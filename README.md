@@ -14,30 +14,29 @@ Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. Th
 
 ### 1. Controller Board (The Brain)
 *   **Module:** Raspberry Pi CM5 (BCM2712) on a custom 4-layer 1.6mm carrier.
-*   **Power Input:** Dual-source with seamless switching (LTC4412 Ideal Diode).
+*   **Power Input:** 3-way seamless switching (LTC4412 Ideal Diode).
+    *   **Military Battery:** Fischer 102 Connector (12V-14.4V nominal) with SMBus telemetry.
+    *   **PoE+ (802.3at):** 30W Power-over-Ethernet via isolated PD controller.
     *   **USB-C PD:** 5V/5A negotiated input.
-    *   **Military Battery:** Fischer 102 Connector (12V-14.4V nominal).
-*   **Protection:** **TPS259474L eFuse** with Latch-off safety (12V UVLO / 16V OVP / 5.5A Limit).
+*   **Protection:** **TPS259474L eFuse** (Latch-off) with 12V UVLO / 16V OVP / 5.5A Limit.
 *   **Output Rail:** Dedicated 3.3V/5A Buck Converter for the 30-rotor stack.
 *   **JTAG Master:** Embedded FT232H (Permanent USB Blaster) on internal USB 2.0.
-*   **I/O Hub:** 
-    *   Native USB 3.0 (90Ω Diff Pairs), HDMI (100Ω Diff Pairs), and Gigabit Ethernet.
-    *   3x 20-pin SMT Headers for Keyboard/Lightboard strips (A-Z, 0-9, +, =, Shift).
+*   **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
+*   **User Interface:** Illuminated Vintage Amber **Safe Shutdown Button**, Master Toggle, and Status LEDs.
 
 ### 2. Universal Rotor (The Engine)
 *   **Logic:** Intel **MAX II EPM240T100C5N** CPLD.
-*   **Memory:** 10 pre-loaded bidirectional wiring sets stored in UFM (User Flash Memory). 
-*   **Selection:** 4-position DIP switch to select "Rotor Identity" from the internal library.
-*   **Sensors:** 6-bit Single-Track Gray Code via 6x **TCRT5000L** reflective sensors on the PCB perimeter.
-*   **Tri-Connector Bus:**
-    *   **Power:** 2x2 Molex Micro-Fit (3.3V Parallel).
-    *   **JTAG:** 2x4 Molex Micro-Fit (GND-Shielded Daisy Chain).
-    *   **Enigma:** 2x6 Molex Micro-Fit (12-bit Bidirectional Relay).
+*   **Dimensions:** 122mm PCB Diameter / **163mm Outer Diameter (OD)**.
+*   **Segments:** 64 characters with **8mm arc width** for high readability.
+*   **Memory:** 10 pre-loaded bidirectional wiring sets; 4-position DIP switch for "Rotor Identity" selection.
+*   **Sensing:** 6-bit Single-Track De Bruijn sequence via 6x **TCRT5000L** reflective sensors.
+*   **Tri-Connector Bus:** 
+    *   Power (2x2), JTAG (2x4 Shielded), and Enigma (2x6 Bidirectional Relay) in a "Tripod" layout.
 *   **Signal Integrity:** **74LVC125A** buffer on every rotor for TCK/TMS regeneration.
 
-### 3. Universal Interface (The I/O)
-*   **Logic:** 2x **MAX II EPM240** (1x 6-to-64 Decoder, 1x 64-to-6 Encoder).
-*   **Keyboard/Lightboard:** 37-key "Hold-to-Shift" layout with Vintage Amber LED feedback.
+### 3. Universal Interface (Keyboard/Plugboard)
+*   **Logic:** 2x **MAX II EPM240** (Decoder/Encoder).
+*   **Keyboard:** 37-key "Hold-to-Shift" layout with Vintage Amber LED feedback.
 *   **Plugboard:** 64x 3.5mm Switching Jacks with 8-channel TVS ESD protection.
 *   **Logic Pattern:** Active-Low (Internal CPLD pull-ups for keys, Sink-to-GND for LEDs).
 
@@ -46,38 +45,32 @@ Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. Th
 ## 💻 Software Implementation
 
 ### 1. Linux Kernel Driver (`enigma_core.c`)
-A custom C driver providing a high-performance bridge between hardware and userspace.
-*   **Interrupt Handling:** Monitors the `KEY_EVENT_INT` line from the Encoder CPLD.
-*   **State Mapping:** Maps the 6-bit Input and 6-bit Return Path directly to a character device at `/dev/enigma_state`.
-*   **JTAG Control:** Triggers the USB Blaster to perform a Boundary Scan (SAMPLE/PRELOAD) upon keypress.
+*   **Interrupt Handling:** High-priority monitoring of the `KEY_EVENT_INT` line.
+*   **State Mapping:** Maps 6-bit Input/Return Path to `/dev/enigma_state`.
+*   **Power Telemetry:** Exposes SMBus battery data and PoE status to userspace.
+*   **JTAG Control:** Executes Boundary Scan (SAMPLE/PRELOAD) upon keypress trigger.
 
 ### 2. .NET 10 GUI (The Terminal)
-A modern C# application providing a rich interactive experience via HDMI.
-*   **Binary File Transfer:** Supports universal file encryption by Base64 encoding binary data and streaming the resulting 6-bit blocks through the hardware Enigma process.
-*   **Ethernet/UDP Interface:** Secure "Digital Field Terminal" file exchanges between hardware units via 6-bit encrypted UDP streams.
-*   **Rotor Library Manager:** Visual design tool to verify custom wiring maps and flash them to the 30-rotor stack via JTAG.
-*   **Historical Archive:** Database of cryptography history covering Bletchley Park, Alan Turing, SIGABA development, and technical machine variants.
+*   **Binary File Transfer:** Encrypts files via Base64 encoding/decryption through the hardware rotors.
+*   **Ethernet/UDP Interface:** Secure 6-bit encrypted UDP streams for remote terminal communication.
+*   **Power Dashboard:** Real-time monitoring of Battery (SoC/Temp), PoE+, and USB-C sources.
+*   **Rotor Library Manager:** Visual tool to design custom wiring and flash the 30-rotor stack.
+*   **Historical Archive:** Educational database of Enigma, Typex, and SIGABA variants.
 
 ---
 
-## 🛠 Design Rules (KiCAD 9)
-*   **Stackup:** 4-layer 1.6mm thickness with solid GND plane (L2) and "Checkerboard" GND pinning on all inter-board connectors.
-*   **Impedance:** 90Ω Differential Pairs for USB 3.0; 100Ω for HDMI/Ethernet.
-*   **Component Mounting:** 100% Surface Mount (SMT) for high-speed I/O to eliminate "stub" reflections.
-
----
-
-## ⚠️ Safety Features
-*   **Latch-Off eFuse:** Electronic fault protection for military battery input. System kills power upon over-voltage or over-current and requires a manual master switch cycle to reset.
-*   **Soft Start Logic:** Master toggle switch drives the Enable (EN) pins of regulators rather than switching raw high-current rails to prevent arcing and inrush spikes.
-*   **ESD Hardening:** TVS diodes (PESD3V3L1BA) on every exposed connector pin; 8-channel TVS arrays and 220Ω series resistors on all 64 user-facing plugboard/keyboard lines.
-*   **Thermal Management:** Solid ground fills and via-stitching under CPLDs for heat dissipation and EMI shielding.
+## ⚠️ Safety & Design Rules (KiCAD 9)
+*   **eFuse Latch-off:** Electronic fault protection requires manual power cycle to reset.
+*   **Soft Start:** Master toggle drives regulator Enable (EN) pins to prevent inrush arcing.
+*   **ESD Hardening:** TVS diodes on all exposed pins (JTAG, Enigma, and 64-jack lines).
+*   **Stackup:** 4-layer 1.6mm FR4; L2 Solid GND plane; 90Ω (USB) / 100Ω (HDMI) diff pairs.
 
 ---
 
 ## 📅 Development Roadmap
-1.  **Controller Board:** KiCAD 9 Schematic & Layout (Power Entry, CM5 Socket, High-Speed I/O, JTAG Master).
-2.  **Universal Rotor:** Hardware Prototype (MAX II Integration, Gray Code Sensor Alignment, Buffering).
-3.  **Universal Interface:** 64-Jack Plugboard and 37-key "Passive" strip design.
-4.  **Firmware:** Verilog implementation for Rotor libraries and Interface Encoding/Decoding.
-5.  **Driver & GUI:** Linux C-Driver development followed by the .NET 10 terminal application.
+1.  **Controller Board:** KiCAD 9 Schematic & Layout (Power, CM5, High-Speed I/O, JTAG Master).
+2.  **Universal Rotor:** Hardware Prototype (MAX II, 163mm Shell, De Bruijn Sensors).
+3.  **Power Injection & Support (PIS):** Passive "Mid-Span" bridge for mechanical alignment and 3.3V rail boosting.
+4.  **Universal Interface:** 64-Jack Plugboard and 37-key "Passive" strip design.
+5.  **Firmware:** Verilog for Rotor libraries and Interface Encoding/Decoding.
+6.  **Driver & GUI:** Linux C-Driver and .NET 10 terminal application.
