@@ -7,6 +7,7 @@ Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. Th
 *   **Enigma Variants:** I, M3, M4, and Abwehr.
 *   **Typex:** The 5-rotor British adaptation with simulated printer output.
 *   **SIGABA:** The 15-rotor US system using complex 3-bank stepping algorithms.
+*   **NG-26** The modern digital enigma machine designed and created by Matthew McAtamney-Greenwood.
 
 ---
 
@@ -74,3 +75,15 @@ Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. Th
 4.  **Universal Interface:** 64-Jack Plugboard and 37-key "Passive" strip design.
 5.  **Firmware:** Verilog for Rotor libraries and Interface Encoding/Decoding.
 6.  **Driver & GUI:** Linux C-Driver and .NET 10 terminal application.
+
+## Contributions
+This is an open-source development project. Contributions are welcomed from all.
+When submitting an issue please ensure you provide the SHA commit hash for the version of code that exibits your issue and provide full replication steps.
+For any contributions, please create a Pull Request and ensure useful commit messages are provided. Once a PR is accepted the changes with be squashed into the current working branch of this repository and your name will be added to the list of contributors.
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
+## Licensing
+For enquiries regarding educational licensing, please contact the maintainer.
+This repository is licensed under the GNU GENERAL PUBLIC LICENSE v3.
