@@ -1,0 +1,55 @@
+name: Wiki Sync
+on:
+  push:
+    branches: [ main ]
+    paths: [ 'Docs/**', 'README.md' ]
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # Fetch full history for accurate link updates
+
+      - name: Flatten and Rename
+        run: |
+          mkdir -p wiki_staging
+          # Renames Docs/Electronics/Power_Module/Design_Spec.md -> Electronics-Power-Module-Design-Spec.md
+          find Docs/ -name "*.md" | while read file; do 
+            newname=$(echo "$file" | sed "s|Docs/||; s|/|-|g; s|_|-|g"); 
+            cp "$file" "wiki_staging/$newname"; 
+          done
+          cp README.md wiki_staging/Home.md
+          if [ -f Docs/_Sidebar.md ]; then cp Docs/_Sidebar.md wiki_staging/; fi
+          if [ -f wiki_staging/-Sidebar.md ]; then rm wiki_staging/-Sidebar.md; fi
+
+      - name: Update Links & Titles
+        run: |
+          python3 -c '
+          import os, re
+          root = "wiki_staging/"
+          for f in os.listdir(root):
+              if f.endswith(".md"):
+                  path = os.path.join(root, f)
+                  with open(path, "r") as file:
+                      content = file.read()
+                  
+                  # 1. Replace relative links: [Text](../Path/File.md) -> [[Path-File|Text]]
+                  # This ensures the link uses the new hyphenated filename but keeps original text
+                  new_content = re.sub(r"\[([^]]+)\]\((\.\.?/)?([^)]+)\.md\)", 
+                                       lambda m: "[[" + m.group(1) + "|" + m.group(3).replace("/", "-").replace("_", "-") + "]]", 
+                                       content)
+                  
+                  with open(path, "w") as file:
+                      file.write(new_content)
+          '
+
+      - name: Sync to Wiki
+        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        with:
+          token: ${{ secrets.WIKI_SYNC_TOKEN }}
+          path: wiki_staging/
+          strategy: init # This clears the wiki and force-pushes the new "flattened" structure
+          preprocess: false # We handled this manually in the script for better control
+          commit_message: "Auto-sync Wiki from Docs (flattened structure)"
