@@ -1,0 +1,71 @@
+# Detailed Design: Shielded Power Module (V1.0)
+
+### 1. PCB Architecture
+*   **Stackup:** 4-Layer / 2oz Finished Copper (JLC04201H-7628).
+*   **Substrate:** High-Tg FR4 for thermal stability.
+*   **Finish:** ENIG (Gold) for all user-touch points and thermal pads.
+*   **Thermal Strategy:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
+
+### 2. Power & UPS Hub
+*   **Storage:** 2.5F Supercap Bank (2x3 Vertical Block) providing ~30s hold-time @ 5W.
+*   **Z-Height:** 42mm minimum clearance for Eaton 15F cells.
+*   **Interface:** Gelid GP-Ultimate (15 W/mK) pad on an **Exposed ENIG** bottom zone to Aluminium Enclosure with internal compression ribs.
+
+### 3. EMI & Filtering (The "Iron Curtain")
+*   **Dual-Choke Entry:** 
+    *   Primary: [WE-CMBNC Nanocrystalline CMC](https://www.we-online.com) (Broadband).
+    *   Secondary: [Laird CM5022 High-Freq Choke](https://uk.farnell.com).
+*   **Differential Filtering:** High-current Pi-filters (Molded Inductors + 50V X7R Caps).
+*   **Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears.
+
+### 4. Protection & Logic
+*   **eFuse:** TPS259474L eFuse (11V UVLO / 17V OVLO) with 1A Soft-Charge for supercaps.
+    *   R-Ladder: 732k (R1), 28.7k (R2), 53.6k (R3) - 0.1% Thin-Film.
+*   **Passive:** 72°C SMD Thermal Cutoff (Bourns AC) in series with the main rail.
+*   **Monitoring:** PWR_GD Handshake to CM5 + "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) active during capacitor discharge.
+
+### 5. Traceability & Manufacturing
+*   **Assembly:** Single-side (Top) population for JLCPCB SMT service.
+*   **Serialization:** JLC Serial Number service block on the bottom layer.
+*   **Identification:** Laser-etched **Blitzpfeil** and Proxy QR code (`enigma-ng.link/docs`).
+*   **Branding:** Inverted white silkscreen "Data Plate" on L4 (Bottom) containing the Enigma silhouette, "ENIGMA-NG" text, near the JLC Serial Number block.
+
+---
+
+# Electrical Design Requirements
+
+### 1. Power Architecture
+*   **Input Range:** 11.0V – 17.0V (The "Enigma Rail").
+*   **Priority Logic:** LTC4412 Ideal Diodes (PoE+ is primary; Battery is tertiary).
+*   **Protection:** TPS259474L eFuse with 5.5A hard-limit and 16.5V OVP.
+*   **Islands:** 4-island L3 Power Plane (15V Enigma, 5V System, 3.3V/5A Rotors, 3.3V/Logic).
+
+### 2. Signal Integrity
+*   **USB 3.0:** 90Ω Differential Pairs (Layer 1) with <0.1mm intra-pair skew.
+*   **Ethernet/HDMI:** 100Ω Differential Pairs (Layer 1).
+*   **Data Bus:** 12-bit parallel bus (Layer 6) shielded by L5 GND.
+
+### 3. Safety & EMC
+*   **ESD:** TPD12S016 (HDMI) and TPD4E05U06 (USB) protection on all external ports.
+*   **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching.
+*   **Isolation:** 1500V Galvanic isolation via Ag5300 PoE+ Module.
+
+---
+
+## Power Sequencing & Hardware Reset Plan
+
+### 1. The "Safe-Start" Logic
+To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp-up, we use an automated voltage supervisor combined with a manual override.
+
+*   **Supervisor IC:** [MCP121T-450E](https://www.microchip.com) (4.50V Threshold).
+*   **Trigger:** The supervisor monitors the **+5V_SYSTEM** rail. It holds the `GLOBAL_EN` (PMIC_EN) pin LOW until the rail is stable.
+*   **Manual Reset:** A high-quality tactile button is wired in parallel to the supervisor output. 
+    *   **Action:** Pressing the button pulls `GLOBAL_EN` to GND, forcing a hard PMIC reset of the CM5 without cycling the 12V-15V Rotor Rail.
+
+### 2. Startup Timeline
+1.  **Input:** 12V-15V enters via PoE+/USB-C/Battery.
+2.  **Gate:** TPS259474L eFuse validates voltage and current.
+3.  **Bucks:** 5V and 3.3V_Rotor converters start.
+4.  **Supervisor:** Once 5V hits 4.5V, a 200ms delay timer starts.
+5.  **Release:** `GLOBAL_EN` goes HIGH; CM5 PMIC begins internal 1.8V/1.1V sequencing.
+6.  **Heartbeat:** MIC1555 starts the 1Hz Green "Initialising" pulse.

@@ -10,4 +10,8 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ### 2. Connectors
 *   **Controller Link:** The matching **40-pin Samtec CLP-RA** (Right-Angle) receptacle for the Controller Board.
-*   **External I/O:** 3x Molex Micro-Fit 3.0 headers for the Keyboard, Lampboard, and Plugboard cable harnesses.
+*   **Encoder Interconnects:** 3x 12-pin high-density Hirose DF40 "Press-Fit" connectors for the Keyboard, Lampboard, and Plugboard cable harnesses.
+*   **Reflector Interconnect:** 12-pin high-density Hirose DF40 "Press-Fit" connector for the Reflector Board.
+
+### 2. Interconnects
+*   **Routing:** Flat Flexible Cable (FFC) secured to the chassis floor with conductive EMI tape for the Interconnects.

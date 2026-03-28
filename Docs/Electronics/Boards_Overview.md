@@ -33,7 +33,7 @@ Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
 ### 🔌 3. JTAG Daughterboard (Hidden)
 The internal "USB Blaster" that makes the Enigma-NG self-contained.
 *   **Bridge:** FT232H High-Speed USB 2.0.
-*   **Function:** Allows the CM5 to re-program all 32 logic devices (2x CPLDs + 30x FPGAs) via the GUI without any external cables or visible ports.
+*   **Function:** Allows the CM5 to re-program all 32 logic devices (37x CPLDs) via the GUI without any external cables or visible ports.
 
 ### 🔋 4. Power Module (The "Power Can")
 The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** enclosure.
@@ -44,12 +44,12 @@ The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** e
 
 ### 🔄 5. Reflector Board (The "Turnaround")
 Located at the opposite end of the Stator from the Controller, this board manages the signal's return journey.
-*   **Reflector Mode:** Pairs the output of the 30th rotor and sends it back into the stack.
+*   **Reflector Mode:** Pairs the output of the last rotor and sends it back into the stack return path.
 *   **Extended Mode:** Routes the signal out to an external Plugboard encoder before returning it through the stack.
 
 ### ⚙️ 6. Rotor Module
 Modular units containing the encryption logic.
-*   **Logic:** iCE40 FPGA per rotor.
+*   **Logic:** Altera EPM240T100C CPLD per rotor.
 *   **Telemetry:** **AS5600 Magnetic Encoders** to report physical wheel position to the CM5.
 *   **Mechanical:** Features a 3D-printed/CNC index gear for the manual advancement pawls.
 
@@ -57,3 +57,4 @@ Modular units containing the encryption logic.
 The mechanical and electrical backbone.
 *   **Distribution:** A 30-slot backplane providing 5A power distribution and signal routing.
 *   **Connectivity:** Bridges the Controller, Encoder, and Rotor stack into a single parallel bus.
+*   **Programmability** An Altera EPM240T100C is used to allow the GUI Application to re-configure the connection of the plugboard encoders either before, after or completely removed from the rotor stack.

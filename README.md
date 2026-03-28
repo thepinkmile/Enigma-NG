@@ -1,13 +1,27 @@
-# Enigma 2026 AI: Digital Cryptography Ecosystem
+# Enigma NG: Digital Cryptography Ecosystem
 
-An advanced, modular, and historically-accurate digital recreation of the world’s most iconic encryption machines. Powered by a **Raspberry Pi Compute Module 5 (CM5)**, this system controls a hardware stack of up to 30 custom CPLD-based rotors and a physical 64-jack plugboard.
+The Enigma-NG is an advanced "Museum-Grade", modular, and historically-accurate digital recreation of the world’s most iconic encryption machines. Powered by a **Raspberry Pi Compute Module 5 (CM5)**, this system controls a hardware stack of up to 30 custom CPLD-based rotors and a physical 64-jack plugboard. Powered with either USB-C Power Adapter, PoE+ or Smart Battery. It bridges 1940s mechanical heritage with 2026 high-speed digital engineering.
 
 ## 🚀 Project Vision
-Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. The hardware is designed to emulate:
+To create a high-fidelity, educational, and industrially robust encryption platform. The design prioritises classroom safety, professional EMI shielding, and deep hardware visibility for students via an integrated diagnostic bank. Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. The hardware is designed to emulate:
 *   **Enigma Variants:** I, M3, M4, and Abwehr.
 *   **Typex:** The 5-rotor British adaptation with simulated printer output.
 *   **SIGABA:** The 15-rotor US system using complex 3-bank stepping algorithms.
 *   **NG-26** The modern digital enigma machine designed and created by Matthew McAtamney-Greenwood.
+
+## Tools Used
+*   **Visual Studio Code:** To manage the Documentation within this repository.
+*   **Visual Studio:** (Latest Community Edition) To develop the GUI Application.
+*   **KiCAD 9:** To develop the electrical components and PCB layouts.
+*   **OnShape:** To create and manage the mechanical designs and assemblies.
+*   **Yocto:** To create the custom Linux OS with built-in drivers and GUI Application.
+
+## Core Component Overview
+*   **Controller:** Raspberry Pi Compute Module 5 (CM5) carrier board for monitoring and programming the system.
+*   **Power Module:** Triple-input priority (PoE+ > USB-C PD > Battery) with 11V–17V eFuse protection.
+*   **Interface:** 40-pin Samtec Right-Angle Board-to-Board (BtB) link to the Stator board.
+*   **Diagnostics:** 2x8 Gold-plated (ENIG) test loop bank for 12-bit data and JTAG monitoring.
+*   **UI:** .NET 10.0 Cross-platform GUI with live power telemetry.
 
 ---
 
@@ -16,7 +30,7 @@ Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. Th
 ### 1. Controller Board (The Brain)
 *   **Module:** Raspberry Pi CM5 (BCM2712) on a custom 4-layer 1.6mm carrier.
 *   **Power Input:** 3-way seamless switching (LTC4412 Ideal Diode).
-    *   **Military Battery:** Fischer 102 Connector (12V-14.4V nominal) with SMBus telemetry.
+    *   **Smart Battery:** 4-pin Molex connector (12V-14.4V nominal) with SMBus telemetry.
     *   **PoE+ (802.3at):** 30W Power-over-Ethernet via isolated PD controller.
     *   **USB-C PD:** 5V/5A negotiated input.
 *   **Protection:** **TPS259474L eFuse** (Latch-off) with 12V UVLO / 16V OVP / 5.5A Limit.
