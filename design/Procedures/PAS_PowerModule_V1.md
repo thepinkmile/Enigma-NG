@@ -1,8 +1,9 @@
 # PAS-PWR-V1.0: Power Module Acceptance Specification
 
 ## ⚠️ HINWEIS: THERMISCHE GRENZFLÄCHE (Thermal Interface)
-*   The exposed ENIG zones can become extremely hot under full load (>5A).
-*   **PROCEDURE:** Gelid-GP thermal pad MUST be applied before live testing.
+
+* The exposed ENIG zones can become extremely hot under full load (>5A).
+* **PROCEDURE:** Gelid-GP thermal pad MUST be applied before live testing.
 
 ## 1. Bare Board "Cold" Tests (Pre-Power)
 
@@ -26,6 +27,7 @@
 * [ ] **UPS Hold-time:** Load 5W; pull power; verify >10s uptime before dropout.
 
 ## 4. Header & Coupon Verification
+
 * [ ] **Polarization:** Confirm the Shrouded 40-pin Header notch faces INWARD toward the V-Score.
 * [ ] **Straight Alignment:** Verify verticality of ENIG pins to prevent ribbon cable binding.
 * [ ] **Adhesive Zone:** Confirm RTV Silicone 'KLEBER-ZONE' is free of solder mask for maximum bond.

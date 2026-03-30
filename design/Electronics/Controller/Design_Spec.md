@@ -7,13 +7,15 @@
 * **Role:** Master traffic controller for Power (Alpha) and Encryption Logic (Beta).
 
 ## 2. Dual-Link Interface (Samtec ERx8)
-*   **Link-Alpha (Power/Entry):** ERF8 Female Socket. Receives 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module. Provides 3V3_SYSTEM for RJ45 Power and Status LED signals.
-*   **Link-Beta (Logic/Stator):** ERM8 Male Header. Transmits JTAG, Reset, and 3.3V_ENIG to Stator.
-*   **Pass-Through:** 3.3V_ENIG is a dedicated 2oz copper "High-Current Highway" on L3, isolating encryption power from CPU noise.
+
+* **Link-Alpha (Power/Entry):** ERF8 Female Socket. Receives 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module. Provides 3V3_SYSTEM for RJ45 Power and Status LED signals.
+* **Link-Beta (Logic/Stator):** ERM8 Male Header. Transmits JTAG, Reset, and 3.3V_ENIG to Stator.
+* **Pass-Through:** 3.3V_ENIG is a dedicated 2oz copper "High-Current Highway" on L3, isolating encryption power from CPU noise.
 
 ### 2.1. High-Speed Routing (on Link-Alpha)
-*   **Ethernet:** 100Ω Stripline pairs on L3, shielded by L2/L5 ground planes.
-*   **Power Vias:** 4-via "Power Clusters" (0.3mm) per Samtec power pin for thermal stability.
+
+* **Ethernet:** 100Ω Stripline pairs on L3, shielded by L2/L5 ground planes.
+* **Power Vias:** 4-via "Power Clusters" (0.3mm) per Samtec power pin for thermal stability.
 
 ### 2.2. Connectivity & Bus (on Link-Beta)
 

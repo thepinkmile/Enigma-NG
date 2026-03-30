@@ -75,14 +75,16 @@ This Power Module is a custom power board that is independantly shielded and pro
 * **Isolation:** 1500V Galvanic isolation via Ag5300 PoE+ Module.
 
 ### 4. Mechanical Spacing (Supercap Block)
-*   **Configuration:** 2x3 Vertical Staggered Block.
-*   **Pitch:** 11.5mm center-to-center (providing a 1.0mm air gap between 10.5mm max-dia cells).
-*   **Rib Clearway:** The 1.0mm gap is a dedicated 'No-Fly Zone' for all PCB traces on L1-L4 to accommodate enclosure compression ribs.
+
+* **Configuration:** 2x3 Vertical Staggered Block.
+* **Pitch:** 11.5mm center-to-center (providing a 1.0mm air gap between 10.5mm max-dia cells).
+* **Rib Clearway:** The 1.0mm gap is a dedicated 'No-Fly Zone' for all PCB traces on L1-L4 to accommodate enclosure compression ribs.
 
 ### 5. Routing Constraints & Keep-outs
-*   **Supercap Shadow Zone:** A 32mm x 22mm 'Routing Keep-out' enforced on L1 and L2 directly beneath the Supercap Block.
-*   **Purpose:** Only GND_CHASSIS copper and Thermal Matrix vias are permitted here to ensure long-term reliability and inspection access.
-*   **PD Emulation:** TPS25750 handles internal 5V/6A negotiation with CM5 to ensure a "Warning-Free" Linux boot.
+
+* **Supercap Shadow Zone:** A 32mm x 22mm 'Routing Keep-out' enforced on L1 and L2 directly beneath the Supercap Block.
+* **Purpose:** Only GND_CHASSIS copper and Thermal Matrix vias are permitted here to ensure long-term reliability and inspection access.
+* **PD Emulation:** TPS25750 handles internal 5V/6A negotiation with CM5 to ensure a "Warning-Free" Linux boot.
 
 ---
 
@@ -113,7 +115,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-6 | **Supercaps (6x)** | 15F / 3.0V | Radial 10mm | [HV1030-3R0156-R](https://www.mouser.co.uk) | [283-HV1030-3R0156-R-ND](https://www.digikey.co.uk) |
-| F1 | **TCO** | 72°C SMD |  | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) |
+| F1 | **TCO** | 72°C SMD | ??? | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) |
 | J1 | **BtB Link** | Samtec ERM8 | 40-pin Gold | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | J2 | **PoE+ Port** | Wurth 7499111121A | Long-Body THT | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | Q1-3 | **Ideal FETs** | SISS22DN | PowerPAK 5x6 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |

@@ -1,4 +1,5 @@
 # Board Layout Visualisations
+
 ---
 
 ## CM5 Master GPIO & BtB Mapping
@@ -13,6 +14,7 @@
 * **Pins 41-44:** 3.3V_ENIG (Input from Power Module)
 * **Pins 49-80:** 5V_MAIN / GND (6A DC Delivery Cluster)
 
+```text
        LINK-ALPHA (80-PIN SAMTEC)           SIGNAL TYPE          FUNCTION
 _______________________________________    _____________    _____________________________
 
@@ -35,6 +37,7 @@ _______________________________________    _____________    ____________________
 
 [ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (6A DELIVERY)  ]
  (4-Via Thermal Clusters)                  (BULK DC)        (To CM5 VCC_IN)
+```
 
 ### LINK-BETA (Encryption & JTAG)
 
@@ -44,6 +47,7 @@ _______________________________________    _____________    ____________________
 * **Pins 47-52:** ENC_OUT [0:5] (6-bit Sniffer Output)
 * **Pins 54-60:** 3.3V_ENIG (Pass-Through Output to Stator)
 
+```text
         LINK-BETA (80-PIN SAMTEC)            SIGNAL TYPE          FUNCTION
 _______________________________________    _____________    _____________________________
 
@@ -60,3 +64,4 @@ _______________________________________    _____________    ____________________
 
 [ PINS 54 - 60 ] ------------------------> [ 2oz POWER ] -> [ 3V3_ENIG (OUTPUT)      ]
  (Direct 2oz Bridge from Alpha)            (CLEAN OUT)      (To Stator/Rotor Logic)
+```
