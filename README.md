@@ -1,10 +1,14 @@
 # Enigma NG: Digital Cryptography Ecosystem
 
-The Enigma-NG is an advanced "Museum-Grade", modular, and historically-accurate digital recreation of the world’s most iconic encryption machines. Powered by a **Raspberry Pi Compute Module 5 (CM5)**, this system controls a hardware stack of up to 30 custom CPLD-based rotors and a physical 64-jack plugboard. Powered with either USB-C Power Adapter, PoE+ or Smart Battery. It bridges 1940s mechanical heritage with 2026 high-speed digital engineering.
+The Enigma-NG is an advanced "Museum-Grade", modular, and historically-accurate digital recreation of the world’s most iconic encryption machines.
+Powered by a **Raspberry Pi Compute Module 5 (CM5)**, this system controls a hardware stack of up to 30 custom CPLD-based rotors and a physical 64-jack plugboard.
+Powered with either USB-C Power Adapter, PoE+ or Smart Battery. It bridges 1940s mechanical heritage with 2026 high-speed digital engineering.
 
 ## 🚀 Project Vision
 
-To create a high-fidelity, educational, and industrially robust encryption platform. The design prioritises classroom safety, professional EMI shielding, and deep hardware visibility for students via an integrated diagnostic bank. Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. The hardware is designed to emulate:
+To create a high-fidelity, educational, and industrially robust encryption platform.
+The design prioritises classroom safety, professional EMI shielding, and deep hardware visibility for students via an integrated diagnostic bank.
+Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. The hardware is designed to emulate:
 
 * **Enigma Variants:** I, M3, M4, and Abwehr.
 * **Typex:** The 5-rotor British adaptation with simulated printer output.
@@ -105,7 +109,8 @@ To create a high-fidelity, educational, and industrially robust encryption platf
 
 This is an open-source development project. Contributions are welcomed from all.
 When submitting an issue please ensure you provide the SHA commit hash for the version of code that exhibits your issue and provide full replication steps.
-For any contributions, please create a Pull Request and ensure useful commit messages are provided. Once a PR is accepted the changes with be squashed into the current working branch of this repository and your name will be added to the list of contributors.
+For any contributions, please create a Pull Request and ensure useful commit messages are provided.
+Once a PR is accepted the changes with be squashed into the current working branch of this repository and your name will be added to the list of contributors.
 
 <!-- readme: collaborators,contributors -start -->
 <table>

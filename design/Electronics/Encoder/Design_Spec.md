@@ -1,6 +1,7 @@
 # Encoder Module (V1.0) Design Specification
 
-A high-performance 64-node interface board. Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle real-time reciprocal encryption for the plugboard and de-bouncing for the 64-key QWERTY keyboard.
+A high-performance 64-node interface board.
+Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle real-time reciprocal encryption for the plugboard and de-bouncing for the 64-key QWERTY keyboard.
 
 ## 1. Power Requirements
 

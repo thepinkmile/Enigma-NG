@@ -1,6 +1,8 @@
 # Detailed Design: Shielded Power Module (V1.0)
 
-This Power Module is a custom power board that is independantly shielded and protected to ensure all power sources are filtered, controlled and monitored. It provides the basis of the clean power rails into the controller board and other peripheral boards. It produces 2 power rails from a common ~12V input source. These power rails are:
+This Power Module is a custom power board that is independantly shielded and protected to ensure all power sources are filtered, controlled and monitored.
+It provides the basis of the clean power rails into the controller board and other peripheral boards.
+It produces 2 power rails from a common ~12V input source. These power rails are:
 
 * **+5V** Providing upto 5A for powering the CM5 module.
 * **+3V3_ENIG** Providing clean 3.3V power for the Encoders and Rotor stack.

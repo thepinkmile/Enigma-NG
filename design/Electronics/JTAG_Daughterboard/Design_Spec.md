@@ -1,12 +1,13 @@
 # JTAG Daughterboard (V1.0) Design Specification
 
-A high-speed USB-to-JTAG bridge module that allows the CM5 to natively program the 30-rotor FPGA stack and the 2 I/O CPLDs. This module replicates the functionality of an **Intel (Altera) USB Blaster II** on a tiny daughterboard.
+A high-speed USB-to-JTAG bridge module that allows the CM5 to natively program the 30-rotor CPLDs and the 4 I/O CPLDs.
+This module replicates the functionality of an **Intel (Altera) USB Blaster II** on a tiny daughterboard.
 
 ## 1. Core Logic
 
 * **Role:** Converts the CM5's USB 2.0 signals into high-speed JTAG (TCK, TMS, TDI, TDO) commands.
 * **Bridge IC:** [FT232H](https://ftdichip.com/wp-content/uploads/2023/09/DS_FT232H.pdf) High-Speed USB 2.0 to MPSSE.
-* **Function:** Dedicated JTAG programmer for the global chain (30x Rotor FPGAs + 2x Encoder CPLDs + 1x Stator CPLD).
+* **Function:** Dedicated JTAG programmer for the global chain (30x Rotor CPLDs + 3x Encoder CPLDs + 1x Stator CPLD).
 * **Configuration:** 12MHz crystal-controlled for high-speed programming via the CM5 GUI.
 * **Integrated Driver:** Compatible with `OpenOCD` or `Quartus` via a custom Linux driver on the CM5.
 
@@ -27,6 +28,5 @@ A high-speed USB-to-JTAG bridge module that allows the CM5 to natively program t
 
 ## 4. Electrical Requirements
 
-* **Voltage:** Powered by the +3.3V Logic Rail from the CM5 on the Controller Board.
-* **Level Shifting:** [74LVC1T45](https://www.ti.com) dual-supply buffers to match the variable I/O voltages of the rotor stack (1.8V to 3.3V).
+* **Voltage:** Powered by the `+3.3V_SYSTEM` Logic Rail from the CM5 on the Controller Board.
 * **Clocking:** Dedicated 24MHz crystal for the FT232H to ensure JTAG clock stability across the 34-device chain.
