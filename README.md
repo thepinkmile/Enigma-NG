@@ -108,6 +108,19 @@ When submitting an issue please ensure you provide the SHA commit hash for the v
 For any contributions, please create a Pull Request and ensure useful commit messages are provided. Once a PR is accepted the changes with be squashed into the current working branch of this repository and your name will be added to the list of contributors.
 
 <!-- readme: collaborators,contributors -start -->
+<table>
+	<tbody>
+		<tr>
+            <td align="center">
+                <a href="https://github.com/thepinkmile">
+                    <img src="https://avatars.githubusercontent.com/u/23457507?v=4" width="100;" alt="thepinkmile"/>
+                    <br />
+                    <sub><b>The Pink Mile Developer</b></sub>
+                </a>
+            </td>
+		</tr>
+	<tbody>
+</table>
 <!-- readme: collaborators,contributors -end -->
 
 ## Licensing
