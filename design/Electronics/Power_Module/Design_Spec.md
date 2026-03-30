@@ -11,14 +11,18 @@ This Power Module is a custom power board that is independantly shielded and pro
 
 ### 1. PCB Architecture
 
-* **Stackup:** 4-Layer / 2oz Finished Copper (JLC04201H-7628).
+* **Stackup:** 4-Layer / 2oz Finished Copper (JLC04201H-7628) [Spec-B: Single-Side Assembly].
 * **Substrate:** High-Tg FR4 for thermal stability.
 * **Finish:** ENIG (Gold) for all user-touch points and thermal pads.
-* **Thermal Strategy:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
+* **Enclosure:** 42mm Aluminium "Power Can" with internal compression ribs.
+* **Thermal:** Cross-Hatched Exposed ENIG "Thermal Halos" (2mm offset) at mesh intersections.
+  * **Vias:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
 
 ### 2. Power & UPS Hub
 
-* **Storage:** 2.5F Supercap Bank (2x3 Vertical Block) providing ~30s hold-time @ 5W.
+* **Storage:** 2.5F Supercap Bank (6x 15F/3.0V Cells in 2x3 Vertical Block) providing ~30s hold-time @ 5W.
+* **Stabilizer:** Solder-mask opening "KLEBER-ZONE" for RTV Silicone adhesive.
+* **Indicators:** Green "LOGIK-BEREIT" LED + 5.1V Zener Amber "Safety Glow" LED.
 * **Z-Height:** 42mm minimum clearance for Eaton 15F cells.
 * **Interface:** Gelid GP-Ultimate (15 W/mK) pad on an **Exposed ENIG** bottom zone to Aluminium Enclosure with internal compression ribs.
 
@@ -32,8 +36,11 @@ This Power Module is a custom power board that is independantly shielded and pro
 
 ### 4. Protection & Logic
 
+* **External Handshake:** STUSB4500 (Standalone Sink) negotiates 15V/3A from Wall/PoE+.
+* **Internal Handshake:** TPS25750 PD Emulator provides 5V/6A "Clean PD" profile to CM5.
+* **Protection:** Triple-Input ORing via LM74700-Q1 Ideal Diodes (PowerPAK MOSFETs).
 * **eFuse:** TPS259474L eFuse (11V UVLO / 17V OVLO) with 1A Soft-Charge for supercaps.
-  * R-Ladder: 732k (R1), 28.7k (R2), 53.6k (R3) - 0.1% Thin-Film.
+  * R-Ladder: 732kΩ (R1), 28.7kΩ (R2), 53.6kΩ (R3) - 0.1% Thin-Film.
 * **Passive:** 72°C SMD Thermal Cutoff (Bourns AC) in series with the main rail.
 * **Monitoring:** PWR_GD Handshake to CM5 + "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) active during capacitor discharge.
 
@@ -67,6 +74,16 @@ This Power Module is a custom power board that is independantly shielded and pro
 * **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching.
 * **Isolation:** 1500V Galvanic isolation via Ag5300 PoE+ Module.
 
+### 4. Mechanical Spacing (Supercap Block)
+*   **Configuration:** 2x3 Vertical Staggered Block.
+*   **Pitch:** 11.5mm center-to-center (providing a 1.0mm air gap between 10.5mm max-dia cells).
+*   **Rib Clearway:** The 1.0mm gap is a dedicated 'No-Fly Zone' for all PCB traces on L1-L4 to accommodate enclosure compression ribs.
+
+### 5. Routing Constraints & Keep-outs
+*   **Supercap Shadow Zone:** A 32mm x 22mm 'Routing Keep-out' enforced on L1 and L2 directly beneath the Supercap Block.
+*   **Purpose:** Only GND_CHASSIS copper and Thermal Matrix vias are permitted here to ensure long-term reliability and inspection access.
+*   **PD Emulation:** TPS25750 handles internal 5V/6A negotiation with CM5 to ensure a "Warning-Free" Linux boot.
+
 ---
 
 ## Power Sequencing & Hardware Reset Plan
@@ -93,11 +110,16 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ## Power Module V1.0: Bill of Materials
 
-| Component | Value | Mouser Part # | DigiKey Part # |
-| :--- | :--- | :--- | :--- |
-| **eFuse (U1)** | TPS259474L | [TPS259474LRPWR](https://www.mouser.co.uk) | [296-TPS259474LRPWRCT-ND](https://www.digikey.co.uk) |
-| **R1 (732k)** | 0.1% Thin-Film | [ERA-3ARB7323V](https://www.mouser.co.uk) | [P732KBYCT-ND](https://www.digikey.co.uk) |
-| **R2 (28.7k)** | 0.1% Thin-Film | [ERA-3ARB2872V](https://www.mouser.co.uk) | [P28.7KBYCT-ND](https://www.digikey.co.uk) |
-| **R3 (53.6k)** | 0.1% Thin-Film | [ERA-3ARB5362V](https://www.mouser.co.uk) | [P53.6KBYCT-ND](https://www.digikey.co.uk) |
-| **TCO (F1)** | 72°C SMD | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) |
-| **Caps (6x)** | 15F / 3.0V | [HV1030-3R0156-R](https://www.mouser.co.uk) | [283-HV1030-3R0156-R-ND](https://www.digikey.co.uk) |
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| C1-6 | **Supercaps (6x)** | 15F / 3.0V | Radial 10mm | [HV1030-3R0156-R](https://www.mouser.co.uk) | [283-HV1030-3R0156-R-ND](https://www.digikey.co.uk) |
+| F1 | **TCO** | 72°C SMD |  | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) |
+| J1 | **BtB Link** | Samtec ERM8 | 40-pin Gold | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
+| J2 | **PoE+ Port** | Wurth 7499111121A | Long-Body THT | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
+| Q1-3 | **Ideal FETs** | SISS22DN | PowerPAK 5x6 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
+| R1 | **Ladder R1** | 732kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB7323V](https://www.mouser.co.uk) | [P732KBYCT-ND](https://www.digikey.co.uk) |
+| R2 | **Ladder R2** | 28.7kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB2872V](https://www.mouser.co.uk) | [P28.7KBYCT-ND](https://www.digikey.co.uk) |
+| R3 | **Ladder R3** | 53.6kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB5362V](https://www.mouser.co.uk) | [P53.6KBYCT-ND](https://www.digikey.co.uk) |
+| U1 | **eFuse** | TPS259474L | QFN-20 | [TPS259474LRPWR](https://www.mouser.co.uk) | [296-TPS259474LRPWRCT-ND](https://www.digikey.co.uk) |
+| U2 | **5V Buck** | LM61460-Q1 | VQFN-14 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
+| U5 | **PD Emulator** | TPS25750 | QFN-28 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |

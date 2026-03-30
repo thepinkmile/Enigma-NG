@@ -4,9 +4,18 @@
 
 * **Module:** Raspberry Pi Compute Module 5 (CM5).
 * **Stackup:** 6-Layer (JLC06161H-2116) for 5Gbps differential pair integrity.
-* **Handshake:** Receives PWR_GD from Power Module via Gold-plated Samtec ERM8 link.
+* **Role:** Master traffic controller for Power (Alpha) and Encryption Logic (Beta).
 
-## 2. Connectivity & Bus
+## 2. Dual-Link Interface (Samtec ERx8)
+*   **Link-Alpha (Power/Entry):** ERF8 Female Socket. Receives 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module. Provides 3V3_SYSTEM for RJ45 Power and Status LED signals.
+*   **Link-Beta (Logic/Stator):** ERM8 Male Header. Transmits JTAG, Reset, and 3.3V_ENIG to Stator.
+*   **Pass-Through:** 3.3V_ENIG is a dedicated 2oz copper "High-Current Highway" on L3, isolating encryption power from CPU noise.
+
+### 2.1. High-Speed Routing (on Link-Alpha)
+*   **Ethernet:** 100Ω Stripline pairs on L3, shielded by L2/L5 ground planes.
+*   **Power Vias:** 4-via "Power Clusters" (0.3mm) per Samtec power pin for thermal stability.
+
+### 2.2. Connectivity & Bus (on Link-Beta)
 
 * **High-Speed Interconnect (BtB Samtec):**
   * **Connector:** [Samtec FTSH-RA](https://www.samtec.com) (Right-Angle).
@@ -16,6 +25,11 @@
     * **Pins 9–32:** 12-bit Parallel Data Bus + JTAG signals (Interleaved with GND shields).
 * **Programming:** Internal USB 2.0 link to the JTAG Daughterboard.
 * **Interface:** Samtec FTSH Gold-flashed headers for high-speed data distribution to the Stator.
+* **Encryption Sniffer Bus**
+  * **Logic:** 12-bit binary encoded bus (6-in / 6-out) for 64-character alphabet monitoring.
+  * **ENC_IN [0:5]:** GPIO 0-5 (Binary input from Keyboard CPLD).
+  * **ENC_OUT [0:5]:** GPIO 6-11 (Binary output from Reflector/Stator).
+  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all 33+ CPLDs.
 
 ## 3. Connector Stacks
 
@@ -119,29 +133,19 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 
 ## 14. BOM
 
-### 1. Power Gatekeeper (TPS259474L eFuse)
-
-* **Calculated Values (11V–17V Window):**
-  * **R1 (Top):** 1.07 MΩ (1%)
-  * **R2 (Mid):** 46.2 kΩ (1%)
-  * **R3 (Bot):** 84.7 kΩ (1%)
-* **Current Limit ($R_{ILIM}$):** 86.6 kΩ for 5.5A hard-trip.
-* **Thermal:** 3x3 VIPPO heatsink grid connected to internal GND planes.
-* **Bilingual Silk:** ACHTUNG: HEISS! (Caution: Hot!).
-
-### 2. Telemetry (INA219 + Shunt)
+### 1. Telemetry (INA219 + Shunt)
 
 * **Shunt Resistor:** 10mΩ (1206, 1%, 1W).
 * **Configuration:** Kelvin-sensing (4-wire) directly to pins for high-current accuracy.
 * **Filtering:** 10Ω + 0.1µF RC filter on sensing lines to suppress rotor switching noise.
 
-### 3. Protection & EMI
+### 2. Protection & EMI
 
 * **ESD Protection:** [TPD12S016](https://www.ti.com) (HDMI) and [TPD4E05U06](https://www.ti.com) (USB 3.0) on Layer 1.
 * **Capacitor Bank:** 50V-rated X7R capacitors (2.5x voltage derating) in a Symmetrical Star pattern.
 * **Status LED:** MIC1555-based 1Hz heartbeat flasher (Bilingual label: ACHTUNG: HEISS!).
 
-### 4. Mating Header (Samtec FTSH)
+### 3. Mating Header (Samtec FTSH)
 
 * **Specs:** [FTSH-120-01-L-DH](https://uk.rs-online.com/web/p/pcb-headers/7676792) (Right-angle, SMT pins, Through-hole reflow clips).
 * **Pins:** 40-position, 1.27mm pitch.
