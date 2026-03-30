@@ -11,7 +11,7 @@ This Power Module is a custom power board that is independantly shielded and pro
 
 ### 1. PCB Architecture
 
-* **Stackup:** 4-Layer / 2oz Finished Copper (JLC04201H-7628) [Spec-B: Single-Side Assembly].
+* **Stackup:** 4-Layer / 2oz Finished Copper (JLC04201H-7628).
 * **Substrate:** High-Tg FR4 for thermal stability.
 * **Finish:** ENIG (Gold) for all user-touch points and thermal pads.
 * **Enclosure:** 42mm Aluminium "Power Can" with internal compression ribs.

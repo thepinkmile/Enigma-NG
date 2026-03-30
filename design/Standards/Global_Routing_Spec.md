@@ -14,6 +14,8 @@
 ## 2. Manufacturing & Mask
 
 * **PCB Stackup:** System-wide 2oz Finished Copper (ensures zero voltage drop across links).
+  * **Spec-A:** Dual-Side Assembly + Hidden/Burried Vias.
+  * **Spec-B:** Single-Side Assembly (used for prototyping).
 * **Mask Type:** NSMD (Non-Solder Mask Defined) for all ICs and PowerPAK MOSFETs.
 * **Expansion:** Global Solder Mask Expansion set to 3mil (0.075mm).
 * **Bridge:** Minimum 4mil (0.1mm) Solder Mask Bridge between pads.
