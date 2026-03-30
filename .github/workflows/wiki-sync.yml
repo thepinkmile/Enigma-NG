@@ -2,7 +2,7 @@ name: Wiki Sync
 on:
   push:
     branches: [ main ]
-    paths: [ 'Docs/**', 'README.md' ]
+    paths: [ 'design/**', 'README.md' ]
 
 jobs:
   sync:
@@ -15,14 +15,14 @@ jobs:
       - name: Flatten and Rename
         run: |
           mkdir -p wiki_staging
-          # Renames Docs/Electronics/Power_Module/Design_Spec.md -> Electronics-Power-Module-Design-Spec.md
-          find Docs/ -name "*.md" | while read file; do 
-            newname=$(echo "$file" | sed "s|Docs/||; s|/|-|g; s|_|-|g"); 
+          # Renames design/Electronics/Power_Module/Design_Spec.md -> Electronics-Power-Module-Design-Spec.md
+          find design/ -name "*.md" | while read file; do 
+            newname=$(echo "$file" | sed "s|design/||; s|/|-|g; s|_|-|g"); 
             cp "$file" "wiki_staging/$newname"; 
           done
           cp README.md wiki_staging/Home.md
-          if [ -f Docs/_Sidebar.md ]; then cp Docs/_Sidebar.md wiki_staging/; fi
           if [ -f wiki_staging/-Sidebar.md ]; then rm wiki_staging/-Sidebar.md; fi
+          if [ -f design/_Sidebar.md ]; then cp design/_Sidebar.md wiki_staging/; fi
 
       - name: Update Links & Titles
         run: |
@@ -52,4 +52,4 @@ jobs:
           path: wiki_staging/
           strategy: init # This clears the wiki and force-pushes the new "flattened" structure
           preprocess: false # We handled this manually in the script for better control
-          commit_message: "Auto-sync Wiki from Docs (flattened structure)"
+          commit_message: "Auto-sync Wiki from design docs (flattened structure)"
