@@ -86,7 +86,7 @@ To create a high-fidelity, educational, and industrially robust encryption platf
 ## ⚠️ Safety & Design Rules (KiCAD 9)
 
 * **eFuse Latch-off:** Electronic fault protection requires manual power cycle to reset.
-* **Soft Start:** Master toggle drives regulator Enable (EN) pins to prevent inrush arcing.
+* **Soft Start:** Master toggle drives regulator Enable (EN) pins to prevent inrush.
 * **ESD Hardening:** TVS diodes on all exposed pins (JTAG, Enigma, and 64-jack lines).
 * **Stackup:** 4-layer 1.6mm FR4; L2 Solid GND plane; 90Ω (USB) / 100Ω (HDMI) diff pairs.
 
