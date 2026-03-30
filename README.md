@@ -107,8 +107,8 @@ This is an open-source development project. Contributions are welcomed from all.
 When submitting an issue please ensure you provide the SHA commit hash for the version of code that exhibits your issue and provide full replication steps.
 For any contributions, please create a Pull Request and ensure useful commit messages are provided. Once a PR is accepted the changes with be squashed into the current working branch of this repository and your name will be added to the list of contributors.
 
-<!-- readme: contributors -start -->
-<!-- readme: contributors -end -->
+<!-- readme: collaborators,contributors -start -->
+<!-- readme: collaborators,contributors -end -->
 
 ## Licensing
 

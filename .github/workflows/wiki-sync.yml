@@ -5,8 +5,22 @@ on:
     paths: [ 'design/**', 'README.md' ]
 
 jobs:
-  sync:
+  contrib-readme-job:
     runs-on: ubuntu-latest
+    name: Update README.md Contributors
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Contribute List
+        uses: akhilmhdh/contributors-readme-action@v2.3.11
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  wiki-sync-job:
+    runs-on: ubuntu-latest
+    name: Sync Design Docs to Wiki
+    needs: contrib-readme-job
     steps:
       - uses: actions/checkout@v6
         with:
