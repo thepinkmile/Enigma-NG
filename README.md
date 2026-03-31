@@ -15,6 +15,9 @@ Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. Th
 * **SIGABA:** The 15-rotor US system using complex 3-bank stepping algorithms.
 * **NG-26** The modern digital enigma machine designed and created by Matthew McAtamney-Greenwood.
 
+One of the long-term goals of this project is to introduce the ability to deliver Enigma encrypted data over the network,
+and even provide the ability to deliver encrypted files using a base-64 encoding before executing the standard rotor-based encryption.
+
 ## Tools Used
 
 * **Visual Studio Code:** To manage the Documentation within this repository.
