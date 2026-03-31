@@ -23,12 +23,27 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 ### 2. Power & UPS Hub
 
 * **Storage:** 2.5F Supercap Bank (6x 15F/3.0V Cells in 2x3 Vertical Block) providing ~30s hold-time @ 5W.
+* **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43045-0512).
+  * Pins 1-2: VBATT (14.4V Nominal).
+  * Pins 3-4: SMBus (SDA/SCL) with ESD protection.
+  * Pin 5: BATT_PRES_N (Presence Detect).
+* **Presence Logic:** Pin 5 is pulled to 3V3_SYSTEM via 10kΩ resistor (R7). Battery internal shorts Pin 5 to GND.
+  * Logic HIGH: Battery Disconnected.
+  * Logic LOW: Battery Detected.
+* **Protection:** TPD1E10B06 TVS diode on the Presence line to protect CM5 from ESD during insertion.
 * **Stabilizer:** Solder-mask opening "KLEBER-ZONE" for RTV Silicone adhesive.
 * **Indicators:** Green "LOGIK-BEREIT" LED + 5.1V Zener Amber "Safety Glow" LED.
 * **Z-Height:** 42mm minimum clearance for Eaton 15F cells.
 * **Interface:** Gelid GP-Ultimate (15 W/mK) pad on an **Exposed ENIG** bottom zone to Aluminium Enclosure with internal compression ribs.
 
-### 3. EMI & Filtering (The "Iron Curtain")
+### 3. Telemetry & Power Management
+
+* **I2C Telemetry:** 4.7kΩ (0.1%) pull-up resistors (R1-2) on SDA/SCL lines, tied to 3V3_SYSTEM.
+* **Reset Logic:** 10kΩ (0.1%) pull-up (R3) on SYS_RESET_N to prevent floating states.
+* **Battery Detection:** Dedicated BATT_PRES_N signal routed to CM5 GPIO 23.
+* **USB Telemetry:** USB Power Fault reported to CM5 GPIO 22 via TPS2065C.
+
+### 4. EMI & Filtering (The "Iron Curtain")
 
 * **Dual-Choke Entry:**
   * Primary: [WE-CMBNC Nanocrystalline CMC](https://www.we-online.com) (Broadband).
@@ -36,7 +51,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **Differential Filtering:** High-current Pi-filters (Molded Inductors + 50V X7R Caps).
 * **Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears.
 
-### 4. Protection & Logic
+### 5. Protection & Logic
 
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates 15V/3A from Wall/PoE+.
 * **Internal Handshake:** TPS25750 PD Emulator provides 5V/6A "Clean PD" profile to CM5.
@@ -46,7 +61,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **Passive:** 72°C SMD Thermal Cutoff (Bourns AC) in series with the main rail.
 * **Monitoring:** PWR_GD Handshake to CM5 + "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) active during capacitor discharge.
 
-### 5. Traceability & Manufacturing
+### 6. Traceability & Manufacturing
 
 * **Assembly:** Single-side (Top) population for JLCPCB SMT service.
 * **Serialization:** JLC Serial Number service block on the bottom layer.
@@ -117,13 +132,16 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-6 | **Supercaps (6x)** | 15F / 3.0V | Radial 10mm | [HV1030-3R0156-R](https://www.mouser.co.uk) | [283-HV1030-3R0156-R-ND](https://www.digikey.co.uk) |
+| D5 | **BATT_PRES ESD** | TPD1E10B06 | SOD-923 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | F1 | **TCO** | 72°C SMD | ??? | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) |
 | J1 | **BtB Link** | Samtec ERM8 | 40-pin Gold | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | J2 | **PoE+ Port** | Wurth 7499111121A | Long-Body THT | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
+| J4 | **Battery Conn** | Molex 43045-0512 | 5-pin Micro-Fit for Smart Battery Link | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | Q1-3 | **Ideal FETs** | SISS22DN | PowerPAK 5x6 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | R1 | **Ladder R1** | 732kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB7323V](https://www.mouser.co.uk) | [P732KBYCT-ND](https://www.digikey.co.uk) |
 | R2 | **Ladder R2** | 28.7kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB2872V](https://www.mouser.co.uk) | [P28.7KBYCT-ND](https://www.digikey.co.uk) |
 | R3 | **Ladder R3** | 53.6kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB5362V](https://www.mouser.co.uk) | [P53.6KBYCT-ND](https://www.digikey.co.uk) |
+| R7 | **BATT_PRES_N Pull-up** | 10kΩ (0.1%) | 0603 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | U1 | **eFuse** | TPS259474L | QFN-20 | [TPS259474LRPWR](https://www.mouser.co.uk) | [296-TPS259474LRPWRCT-ND](https://www.digikey.co.uk) |
 | U2 | **5V Buck** | LM61460-Q1 | VQFN-14 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | U5 | **PD Emulator** | TPS25750 | QFN-28 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |

@@ -3,14 +3,18 @@
 ## 1. Core Processing
 
 * **Module:** Raspberry Pi Compute Module 5 (CM5).
-* **Stackup:** 6-Layer (JLC06161H-2116) for 5Gbps differential pair integrity.
+* **Stackup:** 6-Layer /2oz Finished Copper (JLC06161H-2116) for 5Gbps differential pair integrity.
+* **Shielding:** High-speed signals (Ethernet, USB 3.0, HDMI) routed as Striplines on L3, shielded by L2/L5 GND planes.
 * **Role:** Master traffic controller for Power (Alpha) and Encryption Logic (Beta).
 
 ## 2. Dual-Link Interface (Samtec ERx8)
 
-* **Link-Alpha (Power/Entry):** ERF8 Female Socket. Receives 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module. Provides 3V3_SYSTEM for RJ45 Power and Status LED signals.
-* **Link-Beta (Logic/Stator):** ERM8 Male Header. Transmits JTAG, Reset, and 3.3V_ENIG to Stator.
-* **Pass-Through:** 3.3V_ENIG is a dedicated 2oz copper "High-Current Highway" on L3, isolating encryption power from CPU noise.
+* **Link-Alpha (Power/Entry):** ERF8 Female Socket 80-pin Power/Ethernet/Telemetry entry from Power Module.
+  * Receives: 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
+  * Provides: 3V3_SYSTEM for RJ45 Power and Status LED signals.
+* **Link-Beta (Logic/Stator):** ERM8 Male Header 80-pin Encryption/JTAG exit to Stator Board.
+  * Provides: JTAG, Reset, and 3.3V_ENIG to Stator.
+* **3.3V_ENIG Bridge:** Passive 2oz copper highway on L3, directly linking Alpha and Beta for noise isolation.
 
 ### 2.1. High-Speed Routing (on Link-Alpha)
 
@@ -36,16 +40,20 @@
 ## 3. Connector Stacks
 
 1. **Top Edge:** Order from Left to Right
-    * **Stator Link:** 40-pin Samtec (Flush with edge).
-    * **Power In:** From Power Module (USB-C, PoE+ & Smart Battery).
+    * **Stator Link:** 80-pin Samtec (Flush with edge) to Stator Board.
+    * **Power In:** 80-pin Samtec (Flush with edge) from Power Module (USB-C, PoE+ & Smart Battery).
 2. **Right Edge:** Order from Top to Bottom to follow CM5 pinout flow:
-    * **Video:** Full-size HDMI.
-    * **Data:** Stacked USB 3.0.
+    * **USB 3.0:** Dual-Stacked Type-A (Molex 48406-0003) with 5.0mm overhang.
+    * **HDMI:** Full-Size Type-A (TE 2007435-1) with 5.0mm overhang.
+    * **Protection:** Active current limiting (TPS2065C for USB / AP2331W for HDMI) and TPD4E05U06 ESD suppression.
+    * **Telemetry:** USB Power Fault reported to CM5 GPIO 22.
 
 ## 4. JTAG Programming Subsystem (USB Blaster)
 
 * **Bridge Architecture:** Dedicated **FT232H** (High-Speed USB 2.0 to JTAG/MPSSE).
 * **Module Type:** Removable **Daughterboard** (2.54mm header) for future-proofing and ease of repair.
+* **Interface:** Asymmetrical 1x6 (Power/USB) and 1x10 (Shielded JTAG) 2.54mm ENIG headers.
+* **Shielding:** 1:1 Signal-to-Ground ratio on JTAG header to prevent clock crosstalk.
 * **JTAG Chain Flow:**
     1. **CM5 USB 2.0** → **FT232H Daughterboard**.
     2. **JTAG Out** → **HID Encoder (Dual EPM240T100C CPLD)**.
@@ -53,7 +61,7 @@
     4. **JTAG Chain** → **Plugboard Encoder #2 (Dual EPM240T100C CPLD)**.
     5. **JTAG Chain** → **Stator (EPM240T100C CPLD)**.
     6. **JTAG Chain** → **30x Rotor CPLDs (EPM240T100C CPLD)** via Stator Backplane.
-* **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 32-device load across the machine.
+* **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 34-device load across the machine.
 
 ## 5. Telemetry & Logic (INA219 + SMBus)
 
@@ -95,14 +103,16 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 * **Silkscreen:** **White**, **Typewriter-style font**, Bilingual (ALL-CAPS GERMAN / Sentence-case English).
 * **Branding:** Top-Left corner features the **Shielded Enigma-NG Square Emblem** (Exposed ENIG Gold tied to GND_CHASSIS).
 
-## 9. JLCPCB 6-Layer Stackup (JLC06161H-2116)
+## 9. Advanced Layer Stackup (6-Layer / 2oz) [JLCPCB JLC06161H-2116]
 
-* **Layer 1 (Top):** High-speed Signals (USB 3.0, HDMI, Ethernet).
-* **Layer 2:** Solid GND Plane.
-* **Layer 3:** Power Islands (Split for 15V, 5V, 3.3V_Rotors, 3.3V_Logic).
-* **Layer 4:** Internal Logic (I2C, Control).
-* **Layer 5:** Solid GND Plane.
-* **Layer 6 (Bottom):** Enigma 12-bit Data Bus & JTAG.
+* **L1 (Top):** SMT Components, I2C + PWR Control GPIOs & Shielded Ground Pour.
+* **L2 (Internal):** Primary GND Plane (Logic Reference).
+* **L3 (Internal):** High-Speed Data Striplines (USB/HDMI/GBE/JTAG).
+  * 90Ω Diff: 5.5 mil width / 7.5 mil gap (USB 3.0, Ethernet).
+  * 100Ω Diff: 4.5 mil width / 8.5 mil gap (HDMI).
+* **L4 (Internal):** High-Current Power Plane (5V_SYSTEM / 3V3_SYSTEM / 3V3_ENIG).
+* **L5 (Internal):** Secondary GND Plane (Shielding).
+* **L6 (Bottom):** Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.
 
 ## 10. Trace Widths & Impedance
 
@@ -115,9 +125,13 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 
 ## 11. Vias & Teardrops
 
-* **Standard Via:** 0.3mm Drill / 0.6mm Diameter (Staggered zigzag pattern).
 * **VIPPO (Via-in-Pad):** 0.2mm Drill / 0.45mm Diameter (Plugged & Capped).
+* **Standard Via:** 0.3mm Drill / 0.6mm Diameter (Staggered zigzag pattern).
+  * **Spec-A (Premium):** Blind/Buried Vias (L1-L3) and Back-drilling for all 5Gbps differential pairs to eliminate stubs.
+  * **Spec-B (Standard):** Through-hole Vias using **POFV (Via-in-Pad)**. Vias MUST be **Epoxy Filled and Capped** (IPC-4761 Type VII) to provide a flat solderable surface for CM5/Samtec pads.
 * **Teardrops:** Enabled on all signal and power pads to reduce stress and impedance steps.
+* **Copper:** 2oz Finished Copper (L1-L6).
+* **Finish:** **ENIG (Electroless Nickel Immersion Gold)** mandatory for 0.4mm pitch integrity.
 
 ## 12. Thermal & Branding
 

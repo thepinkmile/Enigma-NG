@@ -1,18 +1,25 @@
 # Reflector Board (V1.0) Design Specification
 
-## 1. System Role: The "Turnaround"
-
 The Reflector Board sits at the far end of the 30-rotor stack. Its primary role is to receive the signals from the final rotor and return them back through the stack via a different electrical path.
+It also acts as the JTAG termination hub and returns the JTAG_TDO directly back to the Stator to reduce required Pin count in the Rotor Interconnects.
+
+## 1. Architecture
+
+* **PCB:** 2oz Finished Copper / ENIG Gold / 2.0mm Filleted Corners.
+* **Standard:** Includes Inverted White Data Plate on bottom layer.
+
+### System Role: The "Turnaround"
 
 * **Logic Type:** Passive (Loopback).
 * **Routing Logic:** All signal mapping is handled remotely by the **EPM240 CPLD** located on the Stator Board.
 * **Signal Path:** Rotor 30 Out → Reflector Contacts → 60-pin FPC → Stator CPLD → 60-pin FPC → Reflector Contacts → Rotor 30 In.
 
-## 2. Connectivity & Interconnect
+## 2. JTAG & Logic Hub
 
-* **The Interface:** 1x 60-pin High-Density **Hirose DF40** "Press-Fit" connector.
-* **Secure Mounting:** Features **metal reinforcement tabs** soldered to GND_CHASSIS for industrial-grade retention.
-* **The Cable:** 60-way Shielded **Flex-PCB (FPC)**, secured to the machine floor with conductive EMI tape.
+* **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical).
+* **Termination:** 22Ω series resistor on TDO and 10kΩ pull-ups on TMS/TDI for end-of-chain stability.
+* **JTAG Return:** TDO from Rotor 30 is routed to Pin 16 for return to the Stator.
+* **Loopback:** Directly routes 6-bit ENC_IN to 6-bit ENC_OUT via 2oz 10-mil traces.
 
 ## 3. Diagnostic & Monitoring
 
@@ -33,3 +40,7 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 
 * **Data Plate:** Inverted white silkscreen "Data Plate" on Bottom (L2) containing the Enigma silhouette, "ENIGMA-NG" text, and JLC Serial Number block.
 * **Label:** `REFLEKTOR-EINHEIT [Reflector Unit]` in ALL-CAPS German typewriter font.
+
+## 6. Maintenance
+
+* **Diagnostics:** 2x8 ENIG Gold Diagnostic Bank on L1 for logic analysis.
