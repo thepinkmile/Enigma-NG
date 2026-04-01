@@ -8,7 +8,7 @@
 ## 2. Connectivity
 
 * **Bus Interface:** Dual 20-pin (2x10) Vertical Shrouded Headers (IN/OUT).
-* **Power Injection:** Receives 3.3V_ENIG and GND daisy-chain to prevent voltage sag across long stacks.
+* **Power Injection:** Receives 3V3_ENIG and GND daisy-chain to prevent voltage sag across long stacks.
 * **JTAG:** Pass-through for the serial chain; carries TDO_RETURN via dedicated Pin 16.
 
 ## 3. Diagnostics & Branding

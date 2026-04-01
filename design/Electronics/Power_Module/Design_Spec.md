@@ -141,6 +141,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 | R1 | **Ladder R1** | 732kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB7323V](https://www.mouser.co.uk) | [P732KBYCT-ND](https://www.digikey.co.uk) |
 | R2 | **Ladder R2** | 28.7kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB2872V](https://www.mouser.co.uk) | [P28.7KBYCT-ND](https://www.digikey.co.uk) |
 | R3 | **Ladder R3** | 53.6kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB5362V](https://www.mouser.co.uk) | [P53.6KBYCT-ND](https://www.digikey.co.uk) |
+| R4-5 | **ETH_LEDs** | 330Ω 0.1% Thin-Film | 0603 | ??? | ??? |
 | R7 | **BATT_PRES_N Pull-up** | 10kΩ (0.1%) | 0603 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
 | U1 | **eFuse** | TPS259474L | QFN-20 | [TPS259474LRPWR](https://www.mouser.co.uk) | [296-TPS259474LRPWRCT-ND](https://www.digikey.co.uk) |
 | U2 | **5V Buck** | LM61460-Q1 | VQFN-14 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |

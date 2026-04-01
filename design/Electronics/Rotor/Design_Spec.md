@@ -14,7 +14,7 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 2. Logic & Transposition
 
-* **Logic:** The Altera **EPM240T100C** CPLD emulates the 64x64 cross-wiring.
+* **Logic:** The **Intel MAX II EPM240T100C5N CPLD** emulates the 64x64 cross-wiring.
 * **Role:** Performs the instantaneous dual 6-bit parallel transposition (substitution cipher) for the forward and backward signal paths.
 * **Memory:** Stores the 26-position wiring table for any historical rotor (I-VIII, Beta, Gamma) selectable via the CM5.
 * **Latency:** Sub-10ns transposition time, ensuring the entire 30-rotor "trip" happens well within one CPU clock cycle.
@@ -52,7 +52,7 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 5. BOM (Key Components per Rotor)
 
-* **Logic:** Altera EPM240T100C.
+* **Logic:** Intel MAX II EPM240T100C5N CPLD.
 * **Encoder:** ams-OSRAM AS5600.
 * **Connector:** Samtec ERM8 Series (0.8mm Pitch).
 * **Passives:** 0402 X7R 10V Capacitors (Minimum 2.5x derating).

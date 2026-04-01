@@ -52,11 +52,11 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 ## 8. Thermal & ESD
 
 * **ESD:** TPD4E001 arrays near the JTAG and Micro-Fit headers.
-* **Thermal:** Vias under the EPM240 "PowerPad" (if applicable) for heat dissipation.
+* **Thermal:** Vias under the Intel MAX II EPM240T100C5N CPLD "PowerPad" (if applicable) for heat dissipation.
 
 ## 9. BOM (Key Components)
 
-* **Logic:** 2x Altera EPM240T100.
+* **Logic:** 2x Intel MAX II EPM240T100C5N CPLD.
 * **Voltage Reg:** [TLV755P](https://www.ti.com) (Low-dropout regulator for CPLD core).
 * **Switches:** Mechanical "Clicky" switches (e.g., Cherry MX) for the Keyboard mode.
 * **Sockets:** 3.5mm or 4mm Jack-Sensing sockets for Plugboard mode.

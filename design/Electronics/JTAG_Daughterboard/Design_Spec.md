@@ -28,5 +28,5 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 ## 4. Electrical Requirements
 
-* **Voltage:** Powered by the `+3.3V_SYSTEM` Logic Rail from the CM5 on the Controller Board.
-* **Clocking:** Dedicated 24MHz crystal for the FT232H to ensure JTAG clock stability across the 34-device chain.
+* **Voltage:** Powered by the `+3V3_SYSTEM` Logic Rail from the CM5 on the Controller Board.
+* **Clocking:** Dedicated 24MHz crystal for the FT232H to ensure JTAG clock stability across the 37-device chain.

@@ -7,12 +7,12 @@ The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided 
 | Board Name | Role | Stackup | Status |
 | :--- | :--- | :--- | :--- |
 | **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 1oz | **Design Locked** |
-| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic. | 4-Layer / 1oz | **Architecture Set** |
+| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 1oz | **Design Locked** |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 2-Layer / 1oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 4-Layer / 2oz | **Design Locked** |
-| **Reflector Board** | Terminating board for the rotor stack return path. | 2-Layer / 1oz | **Architecture Set** |
-| **Rotor Module** | Smart encryption units (30x) with iCE40 FPGAs. | 4-Layer / 1oz | **Architecture Set** |
-| **Stator Board** | Mechanical backplane for the 30-rotor stack. | 4-Layer / 1oz | **Architecture Set** |
+| **Reflector Board** | Terminating board for the rotor stack return path. | 2-Layer / 1oz | **Design Locked** |
+| **Rotor Module** | Smart encryption units (30x) with MAX II EMP240T100C CPLDs. | 4-Layer / 1oz | **Architecture Set** |
+| **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 1oz | **Design Locked** |
 
 ## 🧠 2. Controller Board
 
@@ -27,7 +27,7 @@ The logic heart of the machine, hosting the Raspberry Pi CM5.
 
 Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
 
-* **Logic:** Dual **EPM240T100 CPLDs** managing 64-node I/O.
+* **Logic:** Dual Intel MAX II EPM240T100C5N CPLDs managing 64-node I/O.
 * **Keyboard Mode:** Populated with 10mm long-stroke industrial plungers (C&K F-Series).
 * **Plugboard Mode:** Populated with 64 jack-sensing 3.5mm "Stecker" sockets.
 
@@ -36,7 +36,7 @@ Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
 The internal "USB Blaster" that makes the Enigma-NG self-contained.
 
 * **Bridge:** FT232H High-Speed USB 2.0.
-* **Function:** Allows the CM5 to re-program all 32 logic devices (37x CPLDs) via the GUI without any external cables or visible ports.
+* **Function:** Allows the CM5 to re-program all CPLD logic devices via the GUI without any external cables or visible ports.
 
 ## 🔋 5. Power Module (The "Power Can")
 
@@ -58,14 +58,18 @@ Located at the opposite end of the Stator from the Controller, this board manage
 
 Modular units containing the encryption logic.
 
-* **Logic:** Altera EPM240T100C CPLD per rotor.
-* **Telemetry:** **AS5600 Magnetic Encoders** to report physical wheel position to the CM5.
+* **Logic:** An Intel MAX II EPM240T100C5N CPLD per rotor.
+* **Telemetry:** AS5600 Magnetic Encoders to report physical wheel position to the CM5.
 * **Mechanical:** Features a 3D-printed/CNC index gear for the manual advancement pawls.
 
 ## 🛣️ 8. Stator Board
 
 The mechanical and electrical backbone.
 
-* **Distribution:** A 30-slot backplane providing 5A power distribution and signal routing.
+* **Distribution:** A backplane providing 5A power distribution and signal routing for the rotor stack.
 * **Connectivity:** Bridges the Controller, Encoder, and Rotor stack into a single parallel bus.
-* **Programmability** An Altera EPM240T100C is used to allow the GUI Application to re-configure the connection of the plugboard encoders either before, after or completely removed from the rotor stack.
+* **Programmability** An Intel MAX II EPM240T100C5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
+  * Before the rotor stack.
+  * After the rotor stack.
+  * Before and After the rotor stack.
+  * Completely removed from the rotor stack.

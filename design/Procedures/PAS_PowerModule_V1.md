@@ -23,7 +23,7 @@
 * [ ] **Safety Glow:** Confirm Amber LED illuminates at >5.1V and extinguishes at ~5.0V.
 * [ ] **Discharge:** Ensure < 2V at Safety Probes before handling board.
 * [ ] **Logic Ready:** Confirm Green "LOGIK-BEREIT" LED illuminates only when 5V/3.3V rails are stable.
-* [ ] **Handshake:** Verify PWR_GD signal (Samtec Pin 26) goes HIGH (>3.0V).
+* [ ] **Handshake:** Verify PWR_GD signal (Samtec Pin 34) goes HIGH (>3.0V).
 * [ ] **UPS Hold-time:** Load 5W; pull power; verify >10s uptime before dropout.
 
 ## 4. Header & Coupon Verification

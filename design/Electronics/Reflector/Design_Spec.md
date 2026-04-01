@@ -11,7 +11,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 ### System Role: The "Turnaround"
 
 * **Logic Type:** Passive (Loopback).
-* **Routing Logic:** All signal mapping is handled remotely by the **EPM240 CPLD** located on the Stator Board.
+* **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100C5N CPLD** located on the Stator Board.
 * **Signal Path:** Rotor 30 Out → Reflector Contacts → 60-pin FPC → Stator CPLD → 60-pin FPC → Reflector Contacts → Rotor 30 In.
 
 ## 2. JTAG & Logic Hub

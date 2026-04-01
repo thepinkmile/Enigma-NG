@@ -7,12 +7,12 @@
 ### LINK-ALPHA (To Power Module)
 
 * **Pins 1-20:** Gigabit Ethernet (GND-Shielded: GND|DA+/-|GND|DB+/-|GND...)
-* **Pins 21-24:** 3.3V_SYSTEM (Output from CM5 to Power Module RJ45 Logic)
+* **Pins 21-24:** 3V3_SYSTEM (Output from CM5 to Power Module RJ45 Logic)
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
 * **Pins 27-30:** GND Isolation Moat
 * **Pins 31-34:** Status LEDs (STATUS_AMBER / STATUS_GREEN)
 * **Pins 35-40:** I2C-1 Telemetry (SDA/SCL to PD/eFuse)
-* **Pins 41-44:** 3.3V_ENIG (Input from Power Module - Pass-Through)
+* **Pins 41-44:** 3V3_ENIG (Input from Power Module - Pass-Through)
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection - Active Low GPIO 23)
 * **Pins 49-80:** 5V_MAIN / GND (6A Delivery Cluster - 4-via Thermal Clusters)
 
@@ -31,13 +31,16 @@ _______________________________________    _____________    ____________________
 
 [ PINS 27 - 30 ] ------------------------> [ ISOLATION ] -> [ MASTER GND BANK            ]
 
-[ PINS 31 - 34 ] ------------------------> [ 3.3V LOGIC] -> [ STATUS AMBER / GREEN       ]
+[ PINS 31 - 33 ] ------------------------> [ 3.3V LOGIC] -> [ STATUS GREEN / AMBER / RED ]
                                            (GPIO OUT)       (To Power Module LEDs)
 
-[ PINS 35 - 40 ] ------------------------> [ I2C BUS   ] -> [ TELEMETRY (SDA/SCL)        ]
+[ PIN 34       ] ------------------------> [ 3.3V LOGIC] -> [ PWR_GD                     ]
+                                           (GPIO OUT)       (From Power Module Regulator)
+
+[ PINS 35 - 38 ] ------------------------> [ I2C BUS   ] -> [ TELEMETRY (SDA/SCL)        ]
                                            (SHIELDED)       (To PD Emulator/eFuse)
 
-[ PINS 41 - 44 ] ------------------------> [ 2oz POWER ] -> [ 3V3_ENIG (INPUT)           ]
+[ PINS 39 - 44 ] ------------------------> [ 2oz POWER ] -> [ 3V3_ENIG (INPUT)           ]
                                            (CLEAN IN)       (From Power Module LDO)
 
 [ PIN  45      ] ------------------------> [ 3.3V LOGIC] -> [ BATT_PRES_N                ]
@@ -47,20 +50,37 @@ _______________________________________    _____________    ____________________
  (4-Via Thermal Clusters)                  (BULK DC)        (To CM5 VCC_IN)
 ```
 
+### DIAGNOSTIC BANK-ALPHA (Top-Right)
+
+* **Pins 1-2:** 5V_SYSTEM
+* **Pins 3-4:** 3V3_ENIG
+* **Pins 5-6:** I2C_TELE
+* **Pin  7:** ETH_LED_LINK
+* **Pin  8:** ETH_LED_ACT
+* **Pin  9:** STAT_GREEN
+* **Pin  10:** STAT_AMBER
+* **Pin  11:** STAT_RED
+* **Pin  12:** PWR_GD
+* **Pin  13:** BATT_PRES_N
+* **Pin  14:** 3V3_SYSTEM
+* **Pin  15-18:** SPARE (revered for future use)
+* **Pin  19:** GND_CHASSIS
+* **Pin  20:** GND
+
 ### LINK-BETA (To Stator Board)
 
 * **Pins 1-9:** JTAG & Reset (GND-Shielded: GND|TCK|GND|TMS|GND|TDI|GND|RST|GND)
 * **Pins 10-20:** GND Isolation Bank
 * **Pins 41-46:** ENC_IN [0:5] (6-bit Sniffer Input)
 * **Pins 47-52:** ENC_OUT [0:5] (6-bit Sniffer Output)
-* **Pins 54-60:** 3.3V_ENIG (Pass-Through Output to Stator)
+* **Pins 54-60:** 3V3_ENIG (Pass-Through Output to Stator)
 
 ```text
   LINK-BETA (80-PIN SAMTEC)                         SIGNAL TYPE       FUNCTION
 _______________________________________________    _____________    _____________________________
 
 [ PINS 01 - 09 ] --------------------------------> [ 3.3V LOGIC] -> [ JTAG CHAIN & RESET     ]
- (Pattern: GND|TCK|GND|TMS|GND|TDI|GND|RST|GND)    (SHIELDED)       (To 33+ EPM240 CPLDs)
+ (Pattern: GND|TCK|GND|TMS|GND|TDI|GND|RST|GND)    (SHIELDED)       (To EPM240T100C5N CPLDs)
 
 [ PINS 10 - 20 ] --------------------------------> [ ISOLATION ] -> [ MASTER GND BANK        ]
 

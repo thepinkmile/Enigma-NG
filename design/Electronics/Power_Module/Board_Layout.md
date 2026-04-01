@@ -151,26 +151,28 @@ _________________      ____________________       ____________________          
 
 ```text
 EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLER LINK (BTB)
-_______________________         _____________________________        _________________________
-|                     |         |                           |        |                       |
-| [RJ45 PoE+] (48V) --|--[PD]-->| [WE-CMBNC]                |        | [ SAMTEC ERM8 GOLD ]  |
-|                     |         |    |                      |        |                       |
-| [USB-C] (15V PD) ---|-------->| [CM5022 CHOKE]            |        | PINS 1-10: GND (PWR)  |
-|                     |         |    |                      |        | PINS 11-16: +15V RAW  |
-| [BATT] (14.4V) -----|-------->| [F1: 72°C TCO]            |        | PINS 17-20: +5V LOGIC |
-|_____________________|         |    |                      |        | PINS 21-24: +3.3V LDO |
-                                | [U1: TPS259474L eFuse]    |        | PIN  26: PWR_GD (OUT) |
-       LADDER RESISTORS:        |    |                      |        | PINS 30-40: I2C/ALARM |
-       R1: 732k (UVLO) ---------|--->|                      |        |_______________________|
-       R2: 28.7k (OVLO) --------|--->|                      |                    ^
-       R3: 53.6k (GND) ---------|--->|                      |                    |
-                                |    |                      |                    |
-                                | [SUPERCAP BANK (15F x6)] -|----[5V BUCK]-------|
-                                |    | (2x3 Block)          |   |[3.3V LDO]------|
-                                |    |                      |   |[SUPERVISOR]----|
-                                |    |                      |                    |
-                                | [5.1V ZENER GLOW] --------|--->[AMBER LED EXT] |
-                                |___________________________|        (SAFETY)
+ _____________________           ___________________________          _____________________________
+|                     |         |                           |        |                             |
+| [RJ45 PoE+] (48V) --|--[PD]-->| [WE-CMBNC]                |        |    [ SAMTEC ERM8 GOLD ]     |
+|                     |         |    |                      |        |                             |
+| [USB-C] (15V PD) ---|-------->| [CM5022 CHOKE]            |        | PINS 1-20: Gb Ethernet      |
+|                     |         |    |                      |        | PINS 21-24: 3V3_SYSTEM      |
+| [BATT] (14.4V) -----|-------->| [F1: 72°C TCO]            |        | PIN  25: ETH_LED_LINK       |
+|_____________________|         |    |                      |        | PIN  26: ETH_LED_ACT        |
+                                | [U1: TPS259474L eFuse]    |        | PINS 27-30: GND             |
+       LADDER RESISTORS:        |    |                      |        | PINS 31-34: Status LEDs     |
+       R1: 732k (UVLO) ---------|--->|                      |        | PINS 35-40: I2C Telemetry   |
+       R2: 28.7k (OVLO) --------|--->|                      |        | PINS 41-44: 3V3_ENIG        |
+       R3: 53.6k (GND) ---------|--->|                      |        | PIN  45: BATT_PRES_N        |
+                                |    |                      |        | PINS 49-80: 5V_SYSTEM / GND |
+                                |    |                      |        |_____________________________|
+                                |    |                      |                       ^
+                                | [SUPERCAP BANK (15F x6)] -|-------[5V BUCK]-------|
+                                |    | (2x3 Block)          |       |[3.3V LDO]-----|
+                                |    |                      |       |[SUPERVISOR]---|
+                                |    |                      |                       |
+                                | [5.1V ZENER GLOW] --------|--->[AMBER LED EXT]----+
+                                |___________________________|      (SAFETY)
 ```
 
 ## Interface Protrusions
@@ -192,4 +194,19 @@ SIDE VIEW (CROSS-SECTION)
   |           |                                                   |
   |  [L1/L4 2oz Copper]                                           |
   |_______________________________________________________________|
+```
+
+## Ethernet Activity LEDs
+
+```text
+       CONTROLLER (CM5)                    LINK-ALPHA (80-PIN)                    POWER MODULE
+ ___________________________          ___________________________             _____________________
+| [ CM5 GBE PHY ]           |        |                           |           | [ RJ45 MAGJACK ]    |
+|    |                      |        |                           |           | (WURTH 7499111)     |
+| [ LED_LINK PIN ] --(L)----|------->| [ PIN 25: ETH_LED_LINK  ] |---->(R)-->| [ LED 1 (GREEN) ]   |
+| [ LED_ACT  PIN ] --(A)----|------->| [ PIN 27: ETH_LED_ACT   ] |---->(R)-->| [ LED 2 (YELLOW)]   |
+|                           |        |                           |           |                     |
+| [ 3V3_SYSTEM ] -----------|------->| [ PIN 21: 3V3_SYS_RAIL  ] |---------->| [ LED ANODES ]      |
+|___________________________|        |___________________________|           |_____________________|
+                                                                      (R) = 330Ω Resistors
 ```

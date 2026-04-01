@@ -13,8 +13,8 @@
   * Receives: 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
   * Provides: 3V3_SYSTEM for RJ45 Power and Status LED signals.
 * **Link-Beta (Logic/Stator):** ERM8 Male Header 80-pin Encryption/JTAG exit to Stator Board.
-  * Provides: JTAG, Reset, and 3.3V_ENIG to Stator.
-* **3.3V_ENIG Bridge:** Passive 2oz copper highway on L3, directly linking Alpha and Beta for noise isolation.
+  * Provides: JTAG, Reset, and 3V3_ENIG to Stator.
+* **3V3_ENIG Bridge:** Passive 2oz copper highway on L3, directly linking Alpha and Beta for noise isolation.
 
 ### 2.1. High-Speed Routing (on Link-Alpha)
 
@@ -35,7 +35,7 @@
   * **Logic:** 12-bit binary encoded bus (6-in / 6-out) for 64-character alphabet monitoring.
   * **ENC_IN [0:5]:** GPIO 0-5 (Binary input from Keyboard CPLD).
   * **ENC_OUT [0:5]:** GPIO 6-11 (Binary output from Reflector/Stator).
-  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all 33+ CPLDs.
+  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100C5N CPLDs.
 
 ## 3. Connector Stacks
 
@@ -57,12 +57,12 @@
 * **Shielding:** 1:1 Signal-to-Ground ratio on JTAG header to prevent clock crosstalk.
 * **JTAG Chain Flow:**
     1. **CM5 USB 2.0** → **FT232H Daughterboard**.
-    2. **JTAG Out** → **HID Encoder (Dual EPM240T100C CPLD)**.
-    3. **JTAG Chain** → **Plugboard Encoder #1 (Dual EPM240T100C CPLD)**.
-    4. **JTAG Chain** → **Plugboard Encoder #2 (Dual EPM240T100C CPLD)**.
-    5. **JTAG Chain** → **Stator (EPM240T100C CPLD)**.
-    6. **JTAG Chain** → **30x Rotor CPLDs (EPM240T100C CPLD)** via Stator Backplane.
-* **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 34-device load across the machine.
+    2. **JTAG Out** → **HID Encoder (Dual Intel MAX II EPM240T100C5N CPLD)**.
+    3. **JTAG Chain** → **Plugboard Encoder #1 (Dual Intel MAX II EPM240T100C5N CPLD)**.
+    4. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)**.
+    5. **JTAG Chain** → **Stator (Intel MAX II EPM240T100C5N CPLD)**.
+    6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N CPLD)** via Stator Backplane.
+* **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 37-device load across the machine.
 
 ## 5. Telemetry & Logic (INA219 + SMBus)
 
@@ -108,9 +108,9 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 
 * **L1 (Top):** SMT Components, I2C + PWR Control GPIOs & Shielded Ground Pour.
 * **L2 (Internal):** Primary GND Plane (Logic Reference).
-* **L3 (Internal):** High-Speed Data Striplines (USB/HDMI/GBE/JTAG).
-  * 90Ω Diff: 5.5 mil width / 7.5 mil gap (USB 3.0, Ethernet).
-  * 100Ω Diff: 4.5 mil width / 8.5 mil gap (HDMI).
+* **L3 (Internal):** High-Speed Data Striplines (USB/HDMI/GBE).
+  * 90Ω Diff: 5.5 mil width / 7.5 mil gap (USB 3.0).
+  * 100Ω Diff: 4.5 mil width / 8.5 mil gap (HDMI, Ethernet).
 * **L4 (Internal):** High-Current Power Plane (5V_SYSTEM / 3V3_SYSTEM / 3V3_ENIG).
 * **L5 (Internal):** Secondary GND Plane (Shielding).
 * **L6 (Bottom):** Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.

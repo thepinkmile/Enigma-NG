@@ -17,6 +17,7 @@ Beyond a simple Enigma clone, this terminal is a **Universal Cipher Engine**. Th
 
 One of the long-term goals of this project is to introduce the ability to deliver Enigma encrypted data over the network,
 and even provide the ability to deliver encrypted files using a base-64 encoding before executing the standard rotor-based encryption.
+This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Protocol (EnPP)", which will be a custom specification for this project's ecosystem.
 
 ## Tools Used
 
@@ -30,15 +31,29 @@ and even provide the ability to deliver encrypted files using a base-64 encoding
 
 * **Controller:** Raspberry Pi Compute Module 5 (CM5) carrier board for monitoring and programming the system.
 * **Power Module:** Triple-input priority (PoE+ > USB-C PD > Battery) with 11V–17V eFuse protection.
-* **Interface:** 40-pin Samtec Right-Angle Board-to-Board (BtB) link to the Stator board.
-* **Diagnostics:** 2x8 Gold-plated (ENIG) test loop bank for 12-bit data and JTAG monitoring.
-* **UI:** .NET 10.0 Cross-platform GUI with live power telemetry.
+* **Stator:** A CPLD powered component mapper and the initial starting point of the rotor stack.
+* **Extension:** A block that allows extension of the rotor stack in 5-rotor increments.
+* **Reflector:** A logic loopback from the end of the rotor stack. Also, uses the Stator for mapping comonents (if/when required).
+
+## Core Requirements
+
+* **Interface:** 80-pin Samtec Right-Angle Board-to-Board (BtB) links between Power->Controller and Controller->Stator.
+* **Diagnostics:** 2x10 Gold-plated (ENIG) test loop bank for 12-bit data, JTAG and signal monitoring.
+* **UI:** .NET 10.0 Cross-platform GUI with:
+  * Live power telemetry.
+  * Historical resources.
+  * 3D graphical visualiser.
+  * Configuration programmer (and creator).
 
 ---
 
 ## 🔌 Hardware Architecture
 
-### 1. Controller Board (The Brain)
+### 1. Power Module (The Heart)
+
+* {TBD}
+
+### 2. Controller Board (The Brain)
 
 * **Module:** Raspberry Pi CM5 (BCM2712) on a custom 4-layer 1.6mm carrier.
 * **Power Input:** 3-way seamless switching (LTC4412 Ideal Diode).
@@ -51,7 +66,11 @@ and even provide the ability to deliver encrypted files using a base-64 encoding
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
 * **User Interface:** Illuminated Vintage Amber **Safe Shutdown Button**, Master Toggle, and Status LEDs.
 
-### 2. Universal Rotor (The Engine)
+### 3. Stator Board (Nervous System)
+
+* {TBD}
+
+### 4. Universal Rotor (The Engine)
 
 * **Logic:** Intel **MAX II EPM240T100C5N** CPLD.
 * **Dimensions:** 122mm PCB Diameter / **163mm Outer Diameter (OD)**.
@@ -62,9 +81,9 @@ and even provide the ability to deliver encrypted files using a base-64 encoding
   * Power (2x2), JTAG (2x4 Shielded), and Enigma (2x6 Bidirectional Relay) in a "Tripod" layout.
 * **Signal Integrity:** **74LVC125A** buffer on every rotor for TCK/TMS regeneration.
 
-### 3. Universal Interface (Keyboard/Plugboard)
+### 5. Universal Interface (Keyboard/Plugboard)
 
-* **Logic:** 2x **MAX II EPM240** (Decoder/Encoder).
+* **Logic:** 2x Intel **MAX II EPM240T100C5N** CPLD (Decoder/Encoder).
 * **Keyboard:** 37-key "Hold-to-Shift" layout with Vintage Amber LED feedback.
 * **Plugboard:** 64x 3.5mm Switching Jacks with 8-channel TVS ESD protection.
 * **Logic Pattern:** Active-Low (Internal CPLD pull-ups for keys, Sink-to-GND for LEDs).
@@ -73,7 +92,7 @@ and even provide the ability to deliver encrypted files using a base-64 encoding
 
 ## 💻 Software Implementation
 
-### 1. Linux Kernel Driver (`enigma_core.c`)
+### 1. Linux Kernel Driver
 
 * **Interrupt Handling:** High-priority monitoring of the `KEY_EVENT_INT` line.
 * **State Mapping:** Maps 6-bit Input/Return Path to `/dev/enigma_state`.
@@ -87,6 +106,10 @@ and even provide the ability to deliver encrypted files using a base-64 encoding
 * **Power Dashboard:** Real-time monitoring of Battery (SoC/Temp), PoE+, and USB-C sources.
 * **Rotor Library Manager:** Visual tool to design custom wiring and flash the 30-rotor stack.
 * **Historical Archive:** Educational database of Enigma, Typex, and SIGABA variants.
+
+### 3. VHDL Firmware (The Navigators)
+
+* {TBD}
 
 ---
 
