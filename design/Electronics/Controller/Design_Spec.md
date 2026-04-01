@@ -69,9 +69,10 @@
 * **Rotor Shunt:** **10mΩ (1206, 1%, 1W)** metal strip resistor.
 * **Sensing:** **Kelvin-connection (4-wire)** with 10Ω/0.1µF RC noise filtering.
 * **I2C Map:**
-  * **INA219 (Telemetry):** 0x40
-  * **STUSB4500 (PD Controller):** 0x28
-  * **Smart Battery (SMBus):** 0x0B
+  * **INA219 Power Module Monitor**: I2C @ 0x40 on Power Module.
+  * **INA219 Rotor Monitor**: I2C @ 0x45 on Stator (rotor stack current/voltage).
+  * **STUSB4500 (PD Controller):** I2C @ 0x28 on Power Module.
+  * **Smart Battery (SMBus):** I2C @ 0x0B on Power Module.
 
 ## 6. CM5 GPIO Mapping Matrix (Enigma-NG)
 

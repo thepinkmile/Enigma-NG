@@ -38,7 +38,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 ## 4. Power Telemetry (The "Encryption Load")
 
 * **Purpose:** Provides real-time current/voltage data for the 30-rotor stack to the CM5 GUI.
-* **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45).
+* **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45) — dedicated rotor-stack usage telemetry.
 * **Placement:** Inserted on L1 (Top Layer) connected to the 3V3_ENIG rail immediately before the rotor stack.
   * Minimum 15mm isolation from Intel MAX II EPM240T100C5N CPLD logic core.
 * **Shunt:** 20mΩ (1%) 0805 Current Sense Resistor (Rated for 2A continuous).
