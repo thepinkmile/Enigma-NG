@@ -1,0 +1,30 @@
+using System;
+using Avalonia;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Data.Core;
+using Avalonia.Data.Core.Plugins;
+using Avalonia.Markup.Xaml;
+using GUI_App.Views;
+
+namespace GUI_App;
+
+public partial class App : Application
+{
+    public override void Initialize()
+    {
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        // Line below is needed to remove Avalonia data validation.
+        // For more info see https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
+        BindingPlugins.DataValidators.RemoveAt(0);
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow = new MainWindow();
+        }
+
+        base.OnFrameworkInitializationCompleted();
+    }
+}

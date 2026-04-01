@@ -1,0 +1,14 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:GUI_App.ViewModels"
+             x:Class="GUI_App.App">
+  <Application.DataTemplates>
+    <DataTemplate DataType="local:ViewModelBase">
+      <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </DataTemplate>
+  </Application.DataTemplates>
+
+  <Application.Styles>
+    <FluentTheme />
+  </Application.Styles>
+</Application>

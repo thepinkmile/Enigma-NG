@@ -29,7 +29,7 @@
 
 ## 5. GUI Implementation Checklist
 
-* [ ] Setup Avalonia .NET 10.0 Project Template.
+* [x] Setup Avalonia .NET 10.0 Project Template.
 * [ ] Implement I2C Wrapper for INA219 (Telemetry).
 * [ ] Create the "Enigma Path" SVG animation logic.
 * [ ] Integrate JTAG programming library for Intel MAX II EPM240T100C5N CPLD.
