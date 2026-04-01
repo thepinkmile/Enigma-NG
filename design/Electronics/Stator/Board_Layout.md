@@ -15,3 +15,11 @@
 * **Pins 5-18:** ENC_IN [0:5] (Symmetrical GND shielding)
 * **Pins 21-32:** ENC_OUT [0:5] (Symmetrical GND shielding)
 * **Pins 33-40:** JTAG IN/OUT Loop (Shielded TCK/TMS/TDI/TDO)
+
+## Telemetry Layout
+
+```text
+[ LINK-BETA (ERF8) ] --(3V3_ENIG)--> [ 20mΩ SHUNT ] --(CLEAN 3V3)--> [ ROTOR BUS ]
+              |                         |
+              +-- (I2C-1) -- [ INA219 ]-+
+```

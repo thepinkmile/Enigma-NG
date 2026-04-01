@@ -34,3 +34,28 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
   * **Power:** 2X4 2.54mm Shrouded Header (4x3V3_ENIG, 4xGND).
   * **ENC DATA:** 2x6 2.54mm Shouded Header (ENC_IN [0:5], ENC_OUT [0:5]).
 * **Diagnostics:** 2x8 ENIG Gold Diagnostic Bank (L1, Mirror of Controller).
+
+## 4. Power Telemetry (The "Encryption Load")
+
+* **Purpose:** Provides real-time current/voltage data for the 30-rotor stack to the CM5 GUI.
+* **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45).
+* **Placement:** Inserted on L1 (Top Layer) connected to the 3.3V_ENIG rail immediately before the rotor stack, minimum 15mm isolation from EPM240 CPLD logic core.
+* **Shunt:** 20mΩ (1%) 0805 Current Sense Resistor (Rated for 2A continuous).
+* **Interface:** I2C-1 Telemetry Bus (via Link-Beta, Shared with Power Module).
+* **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
+
+## 5. EMI & Mechanical
+
+* **Shield Mount:** 10mm ENIG Gold landing strip on L1 edge bonded to GND_CHASSIS.
+* **Clamping:** Dual 3.2mm PTH anchors per cable for Galvanised Steel Bar compression.
+* **Diagnostics:** 2x10 ENIG Gold Bank mirrored to Controller's Bank-Beta pinout for A-B signal verification.
+
+---
+
+## Bill of Materials
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| U2 | 3.3V_ENIG Current/Voltage Sensing | INA219AIDR | ??? | [INA219](https://ti.com) | ??? |
+| R10 | Shunt Resistor| 20mΩ (1%) 0.5W | 0805 | ??? | ??? |
+| C30 | Decoupling | 0.1µF (X7R) 50V | 0603 | ??? | ??? |

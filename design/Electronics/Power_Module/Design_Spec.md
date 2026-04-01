@@ -127,7 +127,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ---
 
-## Power Module V1.0: Bill of Materials
+## Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |

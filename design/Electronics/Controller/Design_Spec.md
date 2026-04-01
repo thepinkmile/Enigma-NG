@@ -4,7 +4,7 @@
 
 * **Module:** Raspberry Pi Compute Module 5 (CM5).
 * **Stackup:** 6-Layer /2oz Finished Copper (JLC06161H-2116) for 5Gbps differential pair integrity.
-* **Shielding:** High-speed signals (Ethernet, USB 3.0, HDMI) routed as Striplines on L3, shielded by L2/L5 GND planes.
+* **Shielding:** High-speed signals (Ethernet, USB 3.0, HDMI) routed as Striplines on L3, shielded by L2/L5 GND planes and L4 (Internal) for 6A Power Plane.
 * **Role:** Master traffic controller for Power (Alpha) and Encryption Logic (Beta).
 
 ## 2. Dual-Link Interface (Samtec ERx8)
@@ -45,7 +45,8 @@
 2. **Right Edge:** Order from Top to Bottom to follow CM5 pinout flow:
     * **USB 3.0:** Dual-Stacked Type-A (Molex 48406-0003) with 5.0mm overhang.
     * **HDMI:** Full-Size Type-A (TE 2007435-1) with 5.0mm overhang.
-    * **Protection:** Active current limiting (TPS2065C for USB / AP2331W for HDMI) and TPD4E05U06 ESD suppression.
+    * **Current Limiting:** TPS2065C (1.6A USB Limit + GPIO 22 Fault) and AP2331W (50mA HDMI Limit).
+    * **ESD:** TPD4E05U06 TVS arrays on all external data pins.
     * **Telemetry:** USB Power Fault reported to CM5 GPIO 22.
 
 ## 4. JTAG Programming Subsystem (USB Blaster)
@@ -146,6 +147,12 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
   * **Visuals:** Typewriter-style bilingual silkscreen legend on the bottom layer.
 * **Silkscreen:** Dark Green mask with White Bilingual Typewriter font.
 * **Branding:** Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom).
+
+### 13.1. Symmetrical Diagnostics
+
+* **Bank-Alpha (Power/Entry):** 2x10 ENIG Gold Pads (L1). Monitors 5V/3.3V, I2C Telemetry, Status LEDs, and BATT_PRES.
+* **Bank-Beta (Logic/Exit):** 2x10 ENIG Gold Pads (L1). Monitors 12-bit Sniffer (ENC_IN/OUT), JTAG, and SYS_RESET_N.
+* **JTAG Shielding:** JTAG_TCK (Pin 15) isolated from TDI/TMS via GND buffer (Pin 16).
 
 ## 14. BOM
 

@@ -8,38 +8,42 @@
 
 * **Pins 1-20:** Gigabit Ethernet (GND-Shielded: GND|DA+/-|GND|DB+/-|GND...)
 * **Pins 21-24:** 3.3V_SYSTEM (Output from CM5 to Power Module RJ45 Logic)
-* **Pins 25-30:** GND Isolation Moat
+* **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
+* **Pins 27-30:** GND Isolation Moat
 * **Pins 31-34:** Status LEDs (STATUS_AMBER / STATUS_GREEN)
 * **Pins 35-40:** I2C-1 Telemetry (SDA/SCL to PD/eFuse)
 * **Pins 41-44:** 3.3V_ENIG (Input from Power Module - Pass-Through)
-* **Pin 45:** BATT_PRES_N (Battery Presence Detection - Active Low)
+* **Pin 45:** BATT_PRES_N (Battery Presence Detection - Active Low GPIO 23)
 * **Pins 49-80:** 5V_MAIN / GND (6A Delivery Cluster - 4-via Thermal Clusters)
 
 ```text
        LINK-ALPHA (80-PIN SAMTEC)           SIGNAL TYPE          FUNCTION
 _______________________________________    _____________    _____________________________
 
-[ PINS 01 - 20 ] ------------------------> [ 100Ω DIFF ] -> [ GIGABIT ETHERNET (GBE) ]
+[ PINS 01 - 20 ] ------------------------> [ 100Ω DIFF ] -> [ GIGABIT ETHERNET (GBE)     ]
  (Pattern: GND|DA+/-|GND|DB+/-|GND...)     (SHIELDED)       (To External RJ45)
 
-[ PINS 21 - 24 ] ------------------------> [ 2oz POWER ] -> [ 3V3_SYSTEM (RETURN)    ]
+[ PINS 21 - 24 ] ------------------------> [ 2oz POWER ] -> [ 3V3_SYSTEM (RETURN)        ]
                                            (CLEAN OUT)      (Powers PoE+ Logic)
 
-[ PINS 25 - 30 ] ------------------------> [ ISOLATION ] -> [ MASTER GND BANK        ]
+[ PINS 25 - 26 ] ------------------------> [ 2oz POWER ] -> [ ETH_LED_LINK / ETH_LED_ACT ]
+                                           (GPIO OUT)       (Active Low indicators)
 
-[ PINS 31 - 34 ] ------------------------> [ 3.3V LOGIC] -> [ STATUS AMBER / GREEN   ]
+[ PINS 27 - 30 ] ------------------------> [ ISOLATION ] -> [ MASTER GND BANK            ]
+
+[ PINS 31 - 34 ] ------------------------> [ 3.3V LOGIC] -> [ STATUS AMBER / GREEN       ]
                                            (GPIO OUT)       (To Power Module LEDs)
 
-[ PINS 35 - 40 ] ------------------------> [ I2C BUS   ] -> [ TELEMETRY (SDA/SCL)    ]
+[ PINS 35 - 40 ] ------------------------> [ I2C BUS   ] -> [ TELEMETRY (SDA/SCL)        ]
                                            (SHIELDED)       (To PD Emulator/eFuse)
 
-[ PINS 41 - 44 ] ------------------------> [ 2oz POWER ] -> [ 3V3_ENIG (INPUT)       ]
+[ PINS 41 - 44 ] ------------------------> [ 2oz POWER ] -> [ 3V3_ENIG (INPUT)           ]
                                            (CLEAN IN)       (From Power Module LDO)
 
-[ PIN  45      ] ------------------------> [ 3.3V LOGIC] -> [ BATT_PRES_N            ]
+[ PIN  45      ] ------------------------> [ 3.3V LOGIC] -> [ BATT_PRES_N                ]
                                            (GPIO IN)        (From Power Module Batt)
 
-[ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (6A DELIVERY)  ]
+[ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (6A DELIVERY)      ]
  (4-Via Thermal Clusters)                  (BULK DC)        (To CM5 VCC_IN)
 ```
 
@@ -70,6 +74,14 @@ _______________________________________________    _____________    ____________
  (Direct 2oz Bridge from Alpha)                    (CLEAN OUT)      (To Stator/Rotor Logic)
 ```
 
+### DIAGNOSTIC BANK-BETA (Top-Left)
+
+* **Pins 1-6 / 9-14:** ENC_IN [0:5] / ENC_OUT [0:5] (Sniffer Bus)
+* **Pin 7:** SYS_RESET_N (Manual Clear Point)
+* **Pin 15:** JTAG_TCK (Clock Sniffer)
+* **Pin 16:** GND (Clock Shield)
+* **Pins 17-20:** TMS / TDI / TDI / TDO (JTAG State)
+
 ### BtB Connectivity Routing
 
 ```text
@@ -97,6 +109,30 @@ _______________________________________________    _____________    ____________
  (O) = M3 Star-Burst Grounding PTH                   [R] = 2.0mm Fillet Corner               (1-4) = Star-Pattern Torque Sequence
 ```
 
+```text
+       TOP VIEW (BtB INTERFACES)
+ ____________________________________________________________________
+| (O) [R]    [ LINK-BETA (ERM8) ]    [ LINK-ALPHA (ERF8) ]   [R] (O) |
+|            (Stator / Logic Out)    (Power / Ethernet In)           |
+|                   |                          |                     |
+|            [ DIAG BANK-B  ]        [ DIAG BANK-A      ]            |
+|            [ (ENCRYPTION) ]        [ (POWER & STATUS) ]            |
+|               |      |                       |                (O)  |
+|          (JTAG Link) |                       |                     |
+|               |      |               [  CM5 MODULE  ]    [ USB3 ]  |
+|               |      |               [ (RIGHT-SIDE) ]    [STACK ]  |--- PROTRUDES
+|   [ JTAG DAUGHTER ]  |               [              ]----[ PORT ]  |
+|   [  MOUNT (2x10) ]  +--(6-In/6-Out)-[ (GPIO 0-11)  ]              |
+|               |                      [              ]              |
+|               +------(USB 2.0)-------[ (HDMI/USB3)  ]----[ HDMI ]  |
+|                                      |______________|    [ FULL ]  |--- PROTRUDES
+|                                                          [ TYPEA ] |
+|                                                                    |
+| (O)                                                            (O) |
+|____________________________________________________________________|
+
+```
+
 ## Interface Component Connectivity
 
 ```text
@@ -113,4 +149,19 @@ _______________________________________________    _____________    ____________
 | [ CM5 HDMI 5V ] <---(PWR)--|-------| [ TPD4E05U06   ] |------->| (TE 2007435-1)        |
 |                            |       | (Current/ESD)    |        |       [ ANCHORS ]-----|--> [ CHASSIS GND ]
 |____________________________|       |__________________|        |_______________________|
+```
+
+## Ethernet Activity LEDs
+
+```text
+       CONTROLLER (CM5)                    LINK-ALPHA (80-PIN)                    POWER MODULE
+ ___________________________          ___________________________             _____________________
+| [ CM5 GBE PHY ]           |        |                           |           | [ RJ45 MAGJACK ]    |
+|    |                      |        |                           |           | (WURTH 7499111)     |
+| [ LED_LINK PIN ] --(L)----|------->| [ PIN 25: ETH_LED_LINK  ] |---->(R)-->| [ LED 1 (GREEN) ]   |
+| [ LED_ACT  PIN ] --(A)----|------->| [ PIN 27: ETH_LED_ACT   ] |---->(R)-->| [ LED 2 (YELLOW)]   |
+|                           |        |                           |           |                     |
+| [ 3V3_SYSTEM ] -----------|------->| [ PIN 21: 3V3_SYS_RAIL  ] |---------->| [ LED ANODES ]      |
+|___________________________|        |___________________________|           |_____________________|
+                                                                      (R) = 330Ω Resistors
 ```

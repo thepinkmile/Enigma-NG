@@ -31,8 +31,12 @@
 * **CM5 Module:** Raspberry Pi SC1180 (8GB/32GB/Wireless).
 * **Stacked USB 3.0:** Molex 48406-0003 (THT Right-Angle).
 * **Full HDMI:** TE Connectivity 2007435-1 (THT Type-A).
-* **USB Power Switch:** TI TPS2065C (1.6A Limit).
-* **HDMI Power Switch:** Diodes Inc. AP2331W (50mA Limit).
+
+### 5.1. Controller User I/O Protection
+
+* **TPS2065CDBVR:** USB Power Distribution Switch (SOT-23-5) (1.6A Limit).
+* **AP2331W-7:** HDMI Current Limiter (SOT-25) (50mA Limit).
+* **TPD4E05U06DQNR:** 4-Channel ESD Protection (U-DFN1010-10).
 
 ## 6. Backplane & Extension Components
 
@@ -42,3 +46,8 @@
 * **10-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
 * **8-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
 * **Copper Shielding Tape:** 50mm (2.0") Conductive Adhesive (Manual cable wrap).
+
+## 7. Power & Telemetry Sensors
+
+* **INA219AIDR:** 1 unit (Stator Board - 0x45).
+* **20mΩ 0805 Shunt:** 2 units (Stator Load / Spare).
