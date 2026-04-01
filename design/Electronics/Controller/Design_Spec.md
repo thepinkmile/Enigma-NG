@@ -12,8 +12,10 @@
 * **Link-Alpha (Power/Entry):** ERF8 Female Socket 80-pin Power/Ethernet/Telemetry entry from Power Module.
   * Receives: 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
   * Provides: 3V3_SYSTEM for RJ45 Power and Status LED signals.
+  * **Cross-ref:** See `Power_Module/Design_Spec.md` and `Power_Module/Board_Layout.md` for the matching Link-Alpha pin allocation and power flow definitions.
 * **Link-Beta (Logic/Stator):** ERM8 Male Header 80-pin Encryption/JTAG exit to Stator Board.
   * Provides: JTAG, Reset, and 3V3_ENIG to Stator.
+  * **Cross-ref:** See `Stator/Design_Spec.md` and `Stator/Board_Layout.md` for explicit pin mapping and connector compliance.
 * **3V3_ENIG Bridge:** Passive 2oz copper highway on L3, directly linking Alpha and Beta for noise isolation.
 
 ### 2.1. High-Speed Routing (on Link-Alpha)

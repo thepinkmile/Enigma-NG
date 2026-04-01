@@ -25,10 +25,12 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
   * **Data In:** Receives JTAG, Reset from Controller.
   * **Data Out:** Transmits 12-bit Sniffer data to Controller.
   * **Power:** Receives 3V3_ENIG via the Controller pass-through for all backplane CPLDs.
+  * **Cross-ref:** See `Controller/Design_Spec.md` Link-Beta mapping for explicit pin-number allocation; this Stator document mirrors that mapping for compatibility and implementation validation.
 * **Encoder Interconnects:** 40-pin (2x20) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
 * **Reflector/Extension Interconnect:** 20-pin (2x10) Vertical Shrouded Header (Power, ENC_DATA, TDO_Return).
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).
+  * **Cross-ref:** See `Extension/Design_Spec.md` and `Reflector/Design_Spec.md` for matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping.
 * **Rotor Interconnect:** (Female on input side and Male on output side)
   * **JTAG:** 2x5 2.54mm Shrouded Header (GND|TCK|GND|TMS|GND|TDI|GND|RST|GND).
   * **Power:** 2X4 2.54mm Shrouded Header (4x3V3_ENIG, 4xGND).

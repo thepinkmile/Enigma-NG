@@ -74,6 +74,7 @@ _______________________________________    _____________    ____________________
 * **Pins 41-46:** ENC_IN [0:5] (6-bit Sniffer Input)
 * **Pins 47-52:** ENC_OUT [0:5] (6-bit Sniffer Output)
 * **Pins 54-60:** 3V3_ENIG (Pass-Through Output to Stator)
+* **Note:** This companion 6-bit path and the 2x8 Diagnostic Bank are consistent with Encoder/Reflector body-level pinout conventions and odd/even ribbon orientation.
 
 ```text
   LINK-BETA (80-PIN SAMTEC)                         SIGNAL TYPE       FUNCTION

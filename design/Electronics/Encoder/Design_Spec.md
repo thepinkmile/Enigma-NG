@@ -21,8 +21,14 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 3. Interconnects
 
-* **Data Link:** 12-pin high-density Hirose DF40 "Press-Fit" connector.
-* **Routing:** Flat Flexible Cable (FFC) secured to the chassis floor with conductive EMI tape from the Stator Board.
+* **Data Link:** 16-pin (2x8) high-density connector to support:
+  * 2x 3V3_ENIG power pins
+  * 2x GND pins
+  * 6x ENC_IN bits (0:5)
+  * 6x ENC_OUT bits (0:5)
+* **I/O Terminals:** 2 rows of 64 spade terminal connections (inputs and outputs), one for each of the 64-character I/O path lines.
+  * These terminals connect externally to the mechanical encoder/hardward assembly via a field-installable harness.
+* **Routing:** Flexible cable / harness interface secured to the chassis floor with conductive EMI tape from the Stator Board.
 * **Cornering:** 2.0mm Filleted PCB corners for enclosure fit.
 
 ## 4. Aesthetics
