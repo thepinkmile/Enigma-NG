@@ -10,7 +10,9 @@
 * **Bus Interface:** Dual 20-pin (2x10) Vertical Shrouded Headers (IN/OUT).
 * **Power Injection:** Receives 3V3_ENIG and GND daisy-chain to prevent voltage sag across long stacks.
 * **JTAG:** Pass-through for the serial chain; carries TDO_RETURN via dedicated Pin 16.
-* **Cross-ref:** See `Stator/Design_Spec.md` and `Reflector/Design_Spec.md` for interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping.
+* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
+  * `Stator/Design_Spec.md`
+  * `Reflector/Design_Spec.md`
 
 ## 3. Diagnostics & Branding
 

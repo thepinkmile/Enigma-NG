@@ -20,7 +20,9 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 * **Termination:** 22Ω series resistor on TDO and 10kΩ pull-ups on TMS/TDI for end-of-chain stability.
 * **JTAG Return:** TDO from Rotor 30 is routed to Pin 16 for return to the Stator.
 * **Loopback:** Directly routes 6-bit ENC_IN to 6-bit ENC_OUT via 2oz 10-mil traces.
-* **Cross-ref:** See `Stator/Design_Spec.md` and `Extension/Design_Spec.md` for interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping.
+* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
+  * `Stator/Design_Spec.md`
+  * `Extension/Design_Spec.md`
 
 ## 3. Diagnostic & Monitoring
 

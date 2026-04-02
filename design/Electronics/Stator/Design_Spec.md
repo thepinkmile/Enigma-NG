@@ -30,7 +30,9 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 * **Reflector/Extension Interconnect:** 20-pin (2x10) Vertical Shrouded Header (Power, ENC_DATA, TDO_Return).
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).
-  * **Cross-ref:** See `Extension/Design_Spec.md` and `Reflector/Design_Spec.md` for matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping.
+  * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
+    * `Extension/Design_Spec.md`
+    * `Reflector/Design_Spec.md`
 * **Rotor Interconnect:** (Female on input side and Male on output side)
   * **JTAG:** 2x5 2.54mm Shrouded Header (GND|TCK|GND|TMS|GND|TDI|GND|RST|GND).
   * **Power:** 2X4 2.54mm Shrouded Header (4x3V3_ENIG, 4xGND).

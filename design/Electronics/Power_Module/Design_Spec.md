@@ -12,7 +12,9 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **Controller Link (Link-Alpha):** 80-pin ERF8 connector for power/ethernet/telemetry handshake with the Controller Board.
   * **Provided to Controller:** 5V_MAIN, 3V3_ENIG, GBE signals, and PWR_GD.
   * **Returned by Controller:** 3V3_SYSTEM (to power RJ45 logic and status indicators) and I2C telemetry chain.
-  * **Cross-ref:** See `Controller/Design_Spec.md` for the exact Link-Alpha mapping and signal naming conventions.
+  * **Cross-ref:** For the exact Link-Alpha mapping and signal naming conventions, See:
+    * `Controller/Design_Spec.md`
+
 ## Design
 
 ### 1. PCB Architecture
