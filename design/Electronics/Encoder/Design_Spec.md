@@ -73,9 +73,9 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | [6244278](https://uk.rs-online.com) | ??? |
-| U3 | LDO Regulator | TLV755P | SOT-23 | [TLV755P](https://www.ti.com) | ??? |
-| SW1-64 | Keyboard Switches | Cherry MX style | 3-pin | ??? | ??? |
 | J1 | Plugboard Jack Sockets | 3.5/4mm | Through-hole | ??? | ??? |
 | J2 | Data Link Connector | 16-pin 2x8 | 2.54mm | ??? | ??? |
 | J3 | Diagnostic Bank | 2x8 ENIG | 2.54mm | ??? | ??? |
+| SW1-64 | Keyboard Switches | Cherry MX style | 3-pin | ??? | ??? |
+| U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | [6244278](https://uk.rs-online.com) | ??? |
+| U3 | LDO Regulator | TLV755P | SOT-23 | [TLV755P](https://www.ti.com) | ??? |

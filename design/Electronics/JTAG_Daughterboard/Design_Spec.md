@@ -37,9 +37,9 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | [FT232H](https://www.ftdichip.com) | ??? |
-| Y1 | Crystal | 24MHz | HC-49 | ??? | ??? |
+| C1-C4 | Decoupling | 0.1µF | 0402 | ??? | ??? |
 | J1 | USB header | 4-pin | 2.54mm | ??? | ??? |
 | J2 | JTAG header | 10-pin | 2.54mm | ??? | ??? |
 | R1, R2 | Series resistors | 22Ω | 0603 | ??? | ??? |
-| C1-C4 | Decoupling | 0.1µF | 0402 | ??? | ??? |
+| U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | [FT232H](https://www.ftdichip.com) | ??? |
+| Y1 | Crystal | 24MHz | HC-49 | ??? | ??? |
