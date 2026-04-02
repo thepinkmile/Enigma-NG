@@ -60,16 +60,22 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 * **ESD:** TPD4E001 arrays near the JTAG and Micro-Fit headers.
 * **Thermal:** Vias under the Intel MAX II EPM240T100C5N CPLD "PowerPad" (if applicable) for heat dissipation.
 
-## 9. BOM (Key Components)
-
-* **Logic:** 2x Intel MAX II EPM240T100C5N CPLD.
-* **Voltage Reg:** [TLV755P](https://www.ti.com) (Low-dropout regulator for CPLD core).
-* **Switches:** Mechanical "Clicky" switches (e.g., Cherry MX) for the Keyboard mode.
-* **Sockets:** 3.5mm or 4mm Jack-Sensing sockets for Plugboard mode.
-
 ## 10. PCB Specs (JLCPCB)
 
 * **Layers:** 4-Layer (JLC04161H-7628).
 * **Finish:** ENIG (Gold) for TQFP-100 pads.
 * **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
 * **Chip Placement:** CPLD #1 (Left-side 32 keys) and CPLD #2 (Right-side 32 keys) placed on the rear of the board to allow keys/lamps/sockets on the front.
+
+---
+
+## Bill of Materials
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | [6244278](https://uk.rs-online.com) | ??? |
+| U3 | LDO Regulator | TLV755P | SOT-23 | [TLV755P](https://www.ti.com) | ??? |
+| SW1-64 | Keyboard Switches | Cherry MX style | 3-pin | ??? | ??? |
+| J1 | Plugboard Jack Sockets | 3.5/4mm | Through-hole | ??? | ??? |
+| J2 | Data Link Connector | 16-pin 2x8 | 2.54mm | ??? | ??? |
+| J3 | Diagnostic Bank | 2x8 ENIG | 2.54mm | ??? | ??? |

@@ -50,9 +50,13 @@ There are also sensors used to detect the current position of the outer ring usi
 * **Finish:** ENIG (Gold) for the edge-rate connector pads.
 * **Aesthetics:** Dark Green Solder Mask with Typewriter font labeling (e.g., "WALZE I").
 
-### 5. BOM (Key Components per Rotor)
+---
 
-* **Logic:** Intel MAX II EPM240T100C5N CPLD.
-* **Encoder:** ams-OSRAM AS5600.
-* **Connector:** Samtec ERM8 Series (0.8mm Pitch).
-* **Passives:** 0402 X7R 10V Capacitors (Minimum 2.5x derating).
+## Bill of Materials
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | [6244278](https://uk.rs-online.com) | ??? |
+| U2 | Magnetic encoder | AS5600 | DFN-8 | [AS5600](https://www.ams-osram.com) | ??? |
+| J1 | Edge-rate connector | Samtec ERM8 | 0.8mm pitch | [???](https://www.samtec.com) | ??? |
+| C1-C4 | Decoupling | 0.1µF X7R 10V | 0402 | ??? | ??? |

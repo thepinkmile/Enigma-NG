@@ -18,3 +18,14 @@
 
 * **Diagnostics:** Integrated 2x8 ENIG Gold Diagnostic Bank (Mid-Stack troubleshooting).
 * **Identity:** 2oz Copper / Inverted White Data Plate (V1.0 traceability).
+
+---
+
+## Bill of Materials
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| J1 | Input header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? |
+| J2 | Output header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? |
+| J3 | Diagnostic bank | 2x8 ENIG | 2.54mm | ??? | ??? |
+| R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | ??? | ??? |

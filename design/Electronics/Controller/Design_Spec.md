@@ -183,3 +183,21 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 * **USB-C:** 16-pin "Power Only" to maximize mechanical durability in classroom settings.
 * **Diagnostic Bank:** 2x8 2.54mm grid with gold-plated loops, positioned in-line with the BtB header for clean logic analyzer probing.
 * **Status LED:** **MIC1555 Hardware Heartbeat** (1Hz pulse) triggers on power-up before CM5 boot for instant status confirmation.
+
+---
+
+## Bill of Materials
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | [CM5](https://www.raspberrypi.com) | ??? |
+| J1 | Link-Alpha 80-pin Socket | ERF8 (female) | Samtec | [???](https://www.samtec.com) | ??? |
+| J2 | Link-Beta 80-pin Header | ERM8 (male) | Samtec | [???](https://www.samtec.com) | ??? |
+| J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | [48406-0003](https://www.molex.com) | ??? |
+| J4 | HDMI Type-A | Full-Size | TE 2007435-1 | [2007435-1](https://www.te.com) | ??? |
+| U2 | USB power switch | TPS2065C | SOIC-8 | [TPS2065C](https://www.ti.com) | ??? |
+| U3 | HDMI power switch | AP2331W | SOT-23 | [AP2331W](https://www.diodes.com) | ??? |
+| U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | [TPD4E05U06](https://www.ti.com) | ??? |
+| U5 | 74LVC1G125 | Bus Buffer | SOT-23 | [74LVC1G125](https://www.ti.com) | ??? |
+| R1 | Pull-up for reset | 10kΩ | 0603 | ??? | ??? |
+| R2 | Termination for differential | 100Ω | 0603 | ??? | ??? |

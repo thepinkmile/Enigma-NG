@@ -61,7 +61,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | ??? | [INA219](https://ti.com) | ??? |
+| U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | [INA219](https://ti.com) | ??? |
 | R10 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | ??? | ??? |
 | R11 | JTAG TDO Pull-up | 10kΩ (1%) | 0603 | ??? | ??? |
 | C30 | Decoupling | 0.1µF (X7R) 50V | 0603 | ??? | ??? |
+| J1 | Link-Beta Connector | ERM8-040-05.0-S-DV-K-TR | 80-pin | [Samtec](https://www.samtec.com) | ??? |
+| J2 | 40-pin Rotor & Encoder power/data | 2x20 2.54mm shrouded | through-hole | ??? | ??? |
+| J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | ??? | ??? |
