@@ -15,6 +15,7 @@ There are also sensors used to detect the current position of the outer ring usi
 ### 2. Logic & Transposition
 
 * **Logic:** The **Intel MAX II EPM240T100C5N CPLD** emulates the 64x64 cross-wiring.
+* **Decoupling Rule:** Use **8x 0.1µF X7R** local decoupling capacitors per EPM240T100C5N IC (one per VCC pin).
 * **Role:** Performs the instantaneous dual 6-bit parallel transposition (substitution cipher) for the forward and backward signal paths.
 * **Memory:** Stores the 26-position wiring table for any historical rotor (I-VIII, Beta, Gamma) selectable via the CM5.
 * **Latency:** Sub-10ns transposition time, ensuring the entire 30-rotor "trip" happens well within one CPU clock cycle.
@@ -31,7 +32,8 @@ There are also sensors used to detect the current position of the outer ring usi
 ### 1. Power Management
 
 * **Input:** 3.3V/150mA per rotor (sourced from the Controller Board's **Island C**).
-* **Filtering:** Local **Ferrite Beads** and a **10µF X7R** capacitor bank to suppress switching noise from the 30-rotor chain.
+* **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
+* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** capacitors near the power-entry pins in a **Symmetrical Star/Spoke pattern**.
 
 ### 2. Communication Bus
 
@@ -56,7 +58,8 @@ There are also sensors used to detect the current position of the outer ring usi
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C4 | Decoupling | 0.1µF X7R 10V | 0402 | ??? | ??? | ??? |
-| J1 | Edge-rate connector | Samtec ERM8 | 0.8mm pitch | [???](https://www.samtec.com) | ??? | ??? |
-| U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | [6244278](https://uk.rs-online.com) | ??? | ??? |
-| U2 | Magnetic encoder | AS5600 | DFN-8 | [AS5600](https://www.ams-osram.com) | ??? | ??? |
+| C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 10V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
+| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| J1 | Edge-rate connector | Samtec ERM8 | 0.8mm pitch | 200-ERM8020050SDVKTR | SAM12065-ND | C123469 |
+| U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
+| U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |

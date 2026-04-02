@@ -15,7 +15,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 | |  (PoE+)  |  |  (15V)   |  | (Locking)|                                    |
 | |__________|  |__________|  |__________|                                    |
 |      |              |              |                                        |
-|   [CMC L1]       [CHOKE L2]     [PI-FILTER] <--- EMI Bulkhead Zone          |
+|   [CMC L1]       [CHOKE L2]   [BATT DIODE+ESD] <--- EMI / Input Protection  |
 |______|______________|______________|________________________________________|
 |                                                                             |
 |   [  TCO F1  ] <--- 72°C Thermal Cutoff (In Series)                         |
@@ -46,13 +46,15 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 ## Simplified
 
 ```text
-_____________________________________________________________________________ 
-| [RJ45]      [USB-C]      [BATT]  <-- Bulkhead Zone (THT/SMT Mix)            |
+ _____________________________________________________________________________ 
+| [RJ45]      [USB-C]      [BATT] <------- Bulkhead Zone (THT/SMT Mix)        |
 |    |           |           |                                                |
-| [DIODES]   [DIODES]   [PI-FILTER] <-- Ideal Diode ORing (LM74700 + FETs)    |
+| [D4/D5 ESD] [USB-C ESD] [BATT ESD] <----- Input protection per source       |
+|    |           |           |                                                |
+|   [LM74700-Q1 + Q1-Q3 OR-ING] <-------- Priority source selection           |
 |_____________________________________________________________________________|
 |                                                                             |
-|   [  TCO F1  ]       [ eFuse U1 ]     [ 5V BUCK U2 ]   [ 3.3V LDO U3 ]      |
+|   [  TCO F1  ]       [ eFuse U1 ]     [ 5V BUCK U2 ]   [ 3.3V LDO U7 ]      |
 |                                                                             |
 |   ( All Passives/Caps/Inductors Cluster around their ICs on Top )           |
 |_____________________________________________________________________________|
@@ -79,7 +81,7 @@ _____________________________________________________________________________
 | [ TELEMETRY I2C ] <-------------------|----:  I2C/GND :----|--> [ 40-PIN PI HEADER ]   |
 | [ STATUS LEDS  ] <--------------------|----:  GPIO    :----|    (Logic to Pi 5)        |
 |                                       |    :          :    |                           |
-| [ 3V3_ENIG LDO ] <--------------------|----:----------:----|--> [ 3V3 TEST POINTS ]    |
+| [ U7 3V3_ENIG LDO ] <-----------------|----:----------:----|--> [ 3V3 TEST POINTS ]    |
 |_______________________________________|    :..........:    |___________________________|
                                                V-SCORE
 ```
@@ -87,30 +89,30 @@ _____________________________________________________________________________
 ## Ethernet Power
 
 ```text
-[ RJ45 BULKHEAD (J2) ]         [ ESD FIREWALL ]                [ PoE+ LOGIC ]
- ____________________           _______________                 _______________ 
-|                    |         |               |               |               |
-| DATA PAIR 1-4 -----|-------->| [RClamp0502B] |---[Magjack]-->| [ +15V PoE+ ] |
-| (Differential)     |         | (TVS Shunt)   |   (7499111)   | [  Signals  ] |
-|                    |         |_______|_______|               |_______|_______|
-|                    |                 |                               |
-| CONNECTOR SHIELD --|-----------------|-------------------------------|
-|____________________|                 V
-                                [ GND_CHASSIS ] <--- Main Enclosure Ground
+[ J2 RJ45 MAGJACK ]            [ ESD FIREWALL ]              [ PoE+ LOGIC ]           [ INPUT SELECTOR ]
+ ____________________           _________________             _______________          __________________
+|                    |         |                 |           |               |        |                 |
+| RJ45 + Transformer |         | [D4 TPD4E05U06] |           | [ +15V PoE+ ] |        | [U5 LM74700-Q1] |
+| (Wurth 7499111121A)|-------->| [D5 TPD4E05U06] |---------->| [  Module   ] |------->| (OR-ing Input)  |
+|                    |         |________|________|           |_______|_______|        |_________________|
+|                    |                  |                            |
+| CONNECTOR SHIELD --|------------------|----------------------------|
+|____________________|                  V
+                                 [ GND_CHASSIS ] <--- Main Enclosure Ground
 ```
 
 ## USB-C Power
 
 ```text
-[ USB-C BULKHEAD (J3) ]         [ POWER LOGIC ISLAND ]         [  POWER SELECTOR   ]        [   BtB Connector  ]
- _____________________           ____________________                                        __________________ 
+[ USB-C BULKHEAD (J3) ]         [ ESD & FILTERING ]               [ INPUT SELECTOR ]        [   BtB Connector  ]
+ _____________________           ____________________                                        __________________
 |                     |         |                    |                                      |                  |
-| VBUS (4 PINS) ------|-------->| [ LAIRD CHOKE L2 ] |          ___________________         | [ SAMTEC ERM8 ]  |
-|                     |         |         |          |         |                   |        |                  |
-| GND (4 PINS)  ------|-------->| [  eFUSE U1  ] ----|---------|-> 15V Buck Conv --|------->| PINS 11-16 (15V) |
-|                     |         |         |          |         |___________________|        |                  |
-|                     |         |         |          |                                      |                  |
-| CC1 / CC2     ------|--[PD]-->| [STUSB4500 IC] ----|------------------------------------->| PIN 32 (I2C SDA) |
+| VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _________________        | [ SAMTEC ERM8 ]  |
+|                     |         |         |          |            |                 |       |                  |
+| GND (4 PINS)  ------|-------->| [ LAIRD CHOKE L2 ] |----------->| [U5 LM74700-Q1] |       |                  |
+|                     |         |                    |            | (OR-ing Input)  |       |                  |
+|                     |         |                    |            |_________________|       |                  |
+| CC1 / CC2     ------|--[PD]-->| [U4 STUSB4500 ] ---|-I2C--------------------------------->| PIN 32 (I2C SDA) |
 | (Handshake)         |         | (Negotiates 15V)   |                                      | PIN 34 (I2C SCL) |
 |_____________________|         |____________________|                                      |__________________|
 ```
@@ -118,15 +120,23 @@ _____________________________________________________________________________
 ## Power Flow
 
 ```text
-BULKHEAD ENTRY         OR-ing & PROTECTION         UPS & REGULATION                SAMTEC EXIT
-_________________      ____________________       ____________________            _____________
+ BULKHEAD ENTRY         INPUT PROTECTION             OR-ING / SELECT           UPS & REGULATION                                                                     SAMTEC EXIT
+_________________      ____________________         ___________________        _________________________________________                                            _____________
 
-[RJ45 PoE+] ---------> [Ideal Diode 1] --+         [ 2.5F SUPERCAPS ]     +-----> [ +5V BUCK ]
-                                         |                 |              |
-[USB-C 15V] ---------> [Ideal Diode 2] --+-------> [ TPS259474L EFUSE ] --+-----> [ +3.3V LDO]
-                                         |                 |              |
-[BATTERY  ] -----------------------------+         [ THERMAL MATRIX ]     +-----> [ PWR_GD   ]
+[RJ45 PoE+] ---------> [D4+D5 TPD4E05U06] --\
+                                             \                                                               (soft-charge / hold-up path)
+[USB-C 15V] ---------> [TPD4E05U06] ---------+----> [U5 LM74700-Q1 + Q1-Q3] -> [F1 TCO] -> [U1 TPS259474L] ---+-----> [ 2.5F SUPERCAPS ]
+                                             /          (Priority OR-ing)                                     |
+[BATTERY  ] ---------> [D1 + D2 ESD] -------/                                                                 +-----> [ U2 5V BUCK ] --+--------------------------> [ +5V MAIN ]
+                                                                                                              |            |           |
+                                                                                                              |            |           +--> [ U6 SUPERVISOR ] ----> [ PWR_GD ]
+                                                                                                              |            |
+                                                                                                              |            +--------------------------------------> [ U3 TPS25750 ]
+                                                                                                              |
+                                                                                                              +-----> [ U7 3V3 LDO ] -----------------------------> [ +3V3_ENIG ]
 ```
+
+* Thermal Matrix vias sit beneath the supercap and eFuse thermal island for heat-spreading only; they are not part of the electrical power path.
 
 ## Power Handshake
 
@@ -137,12 +147,12 @@ _________________      ____________________       ____________________          
 |           |               |        | [ GOLD PINS 1-10 ] ---|------->| [ SYSTEM GND ]    |
 | [U2: 5V BUCK (6A)] -------|--------| [ GOLD PINS 11-18 ] --|------->| [ +5V_MAIN ]      |
 |           |               |        |                       |        |                   |
-| [U3: 3.3V LDO (ENIG)] ----|--------| [ GOLD PINS 19-22 ] --|------->| [ +3V3_ENIG ]     |
+| [U7: 3.3V LDO (ENIG)] ----|--------| [ GOLD PINS 19-22 ] --|------->| [ +3V3_ENIG ]     |
 |                           |        |                       |        |                   |
 | [J2: RJ45 MAGJACK] <------|--------| [ GOLD PINS 23-24 ] <-|--------| [ +3V3_SYSTEM ]   |
 | (PoE+ Logic)              |        |                       |        | (Input from CM5)  |
 |                           |        |                       |        |                   |
-| [U4: SUPERVISOR] ---------|--------| [ GOLD PIN  26 ] -----|------->| [ PWR_GD ]        |
+| [U6: SUPERVISOR] ---------|--------| [ GOLD PIN  26 ] -----|------->| [ PWR_GD ]        |
 |                           |        |                       |        | (Handshake)       |
 |___________________________|        |_______________________|        |___________________|
 ```
@@ -168,7 +178,7 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
                                 | [SUPERCAP BANK (15F x6)] -|-------[5V BUCK]-------|
-                                |    | (2x3 Block)          |       |[3.3V LDO]-----|
+                                |    | (2x3 Block)          |       |[U7 3.3V LDO]--|
                                 |    |                      |       |[SUPERVISOR]---|
                                 |    |                      |                       |
                                 | [5.1V ZENER GLOW] --------|--->[AMBER LED EXT]----+

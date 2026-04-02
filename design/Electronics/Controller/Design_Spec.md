@@ -144,8 +144,8 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 
 ## 13. Diagnostics & Aesthetics
 
-* **Bank:** 2x8 Gold-plated ENIG Diagnostic Probe Bank for real-time bus monitoring.
-  * **Placement:** 2x8 2.54mm ENIG Gold Bank placed directly behind the BtB header.
+* **Bank:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank for real-time bus monitoring.
+  * **Placement:** 2x8 2.54mm ENIG Gold Looped Probe Pad Bank placed directly behind the BtB header.
   * **Orientation:** Facing Upwards for easy logic analyser ribbon cable connection.
   * **Visuals:** Typewriter-style bilingual silkscreen legend on the bottom layer.
 * **Silkscreen:** Dark Green mask with White Bilingual Typewriter font.
@@ -153,8 +153,8 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 
 ### 13.1. Symmetrical Diagnostics
 
-* **Bank-Alpha (Power/Entry):** 2x10 ENIG Gold Pads (L1). Monitors 5V/3.3V, I2C Telemetry, Status LEDs, and BATT_PRES.
-* **Bank-Beta (Logic/Exit):** 2x10 ENIG Gold Pads (L1). Monitors 12-bit Sniffer (ENC_IN/OUT), JTAG, and SYS_RESET_N.
+* **Bank-Alpha (Power/Entry):** 2x10 ENIG Gold Looped Probe Pads (L1). Monitors 5V/3.3V, I2C Telemetry, Status LEDs, and BATT_PRES.
+* **Bank-Beta (Logic/Exit):** 2x10 ENIG Gold Looped Probe Pads (L1). Monitors 12-bit Sniffer (ENC_IN/OUT), JTAG, and SYS_RESET_N.
 * **JTAG Shielding:** JTAG_TCK (Pin 15) isolated from TDI/TMS via GND buffer (Pin 16).
 
 ## 14. BOM
@@ -168,7 +168,9 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 ### 2. Protection & EMI
 
 * **ESD Protection:** [TPD12S016](https://www.ti.com) (HDMI) and [TPD4E05U06](https://www.ti.com) (USB 3.0) on Layer 1.
-* **Capacitor Bank:** 50V-rated X7R capacitors (2.5x voltage derating) in a Symmetrical Star pattern.
+* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors at the Link-Alpha power-entry pins.
+* **Capacitor Bank Geometry:** Place in a **Symmetrical Star/Spoke pattern**
+  (one hub capacitor at entry, four spoke capacitors around it) to minimize input-rail impedance and reduce brown-out risk during current transients.
 * **Status LED:** MIC1555-based 1Hz heartbeat flasher (Bilingual label: ACHTUNG: HEISS!).
 
 ### 3. Mating Header (Samtec FTSH)
@@ -181,7 +183,7 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 
 * **Ferrite Beads:** Moved exclusively to the **Stator Board** to keep rotor switching noise isolated from the Controller logic.
 * **USB-C:** 16-pin "Power Only" to maximize mechanical durability in classroom settings.
-* **Diagnostic Bank:** 2x8 2.54mm grid with gold-plated loops, positioned in-line with the BtB header for clean logic analyzer probing.
+* **Diagnostic Looped Probe Pad Bank:** 2x8 2.54mm grid with gold-plated loops, positioned in-line with the BtB header for clean logic analyzer probing.
 * **Status LED:** **MIC1555 Hardware Heartbeat** (1Hz pulse) triggers on power-up before CM5 boot for instant status confirmation.
 
 ---
@@ -190,14 +192,15 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| J1 | Link-Alpha 80-pin Socket | ERF8 (female) | Samtec | [???](https://www.samtec.com) | ??? | ??? |
-| J2 | Link-Beta 80-pin Header | ERM8 (male) | Samtec | [???](https://www.samtec.com) | ??? | ??? |
-| J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | [48406-0003](https://www.molex.com) | ??? | ??? |
-| J4 | HDMI Type-A | Full-Size | TE 2007435-1 | [2007435-1](https://www.te.com) | ??? | ??? |
-| R1 | Pull-up for reset | 10kΩ | 0603 | ??? | ??? | ??? |
-| R2 | Termination for differential | 100Ω | 0603 | ??? | ??? | ??? |
-| U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | [CM5](https://www.raspberrypi.com) | ??? | ??? |
-| U2 | USB power switch | TPS2065C | SOIC-8 | [TPS2065C](https://www.ti.com) | ??? | ??? |
-| U3 | HDMI power switch | AP2331W | SOT-23 | [AP2331W](https://www.diodes.com) | ??? | ??? |
-| U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | [TPD4E05U06](https://www.ti.com) | ??? | ??? |
-| U5 | 74LVC1G125 | Bus Buffer | SOT-23 | [74LVC1G125](https://www.ti.com) | ??? | ??? |
+| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| J1 | Link-Alpha 80-pin Socket | ERF8 (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
+| J2 | Link-Beta 80-pin Header | ERM8 (male) | Samtec | 200-ERM8040050SDVKTR | SAM12064-ND | C123464 |
+| J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
+| J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A125057-ND | C123459 |
+| R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
+| U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | ??? | ??? |
+| U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
+| U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
+| U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
+| U5 | 74LVC1G125 | Bus Buffer | SOT-23 | 771-74LVC1G125DBVR | 296-74LVC1G125DBVRCT-ND | C123463 |

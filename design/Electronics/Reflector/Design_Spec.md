@@ -12,11 +12,13 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 
 * **Logic Type:** Passive (Loopback).
 * **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100C5N CPLD** located on the Stator Board.
+* **CPLD support:** PCB passive routing (no discrete component).
 * **Signal Path:** Rotor 30 Out → Reflector Contacts → 60-pin FPC → Stator CPLD → 60-pin FPC → Reflector Contacts → Rotor 30 In.
 
 ## 2. JTAG & Logic Hub
 
 * **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical).
+* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the interconnect power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **Termination:** 22Ω series resistor on TDO and 10kΩ pull-ups on TMS/TDI for end-of-chain stability.
 * **JTAG Return:** TDO from Rotor 30 is routed to Pin 16 for return to the Stator.
 * **Loopback:** Directly routes 6-bit ENC_IN to 6-bit ENC_OUT via 2oz 10-mil traces.
@@ -28,7 +30,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 
 To ensure the signal has successfully navigated the 30-rotor stack, a dedicated monitoring bank is included.
 
-* **Bank Configuration:** 2x8 Gold-plated (ENIG) Diagnostic Probe Bank.
+* **Bank Configuration:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank.
 * **Standard:** Matches the **Controller Board** 2.54mm (0.1") pitch standard for unified system debugging.
 * **Labelling:** `REFLEKTOR-DIAGNOSE [Reflector Diag]` in ALL-CAPS German typewriter font.
 
@@ -46,7 +48,7 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 
 ## 6. Maintenance
 
-* **Diagnostics:** 2x8 ENIG Gold Diagnostic Bank on L1 for logic analysis.
+* **Diagnostics:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank on L1 for logic analysis.
 
 ---
 
@@ -54,8 +56,8 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| J1 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | ??? | ??? | ??? |
-| J2 | Diagnostic Bank | 2x8 ENIG | 2.54mm | ??? | ??? | ??? |
-| R1 | JTAG termination | 22Ω | 0603 | ??? | ??? | ??? |
-| R2-R3 | Pull-up resistors | 10kΩ | 0603 | ??? | ??? | ??? |
-| U1 | CPLD support | (passive routing) | PCB | N/A | N/A | ??? |
+| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| J1 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
+| J2 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
+| R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | C25805 |
+| R2-R3 | Pull-up resistors | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |

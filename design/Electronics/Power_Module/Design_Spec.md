@@ -31,12 +31,12 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **Storage:** 2.5F Supercap Bank (6x 15F/3.0V Cells in 2x3 Vertical Block) providing ~30s hold-time @ 5W.
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43045-0512).
   * Pins 1-2: VBATT (14.4V Nominal).
-  * Pins 3-4: SMBus (SDA/SCL) with ESD protection.
+  * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
   * Pin 5: BATT_PRES_N (Presence Detect).
 * **Presence Logic:** Pin 5 is pulled to 3V3_SYSTEM via 10kΩ resistor (R6). Battery internal shorts Pin 5 to GND.
   * Logic HIGH: Battery Disconnected.
   * Logic LOW: Battery Detected.
-* **Protection:** TPD1E10B06 TVS diode on the Presence line to protect CM5 from ESD during insertion.
+* **Protection:** TPD1E10B06 TVS diode on the Presence line plus a dedicated 2-channel TVS array on the SMBus lines to protect the battery interface during insertion.
 * **Stabilizer:** Solder-mask opening "KLEBER-ZONE" for RTV Silicone adhesive.
 * **Indicators:** Green "LOGIK-BEREIT" LED + 5.1V Zener Amber "Safety Glow" LED.
 * **Z-Height:** 42mm minimum clearance for Eaton 15F cells.
@@ -61,11 +61,12 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates 15V/3A from Wall/PoE+.
 * **Internal Handshake:** TPS25750 PD Emulator provides 5V/6A "Clean PD" profile to CM5.
-* **Protection:** Triple-Input ORing via LM74700-Q1 Ideal Diodes (PowerPAK MOSFETs).
+* **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
 * **eFuse:** TPS259474L eFuse (11V UVLO / 17V OVLO) with 1A Soft-Charge for supercaps.
   * R-Ladder: 732kΩ (R1), 28.7kΩ (R2), 53.6kΩ (R3) - 0.1% Thin-Film.
 * **Passive:** 72°C SMD Thermal Cutoff (Bourns AC) in series with the main rail.
-* **Monitoring:** PWR_GD Handshake to CM5 + "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) active during capacitor discharge.
+* **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
+  * "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) remains active during capacitor discharge.
 
 ### 6. Traceability & Manufacturing
 
@@ -81,7 +82,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 ### 1. Power Architecture
 
 * **Input Range:** 11.0V – 17.0V (The "Enigma Rail").
-* **Priority Logic:** LTC4412 Ideal Diodes (PoE+ is primary; Battery is tertiary).
+* **Priority Logic:** LM74700-Q1 controlled ideal-diode / OR-ing network (PoE+ is primary; USB-C is secondary; Battery is tertiary).
 * **Protection:** TPS259474L eFuse with 5.5A hard-limit and 16.5V OVP.
 * **Islands:** 4-island L3 Power Plane (15V Enigma, 5V System, 3.3V/5A Rotors, 3.3V/Logic).
 
@@ -93,7 +94,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 3. Safety & EMC
 
-* **ESD:** TPD12S016 (HDMI) and TPD4E05U06 (USB) protection on all external ports.
+* **ESD:** 2× TPD4E05U06 (D4, D5) at the RJ45 entry (one per two GbE pairs), TPD4E05U06 (D3) at the USB-C entry, TPD2E2U06 on battery SMBus, and TPD1E10B06 on BATT_PRES_N.
 * **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching.
 * **Isolation:** 1500V Galvanic isolation via Ag5300 PoE+ Module.
 
@@ -137,18 +138,26 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-6 | **Supercaps (6x)** | 15F / 3.0V | Radial 10mm | [HV1030-3R0156-R](https://www.mouser.co.uk) | [283-HV1030-3R0156-R-ND](https://www.digikey.co.uk) | ??? |
-| D1 | **BATT_PRES ESD** | TPD1E10B06 | SOD-923 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
-| F1 | **TCO** | 72°C SMD | ??? | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) | ??? |
-| J1 | **BtB Link** | Samtec ERM8 | 40-pin Gold | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
-| J2 | **PoE+ Port** | Wurth 7499111121A | Long-Body THT | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
-| J3 | **Battery Conn** | Molex 43045-0512 | 5-pin Micro-Fit for Smart Battery Link | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
-| Q1-3 | **Ideal FETs** | SISS22DN | PowerPAK 5x6 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
-| R1 | **Ladder R1** | 732kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB7323V](https://www.mouser.co.uk) | [P732KBYCT-ND](https://www.digikey.co.uk) | ??? |
-| R2 | **Ladder R2** | 28.7kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB2872V](https://www.mouser.co.uk) | [P28.7KBYCT-ND](https://www.digikey.co.uk) | ??? |
-| R3 | **Ladder R3** | 53.6kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB5362V](https://www.mouser.co.uk) | [P53.6KBYCT-ND](https://www.digikey.co.uk) | ??? |
-| R4, R5 | **ETH_LEDs** | 330Ω 0.1% Thin-Film | 0603 | ??? | ??? | ??? |
-| R6 | **BATT_PRES_N Pull-up** | 10kΩ (0.1%) | 0603 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
-| U1 | **eFuse** | TPS259474L | QFN-20 | [TPS259474LRPWR](https://www.mouser.co.uk) | [296-TPS259474LRPWRCT-ND](https://www.digikey.co.uk) | ??? |
-| U2 | **5V Buck** | LM61460-Q1 | VQFN-14 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
-| U3 | **PD Emulator** | TPS25750 | QFN-28 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| C1-6 | Supercaps (6x) | 15F / 3.0V | Radial 10mm | HV1030-3R0156-R | 283-HV1030-3R0156-R-ND | ??? |
+| D1 | BATT_PRES ESD | TPD1E10B06 | SOD-923 | 595-TPD1E10B06QDCKR | 296-TPD1E10B06QDCKRQ1CT-ND | C284765 |
+| D2 | Battery SMBus ESD | TPD2E2U06 | SON-6 | ??? | ??? | ??? |
+| D3 | USB-C ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
+| D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
+| D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
+| F1 | TCO | 72°C SMD | N/A | AC72ABD | AC72ABD-ND | ??? |
+| J1 | BtB Link | Samtec ERF8 | 80-pin Gold | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
+| J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT | ??? | ??? | ??? |
+| J3 | Battery Conn | Molex 43045-0512 | 5-pin Micro-Fit for Smart Battery Link | ??? | ??? | ??? |
+| Q1-3 | Ideal FETs | SISS22DN | PowerPAK 5x6 | 78-SISS22DN-T1-GE3 | 1727-SISS22DN-T1-GE3CT-ND | C209048 |
+| R1 | Ladder R1 | 732kΩ 0.1% Thin-Film | 0603 | ERA-3ARB7323V | P732KBYCT-ND | ??? |
+| R2 | Ladder R2 | 28.7kΩ 0.1% Thin-Film | 0603 | ERA-3ARB2872V | P28.7KBYCT-ND | ??? |
+| R3 | Ladder R3 | 53.6kΩ 0.1% Thin-Film | 0603 | ERA-3ARB5362V | P53.6KBYCT-ND | ??? |
+| R4, R5 | ETH_LEDs | 330Ω 0.1% Thin-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
+| R6 | BATT_PRES_N Pull-up | 10kΩ (0.1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| U1 | eFuse | TPS259474L | QFN-20 | TPS259474LRPWR | 296-TPS259474LRPWRCT-ND | ??? |
+| U2 | 5V Buck | LM61460-Q1 | VQFN-14 | 926-LM61460ARUMRNOPB | 296-LM61460ARUMR/NOPBCT-ND | C123456 |
+| U3 | PD Emulator | TPS25750 | QFN-28 | 595-TPS25750DRCR | 296-TPS25750DRCRCT-ND | C123457 |
+| U4 | USB-C Sink Controller | STUSB4500 | QFN-24 | ??? | ??? | ??? |
+| U5 | OR-ing Controller | LM74700-Q1 | SOT-23-6 | ??? | ??? | ??? |
+| U6 | Voltage Supervisor | MCP121T-450E | SOT-23-3 | ??? | ??? | ??? |
+| U7 | 3V3_ENIG LDO | TBD | TBD | ??? | ??? | ??? |

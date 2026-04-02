@@ -16,6 +16,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 ## 2. Encryption & JTAG Hub
 
 * **CPLD:** Intel MAX II EPM240T100C5N CPLD (Logic Router).
+* **Decoupling Rule:** Use **8x 0.1µF X7R** local decoupling capacitors per EPM240T100C5N IC (one per VCC pin).
+* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the Link-Beta power-entry pins in a **Symmetrical Star/Spoke pattern**.
+* **Ferrite Bead Rule:** Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
+* **Current Margin Check:** Rotor rail is budgeted at up to **5A peak total**; with 4 parallel feeds this is ~**1.25A per bead** nominal sharing, leaving strong margin versus **3.5A** bead rating.
 * **JTAG Return:** Includes 10kΩ pull-up on TDO_RETURN at the Link-Beta exit.
 * **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail.
 
@@ -37,7 +41,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
   * **JTAG:** 2x5 2.54mm Shrouded Header (GND|TCK|GND|TMS|GND|TDI|GND|RST|GND).
   * **Power:** 2X4 2.54mm Shrouded Header (4x3V3_ENIG, 4xGND).
   * **ENC DATA:** 2x6 2.54mm Shouded Header (ENC_IN [0:5], ENC_OUT [0:5]).
-* **Diagnostics:** 2x8 ENIG Gold Diagnostic Bank (L1, Mirror of Controller).
+* **Diagnostics:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
 
 ## 4. Power Telemetry (The "Encryption Load")
 
@@ -53,7 +57,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 * **Shield Mount:** 10mm ENIG Gold landing strip on L1 edge bonded to GND_CHASSIS.
 * **Clamping:** Dual 3.2mm PTH anchors per cable for Galvanised Steel Bar compression.
-* **Diagnostics:** 2x10 ENIG Gold Bank mirrored to Controller's Bank-Beta pinout for A-B signal verification.
+* **Diagnostics:** 2x10 ENIG Gold Looped Probe Pad Bank mirrored to Controller's Bank-Beta pinout for A-B signal verification.
 
 ---
 
@@ -61,10 +65,12 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1 | Decoupling | 0.1µF (X7R) 50V | 0603 | ??? | ??? | ??? |
-| J1 | Link-Beta Connector | ERM8-040-05.0-S-DV-K-TR | 80-pin | [Samtec](https://www.samtec.com) | ??? | ??? |
-| J2 | 40-pin Rotor & Encoder power/data | 2x20 2.54mm shrouded | through-hole | ??? | ??? | ??? |
-| J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | ??? | ??? | ??? |
-| R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | ??? | ??? | ??? |
-| R2 | JTAG TDO Pull-up | 10kΩ (1%) | 0603 | ??? | ??? | ??? |
-| U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | [INA219](https://ti.com) | ??? | ??? |
+| C1-C8 | Decoupling (8 per CPLD) | 0.1µF (X7R) 50V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
+| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| J1 | Link-Beta Connector | ERM8-040-05.0-S-DV-K-TR | 80-pin | 200-ERM8040050SDVKTR | SAM12064-ND | C123464 |
+| J2 | 40-pin Rotor & Encoder power/data | 2x20 2.54mm shrouded | through-hole | 538-22-23-2401 | WM2921-ND | ??? |
+| J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | 538-22-23-2201 | WM2911-ND | ??? |
+| L1-L4 | Rotor rail ferrite bead bank | 120 Ohm @ 100MHz, 3.5A | 1206 | 81-BLM31PG121SN1L | 490-1056-1-ND | BLM31PG121SN1L |
+| R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | 667-ERJ-6ENF20R0V | P20.0MYCT-ND | C123465 |
+| R2 | JTAG TDO Pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |

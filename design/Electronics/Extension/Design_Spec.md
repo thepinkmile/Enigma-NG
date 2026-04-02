@@ -9,6 +9,7 @@
 
 * **Bus Interface:** Dual 20-pin (2x10) Vertical Shrouded Headers (IN/OUT).
 * **Power Injection:** Receives 3V3_ENIG and GND daisy-chain to prevent voltage sag across long stacks.
+* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the input header power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **JTAG:** Pass-through for the serial chain; carries TDO_RETURN via dedicated Pin 16.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
@@ -16,7 +17,7 @@
 
 ## 3. Diagnostics & Branding
 
-* **Diagnostics:** Integrated 2x8 ENIG Gold Diagnostic Bank (Mid-Stack troubleshooting).
+* **Diagnostics:** Integrated 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (Mid-Stack troubleshooting).
 * **Identity:** 2oz Copper / Inverted White Data Plate (V1.0 traceability).
 
 ---
@@ -25,7 +26,8 @@
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| J1 | Input header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? | ??? |
-| J2 | Output header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? | ??? |
-| J3 | Diagnostic bank | 2x8 ENIG | 2.54mm | ??? | ??? | ??? |
-| R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | ??? | ??? | ??? |
+| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| J1 | Input header | 20-pin 2x10 shrouded | 2.54mm | 538-22-23-2201 | WM2911-ND | ??? |
+| J2 | Output header | 20-pin 2x10 shrouded | 2.54mm | 538-22-23-2201 | WM2911-ND | ??? |
+| J3 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
+| R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
