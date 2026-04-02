@@ -59,12 +59,12 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ## Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| C1 | Decoupling | 0.1µF (X7R) 50V | 0603 | ??? | ??? |
-| J1 | Link-Beta Connector | ERM8-040-05.0-S-DV-K-TR | 80-pin | [Samtec](https://www.samtec.com) | ??? |
-| J2 | 40-pin Rotor & Encoder power/data | 2x20 2.54mm shrouded | through-hole | ??? | ??? |
-| J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | ??? | ??? |
-| R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | ??? | ??? |
-| R2 | JTAG TDO Pull-up | 10kΩ (1%) | 0603 | ??? | ??? |
-| U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | [INA219](https://ti.com) | ??? |
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| C1 | Decoupling | 0.1µF (X7R) 50V | 0603 | ??? | ??? | ??? |
+| J1 | Link-Beta Connector | ERM8-040-05.0-S-DV-K-TR | 80-pin | [Samtec](https://www.samtec.com) | ??? | ??? |
+| J2 | 40-pin Rotor & Encoder power/data | 2x20 2.54mm shrouded | through-hole | ??? | ??? | ??? |
+| J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | ??? | ??? | ??? |
+| R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | ??? | ??? | ??? |
+| R2 | JTAG TDO Pull-up | 10kΩ (1%) | 0603 | ??? | ??? | ??? |
+| U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | [INA219](https://ti.com) | ??? | ??? |

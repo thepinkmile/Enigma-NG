@@ -54,9 +54,9 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ## Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C4 | Decoupling | 0.1µF X7R 10V | 0402 | ??? | ??? |
-| J1 | Edge-rate connector | Samtec ERM8 | 0.8mm pitch | [???](https://www.samtec.com) | ??? |
-| U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | [6244278](https://uk.rs-online.com) | ??? |
-| U2 | Magnetic encoder | AS5600 | DFN-8 | [AS5600](https://www.ams-osram.com) | ??? |
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| C1-C4 | Decoupling | 0.1µF X7R 10V | 0402 | ??? | ??? | ??? |
+| J1 | Edge-rate connector | Samtec ERM8 | 0.8mm pitch | [???](https://www.samtec.com) | ??? | ??? |
+| U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | [6244278](https://uk.rs-online.com) | ??? | ??? |
+| U2 | Magnetic encoder | AS5600 | DFN-8 | [AS5600](https://www.ams-osram.com) | ??? | ??? |

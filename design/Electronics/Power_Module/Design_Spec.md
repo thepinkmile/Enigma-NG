@@ -135,20 +135,20 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ## Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-6 | **Supercaps (6x)** | 15F / 3.0V | Radial 10mm | [HV1030-3R0156-R](https://www.mouser.co.uk) | [283-HV1030-3R0156-R-ND](https://www.digikey.co.uk) |
-| D1 | **BATT_PRES ESD** | TPD1E10B06 | SOD-923 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
-| F1 | **TCO** | 72°C SMD | ??? | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) |
-| J1 | **BtB Link** | Samtec ERM8 | 40-pin Gold | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
-| J2 | **PoE+ Port** | Wurth 7499111121A | Long-Body THT | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
-| J3 | **Battery Conn** | Molex 43045-0512 | 5-pin Micro-Fit for Smart Battery Link | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
-| Q1-3 | **Ideal FETs** | SISS22DN | PowerPAK 5x6 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
-| R1 | **Ladder R1** | 732kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB7323V](https://www.mouser.co.uk) | [P732KBYCT-ND](https://www.digikey.co.uk) |
-| R2 | **Ladder R2** | 28.7kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB2872V](https://www.mouser.co.uk) | [P28.7KBYCT-ND](https://www.digikey.co.uk) |
-| R3 | **Ladder R3** | 53.6kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB5362V](https://www.mouser.co.uk) | [P53.6KBYCT-ND](https://www.digikey.co.uk) |
-| R4, R5 | **ETH_LEDs** | 330Ω 0.1% Thin-Film | 0603 | ??? | ??? |
-| R6 | **BATT_PRES_N Pull-up** | 10kΩ (0.1%) | 0603 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
-| U1 | **eFuse** | TPS259474L | QFN-20 | [TPS259474LRPWR](https://www.mouser.co.uk) | [296-TPS259474LRPWRCT-ND](https://www.digikey.co.uk) |
-| U2 | **5V Buck** | LM61460-Q1 | VQFN-14 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
-| U3 | **PD Emulator** | TPS25750 | QFN-28 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) |
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| C1-6 | **Supercaps (6x)** | 15F / 3.0V | Radial 10mm | [HV1030-3R0156-R](https://www.mouser.co.uk) | [283-HV1030-3R0156-R-ND](https://www.digikey.co.uk) | ??? |
+| D1 | **BATT_PRES ESD** | TPD1E10B06 | SOD-923 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| F1 | **TCO** | 72°C SMD | ??? | [AC72ABD](https://www.mouser.co.uk) | [AC72ABD-ND](https://www.digikey.co.uk) | ??? |
+| J1 | **BtB Link** | Samtec ERM8 | 40-pin Gold | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| J2 | **PoE+ Port** | Wurth 7499111121A | Long-Body THT | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| J3 | **Battery Conn** | Molex 43045-0512 | 5-pin Micro-Fit for Smart Battery Link | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| Q1-3 | **Ideal FETs** | SISS22DN | PowerPAK 5x6 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| R1 | **Ladder R1** | 732kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB7323V](https://www.mouser.co.uk) | [P732KBYCT-ND](https://www.digikey.co.uk) | ??? |
+| R2 | **Ladder R2** | 28.7kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB2872V](https://www.mouser.co.uk) | [P28.7KBYCT-ND](https://www.digikey.co.uk) | ??? |
+| R3 | **Ladder R3** | 53.6kΩ 0.1% Thin-Film | 0603 | [ERA-3ARB5362V](https://www.mouser.co.uk) | [P53.6KBYCT-ND](https://www.digikey.co.uk) | ??? |
+| R4, R5 | **ETH_LEDs** | 330Ω 0.1% Thin-Film | 0603 | ??? | ??? | ??? |
+| R6 | **BATT_PRES_N Pull-up** | 10kΩ (0.1%) | 0603 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| U1 | **eFuse** | TPS259474L | QFN-20 | [TPS259474LRPWR](https://www.mouser.co.uk) | [296-TPS259474LRPWRCT-ND](https://www.digikey.co.uk) | ??? |
+| U2 | **5V Buck** | LM61460-Q1 | VQFN-14 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |
+| U3 | **PD Emulator** | TPS25750 | QFN-28 | [???](https://www.mouser.co.uk) | [???](https://www.digikey.co.uk) | ??? |

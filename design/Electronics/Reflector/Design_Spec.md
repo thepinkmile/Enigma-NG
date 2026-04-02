@@ -52,10 +52,10 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 
 ## Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| J1 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | ??? | ??? |
-| J2 | Diagnostic Bank | 2x8 ENIG | 2.54mm | ??? | ??? |
-| R1 | JTAG termination | 22Ω | 0603 | ??? | ??? |
-| R2-R3 | Pull-up resistors | 10kΩ | 0603 | ??? | ??? |
-| U1 | CPLD support | (passive routing) | PCB | N/A | N/A |
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| J1 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | ??? | ??? | ??? |
+| J2 | Diagnostic Bank | 2x8 ENIG | 2.54mm | ??? | ??? | ??? |
+| R1 | JTAG termination | 22Ω | 0603 | ??? | ??? | ??? |
+| R2-R3 | Pull-up resistors | 10kΩ | 0603 | ??? | ??? | ??? |
+| U1 | CPLD support | (passive routing) | PCB | N/A | N/A | ??? |

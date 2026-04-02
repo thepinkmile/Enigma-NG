@@ -23,9 +23,9 @@
 
 ## Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| J1 | Input header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? |
-| J2 | Output header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? |
-| J3 | Diagnostic bank | 2x8 ENIG | 2.54mm | ??? | ??? |
-| R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | ??? | ??? |
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| J1 | Input header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? | ??? |
+| J2 | Output header | 20-pin 2x10 shrouded | 2.54mm | ??? | ??? | ??? |
+| J3 | Diagnostic bank | 2x8 ENIG | 2.54mm | ??? | ??? | ??? |
+| R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | ??? | ??? | ??? |
