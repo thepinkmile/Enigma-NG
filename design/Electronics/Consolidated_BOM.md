@@ -98,7 +98,7 @@
 | U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450ELB ~ | **MCP121T-450E/LBCT-ND** ✓ | — (extended) | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. |
 | U1 | TPS25980RPWR | VQFN-24 (RGE) | **595-TPS25980RPWR** (provided) | 296-TPS25980RPWR-ND ~ | — | ⚠️ **VERIFY PART #** — TI product page lists TPS25980 only in VQFN(RGE); full orderable PN may be TPS25980**x**RGER (x=variant digit: 0=no OVLO, 3=3.7V, 7=7.6V). Confirm with TI or Mouser before ordering. |
 | U2A/U2B | LMQ61460ARUMR | WSON-8 2×2 | **595-LMQ61460ARUMR** (provided) | 296-LMQ61460ARUMR-ND ~ | — | ⚠️ Not found on findchips; similar family variant LMQ61460AASRJRR available (296-LMQ61460AASRJRRCT-ND, different WSON variant). Verify RUMR suffix with TI/Mouser before ordering. |
-| U4 | TPS25750DRCR | VQFN-20 | 595-TPS25750DRCR ~ | **296-TPS25750DRCR-ND** (provided) | — | ⚠️ Not found on findchips; TPS25750 family available (TPS25750DRJKR is stocked, different package). Verify DRCR stock with DigiKey. ⚠️ TI marks this as not recommended for new designs. |
+| U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). ⚠️ Package changed from QFN-28 to WQFN-38 — schematic symbol and PCB footprint update required. |
 | U7 | TPS7A8333PDSGR | WSON-12 | 595-TPS7A8333PDSGR ~ | **296-TPS7A8333PDSGR-ND** (provided) | — | Not found on findchips; TPS7A83 family available (TPS7A8300 variants in stock). Verify with DigiKey/Mouser. TI prefix 595-. |
 | U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | — (extended) | DigiKey temporarily out of stock (~6-week lead time). $3.09/1. VQFN-20 per TI. |
 | U10 | TPS23730PWPR | HTSSOP-20 (PWP) | **595-TPS23730PWPR** (provided) | 296-TPS23730PWPR-ND ~ | — | ⚠️ **PACKAGE DISCREPANCY** — TI product page shows TPS23730 in VQFN-45 (RMT 7×5mm). PWP suffix = PowerPAD HTSSOP-20. These cannot be the same; verify correct package variant. WQFN-20 variant is TPS23730RMTR (296-TPS23730RMCT-ND, ~5.6k in stock). |
@@ -111,7 +111,7 @@
 1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
 2. **U10** — Confirm whether TPS23730 in **PWP (HTSSOP-20)** or **RMT (VQFN-45)** or **RMTR (WQFN-20)** is the intended package. The BOM says "WQFN-20" which matches RMTR — update MPN accordingly.
 3. **U1** — Verify full orderable part number for TPS25980. Likely `TPS2598000RGER` (no OVLO) or `TPS2598030RGER` (3.7V OVLO) — the `RPWR` suffix may not be a valid TI orderable variant.
-4. **U4** — TPS25750DRCR is not recommended for new designs by TI. Evaluate replacement.
+4. **U4** — Replaced with TPS25751DREFR (WQFN-38 6×4mm). See DEC-012. ⚠️ Schematic and PCB footprint update required (package change from QFN-28).
 
 ## 10. Suppliers
 
@@ -123,7 +123,7 @@ Reference information for placing orders with key component suppliers.
 | S02 | **Farnell** | Global distributor (secondary UK) | [uk.farnell.com](https://uk.farnell.com) | Same-day dispatch for most stock lines. Good for Samtec, Würth, Bourns, Coilcraft. |
 | S03 | **DigiKey** | Global distributor (USA-based, fast to UK) | [digikey.co.uk](https://www.digikey.co.uk) | Good for ADI (LTC3350), TI (low-MOQ), STMicroelectronics (STUSB4500). |
 | S04 | **Coilcraft** | Transformer / inductor manufacturer | [coilcraft.com](https://www.coilcraft.com) | Order T2 (POE600F-12LD) direct from Coilcraft at coilcraft.com/en-us/. Minimum order 1 unit. Sample requests available. UK-friendly shipping. |
-| S05 | **Texas Instruments** | IC manufacturer (TI store) | [ti.com/store](https://www.ti.com/store) | For TI parts (TPS2372-4, TPS23730, TPS25980, LMQ61460-Q1, LM74700-Q1, TPS25750, TPS7A8333P). Samples available via ti.com. |
+| S05 | **Texas Instruments** | IC manufacturer (TI store) | [ti.com/store](https://www.ti.com/store) | For TI parts (TPS2372-4, TPS23730, TPS25980, LMQ61460-Q1, LM74700-Q1, TPS25751DREFR, TPS7A8333P). Samples available via ti.com. |
 | S06 | **Analog Devices (ADI)** | IC manufacturer | [analog.com](https://www.analog.com) | For LTC3350 supercap manager. Samples available. |
 | S07 | **STMicroelectronics** | IC manufacturer | [st.com](https://www.st.com) | For STUSB4500 USB-C sink controller. Samples and eval kits available. |
 | S08 | **Samtec** | Connector manufacturer | [samtec.com](https://www.samtec.com) | For ERF8/ERM8 80-pin BtB connectors. Order direct or via Farnell/Mouser. Min order typically 3 units. |

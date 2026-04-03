@@ -29,7 +29,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 ### 2. Power & UPS Hub
 
 * **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-28), handles charging, cell balancing, and hold-up switchover.
-* **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43045-0512).
+* **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
   * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
   * Pin 5: BATT_PRES_N (Presence Detect).
@@ -57,7 +57,7 @@ The input filter uses a two-stage common-mode (CM) choke cascade followed by a d
 **Filter Topology (power flow left → right):**
 
 ```text
-VIN_RAW ─┬─[L1: WE-CMBNC CM Choke]─[L2: Laird HF CM Choke]─┬─[L3: 10µH DM]─┬─ VIN_BUS (to eFuse)
+VIN_RAW ─┬─[L1: WE-CMBNC CM Choke]─[L2: WE-CMBNC HF CM Choke]─┬─[L3: 10µH DM]─┬─ VIN_BUS (to eFuse)
           │   (Nanocrystalline)       (High-Freq Ferrite)     │               │
          [C1] 22µF } input-side                              [C4] 22µF }  output-side
          [C2]  1µF }   Pi leg                                [C5]  1µF }    Pi leg
@@ -72,14 +72,14 @@ GND ──────┴──────────────────�
 * Part: **Würth WE-CMBNC**, nanocrystalline core, ≥10A rated, ≥1.5mH CM inductance (e.g. 748441440 or equivalent — verify from Würth REDEXPERT tool; mouser.co.uk search: "WE-CMBNC 10A nanocrystalline").
 * Function: Broadband CM attenuation from ~1kHz to >10MHz. Nanocrystalline core maintains high permeability (µ_r > 50,000) well into the MHz range, providing >60dB CM insertion loss at 150kHz.
 
-**Stage 2 — Secondary HF CMC (L2: Laird CM5022):**
-* Part: **Laird CM5022** (high-frequency ferrite CMC, SMT or THT). ⚠️ Verify exact rating and package from Laird catalog before schematic freeze. Equivalent: Würth WE-SL5 or Murata PLY series HF CMC, ≥10A.
+**Stage 2 — Secondary HF CMC (L2: Würth WE-CMBNC 7448031002):**
+* Part: **Würth WE-CMBNC 7448031002** — same part as L1 (nanocrystalline CMC, THT, ≥10A). Original Laird CM5022 is discontinued (Laird EMC passives absorbed by TE Connectivity 2019). Twin nanocrystalline CMC approach provides broadband CM coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test.
 * Function: Supplementary CM attenuation above ~10MHz where nanocrystalline core permeability falls off. Provides a second CM filter pole to ensure >40dB CM attenuation to 30MHz+.
 
 **Stage 3 — Differential Mode Pi-filter (L3, C1–C6):**
 
 *Component selection:*
-* **L3** — Würth WE-PD `7447789100`: 10µH, 14.5A I_sat, 14.4A I_rms, DCR = 20mΩ, 12.5×12.5×6.0mm shielded molded inductor.
+* **L3** — Bourns `SRP1265A-100M`: 10µH, 15.5A I_sat, 10A I_rms, DCR = 16.5mΩ max, 13.5×12.5×6.2mm shielded molded SMD. ⚠️ Footprint differs from original Würth 7447789100 (12.5×12.5mm); update PCB land pattern.
 * **C1, C4** — 22µF, 50V, X7R, 1210 (Murata GRM32ER71H226KE15L or equiv).
 * **C2, C5** — 1µF, 50V, X7R, 0805 (Murata GRM21BR71H105KA12L or equiv).
 * **C3, C6** — 100nF, 50V, X7R, 0402 (Samsung CL05B104KB5NNNC or equiv).
@@ -104,7 +104,7 @@ GND ──────┴──────────────────�
 ### 5. Protection & Logic
 
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.
-* **Internal Handshake:** TPS25750 PD Emulator provides **5V/5A** "Clean PD" profile to CM5.
+* **Internal Handshake:** TPS25751 PD Emulator (U4) provides **5V/5A** "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
 * **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
@@ -191,7 +191,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 * **Supercap Shadow Zone:** A 32mm × 32mm 'Routing Keep-out' enforced on L1 and L2 directly beneath the Supercap Block.
 * **Purpose:** Only GND_CHASSIS copper and Thermal Matrix vias are permitted here to ensure long-term reliability and inspection access.
-* **PD Emulation:** TPS25750 handles internal **5V/5A** negotiation with CM5 to ensure a "Warning-Free" Linux boot.
+* **PD Emulation:** TPS25751DREFR (U4) handles internal **5V/5A** negotiation with CM5 to ensure a "Warning-Free" Linux boot.
 
 ---
 

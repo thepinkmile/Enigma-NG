@@ -20,7 +20,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |                                                                             |
 |   [  TCO F1  ] <--- 72°C Thermal Cutoff (In Series)                         |
 |                                                                             |
-|   [ eFuse U1 ] <--- TPS259474L + [0603 Thin-Film Ladder]                    |
+|   [ eFuse U1 ] <--- TPS25980 + [0603 Thin-Film Ladder]                    |
 |                                                                             |
 |    ______________________             __________________________            |
 |   |   [C1]  [C2]  [C3]   |           |  [ Amber "Safety Glow" ] |           |
@@ -77,7 +77,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |                                       |    :          :    |                           |
 | [ 5V / 6A BUCK ] <--------------------|----:  5V/GND  :----|--> [ USB-C CLIENT PORT ]  |
 |                                       |    :          :    |    (Power to Pi 5)        |
-| [ TPS25750 PD EMULATOR ] <------------|----:  CC1/2   :    |                           |
+| [ TPS25751 PD EMULATOR ] <------------|----:  CC1/2   :    |                           |
 |                                       |    :          :    |                           |
 | [ TELEMETRY I2C ] <-------------------|----:  I2C/GND :----|--> [ 40-PIN PI HEADER ]   |
 | [ STATUS LEDS  ] <--------------------|----:  GPIO    :----|    (Logic to Pi 5)        |
@@ -113,7 +113,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 |                     |         |                    |                                      |                  |
 | VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _________________        | [ SAMTEC ERM8 ]  |
 |                     |         |         |          |            |                 |       |                  |
-| GND (4 PINS)  ------|-------->| [ LAIRD CHOKE L2 ] |----------->| [U5 LM74700-Q1] |       |                  |
+| GND (4 PINS)  ------|-------->| [ WE-CMBNC L2  ] |----------->| [U5 LM74700-Q1] |       |                  |
 |                     |         |                    |            | (OR-ing Input)  |       |                  |
 |                     |         |                    |            |_________________|       |                  |
 | CC1 / CC2     ------|--[PD]-->| [U4 STUSB4500 ] ---|-I2C--------------------------------->| PIN 32 (I2C SDA) |
@@ -143,7 +143,7 @@ _________________      ____________________         ___________________        _
                                                                     |                              |                                          (4× Tecate 22F/2.7V, 2S2P)
                                                                     |                              |                                          (11F / 5.4V on 5V_MAIN)
                                                                     |                              |
-                                                                    |                              +---------------------------------------------> [U4 TPS25750 PD Emu] ---> [ CM5 5V/5A ]
+                                                                    |                              +---------------------------------------------> [U4 TPS25751 PD Emu] ---> [ CM5 5V/5A ]
                                                                     |                              |
                                                                     |                              +---------------------------------------------> [U7 TPS7A8333P LDO] --> [ +3V3_ENIG ]
                                                                     |                              |
@@ -161,10 +161,10 @@ _________________      ____________________         ___________________        _
 |           |               |        | [ GOLD PINS 1-10 ] ---|------->| [ SYSTEM GND ]    |
 | [U2A/U2B: 5V BUCK×2 (12A)] -----|--------| [ GOLD PINS 11-18 ] --|------->| [ +5V_MAIN ]      |
 |           |               |        |                       |        |                   |
-| [U7: TPS7A8333P 3.3V LDO] ----|--------| [ GOLD PINS 19-22 ] --|------->| [ +3V3_ENIG ]     |
+| [U7: TPS7A8333P 3.3V LDO] ----|--------| [ GOLD PINS 39-44 ] --|------->| [ +3V3_ENIG ]     |
 |                           |        |                       |        |                   |
-| [J2: RJ45 MAGJACK] <------|--------| [ GOLD PINS 23-24 ] <-|--------| [ +3V3_SYSTEM ]   |
-| (PoE+ Logic)              |        |                       |        | (Input from CM5)  |
+| [J2: RJ45 LED signals] <--|--------| [ GOLD PINS 25-26 ] <-|--------| [ ETH_LED_L/A ]   |
+| (from CM5 GBE PHY)        |        |                       |        | (CM5 GBE output)  |
 |                           |        |                       |        |                   |
 | [U6: SUPERVISOR] ---------|--------| [ GOLD PIN  26 ] -----|------->| [ PWR_GD ]        |
 |                           |        |                       |        | (Handshake)       |
@@ -177,18 +177,17 @@ _________________      ____________________         ___________________        _
 EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLER LINK (BTB)
  _____________________           ___________________________          _____________________________
 |                     |         |                           |        |                             |
-| [RJ45 PoE+] (48V) --|--[PD]-->| [WE-CMBNC]                |        |    [ SAMTEC ERM8 GOLD ]     |
-|                     |         |    |                      |        |                             |
-| [USB-C] (15V PD) ---|-------->| [CM5022 CHOKE]            |        | PINS 1-20: Gb Ethernet      |
-|                     |         |    |                      |        | PINS 21-24: 3V3_SYSTEM      |
-| [BATT] (14.4V) -----|-------->| [F1: 72°C TCO]            |        | PIN  25: ETH_LED_LINK       |
-|_____________________|         |    |                      |        | PIN  26: ETH_LED_ACT        |
-                                | [U1: TPS25980 eFuse]      |        | PINS 27-30: GND             |
-       LADDER RESISTORS:        |    |                      |        | PINS 31-34: Status LEDs     |
-       R1: 732k (UVLO_HI) ---------|-->|                      |        | PINS 35-38: I2C Telemetry   |
-       R2: 28.7k (UVLO_LO) --------|-->|                      |        | PINS 39-44: 3V3_ENIG        |
-       R3: 53.6k (GND) ---------|--->|                      |        | PIN  45: BATT_PRES_N        |
-                                |    |                      |        | PINS 49-80: 5V_SYSTEM / GND |
+| [RJ45 PoE+] (48V) --|--[PD]-->| [WE-CMBNC]                |        | PINS 1-20: Gb Ethernet      |
+|                     |         |    |                      |        | PINS 21-22: 5V_MAIN (+suppl)|
+| [USB-C] (15V PD) ---|-------->| [WE-CMBNC L2]             |        | PINS 23-24: GND (+suppl)    |
+|                     |         |    |                      |        | PIN  25: ETH_LED_LINK       |
+| [BATT] (14.4V) -----|-------->| [F1: 72°C TCO]            |        | PIN  26: ETH_LED_ACT        |
+|_____________________|         |    |                      |        | PINS 27-30: GND             |
+                                | [U1: TPS25980 eFuse]      |        | PINS 31-34: Status LEDs     |
+       LADDER RESISTORS:        |    |                      |        | PINS 35-38: I2C Telemetry   |
+       R1: 732k (UVLO_HI) ---------|-->|                      |        | PINS 39-44: 3V3_ENIG        |
+       R2: 28.7k (UVLO_LO) --------|-->|                      |        | PIN  45: BATT_PRES_N        |
+       R3: 53.6k (GND) ---------|--->|                      |        | PINS 49-80: 5V_MAIN / GND   |
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
                                 | [5V_MAIN]-----------------|-------[U2A/U2B BUCK]--|
@@ -230,9 +229,13 @@ SIDE VIEW (CROSS-SECTION)
 | [ CM5 GBE PHY ]           |        |                           |           | [ RJ45 MAGJACK ]    |
 |    |                      |        |                           |           | (WURTH 7499111)     |
 | [ LED_LINK PIN ] --(L)----|------->| [ PIN 25: ETH_LED_LINK  ] |---->(R)-->| [ LED 1 (GREEN) ]   |
-| [ LED_ACT  PIN ] --(A)----|------->| [ PIN 27: ETH_LED_ACT   ] |---->(R)-->| [ LED 2 (YELLOW)]   |
+| [ LED_ACT  PIN ] --(A)----|------->| [ PIN 26: ETH_LED_ACT   ] |---->(R)-->| [ LED 2 (YELLOW)]   |
 |                           |        |                           |           |                     |
-| [ 3V3_SYSTEM ] -----------|------->| [ PIN 21: 3V3_SYS_RAIL  ] |---------->| [ LED ANODES ]      |
-|___________________________|        |___________________________|           |_____________________|
+|                           |        |                           |           | 3V3_ENIG (local) -> |
+|___________________________|        |___________________________|           | [ LED ANODES ]      |
                                                                       (R) = 330Ω Resistors
+```
+
+> **Note:** 3V3_ENIG powers RJ45 LED anodes locally on the Power Module.
+> The 3V3_SYSTEM rail is **not** routed on the BtB connector (see DEC-001).
 ```

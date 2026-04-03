@@ -267,3 +267,109 @@ Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-fil
 
 **Impact:**  
 - ⚠️ **Package footprint change**: SRP1265A-100M is 13.5×12.5×6.2mm vs 7447789100's 12.5×12.5×6.0mm. PCB land pattern for L3 must use the Bourns 13.5×12.5mm footprint. Clearance to adjacent components should be checked during layout.
+
+---
+
+## INC Review History
+
+This section records all INC (inconsistency) items tracked during the design process. Each item was identified during design review, verified, and resolved. All items are closed.
+
+| INC | Area | Description | Original Value | Corrected Value | Status |
+|-----|------|-------------|----------------|-----------------|--------|
+| INC-01 | Power Module eFuse | UVLO/OVLO thresholds inconsistent between README and Design_Spec | README: 12V UVLO / 16V OVP | 11.0V UVLO / 16.9V OVLO (per Design_Spec §5) | ✅ Resolved — README corrected |
+| INC-02 | Power Module eFuse | eFuse current limit insufficient for 75W USB-C path. TPS259474L max 5.5A with no headroom at 5.0A worst case | TPS259474L (5.5A ILIM) | TPS25980 (7A ILIM, 16.9V OVLO, VQFN-24). See DEC-005 | ✅ Resolved — DEC-005 |
+| INC-03 | Power Module 5V Buck | Single buck insufficient for CM5 25W + other loads | LM61460-Q1 (6A) | Dual LMQ61460-Q1 interleaved (12A total). See DEC-007 | ✅ Resolved — DEC-007 |
+| INC-04 | Power Module PD Emulator | TPS25750 PDO listed as "5V/6A" — not a valid USB-C PD current at 5V | "5V/6A" (invalid) | 5V/5A (25W maximum at 5V per USB-C PD spec). See DEC-008 | ✅ Resolved — DEC-008 |
+| INC-05 | Link-Alpha BtB Connector | 3V3_SYSTEM routed from CM5 to Power Module on pins 21–24 for RJ45 LED anodes — cross-domain dependency | 3V3_SYSTEM on pins 21–24 (input from CM5) | Removed. 3V3_ENIG generated locally on Power Module. Pins 21–22 → 5V_MAIN; pins 23–24 → GND. See DEC-001 | ✅ Resolved — DEC-001 |
+| INC-06 | Power Module PoE | Ag5300 PoE module only supports 802.3at (25.5W PD) — insufficient for full system load ~42W | Ag5300 (802.3at, 25.5W) | Discrete: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD (802.3bt Type 4, 51W). See DEC-002 | ✅ Resolved — DEC-002 |
+| INC-07 | Power Module / Controller | "3.3V/5A Rotors Buck" placed on Controller Board in README; contradicts central power generation principle | README: Rotor Buck on Controller Board | All rails on Power Module. Rotor stack uses 3V3_ENIG. See DEC-011 | ✅ Resolved — DEC-011 |
+| INC-08 | Power Module I2C | I2C pull-ups (SDA/SCL 4.7kΩ) tied to 3V3_SYSTEM — invalid once 3V3_SYSTEM removed from Power Module | Pull-ups to 3V3_SYSTEM | Pull-ups moved to 3V3_ENIG | ✅ Resolved |
+| INC-09 | Power Module Design_Spec | Internal conflict: §1 stated "16.5V OVP"; §5 stated "17V OVLO" — two different values in same document | §1: 16.5V OVP | 16.9V OVLO (consistent with TPS25980 fixed OVLO variant; §1 corrected) | ✅ Resolved — auto-resolved (16.5V reference not found in any current file) |
+| INC-10 | Power Module BOM | Reference designator collision: R1–R3 used for both eFuse ladder resistors AND I2C/reset pull-ups in the same document | R1–R3 dual-use | eFuse ladder: R1/R2/R3. I2C pull-ups: R7/R8. Reset pull-up: R9 | ✅ Resolved — designators renamed |
+| INC-11 | Power Module Battery | BATT_PRES_N pull-up R6 tied to 3V3_SYSTEM — invalid once 3V3_SYSTEM removed | R6 pull-up to 3V3_SYSTEM | R6 pull-up moved to 3V3_ENIG | ✅ Resolved |
+| INC-12 | Link-Alpha BtB Connector | Power cluster labelled "6A Delivery Cluster" — outdated after dual 12A buck upgrade and pin reallocation | "6A Delivery Cluster" (16 pins) | 9A delivery (18 pins × 0.5A/pin after reallocation). Label updated | ✅ Resolved |
+| INC-13 | Power Module USB-C | STUSB4500 specified to negotiate 15V/3A (45W) — only 56.7% eFuse utilisation violation at worst-case 42.5W load | STUSB4500: 15V/3A (45W) | STUSB4500: 15V/5A (75W). See DEC-006 | ✅ Resolved — DEC-006 |
+| INC-14 | Controller Diagnostic Banks | Diagnostic Bank-Alpha and Bank-Beta have no ESD protection; exposed ENIG pads treated as external interfaces | No ESD on diagnostic banks | Deferred to post-prototype. Accept risk for prototype stage. See DEC-010 | ✅ Resolved — DEC-010 (deferred) |
+| INC-15 | Controller/Power Module | Internal conflict in Board_Layout.md: bullet list said I2C=pins 35–40, 3V3_ENIG=pins 41–44; ASCII diagram said I2C=35–38, 3V3_ENIG=39–44 | Bullets: I2C 35–40; 3V3_ENIG 41–44 | ASCII diagram authoritative: I2C 35–38, 3V3_ENIG 39–44 (6 pins at 51.4% utilisation) | ✅ Resolved — ASCII diagram is authoritative |
+| INC-16 | Board_Layout.md ETH LED diagram | ETH LED diagram showed PIN 27 = ETH_LED_ACT; main pin map shows pins 27–30 = GND Isolation Moat | Diagram: PIN 27 = ETH_LED_ACT | Correct: PIN 26 = ETH_LED_ACT; PIN 27 = GND Moat | ✅ Resolved |
+| INC-17 | Power Module Battery | eFuse OVLO margin: with 16.9V OVLO and 4.2V/cell BMS (16.8V max), only 0.1V margin — risk of nuisance trips | BMS max 4.2V/cell (16.8V); OVLO 16.9V; margin 0.1V | BMS must use 4.1V/cell max (16.4V total for 4S), giving 0.5V margin. Added to Design_Spec §2. See DEC-005 | ✅ Resolved |
+| INC-18 | Power Module Design_Spec | Battery BMS charge voltage not specified in design spec — required to protect against OVLO nuisance trips | No BMS charge spec | Added: "BMS max charge voltage = 4.1V/cell (16.4V for 4S)" to Power Module §2 Battery Interface | ✅ Resolved |
+| INC-19 | Power Module PoE | Ag5300/Ag53000 is 802.3at only (25.5W PD). No 802.3bt Type 4 PCB module found. Architecture change required for 51W PoE | Ag5300/Ag53000 (802.3at SIL module) | Discrete two-stage: TPS2372-4 (PD) + TPS23730 + POE600F-12LD (ACF transformer). See DEC-002 | ✅ Resolved — DEC-002 |
+| INC-20 | Power Module Supercap | Supercap charge path had no current limiting — would cause excessive inrush and violate 75% utilisation rule under PoE | Supercap directly on 15V bus | LTC3350 soft-charge via RICHARGE resistor; 0.5A limit under PoE. See DEC-004 | ✅ Resolved — DEC-004 |
+| INC-21 | Power Module J2 | Component selection locked: RJ45 MagJack | — | Würth 7499111121A (SMT, shielded, 2-LED, 10/100/1000) | ✅ Locked |
+| INC-22 | Power Module ESD | Component selection locked: Ethernet ESD arrays | — | 2× TI TPD4E1U06DBVR (0.8pF, ±15kV, −40°C to +125°C) per port | ✅ Locked |
+| INC-23 | Power Module Bob Smith | Component selection locked: Bob Smith termination network | — | 4× 75Ω 0402 ±1% resistors + 1× 10nF Y1-class capacitor to GND_CHASSIS | ✅ Locked |
+
+---
+
+## Board Connector Inventory
+
+The following table lists all physical connectors across every board in the Enigma-NG system. This list should be manually verified against the original intended design to confirm no specification changes have inadvertently altered connector placement, orientation, or mating requirements.
+
+### Power Module
+
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
+|-----|-------------|---------------|-----|-----------|------------|-------|
+| J1 | Link-Alpha BtB — 80-pin socket to Controller Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Male header (ERM8). Mating female on Controller (ERF8). Gold-plated, 0.5A/pin |
+| J2 | RJ45 MagJack with integrated magnetics | Würth 7499111121A | 7499111121A | 710-7499111121A | 732-2174-ND | SMT, shielded, 2 integrated LEDs (green/yellow), 10/100/1000 PoE compatible |
+| J3 | Battery connector — 5-pin Micro-Fit 3.0 THT vertical | Molex 43650-0519 | 43650-0519 | 538-43650-0519 | WM7843-ND ⚠️ verify | 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. ⚠️ MPN corrected (43045-0512 does not exist) |
+
+### Controller Board
+
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
+|-----|-------------|---------------|-----|-----------|------------|-------|
+| J1 | Link-Alpha BtB — 80-pin socket to Power Module | Samtec ERF8-040-05.0-S-DV-K-TR | ERF8-040 | 200-ERF8040050SDVKTR | SAM8621-ND ⚠️ verify | Female socket (ERF8). Mating male on Power Module (ERM8) |
+| J2 | Link-Beta BtB — 80-pin header to Stator Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Male header. Encryption/JTAG exit. Provides JTAG, Reset, 3V3_ENIG to Stator |
+| J3 | USB 3.0 — Dual-stacked Type-A port | Molex 48406-0003 | 48406-0003 | 538-0484060003 | WM1394-ND | Dual-stack Type-A, 5.0mm protrusion through chassis |
+| J4 | HDMI — Full-size Type-A | TE Connectivity 2007435-1 | 2007435-1 | 571-2007435-1 | A125057-ND | Full-size HDMI Type-A, 5.0mm protrusion through chassis |
+| — | Diagnostic Bank-Alpha | 2×8 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, placed behind BtB header. Not a separate connector; probed directly with logic analyser clips |
+| — | Diagnostic Bank-Beta | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, L1 layer. Monitors 12-bit Sniffer, JTAG, SYS_RESET_N |
+| — | JTAG Daughterboard link (to FT232H board) | 1×6 power/USB header + 1×10 JTAG header | — | — | — | 2.54mm ENIG headers. 1:1 signal-to-ground ratio on JTAG header. USB 2.0 from CM5 |
+
+### Stator Board
+
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
+|-----|-------------|---------------|-----|-----------|------------|-------|
+| J1 | Link-Beta BtB — 80-pin socket from Controller Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Receives JTAG, Reset, 3V3_ENIG from Controller |
+| J2 | Rotor/Encoder power and data — 40-pin shrouded box header | Molex 22-23-2401 (2×20, 2.54mm) | 22-23-2401 | 538-22-23-2401 | WM2921-ND | THT, shrouded, keyed. Power (3V3_ENIG/GND), ENC_DATA, JTAG to each encoder slot |
+| J3 | Reflector/Extension — 20-pin shrouded box header | Molex 22-23-2201 (2×10, 2.54mm) | 22-23-2201 | 538-22-23-2201 | WM2911-ND | THT, shrouded. Power (3V3_ENIG/GND), ENC_DATA, TDO_Return |
+| — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|RST\|GND |
+
+### Rotor Board (×30)
+
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
+|-----|-------------|---------------|-----|-----------|------------|-------|
+| J1 | Stator edge-rate connector — 20-pin | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND | 0.8mm pitch edge-rate. ENIG pads for low-insertion-force hot-swap mating. Rated for high mating cycles |
+
+### Encoder Board
+
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
+|-----|-------------|---------------|-----|-----------|------------|-------|
+| J1 | Plugboard jack sockets | 3.5mm / 4mm through-hole jacks | ??? | ??? | ??? | ⚠️ Part not yet selected — physical plug/jack type TBD |
+| J2 | Data link to Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J2 |
+| J3 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
+
+### Reflector Board
+
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
+|-----|-------------|---------------|-----|-----------|------------|-------|
+| J1 | Interconnect from Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J3 |
+| J2 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
+
+### Extension Board
+
+| Ref | Description | Part / Series | Notes |
+|-----|-------------|---------------|-------|
+| J1 | Interconnect from Stator | 20-pin 2.54mm shrouded | Mirrors Reflector/Extension slot on Stator J3 |
+| J2 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | Same pattern as Reflector J2 |
+
+### JTAG Daughterboard (FT232H)
+
+| Ref | Description | Part / Series | Notes |
+|-----|-------------|---------------|-------|
+| J1 | USB 2.0 link from CM5 | 1×6 2.54mm header (power + USB) | Connects to Controller Board FT232H power/USB header |
+| J2 | JTAG chain output | 1×10 2.54mm shielded header | Drives HID Encoder CPLDs. 1:1 GND interleave on all JTAG signals |
+
+---
+
+> **Note for manual review:** Items marked `???` or `⚠️ verify` require confirmation before the BOM is finalised for procurement. In particular: Encoder J1 plug/jack type has not been selected; Controller J1 (ERF8) DigiKey PN SAM8621-ND should be confirmed; Power Module J3 (43650-0519) DigiKey WM7843-ND should be verified at digikey.co.uk.

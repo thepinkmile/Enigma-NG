@@ -82,7 +82,7 @@ A single-point `GND_CHASSIS` bond is established between the OR-ing network outp
   → TPS25980 eFuse (7A ILIM, 11.0V UVLO, 16.9V OVLO fixed variant, VQFN 4×4mm)
   → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 4× Tecate TPLH-2R7/22WR12X31 supercaps (11F/5.4V, 2S2P)]
   → 5V_MAIN bus
-  → [CM5 via TPS25750 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS7A8333P 3V3 LDO]
+  → [CM5 via TPS25751 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS7A8333P 3V3 LDO]
   → 3V3_ENIG (all CPLDs + USB-JTAG)
 ```
 
@@ -258,7 +258,7 @@ The Power Module implements a two-stage common-mode and differential filter at t
 | Stage | Component | Type | Function |
 |---|---|---|---|
 | Primary | Würth Elektronik WE-CMBNC Nanocrystalline CMC | Common-mode choke | Broadband (1kHz–1GHz) common-mode noise attenuation |
-| Secondary | Laird CM5022 | High-frequency differential choke | Narrowband differential noise attenuation above 10MHz |
+| Secondary | Würth WE-CMBNC 7448031002 | High-frequency nanocrystalline CMC (replaces discontinued Laird CM5022) | Broadband differential/common-mode noise attenuation 1kHz–30MHz |
 | Pi-filter | Moulded inductors + 50V X7R ceramic capacitors | LC Pi filter | Differential noise attenuation across Buck switching band |
 | Y-capacitors | X7R ceramics, 50V, to GND_CHASSIS | Capacitive shunt to chassis | Common-mode current path to chassis; reduces conducted DM→CM conversion |
 
@@ -402,7 +402,7 @@ Any replacement CPLD must be verified for:
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
 | OA-05 | Thermal simulation of BtB connector zone to verify 0.6A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
-| OA-06 | Verify TPS25750 CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W). | Hardware Designer | High |
+| OA-06 | Verify TPS25751DREFR CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W). | Hardware Designer | High |
 | OA-07 | Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md. | Hardware Designer | Medium |
 | ~~OA-08~~ | ~~Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** — Superseded by selection of Coilcraft POE600F-12LD (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, catalogue stock). No custom winding required. |
 

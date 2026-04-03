@@ -102,7 +102,7 @@ Each regulator also uses a built-in feature called **Dual Random Spread Spectrum
 
 Before any switching occurs, the raw input power passes through a two-stage filter at the board entry point:
 - A **nanocrystalline common-mode choke** (wideband, from Würth Elektronik) blocks high-frequency noise arriving from the source.
-- A **high-frequency differential choke** (Laird CM5022) handles the narrower-band differential noise.
+- A **high-frequency nanocrystalline CMC** (Würth WE-CMBNC 7448031002, same as L1) handles the narrower-band differential noise. The original Laird CM5022 was discontinued when Laird's EMC passives division was absorbed by TE Connectivity in 2019.
 - Pi-filter sections (inductors + capacitors) on each power path provide additional attenuation.
 
 Together, these three techniques — phase interleaving, spread spectrum, and input filtering — are designed to comfortably meet EN 55032 Class B conducted and radiated emission limits under CE/UKCA certification.

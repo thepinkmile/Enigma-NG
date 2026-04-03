@@ -36,7 +36,7 @@
 
 * [ ] **Handshake:** Connect Pi 5 via Shrouded ENIG Header and USB-C Client port.
 * [ ] **PD Check:** Verify 5V/5A negotiation via `vcgencmd get_throttled`.
-* [ ] **Telemetry:** Verify I2C communication with TPS25750 Emulator.
+* [ ] **Telemetry:** Verify I2C communication with TPS25751 PD Emulator.
 
 ## 6. V-Score & Coupon Inspection
 
