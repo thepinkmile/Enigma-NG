@@ -11,11 +11,102 @@
 * **Pins 23-24:** GND additional return path
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
 * **Pins 27-30:** GND Isolation Moat
-* **Pins 31-34:** Status LEDs (STATUS_AMBER / STATUS_GREEN) + PWR_GD
+* **Pins 31-34:** Status LEDs (STATUS_AMBER / STATUS_GREEN / STATUS_RED) + PWR_GD
 * **Pins 35-38:** I2C-1 Telemetry (SDA/SCL/GND/GND — to PD/eFuse)
 * **Pins 39-44:** 3V3_ENIG (Input from Power Module LDO — 6 pins, 3.0A capacity)
-* **Pin 45:** BATT_PRES_N (Battery Presence Detection - Active Low GPIO 23)
-* **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — combined with pins 21-22; 4-via Thermal Clusters)
+* **Pin 45:** BATT_PRES_N (Battery Presence Detection — Active Low, CM5 GPIO 23)
+* **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS7A8333P EN pin on Power Module)
+* **Pins 47-48:** SPARE (reserved for future use)
+* **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — interleaved; combined with pins 21-22; 4-via Thermal Clusters)
+
+#### Full 80-Pin Map
+
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | GND | — | GbE shield return |
+| 2 | MDI0+ | Bidir | GbE Pair A positive (100Ω diff) |
+| 3 | MDI0− | Bidir | GbE Pair A negative |
+| 4 | GND | — | GbE inter-pair shield |
+| 5 | MDI1+ | Bidir | GbE Pair B positive (100Ω diff) |
+| 6 | MDI1− | Bidir | GbE Pair B negative |
+| 7 | GND | — | GbE inter-pair shield |
+| 8 | MDI2+ | Bidir | GbE Pair C positive (100Ω diff) |
+| 9 | MDI2− | Bidir | GbE Pair C negative |
+| 10 | GND | — | GbE inter-pair shield |
+| 11 | MDI3+ | Bidir | GbE Pair D positive (100Ω diff) |
+| 12 | MDI3− | Bidir | GbE Pair D negative |
+| 13 | GND | — | GbE trailing shield |
+| 14 | GND | — | GbE extra return |
+| 15 | GND | — | GbE extra return |
+| 16 | GND | — | GbE extra return |
+| 17 | GND | — | GbE extra return |
+| 18 | GND | — | GbE extra return |
+| 19 | GND | — | GbE extra return |
+| 20 | GND | — | GbE extra return |
+| 21 | 5V_MAIN | PM → CTRL | Supplemental power; 2oz trace; 0.5A/pin |
+| 22 | 5V_MAIN | PM → CTRL | Supplemental power; 2oz trace; 0.5A/pin |
+| 23 | GND | — | Supplemental return |
+| 24 | GND | — | Supplemental return |
+| 25 | ETH_LED_LINK | PM → CTRL | Active-Low ETH link status LED |
+| 26 | ETH_LED_ACT | PM → CTRL | Active-Low ETH activity LED |
+| 27 | GND | — | Isolation moat |
+| 28 | GND | — | Isolation moat |
+| 29 | GND | — | Isolation moat |
+| 30 | GND | — | Isolation moat |
+| 31 | STATUS_AMBER | CTRL → PM | Amber LED control (CM5 GPIO 5) |
+| 32 | STATUS_GREEN | CTRL → PM | Green LED control (CM5 GPIO 6) |
+| 33 | STATUS_RED | CTRL → PM | Red LED control (CM5 GPIO 7) |
+| 34 | PWR_GD | PM → CTRL | Power-good signal from MCP121T-450E |
+| 35 | I2C1_SDA | Bidir | I2C Telemetry bus data (CM5 GPIO 2; 4.7kΩ pull-up on PM) |
+| 36 | I2C1_SCL | Bidir | I2C Telemetry bus clock (CM5 GPIO 3; 4.7kΩ pull-up on PM) |
+| 37 | GND | — | I2C shield return |
+| 38 | GND | — | I2C shield return |
+| 39 | 3V3_ENIG | PM → CTRL | Logic rail from TPS7A8333P LDO; 0.5A/pin |
+| 40 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
+| 41 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
+| 42 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
+| 43 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
+| 44 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin; combined 6 pins = 3.0A |
+| 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
+| 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS7A8333P EN |
+| 47 | SPARE | — | Reserved for future use |
+| 48 | SPARE | — | Reserved for future use |
+| 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
+| 50 | GND | — | Interleaved return |
+| 51 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 52 | GND | — | Interleaved return |
+| 53 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 54 | GND | — | Interleaved return |
+| 55 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 56 | GND | — | Interleaved return |
+| 57 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 58 | GND | — | Interleaved return |
+| 59 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 60 | GND | — | Interleaved return |
+| 61 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 62 | GND | — | Interleaved return |
+| 63 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 64 | GND | — | Interleaved return |
+| 65 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 66 | GND | — | Interleaved return |
+| 67 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 68 | GND | — | Interleaved return |
+| 69 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 70 | GND | — | Interleaved return |
+| 71 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 72 | GND | — | Interleaved return |
+| 73 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 74 | GND | — | Interleaved return |
+| 75 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 76 | GND | — | Interleaved return |
+| 77 | 5V_MAIN | PM → CTRL | Interleaved power |
+| 78 | GND | — | Interleaved return |
+| 79 | 5V_MAIN | PM → CTRL | Interleaved power; last 5V_MAIN pin |
+| 80 | GND | — | Interleaved return; last pin |
+
+**5V_MAIN pin count:** Pins 21–22 (2) + Pins 49, 51, 53…79 (16 odd pins) = **18 pins × 0.5A = 9.0A total capacity** ✓
+**3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS7A8333P 3A max output)
+**ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
 
 ```text
        LINK-ALPHA (80-PIN SAMTEC)           SIGNAL TYPE          FUNCTION
@@ -39,7 +130,7 @@ _______________________________________    _____________    ____________________
                                            (GPIO OUT)       (To Power Module LEDs)
 
 [ PIN 34       ] ------------------------> [ 3.3V LOGIC] -> [ PWR_GD                     ]
-                                           (GPIO OUT)       (From Power Module Regulator)
+                                           (GPIO IN)        (From Power Module MCP121T)
 
 [ PINS 35 - 38 ] ------------------------> [ I2C BUS   ] -> [ TELEMETRY (SDA/SCL)        ]
                                            (SHIELDED)       (To PD Emulator/eFuse)
@@ -50,8 +141,13 @@ _______________________________________    _____________    ____________________
 [ PIN  45      ] ------------------------> [ 3.3V LOGIC] -> [ BATT_PRES_N                ]
                                            (GPIO IN)        (From Power Module Batt)
 
+[ PIN  46      ] ------------------------> [ 3.3V LOGIC] -> [ ROTOR_EN                   ]
+                                           (GPIO OUT)       (CM5 GPIO 16 → TPS7A8333P EN)
+
+[ PINS 47 - 48 ] ------------------------> [ SPARE     ] -> [ RESERVED                   ]
+
 [ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (9A DELIVERY)      ]
- (4-Via Thermal Clusters)                  (BULK DC)        (To CM5 VCC_IN; incl. pins 21-22)
+ (16× 5V + 16× GND interleaved)           (BULK DC)        (To CM5 VCC_IN; incl. pins 21-22)
 ```
 
 ### DIAGNOSTIC BANK-ALPHA (Top-Right)

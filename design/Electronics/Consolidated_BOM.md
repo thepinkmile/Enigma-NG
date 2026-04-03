@@ -14,11 +14,14 @@
 * **10uF Bulk:** Murata GRM188R61C106MA73D (0603).
 * **10k Pull-ups:** Panasonic ERJ-3EKF1002V (0603).
 
-## 3. Logic Passives  (0603 0.1% Thin-Film)
+## 3. Logic Passives  (0603 0.1% Thin-Film unless otherwise noted)
 
 * **4.7kΩ:** 10 units (I2C-1 Telemetry Bus).
-* **10kΩ:** 10 units (Reset & Battery Presence).
+* **10kΩ:** 10 units (Reset, Battery Presence & ROTOR_EN pull-up to 5V_MAIN).
 * **22Ω:** 10 units (USB 2.0 / JTAG Damping).
+* **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
+* **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
+* **10mΩ / 5A (2512 Kelvin):** 5 units (LTC3350 RSENSE — charge path current sense, R12; Bourns CSS2H-2512R-L100ELF or equiv.).
 
 ## 4. High-Speed Interconnects
 
@@ -57,13 +60,15 @@
 | Ref | Component | Part Number | Value / Notes | Supplier | Supplier Part # | Unit Price (1-off) | Unit Price (volume) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | U9 | PoE PD Interface (Type 4) | TPS2372-4RGWR | TI QFN-16; 802.3bt Type 4, external hotswap, up to 90W | Mouser | 595-TPS2372-4RGWR | ~£3.50 | ~£2.00 |
-| U10 | PoE ACF DC-DC Controller | TPS23730PWPR | TI WQFN-20; ACF topology, R_VFB set for 12V output | Mouser | 595-TPS23730PWPR | ~£3.50 | ~£2.00 |
+| U10 | PoE ACF DC-DC Controller | TPS23730PWPR | TI WQFN-20; ACF topology; PSR mode; 12V output set by POE600F-12LD turns ratio; VS pin to aux winding | Mouser | 595-TPS23730PWPR | ~£3.50 | ~£2.00 |
 | T2 | PoE ACF Isolation Transformer | **Coilcraft POE600F-12LD** | 60W; 12V out; 36–72V in; 200kHz; ACF topology; ≥1500Vrms; SMT; RoHS | Coilcraft Direct | POE600F-12LD | **£3.54** | **~£1.86** |
+| R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 0.1% Thin-Film | 121kΩ E96; IMPS = VIMPS/RMPS = 1.205V/121kΩ = 9.96mA (Type 4 MPS auto-stretch) | Mouser | 667-ERJ-3EKF1213V | ~£0.10 | ~£0.03 |
 
 **Notes:**
 - T2 is an **off-the-shelf catalogue part** — order direct from [coilcraft.com](https://www.coilcraft.com). 668 units confirmed in stock (Coilcraft Direct as of 2026-04-03).
-- TPS23730 feedback resistors R_VFB must be calculated and verified against TI TPS23730 datasheet for 12V output regulation. Verify against Coilcraft POE600F-12LD application notes for operating point compatibility (turns ratio, duty cycle, magnetising inductance).
-- OR-ing priority: TPS2372-4 `/PG` signal drives LM74700-Q1 enable on the USB-C path to enforce PoE source priority (PoE 12V < USB-C 15V passive OR-ing would otherwise prefer USB-C).
+- TPS23730 operates in **PSR (Primary-Side Regulation) mode** using the auxiliary winding of the POE600F-12LD. No external TL431 or optocoupler required. ⚠️ Confirm PSR vs SSR mode from the Coilcraft POE600F-12LD application note before schematic freeze.
+- TPS2372-4 uses **Autoclass** for automatic 4-event IEEE 802.3bt Type 4 classification; no external RCLASS resistor required. R13 (RMPS) programs MPS pulse current only.
+- OR-ing priority: TPS2372-4 `/PG` signal drives LM74700-Q1 enable on the USB-C path to enforce PoE source priority.
 
 ## 9. Suppliers
 
