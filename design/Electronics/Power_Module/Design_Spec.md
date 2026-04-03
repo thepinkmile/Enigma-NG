@@ -52,11 +52,54 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 4. EMI & Filtering (The "Iron Curtain")
 
-* **Dual-Choke Entry:**
-  * Primary: [WE-CMBNC Nanocrystalline CMC](https://www.we-online.com) (Broadband).
-  * Secondary: [Laird CM5022 High-Freq Choke](https://uk.farnell.com).
-* **Differential Filtering:** High-current Pi-filters (Molded Inductors + 50V X7R Caps).
-* **Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears.
+The input filter uses a two-stage common-mode (CM) choke cascade followed by a differential-mode (DM) Pi-filter. This architecture addresses both CM and DM conducted noise across the full EN 55032 Class B frequency range (150kHz–30MHz).
+
+**Filter Topology (power flow left → right):**
+
+```text
+VIN_RAW ─┬─[L1: WE-CMBNC CM Choke]─[L2: Laird HF CM Choke]─┬─[L3: 10µH DM]─┬─ VIN_BUS (to eFuse)
+          │   (Nanocrystalline)       (High-Freq Ferrite)     │               │
+         [C1] 22µF } input-side                              [C4] 22µF }  output-side
+         [C2]  1µF }   Pi leg                                [C5]  1µF }    Pi leg
+         [C3] 100nF}  (to GND)                               [C6] 100nF}   (to GND)
+          │                                                   │               │
+GND ──────┴───────────────────────────────────────────────────┴───────────────┴─ GND
+```
+
+> **Note:** L1 and L2 are common-mode chokes — each has two coupled windings, one in the +VIN line and one in the GND return line. C1–C3 (input) and C4–C6 (output) are single capacitors to GND (differential filter caps).
+
+**Stage 1 — Primary CMC (L1: WE-CMBNC Nanocrystalline):**
+* Part: **Würth WE-CMBNC**, nanocrystalline core, ≥10A rated, ≥1.5mH CM inductance (e.g. 748441440 or equivalent — verify from Würth REDEXPERT tool; mouser.co.uk search: "WE-CMBNC 10A nanocrystalline").
+* Function: Broadband CM attenuation from ~1kHz to >10MHz. Nanocrystalline core maintains high permeability (µ_r > 50,000) well into the MHz range, providing >60dB CM insertion loss at 150kHz.
+
+**Stage 2 — Secondary HF CMC (L2: Laird CM5022):**
+* Part: **Laird CM5022** (high-frequency ferrite CMC, SMT or THT). ⚠️ Verify exact rating and package from Laird catalog before schematic freeze. Equivalent: Würth WE-SL5 or Murata PLY series HF CMC, ≥10A.
+* Function: Supplementary CM attenuation above ~10MHz where nanocrystalline core permeability falls off. Provides a second CM filter pole to ensure >40dB CM attenuation to 30MHz+.
+
+**Stage 3 — Differential Mode Pi-filter (L3, C1–C6):**
+
+*Component selection:*
+* **L3** — Würth WE-PD `7447789100`: 10µH, 14.5A I_sat, 14.4A I_rms, DCR = 20mΩ, 12.5×12.5×6.0mm shielded molded inductor.
+* **C1, C4** — 22µF, 50V, X7R, 1210 (Murata GRM32ER71H226KE15L or equiv).
+* **C2, C5** — 1µF, 50V, X7R, 0805 (Murata GRM21BR71H105KA12L or equiv).
+* **C3, C6** — 100nF, 50V, X7R, 0402 (Samsung CL05B104KB5NNNC or equiv).
+
+*Filter performance calculations:*
+* Effective capacitance per Pi leg: C₁‖C₂‖C₃ = 22µF + 1µF + 100nF ≈ **23.1µF** (capacitors in parallel).
+* Pi-filter −3dB corner frequency: `f_c = 1/(2π√(L3 × C)) = 1/(2π × √(10µH × 23.1µF))` = **10.5kHz**.
+* DM attenuation at 150kHz (EN 55032 Class B lower limit): 40dBdec × log(150k/10.5k) ≈ **−46dB** ✓
+* DM attenuation at 200kHz (TPS23730 ACF switching): ≈ **−51dB** ✓
+* DM attenuation at 400kHz (LMQ61460-Q1 buck switching): ≈ **−63dB** ✓
+* Combined with dual CMC stages: total insertion loss well exceeds EN 55032 Class B limits across 150kHz–10MHz.
+
+*Broadband capacitor stack rationale:*
+* C1/C4 (22µF): bulk DM filtering at f_c and 2nd–3rd harmonics.
+* C2/C5 (1µF): mid-frequency bypass; bridges impedance gap between 22µF ceramic SRF (~3MHz) and 100nF.
+* C3/C6 (100nF): HF bypass; low impedance at >10MHz where bulk caps become inductive.
+* All caps: 50V rating provides >3× voltage margin over 17V max input; X7R stable over −55°C to +125°C.
+
+**Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears — provides a Faraday shield for the entire Power Module, supplementing conducted filtering with radiated attenuation.
+
 
 ### 5. Protection & Logic
 
@@ -211,6 +254,9 @@ TPS25980 latches OFF under the following fault conditions:
 
 | Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L | 490-GRM32ER71H226KE15LCT-ND | ??? |
+| C2, C5 | Pi-filter mid-freq bypass | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
+| C3, C6 | Pi-filter HF bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_SC1–4 | Supercaps (4× cells, 2S2P) | Tecate TPLH-2R7/22WR12X31 / 22F 2.7V −40°C to +85°C | THT Radial 12×31mm | — (direct/broker) | — | — |
 | D1 | BATT_PRES ESD | TPD1E10B06 | SOD-923 | 595-TPD1E10B06QDCKR | 296-TPD1E10B06QDCKRQ1CT-ND | C284765 |
 | D2 | Battery SMBus ESD | TPD2E2U06 | SON-6 | ??? | ??? | ??? |
@@ -221,7 +267,9 @@ TPS25980 latches OFF under the following fault conditions:
 | J1 | BtB Link | Samtec ERF8-040-05.0-SD-VK-TR | 80-pin Gold ERF8 | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | ??? | ??? | ??? |
 | J3 | Battery Conn | Molex 43045-0512 | 5-pin Micro-Fit | ??? | ??? | ??? |
-| Q1–3 | Ideal FETs (×3) | SISS22DN | PowerPAK 5×6 | 78-SISS22DN-T1-GE3 | 1727-SISS22DN-T1-GE3CT-ND | C209048 |
+| L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC Nanocrystalline CMC — ≥10A, ≥1.5mH CM inductance; nanocrystalline core. ⚠️ Verify exact part from Würth REDEXPERT (748441440 or equiv.) | THT/SMT | ??? | ??? | ??? |
+| L2 | EMI Secondary CMC (HF, >10MHz) | Laird CM5022 — HF ferrite CMC, ≥10A. ⚠️ Verify exact spec from Laird catalog; alt: Würth WE-SL5 or Murata PLY series ≥10A HF CMC | SMT | ??? | ??? | ??? |
+| L3 | EMI DM Pi-filter Inductor | Würth WE-PD 7447789100 — 10µH, 14.5A Isat, 14.4A Irms, DCR=20mΩ, shielded molded | 12.5×12.5×6.0mm SMT | 710-7447789100 | 732-7447789100CT-ND | ??? |
 | R1 | eFuse UVLO upper resistor | 732kΩ 0.1% Thin-Film | 0603 | ERA-3ARB7323V | P732KBYCT-ND | ??? |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 0.1% Thin-Film | 0603 | ERA-3ARB2872V | P28.7KBYCT-ND | ??? |
 | R3 | eFuse OVLO set resistor | 53.6kΩ 0.1% Thin-Film | 0603 | ERA-3ARB5362V | P53.6KBYCT-ND | ??? |

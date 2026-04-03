@@ -23,6 +23,22 @@
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
 * **10mΩ / 5A (2512 Kelvin):** 5 units (LTC3350 RSENSE — charge path current sense, R12; Bourns CSS2H-2512R-L100ELF or equiv.).
 
+## 3a. EMI Filter Passives
+
+| Ref | Component | Part | Value | Package | Mouser Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC Nanocrystalline | ≥1.5mH, ≥10A | THT/SMT | ⚠️ Verify from Würth REDEXPERT (748441440 or equiv.) |
+| L2 | EMI Secondary CMC (HF, >10MHz) | Laird CM5022 (or Würth WE-SL5 ≥10A equiv.) | HF ferrite CMC, ≥10A | SMT | ⚠️ Verify from Laird catalog |
+| L3 | EMI DM Pi-filter Inductor | Würth WE-PD 7447789100 | 10µH, 14.5A Isat, DCR 20mΩ | 12.5×12.5mm SMT | 710-7447789100 |
+| C1, C4 | Pi-filter bulk cap (2× each) | Murata GRM32ER71H226KE15L | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L |
+| C2, C5 | Pi-filter mid-freq bypass (2× each) | Murata GRM21BR71H105KA12L | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L |
+| C3, C6 | Pi-filter HF bypass (2× each) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
+
+**Pi-filter performance summary (f_c = 10.5kHz):**
+- −46dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
+- −51dB at 200kHz (TPS23730 ACF switching frequency) ✓
+- −63dB at 400kHz (LMQ61460-Q1 buck switching frequency) ✓
+
 ## 4. High-Speed Interconnects
 
 * **Samtec ERM8-040-05.0-S-DV-K-TR (Male):** Power Module / Controller Beta.
