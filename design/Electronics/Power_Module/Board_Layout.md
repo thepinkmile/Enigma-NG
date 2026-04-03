@@ -185,8 +185,8 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
 |_____________________|         |    |                      |        | PIN  26: ETH_LED_ACT        |
                                 | [U1: TPS25980 eFuse]      |        | PINS 27-30: GND             |
        LADDER RESISTORS:        |    |                      |        | PINS 31-34: Status LEDs     |
-       R1: 732k (UVLO) ---------|--->|                      |        | PINS 35-40: I2C Telemetry   |
-       R2: 28.7k (OVLO) --------|--->|                      |        | PINS 41-44: 3V3_ENIG        |
+       R1: 732k (UVLO_HI) ---------|-->|                      |        | PINS 35-38: I2C Telemetry   |
+       R2: 28.7k (UVLO_LO) --------|-->|                      |        | PINS 39-44: 3V3_ENIG        |
        R3: 53.6k (GND) ---------|--->|                      |        | PIN  45: BATT_PRES_N        |
                                 |    |                      |        | PINS 49-80: 5V_SYSTEM / GND |
                                 |    |                      |        |_____________________________|

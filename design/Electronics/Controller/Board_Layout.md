@@ -7,14 +7,15 @@
 ### LINK-ALPHA (To Power Module)
 
 * **Pins 1-20:** Gigabit Ethernet (GND-Shielded: GND|DA+/-|GND|DB+/-|GND...)
-* **Pins 21-24:** 3V3_SYSTEM (Output from CM5 to Power Module RJ45 Logic)
+* **Pins 21-22:** 5V_MAIN additional power (supplements pins 49-80 delivery cluster; combined 18 pins × 0.5A = 9A capacity)
+* **Pins 23-24:** GND additional return path
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
 * **Pins 27-30:** GND Isolation Moat
-* **Pins 31-34:** Status LEDs (STATUS_AMBER / STATUS_GREEN)
-* **Pins 35-40:** I2C-1 Telemetry (SDA/SCL to PD/eFuse)
-* **Pins 41-44:** 3V3_ENIG (Input from Power Module - Pass-Through)
+* **Pins 31-34:** Status LEDs (STATUS_AMBER / STATUS_GREEN) + PWR_GD
+* **Pins 35-38:** I2C-1 Telemetry (SDA/SCL/GND/GND — to PD/eFuse)
+* **Pins 39-44:** 3V3_ENIG (Input from Power Module LDO — 6 pins, 3.0A capacity)
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection - Active Low GPIO 23)
-* **Pins 49-80:** 5V_MAIN / GND (6A Delivery Cluster - 4-via Thermal Clusters)
+* **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — combined with pins 21-22; 4-via Thermal Clusters)
 
 ```text
        LINK-ALPHA (80-PIN SAMTEC)           SIGNAL TYPE          FUNCTION
@@ -23,8 +24,11 @@ _______________________________________    _____________    ____________________
 [ PINS 01 - 20 ] ------------------------> [ 100Ω DIFF ] -> [ GIGABIT ETHERNET (GBE)     ]
  (Pattern: GND|DA+/-|GND|DB+/-|GND...)     (SHIELDED)       (To External RJ45)
 
-[ PINS 21 - 24 ] ------------------------> [ 2oz POWER ] -> [ 3V3_SYSTEM (RETURN)        ]
-                                           (CLEAN OUT)      (Powers PoE+ Logic)
+[ PINS 21 - 22 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (SUPPLEMENTAL)     ]
+                                           (BULK DC)        (Adds 2 pins to delivery cluster)
+
+[ PINS 23 - 24 ] ------------------------> [ 2oz POWER ] -> [ GND (SUPPLEMENTAL RETURN)  ]
+                                           (BULK DC)        (Adds 2 pins to return path)
 
 [ PINS 25 - 26 ] ------------------------> [ 2oz POWER ] -> [ ETH_LED_LINK / ETH_LED_ACT ]
                                            (GPIO OUT)       (Active Low indicators)
@@ -46,8 +50,8 @@ _______________________________________    _____________    ____________________
 [ PIN  45      ] ------------------------> [ 3.3V LOGIC] -> [ BATT_PRES_N                ]
                                            (GPIO IN)        (From Power Module Batt)
 
-[ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (6A DELIVERY)      ]
- (4-Via Thermal Clusters)                  (BULK DC)        (To CM5 VCC_IN)
+[ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (9A DELIVERY)      ]
+ (4-Via Thermal Clusters)                  (BULK DC)        (To CM5 VCC_IN; incl. pins 21-22)
 ```
 
 ### DIAGNOSTIC BANK-ALPHA (Top-Right)
@@ -62,7 +66,7 @@ _______________________________________    _____________    ____________________
 * **Pin  11:** STAT_RED
 * **Pin  12:** PWR_GD
 * **Pin  13:** BATT_PRES_N
-* **Pin  14:** 3V3_SYSTEM
+* **Pin  14:** GND (previously 3V3_SYSTEM — rail removed; reassigned to GND for improved return path)
 * **Pin  15-18:** SPARE (revered for future use)
 * **Pin  19:** GND_CHASSIS
 * **Pin  20:** GND
@@ -180,9 +184,9 @@ _______________________________________________    _____________    ____________
 | [ CM5 GBE PHY ]           |        |                           |           | [ RJ45 MAGJACK ]    |
 |    |                      |        |                           |           | (WURTH 7499111)     |
 | [ LED_LINK PIN ] --(L)----|------->| [ PIN 25: ETH_LED_LINK  ] |---->(R)-->| [ LED 1 (GREEN) ]   |
-| [ LED_ACT  PIN ] --(A)----|------->| [ PIN 27: ETH_LED_ACT   ] |---->(R)-->| [ LED 2 (YELLOW)]   |
+| [ LED_ACT  PIN ] --(A)----|------->| [ PIN 26: ETH_LED_ACT   ] |---->(R)-->| [ LED 2 (YELLOW)]   |
 |                           |        |                           |           |                     |
-| [ 3V3_SYSTEM ] -----------|------->| [ PIN 21: 3V3_SYS_RAIL  ] |---------->| [ LED ANODES ]      |
+| [ 3V3_ENIG ] -------------|------->| (local Power Module rail) |---------->| [ LED ANODES ]      |
 |___________________________|        |___________________________|           |_____________________|
                                                                       (R) = 330Ω Resistors
 ```

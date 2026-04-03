@@ -11,7 +11,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 * **Controller Link (Link-Alpha):** 80-pin ERF8 connector for power/ethernet/telemetry handshake with the Controller Board.
   * **Provided to Controller:** 5V_MAIN, 3V3_ENIG, GBE signals, and PWR_GD.
-  * **Returned by Controller:** 3V3_SYSTEM (to power RJ45 logic and status indicators) and I2C telemetry chain.
+  * **Returned by Controller:** I2C telemetry chain only. 3V3_SYSTEM no longer crosses to Power Module — RJ45 LED anodes and pull-up logic are powered by 3V3_ENIG (generated locally on Power Module).
   * **Cross-ref:** For the exact Link-Alpha mapping and signal naming conventions, See:
     * `Controller/Design_Spec.md`
 
@@ -33,7 +33,8 @@ It produces 2 power rails from a common ~12V input source. These power rails are
   * Pins 1-2: VBATT (14.4V Nominal).
   * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
   * Pin 5: BATT_PRES_N (Presence Detect).
-* **Presence Logic:** Pin 5 is pulled to 3V3_SYSTEM via 10kΩ resistor (R6). Battery internal shorts Pin 5 to GND.
+  * **BMS Charge Voltage:** Smart Battery BMS must be configured for a maximum charge voltage of **4.1V/cell (16.4V total for 4S)**. This provides a ≥0.5V margin to the TPS25980 eFuse 16.9V OVLO threshold, preventing nuisance latch-off at full charge. BMS configurations using 4.2V/cell (16.8V) are not compatible without OVLO re-specification.
+* **Presence Logic:** Pin 5 is pulled to **3V3_ENIG** via 10kΩ resistor (R6). Battery internal shorts Pin 5 to GND.
   * Logic HIGH: Battery Disconnected.
   * Logic LOW: Battery Detected.
 * **Protection:** TPD1E10B06 TVS diode on the Presence line plus a dedicated 2-channel TVS array on the SMBus lines to protect the battery interface during insertion.
@@ -44,8 +45,8 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 3. Telemetry & Power Management
 
-* **I2C Telemetry:** 4.7kΩ (0.1%) pull-up resistors (R1-2) on SDA/SCL lines, tied to 3V3_SYSTEM.
-* **Reset Logic:** 10kΩ (0.1%) pull-up (R3) on SYS_RESET_N to prevent floating states.
+* **I2C Telemetry:** 4.7kΩ (0.1%) pull-up resistors (**R7, R8**) on SDA/SCL lines, tied to **3V3_ENIG**.
+* **Reset Logic:** 10kΩ (0.1%) pull-up (**R9**) on SYS_RESET_N to prevent floating states.
 * **Battery Detection:** Dedicated BATT_PRES_N signal routed to CM5 GPIO 23.
 * **USB Telemetry:** USB Power Fault reported to CM5 GPIO 22 via TPS2065C.
 
@@ -59,8 +60,8 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 5. Protection & Logic
 
-* **External Handshake:** STUSB4500 (Standalone Sink) negotiates 15V/3A from Wall/PoE+.
-* **Internal Handshake:** TPS25750 PD Emulator provides 5V/6A "Clean PD" profile to CM5.
+* **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.
+* **Internal Handshake:** TPS25750 PD Emulator provides **5V/5A** "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
 * **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
@@ -112,7 +113,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 * **Supercap Shadow Zone:** A 32mm × 32mm 'Routing Keep-out' enforced on L1 and L2 directly beneath the Supercap Block.
 * **Purpose:** Only GND_CHASSIS copper and Thermal Matrix vias are permitted here to ensure long-term reliability and inspection access.
-* **PD Emulation:** TPS25750 handles internal 5V/6A negotiation with CM5 to ensure a "Warning-Free" Linux boot.
+* **PD Emulation:** TPS25750 handles internal **5V/5A** negotiation with CM5 to ensure a "Warning-Free" Linux boot.
 
 ---
 
@@ -154,11 +155,13 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | ??? | ??? | ??? |
 | J3 | Battery Conn | Molex 43045-0512 | 5-pin Micro-Fit | ??? | ??? | ??? |
 | Q1–3 | Ideal FETs (×3) | SISS22DN | PowerPAK 5×6 | 78-SISS22DN-T1-GE3 | 1727-SISS22DN-T1-GE3CT-ND | C209048 |
-| R_UVLO_HI | eFuse UVLO upper | 732kΩ 0.1% Thin-Film | 0603 | ERA-3ARB7323V | P732KBYCT-ND | ??? |
-| R_UVLO_LO | eFuse UVLO lower | 28.7kΩ 0.1% Thin-Film | 0603 | ERA-3ARB2872V | P28.7KBYCT-ND | ??? |
-| R_OVLO | eFuse OVLO set | 53.6kΩ 0.1% Thin-Film | 0603 | ERA-3ARB5362V | P53.6KBYCT-ND | ??? |
+| R1 | eFuse UVLO upper resistor | 732kΩ 0.1% Thin-Film | 0603 | ERA-3ARB7323V | P732KBYCT-ND | ??? |
+| R2 | eFuse UVLO lower resistor | 28.7kΩ 0.1% Thin-Film | 0603 | ERA-3ARB2872V | P28.7KBYCT-ND | ??? |
+| R3 | eFuse OVLO set resistor | 53.6kΩ 0.1% Thin-Film | 0603 | ERA-3ARB5362V | P53.6KBYCT-ND | ??? |
 | R4, R5 | ETH Activity LEDs | 330Ω 0.1% Thin-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
-| R6 | BATT_PRES_N Pull-up | 10kΩ 0.1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 0.1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 0.1% Thin-Film | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | ??? |
+| R9 | SYS_RESET_N Pull-up (to 3V3_ENIG) | 10kΩ 0.1% Thin-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS25980 (16.9V OVLO variant) | VQFN 4×4mm | TPS25980RPWR | ??? | ??? |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | VQFN-15-HR | 926-LMQ61460ARUMRNOPB | 296-LMQ61460ARUMR/NOPBCT-ND | ??? |
