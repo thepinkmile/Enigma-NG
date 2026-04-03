@@ -29,7 +29,7 @@
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC 7448031002 | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 (**replaces discontinued Laird CM5022**) | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
-| L3 | EMI DM Pi-filter Inductor | Würth WE-PD 7447789100 | 10µH, 14.5A Isat, DCR 20mΩ | 12.5×12.5mm SMT | 710-7447789100 ⚠️ verify stock with Würth rep |
+| L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M (replaces Würth 7447789100 — not in public catalog) | 10µH, 15.5A Isat, DCR 16.5mΩ | 13.5×12.5×6.2mm SMT ⚠️ footprint change | 652-SRP1265A-100M; alt: Farnell ~2741 in stock |
 | C1, C4 | Pi-filter bulk cap (2× each) | Murata GRM32ER71H226KE15L | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L |
 | C2, C5 | Pi-filter mid-freq bypass (2× each) | Murata GRM21BR71H105KA12L | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L |
 | C3, C6 | Pi-filter HF bypass (2× each) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
