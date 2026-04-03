@@ -132,3 +132,29 @@ Reference information for placing orders with key component suppliers.
 | S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
 | S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04201H-7628 (4-layer, 2oz). |
 | S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. L1/L2 WE-CMBNC 7448031002 available as Newark #75X1218 (~561 pcs, ~$14.58 each). Same-group as Farnell/element14. |
+
+---
+
+## 11. Datasheet Links
+
+Product page links for all major components for design review and procurement verification.
+
+| Ref | Part / Description | Manufacturer | Product Page |
+| :--- | :--- | :--- | :--- |
+| U1 | TPS25980 — eFuse / Ideal Diode (16.9V OVLO) | Texas Instruments | [ti.com/product/TPS25980](https://www.ti.com/product/TPS25980) |
+| U2A, U2B | LMQ61460-Q1 — 6A Synchronous Buck Converter | Texas Instruments | [ti.com/product/LMQ61460-Q1](https://www.ti.com/product/LMQ61460-Q1) |
+| U3 | LTC3350 — Supercap Manager / Charger / Backup | Analog Devices | [analog.com/en/products/ltc3350.html](https://www.analog.com/en/products/ltc3350.html) |
+| U4 | TPS25751 — USB PD 3.1 DRP Controller | Texas Instruments | [ti.com/product/TPS25751](https://www.ti.com/product/TPS25751) |
+| U5 | STUSB4500 — USB-C Sink PD Negotiation Controller | STMicroelectronics | [st.com/en/interfaces-and-transceivers/stusb4500.html](https://www.st.com/en/interfaces-and-transceivers/stusb4500.html) |
+| U6 | LM74700-Q1 — Ideal Diode OR-ing Controller | Texas Instruments | [ti.com/product/LM74700-Q1](https://www.ti.com/product/LM74700-Q1) |
+| U7 | TPS7A8333P — 3.3V 3A LDO Regulator (3V3_ENIG) | Texas Instruments | [ti.com/product/TPS7A8333](https://www.ti.com/product/TPS7A8333) |
+| U8 | MCP121T-450E — 4.50V Voltage Supervisor | Microchip Technology | [microchip.com/en-us/product/MCP121T](https://www.microchip.com/en-us/product/MCP121T) |
+| U9 | TPS2372-4 — IEEE 802.3bt PoE PD Controller | Texas Instruments | [ti.com/product/TPS2372-4](https://www.ti.com/product/TPS2372-4) |
+| U10 | TPS23730 — ACF PoE+ DC/DC Controller | Texas Instruments | [ti.com/product/TPS23730](https://www.ti.com/product/TPS23730) |
+| T2 | POE600F-12LD — Active Clamp Flyback Transformer | Coilcraft | [coilcraft.com/…/poe600f](https://www.coilcraft.com/en-us/products/power-magnetics/power-transformers/poe-transformers/poe600f/) |
+| L1, L2 | WE-CMBNC 7448031002 — Nanocrystalline CMC | Würth Elektronik | [we-online.com (search 7448031002)](https://www.we-online.com/en/components/products/CMBNC) |
+| L3 | SRP1265A-100M — 10µH 14A Power Inductor | Bourns | [bourns.com/…/SRP1265A](https://www.bourns.com/products/inductors/power-inductors/product/SRP1265A) |
+| R12 / R_SENSE | CSS2H-2512R-R010ELF — 10mΩ Current Sense Resistor | Bourns | [bourns.com/…/CSS2H](https://www.bourns.com/products/resistors/current-sense-resistors/product/CSS2H) |
+| J2 | 7499111121A — GbE RJ45 MagJack with LEDs | Würth Elektronik | [we-online.com (search 7499111121A)](https://www.we-online.com/en/components/products/GMJT) |
+| J3 | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [molex.com/…/436500519](https://www.molex.com/en-us/products/part-detail/436500519) |
+| C_SC1–4 | TPLH-2R7/22WR12X31 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com (search TPLH-2R7-22WR)](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |

@@ -28,7 +28,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 2. Power & UPS Hub
 
-* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-28), handles charging, cell balancing, and hold-up switchover.
+* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
   * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
@@ -109,7 +109,7 @@ GND ──────┴──────────────────�
 * **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 732kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
-* **Supercap Manager:** LTC3350 (QFN-28) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
+* **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where `VICHARGE = 1.485V` (LTC3350 internal reference), `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path). For `ICH = 0.5A`: `RICHARGE = 1.485V / (0.5A × 0.010Ω) = 297Ω → use 301Ω (E96, 0.1%, 0603)`.
   * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; RSENSE must be a 4-terminal Kelvin-sense resistor to avoid trace resistance error.
   * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below 4.75V (programmed via comparator threshold resistor divider from 5V_MAIN to BACKUP pin). Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
@@ -202,7 +202,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp-up, we use an automated voltage supervisor combined with a manual override.
 
 * **Supervisor IC:** [MCP121T-450E](https://www.microchip.com) (4.50V Threshold).
-* **Trigger:** The supervisor monitors the **+5V_SYSTEM** rail. It holds the `GLOBAL_EN` (PMIC_EN) pin LOW until the rail is stable.
+* **Trigger:** The supervisor monitors the **5V_MAIN** rail. It holds the `GLOBAL_EN` (PMIC_EN) pin LOW until the rail is stable.
 * **Manual Reset:** A high-quality tactile button is wired in parallel to the supervisor output.
   * **Action:** Pressing the button pulls `GLOBAL_EN` to GND, forcing a hard PMIC reset of the CM5 without cycling the 12V-15V Rotor Rail.
 
@@ -283,7 +283,7 @@ TPS25980 latches OFF under the following fault conditions:
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS259803ONRGER (16.9V OVLO) ⚠️ verify PN before ordering | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | — |
-| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | VQFN-15-HR | 926-LMQ61460ARUMRNOPB | 296-LMQ61460ARUMR/NOPBCT-ND | — |
+| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | WSON-8 2×2mm | 926-LMQ61460ARUMRNOPB | 296-LMQ61460ARUMR/NOPBCT-ND | — |
 | U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
 | U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. ⚠️ Package is WQFN-38 6×4mm (REF) — **different from TPS25750 QFN-28; schematic and PCB footprint update required** | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — |
 | U5 | USB-C Sink Controller | STUSB4500LQTR | QFN-24 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 ⚠️ OOS |
