@@ -76,7 +76,7 @@
 | Ref | Component | Part Number | Value / Notes | Supplier | Supplier Part # | Unit Price (1-off) | Unit Price (volume) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | U9 | PoE PD Interface (Type 4) | TPS2372-4RGWR | TI QFN-16; 802.3bt Type 4, external hotswap, up to 90W | Mouser | 595-TPS2372-4RGWR | ~£3.50 | ~£2.00 |
-| U10 | PoE ACF DC-DC Controller | TPS23730PWPR | TI WQFN-20; ACF topology; PSR mode; 12V output set by POE600F-12LD turns ratio; VS pin to aux winding | Mouser | 595-TPS23730PWPR | ~£3.50 | ~£2.00 |
+| U10 | PoE ACF DC-DC Controller | TPS23730RMCT | TI WQFN-20; ACF topology; PSR mode; 12V output set by POE600F-12LD turns ratio; VS pin to aux winding | Mouser | 595-TPS23730RMCT | ~£3.50 | ~£2.00 |
 | T2 | PoE ACF Isolation Transformer | **Coilcraft POE600F-12LD** | 60W; 12V out; 36–72V in; 200kHz; ACF topology; ≥1500Vrms; SMT; RoHS | Coilcraft Direct | POE600F-12LD | **£3.54** | **~£1.86** |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 0.1% Thin-Film | 121kΩ E96; IMPS = VIMPS/RMPS = 1.205V/121kΩ = 9.96mA (Type 4 MPS auto-stretch) | Mouser | 667-ERJ-3EKF1213V | ~£0.10 | ~£0.03 |
 
@@ -86,7 +86,34 @@
 - TPS2372-4 uses **Autoclass** for automatic 4-event IEEE 802.3bt Type 4 classification; no external RCLASS resistor required. R13 (RMPS) programs MPS pulse current only.
 - OR-ing priority: TPS2372-4 `/PG` signal drives LM74700-Q1 enable on the USB-C path to enforce PoE source priority.
 
-## 9. Suppliers
+## 9. Power Module — IC & Connector BOM (Multi-Distributor)
+
+> **Legend:** ✓ = confirmed from distributor search · ~ = derived from manufacturer prefix convention · ⚠️ = part number issue flagged · — = not stocked / THT not assembled
+
+| Designator | Part | Package | Mouser # | DigiKey # | JLCPCB # | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| U3 | LTC3350EUHF#PBF | QFN-38 5×7 | 584-LTC3350EUHF#PBF ✓ | 1469-1010-1-ND (tube) / **1469-1010-2-ND** (T&R) | — (not in library) | ~4.5k in stock Mouser (tube). T&R variant has ~7.5k DigiKey stock. JLCPCB custom-supply only. |
+| U5 | STUSB4500QTR | QFN-24 4×4 | 511-STUSB4500QTR ~ | **497-18060-1-ND** ✓ | C841785 (extended) | DigiKey ~7.8k in stock. ST prefix 511- is standard. JLCPCB extended library (verify C841785). |
+| U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 ~ | **296-LM74700QDBVRQ1CT-ND** ✓ | — (extended) | ⚠️ **BOM PART NUMBER INCORRECT** — LM74700-Q1DCKR does not exist. Correct automotive part is LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. |
+| U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450ELB ~ | **MCP121T-450E/LBCT-ND** ✓ | — (extended) | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. |
+| U1 | TPS25980RPWR | VQFN-24 (RGE) | **595-TPS25980RPWR** (provided) | 296-TPS25980RPWR-ND ~ | — | ⚠️ **VERIFY PART #** — TI product page lists TPS25980 only in VQFN(RGE); full orderable PN may be TPS25980**x**RGER (x=variant digit: 0=no OVLO, 3=3.7V, 7=7.6V). Confirm with TI or Mouser before ordering. |
+| U2A/U2B | LMQ61460ARUMR | WSON-8 2×2 | **595-LMQ61460ARUMR** (provided) | 296-LMQ61460ARUMR-ND ~ | — | ⚠️ Not found on findchips; similar family variant LMQ61460AASRJRR available (296-LMQ61460AASRJRRCT-ND, different WSON variant). Verify RUMR suffix with TI/Mouser before ordering. |
+| U4 | TPS25750DRCR | VQFN-20 | 595-TPS25750DRCR ~ | **296-TPS25750DRCR-ND** (provided) | — | ⚠️ Not found on findchips; TPS25750 family available (TPS25750DRJKR is stocked, different package). Verify DRCR stock with DigiKey. ⚠️ TI marks this as not recommended for new designs. |
+| U7 | TPS7A8333PDSGR | WSON-12 | 595-TPS7A8333PDSGR ~ | **296-TPS7A8333PDSGR-ND** (provided) | — | Not found on findchips; TPS7A83 family available (TPS7A8300 variants in stock). Verify with DigiKey/Mouser. TI prefix 595-. |
+| U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | — (extended) | DigiKey temporarily out of stock (~6-week lead time). $3.09/1. VQFN-20 per TI. |
+| U10 | TPS23730PWPR | HTSSOP-20 (PWP) | **595-TPS23730PWPR** (provided) | 296-TPS23730PWPR-ND ~ | — | ⚠️ **PACKAGE DISCREPANCY** — TI product page shows TPS23730 in VQFN-45 (RMT 7×5mm). PWP suffix = PowerPAD HTSSOP-20. These cannot be the same; verify correct package variant. WQFN-20 variant is TPS23730RMTR (296-TPS23730RMCT-ND, ~5.6k in stock). |
+| D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | — (extended) | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
+| J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
+| J3 | Molex 43045-0512 | THT Micro-Fit 3.0 | 538-43045-0512 ~ | WM1792-ND ~ | — (THT) | Micro-Fit 3.0 5-circuit vertical header (battery connector). Mouser prefix 538- is standard for Molex. DigiKey WM number inferred from series pattern (WM1789=2-pos); **verify WM number at digikey.co.uk**. JLCPCB does not stock THT connectors. |
+
+### 9.0. Part Number Issues Requiring Action
+
+1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
+2. **U10** — Confirm whether TPS23730 in **PWP (HTSSOP-20)** or **RMT (VQFN-45)** or **RMTR (WQFN-20)** is the intended package. The BOM says "WQFN-20" which matches RMTR — update MPN accordingly.
+3. **U1** — Verify full orderable part number for TPS25980. Likely `TPS2598000RGER` (no OVLO) or `TPS2598030RGER` (3.7V OVLO) — the `RPWR` suffix may not be a valid TI orderable variant.
+4. **U4** — TPS25750DRCR is not recommended for new designs by TI. Evaluate replacement.
+
+## 10. Suppliers
 
 Reference information for placing orders with key component suppliers.
 
