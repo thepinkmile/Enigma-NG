@@ -31,7 +31,7 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 1. Power Management
 
-* **Input:** 3.3V/150mA per rotor (sourced from the **Power Module**'s dedicated 3V3_ROTOR 5A Buck, routed through Controller Board → Stator Board → Rotor stack via Link-Beta).
+* **Input:** 3.3V/150mA per rotor (sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta).
 * **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** capacitors near the power-entry pins in a **Symmetrical Star/Spoke pattern**.
 
