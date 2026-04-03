@@ -24,7 +24,7 @@
 
 The **Enigma-NG** is a precision recreation of the legendary Enigma cipher machine and its variants, reimagined as a museum-grade, military-deployable, and educational device. It faithfully replicates all major historical Enigma variants as well as Allied-developed adaptations, and adds a contemporary extension: a 64-character set supporting Base-64 encoded data transmission, enabling the machine to encrypt and transmit binary files using the same mechanical substitution principles as the original.
 
-At its core, the Enigma-NG is powered by a Raspberry Pi Compute Module 5 (CM5) running a full Linux-based control system, managing a stack of hardware Rotor logic implemented in dedicated logic chips (CPLDs). The entire system is built to exacting electrical standards — meeting civilian CE and UKCA requirements as well as the UK Ministry of Defence standard DefStan 59-411 Land Class C — making it suitable for deployment in demanding environments.
+At its core, the Enigma-NG is powered by a Raspberry Pi Compute Module 5 (CM5) running a full Linux-based control system, managing a stack of hardware Rotor logic implemented in dedicated logic chips (CPLDs). The entire system is built to exacting electrical standards — meeting civilian CE and UKCA certification requirements — making it suitable for deployment in demanding environments.
 
 ---
 
@@ -126,7 +126,7 @@ When power is applied, the following sequence occurs automatically:
 
 1. **Input validation:** The eFuse checks that input voltage is within 11–17V and current is within limits. The thermal cutoff (TCO) provides over-temperature protection at 72°C.
 2. **Buck regulators start:** The dual 5V switching regulators (U2A/U2B) and the 3.3V LDO (U7) begin operating, establishing the 5V_MAIN and 3V3_ENIG power rails.
-3. **Supercapacitor charging:** The LTC3350 supercap manager begins a controlled 1A soft-charge of the supercapacitor bank from the 5V_MAIN rail, preventing an inrush current spike. From a fully depleted state, the bank is fully charged in approximately 14 seconds.
+3. **Supercap charging:** The LTC3350 supercap manager begins a controlled 0.5A soft-charge of the supercapacitor bank from the 5V_MAIN rail. This reduced charge rate keeps the system within power budget on all input sources. From a fully depleted state, the bank takes approximately **2 minutes** to reach full charge. Full hold-up protection (approximately 14 seconds) is available once charging is complete.
 4. **Rail supervision:** A voltage supervisor monitors the 5V_MAIN rail. Once it stabilises above 4.5V, a 200ms delay timer starts.
 5. **CM5 power-on:** After the 200ms delay, the CM5 module receives its enable signal and begins its internal power sequencing (1.8V, 1.1V rails).
 6. **Linux boot:** The CM5 boots Linux. The LOGIK-BEREIT LED pulses at 1Hz during this phase.
@@ -137,6 +137,8 @@ Total startup time from power application to operational readiness is typically 
 ### 3.6 Battery and Supercapacitor Hold-Up
 
 **Supercapacitors:** The Power Module contains four supercapacitor cells (22F each, arranged in a 2-series × 2-parallel configuration giving 11F at 5.4V, managed by the LTC3350 supercap controller) providing approximately **14 seconds of hold-up** at a 5W shutdown load. This is sufficient for the operating system to perform a clean, ordered shutdown, preventing filesystem and memory corruption.
+
+> **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 2 minutes from a cold start. The system is designed for operational sessions of 30 minutes or longer — the supercapacitors will be fully charged well before they could ever be needed in normal use.
 
 The LTC3350 controller continuously monitors the supercapacitor bank, balances charge across all four cells, and automatically switches to supercap-powered operation within microseconds of detecting a loss of the main 5V rail. No user action is required — the switchover is completely transparent to the operating system.
 

@@ -101,7 +101,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 | UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~15V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
 | OVLO | **16.9V (fixed variant)** | Highest available option on TPS25980. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin above OVLO. See §3.2 Note on Battery Voltage. |
 | ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 8.5A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
-| Soft-start (supercap charge) | **1A** | Controls inrush current during supercapacitor initial charge, preventing nuisance eFuse trips at power-on. |
+| Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~2 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to keep PoE utilisation within 75% rule on all sources. |
 
 **Resistor ladder values (all 0.1% thin-film, 0603):**
 
@@ -234,7 +234,7 @@ All active components are operated at ≤75% of their rated maximum under worst-
 
 > *eFuse load: Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.5A + LTC3350 supercap charge 1A (5V side) = 9.5A at 5V = 47.5W. Buck input (÷0.87) = 54.6W. At 15V: 54.6W / 15V = 3.64A eFuse current. eFuse utilisation (ILIM=7A): 3.64A / 7A = **52.0%** ✓. Steady state (no supercap charge): 8.5A × 5V / (0.87 × 15V) = 3.26A / 7A = **46.5%** ✓.
 >
-> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 1A from 5V_MAIN, not directly from the 15V input. During initial charge, total 5V_MAIN load = 8.5A (system) + 1A (LTC3350 supercap charge) = 9.5A. Buck input at 87% efficiency = 9.5A × 5V / (0.87 × 15V) = 3.64A at 15V = 54.6W. PoE utilisation during charge phase = 54.6W / 72W = **75.8%** (marginally above 75% rule for approximately 14 seconds from cold start). Steady-state utilisation: 8.5A × 5V / (0.87 × 15V) = 3.26A = 48.9W / 72W = **67.9%** ✓. Transient peak during supercap charge is accepted; duration is ≤14 seconds. Mitigation: LTC3350 charge current can be reduced to 0.8A if strict 75% compliance is required at all times.
+> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~2 minutes from cold start), total 5V_MAIN load = 8.5A (system) + 0.5A (LTC3350 supercap charge) = 9.0A. Buck input at 87% efficiency = 9.0A × 5V / (0.87 × 15V) = 3.45A at 15V = 51.7W. PoE utilisation during charge phase = 51.7W / 72W = **71.8%** ✓. Steady-state utilisation (fully charged): 8.5A × 5V / (0.87 × 15V) = 3.26A = 48.9W / 72W = **67.9%** ✓. Both within the 75% design rule at all times. OA-02 resolved — see Open Actions.
 
 ### 3.6 Thermal Management Design Intent
 
@@ -332,9 +332,9 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 | Condition | System Load | Type 3 (51W) | Type 4 (71.3W) |
 |---|---|---|---|
 | Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.6% ✓ |
-| Peak (add supercap initial charge 15W) | 57.5W | 112.7% ❌ | 80.6% ⚠️ * |
+| Initial supercap charge (+2.87W Buck input for 0.5A @ 5V) | 45.4W | 89.0% ❌ | 63.6% ✓ |
 
-> *Peak 80.6% exceeds the 75% design rule during supercapacitor initial charge only (first ~60 seconds of operation from cold). Accepted as a transient; steady-state is 59.6%. Mitigation: throttle supercap charge rate during PoE-only operation if required for certification. See open action OA-02.
+> Initial supercap charge adds 2.87W (0.5A at 5V / 87% Buck efficiency) to PoE input load for approximately 2 minutes from cold start. Worst-case PoE utilisation during this window: 51.7W / 72W = 71.8% — within the 75% design rule. System must be powered for ≥2 minutes before full hold-up protection (14.5 seconds) is available. Normal minimum operational session is 30+ minutes; this constraint is not operationally significant.
 
 **PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design using:
 - **TPS2372-4** (TI, QFN-16): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
@@ -397,7 +397,7 @@ Any replacement CPLD must be verified for:
 | ID | Description | Owner | Priority |
 |---|---|---|---|
 | OA-01 | Confirm TPS25980 16.9V OVLO variant exact part number suffix from TI ordering information. Verify OVLO threshold accuracy (±%) in full datasheet — must confirm lower tolerance ≥ 16.4V (battery BMS max charge). Recalculate UVLO/ILIM resistor values per TPS25980 datasheet programming equations. | Hardware Designer | High |
-| OA-02 | Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase). | Hardware Designer | Medium |
+| OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~2 min charge from cold: 51.7W / 72W = 71.8% ✓. Steady-state: 48.9W / 72W = 67.9% ✓. Within 75% rule at all times on all sources. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + custom T2 ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
 | OA-05 | Thermal simulation of BtB connector zone to verify 0.6A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |

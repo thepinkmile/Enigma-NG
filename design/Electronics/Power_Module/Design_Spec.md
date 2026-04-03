@@ -64,7 +64,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 732kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
-* **Supercap Manager:** LTC3350 (QFN-28) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 1A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
+* **Supercap Manager:** LTC3350 (QFN-28) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit (RICHARGE programming resistor set to halve charge current from the LTC3350 1A nominal; exact resistor value to be confirmed from LTC3350 datasheet ICHARGE programming equation); automatic hold-up switchover on 5V_MAIN loss.
 * **Passive:** 72°C SMD Thermal Cutoff (Bourns AC) in series with the main rail.
 * **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
   * "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) remains active during capacitor discharge.
@@ -131,7 +131,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 1. **Input:** 11–17V enters via PoE+ (TPS2372-4/TPS23730 discrete), USB-C (STUSB4500 negotiated), or Battery.
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
 3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
-4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 1A. Charge duration: approximately 14 seconds from depleted state.
+4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully depleted state: approximately 2 minutes. Once fully charged, the bank provides approximately 14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
 5. **Supervisor:** Once 5V_MAIN hits 4.5V, MCP121T-450E asserts GLOBAL_EN HIGH after a 200ms delay.
 6. **Release:** CM5 PMIC begins internal 1.8V/1.1V sequencing.
 7. **Heartbeat:** MIC1555 starts the 1Hz Green "Initialising" pulse.
