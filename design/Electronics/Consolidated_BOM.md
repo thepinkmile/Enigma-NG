@@ -104,7 +104,7 @@
 | U10 | TPS23730PWPR | HTSSOP-20 (PWP) | **595-TPS23730PWPR** (provided) | 296-TPS23730PWPR-ND ~ | — | ⚠️ **PACKAGE DISCREPANCY** — TI product page shows TPS23730 in VQFN-45 (RMT 7×5mm). PWP suffix = PowerPAD HTSSOP-20. These cannot be the same; verify correct package variant. WQFN-20 variant is TPS23730RMTR (296-TPS23730RMCT-ND, ~5.6k in stock). |
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | — (extended) | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
 | J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
-| J3 | Molex 43045-0512 | THT Micro-Fit 3.0 | 538-43045-0512 ~ | WM1792-ND ~ | — (THT) | Micro-Fit 3.0 5-circuit vertical header (battery connector). Mouser prefix 538- is standard for Molex. DigiKey WM number inferred from series pattern (WM1789=2-pos); **verify WM number at digikey.co.uk**. JLCPCB does not stock THT connectors. |
+| J3 | Molex 43650-0519 | THT Micro-Fit 3.0 | 538-43650-0519 ~ | WM7843-ND ⚠️ verify | — (THT) | ⚠️ **MPN corrected** — `43045-0512` does not exist. Correct series is `43650` (vertical THT). 43650-0519: 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. DigiKey WM7843-ND inferred; **verify exact WM number**. JLCPCB does not stock THT connectors. |
 
 ### 9.0. Part Number Issues Requiring Action
 
@@ -128,7 +128,7 @@ Reference information for placing orders with key component suppliers.
 | S07 | **STMicroelectronics** | IC manufacturer | [st.com](https://www.st.com) | For STUSB4500 USB-C sink controller. Samples and eval kits available. |
 | S08 | **Samtec** | Connector manufacturer | [samtec.com](https://www.samtec.com) | For ERF8/ERM8 80-pin BtB connectors. Order direct or via Farnell/Mouser. Min order typically 3 units. |
 | S09 | **Würth Elektronik** | Passive / connector manufacturer | [we-online.com](https://www.we-online.com) | For RJ45 MagJack (7499111121A), EMI chokes (WE-CMBNC). Order via Farnell, Mouser, or direct. |
-| S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43045-0512 Micro-Fit 5-pin). Order via Mouser or DigiKey. |
+| S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43650-0519 Micro-Fit 3.0, 5-pin vertical THT). Order via Mouser or DigiKey. |
 | S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
 | S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04201H-7628 (4-layer, 2oz). |
 | S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. L1/L2 WE-CMBNC 7448031002 available as Newark #75X1218 (~561 pcs, ~$14.58 each). Same-group as Farnell/element14. |
