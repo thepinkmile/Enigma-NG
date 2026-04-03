@@ -76,7 +76,7 @@ A single-point `GND_CHASSIS` bond is established between the OR-ing network outp
 **Full power chain (input to output):**
 
 ```
-[PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (51W, 15V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
+[PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 51W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
   → LM74700-Q1 OR-ing controller + SISS22DN ideal-diode FETs (×3)
   → TCO F1 (72°C thermal fuse)
   → TPS25980 eFuse (7A ILIM, 11.0V UVLO, 16.9V OVLO fixed variant, VQFN 4×4mm)
@@ -230,12 +230,12 @@ All active components are operated at ≤75% of their rated maximum under worst-
 | 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.50A | **70.8%** ✓ |
 | TPS7A8333P | 3V3_ENIG LDO | 3A | 1.85A | **61.7%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.86A* | **69.4%** ✓ |
-| TPS2372-4 + TPS23730 + T2 (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
+| TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
 
-> *eFuse load: Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.5A + LTC3350 supercap charge 1A (5V side) = 9.5A at 5V = 47.5W. Buck input (÷0.87) = 54.6W. At 15V: 54.6W / 15V = 3.64A eFuse current. eFuse utilisation (ILIM=7A): 3.64A / 7A = **52.0%** ✓. Steady state (no supercap charge): 8.5A × 5V / (0.87 × 15V) = 3.26A / 7A = **46.5%** ✓.
+> *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.5A + LTC3350 supercap charge 1A (5V side) = 9.5A at 5V = 47.5W. Buck input (÷0.87) = 54.6W. At 12V PoE bus: 54.6W / 12V = **4.55A eFuse current**. eFuse utilisation (ILIM=7A): 4.55A / 7A = **65.0%** ✓. Steady state (no supercap charge): 8.5A × 5V / (0.87 × 12V) = 4.07A / 7A = **58.1%** ✓. At USB-C 15V: 54.6W / 15V = 3.64A / 7A = **52.0%** ✓. All cases within the 75% derating rule.
 >
-> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~2 minutes from cold start), total 5V_MAIN load = 8.5A (system) + 0.5A (LTC3350 supercap charge) = 9.0A. Buck input at 87% efficiency = 9.0A × 5V / (0.87 × 15V) = 3.45A at 15V = 51.7W. PoE utilisation during charge phase = 51.7W / 72W = **71.8%** ✓. Steady-state utilisation (fully charged): 8.5A × 5V / (0.87 × 15V) = 3.26A = 48.9W / 72W = **67.9%** ✓. Both within the 75% design rule at all times. OA-02 resolved — see Open Actions.
+> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~2 minutes from cold start), total 5V_MAIN load = 8.5A (system) + 0.5A (LTC3350 supercap charge) = 9.0A. Buck input at 87% efficiency = 9.0A × 5V / 0.87 = 51.7W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 51.7W / 72W = **71.8%** ✓. Steady-state utilisation (fully charged): 8.5A × 5V / 0.87 = 48.9W / 72W = **67.9%** ✓. Both within the 75% design rule at all times. OA-02 resolved — see Open Actions.
 
 ### 3.6 Thermal Management Design Intent
 
@@ -339,9 +339,9 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 
 **PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design using:
 - **TPS2372-4** (TI, QFN-16): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
-- **TPS23730** (TI, WQFN-20): Active Clamp Forward (ACF) DC-DC controller, 250kHz SSFD, 15V output, PSR mode
-- **T2**: Custom ACF isolation transformer (EF20 core, Np:Ns ≈ 2.8:1, Lm 150–200µH, ≥1500Vrms isolation, −40°C to +125°C)
-  - Procurement: Custom winding from Würth Elektronik application support per TI reference designs TIDA-050045 and PMP23365. No standard catalogue part exists for this specification. Part number to be assigned by Würth after design engagement.
+- **TPS23730** (TI, WQFN-20): Active Clamp Forward (ACF) DC-DC controller, 200kHz, 12V output (R_VFB feedback resistors configured for 12V), PSR mode
+- **T2**: **Coilcraft POE600F-12LD** — off-the-shelf 60W ACF PoE isolation transformer; 12V output, 36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. Catalogue stock part ordered direct from Coilcraft (coilcraft.com). No custom winding required.
+  - **OR-ing priority note:** PoE at 12V is lower than USB-C at 15V. The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal to enforce PoE priority when PoE is live. Battery path activates only if both higher-priority sources are absent.
 
 **System capacity: 72W** (TPS2372-4 external hotswap allows TPS23730 DC-DC to operate beyond the 51W Type 3 integrated limit; confirmed by TI PMP23365 reference design at 72W/Class 8 with TPS2372-4).
 
@@ -399,12 +399,12 @@ Any replacement CPLD must be verified for:
 |---|---|---|---|
 | OA-01 | Confirm TPS25980 16.9V OVLO variant exact part number suffix from TI ordering information. Verify OVLO threshold accuracy (±%) in full datasheet — must confirm lower tolerance ≥ 16.4V (battery BMS max charge). Recalculate UVLO/ILIM resistor values per TPS25980 datasheet programming equations. | Hardware Designer | High |
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~2 min charge from cold: 51.7W / 72W = 71.8% ✓. Steady-state: 48.9W / 72W = 67.9% ✓. Within 75% rule at all times on all sources. |
-| ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + custom T2 ACF transformer. Capacity 72W. See §6 for full rationale. |
+| ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
 | OA-05 | Thermal simulation of BtB connector zone to verify 0.6A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
 | OA-06 | Verify TPS25750 CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W). | Hardware Designer | High |
 | OA-07 | Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md. | Hardware Designer | Medium |
-| OA-08 | Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time. | Hardware Designer | High |
+| ~~OA-08~~ | ~~Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** — Superseded by selection of Coilcraft POE600F-12LD (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, catalogue stock). No custom winding required. |
 
 ### Deferred Items (Post-Prototype Stage)
 

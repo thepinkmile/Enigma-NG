@@ -89,7 +89,7 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 | **17** | **LED_RED** | PWM | 3.3V | RGB LED - Red Channel (Status/Fault). |
 | **18** | **LED_GRN** | PWM | 3.3V | RGB LED - Green Channel (Heartbeat/PoE). |
 | **19** | **LED_BLU** | PWM | 3.3V | RGB LED - Blue Channel (USB-C). |
-| **20** | **POE_STAT** | Input | 3.3V | Active High: Powered via Ag5300. |
+| **20** | **POE_STAT** | Input | 3.3V | Active High: PoE live (TPS2372-4 /PG signal asserted). |
 | **21** | **USB_STAT** | Input | 3.3V | Active Low: 12V/15V PD Negotiated. |
 | **22** | **BATT_STAT** | Input | 3.3V | Active Low: Battery Present. |
 | **23** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse Fault Interrupt. |

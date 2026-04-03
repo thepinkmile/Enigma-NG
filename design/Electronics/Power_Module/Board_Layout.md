@@ -97,13 +97,12 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 | 7499111121A)       |--->| [D5 TPD4E05U06] |-->|  Type 4 PD / Hotswap          |       | (OR-ing Input)  |
 | (4-pair 37-57V CT) |    |________|________|   |  ↓                             |       |_________________|
 |                    |             |            | [U10 TPS23730 ACF DC-DC]       |
-| CONNECTOR SHIELD --|-------------|----------  |  + [T2: ACF Transformer]       |
-|____________________|             V            |  EF20 / Np:Ns 2.8:1           |-----> [ +15V_POE ]
-                             [ GND_CHASSIS ]   |  ≥1500Vrms / 250kHz / 51W     |       (to OR-ing)
+| CONNECTOR SHIELD --|-------------|----------  |  + [T2: POE600F-12LD]          |
+|____________________|             V            |  Coilcraft / 60W / 12V out     |-----> [ +12V_POE ]
+                             [ GND_CHASSIS ]   |  >=1500Vrms / 200kHz / 51W     |       (to OR-ing)
                                                |________________________________|
 
-Note: T2 is a custom-wound ACF transformer specified per TI TIDA-050045 / PMP23365 reference.
-Würth Elektronik application support to be engaged for prototype winding.
+Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer (12V out, 36-72V in, 200kHz, >=1500Vrms). Order direct: coilcraft.com.
 ```
 
 ## USB-C Power
@@ -129,7 +128,7 @@ Würth Elektronik application support to be engaged for prototype winding.
 _________________      ____________________         ___________________        _________________________________________                                            _____________
 
 [RJ45 PoE+] ---> [D4+D5 TPD4E05U06 ESD] ---> [U9 TPS2372-4 + U10 TPS23730 + T2 ACF] --\
-                                                (PoE Type 4 discrete DC-DC, 15V/51W)      \
+                                                (PoE Type 4 discrete DC-DC, 12V/51W)      \
 [USB-C 15V] ---> [TPD4E05U06 ESD] -------------------------------------------------------+---> [U6 LM74700-Q1 + Q1-Q3] -> [F1 TCO] -> [U1 TPS25980 eFuse]
                                                                                           /           (Priority OR-ing)                      (7A / 11V / 16.9V)
 [BATTERY  ] ---> [D1+D2 ESD] ------------------------------------------------------------/                                                         |

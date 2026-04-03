@@ -62,6 +62,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates 15V/3A from Wall/PoE+.
 * **Internal Handshake:** TPS25750 PD Emulator provides 5V/6A "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
+* **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 732kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
 * **Supercap Manager:** LTC3350 (QFN-28) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit (RICHARGE programming resistor set to halve charge current from the LTC3350 1A nominal; exact resistor value to be confirmed from LTC3350 datasheet ICHARGE programming equation); automatic hold-up switchover on 5V_MAIN loss.
@@ -85,7 +86,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **Input Range:** 11.0V – 17.0V (The "Enigma Rail").
 * **Priority Logic:** LM74700-Q1 controlled ideal-diode / OR-ing network (PoE+ is primary; USB-C is secondary; Battery is tertiary).
 * **Protection:** TPS25980 eFuse (16.9V OVLO variant) with 7.0A ILIM, 11.0V UVLO, and 16.9V OVLO.
-* **Islands:** 3-island L3 Power Plane (15V_ENIG input/PoE zone, 5V_MAIN bus, 3V3_ENIG logic). Supercap bank resides on 5V_MAIN island.
+* **Islands:** 3-island L3 Power Plane (VIN_BUS input zone — PoE 12V / USB-C 15V / BATT 11–16.8V; 5V_MAIN bus; 3V3_ENIG logic). Supercap bank resides on 5V_MAIN island.
 
 ### 2. Signal Integrity
 
@@ -97,7 +98,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 * **ESD:** 2× TPD4E05U06 (D4, D5) at the RJ45 entry (one per two GbE pairs), TPD4E05U06 (D3) at the USB-C entry, TPD2E2U06 on battery SMBus, and TPD1E10B06 on BATT_PRES_N.
 * **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching.
-* **Isolation:** 1500V Galvanic isolation via Ag5300 PoE+ Module.
+* **Isolation:** 1500V Galvanic isolation via T2 ACF transformer (Coilcraft POE600F-12LD, ≥1500Vrms rated).
 
 ### 4. Mechanical Spacing (Supercap Block)
 
@@ -128,7 +129,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ### 2. Startup Timeline
 
-1. **Input:** 11–17V enters via PoE+ (TPS2372-4/TPS23730 discrete), USB-C (STUSB4500 negotiated), or Battery.
+1. **Input:** 11–17V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.8V). All three sources are within the TPS25980 eFuse window (UVLO 11V / OVLO 16.9V).
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
 3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
 4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully depleted state: approximately 2 minutes. Once fully charged, the bank provides approximately 14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
@@ -158,7 +159,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 | R_OVLO | eFuse OVLO set | 53.6kΩ 0.1% Thin-Film | 0603 | ERA-3ARB5362V | P53.6KBYCT-ND | ??? |
 | R4, R5 | ETH Activity LEDs | 330Ω 0.1% Thin-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
 | R6 | BATT_PRES_N Pull-up | 10kΩ 0.1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| T2 | PoE ACF Isolation Transformer | Custom wound per spec (Würth app support) / EF20 core / Np:Ns 2.8:1 / Lm 150–200µH / ≥1500Vrms / −40°C to +125°C | THT EF20 | — (custom specification) | — | — |
+| T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS25980 (16.9V OVLO variant) | VQFN 4×4mm | TPS25980RPWR | ??? | ??? |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | VQFN-15-HR | 926-LMQ61460ARUMRNOPB | 296-LMQ61460ARUMR/NOPBCT-ND | ??? |
 | U3 | Supercap Manager | LTC3350 | QFN-28 | ??? | LTC3350EUHE#PBF-ND | ??? |
@@ -168,4 +169,4 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 | U7 | 3V3_ENIG LDO | TPS7A8333P (fixed 3.3V) | WSON-12 3.5×3.5mm | ??? | TPS7A8333PRMWR-ND | ??? |
 | U8 | Voltage Supervisor | MCP121T-450E | SOT-23-3 | ??? | ??? | ??? |
 | U9 | PoE PD Interface (Type 4) | TPS2372-4 | QFN-16 | 595-TPS2372-4RGWR | 296-TPS2372-4RGWRCT-ND | ??? |
-| U10 | PoE DC-DC Controller (ACF) | TPS23730 | WQFN-20 | 595-TPS23730PWPR | 296-TPS23730PWPRCT-ND | ??? |
+| U10 | PoE DC-DC Controller (ACF) | TPS23730 — feedback resistors R_VFB configured for 12V output (to match Coilcraft POE600F-12LD) | WQFN-20 | 595-TPS23730PWPR | 296-TPS23730PWPRCT-ND | ??? |
