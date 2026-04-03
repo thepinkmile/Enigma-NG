@@ -28,7 +28,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 2. Power & UPS Hub
 
-* **Storage:** 2.5F Supercap Bank (6x 15F/3.0V Cells in 2x3 Vertical Block) providing ~30s hold-time @ 5W.
+* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-28), handles charging, cell balancing, and hold-up switchover.
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43045-0512).
   * Pins 1-2: VBATT (14.4V Nominal).
   * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
@@ -39,7 +39,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **Protection:** TPD1E10B06 TVS diode on the Presence line plus a dedicated 2-channel TVS array on the SMBus lines to protect the battery interface during insertion.
 * **Stabilizer:** Solder-mask opening "KLEBER-ZONE" for RTV Silicone adhesive.
 * **Indicators:** Green "LOGIK-BEREIT" LED + 5.1V Zener Amber "Safety Glow" LED.
-* **Z-Height:** 42mm minimum clearance for Eaton 15F cells.
+* **Z-Height:** 42mm minimum clearance for Tecate TPLH-2R7/22WR12X31 cells (31mm body + 10mm pin/clearance = 41mm). Thermal pad zone provides additional standoff clearance.
 * **Interface:** Gelid GP-Ultimate (15 W/mK) pad on an **Exposed ENIG** bottom zone to Aluminium Enclosure with internal compression ribs.
 
 ### 3. Telemetry & Power Management
@@ -62,8 +62,9 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates 15V/3A from Wall/PoE+.
 * **Internal Handshake:** TPS25750 PD Emulator provides 5V/6A "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
-* **eFuse:** TPS259474L eFuse (11V UVLO / 17V OVLO) with 1A Soft-Charge for supercaps.
-  * R-Ladder: 732kΩ (R1), 28.7kΩ (R2), 53.6kΩ (R3) - 0.1% Thin-Film.
+* **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
+  * R-Ladder: 732kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
+* **Supercap Manager:** LTC3350 (QFN-28) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 1A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
 * **Passive:** 72°C SMD Thermal Cutoff (Bourns AC) in series with the main rail.
 * **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
   * "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) remains active during capacitor discharge.
@@ -83,14 +84,14 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 * **Input Range:** 11.0V – 17.0V (The "Enigma Rail").
 * **Priority Logic:** LM74700-Q1 controlled ideal-diode / OR-ing network (PoE+ is primary; USB-C is secondary; Battery is tertiary).
-* **Protection:** TPS259474L eFuse with 5.5A hard-limit and 16.5V OVP.
-* **Islands:** 4-island L3 Power Plane (15V Enigma, 5V System, 3.3V/5A Rotors, 3.3V/Logic).
+* **Protection:** TPS25980 eFuse (16.9V OVLO variant) with 7.0A ILIM, 11.0V UVLO, and 16.9V OVLO.
+* **Islands:** 3-island L3 Power Plane (15V_ENIG input/PoE zone, 5V_MAIN bus, 3V3_ENIG logic). Supercap bank resides on 5V_MAIN island.
 
 ### 2. Signal Integrity
 
 * **USB 3.0:** 90Ω Differential Pairs (Layer 1) with <0.1mm intra-pair skew.
-* **Ethernet/HDMI:** 100Ω Differential Pairs (Layer 1).
-* **Data Bus:** 12-bit parallel bus (Layer 6) shielded by L5 GND.
+* **Ethernet (GbE):** 100Ω Differential Pairs (Layer 1); critical for link-layer signal integrity at 1Gbps.
+* **HDMI:** 100Ω Differential Pairs (Layer 1).
 
 ### 3. Safety & EMC
 
@@ -100,13 +101,15 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 4. Mechanical Spacing (Supercap Block)
 
-* **Configuration:** 2x3 Vertical Staggered Block.
-* **Pitch:** 11.5mm center-to-center (providing a 1.0mm air gap between 10.5mm max-dia cells).
-* **Rib Clearway:** The 1.0mm gap is a dedicated 'No-Fly Zone' for all PCB traces on L1-L4 to accommodate enclosure compression ribs.
+* **Configuration:** 2×2 Block (4 cells: 2S2P — 2 parallel strings of 2 series cells).
+* **Cell dimensions:** Tecate TPLH-2R7/22WR12X31 — 12mm diameter body, 31mm height.
+* **Pitch:** 14mm centre-to-centre (providing a 2.0mm air gap between 12mm max-dia cells) in each direction.
+* **Block footprint:** Approx. 28mm × 28mm on PCB (2×2 arrangement).
+* **Rib Clearway:** The 2.0mm gap is a dedicated 'No-Fly Zone' for all PCB traces on L1-L4 to accommodate enclosure compression ribs and airflow.
 
 ### 5. Routing Constraints & Keep-outs
 
-* **Supercap Shadow Zone:** A 32mm x 22mm 'Routing Keep-out' enforced on L1 and L2 directly beneath the Supercap Block.
+* **Supercap Shadow Zone:** A 32mm × 32mm 'Routing Keep-out' enforced on L1 and L2 directly beneath the Supercap Block.
 * **Purpose:** Only GND_CHASSIS copper and Thermal Matrix vias are permitted here to ensure long-term reliability and inspection access.
 * **PD Emulation:** TPS25750 handles internal 5V/6A negotiation with CM5 to ensure a "Warning-Free" Linux boot.
 
@@ -125,39 +128,44 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ### 2. Startup Timeline
 
-1. **Input:** 12V-15V enters via PoE+/USB-C/Battery.
-2. **Gate:** TPS259474L eFuse validates voltage and current.
-3. **Bucks:** 5V and 3.3V_Rotor converters start.
-4. **Supervisor:** Once 5V hits 4.5V, a 200ms delay timer starts.
-5. **Release:** `GLOBAL_EN` goes HIGH; CM5 PMIC begins internal 1.8V/1.1V sequencing.
-6. **Heartbeat:** MIC1555 starts the 1Hz Green "Initialising" pulse.
+1. **Input:** 11–17V enters via PoE+ (TPS2372-4/TPS23730 discrete), USB-C (STUSB4500 negotiated), or Battery.
+2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
+3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
+4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 1A. Charge duration: approximately 14 seconds from depleted state.
+5. **Supervisor:** Once 5V_MAIN hits 4.5V, MCP121T-450E asserts GLOBAL_EN HIGH after a 200ms delay.
+6. **Release:** CM5 PMIC begins internal 1.8V/1.1V sequencing.
+7. **Heartbeat:** MIC1555 starts the 1Hz Green "Initialising" pulse.
 
 ---
 
 ## Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-6 | Supercaps (6x) | 15F / 3.0V | Radial 10mm | HV1030-3R0156-R | 283-HV1030-3R0156-R-ND | ??? |
+| C_SC1–4 | Supercaps (4× cells, 2S2P) | Tecate TPLH-2R7/22WR12X31 / 22F 2.7V −40°C to +85°C | THT Radial 12×31mm | — (direct/broker) | — | — |
 | D1 | BATT_PRES ESD | TPD1E10B06 | SOD-923 | 595-TPD1E10B06QDCKR | 296-TPD1E10B06QDCKRQ1CT-ND | C284765 |
 | D2 | Battery SMBus ESD | TPD2E2U06 | SON-6 | ??? | ??? | ??? |
 | D3 | USB-C ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
 | D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
 | D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
-| F1 | TCO | 72°C SMD | N/A | AC72ABD | AC72ABD-ND | ??? |
-| J1 | BtB Link | Samtec ERF8 | 80-pin Gold | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
-| J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT | ??? | ??? | ??? |
-| J3 | Battery Conn | Molex 43045-0512 | 5-pin Micro-Fit for Smart Battery Link | ??? | ??? | ??? |
-| Q1-3 | Ideal FETs | SISS22DN | PowerPAK 5x6 | 78-SISS22DN-T1-GE3 | 1727-SISS22DN-T1-GE3CT-ND | C209048 |
-| R1 | Ladder R1 | 732kΩ 0.1% Thin-Film | 0603 | ERA-3ARB7323V | P732KBYCT-ND | ??? |
-| R2 | Ladder R2 | 28.7kΩ 0.1% Thin-Film | 0603 | ERA-3ARB2872V | P28.7KBYCT-ND | ??? |
-| R3 | Ladder R3 | 53.6kΩ 0.1% Thin-Film | 0603 | ERA-3ARB5362V | P53.6KBYCT-ND | ??? |
-| R4, R5 | ETH_LEDs | 330Ω 0.1% Thin-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
-| R6 | BATT_PRES_N Pull-up | 10kΩ (0.1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| U1 | eFuse | TPS259474L | QFN-20 | TPS259474LRPWR | 296-TPS259474LRPWRCT-ND | ??? |
-| U2 | 5V Buck | LM61460-Q1 | VQFN-14 | 926-LM61460ARUMRNOPB | 296-LM61460ARUMR/NOPBCT-ND | C123456 |
-| U3 | PD Emulator | TPS25750 | QFN-28 | 595-TPS25750DRCR | 296-TPS25750DRCRCT-ND | C123457 |
-| U4 | USB-C Sink Controller | STUSB4500 | QFN-24 | ??? | ??? | ??? |
-| U5 | OR-ing Controller | LM74700-Q1 | SOT-23-6 | ??? | ??? | ??? |
-| U6 | Voltage Supervisor | MCP121T-450E | SOT-23-3 | ??? | ??? | ??? |
-| U7 | 3V3_ENIG LDO | TBD | TBD | ??? | ??? | ??? |
+| F1 | TCO | 72°C SMD Thermal Cutoff | N/A | AC72ABD | AC72ABD-ND | ??? |
+| J1 | BtB Link | Samtec ERF8-040-05.0-SD-VK-TR | 80-pin Gold ERF8 | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
+| J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | ??? | ??? | ??? |
+| J3 | Battery Conn | Molex 43045-0512 | 5-pin Micro-Fit | ??? | ??? | ??? |
+| Q1–3 | Ideal FETs (×3) | SISS22DN | PowerPAK 5×6 | 78-SISS22DN-T1-GE3 | 1727-SISS22DN-T1-GE3CT-ND | C209048 |
+| R_UVLO_HI | eFuse UVLO upper | 732kΩ 0.1% Thin-Film | 0603 | ERA-3ARB7323V | P732KBYCT-ND | ??? |
+| R_UVLO_LO | eFuse UVLO lower | 28.7kΩ 0.1% Thin-Film | 0603 | ERA-3ARB2872V | P28.7KBYCT-ND | ??? |
+| R_OVLO | eFuse OVLO set | 53.6kΩ 0.1% Thin-Film | 0603 | ERA-3ARB5362V | P53.6KBYCT-ND | ??? |
+| R4, R5 | ETH Activity LEDs | 330Ω 0.1% Thin-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
+| R6 | BATT_PRES_N Pull-up | 10kΩ 0.1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| T2 | PoE ACF Isolation Transformer | Custom wound per spec (Würth app support) / EF20 core / Np:Ns 2.8:1 / Lm 150–200µH / ≥1500Vrms / −40°C to +125°C | THT EF20 | — (custom specification) | — | — |
+| U1 | eFuse | TPS25980 (16.9V OVLO variant) | VQFN 4×4mm | TPS25980RPWR | ??? | ??? |
+| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | VQFN-15-HR | 926-LMQ61460ARUMRNOPB | 296-LMQ61460ARUMR/NOPBCT-ND | ??? |
+| U3 | Supercap Manager | LTC3350 | QFN-28 | ??? | LTC3350EUHE#PBF-ND | ??? |
+| U4 | PD Emulator | TPS25750 | QFN-28 | 595-TPS25750DRCR | 296-TPS25750DRCRCT-ND | ??? |
+| U5 | USB-C Sink Controller | STUSB4500 | QFN-24 | ??? | ??? | ??? |
+| U6 | OR-ing Controller | LM74700-Q1 | SOT-23-6 | ??? | ??? | ??? |
+| U7 | 3V3_ENIG LDO | TPS7A8333P (fixed 3.3V) | WSON-12 3.5×3.5mm | ??? | TPS7A8333PRMWR-ND | ??? |
+| U8 | Voltage Supervisor | MCP121T-450E | SOT-23-3 | ??? | ??? | ??? |
+| U9 | PoE PD Interface (Type 4) | TPS2372-4 | QFN-16 | 595-TPS2372-4RGWR | 296-TPS2372-4RGWRCT-ND | ??? |
+| U10 | PoE DC-DC Controller (ACF) | TPS23730 | WQFN-20 | 595-TPS23730PWPR | 296-TPS23730PWPRCT-ND | ??? |

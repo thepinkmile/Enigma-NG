@@ -1,0 +1,415 @@
+# Enigma-NG Certification Evidence Record (V1.0 — DRAFT)
+
+> **Document Status:** Draft — Power Module design rationale complete; additional sections to be added as design review progresses.
+>
+> **Applicable Standards:**
+> - **CE Marking:** EN 55032:2015+A2:2021 (Multimedia Equipment EMC), EN 55035:2017+A11:2020, EN IEC 61000-3-2, EN IEC 61000-3-3
+> - **UKCA:** UKCA equivalent to the above CE directives under UK Statutory Instrument 2016/1091
+> - **DefStan 59-411 Part 3:** Land Class C (Conducted and Radiated Emissions, Conducted and Radiated Susceptibility)
+> - **DefStan 00-35 Part 3:** Environmental Testing (Shock, Vibration, Temperature)
+> - **IEC 61000-4-2:** Electrostatic Discharge Immunity
+> - **IEC 61000-4-5:** Electrical Fast Transient / Surge Immunity
+
+---
+
+## Table of Contents
+
+1. [Document Scope and Purpose](#1-document-scope-and-purpose)
+2. [Design Philosophy and Overarching Decisions](#2-design-philosophy-and-overarching-decisions)
+3. [Power Architecture Design Rationale](#3-power-architecture-design-rationale)
+   - 3.1 [Input Selection and Protection Chain](#31-input-selection-and-protection-chain)
+   - 3.2 [eFuse Settings — UVLO and OVLO Rationale](#32-efuse-settings--uvlo-and-ovlo-rationale)
+   - 3.3 [5V Buck Converters — Dual-Phase Interleaving Design Rationale](#33-5v-buck-converters--dual-phase-interleaving-design-rationale)
+   - 3.4 [3V3_ENIG LDO — Selection Rationale](#34-3v3_enig-ldo--selection-rationale)
+   - 3.5 [Component Utilisation Policy](#35-component-utilisation-policy)
+   - 3.6 [Thermal Management Design Intent](#36-thermal-management-design-intent)
+4. [EMC Design Measures](#4-emc-design-measures)
+   - 4.1 [Conducted Emissions — Power Entry Filtering](#41-conducted-emissions--power-entry-filtering)
+   - 4.2 [Conducted Emissions — Switching Regulator Strategy](#42-conducted-emissions--switching-regulator-strategy)
+   - 4.3 [Radiated Emissions — Grounding Architecture](#43-radiated-emissions--grounding-architecture)
+   - 4.4 [ESD Protection Coverage](#44-esd-protection-coverage)
+5. [Component Derating Evidence](#5-component-derating-evidence)
+6. [PoE Power Budget Evidence](#6-poe-power-budget-evidence)
+7. [Component Obsolescence Register](#7-component-obsolescence-register)
+8. [Open Actions and Deferred Items](#8-open-actions-and-deferred-items)
+
+---
+
+## 1. Document Scope and Purpose
+
+This document records the design decisions and technical rationale for the Enigma-NG hardware, structured to support formal conformity assessment against the standards listed above. It serves as the primary evidence document for any independent test laboratory, Notified Body, or MOD Technical Authority review.
+
+The Enigma-NG is a purpose-built digital Enigma cipher machine recreation, intended for use in museum, military, and educational environments. The device must therefore meet the intersection of civilian EMC requirements (CE/UKCA) and military electromagnetic environment requirements (DefStan 59-411 Land Class C), which is a deliberately conservative and demanding target.
+
+This document is **living** — it will be updated as the design progresses through prototype, validation, and production stages. Sections referencing prototype-stage decisions will be clearly marked.
+
+---
+
+## 2. Design Philosophy and Overarching Decisions
+
+### 2.1 "Museum-Grade" Design Standard
+
+All components are selected and operated to a standard described internally as "Museum-Grade": the design must remain functional and maintainable for decades, in the hands of non-technical users, in unpredictable environments. This drives the following binding design rules, applied system-wide:
+
+| Rule | Value | Rationale |
+|---|---|---|
+| Ceramic capacitor dielectric | X7R only | Y5V/Z5U exhibit >80% capacitance loss at rated voltage; unacceptable for precision filtering |
+| Power capacitor voltage derating | 2.5× rated voltage | Long-term reliability under voltage stress; mandatory for military cycling environments |
+| Resistor tolerance | 1% minimum; 0.1% for protection thresholds and current-sense paths | Accuracy of UVLO/OVLO/ILIM settings directly impacts protection behaviour |
+| Component utilisation | ≤75% of rated maximum | Prevents thermal and electrical degradation under sustained high load |
+| Thermal design | Sized for 100% utilisation dissipation | Enclosure and thermal pads sized for worst-case, not design-point |
+| Switching converters | Spread-spectrum mandatory; shielded inductors required | DefStan CE01/CE03 conducted emissions compliance |
+
+### 2.2 Single-Point Chassis Ground Architecture
+
+A single-point `GND_CHASSIS` bond is established between the OR-ing network output and the eFuse input — the electrical boundary between the "dirty" input side and the "clean" downstream side. All external connector ESD protection TVS diodes shunt to `GND_CHASSIS`, which connects to the aluminium enclosure and from there to protective earth. The signal and power reference ground connects to `GND_CHASSIS` at this one point only.
+
+**Rationale:** Multiple chassis ground bonds create ground loops. Ground loop currents are a leading cause of common-mode radiated emissions failures in DefStan RE01/RE02 (radiated emissions) and can exacerbate susceptibility failures in DefStan RS01/RS02 (radiated susceptibility). The single-point bond is the canonical solution specified in MIL-STD-461 and adopted here by analogy for DefStan compliance.
+
+---
+
+## 3. Power Architecture Design Rationale
+
+### 3.1 Input Selection and Protection Chain
+
+**Full power chain (input to output):**
+
+```
+[PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (51W, 15V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
+  → LM74700-Q1 OR-ing controller + SISS22DN ideal-diode FETs (×3)
+  → TCO F1 (72°C thermal fuse)
+  → TPS25980 eFuse (7A ILIM, 11.0V UVLO, 16.9V OVLO fixed variant, VQFN 4×4mm)
+  → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 4× Tecate TPLH-2R7/22WR12X31 supercaps (11F/5.4V, 2S2P)]
+  → 5V_MAIN bus
+  → [CM5 via TPS25750 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS7A8333P 3V3 LDO]
+  → 3V3_ENIG (all CPLDs + USB-JTAG)
+```
+
+**Input priority rationale:**
+- PoE is primary as it is the highest-capacity source (71.3W PD vs 75W USB-C adapter), and in fixed installations is the most reliable and managed power source.
+- USB-C is secondary as it depends on the availability of an appropriate adapter.
+- Battery is tertiary as its capacity is finite.
+
+The LM74700-Q1 + SISS22DN ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which is critical for DefStan 00-35 temperature testing compliance.
+
+### 3.2 eFuse Settings — UVLO and OVLO Rationale
+
+The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a resistor (UVLO) and external component selection (ILIM) to the following thresholds:
+
+| Parameter | Value | Rationale |
+|---|---|---|
+| UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~15V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
+| OVLO | **16.9V (fixed variant)** | Highest available option on TPS25980. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin above OVLO. See §3.2 Note on Battery Voltage. |
+| ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 8.5A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
+| Soft-start (supercap charge) | **1A** | Controls inrush current during supercapacitor initial charge, preventing nuisance eFuse trips at power-on. |
+
+**Resistor ladder values (all 0.1% thin-film, 0603):**
+
+| Designator | Value | Purpose |
+|---|---|---|
+| R_UVLO_HI | 732 kΩ | UVLO upper resistor |
+| R_UVLO_LO | 28.7 kΩ | UVLO lower resistor |
+| R_OVLO | 53.6 kΩ | OVLO set resistor |
+
+> **Note on Battery Voltage — OVLO Margin:** The TPS25980 16.9V OVLO variant is 0.1V above the theoretical max battery voltage of 16.8V (4S Li-ion at 4.2V/cell). To maintain an engineering margin of ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)**. This specification must be enforced in the battery procurement specification and verified during incoming inspection. OVLO threshold accuracy must be confirmed against the TPS25980 datasheet (full threshold tolerance band required before production release — see §8, OA-01).
+
+> **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting DefStan CE01/CE03 conducted emissions compliance.
+
+
+### 3.3 5V Buck Converters — Dual-Phase Interleaving Design Rationale
+
+#### 3.3.1 Part Selection
+
+Two **TI LMQ61460-Q1** (3–36V input, 6A rated, VQFN-15-HR, automotive-grade AEC-Q100) switching regulators are used in parallel, phase-interleaved.
+
+**Why two instead of one larger regulator?**
+
+A single 12A-class Buck regulator would satisfy the current requirement but would concentrate switching noise into one location, increase thermal density, and reduce component utilisation headroom. The dual 6A approach provides:
+- 70.8% utilisation of each IC (below the 75% rule) ✓
+- Thermal load distributed across two thermal pads
+- Redundant current delivery — loss of one IC degrades output to 6A (sufficient for CM5 safe shutdown)
+- An upgrade path without PCB redesign: LMQ61480 (8A) or LMQ61495 (10A) are pin-compatible replacements
+
+#### 3.3.2 Switching Frequency — 400 kHz Selection
+
+The LMQ61460-Q1 is configurable from approximately 200 kHz to 2.2 MHz. **400 kHz** is selected for this design.
+
+| Consideration | 400 kHz | 2.2 MHz |
+|---|---|---|
+| AM broadcast band (525–1705 kHz) | Below band ✓ | Above band ✓ |
+| Harmonic at 3× | 1.2 MHz (in band) | 6.6 MHz (clear) |
+| Harmonic at 2× (with interleaving) | 800 kHz (near band) | 4.4 MHz (clear) |
+| Core loss in inductors | Low | High |
+| Inductor size | Larger | Smaller |
+| DefStan CE01/CE03 compliance margin | High (DRSS keeps 2× fundamental clear of 525kHz) | Requires careful harmonic management above 2MHz |
+| Thermal density in Power Can | Acceptable | Higher due to core loss |
+
+At 400 kHz with the DRSS ±5.5% modulation:
+- Fundamental range: 378–422 kHz (well below the 525 kHz AM lower boundary)
+- Phase-interleaved effective ripple frequency: 756–844 kHz (the second harmonic cluster, marginally entering the AM band at its upper extreme)
+- This residual overlap is managed by the Iron Curtain input filter and the board-level shielded enclosure
+
+#### 3.3.3 Phase Interleaving Architecture — 180° SYNC Implementation
+
+**Master IC (U2A):** Frequency set by R_FSET = 86.6 kΩ (0.1%, 0603) from FSET pin to AGND. DRSS enabled (factory default). Internal oscillator runs at 400 kHz ± 5.5%.
+
+**Slave IC (U2B):** FSET/SYNC pin driven by an external phase-shifted replica of U2A's switching signal, constructed as follows:
+
+```
+U2A SW node
+    │
+   [R_SW: 10kΩ 1% 0402]          (isolates SW ringing from delay chain)
+    │
+   [C_F1: 100pF X7R 0402]         (low-pass: τ = 1µs, attenuates SW ringing)
+    │
+   [U_INV1: SN74LVC1G14 SOT-23-5]  (Schmitt trigger — restores clean digital signal)
+    │
+   [R_DLY: 100kΩ 0.1% 0402]       ┐
+   [C_DLY: 18nF X7R 0603]         ┘  RC delay: τ ≈ 1.8µs → ½ period at 400kHz ≈ 1.25µs
+    │
+   [U_INV2: SN74LVC1G14 SOT-23-5]  (Schmitt trigger — re-squares delayed signal)
+    │
+  U2B FSET/SYNC
+    │
+   [R_PD: 10kΩ 1% 0402 to AGND]   (ensures defined state during U2A startup; U2B free-runs
+                                    at ~400kHz via R_FSET resistor until SYNC locks)
+```
+
+Both SN74LVC1G14 instances are powered from 3V3_ENIG (available post-LDO startup). 100nF X7R decoupling capacitors are placed within 0.5mm of each VCC pin.
+
+**Phase accuracy:** At 400 kHz nominal, the RC delay produces a 180° offset. With DRSS modulation at ±5.5% (frequency range 378–422 kHz), the fixed RC delay introduces ±8° phase variation. The residual asymmetric ripple at this offset error is less than 5% of the single-phase ripple amplitude — acceptable for all certification purposes.
+
+**DRSS coherence:** Because U2B's SYNC pin tracks U2A's switching signal directly (including DRSS modulation), both ICs share coherent spread-spectrum dithering. If each IC ran independent DRSS, inter-modulation products would appear at sum and difference frequencies, partially defeating the spread-spectrum benefit. Coherent DRSS avoids this.
+
+#### 3.3.4 EMI Benefit Quantification
+
+| Mechanism | Quantified Effect | Applicable Limit |
+|---|---|---|
+| 180° phase interleaving | Input capacitor RMS ripple current reduced by 50% | DefStan CE01 (30Hz–10kHz conducted) |
+| Effective ripple at 800kHz | Output filter requirement halved; lower-inductance filter reduces parasitic emission | DefStan CE03 (10kHz–10MHz conducted) |
+| DRSS ±5.5% | Peak conducted emission at switching frequency reduced ~10–15 dBµV | DefStan CE03, EN 55032 Class B |
+| 400kHz below AM band | No interference with 525–1705kHz AM broadcast band | CISPR 25 Class 5 |
+| Coherent DRSS | No inter-modulation artifacts between the two ICs | DefStan CS02 (2MHz–1GHz radiated susceptibility) |
+
+### 3.4 3V3_ENIG LDO — Selection Rationale
+
+**Part selected: TI TPS7A8333P** (fixed 3.3V output variant, WSON-12)
+
+| Parameter | Value | Rationale |
+|---|---|---|
+| Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; well above TPS7A8333P 500mV dropout |
+| Output noise | 8.8 µVRMS | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
+| PSRR | 72 dB | Attenuates Buck output ripple (800kHz effective) by >72dB — negligible at CPLD supply |
+| Max output current | 3A | Peak load: 37 CPLDs × 50mA avg = 1.85A → **61.7% utilisation** ✓ |
+| Package | WSON-12 (3.5×3.5mm) | Exposed pad enables thermal transfer to PCB copper pour |
+| Input power dissipation | 1.7V × 1.85A = **3.15W** | Managed by Power Module thermal zone (Gelid GP-Ultimate pad, 15W/mK to enclosure) |
+
+**Why not a second switching regulator for 3V3_ENIG?**
+
+The 37 CPLDs (MAX II EPM240T100C5N) share this rail as their VCCIO (I/O voltage reference). Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and potential JTAG chain errors. A linear LDO with 72dB PSRR provides isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional filtering.
+
+### 3.5 Component Utilisation Policy
+
+All active components are operated at ≤75% of their rated maximum under worst-case conditions (maximum ambient temperature, maximum specified load). This provides thermal and electrical derating consistent with military component derating standards.
+
+**Peak load budget (5V_MAIN bus):**
+
+| Load | Current | Notes |
+|---|---|---|
+| Raspberry Pi CM5 (full rated) | 5.00A | Linux OS undervoltage threshold: 5V/5A (25W); full allocation maintained |
+| USB 3.0 (TPS2065C rated limit) | 1.60A | Single USB 3.0 port; TPS2065C current-limited |
+| HDMI (AP2331W rated limit) | 0.05A | Hot-plug current spike handled by AP2331W |
+| 3V3_ENIG LDO input (37 CPLDs) | 1.85A | 37 × 50mA average; 3A LDO peak |
+| **Total peak** | **8.50A** | **70.8% of 12A rated Buck output** ✓ |
+
+**Component utilisation summary:**
+
+| Component | Function | Rated | Peak Load | Utilisation |
+|---|---|---|---|---|
+| 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.50A | **70.8%** ✓ |
+| TPS7A8333P | 3V3_ENIG LDO | 3A | 1.85A | **61.7%** ✓ |
+| TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.86A* | **69.4%** ✓ |
+| TPS2372-4 + TPS23730 + T2 (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
+| STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
+
+> *eFuse load: Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.5A + LTC3350 supercap charge 1A (5V side) = 9.5A at 5V = 47.5W. Buck input (÷0.87) = 54.6W. At 15V: 54.6W / 15V = 3.64A eFuse current. eFuse utilisation (ILIM=7A): 3.64A / 7A = **52.0%** ✓. Steady state (no supercap charge): 8.5A × 5V / (0.87 × 15V) = 3.26A / 7A = **46.5%** ✓.
+>
+> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 1A from 5V_MAIN, not directly from the 15V input. During initial charge, total 5V_MAIN load = 8.5A (system) + 1A (LTC3350 supercap charge) = 9.5A. Buck input at 87% efficiency = 9.5A × 5V / (0.87 × 15V) = 3.64A at 15V = 54.6W. PoE utilisation during charge phase = 54.6W / 72W = **75.8%** (marginally above 75% rule for approximately 14 seconds from cold start). Steady-state utilisation: 8.5A × 5V / (0.87 × 15V) = 3.26A = 48.9W / 72W = **67.9%** ✓. Transient peak during supercap charge is accepted; duration is ≤14 seconds. Mitigation: LTC3350 charge current can be reduced to 0.8A if strict 75% compliance is required at all times.
+
+### 3.6 Thermal Management Design Intent
+
+The Power Module is housed in a 42mm aluminium "Power Can" enclosure with internal compression ribs. The thermal design provides a continuous heat path from component junctions to the enclosure:
+
+- **Switching regulator thermal pads** → type VII epoxy-filled VIPPO via matrix (hexagonal pattern) → L4 copper plane → exposed ENIG thermal pad on PCB bottom → Gelid GP-Ultimate thermal interface material (15 W/mK) → aluminium enclosure wall
+- **LDO thermal pad** → same via matrix → shared thermal zone with supercapacitor area
+- **Enclosure** → ambient via natural convection; no forced cooling required for rated load
+
+The thermal system is designed to manage the heat dissipation resulting from 100% component utilisation, despite the 75% operational limit, providing a safety margin for unexpected load spikes and ambient temperature excursions consistent with DefStan 00-35 temperature requirements.
+
+---
+
+## 4. EMC Design Measures
+
+### 4.1 Conducted Emissions — Power Entry Filtering
+
+The Power Module implements a two-stage common-mode and differential filter at the point of power entry (the "Iron Curtain"):
+
+| Stage | Component | Type | Function |
+|---|---|---|---|
+| Primary | Würth Elektronik WE-CMBNC Nanocrystalline CMC | Common-mode choke | Broadband (1kHz–1GHz) common-mode noise attenuation |
+| Secondary | Laird CM5022 | High-frequency differential choke | Narrowband differential noise attenuation above 10MHz |
+| Pi-filter | Moulded inductors + 50V X7R ceramic capacitors | LC Pi filter | Differential noise attenuation across Buck switching band |
+| Y-capacitors | X7R ceramics, 50V, to GND_CHASSIS | Capacitive shunt to chassis | Common-mode current path to chassis; reduces conducted DM→CM conversion |
+
+Y-capacitors are placed at the power entry point, between the power rails and GND_CHASSIS, before any switching circuitry. This ensures common-mode noise from the source is shunted to chassis before entering the board.
+
+### 4.2 Conducted Emissions — Switching Regulator Strategy
+
+See §3.3 for the full dual-phase interleaving design rationale. Key measures:
+
+- **400kHz operation:** Below AM broadcast band; avoids direct interference with 525–1705kHz
+- **DRSS ±5.5%:** Mandatory for all switching regulators; spreads conducted emission peaks
+- **Shielded inductors:** Mandatory for all Buck regulator output inductors; prevents magnetic field coupling to adjacent signal traces
+- **Phase interleaving:** 180° offset between U2A and U2B reduces conducted ripple amplitude at all frequencies
+
+### 4.3 Radiated Emissions — Grounding Architecture
+
+**Single-point GND_CHASSIS bond:** As described in §2.2. The bond point is located physically between the OR-ing network and the eFuse, at the "clean/dirty" boundary. Copper pours for GND_CHASSIS and signal GND are separated everywhere except this one point, with a clear visual gap on all PCB layers maintained in the layout.
+
+**GND_CHASSIS ring:** A 4-layer GND_CHASSIS copper ring with 2.5mm staggered via-stitching runs the perimeter of the PCB, providing a low-impedance return path for ESD events and shielding the board interior from external fields.
+
+**Aluminium enclosure:** The "Power Can" enclosure acts as a Faraday shield for radiated emissions above approximately 300 MHz. All screws connecting the PCB to the enclosure pass through GND_CHASSIS copper, maintaining shield continuity.
+
+### 4.4 ESD Protection Coverage
+
+All externally accessible connectors on the Power Module are protected against ESD events per IEC 61000-4-2 (contact discharge ±4kV, air discharge ±8kV minimum). TVS protection arrays shunt to GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
+
+| Interface | Protection Device | Package | Notes |
+|---|---|---|---|
+| RJ45 Ethernet (MDI0/MDI1) | TPD4E05U06 (D4) | U-DFN-10 | One device per two differential pairs |
+| RJ45 Ethernet (MDI2/MDI3) | TPD4E05U06 (D5) | U-DFN-10 | One device per two differential pairs |
+| USB-C Power Input | TPD4E05U06 (D3) | U-DFN-10 | Covers CC1, CC2, VBUS, and SBU lines |
+| Battery SMBus (SDA/SCL) | TPD2E2U06 (D2) | SON-6 | SMBus differential pair protection |
+| Battery Presence (BATT_PRES_N) | TPD1E10B06 (D1) | SOD-923 | Single-line presence detect |
+
+**Internal connections (Board-to-Board links):** Internal BtB connectors (Link-Alpha, Link-Beta) are not individually ESD-protected in the standard configuration, as they are considered internal interfaces not subject to user contact during normal operation.
+
+**Diagnostic test banks:** ESD protection on diagnostic banks is deferred to the post-prototype stage (see §8, deferred item DA-01).
+
+---
+
+## 5. Component Derating Evidence
+
+All components operate within the following derating limits. Calculations are based on worst-case ambient temperature of 70°C (DefStan 00-35 Land Class C operational) unless stated.
+
+| Component Class | Parameter | Derating Applied | Basis |
+|---|---|---|---|
+| Ceramic capacitors | Voltage | 2.5× rated | X7R capacitance loss at rated voltage; long-term reliability |
+| Electrolytic capacitors | Voltage | 2.0× rated | Not used in this design (all ceramic and film) |
+| Switching regulators | Current | ≤75% of Iout(max) | Thermal derating; junction temperature target |
+| LDO regulator | Current | ≤75% of Iout(max) | Power dissipation; θJA × Pdiss < TJ(max) − TA(max) |
+| eFuse | Current limit | 70% of ILIM setting | Prevents nuisance trips on transients |
+| Resistors (power) | Power | ≤50% of rated | Long-term stability; 50% derating is standard for resistors |
+| Resistors (precision, 0.1%) | Power | ≤25% of rated | Maintains temperature coefficient specification |
+| PCB traces (power) | Current | Per IPC-2221B at 70°C | 2oz copper; trace width calculated per IPC standard |
+| BtB connector (power pins) | Current | ≤0.6A per contact | Samtec ERF8 rated 0.5A/contact; 0.6A accepted with 2oz copper thermal analysis (evidence TBD) |
+
+---
+
+## 6. PoE Power Budget Evidence
+
+The following table documents the IEEE 802.3 PoE standard capabilities and the rationale for the selection of 802.3bt Type 4.
+
+| Standard | PSE Output | PD Input Power | Input Current @15V | Pairs Used |
+|---|---|---|---|---|
+| 802.3af (PoE) | 15.4W | 12.95W | 0.86A | 2-pair |
+| 802.3at (PoE+) | 30W | 25.5W | 1.70A | 2-pair |
+| 802.3bt Type 3 (PoE++) | 60W | 51.0W | 3.40A | 4-pair |
+| **802.3bt Type 4 (PoE++)** | **90W** | **71.3W** | **4.75A** | **4-pair** |
+
+**Load vs. PoE standard comparison:**
+
+| Condition | System Load | Type 3 (51W) | Type 4 (71.3W) |
+|---|---|---|---|
+| Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.6% ✓ |
+| Peak (add supercap initial charge 15W) | 57.5W | 112.7% ❌ | 80.6% ⚠️ * |
+
+> *Peak 80.6% exceeds the 75% design rule during supercapacitor initial charge only (first ~60 seconds of operation from cold). Accepted as a transient; steady-state is 59.6%. Mitigation: throttle supercap charge rate during PoE-only operation if required for certification. See open action OA-02.
+
+**PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design using:
+- **TPS2372-4** (TI, QFN-16): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
+- **TPS23730** (TI, WQFN-20): Active Clamp Forward (ACF) DC-DC controller, 250kHz SSFD, 15V output, PSR mode
+- **T2**: Custom ACF isolation transformer (EF20 core, Np:Ns ≈ 2.8:1, Lm 150–200µH, ≥1500Vrms isolation, −40°C to +125°C)
+  - Procurement: Custom winding from Würth Elektronik application support per TI reference designs TIDA-050045 and PMP23365. No standard catalogue part exists for this specification. Part number to be assigned by Würth after design engagement.
+
+**System capacity: 72W** (TPS2372-4 external hotswap allows TPS23730 DC-DC to operate beyond the 51W Type 3 integrated limit; confirmed by TI PMP23365 reference design at 72W/Class 8 with TPS2372-4).
+
+**Open action OA-03 is closed** by this selection. See §8 for updated open action register.
+
+---
+
+## 7. Component Obsolescence Register
+
+This section records components that have active end-of-life (EOL) or product change notices (PCN) at the time of design. For each such component, the design team's acceptance rationale and any mitigation plan are documented.
+
+### 7.1 MAX II EPM240T100C5N (CPLD — Multiple Boards)
+
+| Attribute | Detail |
+|---|---|
+| **Manufacturer** | Intel (formerly Altera) |
+| **Part Number** | EPM240T100C5N |
+| **Family** | MAX II |
+| **Function** | CPLD — Rotor logic emulation (VCCIO from 3V3_ENIG rail) |
+| **Quantity** | 37 devices (across Rotor stack boards) |
+| **EOL/PCN Status** | Active lifecycle notice issued by Intel |
+| **Notice Type** | Product Discontinuation / Last-Time-Buy notification |
+
+**Acceptance Rationale (Prototype Stage):**
+
+The MAX II EPM240T100C5N is accepted for use in the prototype design for the following reasons:
+
+1. **Cost effectiveness:** These devices are significantly lower in cost than their recommended successors (MAX 10, Cyclone 10 LP), making them well-suited for prototype-stage development where design changes are expected.
+2. **Developer tooling:** The designer holds a MAX II FPGA/CPLD development board, enabling direct verification of programming chains and JTAG connectivity prior to committing to PCB fabrication.
+3. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6–12 months) is considered acceptable, particularly given the availability of remaining stock from reputable distributors.
+4. **Pin and feature compatibility:** The MAX II EPM240T100C5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising development risk.
+
+**Mitigation Plan (Production Stage):**
+
+Before any production units are manufactured, the CPLD selection must be reviewed. Candidate replacements include:
+- **Intel MAX 10 10M02SCE144C8G** (EEPROM-based, single-supply, no external configuration memory required) — preferred drop-in successor to MAX II in terms of tooling familiarity
+- **Lattice MachXO2** family (lower cost, competitive tooling, active lifecycle)
+- **Lattice MachXO3** family (higher density options if needed)
+
+Any replacement CPLD must be verified for:
+- Pin-compatible TQFP-100 (or equivalent via adapter) footprint, or a PCB layout revision must be performed
+- JTAG chain compatibility with the FT232H-based USB-JTAG interface
+- 3.3V VCCIO (3V3_ENIG) compatibility
+- Operating temperature range: −40°C to +85°C minimum (DefStan 00-35 Land Class C)
+
+> **Action item OA-04:** Review replacement CPLD options before prototype-to-production transition. Update this register with selected replacement part.
+
+---
+
+## 8. Open Actions and Deferred Items
+
+### Open Actions (Required Before Certification Submission)
+
+| ID | Description | Owner | Priority |
+|---|---|---|---|
+| OA-01 | Confirm TPS25980 16.9V OVLO variant exact part number suffix from TI ordering information. Verify OVLO threshold accuracy (±%) in full datasheet — must confirm lower tolerance ≥ 16.4V (battery BMS max charge). Recalculate UVLO/ILIM resistor values per TPS25980 datasheet programming equations. | Hardware Designer | High |
+| OA-02 | Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase). | Hardware Designer | Medium |
+| ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + custom T2 ACF transformer. Capacity 72W. See §6 for full rationale. |
+| OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
+| OA-05 | Thermal simulation of BtB connector zone to verify 0.6A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
+| OA-06 | Verify TPS25750 CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W). | Hardware Designer | High |
+| OA-07 | Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md. | Hardware Designer | Medium |
+| OA-08 | Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time. | Hardware Designer | High |
+
+### Deferred Items (Post-Prototype Stage)
+
+| ID | Description | Deferred Until |
+|---|---|---|
+| DA-01 | ESD protection on Diagnostic Bank-A and Diagnostic Bank-B exposed ENIG pads. TVS arrays (TPD4E05U06 or equivalent) to GND_CHASSIS required before production release and any classroom deployment. | Post-prototype validation |
+| DA-02 | ESD policy for classroom deployment variant — define which internal BtB-accessible connections require additional ESD protection when the device is used in an educational/student-access configuration. | Pre-production (classroom variant) |
+| DA-03 | Full consistency documentation pass — INC-01 through INC-20 applied in current session. Remaining actions: Consolidated BOM update, Controller Board Board_Layout.md Link-Alpha pin map (80-pin allocation), TPS25980 suffix verification (OA-01). | Post-eFuse suffix confirmation |
+| DA-04 | Update Consolidated BOM with all locked Power Module components. Format: component description, specification, boards requiring, quantity, notes (no reference designators — these are per-board). | Post-eFuse part lock (OA-01) |

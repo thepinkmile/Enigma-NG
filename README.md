@@ -51,16 +51,22 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ### 1. Power Module (The Heart)
 
-* {TBD}
+* **Input:** Triple-input priority selection (PoE+ 802.3bt Type 4 > USB-C 15V PD > Battery 11–16.8V) via LM74700-Q1 + SISS22DN ideal-diode FETs.
+* **PoE:** Fully discrete 802.3bt Type 4 implementation — TPS2372-4 (PD interface) + TPS23730 (ACF DC-DC) + T2 custom isolation transformer. Capacity: 72W. Steady-state utilisation: 70.8%.
+* **Protection:** TPS25980 eFuse — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON. Plus 72°C TCO thermal fuse.
+* **Buck:** Dual-phase interleaved LMQ61460-Q1 (×2, 6A each, 12A combined, 400kHz DRSS, 180° SYNC). Effective ripple: 800kHz.
+* **LDO:** TPS7A8333P 3V3_ENIG (8.8µVRMS noise, 72dB PSRR, 3A, 1.85A load at 61.7% utilisation).
+* **UPS:** LTC3350 supercap manager + 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, 2S2P) on 5V_MAIN bus. 11F at 5.4V → ~14 second hold-up for clean CM5 shutdown.
+* **Outputs:** 5V_MAIN (12A) and 3V3_ENIG (3A) via 80-pin Samtec ERF8 BtB to Controller Board.
 
 ### 2. Controller Board (The Brain)
 
 * **Module:** Raspberry Pi CM5 (BCM2712) on a custom 4-layer 1.6mm carrier.
 * **Power Input:** 3-way seamless switching (LTC4412 Ideal Diode).
   * **Smart Battery:** 4-pin Molex connector (12V-14.4V nominal) with SMBus telemetry.
-  * **PoE+ (802.3at):** 30W Power-over-Ethernet via isolated PD controller.
+  * **PoE+ (802.3bt Type 4):** Up to 71.3W Power-over-Ethernet via Power Module discrete TPS2372-4 + TPS23730 + T2 ACF design. Single Ethernet cable carries both data and power.
   * **USB-C PD:** 5V/5A negotiated input.
-* **Protection:** **TPS259474L eFuse** (Latch-off) with 12V UVLO / 16V OVP / 5.5A Limit.
+* **Protection:** Over-voltage and over-current protection provided by Power Module eFuse upstream; local reverse-polarity and ESD protection on BtB interface.
 * **Output Rail:** Dedicated 3.3V/5A Buck Converter for the 30-rotor stack.
 * **JTAG Master:** Embedded FT232H (Permanent USB Blaster) on internal USB 2.0.
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.

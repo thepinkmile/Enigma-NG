@@ -54,12 +54,13 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |   [LM74700-Q1 + Q1-Q3 OR-ING] <-------- Priority source selection           |
 |_____________________________________________________________________________|
 |                                                                             |
-|   [  TCO F1  ]       [ eFuse U1 ]     [ 5V BUCK U2 ]   [ 3.3V LDO U7 ]      |
+|   [  TCO F1  ]   [ eFuse U1 ]   [ U2A/U2B 5V BUCK ×2 ]   [ U7 3V3 LDO ]     |
+|   [ U9 TPS2372-4 + U10 TPS23730 PoE DC-DC ]  [ T2 ACF XFMR ]                  |
 |                                                                             |
 |   ( All Passives/Caps/Inductors Cluster around their ICs on Top )           |
 |_____________________________________________________________________________|
 |                                                                             |
-|               [ 2x3 SUPERCAP VERTICAL BLOCK ]                               |
+|          [ U3 LTC3350 ]  [ C_SC1-4: 2×2 SUPERCAP BLOCK (on 5V_MAIN) ]       |
 |                                                                             |
 |      (Thermal Hex-Matrix Vias scattered underneath these high-heat zones)   |
 |_____________________________________________________________________________|
@@ -89,16 +90,20 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 ## Ethernet Power
 
 ```text
-[ J2 RJ45 MAGJACK ]            [ ESD FIREWALL ]              [ PoE+ LOGIC ]           [ INPUT SELECTOR ]
- ____________________           _________________             _______________          __________________
-|                    |         |                 |           |               |        |                 |
-| RJ45 + Transformer |         | [D4 TPD4E05U06] |           | [ +15V PoE+ ] |        | [U5 LM74700-Q1] |
-| (Wurth 7499111121A)|-------->| [D5 TPD4E05U06] |---------->| [  Module   ] |------->| (OR-ing Input)  |
-|                    |         |________|________|           |_______|_______|        |_________________|
-|                    |                  |                            |
-| CONNECTOR SHIELD --|------------------|----------------------------|
-|____________________|                  V
-                                 [ GND_CHASSIS ] <--- Main Enclosure Ground
+[ J2 RJ45 MAGJACK ]      [ ESD FIREWALL ]      [ PoE DISCRETE DC-DC ]                  [ INPUT SELECTOR ]
+ ____________________      _________________     ________________________________         __________________
+|                    |    |                 |   |                                |       |                 |
+| RJ45 (Wurth        |    | [D4 TPD4E05U06] |   | [U9 TPS2372-4]                 |       | [U6 LM74700-Q1] |
+| 7499111121A)       |--->| [D5 TPD4E05U06] |-->|  Type 4 PD / Hotswap          |       | (OR-ing Input)  |
+| (4-pair 37-57V CT) |    |________|________|   |  ↓                             |       |_________________|
+|                    |             |            | [U10 TPS23730 ACF DC-DC]       |
+| CONNECTOR SHIELD --|-------------|----------  |  + [T2: ACF Transformer]       |
+|____________________|             V            |  EF20 / Np:Ns 2.8:1           |-----> [ +15V_POE ]
+                             [ GND_CHASSIS ]   |  ≥1500Vrms / 250kHz / 51W     |       (to OR-ing)
+                                               |________________________________|
+
+Note: T2 is a custom-wound ACF transformer specified per TI TIDA-050045 / PMP23365 reference.
+Würth Elektronik application support to be engaged for prototype winding.
 ```
 
 ## USB-C Power
@@ -123,17 +128,27 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
  BULKHEAD ENTRY         INPUT PROTECTION             OR-ING / SELECT           UPS & REGULATION                                                                     SAMTEC EXIT
 _________________      ____________________         ___________________        _________________________________________                                            _____________
 
-[RJ45 PoE+] ---------> [D4+D5 TPD4E05U06] --\
-                                             \                                                               (soft-charge / hold-up path)
-[USB-C 15V] ---------> [TPD4E05U06] ---------+----> [U5 LM74700-Q1 + Q1-Q3] -> [F1 TCO] -> [U1 TPS259474L] ---+-----> [ 2.5F SUPERCAPS ]
-                                             /          (Priority OR-ing)                                     |
-[BATTERY  ] ---------> [D1 + D2 ESD] -------/                                                                 +-----> [ U2 5V BUCK ] --+--------------------------> [ +5V MAIN ]
-                                                                                                              |            |           |
-                                                                                                              |            |           +--> [ U6 SUPERVISOR ] ----> [ PWR_GD ]
-                                                                                                              |            |
-                                                                                                              |            +--------------------------------------> [ U3 TPS25750 ]
-                                                                                                              |
-                                                                                                              +-----> [ U7 3V3 LDO ] -----------------------------> [ +3V3_ENIG ]
+[RJ45 PoE+] ---> [D4+D5 TPD4E05U06 ESD] ---> [U9 TPS2372-4 + U10 TPS23730 + T2 ACF] --\
+                                                (PoE Type 4 discrete DC-DC, 15V/51W)      \
+[USB-C 15V] ---> [TPD4E05U06 ESD] -------------------------------------------------------+---> [U6 LM74700-Q1 + Q1-Q3] -> [F1 TCO] -> [U1 TPS25980 eFuse]
+                                                                                          /           (Priority OR-ing)                      (7A / 11V / 16.9V)
+[BATTERY  ] ---> [D1+D2 ESD] ------------------------------------------------------------/                                                         |
+                                                                                                                                                    |
+                                                                    +-------------------------------------------------------------------> [U2A/U2B LMQ61460-Q1 Dual Buck]
+                                                                    |                                                                              |
+                                                                    |                                                                         [ 5V_MAIN BUS ]
+                                                                    |                                                                              |
+                                                                    |                              +---------------------------------------------> [U3 LTC3350]
+                                                                    |                              |  (supercap manager)                           |
+                                                                    |                              |                                          [C_SC1-4 Supercaps]
+                                                                    |                              |                                          (4× Tecate 22F/2.7V, 2S2P)
+                                                                    |                              |                                          (11F / 5.4V on 5V_MAIN)
+                                                                    |                              |
+                                                                    |                              +---------------------------------------------> [U4 TPS25750 PD Emu] ---> [ CM5 5V/5A ]
+                                                                    |                              |
+                                                                    |                              +---------------------------------------------> [U7 TPS7A8333P LDO] --> [ +3V3_ENIG ]
+                                                                    |                              |
+                                                                    |                              +---------------------------------------------> [U8 MCP121T-450E] --> [ PWR_GD ]
 ```
 
 * Thermal Matrix vias sit beneath the supercap and eFuse thermal island for heat-spreading only; they are not part of the electrical power path.
@@ -145,9 +160,9 @@ _________________      ____________________         ___________________        _
  ___________________________          _______________________          ___________________ 
 | [U1: eFuse 15V IN]        |        |                       |        |                   |
 |           |               |        | [ GOLD PINS 1-10 ] ---|------->| [ SYSTEM GND ]    |
-| [U2: 5V BUCK (6A)] -------|--------| [ GOLD PINS 11-18 ] --|------->| [ +5V_MAIN ]      |
+| [U2A/U2B: 5V BUCK×2 (12A)] -----|--------| [ GOLD PINS 11-18 ] --|------->| [ +5V_MAIN ]      |
 |           |               |        |                       |        |                   |
-| [U7: 3.3V LDO (ENIG)] ----|--------| [ GOLD PINS 19-22 ] --|------->| [ +3V3_ENIG ]     |
+| [U7: TPS7A8333P 3.3V LDO] ----|--------| [ GOLD PINS 19-22 ] --|------->| [ +3V3_ENIG ]     |
 |                           |        |                       |        |                   |
 | [J2: RJ45 MAGJACK] <------|--------| [ GOLD PINS 23-24 ] <-|--------| [ +3V3_SYSTEM ]   |
 | (PoE+ Logic)              |        |                       |        | (Input from CM5)  |
@@ -169,7 +184,7 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
 |                     |         |    |                      |        | PINS 21-24: 3V3_SYSTEM      |
 | [BATT] (14.4V) -----|-------->| [F1: 72°C TCO]            |        | PIN  25: ETH_LED_LINK       |
 |_____________________|         |    |                      |        | PIN  26: ETH_LED_ACT        |
-                                | [U1: TPS259474L eFuse]    |        | PINS 27-30: GND             |
+                                | [U1: TPS25980 eFuse]      |        | PINS 27-30: GND             |
        LADDER RESISTORS:        |    |                      |        | PINS 31-34: Status LEDs     |
        R1: 732k (UVLO) ---------|--->|                      |        | PINS 35-40: I2C Telemetry   |
        R2: 28.7k (OVLO) --------|--->|                      |        | PINS 41-44: 3V3_ENIG        |
@@ -177,8 +192,10 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
                                 |    |                      |        | PINS 49-80: 5V_SYSTEM / GND |
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
-                                | [SUPERCAP BANK (15F x6)] -|-------[5V BUCK]-------|
-                                |    | (2x3 Block)          |       |[U7 3.3V LDO]--|
+                                | [5V_MAIN]-----------------|-------[U2A/U2B BUCK]--|
+                                |    |                      |       [U7 3.3V LDO]--|
+                                | [LTC3350 + C_SC1-4]-------|                      |
+                                |    | (2x2 Block on 5V_MAIN|                      |
                                 |    |                      |       |[SUPERVISOR]---|
                                 |    |                      |                       |
                                 | [5.1V ZENER GLOW] --------|--->[AMBER LED EXT]----+
