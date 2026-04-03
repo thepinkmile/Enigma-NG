@@ -267,20 +267,20 @@ TPS25980 latches OFF under the following fault conditions:
 | J1 | BtB Link | Samtec ERF8-040-05.0-SD-VK-TR | 80-pin Gold ERF8 | 200-ERF8040050SDVKTR | SAM8621-ND | — |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | — |
 | J3 | Battery Conn | Molex 43045-0512 | 5-pin Micro-Fit | 538-43045-0512 | WM1792-ND ⚠️ verify | — |
-| L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC Nanocrystalline CMC — ≥10A, ≥1.5mH CM inductance; nanocrystalline core. ⚠️ Verify exact part from Würth REDEXPERT (748441440 or equiv.) | THT/SMT | ??? | ??? | ??? |
-| L2 | EMI Secondary CMC (HF, >10MHz) | Laird CM5022 — HF ferrite CMC, ≥10A. ⚠️ Verify exact spec from Laird catalog; alt: Würth WE-SL5 or Murata PLY series ≥10A HF CMC | SMT | ??? | ??? | ??? |
-| L3 | EMI DM Pi-filter Inductor | Würth WE-PD 7447789100 — 10µH, 14.5A Isat, 14.4A Irms, DCR=20mΩ, shielded molded | 12.5×12.5×6.0mm SMT | 710-7447789100 | 732-7447789100CT-ND | ??? |
+| L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND ⚠️ 32-wk lead; alt: Newark 75X1218 (561 in stock) | — |
+| L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND ⚠️ 32-wk lead; alt: Newark 75X1218 | — |
+| L3 | EMI DM Pi-filter Inductor | Würth WE-PD 7447789100 — 10µH, 14.5A Isat, 14.4A Irms, DCR=20mΩ, shielded molded. ⚠️ Not confirmed in public Würth catalog — verify with Würth rep before PCB layout. Fallback: WE-PD 7447709100 (10µH, 9.5A Isat — reduced headroom, verify margin) | 12.5×12.5×6.0mm SMT | 710-7447789100 | — ⚠️ not listed at DigiKey; verify | — |
 | R1 | eFuse UVLO upper resistor | 732kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB7323V | P732KBYCT-ND | — |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2872V | P28.7KBYCT-ND | — |
 | R3 | eFuse OVLO set resistor | 53.6kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB5362V | P53.6KBYCT-ND | — |
-| R4, R5 | ETH Activity LEDs | 330Ω 0.1% Thin-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
-| R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 0.1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 0.1% Thin-Film | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
-| R9 | SYS_RESET_N Pull-up (to 3V3_ENIG) | 10kΩ 0.1% Thin-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R10 | ROTOR_EN Pull-up (EN to 5V_MAIN) | 10kΩ 0.1% Thin-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R11 | LTC3350 RICHARGE (charge current set) | 301Ω 0.1% Thin-Film [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301BYCT-ND | — |
-| R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-L100ELF | CSS2H-2512R-L100ELF-ND | — |
-| R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 0.1% Thin-Film [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
+| R4, R5 | ETH Activity LEDs | 330Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
+| R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
+| R9 | SYS_RESET_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R10 | ROTOR_EN Pull-up (EN to 5V_MAIN) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
+| R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
+| R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS259803ONRGER (16.9V OVLO) ⚠️ verify PN before ordering | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | — |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | VQFN-15-HR | 926-LMQ61460ARUMRNOPB | 296-LMQ61460ARUMR/NOPBCT-ND | — |
@@ -291,7 +291,7 @@ TPS25980 latches OFF under the following fault conditions:
 | U7 | 3V3_ENIG LDO | TPS7A8333PRMWR (fixed 3.3V) | WSON-12 3.5×3.5mm | 595-TPS7A8333PRMWR | TPS7A8333PRMWR-ND | — |
 | U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | — |
 | U9 | PoE PD Interface (Type 4) | TPS2372-4 | QFN-16 | 595-TPS2372-4RGWR | 296-52795-1-ND | — |
-| U10 | PoE DC-DC Controller (ACF) | TPS23730RMCT — PSR mode; 12V output set by POE600F-12LD transformer turns ratio; VS pin to aux winding; no external feedback divider required (confirm from Coilcraft app note) | WQFN-20 | 595-TPS23730RMCT | 296-TPS23730RMCT-ND | — |
+| U10 | PoE DC-DC Controller (ACF) | TPS23730RMTR — PSR mode; 12V output set by POE600F-12LD transformer turns ratio; VS pin to aux winding; no external feedback divider required (confirm from Coilcraft app note) | WQFN-20 | 595-TPS23730RMTR | 296-TPS23730RMCT-ND | — |
 
 > **BOM Notes:**
 > - **U1 TPS259803ONRGER** — `TPS25980RPWR` was the original placeholder; research confirms `TPS259803ONRGER` as the 16.9V OVLO VQFN-24 variant. Verify against TI's current product page at ti.com/product/TPS25980 before ordering.
@@ -299,8 +299,11 @@ TPS25980 latches OFF under the following fault conditions:
 > - **U4 TPS25750** — Flagged **NRND** (Not Recommended for New Designs) by TI. Evaluate replacement before schematic freeze. STUSB4500 (U5) handles USB-C sink; U4 covers the PD source/emulation path — verify if PD emulation is required or if STUSB4500 covers the full use case.
 > - **U5 STUSB4500LQTR** — JLCPCB C506650 currently **out of stock**. Alternative: C2678061 (`STUSB4500QTR`, non-L variant, 2,895 in stock). Both are pin-compatible; non-L variant has slightly higher Iq (~210µA vs 160µA).
 > - **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser 579-MCP121T-450ETTDITR) instead.
-> - **U10 TPS23730RMCT** — `PWPR` suffix (HTSSOP-20) was previously in error; correct WQFN-20 part is `RMCT`. DigiKey `296-TPS23730RMCT-ND` shows ~5,600 in stock. Verify against TI's product page before ordering.
-> - **J3 WM1792-ND** — DigiKey PN is inferred. Verify at digikey.co.uk against Molex 43045-0512 (Molex 5-pin Micro-Fit vertical header) before ordering.
-> - **L1, L2** — ⚠️ Final part numbers require confirmation via Würth REDEXPERT / Laird catalog. See component notes in column for guidance.
-> - **JLCPCB column** — `—` indicates the part is not stocked in JLCPCB basic/extended library and must be sourced as customer-supplied material (consigned). Precision 0.1% thin-film resistors (ERA/ERJ), automotive-grade ICs (LM74700-Q1), and large inductors (L3, L1, L2) are typically consigned.
+> - **U10 TPS23730RMTR** — `PWPR` suffix (HTSSOP-20) was previously in error; correct WQFN-20 manufacturer PN is `TPS23730RMTR`. DigiKey catalogues as `296-TPS23730RMCT-ND`. Verify against TI's product page before ordering.
+> - **J3 WM1792-ND** — DigiKey PN is inferred. Verify at digikey.co.uk against Molex 43045-0512 (5-pin Micro-Fit vertical header) before ordering.
+> - **R1 ERA-3ARB7323V (732kΩ)** — Part not widely listed on FindChips/Octopart (73.2kΩ variant ERA-3ARB7322V is more common). The 732kΩ value is a valid E96 standard value and should exist in Panasonic's range. Confirm stock at Mouser (667-ERA-3ARB7323V) or DigiKey before BOM freeze.
+> - **R4–R13 ERJ-3EKF series** — These are Panasonic **1% thick-film** resistors (corrected from "0.1% Thin-Film" in earlier drafts). The ERA-3ARB series (R1–R3) remains 0.1% thin-film for precision UVLO/OVLO dividers. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
+> - **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω range). Mouser: 652-CSS2H-2512R-R010ELF; DigiKey: CSS2H-2512R-R010ELF-ND.
+> - **L1/L2 WE-CMBNC 7448031002** — Both L1 and L2 now use the same Würth nanocrystalline CMC. L2 was originally Laird CM5022 but that part is **discontinued** (Laird EMC passives absorbed by TE Connectivity in 2019). No equivalent ≥10A HF ferrite CMC was found in current catalogs. Twin nanocrystalline CMCs provide adequate broadband CM attenuation from 1kHz–30MHz. Re-evaluate at EMC pre-compliance testing. Primary stock source: **Newark 75X1218** (561 pcs, ~$14.58). DigiKey 732-5584-ND has 0 stock with 32-week lead.
+> - **L3 7447789100** — Not confirmed in Würth's public catalog or at DigiKey. Mouser URL format is valid (710-7447789100) but stock unconfirmed. **Contact Würth Elektronik rep directly** to confirm availability. Fallback: WE-PD `7447709100` (10µH, 9.5A Isat — verify 12A DC headroom is acceptable before substituting).
 

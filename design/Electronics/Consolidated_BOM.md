@@ -21,15 +21,15 @@
 * **22Ω:** 10 units (USB 2.0 / JTAG Damping).
 * **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
-* **10mΩ / 5A (2512 Kelvin):** 5 units (LTC3350 RSENSE — charge path current sense, R12; Bourns CSS2H-2512R-L100ELF or equiv.).
+* **10mΩ / 5A (2512 Kelvin):** 5 units (LTC3350 RSENSE — charge path current sense, R12; Bourns CSS2H-2512R-**R010**ELF).
 
 ## 3a. EMI Filter Passives
 
 | Ref | Component | Part | Value | Package | Mouser Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC Nanocrystalline | ≥1.5mH, ≥10A | THT/SMT | ⚠️ Verify from Würth REDEXPERT (748441440 or equiv.) |
-| L2 | EMI Secondary CMC (HF, >10MHz) | Laird CM5022 (or Würth WE-SL5 ≥10A equiv.) | HF ferrite CMC, ≥10A | SMT | ⚠️ Verify from Laird catalog |
-| L3 | EMI DM Pi-filter Inductor | Würth WE-PD 7447789100 | 10µH, 14.5A Isat, DCR 20mΩ | 12.5×12.5mm SMT | 710-7447789100 |
+| L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC 7448031002 | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
+| L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 (**replaces discontinued Laird CM5022**) | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
+| L3 | EMI DM Pi-filter Inductor | Würth WE-PD 7447789100 | 10µH, 14.5A Isat, DCR 20mΩ | 12.5×12.5mm SMT | 710-7447789100 ⚠️ verify stock with Würth rep |
 | C1, C4 | Pi-filter bulk cap (2× each) | Murata GRM32ER71H226KE15L | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L |
 | C2, C5 | Pi-filter mid-freq bypass (2× each) | Murata GRM21BR71H105KA12L | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L |
 | C3, C6 | Pi-filter HF bypass (2× each) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
@@ -76,7 +76,7 @@
 | Ref | Component | Part Number | Value / Notes | Supplier | Supplier Part # | Unit Price (1-off) | Unit Price (volume) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | U9 | PoE PD Interface (Type 4) | TPS2372-4RGWR | TI QFN-16; 802.3bt Type 4, external hotswap, up to 90W | Mouser | 595-TPS2372-4RGWR | ~£3.50 | ~£2.00 |
-| U10 | PoE ACF DC-DC Controller | TPS23730RMCT | TI WQFN-20; ACF topology; PSR mode; 12V output set by POE600F-12LD turns ratio; VS pin to aux winding | Mouser | 595-TPS23730RMCT | ~£3.50 | ~£2.00 |
+| U10 | PoE ACF DC-DC Controller | TPS23730RMTR | TI WQFN-20; ACF topology; PSR mode; 12V output set by POE600F-12LD turns ratio; VS pin to aux winding | Mouser | 595-TPS23730RMTR | ~£3.50 | ~£2.00 |
 | T2 | PoE ACF Isolation Transformer | **Coilcraft POE600F-12LD** | 60W; 12V out; 36–72V in; 200kHz; ACF topology; ≥1500Vrms; SMT; RoHS | Coilcraft Direct | POE600F-12LD | **£3.54** | **~£1.86** |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 0.1% Thin-Film | 121kΩ E96; IMPS = VIMPS/RMPS = 1.205V/121kΩ = 9.96mA (Type 4 MPS auto-stretch) | Mouser | 667-ERJ-3EKF1213V | ~£0.10 | ~£0.03 |
 
@@ -131,3 +131,4 @@ Reference information for placing orders with key component suppliers.
 | S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43045-0512 Micro-Fit 5-pin). Order via Mouser or DigiKey. |
 | S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
 | S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04201H-7628 (4-layer, 2oz). |
+| S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. L1/L2 WE-CMBNC 7448031002 available as Newark #75X1218 (~561 pcs, ~$14.58 each). Same-group as Farnell/element14. |
