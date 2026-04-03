@@ -85,7 +85,7 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 | **0 / 1** | **ID_EEPROM** | I2C | 3.3V | Reserved for CM5 HAT ID. |
 | **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** INA219, STUSB4500, Smart Battery. |
 | **4–15** | **DATA_BUS** | Output | 3.3V | **12-bit Parallel Bus** (D0-D11) to Stator/Rotors. |
-| **16** | **ROTOR_EN** | Output | 3.3V | Enable for 3.3V_Rotor Buck Converter. |
+| **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ROTOR Buck Converter (5A rotor stack rail). |
 | **17** | **LED_RED** | PWM | 3.3V | RGB LED - Red Channel (Status/Fault). |
 | **18** | **LED_GRN** | PWM | 3.3V | RGB LED - Green Channel (Heartbeat/PoE). |
 | **19** | **LED_BLU** | PWM | 3.3V | RGB LED - Blue Channel (USB-C). |

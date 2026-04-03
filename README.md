@@ -57,7 +57,7 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 * **Buck:** Dual-phase interleaved LMQ61460-Q1 (×2, 6A each, 12A combined, 400kHz DRSS, 180° SYNC). Effective ripple: 800kHz.
 * **LDO:** TPS7A8333P 3V3_ENIG (8.8µVRMS noise, 72dB PSRR, 3A, 1.85A load at 61.7% utilisation).
 * **UPS:** LTC3350 supercap manager + 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, 2S2P) on 5V_MAIN bus. 11F at 5.4V → ~14 second hold-up for clean CM5 shutdown.
-* **Outputs:** 5V_MAIN (12A) and 3V3_ENIG (3A) via 80-pin Samtec ERF8 BtB to Controller Board.
+* **Output Rails:** 5V_MAIN (12A), 3V3_ENIG (3A logic/CPLD rail), and 3V3_ROTOR (5A dedicated rotor stack rail) via 80-pin Samtec ERF8 BtB to Controller Board for distribution.
 
 ### 2. Controller Board (The Brain)
 
@@ -67,7 +67,7 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
   * **PoE+ (802.3bt Type 4):** Up to 71.3W Power-over-Ethernet via Power Module discrete TPS2372-4 + TPS23730 + T2 ACF design. Single Ethernet cable carries both data and power.
   * **USB-C PD:** 5V/5A negotiated input.
 * **Protection:** Over-voltage and over-current protection provided by Power Module eFuse upstream; local reverse-polarity and ESD protection on BtB interface.
-* **Output Rail:** Dedicated 3.3V/5A Buck Converter for the 30-rotor stack.
+* **Rotor Rail:** Dedicated **3.3V/5A Buck Converter** for the 30-rotor stack (3V3_ROTOR) generated on the Power Module; routed to rotor stack via Controller Board → Link-Beta.
 * **JTAG Master:** Embedded FT232H (Permanent USB Blaster) on internal USB 2.0.
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
 * **User Interface:** Illuminated Vintage Amber **Safe Shutdown Button**, Master Toggle, and Status LEDs.

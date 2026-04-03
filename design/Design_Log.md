@@ -199,23 +199,30 @@ ESD protection on the diagnostic bank connectors is **deferred** to post-prototy
 
 ---
 
-## DEC-011 — PENDING: Rotor Buck Placement (Controller vs Power Module)
+## DEC-011 — Rotor Buck (3V3_ROTOR) Located on Power Module
 
 **Date:** 2025  
-**Status:** ⚠️ PENDING — Location not confirmed  
-**Affects:** 3.3V/5A Rotor supply
+**Status:** ✅ RESOLVED  
+**Affects:** 3.3V/5A Rotor supply, Power Module islands, Controller Board routing
 
 **Decision:**  
-Location of the 3.3V/5A Rotor Buck regulator has not been confirmed.
+All power rails are generated on the **Power Module**. The dedicated 3.3V/5A Rotor Buck (3V3_ROTOR) is a Power Module component. The Controller Board's role is purely to **route** power rails onward to downstream boards — it does not generate any rails itself.
 
-**Conflicting Evidence:**  
-- `README.md` places the Rotor Buck on the **Controller Board**.
-- `Power_Module/Design_Spec.md` §1 (power islands) lists "3.3V/5A Rotors" as a Power Module island.
+**Rationale:**  
+- Centralising all power generation on the Power Module simplifies thermal management (all heat dissipation in one shielded enclosure with dedicated thermal zone).
+- Reduces the risk of ground loops and cross-domain sequencing issues.
+- The Controller Board becoming a routing layer (not a power source) keeps its design cleaner and easier to revise independently.
+- ROTOR_EN (CM5 GPIO 16) still routes from Controller Board to Power Module to enable/disable the 3V3_ROTOR Buck — this is a control signal, not a power generation function.
 
-**Action Required:**  
-Confirm intended physical location of the Rotor Buck and update all references consistently.  
-Options:  
-1. **Controller Board** — Keeps rotor power generation close to the Stator Board (downstream consumer). Reduces long 3.3V runs over Link-Beta.  
-2. **Power Module** — Centralises all power conversion in one module. Simpler cabling if rotor demand is stable.
+**Architectural Rule (permanent):**  
+> All power rails are generated on the Power Module. The Controller Board routes rails to downstream boards only. No buck converters, LDOs, or other power-generating components belong on the Controller Board.
 
-Update this entry with the final decision and rationale when confirmed.
+**Files Updated:**  
+- `README.md`: Removed "Dedicated 3.3V/5A Buck" from Controller Board section; added 3V3_ROTOR to Power Module outputs.
+- `Power_Module/Design_Spec.md`: Added 3V3_ROTOR rail to intro and updated to 4-island L3 Power Plane.
+- `Controller/Design_Spec.md`: ROTOR_EN clarified as enable signal to Power Module Buck.
+- `Rotor/Design_Spec.md`: Power source updated from "Controller Board Island C" to "Power Module 3V3_ROTOR Buck".
+
+**Previously Conflicting References (now corrected):**  
+- `README.md` line ~70 placed the Rotor Buck under the Controller Board section.
+- `Rotor/Design_Spec.md` said "sourced from the Controller Board's Island C".
