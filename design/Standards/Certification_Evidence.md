@@ -5,10 +5,11 @@
 > **Applicable Standards:**
 > - **CE Marking:** EN 55032:2015+A2:2021 (Multimedia Equipment EMC), EN 55035:2017+A11:2020, EN IEC 61000-3-2, EN IEC 61000-3-3
 > - **UKCA:** UKCA equivalent to the above CE directives under UK Statutory Instrument 2016/1091
-> - **DefStan 59-411 Part 3:** Land Class C (Conducted and Radiated Emissions, Conducted and Radiated Susceptibility)
-> - **DefStan 00-35 Part 3:** Environmental Testing (Shock, Vibration, Temperature)
 > - **IEC 61000-4-2:** Electrostatic Discharge Immunity
 > - **IEC 61000-4-5:** Electrical Fast Transient / Surge Immunity
+> - **IEC 60068-2:** Environmental Testing (Shock, Vibration, Temperature) — design basis 55°C maximum ambient (industrial)
+>
+> **Note:** Military standards compliance evidence (including UK MOD environmental and EMC standards) is deferred to a future phase requiring access to an appropriate accredited review environment. The design is architected conservatively and is expected to satisfy military requirements with minimal rework once that review pathway is available; this document will be updated at that stage.
 
 ---
 
@@ -37,9 +38,9 @@
 
 ## 1. Document Scope and Purpose
 
-This document records the design decisions and technical rationale for the Enigma-NG hardware, structured to support formal conformity assessment against the standards listed above. It serves as the primary evidence document for any independent test laboratory, Notified Body, or MOD Technical Authority review.
+This document records the design decisions and technical rationale for the Enigma-NG hardware, structured to support formal conformity assessment against the standards listed above. It serves as the primary evidence document for any independent test laboratory or Notified Body review.
 
-The Enigma-NG is a purpose-built digital Enigma cipher machine recreation, intended for use in museum, military, and educational environments. The device must therefore meet the intersection of civilian EMC requirements (CE/UKCA) and military electromagnetic environment requirements (DefStan 59-411 Land Class C), which is a deliberately conservative and demanding target.
+The Enigma-NG is a purpose-built digital Enigma cipher machine recreation, intended for use in museum, military, and educational environments. The device must meet CE/UKCA electromagnetic compatibility requirements and is designed conservatively to a standard consistent with demanding operational environments. The design philosophy deliberately exceeds civilian CE/UKCA minimums to facilitate future military compliance assessment with minimal rework.
 
 This document is **living** — it will be updated as the design progresses through prototype, validation, and production stages. Sections referencing prototype-stage decisions will be clearly marked.
 
@@ -58,13 +59,13 @@ All components are selected and operated to a standard described internally as "
 | Resistor tolerance | 1% minimum; 0.1% for protection thresholds and current-sense paths | Accuracy of UVLO/OVLO/ILIM settings directly impacts protection behaviour |
 | Component utilisation | ≤75% of rated maximum | Prevents thermal and electrical degradation under sustained high load |
 | Thermal design | Sized for 100% utilisation dissipation | Enclosure and thermal pads sized for worst-case, not design-point |
-| Switching converters | Spread-spectrum mandatory; shielded inductors required | DefStan CE01/CE03 conducted emissions compliance |
+| Switching converters | Spread-spectrum mandatory; shielded inductors required | EN 55032 Class B conducted emissions compliance |
 
 ### 2.2 Single-Point Chassis Ground Architecture
 
 A single-point `GND_CHASSIS` bond is established between the OR-ing network output and the eFuse input — the electrical boundary between the "dirty" input side and the "clean" downstream side. All external connector ESD protection TVS diodes shunt to `GND_CHASSIS`, which connects to the aluminium enclosure and from there to protective earth. The signal and power reference ground connects to `GND_CHASSIS` at this one point only.
 
-**Rationale:** Multiple chassis ground bonds create ground loops. Ground loop currents are a leading cause of common-mode radiated emissions failures in DefStan RE01/RE02 (radiated emissions) and can exacerbate susceptibility failures in DefStan RS01/RS02 (radiated susceptibility). The single-point bond is the canonical solution specified in MIL-STD-461 and adopted here by analogy for DefStan compliance.
+**Rationale:** Multiple chassis ground bonds create ground loops. Ground loop currents are a leading cause of common-mode radiated emissions failures (EN 55032 Class B radiated emissions) and can exacerbate susceptibility failures (EN 55035 / IEC 61000-4-3 radiated immunity). The single-point bond is the canonical solution specified in MIL-STD-461G §3.6 and is adopted here as best practice for CE/UKCA EMC compliance.
 
 ---
 
@@ -90,7 +91,7 @@ A single-point `GND_CHASSIS` bond is established between the OR-ing network outp
 - USB-C is secondary as it depends on the availability of an appropriate adapter.
 - Battery is tertiary as its capacity is finite.
 
-The LM74700-Q1 + SISS22DN ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which is critical for DefStan 00-35 temperature testing compliance.
+The LM74700-Q1 + SISS22DN ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which directly reduces junction temperatures across the power chain and supports IEC 60068-2 thermal test compliance.
 
 ### 3.2 eFuse Settings — UVLO and OVLO Rationale
 
@@ -113,7 +114,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 
 > **Note on Battery Voltage — OVLO Margin:** The TPS25980 16.9V OVLO variant is 0.1V above the theoretical max battery voltage of 16.8V (4S Li-ion at 4.2V/cell). To maintain an engineering margin of ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)**. This specification must be enforced in the battery procurement specification and verified during incoming inspection. OVLO threshold accuracy must be confirmed against the TPS25980 datasheet (full threshold tolerance band required before production release — see §8, OA-01).
 
-> **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting DefStan CE01/CE03 conducted emissions compliance.
+> **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting EN 55032 Class B conducted emissions compliance.
 
 
 ### 3.3 5V Buck Converters — Dual-Phase Interleaving Design Rationale
@@ -141,7 +142,7 @@ The LMQ61460-Q1 is configurable from approximately 200 kHz to 2.2 MHz. **400 kHz
 | Harmonic at 2× (with interleaving) | 800 kHz (near band) | 4.4 MHz (clear) |
 | Core loss in inductors | Low | High |
 | Inductor size | Larger | Smaller |
-| DefStan CE01/CE03 compliance margin | High (DRSS keeps 2× fundamental clear of 525kHz) | Requires careful harmonic management above 2MHz |
+| EN 55032 Class B compliance margin | High (DRSS keeps 2× fundamental clear of 525kHz) | Requires careful harmonic management above 2MHz |
 | Thermal density in Power Can | Acceptable | Higher due to core loss |
 
 At 400 kHz with the DRSS ±5.5% modulation:
@@ -185,11 +186,11 @@ Both SN74LVC1G14 instances are powered from 3V3_ENIG (available post-LDO startup
 
 | Mechanism | Quantified Effect | Applicable Limit |
 |---|---|---|
-| 180° phase interleaving | Input capacitor RMS ripple current reduced by 50% | DefStan CE01 (30Hz–10kHz conducted) |
-| Effective ripple at 800kHz | Output filter requirement halved; lower-inductance filter reduces parasitic emission | DefStan CE03 (10kHz–10MHz conducted) |
-| DRSS ±5.5% | Peak conducted emission at switching frequency reduced ~10–15 dBµV | DefStan CE03, EN 55032 Class B |
+| 180° phase interleaving | Input capacitor RMS ripple current reduced by 50% | EN 55032 Class B conducted emissions (30Hz–10kHz) |
+| Effective ripple at 800kHz | Output filter requirement halved; lower-inductance filter reduces parasitic emission | EN 55032 Class B conducted emissions (10kHz–10MHz) |
+| DRSS ±5.5% | Peak conducted emission at switching frequency reduced ~10–15 dBµV | EN 55032 Class B conducted and radiated emissions |
 | 400kHz below AM band | No interference with 525–1705kHz AM broadcast band | CISPR 25 Class 5 |
-| Coherent DRSS | No inter-modulation artifacts between the two ICs | DefStan CS02 (2MHz–1GHz radiated susceptibility) |
+| Coherent DRSS | No inter-modulation artifacts between the two ICs | EN 55035 / IEC 61000-4-3 radiated susceptibility |
 
 ### 3.4 3V3_ENIG LDO — Selection Rationale
 
@@ -244,7 +245,7 @@ The Power Module is housed in a 42mm aluminium "Power Can" enclosure with intern
 - **LDO thermal pad** → same via matrix → shared thermal zone with supercapacitor area
 - **Enclosure** → ambient via natural convection; no forced cooling required for rated load
 
-The thermal system is designed to manage the heat dissipation resulting from 100% component utilisation, despite the 75% operational limit, providing a safety margin for unexpected load spikes and ambient temperature excursions consistent with DefStan 00-35 temperature requirements.
+The thermal system is designed to manage the heat dissipation resulting from 100% component utilisation, despite the 75% operational limit, providing a safety margin for unexpected load spikes and ambient temperature excursions consistent with IEC 60068-2 environmental test requirements.
 
 ---
 
@@ -300,7 +301,7 @@ All externally accessible connectors on the Power Module are protected against E
 
 ## 5. Component Derating Evidence
 
-All components operate within the following derating limits. Calculations are based on worst-case ambient temperature of 70°C (DefStan 00-35 Land Class C operational) unless stated.
+All components operate within the following derating limits. Calculations are based on worst-case ambient temperature of **55°C** (IEC 60068-2 industrial maximum ambient; CE/UKCA design basis) unless stated. The thermal enclosure is sized to handle 70°C ambient at 100% utilisation, providing additional headroom for future military certification assessment.
 
 | Component Class | Parameter | Derating Applied | Basis |
 |---|---|---|---|
@@ -384,7 +385,7 @@ Any replacement CPLD must be verified for:
 - Pin-compatible TQFP-100 (or equivalent via adapter) footprint, or a PCB layout revision must be performed
 - JTAG chain compatibility with the FT232H-based USB-JTAG interface
 - 3.3V VCCIO (3V3_ENIG) compatibility
-- Operating temperature range: −40°C to +85°C minimum (DefStan 00-35 Land Class C)
+- Operating temperature range: −40°C to +85°C minimum (IEC 60068-2 extended industrial range; selected conservatively to support future military certification assessment)
 
 > **Action item OA-04:** Review replacement CPLD options before prototype-to-production transition. Update this register with selected replacement part.
 

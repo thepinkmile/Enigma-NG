@@ -105,7 +105,7 @@ Before any switching occurs, the raw input power passes through a two-stage filt
 - A **high-frequency differential choke** (Laird CM5022) handles the narrower-band differential noise.
 - Pi-filter sections (inductors + capacitors) on each power path provide additional attenuation.
 
-Together, these three techniques — phase interleaving, spread spectrum, and input filtering — allow the Enigma-NG power system to comfortably meet DefStan 59-411 Land Class C conducted and radiated emission limits.
+Together, these three techniques — phase interleaving, spread spectrum, and input filtering — are designed to comfortably meet EN 55032 Class B conducted and radiated emission limits under CE/UKCA certification.
 
 ### 3.4 Power Status Indicators
 
