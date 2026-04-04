@@ -113,10 +113,10 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 |                     |         |                    |                                      |                  |
 | VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _________________        | [ SAMTEC ERM8 ]  |
 |                     |         |         |          |            |                 |       |                  |
-| GND (4 PINS)  ------|-------->| [ WE-CMBNC L2  ] --|----------->| [U5 LM74700-Q1] |       |                  |
+| GND (4 PINS)  ------|-------->| [ WE-CMBNC L2  ] --|----------->| [U6 LM74700QDBVRQ1] |       |                  |
 |                     |         |                    |            | (OR-ing Input)  |       |                  |
 |                     |         |                    |            |_________________|       |                  |
-| CC1 / CC2     ------|--[PD]-->| [U4 STUSB4500 ] ---|-I2C--------------------------------->| PIN 35 (I2C SDA) |
+| CC1 / CC2     ------|--[PD]-->| [U5 STUSB4500LQTR] |-I2C--------------------------------->| PIN 35 (I2C SDA) |
 | (Handshake)         |         | (Negotiates 15V)   |                                      | PIN 36 (I2C SCL) |
 |_____________________|         |____________________|                                      |__________________|
 ```
