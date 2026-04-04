@@ -1,9 +1,16 @@
 # Reflector Board (V1.0) Design Specification
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
+
+## 1. Overview
+
 The Reflector Board sits at the far end of the 30-rotor stack. Its primary role is to receive the signals from the final rotor and return them back through the stack via a different electrical path.
 It also acts as the JTAG termination hub and returns the JTAG_TDO directly back to the Stator to reduce required Pin count in the Rotor Interconnects.
 
-## 1. Architecture
+## 2. Architecture
 
 * **PCB:** 2oz Finished Copper / ENIG Gold / 2.0mm Filleted Corners.
 * **Standard:** Includes Inverted White Data Plate on bottom layer.
@@ -15,7 +22,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 * **CPLD support:** PCB passive routing (no discrete component).
 * **Signal Path:** Rotor 30 Out → Reflector Contacts → 60-pin FPC → Stator CPLD → 60-pin FPC → Reflector Contacts → Rotor 30 In.
 
-## 2. JTAG & Logic Hub
+## 3. JTAG & Logic Hub
 
 * **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical) — J1 pin allocation:
   * Pin 1: 3V3_ENIG (power in)
@@ -43,7 +50,7 @@ Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-p
 A single 0 Ω bond resistor (or direct via) connects the signal GND plane to the chassis copper pour at this point.
 No additional bonds are made on this board to avoid ground loops.
 
-## 3. Diagnostic & Monitoring
+## 4. Diagnostic & Monitoring
 
 To ensure the signal has successfully navigated the 30-rotor stack, a dedicated monitoring bank is included.
 
@@ -51,25 +58,19 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 * **Standard:** Matches the **Controller Board** 2.54mm (0.1") pitch standard for unified system debugging.
 * **Labelling:** `REFLEKTOR-DIAGNOSE [Reflector Diag]` in ALL-CAPS German typewriter font.
 
-## 4. PCB & Mechanical Specs
+## 5. PCB & Mechanical Specs
 
 * **Stackup:** 2-Layer / 1oz Copper.
 * **Contacts:** 26x Gold-plated friction pads matching the Rotor Module pitch.
 * **Fillets:** 2.0mm Rounded PCB corners for consistent "Museum-Grade" enclosure fit.
 * **Routing:** Global **0.5mm Fixed-Radius Circular Arcs** for all loopback traces.
 
-## 5. Branding & Traceability
+## 6. Branding & Traceability
 
 * **Data Plate:** Inverted white silkscreen "Data Plate" on Bottom (L2) containing the Enigma silhouette, "ENIGMA-NG" text, and JLC Serial Number block.
 * **Label:** `REFLEKTOR-EINHEIT [Reflector Unit]` in ALL-CAPS German typewriter font.
 
-## 6. Maintenance
-
-* **Diagnostics:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank on L1 for logic analysis.
-
----
-
-## Bill of Materials
+## 7. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -78,3 +79,5 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 | J2 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | C25805 |
 | R2-R3 | Pull-up resistors | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+
+> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

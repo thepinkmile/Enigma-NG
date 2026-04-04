@@ -1,14 +1,19 @@
 # Enigma-NG Stator Board (Backplane)
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
+
 The Stator Board is the mechanical and electrical backbone of the rotor stack. It provides the high-current distribution and signal routing for the 30 modular rotors.
 
-## 1. Board Architecture
+## 1. Overview
 
 * **Stackup:** 4-Layer / 2oz Finished Copper.
 * **Layer Mapping:** L1: JTAG | L2: GND | L3: 3V3_ENIG | L4: ENIG Data.
 * **Role:** Master Switchboard for the 30-rotor stack and satellite encoders.
 
-## 1. Core Features
+## 2. Core Features
 
 * **Modular Slots:** 30x [Samtec CLP Series](https://www.samtec.com) low-profile female sockets.
 * **Power Tree:** A massive 2oz copper pour for the `+3V3_ENIG` rail to handle the **5A peak** load without voltage sag.
@@ -22,7 +27,7 @@ Per `design/Standards/Global_Routing_Spec.md §4`, each PCB in the Enigma-NG sys
 A single 0 Ω bond resistor (or direct via) in a dedicated keepout zone connects the signal/power GND plane
 to the chassis copper pour at this entry point. No additional chassis bonds are made on this board to avoid ground loops.
 
-## 2. Encryption & JTAG Hub
+## 3. Encryption & JTAG Hub
 
 * **CPLD:** Intel MAX II EPM240T100C5N CPLD (Logic Router).
 * **Decoupling Rule:** Use **8x 0.1µF X7R** local decoupling capacitors per EPM240T100C5N IC (one per VCC pin).
@@ -32,7 +37,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **JTAG Return:** Includes 10kΩ pull-up on TDO_RETURN at the Link-Beta exit.
 * **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail.
 
-## 3. Interconnects
+## 4. Interconnects
 
 * **Controller Link (Link-Beta):** The **80-pin ERM8-040-05.0-S-DV-K-TR** male header on the Stator Board plugs into the matching ERF8-040 female socket on the Controller Board.
   * **Data In:** Receives JTAG, Reset from Controller.
@@ -52,7 +57,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **ENC DATA:** 2x6 2.54mm Shouded Header (ENC_IN [0:5], ENC_OUT [0:5]).
 * **Diagnostics:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
 
-## 4. Power Telemetry (The "Encryption Load")
+## 5. Power Telemetry (The "Encryption Load")
 
 * **Purpose:** Provides real-time current/voltage data for the 30-rotor stack to the CM5 GUI.
 * **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45) — dedicated rotor-stack usage telemetry.
@@ -62,7 +67,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Interface:** I2C-1 Telemetry Bus (via Link-Beta, Shared with Power Module).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
 
-## 5. EMI & Mechanical
+## 6. EMI & Mechanical
 
 * **Shield Mount:** 10mm ENIG Gold landing strip on L1 edge bonded to GND_CHASSIS.
 * **Clamping:** Dual 3.2mm PTH anchors per cable for Galvanised Steel Bar compression.
@@ -70,7 +75,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 
 ---
 
-## Bill of Materials
+## 7. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -83,3 +88,5 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | 667-ERJ-6ENF20R0V | P20.0MYCT-ND | C123465 |
 | R2 | JTAG TDO Pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |
+
+> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

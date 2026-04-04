@@ -1,9 +1,16 @@
 # Encoder Module (V1.0) Design Specification
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
+
+## 1. Overview
+
 A high-performance 64-node interface board.
 Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle real-time reciprocal encryption for the plugboard and de-bouncing for the 64-key QWERTY keyboard.
 
-## 1. Power Requirements
+## 2. Power Requirements
 
 * **Core:** 3.3V (Logic) & 1.8V (Internal) if required by CPLD variant.
 * **Filtering:** Dedicated 0.1µF X7R decoupling per VCC pin.
@@ -11,7 +18,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the Data Link power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **Protection:** AP22652 current-limited 3.3V rail from the Controller Board.
 
-## 2. Dual-Role Architecture
+## 3. Dual-Role Architecture
 
 * **Logic:** 2x Intel MAX II EPM240T100C5N CPLDs.
 * **I/O Capacity:** Each CPLD provides 80 User I/O pins in a 100-pin TQFP package.
@@ -21,7 +28,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
     * **Lightboard:** Maps parallel return data bus to the Lightboard (Lampboard) and CM5 for GUI feedback.
   * **Plugboard Mode:** Maps 64 "Stecker" jacks for reciprocal encryption.
 
-## 3. Interconnects
+## 4. Interconnects
 
 * **Data Link:** 16-pin (2x8) 2.54mm shrouded header to support:
   * 2x 3V3_ENIG power pins
@@ -50,33 +57,33 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
   * **BT193–BT256:** Row 4 — KEY_NO lines (switch NO1 → CPLD key-press input, active-low via pull-up).
 * **Cornering:** 2.0mm Filleted PCB corners for enclosure fit.
 
-## 4. Aesthetics
+## 5. Aesthetics
 
 * **Silkscreen:** Bilingual German/English typewriter font.
 * **Branding:** Inverted V1.0 Data Plate with Enigma Silhouette on Bottom (L4).
 
-## 5. JTAG Chain Integrity
+## 6. JTAG Chain Integrity
 
 * **Buffering:** [74LVC1G125](https://www.ti.com) buffers on the TCK and TMS lines to maintain signal integrity across the long chain (2x I/O CPLDs + 30 Rotor FPGAs).
 * **Termination:** 47Ω series resistors on the JTAG data lines to prevent reflections.
 * **Chain Position:** The I/O CPLDs sit at the start of the JTAG chain, followed by the 30 Rotor FPGAs.
 * **Programming:** Allows for "In-System Sources and Probes" debugging via the CM5 GUI.
 
-## 6. Key Mapping (64-Way QWERTY for Keyboard)
+## 7. Key Mapping (64-Way QWERTY for Keyboard)
 
 * **Layout:** Standard QWERTY + Numbers + Symbols + Shift.
 * **Debouncing:** Digital de-bounce implemented in the CPLD VHDL/Verilog, eliminating mechanical "key chatter."
 * **Implementation:** The Shift keys (Left/Right) act as logic-level triggers for the CPLD state machine.
 * **LED Drive:** CPLDs directly drive the **Shift Status LEDs** and the 64-character lamp matrix (via MOSFET arrays).
 
-## 7. Plugboard Jack-Sensing
+## 8. Plugboard Jack-Sensing
 
 * **Logic:** The CPLD monitors 64 insertion-detect lines (BT65–BT128, Switch contacts) from the Stecker jack sockets.
 * **Signal:** Each jack Switch contact is normally closed (connected to Tip) when no plug is inserted; the contact opens on plug insertion, pulling the CPLD input low via an internal or external pull-up.
 * **Latency:** Sub-microsecond detection of Stecker cable insertion, updating the internal encryption matrix instantly.
 * **Harness:** 64× 2-wire assemblies (Tip + Switch), each terminated with 6.35mm female crimp spade terminals, connecting the panel-mount jacks to BT1–BT128 on the PCB.
 
-## 8. Thermal & ESD
+## 9. Thermal & ESD
 
 * **ESD:** TPD4E001 arrays near the JTAG and Micro-Fit headers.
 * **Thermal:** Vias under the Intel MAX II EPM240T100C5N CPLD "PowerPad" (if applicable) for heat dissipation.
@@ -90,7 +97,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ---
 
-## Bill of Materials
+## 11. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -105,3 +112,5 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285 — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285 | A33376-ND | — |
 | U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U3 | LDO Regulator | TLV755P | SOT-23 | 595-TLV755PDBVR | 296-TLV755PDBVRCT-ND | C291923 |
+
+> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

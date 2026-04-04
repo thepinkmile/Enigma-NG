@@ -1,9 +1,16 @@
 # JTAG Daughterboard (V1.0) Design Specification
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
+
+## 1. Overview
+
 A high-speed USB-to-JTAG bridge module that allows the CM5 to natively program the 30-rotor CPLDs and the 4 I/O CPLDs.
 This module replicates the functionality of an **Intel (Altera) USB Blaster II** on a tiny daughterboard.
 
-## 1. Core Logic
+## 2. Core Logic
 
 * **Role:** Converts the CM5's USB 2.0 signals into high-speed JTAG (TCK, TMS, TDI, TDO) commands.
 * **Bridge IC:** [FT232H](https://ftdichip.com/wp-content/uploads/2023/09/DS_FT232H.pdf) High-Speed USB 2.0 to MPSSE.
@@ -11,7 +18,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 * **Configuration:** 24MHz crystal-controlled for high-speed programming via the CM5 GUI.
 * **Integrated Driver:** Compatible with `OpenOCD` or `Quartus` via a custom Linux driver on the CM5.
 
-## 2. Interface & Wiring
+## 3. Interface & Wiring
 
 * **USB:** Internal 4-pin header to the Controller Board's USB 2.0 Hub.
 * **JTAG Pinout (MPSSE Mode):**
@@ -29,12 +36,12 @@ Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-p
 (the USB-B or BtB power input connector receiving 3V3_ENIG from the Controller board).
 A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis copper pour at this entry point only.
 
-## 3. Aesthetics & Mounting
+## 4. Aesthetics & Mounting
 
 * **Visibility:** Completely hidden internally.
 * **Mounting:** Small 2-layer PCB mounted via 3M VHB tape or standoffs near the Controller.
 
-## 4. Electrical Requirements
+## 5. Electrical Requirements
 
 * **Voltage:** Powered by the `+3V3_ENIG` rail from the Power Module via the BtB interconnect.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the USB/power-entry pins in a **Symmetrical Star/Spoke pattern**.
@@ -42,7 +49,7 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 
 ---
 
-## Bill of Materials
+## 6. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -53,3 +60,5 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 | R1, R2 | Series resistors | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | C25805 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |
 | Y1 | Crystal | 24MHz | HC-49 | 520-ABL-24.000MHZ-B2 | 644-1053-1-ND | C123468 |
+
+> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

@@ -1,5 +1,10 @@
 # Detailed Design: Extension Board (V1.0)
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
+
 ## 1. Modular "Mini-Stack" Logic
 
 * **Role:** Mechanical anchor and Power Injection for 5-rotor groups.
@@ -20,9 +25,7 @@
 * **Diagnostics:** Integrated 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (Mid-Stack troubleshooting).
 * **Identity:** 2oz Copper / Inverted White Data Plate (V1.0 traceability).
 
----
-
-## Bill of Materials
+## 4. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -31,3 +34,5 @@
 | J2 | Output header | 20-pin 2x10 shrouded | 2.54mm | 538-22-23-2201 | WM2911-ND | ??? |
 | J3 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
+
+> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.
