@@ -67,7 +67,7 @@ The Enigma-NG can be powered from any of three sources simultaneously. An intell
 automatically selects the best available source without any interruption to the system. The priority order is:
 
 | Priority | Source | Typical Voltage | Notes |
-|:---: |--- |--- |--- |
+| :---: | --- | --- | --- |
 | 1st | **PoE+ (Power over Ethernet)** | ~15V | 802.3bt Type 4 — highest available power (up to 71W); recommended for fixed installations |
 | 2nd | **USB-C (PD adapter)** | 15V | Requires a 75W USB-C PD adapter (15V/5A); adequate for normal operation |
 | 3rd | **Battery** | 11–16.8V | Lithium-based smart battery pack; tertiary source used when no mains is available |
@@ -83,7 +83,7 @@ above **17V**, protecting all downstream components.
 The Power Module produces two regulated output rails:
 
 | Rail | Voltage | Max Current | Powers |
-|--- |--- |--- |--- |
+| --- | --- | --- | --- |
 | **5V_MAIN** | 5.0V | 12A (rated) | Raspberry Pi CM5, USB 3.0 ports, HDMI output |
 | **3V3_ENIG** | 3.3V | 3A (rated) | All CPLD logic chips (Rotor stack), USB-JTAG interface chip |
 
@@ -133,7 +133,7 @@ certification.
 Two LEDs on the Power Module (visible through the enclosure window or on the front panel) provide at-a-glance status:
 
 | LED | Colour | State | Meaning |
-|--- |--- |--- |--- |
+| --- | --- | --- | --- |
 | **LOGIK-BEREIT** | Green | Solid | 5V_MAIN rail is stable; system is ready |
 | **LOGIK-BEREIT** | Green | 1Hz pulse | System is initialising (CM5 booting) |
 | **Safety Glow** | Amber | Solid | Supercapacitors are charged (>5.1V); internal power is live |
