@@ -136,9 +136,87 @@ HandlePowerKey=poweroff
 - I²C enabled on CM5 (`dtparam=i2c_arm=on` in config.txt)
 - `enigma-power-monitor.service` installed and enabled (`systemctl enable enigma-power-monitor`)
 
+## SW1 RGB LED State Machine
+
+The CM5 controls the SW1 RGB LED via four GPIOs once firmware initialises. The hardware handoff
+sequence and colour states are defined below.
+
+### Boot Handoff Sequence
+
+1. **Power on (CM5 not yet booted):** `SW_LED_CTRL` (GPIO 24) is floating/low (CM5 GPIO in input mode).
+   Hardware path active: MIC1555 (U11) oscillator drives Q_HW → BAT54 diodes → SW_LED_R + SW_LED_G
+   simultaneously → 1Hz orange flash on SW1. Identical orange heartbeat to the Controller status LED.
+
+2. **CM5 kernel boots, systemd target reached:** Power monitor service starts.
+   Before asserting `SW_LED_CTRL`, pre-set SW_LED_R/G/B GPIOs to desired initial state (orange solid:
+   GPIO 17 HIGH, GPIO 18 HIGH, GPIO 19 LOW).
+
+3. **CM5 drives `SW_LED_CTRL` HIGH (GPIO 24):** Hardware Q_HW gate disabled → MIC1555 path cut.
+   CM5 now has exclusive control of SW_LED_R/G/B.
+
+4. **Power source detection:** Read POE_STAT (GPIO 20), USB_STAT (GPIO 21), BATT_STAT (GPIO 22)
+   and set LED colour per table below.
+
+### LED Colour Table
+
+| State | GPIO 17 (R) | GPIO 18 (G) | GPIO 19 (B) | Colour | Control |
+|---|---|---|---|---|---|
+| Booting (pre-CM5) | 1Hz PWM | 1Hz PWM | Off | 🟠 Orange flash | Hardware (MIC1555) |
+| CM5 ready, USB-C active | Off | On | Off | 🟢 Solid green | CM5 GPIO |
+| CM5 ready, PoE active | Off | Off | On | 🔵 Solid blue | CM5 GPIO |
+| CM5 ready, Battery active | On | On | Off | 🟠 Solid orange | CM5 GPIO |
+| Supercap hold-up (mains fail) | PWM 2Hz | PWM 2Hz | Off | 🟠 Fast orange flash | CM5 GPIO |
+| Fault / eFuse latched | On | Off | Off | 🔴 Solid red | CM5 GPIO |
+| Graceful shutdown in progress | PWM 1Hz | Off | Off | 🔴 Slow red flash | CM5 GPIO |
+
+### SW_LED_CTRL GPIO Initialisation (Device Tree / Python)
+
+Add to the power monitor daemon startup sequence:
+
+```python
+import RPi.GPIO as GPIO
+
+SW_LED_R    = 17
+SW_LED_G    = 18
+SW_LED_B    = 19
+SW_LED_CTRL = 24
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup([SW_LED_R, SW_LED_G, SW_LED_B, SW_LED_CTRL], GPIO.OUT, initial=GPIO.LOW)
+
+# Pre-set orange before taking control
+GPIO.output(SW_LED_R, GPIO.HIGH)
+GPIO.output(SW_LED_G, GPIO.HIGH)
+
+# Take control from hardware oscillator
+GPIO.output(SW_LED_CTRL, GPIO.HIGH)
+
+# Now detect power source and set correct colour
+def set_led(r, g, b):
+    GPIO.output(SW_LED_R, r)
+    GPIO.output(SW_LED_G, g)
+    GPIO.output(SW_LED_B, b)
+
+poe_active  = GPIO.input(20)   # POE_STAT active high
+usb_active  = not GPIO.input(21)  # USB_STAT active low
+batt_active = not GPIO.input(22)  # BATT_STAT active low
+
+if usb_active:
+    set_led(0, 1, 0)   # Green — USB-C
+elif poe_active:
+    set_led(0, 0, 1)   # Blue — PoE
+elif batt_active:
+    set_led(1, 1, 0)   # Orange — Battery
+else:
+    set_led(1, 0, 0)   # Red — No known source (fault)
+```
+
 ## Open Items
 
 - [ ] Confirm CM5 GPIO pin number for PWR_GD (update `<TBD>` above once GPIO mapping is finalised in Controller/Design_Spec.md)
 - [ ] Verify LTC3350 I²C address (0x09 is default; may change based on ADDR pin strapping — check schematic)
 - [ ] Test hold-up timing under actual CM5 load profile (5W assumed; measure at first prototype)
 - [ ] Consider adding LTC3350 charge status polling (SOC readout) for optional status LED control from software
+- [ ] Confirm Marquardt 1800 series exact PN for RGB LED rocker (select at mechanical design stage for panel cutout dimensions)
+- [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
+- [ ] Add SW_LED_CTRL (GPIO 24) to BtB Link-Alpha connector wiring list in Controller Board_Layout.md (pin 47)

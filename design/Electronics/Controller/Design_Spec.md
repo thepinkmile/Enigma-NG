@@ -90,13 +90,14 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** INA219, STUSB4500, Smart Battery. |
 | **4–15** | **DATA_BUS** | Output | 3.3V | **12-bit Parallel Bus** (D0-D11) to Stator/Rotors. |
 | **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ENIG LDO for sequenced rotor stack power-up. |
-| **17** | **LED_RED** | PWM | 3.3V | RGB LED - Red Channel (Status/Fault). |
-| **18** | **LED_GRN** | PWM | 3.3V | RGB LED - Green Channel (Heartbeat/PoE). |
-| **19** | **LED_BLU** | PWM | 3.3V | RGB LED - Blue Channel (USB-C). |
+| **17** | **SW_LED_R** | PWM | 3.3V | RGB switch (SW1) — Red channel. Fault / graceful shutdown indicator. |
+| **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |
+| **19** | **SW_LED_B** | PWM | 3.3V | RGB switch (SW1) — Blue channel. PoE active power source. |
 | **20** | **POE_STAT** | Input | 3.3V | Active High: PoE live (TPS2372-4 /PG signal asserted). |
 | **21** | **USB_STAT** | Input | 3.3V | Active Low: 12V/15V PD Negotiated. |
 | **22** | **BATT_STAT** | Input | 3.3V | Active Low: Battery Present. |
 | **23** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse Fault Interrupt. |
+| **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware MIC1555 orange-flash path on Power Module. |
 
 ## 7. Protection Notes
 

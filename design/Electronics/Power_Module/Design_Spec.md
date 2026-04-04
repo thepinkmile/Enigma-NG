@@ -271,11 +271,21 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp-up, we use an automated voltage supervisor combined with a manual override.
 
-* **Power Toggle (SW1):** Panel-mount latching SPST toggle switch in series with the VIN_BUS line between
-  the OR-ing network output and the TPS25980 eFuse input. When open (OFF), all downstream power is cut
-  regardless of which input source is present. Rated ≥10A DC, ≥20V. Connected to PCB via spade blade
-  terminals (Keystone 1285). PCB trace on this path must be ≥3.0mm wide (7A on 1oz copper, ≤10°C rise).
-  No pull-up or pull-down required — this is a high-current line, not a logic signal.
+* **Power Toggle (SW1):** Panel-mount latching SPST rocker switch (Marquardt 1800 series, RGB LED — TBD
+  exact variant) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line. When SW1
+  is open (ON position), R_EN (10kΩ to 3V3_ENIG) holds EN HIGH → eFuse enabled. When SW1 is closed
+  (OFF position), EN is pulled to GND → eFuse output cut, all downstream power off.
+  * **Current rating:** Low-current logic signal only (EN pin draws microamps) — no high-current switch
+    rating required. Any 50mA+ rated switch is suitable.
+  * **RGB LED circuit:** SW1 integrates an RGB LED status indicator. The LED is driven by a hardware
+    handoff circuit: before CM5 boot, the MIC1555 oscillator (U11) drives the Red and Green channels
+    via Q_HW (BSS138 NMOSFET gate) to produce a 1Hz orange flash (R+G simultaneously). Once CM5
+    firmware asserts SW_LED_CTRL (BtB pin 47, CM5 GPIO 24) HIGH, Q_HW is disabled and CM5 drives
+    SW_LED_R/G/B (BtB pins 31/32/33, CM5 GPIOs 17/18/19) directly.
+  * **LED colour scheme:** Orange flash = booting; Solid green = USB-C active; Solid blue = PoE active;
+    Solid orange = Battery active; Red = fault or graceful shutdown in progress.
+  * **Hardware path isolation:** BAT54 Schottky diodes (D_R, D_G) isolate the MIC1555/Q_HW hardware
+    path from the CM5 GPIO outputs to prevent back-driving.
 * **Supervisor IC:** [MCP121T-450E](https://www.microchip.com) (4.50V Threshold).
 * **Trigger:** The supervisor monitors the **5V_MAIN** rail. It holds the `GLOBAL_EN` (PMIC_EN) pin LOW until the rail is stable.
 * **Manual Reset (SW2):** A high-quality tactile button wired in parallel to the supervisor output.
@@ -384,8 +394,12 @@ TPS25980 latches OFF under the following fault conditions:
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB1002V | P10.0KBYCT-ND | — |
 | R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
-| SW1 | Main Power Toggle | Panel-mount latching SPST toggle switch — ≥10A DC / ≥20V rated. In series with VIN_BUS between OR-ing output and eFuse (U1) input. Connected via Keystone 1285 spade blade terminals. TBD — select at mechanical design stage; specify panel cutout dimension. | Panel-mount THT | TBD | TBD | — |
+| SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — TBD exact Marquardt PN (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | TBD (Marquardt 1800 series) | TBD | — |
 | SW2 | CM5 Hard Reset | Tactile SMT pushbutton, momentary SPST, in parallel with MCP121T-450E (U8) RESET output on GLOBAL_EN line. Pulls GLOBAL_EN to GND on press. No pull-up needed (R9 on GLOBAL_EN line serves this purpose). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
+| R_EN | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| D_R | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
+| D_G | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
+| Q_HW | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS259803ONRGER (16.9V OVLO) ⚠️ verify PN before ordering | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | — |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | WSON-8 2×2mm | 595-LMQ61460ARUMR | 296-LMQ61460ARUMR/NOPBCT-ND | — |

@@ -11,12 +11,12 @@
 * **Pins 23-24:** GND additional return path
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
 * **Pins 27-30:** GND Isolation Moat
-* **Pins 31-34:** Status LEDs (STATUS_AMBER / STATUS_GREEN / STATUS_RED) + PWR_GD
+* **Pins 31-34:** SW_LED_R/G/B (RGB switch) + PWR_GD
 * **Pins 35-38:** I2C-1 Telemetry (SDA/SCL/GND/GND — to PD/eFuse)
 * **Pins 39-44:** 3V3_ENIG (Input from Power Module LDO — 6 pins, 3.0A capacity)
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection — Active Low, CM5 GPIO 23)
 * **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS7A8333P EN pin on Power Module)
-* **Pins 47-48:** SPARE (reserved for future use)
+* **Pins 47-48:** SPARE (pin 47 → SW_LED_CTRL; pin 48 reserved for future use)
 * **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — interleaved; combined with pins 21-22; 4-via Thermal Clusters)
 
 #### Full 80-Pin Map
@@ -53,9 +53,9 @@
 | 28 | GND | — | Isolation moat |
 | 29 | GND | — | Isolation moat |
 | 30 | GND | — | Isolation moat |
-| 31 | STATUS_AMBER | CTRL → PM | Amber LED control (CM5 GPIO 5) |
-| 32 | STATUS_GREEN | CTRL → PM | Green LED control (CM5 GPIO 6) |
-| 33 | STATUS_RED | CTRL → PM | Red LED control (CM5 GPIO 7) |
+| 31 | SW_LED_R | CTRL → PM | SW1 RGB switch red channel (CM5 GPIO 17) |
+| 32 | SW_LED_G | CTRL → PM | SW1 RGB switch green channel (CM5 GPIO 18) |
+| 33 | SW_LED_B | CTRL → PM | SW1 RGB switch blue channel (CM5 GPIO 19) |
 | 34 | PWR_GD | PM → CTRL | Power-good signal from MCP121T-450E |
 | 35 | I2C1_SDA | Bidir | I2C Telemetry bus data (CM5 GPIO 2; 4.7kΩ pull-up on PM) |
 | 36 | I2C1_SCL | Bidir | I2C Telemetry bus clock (CM5 GPIO 3; 4.7kΩ pull-up on PM) |
@@ -69,7 +69,7 @@
 | 44 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin; combined 6 pins = 3.0A |
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS7A8333P EN |
-| 47 | SPARE | — | Reserved for future use |
+| 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; disables MIC1555 hardware path (CM5 GPIO 24) |
 | 48 | SPARE | — | Reserved for future use |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
 | 50 | GND | — | Interleaved return |
@@ -126,8 +126,8 @@ _______________________________________    _____________    ____________________
 
 [ PINS 27 - 30 ] ------------------------> [ ISOLATION ] -> [ MASTER GND BANK            ]
 
-[ PINS 31 - 33 ] ------------------------> [ 3.3V LOGIC] -> [ STATUS GREEN / AMBER / RED ]
-                                           (GPIO OUT)       (To Power Module LEDs)
+[ PINS 31 - 33 ] ------------------------> [ 3.3V LOGIC] -> [ SW_LED_R/G/B (RGB switch) ]
+                                           (GPIO OUT)       (SW1 RGB LED channels)
 
 [ PIN 34       ] ------------------------> [ 3.3V LOGIC] -> [ PWR_GD                     ]
                                            (GPIO IN)        (From Power Module MCP121T)
@@ -144,7 +144,7 @@ _______________________________________    _____________    ____________________
 [ PIN  46      ] ------------------------> [ 3.3V LOGIC] -> [ ROTOR_EN                   ]
                                            (GPIO OUT)       (CM5 GPIO 16 → TPS7A8333P EN)
 
-[ PINS 47 - 48 ] ------------------------> [ SPARE     ] -> [ RESERVED                   ]
+[ PINS 47 - 48 ] ------------------------> [ SPARE     ] -> [ RESERVED (PIN 47: SW_LED_CTRL) ]
 
 [ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (9A DELIVERY)      ]
  (16× 5V + 16× GND interleaved)           (BULK DC)        (To CM5 VCC_IN; incl. pins 21-22)
@@ -152,14 +152,14 @@ _______________________________________    _____________    ____________________
 
 ### DIAGNOSTIC BANK-ALPHA (Top-Right)
 
-* **Pins 1-2:** 5V_SYSTEM
+* **Pins 1-2:** 5V_MAIN
 * **Pins 3-4:** 3V3_ENIG
 * **Pins 5-6:** I2C_TELE
 * **Pin  7:** ETH_LED_LINK
 * **Pin  8:** ETH_LED_ACT
-* **Pin  9:** STAT_GREEN
-* **Pin  10:** STAT_AMBER
-* **Pin  11:** STAT_RED
+* **Pin  9:** SW_LED_G (RGB switch green)
+* **Pin  10:** SW_LED_R (RGB switch red)
+* **Pin  11:** SW_LED_B (RGB switch blue)
 * **Pin  12:** PWR_GD
 * **Pin  13:** BATT_PRES_N
 * **Pin  14:** GND (previously 3V3_SYSTEM — rail removed; reassigned to GND for improved return path)

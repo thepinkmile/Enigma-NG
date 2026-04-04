@@ -86,7 +86,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 | [ TPS25751 PD EMULATOR ] <------------|----:  CC1/2   :    |                           |
 |                                       |    :          :    |                           |
 | [ TELEMETRY I2C ] <-------------------|----:  I2C/GND :----|--> [ 40-PIN PI HEADER ]   |
-| [ STATUS LEDS  ] <--------------------|----:  GPIO    :----|    (Logic to Pi 5)        |
+| [ SW1 RGB SWITCH LED ] <--------------|----:  GPIO    :----|    (Logic to CM5)         |
 |                                       |    :          :    |                           |
 | [ U7 3V3_ENIG LDO ] <-----------------|----:----------:----|--> [ 3V3 TEST POINTS ]    |
 |_______________________________________|    :..........:    |___________________________|
@@ -197,7 +197,8 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
 |                     |         |    |                      |        | PIN  25: ETH_LED_LINK       |
 | [BATT] (14.4V) -----|-------->| [F1: 72°C TCO]            |        | PIN  26: ETH_LED_ACT        |
 |_____________________|         |    |                      |        | PINS 27-30: GND             |
-                                | [U1: TPS25980 eFuse]      |        | PINS 31-34: Status LEDs     |
+                                | [U1: TPS25980 eFuse]      |        | PINS 31-33: SW_LED_R/G/B   |
+| PIN  34:    PWR_GD          |
        LADDER RESISTORS:        |    |                      |        | PINS 35-38: I2C Telemetry   |
        R1: 232k (UVLO_HI) ------|--->|                      |        | PINS 39-44: 3V3_ENIG        |
        R2: 28.7k (UVLO_LO) -----|--->|                      |        | PIN  45: BATT_PRES_N        |
