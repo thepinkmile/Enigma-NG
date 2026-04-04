@@ -124,30 +124,35 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 ## Power Flow
 
 ```text
- BULKHEAD ENTRY         INPUT PROTECTION             OR-ING / SELECT           UPS & REGULATION                                                                              SAMTEC EXIT
-_________________      ____________________         ___________________        _________________________________________                                                     _____________
-
-[RJ45 PoE+] ---> [D4+D5 TPD4E05U06 ESD] ---> [U9 TPS2372-4 + U10 TPS23730 + T2 ACF] ----\
-                                                (PoE Type 4 discrete DC-DC, 12V/51W)      \
-[USB-C 15V] ---> [TPD4E05U06 ESD] ---------------------------------------------------------+---> [U6 LM74700-Q1 + Q1-Q3] -> [F1 TCO] -> [U1 TPS25980 eFuse]
-                                                                                          /           (Priority OR-ing)                      (7A / 11V / 16.9V)
-[BATTERY  ] ---> [D1+D2 ESD] ------------------------------------------------------------/                                                         |
-                                                                                                                                                   |
-                                                                    +-------------------------------------------------------------------> [U2A/U2B LMQ61460-Q1 Dual Buck]
-                                                                    |                                                                              |
-                                                                    |                                                                         [ 5V_MAIN BUS ]
-                                                                    |                                                                              |
-                                                                    |                              +---------------------------------------------> [U3 LTC3350]
-                                                                    |                              |  (supercap manager)                           |
-                                                                    |                              |                                          [C_SC1-4 Supercaps]
-                                                                    |                              |                                          (4× Tecate 22F/2.7V, 2S2P)
-                                                                    |                              |                                          (11F / 5.4V on 5V_MAIN)
-                                                                    |                              |
-                                                                    |                              +---------------------------------------------> [U4 TPS25751 PD Emu] ---> [ CM5 5V/5A ]
-                                                                    |                              |
-                                                                    |                              +---------------------------------------------> [U7 TPS7A8333P LDO] ----> [ +3V3_ENIG ]
-                                                                    |                              |
-                                                                    |                              +---------------------------------------------> [U8 MCP121T-450E] ------> [ PWR_GD ]
+        INPUT A: PoE+              INPUT B: USB-C              INPUT C: Battery
+     [ J2 RJ45 MagJack ]        [ J4 USB-C 15V ]           [ J3 Locking Conn ]
+            |                          |                           |
+  [D4/D5 ESD + L1 CMC  ]    [D3 ESD + L2 CMC    ]           [D1/D2 ESD]
+  [U9 TPS2372-4 PD ctrl]    [U5 STUSB4500 PD ctrl]                |
+  [U10 TPS23730 ACF+T2 ]      (negotiates 15V)                    |
+   (PoE Type 4, 12V/51W)                                          |
+            |                          |                           |
+            \__________________________|___________________________/
+                                       |
+                          [U6 LM74700QDBVRQ1 + Q1/Q2/Q3]
+                            (ideal-diode priority OR-ing)
+                                       |
+                                [F1 TCO 72°C]
+                              (in-series thermal cutoff)
+                                       |
+                           [U1 TPS25980 eFuse]
+                           (7A / 11V UVLO / 16.9V OVP)
+                                       |
+                     [U2A/U2B LMQ61460-Q1 Dual Buck x2]
+                      (7-17V pre-reg input -> 5V / 12A)
+                                       |
+                               [ 5V_MAIN BUS ]
+          +---------------------------+-------------+--------------------+
+          |                           |             |                    |
+ [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS7A8333P]  [U8 MCP121T-450E]
+ [C_SC1-4: 11F / 5.4V    ]   PD Emulator         3.3V LDO          Supervisor
+ (4x Tecate 22F/2.7V 2S2P) -> CM5 5V/5A          -> 3V3_ENIG        -> PWR_GD
+                              (via J1 BtB)         (3A / 3.3V)      (open-drain)
 ```
 
 * Thermal Matrix vias sit beneath the supercap and eFuse thermal island for heat-spreading only; they are not part of the electrical power path.
