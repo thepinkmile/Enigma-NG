@@ -41,8 +41,9 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 * **Keyboard Switches (×64):** DPDT 6-pin momentary push-button switches, one per key position.
   * Mounted in the keyboard panel (mechanical chassis); connect to the PCB via a field-installable spade-terminal harness.
   * **Pole 1 — COM1 + NO1** → key-press signal path to CPLD input (Row 3 spade bank BT129–BT192 COM, BT193–BT256 NO).
-  * **Pole 2 — COM2 + NO2** → reserved for future lamp co-location drive or redundancy wiring (not routed in V1.0).
-  * **NC1 / NC2** → not connected.
+  * **Pole 2 pins (3×)** → mechanically soldered to PCB for physical key anchoring only; **no electrical connection**.
+  * **NC1** → not connected.
+  * Keys connect only to the keyboard side of the Encoder board; there is no direct switch connection to the Lightboard.
   * Part: DPDT 2-pole 6-pin push button switch — purchased (gadgetkingdom, eBay, 2 per pack).
 * **PCB Spade Terminal Banks — Keyboard (×128):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs, 2 per switch (128 total).
   * **BT129–BT192:** Row 3 — KEY_COM lines (switch COM1 to CPLD input reference rail).
