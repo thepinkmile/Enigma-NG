@@ -30,9 +30,15 @@
 | L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC 7448031002 | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 (**replaces discontinued Laird CM5022**) | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M (replaces Würth 7447789100 — not in public catalog) | 10µH, 15.5A Isat, DCR 16.5mΩ | 13.5×12.5×6.2mm SMT ⚠️ footprint change | 652-SRP1265A-100M; alt: Farnell ~2741 in stock |
-| C1, C4 | Pi-filter bulk cap (2× each) | Murata GRM32ER71H226KE15L | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L |
+| C1, C4 | Pi-filter bulk cap (2× each) | Murata GRM32ER71H226KE15L | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L |
 | C2, C5 | Pi-filter mid-freq bypass (2× each) | Murata GRM21BR71H105KA12L | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L |
 | C3, C6 | Pi-filter HF bypass (2× each) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
+| C7–C12 | Power IC bulk caps (U1 in/out, U2A in/out, U2B in/out) | Murata GRM32ER71H226KE15L | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L |
+| C13 | LDO input cap (U7 VIN) | Murata GRM31CR72E106KA12L | 10µF 25V X7R | 1206 | 81-GRM31CR72E106KA12L |
+| C14 | LDO output cap (U7 VOUT) | Murata GRM32ER71H226KE15L | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L |
+| C15–C22 | IC VCC bypass (U3–U6, U8–U11) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
+| C23 | MIC1555 timing cap (C_OSC) | Murata GRM21BR71H105KA2L | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L |
+| C24 | TPS23730 soft-start cap (C_SS) | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
 
 **Pi-filter performance summary (f_c = 10.5kHz):**
 - −46dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
@@ -82,7 +88,7 @@
 
 **Notes:**
 - T2 is an **off-the-shelf catalogue part** — order direct from [coilcraft.com](https://www.coilcraft.com). 668 units confirmed in stock (Coilcraft Direct as of 2026-04-03).
-- TPS23730 operates in **PSR (Primary-Side Regulation) mode** using the auxiliary winding of the POE600F-12LD. No external TL431 or optocoupler required. ⚠️ Confirm PSR vs SSR mode from the Coilcraft POE600F-12LD application note before schematic freeze.
+- TPS23730 operates in **PSR (Primary-Side Regulation) mode** using the auxiliary winding of the POE600F-12LD. No external TL431 or optocoupler required.
 - TPS2372-4 uses **Autoclass** for automatic 4-event IEEE 802.3bt Type 4 classification; no external RCLASS resistor required. R13 (RMPS) programs MPS pulse current only.
 - OR-ing priority: TPS2372-4 `/PG` signal drives LM74700-Q1 enable on the USB-C path to enforce PoE source priority.
 
@@ -105,6 +111,10 @@
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | — (extended) | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
 | J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
 | J3 | Molex 43650-0519 | THT Micro-Fit 3.0 | 538-43650-0519 ~ | WM7843-ND ⚠️ verify | — (THT) | ⚠️ **MPN corrected** — `43045-0512` does not exist. Correct series is `43650` (vertical THT). 43650-0519: 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. DigiKey WM7843-ND inferred; **verify exact WM number**. JLCPCB does not stock THT connectors. |
+| J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — (hand-place) | 24-pin USB Type-C receptacle, 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. Not in JLCPCB standard catalog; hand-place or pre-fit. |
+| Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
+| R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=30.1kΩ (ERA-3ARB3012V, Mouser 667-ERA-3ARB3012V, DigiKey P30.1KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.81V. |
+| U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERA series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Murata as C2/C5). |
 
 ### 9.0. Part Number Issues Requiring Action
 
@@ -157,4 +167,7 @@ Product page links for all major components for design review and procurement ve
 | R12 / R_SENSE | CSS2H-2512R-R010ELF — 10mΩ Current Sense Resistor | Bourns | [bourns.com/…/CSS2H](https://www.bourns.com/products/resistors/current-sense-resistors/product/CSS2H) |
 | J2 | 7499111121A — GbE RJ45 MagJack with LEDs | Würth Elektronik | [we-online.com (search 7499111121A)](https://www.we-online.com/en/components/products/GMJT) |
 | J3 | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [molex.com/…/436500519](https://www.molex.com/en-us/products/part-detail/436500519) |
+| J4 | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [gct.co/part/USB4135-GF-A](https://gct.co/part/USB4135-GF-A) |
+| Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [ti.com/product/CSD17483F4](https://www.ti.com/product/CSD17483F4) |
+| U11 | MIC1555 — CMOS Timer, SOT-23-5 | Microchip Technology | [microchip.com/en-us/product/MIC1555](https://www.microchip.com/en-us/product/MIC1555) |
 | C_SC1–4 | TPLH-2R7/22WR12X31 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com (search TPLH-2R7-22WR)](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |

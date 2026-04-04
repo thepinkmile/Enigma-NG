@@ -108,7 +108,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 ## USB-C Power
 
 ```text
-[ USB-C BULKHEAD (J3) ]         [ ESD & FILTERING ]               [ INPUT SELECTOR ]        [   BtB Connector  ]
+[ USB-C BULKHEAD (J4) ]         [ ESD & FILTERING ]               [ INPUT SELECTOR ]        [   BtB Connector  ]
  _____________________           ____________________                                        __________________
 |                     |         |                    |                                      |                  |
 | VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _________________        | [ SAMTEC ERM8 ]  |
