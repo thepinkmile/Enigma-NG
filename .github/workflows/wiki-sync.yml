@@ -30,13 +30,88 @@ jobs:
         run: |
           mkdir -p wiki_staging
           # Renames design/Electronics/Power_Module/Design_Spec.md -> Electronics-Power-Module-Design-Spec.md
-          find design/ -name "*.md" | while read file; do 
+          # _Sidebar.md is excluded here; it is auto-generated in the next step.
+          find design/ -name "*.md" ! -name "_Sidebar.md" | while read file; do 
             newname=$(echo "$file" | sed "s|design/||; s|/|-|g; s|_|-|g"); 
             cp "$file" "wiki_staging/$newname"; 
           done
           cp README.md wiki_staging/Home.md
-          if [ -f wiki_staging/-Sidebar.md ]; then rm wiki_staging/-Sidebar.md; fi
-          if [ -f design/_Sidebar.md ]; then cp design/_Sidebar.md wiki_staging/; fi
+
+      - name: Generate Sidebar
+        run: |
+          python3 << 'EOF'
+          import os
+
+          DESIGN_ROOT = "design"
+          WIKI_ROOT   = "wiki_staging"
+          EXCLUDE     = {"_Sidebar.md"}
+
+          def path_to_wiki_name(repo_path):
+              p = repo_path.replace("\\", "/")
+              if p == "README.md":
+                  return "Home"
+              if p.startswith("design/"):
+                  p = p[len("design/"):]
+              name = p.replace("/", "-").replace("_", "-")
+              if name.endswith(".md"):
+                  name = name[:-3]
+              return name
+
+          def build_tree(dirpath, repo_dir_path, indent=0):
+              """
+              Recursively produce sidebar list entries mirroring the directory tree.
+              Directories (sections) are listed before files at each level.
+              """
+              prefix = "  " * indent
+              lines  = []
+              try:
+                  # Dirs first (sort key 0), then files (sort key 1); both alphabetical.
+                  entries = sorted(
+                      os.scandir(dirpath),
+                      key=lambda e: (not e.is_dir(), e.name.lower())
+                  )
+              except PermissionError:
+                  return lines
+
+              for entry in entries:
+                  if entry.name.startswith("."):
+                      continue
+
+                  if entry.is_dir():
+                      label = entry.name.replace("_", " ")
+                      lines.append(f"{prefix}* **{label}**")
+                      sub_repo = f"{repo_dir_path}/{entry.name}"
+                      lines.extend(build_tree(entry.path, sub_repo, indent + 1))
+
+                  elif entry.is_file() and entry.name.endswith(".md") and entry.name not in EXCLUDE:
+                      label     = entry.name[:-3].replace("_", " ")
+                      repo_path = f"{repo_dir_path}/{entry.name}"
+                      wiki_name = path_to_wiki_name(repo_path)
+                      lines.append(f"{prefix}* [{label}]({wiki_name})")
+
+              return lines
+
+          sidebar = [
+              "# Wiki Contents",
+              "",
+              "* [Home](Home)",
+              "",
+          ]
+          sidebar.extend(build_tree(DESIGN_ROOT, DESIGN_ROOT))
+          sidebar += [
+              "",
+              "---",
+              "",
+              "* [Browse Source Code](https://github.com/thepinkmile/Enigma-NG)",
+              "",
+          ]
+
+          out_path = os.path.join(WIKI_ROOT, "_Sidebar.md")
+          with open(out_path, "w", encoding="utf-8") as f:
+              f.write("\n".join(sidebar))
+
+          print("Generated _Sidebar.md from design/ directory tree.")
+          EOF
 
       - name: Fix Cross-References
         run: |
@@ -127,7 +202,8 @@ jobs:
                   if wiki_filename == "Home.md":
                       orig_path = "README.md"
                   elif wiki_filename == "_Sidebar.md":
-                      orig_path = "design/_Sidebar.md"
+                      # Generated file — links are already wiki page names, no path resolution needed.
+                      continue
                   else:
                       print(f"Warning: no origin mapping for {wiki_filename} — skipping link fix")
                       continue
