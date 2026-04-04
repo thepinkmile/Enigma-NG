@@ -1,4 +1,11 @@
-# Detailed Design: Shielded Power Module (V1.0)
+# Power Module: Design Spec
+
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
+
+## System Overview
 
 This Power Module is a custom power board that is independantly shielded and protected to ensure all power sources are filtered, controlled and monitored.
 It provides the basis of the clean power rails into the controller board and other peripheral boards.
@@ -16,6 +23,8 @@ It produces 2 power rails from a common ~12V input source. These power rails are
     * `Controller/Design_Spec.md`
 
 ## Design
+
+> **NOTE:** All global rules defined in the Global_Routing_Spec.md should be applied to this design.
 
 ### 1. PCB Architecture
 
@@ -122,7 +131,9 @@ GND ──────┴──────────────────�
 
 **Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears — provides a Faraday shield for the entire Power Module, supplementing conducted filtering with radiated attenuation.
 
-> **Note on L1/L2 placement:** L1 and L2 are cascaded common-mode chokes on the **combined post-OR-ing bus** (VIN_RAW), not per-input filters. All three input sources (PoE, USB-C, Battery) are OR-ed first via Q1–Q3 and U6, then the combined rail passes through L1→L2→L3 before reaching the eFuse (U1). Only the Battery input (J3) has no dedicated input-side ESD filter — D1/D2 provide transient protection at the connector.
+> **Note on L1/L2 placement:** L1 and L2 are cascaded common-mode chokes on the **combined post-OR-ing bus** (VIN_RAW), not per-input filters.
+> All three input sources (PoE, USB-C, Battery) are OR-ed first via Q1–Q3 and U6, then the combined rail passes through L1→L2→L3 before reaching the eFuse (U1).
+> Only the Battery input (J3) has no dedicated input-side ESD filter — D1/D2 provide transient protection at the connector.
 
 ### 5. Protection & Logic
 
@@ -166,7 +177,9 @@ GND ──────┴──────────────────�
     * Soft-start capacitor on SS pin: 10nF (5ms ramp-up, **C24**).
 * **LDO Enable (ROTOR_EN):**
   * CM5 GPIO 16 (ROTOR_EN, 3.3V drive) drives the TPS7A8333P (U7) EN pin directly. The EN pin threshold is 1.2V typical — no level-shifting required.
-  * A 10kΩ pull-up resistor from the EN pin to **3V3_ENIG** ensures the LDO is ON by default during power-up. Using 3V3_ENIG (derived from 5V_MAIN, present before CM5 boot) instead of 5V_MAIN prevents 5V from being applied to the CM5 BCM2712 GPIO 16 input (3.3V LVCMOS), which could cause clamp-diode conduction when the CM5 is unpowered. CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW
+  * A 10kΩ pull-up resistor from the EN pin to **3V3_ENIG** ensures the LDO is ON by default during power-up.
+  Using 3V3_ENIG (derived from 5V_MAIN, present before CM5 boot) instead of 5V_MAIN prevents 5V from being applied to the CM5 BCM2712 GPIO 16 input (3.3V LVCMOS),
+  which could cause clamp-diode conduction when the CM5 is unpowered. CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW
 
     disables the LDO in a controlled power-down sequence.
 

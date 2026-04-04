@@ -1,4 +1,9 @@
-# Board Layout Visualisations
+# Power Module: Board Layout Visualisations
+
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
 
 ---
 
@@ -23,10 +28,10 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |   [ eFuse U1 ] <--- TPS25980 + [0603 Thin-Film Ladder]                      |
 |                                                                             |
 |    ______________________             __________________________            |
-|   |   [C_SC1]  [C_SC2]   |           |  [ Amber "Safety Glow" ] |           |
-|   |   [C_SC3]  [C_SC4]   |           |  [ J3 Molex 43650-0519 ] |           |
-|   | (11F/5.4V Supercap)  |
-|   | (22F×4 cells, 2S2P)   |           |__________________________|           |
+|   |   [C_SC1]  [C_SC2]   |           |                          |           |
+|   |   [C_SC3]  [C_SC4]   |           |  [ Amber "Safety Glow" ] |           |
+|   | (11F/5.4V Supercap)  |           |  [ J3 Molex 43650-0519 ] |           |
+|   | (22F×4 cells, 2S2P)  |           |__________________________|           |
 |   |______________________|                                                  |
 |                |                                                            |
 |         [ THERMAL HUB ] <--- Type VII Hex-Matrix Vias to Bottom Slug        |
@@ -91,7 +96,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 ## Ethernet Power
 
 ```text
-[ J2 RJ45 MAGJACK ]      [ ESD FIREWALL ]      [ PoE DISCRETE DC-DC ]                  [ INPUT SELECTOR ]
+[ J2 RJ45 MAGJACK ]       [ ESD FIREWALL ]      [ PoE DISCRETE DC-DC ]                  [ INPUT SELECTOR ]
  ____________________      _________________     ________________________________         __________________
 |                    |    |                 |   |                                |       |                 |
 | RJ45 (Wurth        |    | [D4 TPD4E05U06] |   | [U9 TPS2372-4]                 |       | [U6 LM74700-Q1] |
@@ -109,17 +114,17 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 ## USB-C Power
 
 ```text
-[ USB-C BULKHEAD (J4) ]         [ ESD & FILTERING ]               [ INPUT SELECTOR ]        [   BtB Connector  ]
- _____________________           ____________________                                        __________________
-|                     |         |                    |                                      |                  |
-| VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _________________        | [ SAMTEC ERM8 ]  |
-|                     |         |         |          |            |                 |       |                  |
+[ USB-C BULKHEAD (J4) ]         [ ESD & FILTERING ]               [ INPUT SELECTOR ]            [   BtB Connector  ]
+ _____________________           ____________________                                            __________________
+|                     |         |                    |                                          |                  |
+| VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _____________________        | [ SAMTEC ERM8 ]  |
+|                     |         |         |          |            |                     |       |                  |
 | GND (4 PINS)  ------|-------->| [ WE-CMBNC L2  ] --|----------->| [U6 LM74700QDBVRQ1] |       |                  |
-|                     |         |                    |            | (OR-ing Input)  |       |                  |
-|                     |         |                    |            |_________________|       |                  |
-| CC1 / CC2     ------|--[PD]-->| [U5 STUSB4500LQTR] |-I2C--------------------------------->| PIN 35 (I2C SDA) |
-| (Handshake)         |         | (Negotiates 15V)   |                                      | PIN 36 (I2C SCL) |
-|_____________________|         |____________________|                                      |__________________|
+|                     |         |                    |            | (OR-ing Input)      |       |                  |
+|                     |         |                    |            |_____________________|       |                  |
+| CC1 / CC2     ------|--[PD]-->| [U5 STUSB4500LQTR] |-I2C------------------------------------->| PIN 35 (I2C SDA) |
+| (Handshake)         |         | (Negotiates 15V)   |                                          | PIN 36 (I2C SCL) |
+|_____________________|         |____________________|                                          |__________________|
 ```
 
 ## Power Flow
@@ -196,7 +201,7 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
        LADDER RESISTORS:        |    |                      |        | PINS 35-38: I2C Telemetry   |
        R1: 232k (UVLO_HI) ------|--->|                      |        | PINS 39-44: 3V3_ENIG        |
        R2: 28.7k (UVLO_LO) -----|--->|                      |        | PIN  45: BATT_PRES_N        |
-       R3: 53.6k (OVLO) ---------|--->|                      |        | PINS 49-80: 5V_MAIN / GND   |
+       R3: 53.6k (OVLO) --------|--->|                      |        | PINS 49-80: 5V_MAIN / GND   |
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
                                 | [5V_MAIN]-----------------|-------[U2A/U2B BUCK]--|
