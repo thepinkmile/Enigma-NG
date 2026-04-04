@@ -21,7 +21,7 @@
 
 * **Pins 1-9:** JTAG + Reset (GND|TCK|GND|TMS|GND|TDI|GND|RST|GND)
 * **Pins 10-20:** Ground isolation bank
-* **Pins 21-24:** 3V3_SYSTEM / status power paths (control signals to controller)
+* **Pins 21-24:** 5V_MAIN (pins 21-22) / GND (pins 23-24) — previously 3V3_SYSTEM, reassigned per DEC-001
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT
 * **Pins 27-30:** GND
 * **Pins 31-34:** Status I/O / PWR_GD / I2C_return

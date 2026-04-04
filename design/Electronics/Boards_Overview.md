@@ -5,8 +5,7 @@ robustness.
 
 ## � Power Rail Glossary (Canonical naming)
 
-* **3V3_SYSTEM**: Provided by CM5 +3.3V regulator; powers Controller logic, status lines (USB/HDMI/Ethernet), and local digital I/O.
-* **3V3_ENIG**: Provided by Power Module 3.3V LDO; distributed to Stator and the Rotor stack (core encryption logic).
+* **3V3_ENIG**: Provided by Power Module TPS7A8333P LDO (3.3V fixed); powers all CPLDs, JTAG interface, I2C logic, rotor stack, and Controller digital I/O. Replaces the former 3V3_SYSTEM rail (see DEC-001).
 * **5V_MAIN**: Provided by Power Module 5V buck; powers CM5 main supplies and 5V system bus.
 * **GND_CHASSIS**: Safety earth / EMI reference plane.
 * **PWR_GD**: Power-good handshake line from Power Module to Controller.

@@ -15,7 +15,7 @@
 
 * **Link-Alpha (Power/Entry):** ERF8 Female Socket 80-pin Power/Ethernet/Telemetry entry from Power Module.
   * Receives: 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
-  * Provides: 3V3_SYSTEM for RJ45 Power and Status LED signals.
+  * Provides: 3V3_ENIG for RJ45 Power and Status LED signals.
   * **Cross-ref:** See `Power_Module/Design_Spec.md` and `Power_Module/Board_Layout.md` for the matching Link-Alpha pin allocation and power flow definitions.
 * **Link-Beta (Logic/Stator):** ERF8 Female Socket 80-pin Encryption/JTAG interface to Stator Board.
   * Provides: JTAG, Reset, and 3V3_ENIG to Stator.
@@ -82,7 +82,7 @@
 
 ## 6. CM5 GPIO Mapping Matrix (Enigma-NG)
 
-All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <50mA across all pins.
+All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50mA across all pins.
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -118,7 +118,7 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 * **L3 (Internal):** High-Speed Data Striplines (USB/HDMI/GBE).
   * 90Ω Diff: 5.5 mil width / 7.5 mil gap (USB 3.0).
   * 100Ω Diff: 4.5 mil width / 8.5 mil gap (HDMI, Ethernet).
-* **L4 (Internal):** High-Current Power Plane (5V_SYSTEM / 3V3_SYSTEM / 3V3_ENIG).
+* **L4 (Internal):** High-Current Power Plane (5V_SYSTEM / 3V3_ENIG).
 * **L5 (Internal):** Secondary GND Plane (Shielding).
 * **L6 (Bottom):** Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.
 
@@ -205,6 +205,7 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 | J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A125057-ND | C123459 |
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
+| R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | ??? | ??? |
 | U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |

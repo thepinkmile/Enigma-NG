@@ -56,7 +56,7 @@ PIN | SIGNAL          | DESCRIPTION
 ```text
 PIN | SIGNAL          | DESCRIPTION
 ----|------------------|---------------------------------
-1   | 3V3_SYSTEM      | Logic Power
+1   | 3V3_ENIG        | Logic Power
 2   | GND             | Ground
 3   | VBUS            | USB Power
 4   | D-              | USB Data -
