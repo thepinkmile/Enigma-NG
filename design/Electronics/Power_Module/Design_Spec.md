@@ -235,9 +235,10 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 ### 2. Signal Integrity
 
-* **USB 3.0:** 90Ω Differential Pairs (Layer 1) with <0.1mm intra-pair skew.
 * **Ethernet (GbE):** 100Ω Differential Pairs (Layer 1); critical for link-layer signal integrity at 1Gbps.
-* **HDMI:** 100Ω Differential Pairs (Layer 1).
+
+> **Note:** The USB-C port (J2) is power-delivery only (PD negotiation via U4 TPS25751DREFR). No USB data lines are routed
+> on this board. HDMI is not present on the Power Module.
 
 ### 3. Safety & EMC
 
