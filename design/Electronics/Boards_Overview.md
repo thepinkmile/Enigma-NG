@@ -50,8 +50,8 @@ The logic heart of the machine, hosting the Raspberry Pi CM5.
 Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
 
 * **Logic:** Dual Intel MAX II EPM240T100C5N CPLDs managing 64-node I/O.
-* **Keyboard Mode:** Populated with 10mm long-stroke industrial plungers (C&K F-Series).
-* **Plugboard Mode:** Populated with 64 jack-sensing 3.5mm "Stecker" sockets.
+* **Keyboard Mode:** 64 DPDT mechanical push-button switches (6-pin, momentary) mounted in the keyboard panel; connected to the PCB via 6.35mm spade-terminal harness.
+* **Plugboard Mode:** 64 × 6.35mm (¼″) mono switched panel-mount jack sockets ("Stecker") connected via the same spade-terminal harness architecture.
 
 ## 🔌 4. JTAG Daughterboard (Hidden)
 

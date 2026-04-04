@@ -38,7 +38,15 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
   * **BT1–BT64:** Row 1 — ENC signal paths (Tip connections).
   * **BT65–BT128:** Row 2 — Insertion-detect lines (Switch contact connections).
   * Arranged in two parallel rows of 64, pitched to accept a standard 6.35mm female crimp spade harness.
-* **Routing:** Flexible cable / harness interface secured to the chassis floor with conductive EMI tape from the Stator Board.
+* **Keyboard Switches (×64):** DPDT 6-pin momentary push-button switches, one per key position.
+  * Mounted in the keyboard panel (mechanical chassis); connect to the PCB via a field-installable spade-terminal harness.
+  * **Pole 1 — COM1 + NO1** → key-press signal path to CPLD input (Row 3 spade bank BT129–BT192 COM, BT193–BT256 NO).
+  * **Pole 2 — COM2 + NO2** → reserved for future lamp co-location drive or redundancy wiring (not routed in V1.0).
+  * **NC1 / NC2** → not connected.
+  * Part: DPDT 2-pole 6-pin push button switch — purchased (gadgetkingdom, eBay, 2 per pack).
+* **PCB Spade Terminal Banks — Keyboard (×128):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs, 2 per switch (128 total).
+  * **BT129–BT192:** Row 3 — KEY_COM lines (switch COM1 to CPLD input reference rail).
+  * **BT193–BT256:** Row 4 — KEY_NO lines (switch NO1 → CPLD key-press input, active-low via pull-up).
 * **Cornering:** 2.0mm Filleted PCB corners for enclosure fit.
 
 ## 4. Aesthetics
@@ -91,6 +99,8 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | J2 | Data Link Connector | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
 | J3 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
-| SW1-64 | Keyboard Switches | Cherry MX style | 3-pin | ??? | ??? | ??? |
+| SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (lamp/redundancy TBD). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
+| BT129-192 | PCB spade blade terminals — KEY_COM (Row 3) | Keystone 1285 — 6.35mm straight vertical PCB-mount male blade tab. COM1 of each keyboard switch pole-1. | Through-hole vertical | 534-1285 | A33376-ND | — |
+| BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285 — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285 | A33376-ND | — |
 | U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U3 | LDO Regulator | TLV755P | SOT-23 | 595-TLV755PDBVR | 296-TLV755PDBVRCT-ND | C291923 |
