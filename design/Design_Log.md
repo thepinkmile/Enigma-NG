@@ -65,6 +65,7 @@ The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF trans
 - **Kinetic Technologies KPM5912:** 85W, 93% efficiency. Rejected: not stocked by any UK/EU distributor.
 
 **Key Parameters:**  
+
 | Parameter | Value |
 |---|---|
 | Part | Coilcraft POE600F-12LD |
