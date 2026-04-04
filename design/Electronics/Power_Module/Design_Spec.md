@@ -400,7 +400,9 @@ TPS25980 latches OFF under the following fault conditions:
 > * **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical
 > through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
 > Mouser: `538-43650-0519`; DigiKey WM number: `WM7843-ND` ⚠️ verify exact WM number at digikey.co.uk.
-> * **R1 ERA-3ARB2323V (232kΩ)** — Corrected from 732kΩ (calculation error). R1 = 28700 × (11/1.21 − 1) = 232kΩ for 11V UVLO threshold with R2 = 28.7kΩ. E96 standard value 232kΩ. Confirm stock at Mouser (667-ERA-3ARB2323V, Panasonic ERA-3ARB2323V) or DigiKey (P232KBYCT-ND) before BOM freeze.
+> * **R1 ERA-3ARB2323V (232kΩ)** — Corrected from 732kΩ (calculation error). R1 = 28700 × (11/1.21 − 1) = 232kΩ
+> for 11V UVLO threshold with R2 = 28.7kΩ. E96 standard value 232kΩ. Confirm stock at Mouser
+> (667-ERA-3ARB2323V, Panasonic ERA-3ARB2323V) or DigiKey (P232KBYCT-ND) before BOM freeze.
 > * **R4–R13 ERJ-3EKF series** — These are Panasonic **1% thick-film** resistors (corrected from "0.1% Thin-Film" in earlier drafts). The ERA-3ARB series (R1–R3) remains 0.1% thin-film for precision
 > UVLO/OVLO dividers. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
 > * **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω
