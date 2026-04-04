@@ -48,8 +48,8 @@
 
 ## 4. High-Speed Interconnects
 
-* **Samtec ERM8-040-05.0-S-DV-K-TR (Male):** Power Module / Controller Beta.
-* **Samtec ERF8-040-05.0-S-DV-K-TR (Female):** Controller Alpha / Stator.
+* **Samtec ERM8-040-05.0-S-DV-K-TR (Male):** Power Module J1 / Stator J1.
+* **Samtec ERF8-040-05.0-S-DV-K-TR (Female):** Controller J1 (Link-Alpha) / Controller J2 (Link-Beta).
 * **Intel EPM240T100C5N:** 37 units (Standardized logic node).
 
 ## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals

@@ -25,7 +25,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ## 3. Interconnects
 
-* **Controller Link (Link-Beta):** The matching **80-pin ERF8-040-05.0-S-DV-K-TR** receptacle for the Controller Board (ERM8 Male Socket).
+* **Controller Link (Link-Beta):** The **80-pin ERM8-040-05.0-S-DV-K-TR** male header on the Stator Board plugs into the matching ERF8-040 female socket on the Controller Board.
   * **Data In:** Receives JTAG, Reset from Controller.
   * **Data Out:** Transmits 12-bit Sniffer data to Controller.
   * **Power:** Receives 3V3_ENIG via the Controller pass-through for all backplane CPLDs.

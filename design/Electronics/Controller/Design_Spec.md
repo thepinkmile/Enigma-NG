@@ -15,7 +15,7 @@
   * Receives: 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
   * Provides: 3V3_SYSTEM for RJ45 Power and Status LED signals.
   * **Cross-ref:** See `Power_Module/Design_Spec.md` and `Power_Module/Board_Layout.md` for the matching Link-Alpha pin allocation and power flow definitions.
-* **Link-Beta (Logic/Stator):** ERM8 Male Header 80-pin Encryption/JTAG exit to Stator Board.
+* **Link-Beta (Logic/Stator):** ERF8 Female Socket 80-pin Encryption/JTAG interface to Stator Board.
   * Provides: JTAG, Reset, and 3V3_ENIG to Stator.
   * **Cross-ref:** See `Stator/Design_Spec.md` and `Stator/Board_Layout.md` for explicit pin mapping and connector compliance.
 * **3V3_ENIG Bridge:** Passive 2oz copper highway on L3, directly linking Alpha and Beta for noise isolation.
@@ -198,7 +198,7 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | J1 | Link-Alpha 80-pin Socket | ERF8 (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
-| J2 | Link-Beta 80-pin Header | ERM8 (male) | Samtec | 200-ERM8040050SDVKTR | SAM12064-ND | C123464 |
+| J2 | Link-Beta 80-pin Socket | ERF8 (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
 | J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A125057-ND | C123459 |
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
