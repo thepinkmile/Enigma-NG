@@ -46,7 +46,7 @@ PIN | SIGNAL     | DESCRIPTION | PHYSICAL POSITION (2x8 IDC cable)
 1   | 3V3_ENIG   | Power       | Row 1, Col 1
 2   | 3V3_ENIG   | Power       | Row 2, Col 1
 3   | GND        | Ground      | Row 1, Col 2
-4   | GND        | Ground      | Row 2, Col 2
+4   | SYS_RESET_N | CPLD Reset  | Row 2, Col 2
 5   | ENC_IN[0]  | Encrypt in  | Row 1, Col 3
 6   | ENC_OUT[0] | Encrypt out | Row 2, Col 3
 7   | ENC_IN[1]  | Encrypt in  | Row 1, Col 4

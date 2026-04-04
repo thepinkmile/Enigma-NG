@@ -125,6 +125,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |
 | **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware MIC1555 orange-flash path on Power Module. |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
+| **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100C5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
 
 ## 6. Protection & EMI
 

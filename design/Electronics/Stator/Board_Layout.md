@@ -9,7 +9,7 @@ and to provide a short TDO return path for the JTAG chain.
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | PM → Reflector | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
-| 2 | GND | — | Power return |
+| 2 | SYS_RESET_N | CTRL→Ext | Active-low CPLD reset broadcast (from Controller GPIO 26 via LINK-BETA) |
 | 3 | ENC_IN[0] | Stator → Reflector | Encoder input bit 0 |
 | 4 | ENC_IN[1] | Stator → Reflector | Encoder input bit 1 |
 | 5 | ENC_IN[2] | Stator → Reflector | Encoder input bit 2 |
@@ -26,15 +26,24 @@ and to provide a short TDO return path for the JTAG chain.
 | 16 | GND | — | Signal return / shield |
 
 **Connector:** 2×8 2.54mm shrouded box header with polarisation key (e.g. Wurth 61201621621 or equiv).
-**Mating connector on Reflector:** J1 — same 16-pin 2×8 shrouded box header.
-**Power current capacity:** 1 pin × 1A = 1A maximum to Reflector. Reflector estimated draw ≤200mA — adequate with >4× margin.
+**Mating connector on Extension/Reflector:** J1 — same 16-pin 2×8 shrouded box header.
+**Power current capacity:** 1 pin × 1A = 1A maximum to Extension/Reflector. Estimated draw ≤200mA — adequate with >4× margin.
 
-## J2-J4: SATELLITE LINKS (40-PIN)
+## J2–J4: EXTENSION PORTS (Rotor Interface — Specification Pending)
 
-* **Pins 1-4:** 3V3_ENIG / GND Power
-* **Pins 5-18:** ENC_IN [0:5] (Symmetrical GND shielding)
-* **Pins 21-32:** ENC_OUT [0:5] (Symmetrical GND shielding)
-* **Pins 33-40:** JTAG IN/OUT Loop (Shielded TCK/TMS/TDI/TDO)
+> ⚠️ **Mechanical specification pending.** The rotor interface connector set (3 connectors per rotor position:
+> ENC-IN, ENC-OUT, and PWR/JTAG) has not yet been fully defined. Pin count and connector type will be confirmed
+> once the mechanical design of the rotor/extension/reflector stack is finalised.
+>
+> **Positional requirement:** The rotor interface connector set **must be positionally identical** across all boards
+> that mate with rotors — Stator (input to Rotor 1), Extension (output from previous group / input to next group),
+> and Reflector (output from last rotor). This ensures any rotor can mate at any stack position without re-wiring.
+>
+> **Planned signal groups per connector position:**
+> * **ENC-IN connector:** ENC_IN[0:5] — 6-bit data input to rotor CPLD.
+> * **ENC-OUT connector:** ENC_OUT[0:5] — 6-bit data output from rotor CPLD.
+> * **PWR/JTAG connector:** 3V3_ENIG (both sides) | GND | TCK | GND | TMS | GND | TDI | GND | SYS_RESET_N | GND |
+>   3V3_ENIG. No TDO — TDO returns via the Extension Port (TDO_RETURN on J5).
 
 ## LINK-BETA (40-PIN ERM8-020) Explicit Mapping
 
@@ -49,7 +58,7 @@ and to provide a short TDO return path for the JTAG chain.
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
 | 7 | GND | — | TDI/RST inter-pin shield |
-| 8 | RST | CTRL→Stator | SYS_RESET_N (active-low) |
+| 8 | SYS_RESET_N | CTRL→Stator | Active-low system reset; clears all CPLDs in stack |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |

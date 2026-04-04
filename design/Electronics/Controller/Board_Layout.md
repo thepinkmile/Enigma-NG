@@ -193,7 +193,7 @@ _______________________________________    _____________    ____________________
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
 | 7 | GND | — | TDI/RST inter-pin shield |
-| 8 | RST | CTRL→Stator | SYS_RESET_N (active-low) |
+| 8 | SYS_RESET_N | CTRL→Stator | Active-low system reset; clears all CPLDs in stack |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |

@@ -12,10 +12,17 @@
 
 ## 2. Connectivity
 
-* **Bus Interface:** Dual 20-pin (2x10) Vertical Shrouded Headers (IN/OUT).
-* **Power Injection:** Receives 3V3_ENIG and GND daisy-chain to prevent voltage sag across long stacks.
+* **Extension Port (J1 IN / J2 OUT):** 16-pin 2×8 shrouded box header (same format as Stator J5 and Reflector J1).
+  Carries 3V3_ENIG, SYS_RESET_N, ENC_IN[0:5], ENC_OUT[0:5], TDO_RETURN, and GND. Forms the daisy-chain from
+  Stator → Extension(s) → Reflector.
+* **Rotor Interface Connectors (3 per rotor-facing side):** ENC-IN, ENC-OUT, and PWR/JTAG connector set. Must be
+  **positionally identical** to the matching set on the Stator (Rotor 1 input) and Reflector (last rotor output).
+  See `Stator/Board_Layout.md` J2–J4 section for planned signal groups. Exact pin count and connector type are
+  pending mechanical design finalisation.
+* **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the input header power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **JTAG:** Pass-through for the serial chain; carries TDO_RETURN via dedicated Pin 16.
+* **JTAG:** Pass-through for the serial chain; TDO_RETURN carried via Extension Port pin 15.
+* **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
   * `Reflector/Design_Spec.md`
@@ -30,9 +37,10 @@
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Input header | 20-pin 2x10 shrouded | 2.54mm | 538-22-23-2201 | WM2911-ND | ??? |
-| J2 | Output header | 20-pin 2x10 shrouded | 2.54mm | 538-22-23-2201 | WM2911-ND | ??? |
-| J3 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
+| J1 | Extension Port IN header | 16-pin 2×8 shrouded box | 2.54mm | ??? | ??? | ??? |
+| J2 | Extension Port OUT header | 16-pin 2×8 shrouded box | 2.54mm | ??? | ??? | ??? |
+| J3–J8 | Rotor interface connectors (3 per side × 2 sides — spec pending) | TBD | TBD | ??? | ??? | ??? |
+| J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.
