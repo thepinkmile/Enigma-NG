@@ -34,7 +34,12 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the Link-Beta power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **Ferrite Bead Rule:** Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
 * **Current Margin Check:** Rotor rail is budgeted at up to **5A peak total**; with 4 parallel feeds this is ~**1.25A per bead** nominal sharing, leaving strong margin versus **3.5A** bead rating.
-* **JTAG Return:** Includes 10kΩ pull-up on TDO_RETURN at the Link-Beta exit.
+* **JTAG Return:** Includes 10kΩ pull-up on TDO_RETURN at the Link-Beta exit (R2).
+* **JTAG Pull Resistors (×4, placed near Stator CPLD U1):**
+  * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up and when controller is idle.
+  * **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS) when not actively driven by the Controller.
+  * **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK line is floating.
+  * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low signal; pull-up ensures CPLD remains out of reset by default.
 * **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail.
 
 ## 4. Interconnects
@@ -86,7 +91,11 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | 538-22-23-2201 | WM2911-ND | ??? |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ohm @ 100MHz, 3.5A | 1206 | 81-BLM31PG121SN1L | 490-1056-1-ND | BLM31PG121SN1L |
 | R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | 667-ERJ-6ENF20R0V | P20.0MYCT-ND | C123465 |
-| R2 | JTAG TDO Pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R2 | JTAG TDO_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R3 | TMS pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R5 | TCK pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

@@ -70,6 +70,12 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 * **Buffering:** [74LVC1G125](https://www.ti.com) buffers on the TCK and TMS lines to maintain signal integrity across the long chain (2x I/O CPLDs + 30 Rotor FPGAs).
 * **Termination:** 47Ω series resistors on the JTAG data lines to prevent reflections.
+* **Pull Resistors (×4, placed near CPLDs):**
+  * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up and when controller is idle.
+  * **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS instruction) when not actively driven.
+  * **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK line is floating.
+  * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low signal; pull-up ensures CPLDs remain out of reset by default.
+  * One set of four is sufficient per board; TCK, TMS and SYS_RESET_N are broadcast nets shared between both CPLDs.
 * **Chain Position:** The I/O CPLDs sit at the start of the JTAG chain, followed by the 30 Rotor FPGAs.
 * **Programming:** Allows for "In-System Sources and Probes" debugging via the CM5 GUI.
 
@@ -117,6 +123,10 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285 — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285 | A33376-ND | — |
 | U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LBCT-ND | C105872 |
+| R3 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U3 | LDO Regulator | TLV755P | SOT-23 | 595-TLV755PDBVR | 296-TLV755PDBVRCT-ND | C291923 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.
