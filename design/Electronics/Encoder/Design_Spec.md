@@ -30,11 +30,15 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 4. Interconnects
 
-* **Data Link:** 16-pin (2x8) 2.54mm shrouded header to support:
-  * 2x 3V3_ENIG power pins
-  * 2x GND pins
-  * 6x ENC_IN bits (0:5)
-  * 6x ENC_OUT bits (0:5)
+* **Data Link:** 26-pin (2×13) 2.54mm shrouded box header with polarisation key. Signals:
+  * 2× 3V3_ENIG power pins (pins 1, 26) — 2.0A capacity; estimated load ~208mA
+  * 6× ENC_IN[0:5] (pins 2–7)
+  * 6× ENC_OUT[0:5] (pins 19–24)
+  * JTAG: TCK, TMS, TDI, TDO, SYS_RESET_N (pins 9–17, GND-shielded between each signal)
+  * 7× GND (group separators + inter-JTAG shields + trailing return)
+  * See `Stator/Board_Layout.md` J6–J8 for full pin table and JTAG chain order.
+* **Status LEDs (×2):** One active-low debug LED per CPLD. CPLD output LOW = LED ON.
+  330Ω current-limiting resistor per LED; ~4mA drive current at 3.3V.
 * **Stecker Jack Sockets (×64):** 6.35mm (¼″) mono switched panel-mount jack sockets, one per character position.
   * Mounted in the plugboard panel; connect to the PCB via a field-installable spade-terminal harness.
   * **Tip terminal** → ENC signal path (CPLD I/O bus, Row 1 spade bank BT1–BT64).
@@ -105,12 +109,14 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | C17-C21 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | BT1-128 | PCB spade blade terminals (2 per jack, 128 total) | 6.35mm (¼″) straight vertical PCB-mount male blade tab — Row 1 (BT1-64): ENC Tip signal; Row 2 (BT65-128): Switch insertion-detect | Through-hole vertical | 534-1285 | A33376-ND | — |
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
-| J2 | Data Link Connector | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
+| D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |
+| J2 | Data Link Connector | 26-pin 2×13 shrouded box header, 2.54mm | 2.54mm | ??? | ??? | ??? |
 | J3 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (lamp/redundancy TBD). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
 | BT129-192 | PCB spade blade terminals — KEY_COM (Row 3) | Keystone 1285 — 6.35mm straight vertical PCB-mount male blade tab. COM1 of each keyboard switch pole-1. | Through-hole vertical | 534-1285 | A33376-ND | — |
 | BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285 — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285 | A33376-ND | — |
 | U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
+| R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LBCT-ND | C105872 |
 | U3 | LDO Regulator | TLV755P | SOT-23 | 595-TLV755PDBVR | 296-TLV755PDBVRCT-ND | C291923 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

@@ -103,10 +103,75 @@ and to provide a short TDO return path for the JTAG chain.
               +------ (I2C-1) -------- [ INA219 ] --------+
 ```
 
-## J6–J8: ENCODER PORTS (Specification Pending)
+## J6–J8: ENCODER PORTS (26-Pin, 2×13, 2.54mm Shrouded Box Header)
 
-> ⚠️ **Specification pending.** The Encoder Port connectors (one per Encoder board: HID Encoder, Plugboard #1,
-> Plugboard #2) require signal requirements to be fully defined before the connector type and size can be confirmed.
-> Signals will include at minimum: ENC_IN[0:5], ENC_OUT[0:5], SYS_RESET_N, 3V3_ENIG, and GND. JTAG subset
-> (TCK/TMS/TDI/TDO) may also be required. Connector format to be determined.
-> See `Encoder/Board_Layout.md` for the current Encoder Data Link pinout as a starting reference.
+**Connector type:** 2×13 (26-pin) 2.54mm pitch shrouded box header with polarisation key.
+**Cable:** Standard 26-wire 2.54mm IDC ribbon cable.
+
+### Physical Placement & Silkscreen
+
+```text
+Left group:              Right group (stacked vertically):
+┌──────────┐             ┌──────────┐
+│    J6    │             │    J7    │
+│ TASTATUR │             │STECKERBR.│
+│    /     │             │    A     │
+│ HID UNIT │             └──────────┘
+└──────────┘             ┌──────────┐
+                         │    J8    │
+                         │STECKERBR.│
+                         │    B     │
+                         └──────────┘
+```
+
+> **Silkscreen requirement:** Each port labelled individually in bilingual typewriter style:
+>
+> * **J6:** `TASTATUR/LAMPENFELD` / `HID UNIT`
+> * **J7:** `STECKERBRETT A` / `PLUGBOARD A`
+> * **J8:** `STECKERBRETT B` / `PLUGBOARD B`
+
+### JTAG Chain
+
+TCK and TMS are broadcast to all three encoder ports and the rotor stack. SYS_RESET_N is broadcast
+to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
+
+1. LINK-BETA TDI → **Stator CPLD** TDI
+2. Stator CPLD TDO → **J6 (HID Encoder)** TDI *(internal Stator trace)*
+3. J6 TDO → **J7 (Plugboard Encoder #1)** TDI *(internal Stator trace)*
+4. J7 TDO → **J8 (Plugboard Encoder #2)** TDI *(internal Stator trace)*
+5. J8 TDO → **Rotor stack** TDI (via J2–J4 PWR/JTAG connector) *(internal Stator trace)*
+6. Rotor stack TDO returns via J5 Extension Port TDO_RETURN
+
+### Pin Table (identical across J6, J7, and J8)
+
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | 3V3_ENIG | Stator→Encoder | Power supply |
+| 2 | ENC_IN[0] | Stator→Encoder | Encoder input bit 0 |
+| 3 | ENC_IN[1] | Stator→Encoder | Encoder input bit 1 |
+| 4 | ENC_IN[2] | Stator→Encoder | Encoder input bit 2 |
+| 5 | ENC_IN[3] | Stator→Encoder | Encoder input bit 3 |
+| 6 | ENC_IN[4] | Stator→Encoder | Encoder input bit 4 |
+| 7 | ENC_IN[5] | Stator→Encoder | Encoder input bit 5 |
+| 8 | GND | — | ENC_IN / JTAG group separator |
+| 9 | TCK | Stator→Encoder | JTAG clock (broadcast to all encoder ports) |
+| 10 | GND | — | TCK/TMS inter-pin shield |
+| 11 | TMS | Stator→Encoder | JTAG mode select (broadcast to all encoder ports) |
+| 12 | GND | — | TMS/TDO inter-pin shield |
+| 13 | TDO | Encoder→Stator | JTAG data out (chains to next device via Stator) |
+| 14 | GND | — | TDO/TDI inter-pin shield |
+| 15 | TDI | Stator→Encoder | JTAG data in (from previous device via Stator) |
+| 16 | GND | — | TDI/SYS_RESET_N shield |
+| 17 | SYS_RESET_N | Stator→Encoder | Active-low CPLD reset (broadcast to all encoder ports) |
+| 18 | GND | — | JTAG / ENC_OUT group separator |
+| 19 | ENC_OUT[0] | Encoder→Stator | Encoder output bit 0 |
+| 20 | ENC_OUT[1] | Encoder→Stator | Encoder output bit 1 |
+| 21 | ENC_OUT[2] | Encoder→Stator | Encoder output bit 2 |
+| 22 | ENC_OUT[3] | Encoder→Stator | Encoder output bit 3 |
+| 23 | ENC_OUT[4] | Encoder→Stator | Encoder output bit 4 |
+| 24 | ENC_OUT[5] | Encoder→Stator | Encoder output bit 5 |
+| 25 | GND | — | ENC_OUT trailing shield / power return |
+| 26 | 3V3_ENIG | Stator→Encoder | Power supply |
+
+**Power capacity:** 2 × 3V3_ENIG pins × 1A/pin = 2.0A — adequate for Encoder board load
+(~208mA: 2× EPM240T100C5N CPLDs + 2× status LEDs; >9× margin).

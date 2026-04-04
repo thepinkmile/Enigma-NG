@@ -36,30 +36,41 @@ _____________________________________________________________________________
 |____________________________________________________________________________|
 ```
 
-## Data Link Pinout (16-Pin Connector)
+## Data Link Pinout (26-Pin Connector)
 
-This is a ribbon-style footprint in the style of KiCad where odd pins are in row 1 and even pins are in row 2, moving left-to-right across the connector columns.
+This is a 2×13 (26-pin) 2.54mm shrouded box header with polarisation key. Connects to matching
+header on Stator (J6 = HID Unit, J7 = Plugboard A, J8 = Plugboard B).
 
-```text
-PIN | SIGNAL     | DESCRIPTION | PHYSICAL POSITION (2x8 IDC cable)
-----|------------|-------------|----------------------------------
-1   | 3V3_ENIG   | Power       | Row 1, Col 1
-2   | 3V3_ENIG   | Power       | Row 2, Col 1
-3   | GND        | Ground      | Row 1, Col 2
-4   | SYS_RESET_N | CPLD Reset  | Row 2, Col 2
-5   | ENC_IN[0]  | Encrypt in  | Row 1, Col 3
-6   | ENC_OUT[0] | Encrypt out | Row 2, Col 3
-7   | ENC_IN[1]  | Encrypt in  | Row 1, Col 4
-8   | ENC_OUT[1] | Encrypt out | Row 2, Col 4
-9   | ENC_IN[2]  | Encrypt in  | Row 1, Col 5
-10  | ENC_OUT[2] | Encrypt out | Row 2, Col 5
-11  | ENC_IN[3]  | Encrypt in  | Row 1, Col 6
-12  | ENC_OUT[3] | Encrypt out | Row 2, Col 6
-13  | ENC_IN[4]  | Encrypt in  | Row 1, Col 7
-14  | ENC_OUT[4] | Encrypt out | Row 2, Col 7
-15  | ENC_IN[5]  | Encrypt in  | Row 1, Col 8
-16  | ENC_OUT[5] | Encrypt out | Row 2, Col 8
-```
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | 3V3_ENIG | Stator→Encoder | Power supply |
+| 2 | ENC_IN[0] | Stator→Encoder | Encoder input bit 0 |
+| 3 | ENC_IN[1] | Stator→Encoder | Encoder input bit 1 |
+| 4 | ENC_IN[2] | Stator→Encoder | Encoder input bit 2 |
+| 5 | ENC_IN[3] | Stator→Encoder | Encoder input bit 3 |
+| 6 | ENC_IN[4] | Stator→Encoder | Encoder input bit 4 |
+| 7 | ENC_IN[5] | Stator→Encoder | Encoder input bit 5 |
+| 8 | GND | — | ENC_IN / JTAG group separator |
+| 9 | TCK | Stator→Encoder | JTAG clock (broadcast) |
+| 10 | GND | — | TCK/TMS inter-pin shield |
+| 11 | TMS | Stator→Encoder | JTAG mode select (broadcast) |
+| 12 | GND | — | TMS/TDO inter-pin shield |
+| 13 | TDO | Encoder→Stator | JTAG data out (to next device in chain) |
+| 14 | GND | — | TDO/TDI inter-pin shield |
+| 15 | TDI | Stator→Encoder | JTAG data in (from previous device in chain) |
+| 16 | GND | — | TDI/SYS_RESET_N shield |
+| 17 | SYS_RESET_N | Stator→Encoder | Active-low CPLD reset (broadcast) |
+| 18 | GND | — | JTAG / ENC_OUT group separator |
+| 19 | ENC_OUT[0] | Encoder→Stator | Encoder output bit 0 |
+| 20 | ENC_OUT[1] | Encoder→Stator | Encoder output bit 1 |
+| 21 | ENC_OUT[2] | Encoder→Stator | Encoder output bit 2 |
+| 22 | ENC_OUT[3] | Encoder→Stator | Encoder output bit 3 |
+| 23 | ENC_OUT[4] | Encoder→Stator | Encoder output bit 4 |
+| 24 | ENC_OUT[5] | Encoder→Stator | Encoder output bit 5 |
+| 25 | GND | — | ENC_OUT trailing shield / power return |
+| 26 | 3V3_ENIG | Stator→Encoder | Power supply |
+
+**Power capacity:** 2 × 3V3_ENIG pins × 1A/pin = 2.0A. Encoder estimated load ~208mA (2× EPM240 CPLDs + 2× status LEDs) — >9× margin.
 
 ## Diagnostic Bank Pinout (2x8)
 
