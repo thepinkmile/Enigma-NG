@@ -1,5 +1,16 @@
 # Enigma-NG Consolidated BOM & Spares
 
+**Status:** Draft — pending schematic freeze
+**Version:** v1.0.0
+**Last Updated:** 2026-04-04
+
+## Overview
+
+This is the consolidated Bill of Materials for all boards and modules in the Enigma-NG system.
+It covers critical spares, common passives, high-speed interconnects, power components, and supplier
+reference information. For per-board BOM notes and design constraints, refer to each board's
+individual `Design_Spec.md` file.
+
 ## 1. Critical Spares (MOQ Recommendations)
 
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
@@ -42,9 +53,9 @@
 
 **Pi-filter performance summary (f_c = 10.5kHz):**
 
-- −46dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
-- −51dB at 200kHz (TPS23730 ACF switching frequency) ✓
-- −63dB at 400kHz (LMQ61460-Q1 buck switching frequency) ✓
+* −46dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
+* −51dB at 200kHz (TPS23730 ACF switching frequency) ✓
+* −63dB at 400kHz (LMQ61460-Q1 buck switching frequency) ✓
 
 ## 4. High-Speed Interconnects
 
@@ -65,10 +76,10 @@
 
 **Notes:**
 
-- **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip + Switch contact; Sleeve to chassis GND). Rows 1–2 (BT1–128).
-- **Keyboard switches (SW1-64):** mount in the keyboard panel. Each switch connects via a 2-wire harness (COM1 + NO1 from Pole 1 only). Pole 2 pins are mechanically soldered for physical anchoring — no electrical connection. Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard. Rows 3–4 (BT129–256).
-- **Total PCB blade terminals: 256** — four rows of 64, all Keystone 1285.
-- Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
+* **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip + Switch contact; Sleeve to chassis GND). Rows 1–2 (BT1–128).
+* **Keyboard switches (SW1-64):** mount in the keyboard panel. Each switch connects via a 2-wire harness (COM1 + NO1 from Pole 1 only). Pole 2 pins are mechanically soldered for physical anchoring — no electrical connection. Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard. Rows 3–4 (BT129–256).
+* **Total PCB blade terminals: 256** — four rows of 64, all Keystone 1285.
+* Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
 
 ## 5. Controller Specifics
 
@@ -107,10 +118,10 @@
 
 **Notes:**
 
-- T2 is an **off-the-shelf catalogue part** — order direct from [coilcraft.com](https://www.coilcraft.com). 668 units confirmed in stock (Coilcraft Direct as of 2026-04-03).
-- TPS23730 operates in **PSR (Primary-Side Regulation) mode** using the auxiliary winding of the POE600F-12LD. No external TL431 or optocoupler required.
-- TPS2372-4 uses **Autoclass** for automatic 4-event IEEE 802.3bt Type 4 classification; no external RCLASS resistor required. R13 (RMPS) programs MPS pulse current only.
-- OR-ing priority: TPS2372-4 `/PG` signal drives LM74700-Q1 enable on the USB-C path to enforce PoE source priority.
+* T2 is an **off-the-shelf catalogue part** — order direct from [coilcraft.com](https://www.coilcraft.com). 668 units confirmed in stock (Coilcraft Direct as of 2026-04-03).
+* TPS23730 operates in **PSR (Primary-Side Regulation) mode** using the auxiliary winding of the POE600F-12LD. No external TL431 or optocoupler required.
+* TPS2372-4 uses **Autoclass** for automatic 4-event IEEE 802.3bt Type 4 classification; no external RCLASS resistor required. R13 (RMPS) programs MPS pulse current only.
+* OR-ing priority: TPS2372-4 `/PG` signal drives LM74700-Q1 enable on the USB-C path to enforce PoE source priority.
 
 ## 9. Power Module — IC & Connector BOM (Multi-Distributor)
 
