@@ -11,7 +11,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 * **Stackup:** 4-Layer / 2oz Finished Copper.
 * **Layer Mapping:** L1: JTAG | L2: GND | L3: 3V3_ENIG | L4: ENIG Data.
-* **Role:** Master Switchboard for the 30-rotor stack and satellite encoders.
+* **Role:** Master Switchboard for the 30-rotor stack and peripheral encoder boards.
 
 ## 2. Core Features
 

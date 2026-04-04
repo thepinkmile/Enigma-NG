@@ -29,7 +29,7 @@ and to provide a short TDO return path for the JTAG chain.
 **Mating connector on Extension/Reflector:** J1 — same 16-pin 2×8 shrouded box header.
 **Power current capacity:** 1 pin × 1A = 1A maximum to Extension/Reflector. Estimated draw ≤200mA — adequate with >4× margin.
 
-## J2–J4: EXTENSION PORTS (Rotor Interface — Specification Pending)
+## J2–J4: ROTOR STACK ENTRY CONNECTORS (Specification Pending)
 
 > ⚠️ **Mechanical specification pending.** The rotor interface connector set (3 connectors per rotor position:
 > ENC-IN, ENC-OUT, and PWR/JTAG) has not yet been fully defined. Pin count and connector type will be confirmed
@@ -101,3 +101,11 @@ and to provide a short TDO return path for the JTAG chain.
               |                                            |
               +------ (I2C-1) -------- [ INA219 ] --------+
 ```
+
+## J6–J8: ENCODER PORTS (Specification Pending)
+
+> ⚠️ **Specification pending.** The Encoder Port connectors (one per Encoder board: HID Encoder, Plugboard #1,
+> Plugboard #2) require signal requirements to be fully defined before the connector type and size can be confirmed.
+> Signals will include at minimum: ENC_IN[0:5], ENC_OUT[0:5], SYS_RESET_N, 3V3_ENIG, and GND. JTAG subset
+> (TCK/TMS/TDI/TDO) may also be required. Connector format to be determined.
+> See `Encoder/Board_Layout.md` for the current Encoder Data Link pinout as a starting reference.
