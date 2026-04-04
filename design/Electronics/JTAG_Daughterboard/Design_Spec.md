@@ -21,6 +21,12 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
   * AD3 -> **TMS** (State Machine)
 * **Voltage:** 3.3V logic level with 5V-tolerant I/O.
 
+### GND_CHASSIS Single-Point Bond
+
+Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-point GND_CHASSIS bond at its power entry connector.
+
+**JTAG Daughterboard GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J1 (the USB-B or BtB power input connector receiving 3V3_ENIG from the Controller board). A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis copper pour at this entry point only.
+
 ## 3. Aesthetics & Mounting
 
 * **Visibility:** Completely hidden internally.

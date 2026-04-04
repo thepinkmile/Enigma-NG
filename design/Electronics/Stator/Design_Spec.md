@@ -13,6 +13,12 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 * **Modular Slots:** 30x [Samtec CLP Series](https://www.samtec.com) low-profile female sockets.
 * **Power Tree:** A massive 2oz copper pour for the `+3V3_ENIG` rail to handle the **5A peak** load without voltage sag.
 
+### GND_CHASSIS Single-Point Bond
+
+Per `design/Standards/Global_Routing_Spec.md §4`, each PCB in the Enigma-NG system must have a documented single-point GND_CHASSIS bond at its power entry connector.
+
+**Stator GND_CHASSIS bond point:** The GND_CHASSIS connection is made at the LINK-BETA connector (J4 or equivalent power input connector receiving 5V_MAIN and 3V3_ENIG from the Power Module via the BtB rotor stack). A single 0 Ω bond resistor (or direct via) in a dedicated keepout zone connects the signal/power GND plane to the chassis copper pour at this entry point. No additional chassis bonds are made on this board to avoid ground loops.
+
 ## 2. Encryption & JTAG Hub
 
 * **CPLD:** Intel MAX II EPM240T100C5N CPLD (Logic Router).

@@ -460,7 +460,7 @@ Any replacement CPLD must be verified for:
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
 | OA-05 | Thermal simulation of BtB connector zone to verify 0.6A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
 | OA-06 | Verify TPS25751DREFR CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W). | Hardware Designer | High |
-| OA-07 | Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md. | Hardware Designer | Medium |
+| ~~OA-07~~ | ~~Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md.~~ | ~~Hardware Designer~~ | **CLOSED** — DEC-001 confirmed: pins 21-22 = 5V_MAIN, pins 23-24 = GND. Formally documented in Controller/Board_Layout.md BtB Link-Alpha table (all 80 pins assigned). |
 | ~~OA-08~~ | ~~Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** — Superseded by selection of Coilcraft POE600F-12LD (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, catalogue stock). No custom winding required. |
 
 ### Deferred Items (Post-Prototype Stage)
@@ -471,3 +471,52 @@ Any replacement CPLD must be verified for:
 | DA-02 | ESD policy for classroom deployment variant — define which internal BtB-accessible connections require additional ESD protection when the device is used in an educational/student-access configuration. | Pre-production (classroom variant) |
 | DA-03 | Full consistency documentation pass — INC-01 through INC-20 applied in current session. Remaining actions: Consolidated BOM update, Controller Board Board_Layout.md Link-Alpha pin map (80-pin allocation), TPS25980 suffix verification (OA-01). | Post-eFuse suffix confirmation |
 | DA-04 | Update Consolidated BOM with all locked Power Module components. Format: component description, specification, boards requiring, quantity, notes (no reference designators — these are per-board). | Post-eFuse part lock (OA-01) |
+
+---
+
+## 9. Future Military & Defence Certification Considerations
+
+The following table records alignment of the current Enigma-NG Power Module design against relevant military and defence standards. **No design changes are required at this stage.** This section is for reporting purposes and to support future MOD (UK Ministry of Defence) or equivalent certification submissions.
+
+> **Status key:** ✅ Aligned — design meets intent; ⚠️ Partial — some requirements met, gaps identified; ❌ Not addressed; 🔵 Reference only — voltage/platform class mismatch, philosophy only
+
+### 9.1 EMC Standards
+
+| Standard | Relevance | Status | Aligned Features | Key Gaps / Future Actions |
+| :--- | :--- | :---: | :--- | :--- |
+| **MIL-STD-461G** | Primary EMC standard for defence equipment | ⚠️ Partial | CE102 input filter provides −46 dB @ 150 kHz; RE102 Faraday enclosure; §3.6 GND bond rule explicitly documented | CS114/RS103 susceptibility not addressed; non-PM boards lack EMC design documentation |
+| **DEF STAN 59-411** | UK MoD EMC policy (Navy/Army/Air) | ⚠️ Partial | CMC below 150 kHz per specification; Faraday enclosure; ESD protection at all external ports | Platform category (Ship/Vehicle/Aircraft) not determined — this gates test levels |
+| **IEC 61000-4-2** | ESD immunity | ✅ Aligned | TPD4E05U06 ESD suppressors fitted at all external ports; transients steered to GND_CHASSIS | Diagnostic Bank ESD protection deferred (see OA-01) |
+| **IEC 61000-4-4** | Electrical Fast Transient (EFT) | ⚠️ Partial | Pi-filter + CMC provides significant attenuation of fast transients on input lines | No EFT margin calculation documented against specific test levels |
+| **IEC 61000-4-5** | Surge immunity | ⚠️ Partial | 1500 Vrms isolation on PoE path; TVS diode on battery input | No differential-mode surge margin calculated against specific test levels |
+| **IEC 61000-4-6** | Conducted susceptibility (RF) | ⚠️ Partial | Dual CMC topology provides common-mode RF rejection | No CM susceptibility margin documented |
+| **IEC 61000-4-8** | Power frequency magnetic field | ❌ Not addressed | Nanocrystalline CMC cores provide partial 50 Hz attenuation incidentally | No design intent or test plan stated |
+
+### 9.2 Environmental Standards
+
+| Standard | Relevance | Status | Aligned Features | Key Gaps / Future Actions |
+| :--- | :--- | :---: | :--- | :--- |
+| **MIL-STD-810H** | Environmental engineering — temperature, vibration, humidity, shock | ⚠️ Partial | Component temperature ratings: −40 °C / +125 °C for most actives; RTV silicone mechanical retention; locking connector features; X7R ceramic dielectric (stable over temperature) | Supercap rated to +85 °C — no thermal margin at upper extreme; CPLD lower limit 0 °C; no conformal coating specified; no vibration/shock profile defined |
+| **DEF STAN 00-035** | Environmental testing for defence materiel | ⚠️ Partial | Same as MIL-STD-810H alignment | Same gaps; transit and storage environmental profiles not yet defined |
+
+### 9.3 Safety Standards
+
+| Standard | Relevance | Status | Aligned Features | Key Gaps / Future Actions |
+| :--- | :--- | :---: | :--- | :--- |
+| **MIL-STD-882E** | System safety programme requirements | ⚠️ Partial | OVLO/UVLO/ILIM protection on all inputs; thermal cutout (TCO) on battery path; 1500 Vrms galvanic isolation on PoE; graceful shutdown sequencing via supercap hold-up | No formal FMEA (Failure Mode & Effects Analysis) or SHA (System Hazard Analysis) documented |
+
+### 9.4 Power Quality Standards
+
+| Standard | Relevance | Status | Aligned Features | Key Gaps / Future Actions |
+| :--- | :--- | :---: | :--- | :--- |
+| **MIL-STD-704F** | Aircraft electric power characteristics | 🔵 Reference only | UVLO/OVLO input protection philosophy aligned with 704F intent | Voltage class mismatch: Enigma-NG operates at 11–17 V (battery/PoE), not 28 V DC mil-bus |
+| **MIL-STD-1275E** | Characteristics of 28 V DC military vehicle power | 🔵 Reference only | Reverse polarity protection; UVLO floor concept | Voltage class mismatch: same as above; no 28 V bus |
+
+### 9.5 Notes for Future Certification Submissions
+
+1. **Platform classification (DEF STAN 59-411 / MIL-STD-461G):** The applicable test levels depend on classification (e.g., Ship Above Deck, Ground Vehicle, Airborne). This must be determined before any EMC pre-compliance testing.
+2. **FMEA/SHA (MIL-STD-882E):** A formal Failure Mode & Effects Analysis should be conducted at PDR (Preliminary Design Review) stage prior to any MOD contract submission.
+3. **Conformal coating:** Decision required at production design stage. Acrylic or silicone coating would support DEF STAN 00-035 humidity and fungal resistance requirements.
+4. **Vibration profile:** No vibration specification has been defined. A target operational environment must be stated to determine whether vibration testing (MIL-STD-810H Method 514) is applicable.
+5. **EFT/Surge margin calculations:** Formal margin calculations against IEC 61000-4-4 and IEC 61000-4-5 test levels should be performed at pre-compliance test stage.
+6. **CPLD temperature range:** CPLD lower operating limit is 0 °C — this may require a cold-soak waiver or component substitution if sub-zero operation is required. See OA-04.
