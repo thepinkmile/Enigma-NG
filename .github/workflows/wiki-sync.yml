@@ -38,26 +38,114 @@ jobs:
           if [ -f wiki_staging/-Sidebar.md ]; then rm wiki_staging/-Sidebar.md; fi
           if [ -f design/_Sidebar.md ]; then cp design/_Sidebar.md wiki_staging/; fi
 
-      - name: Update Links & Titles
+      - name: Fix Cross-References
         run: |
-          python3 -c '
+          python3 << 'EOF'
           import os, re
-          root = "wiki_staging/"
-          for f in os.listdir(root):
-              if f.endswith(".md"):
-                  path = os.path.join(root, f)
-                  with open(path, "r") as file:
-                      content = file.read()
-                  
-                  # 1. Replace relative links: [Text](../Path/File.md) -> [[Path-File|Text]]
-                  # This ensures the link uses the new hyphenated filename but keeps original text
-                  new_content = re.sub(r"\[([^]]+)\]\((\.\.?/)?([^)]+)\.md\)", 
-                                       lambda m: "[[" + m.group(1) + "|" + m.group(3).replace("/", "-").replace("_", "-") + "]]", 
-                                       content)
-                  
-                  with open(path, "w") as file:
-                      file.write(new_content)
-          '
+
+          DESIGN_ROOT = "design"
+          WIKI_ROOT   = "wiki_staging"
+
+          def path_to_wiki_name(repo_path):
+              """
+              Convert a repo-root-relative path to its flat wiki page name
+              (without .md extension), applying the same rules as the bash
+              flatten step: strip 'design/' prefix, replace '/' and '_' with '-'.
+              """
+              p = repo_path.replace("\\", "/")
+              if p == "README.md":
+                  return "Home"
+              if p.startswith("design/"):
+                  p = p[len("design/"):]
+              name = p.replace("/", "-").replace("_", "-")
+              if name.endswith(".md"):
+                  name = name[:-3]
+              return name
+
+          # Build forward map:  repo-relative path  ->  wiki page name
+          path_map = {}
+          for dirpath, _, filenames in os.walk(DESIGN_ROOT):
+              for fn in filenames:
+                  if fn.endswith(".md"):
+                      p = os.path.normpath(os.path.join(dirpath, fn)).replace("\\", "/")
+                      path_map[p] = path_to_wiki_name(p)
+          path_map["README.md"] = "Home"
+
+          # Reverse map: wiki page name  ->  original repo-relative path
+          wiki_to_orig = {v: k for k, v in path_map.items()}
+
+          LINK_RE = re.compile(r'\[([^\]]+)\]\(([^)]+)\)')
+
+          def fix_link(m, source_orig_path):
+              link_text = m.group(1)
+              href      = m.group(2)
+
+              # Leave external URLs and bare fragment anchors unchanged.
+              if re.match(r'^(https?|mailto|ftp):', href) or href.startswith('#'):
+                  return m.group(0)
+
+              # Separate optional fragment anchor from the path portion.
+              fragment = ""
+              if "#" in href:
+                  href, frag = href.split("#", 1)
+                  fragment = "#" + frag
+              if not href:
+                  return m.group(0)
+
+              # Resolve the relative href against the source file's directory.
+              source_dir = os.path.dirname(source_orig_path)
+              if source_dir:
+                  resolved = os.path.normpath(os.path.join(source_dir, href)).replace("\\", "/")
+              else:
+                  resolved = os.path.normpath(href).replace("\\", "/")
+
+              # os.path.normpath may return a leading './' on some inputs — strip it.
+              if resolved.startswith("./"):
+                  resolved = resolved[2:]
+
+              # Ensure the target has a .md extension for the map lookup.
+              resolved_md = resolved if resolved.endswith(".md") else resolved + ".md"
+
+              if resolved_md in path_map:
+                  wiki_name = path_map[resolved_md]
+                  return f"[[{link_text}|{wiki_name}{fragment}]]"
+
+              # Unresolvable (external asset, typo, etc.) — leave unchanged so we
+              # don't silently break links we cannot map.
+              return m.group(0)
+
+          for wiki_filename in sorted(os.listdir(WIKI_ROOT)):
+              if not wiki_filename.endswith(".md"):
+                  continue
+
+              # Map the flat wiki filename back to the original repo path.
+              wiki_name = wiki_filename[:-3]   # strip .md
+              orig_path = wiki_to_orig.get(wiki_name)
+
+              if orig_path is None:
+                  # Special files whose flat name differs from the map key.
+                  if wiki_filename == "Home.md":
+                      orig_path = "README.md"
+                  elif wiki_filename == "_Sidebar.md":
+                      orig_path = "design/_Sidebar.md"
+                  else:
+                      print(f"Warning: no origin mapping for {wiki_filename} — skipping link fix")
+                      continue
+
+              filepath = os.path.join(WIKI_ROOT, wiki_filename)
+              with open(filepath, "r", encoding="utf-8") as f:
+                  content = f.read()
+
+              new_content = LINK_RE.sub(lambda m: fix_link(m, orig_path), content)
+
+              if new_content != content:
+                  print(f"  Updated links: {wiki_filename}")
+
+              with open(filepath, "w", encoding="utf-8") as f:
+                  f.write(new_content)
+
+          print("Cross-reference fix complete.")
+          EOF
 
       - name: Sync to Wiki
         uses: Andrew-Chen-Wang/github-wiki-action@v4
