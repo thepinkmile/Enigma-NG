@@ -40,6 +40,7 @@ and to provide a short TDO return path for the JTAG chain.
 > and Reflector (output from last rotor). This ensures any rotor can mate at any stack position without re-wiring.
 >
 > **Planned signal groups per connector position:**
+>
 > * **ENC-IN connector:** ENC_IN[0:5] — 6-bit data input to rotor CPLD.
 > * **ENC-OUT connector:** ENC_OUT[0:5] — 6-bit data output from rotor CPLD.
 > * **PWR/JTAG connector:** 3V3_ENIG (both sides) | GND | TCK | GND | TMS | GND | TDI | GND | SYS_RESET_N | GND |
