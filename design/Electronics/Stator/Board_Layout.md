@@ -1,6 +1,6 @@
 # Stator V1.0 Master Pinout
 
-### J5 — Reflector / Extension Link (16-pin, 2×8, 2.54mm Shrouded Box Header)
+## J5 — Reflector / Extension Link (16-pin, 2×8, 2.54mm Shrouded Box Header)
 
 Provides a direct power and data link to the Reflector (end-of-stack loopback) board,
 bypassing the full rotor stack to avoid cumulative contact resistance on the power rail

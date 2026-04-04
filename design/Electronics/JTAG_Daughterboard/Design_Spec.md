@@ -25,7 +25,9 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-point GND_CHASSIS bond at its power entry connector.
 
-**JTAG Daughterboard GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J1 (the USB-B or BtB power input connector receiving 3V3_ENIG from the Controller board). A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis copper pour at this entry point only.
+**JTAG Daughterboard GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J1
+(the USB-B or BtB power input connector receiving 3V3_ENIG from the Controller board).
+A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis copper pour at this entry point only.
 
 ## 3. Aesthetics & Mounting
 

@@ -173,7 +173,8 @@ _______________________________________    _____________    ____________________
 * **Pin  19:** GND_CHASSIS
 * **Pin  20:** GND
 
-> **Note:** RGB channel order in Diagnostic Bank (pins 9/10/11 = G/R/B) differs from BtB Link-Alpha order (pins 31/32/33 = R/G/B). This is intentional for PCB routing convenience. Silkscreen legend must label each pad individually to avoid probe confusion during bring-up.
+> **Note:** RGB channel order in Diagnostic Bank (pins 9/10/11 = G/R/B) differs from BtB Link-Alpha order (pins 31/32/33 = R/G/B).
+> This is intentional for PCB routing convenience. Silkscreen legend must label each pad individually to avoid probe confusion during bring-up.
 
 ### LINK-BETA (To Stator Board)
 
