@@ -142,7 +142,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
                               (in-series thermal cutoff)
                                        |
                            [U1 TPS25980 eFuse]
-                           (7A / 11V UVLO / 16.9V OVP)
+                           (7A / 11V UVLO / 16.9V OVLO)
                                        |
                      [U2A/U2B LMQ61460-Q1 Dual Buck x2]
                       (7-17V pre-reg input -> 5V / 12A)

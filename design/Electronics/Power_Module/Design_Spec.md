@@ -316,18 +316,18 @@ TPS25980 latches OFF under the following fault conditions:
 
 | Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
-| C2, C5 | Pi-filter mid-freq bypass | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
+| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
+| C2, C5 | Pi-filter mid-freq bypass | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA12L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
 | C3, C6 | Pi-filter HF bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
-| C9, C10 | 5V Buck output bulk cap (U2A OUT, U2B OUT) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
-| C11 | eFuse input bulk cap (U1 VIN) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
-| C12 | eFuse output bulk cap (U1 VOUT) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
+| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
+| C9, C10 | 5V Buck output bulk cap (U2A OUT, U2B OUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
+| C11 | eFuse input bulk cap (U1 VIN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
+| C12 | eFuse output bulk cap (U1 VOUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
 | C13 | LDO input cap (U7 VIN from 5V_MAIN) | 10µF 25V X7R | 1206 | 81-GRM31CR72E106KA12L | 490-GRM31CR72E106KA12LCT-ND | C15850 |
-| C14 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
+| C14 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
 | C15–C21 | IC VCC bypass (one per: U3, U4, U5, U6, U8, U9, U10) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C22 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
+| C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA12L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
 | C24 | TPS23730 soft-start cap (C_SS, SS pin) | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1005-1-ND | C57112 |
 | C_SC1–4 | Supercaps (4× cells, 2S2P) | Tecate TPLH-2R7/22WR12X31 / 22F 2.7V −40°C to +85°C | THT Radial 12×31mm | — (direct/broker) | — | — |
 | D1 | BATT_PRES ESD | TPD1E10B06 | SOD-923 | 595-TPD1E10B06QDCKR | 296-TPD1E10B06QDCKRQ1CT-ND | C284765 |
@@ -397,9 +397,12 @@ TPS25980 latches OFF under the following fault conditions:
 > to STUSB4500 (U5) for PD 15V negotiation.
 > * **R14/R15 BACKUP divider** — Sets LTC3350 BACKUP comparator trigger at 4.81V (V_thr=1.2V, R_TOP=30.1kΩ, R_BOT=10.0kΩ). Use 0.1% tolerance for accuracy; trigger window relative to PWR_GD threshold
 > (4.5V) is 310mV — supercap discharge begins ~310mV above the PWR_GD trip.
-> * **C7–C14 bulk/bypass caps** — All 22µF caps share the same Murata GRM32ER71H226KE15L part number as C1/C4. Simplifies procurement (single-line purchase for all 22µF 50V 1210 positions). C13 uses
-> a different 10µF part. All are standard ceramic; no electrolytic capacitors used anywhere on the Power Module.
-> * **C15–C24 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6. C23 (1µF timer) shares the same Murata GRM21BR71H105KA2L as C2/C5. C24 (10nF C_SS)
+> * **C7–C14 bulk/bypass caps** — All 22µF caps use Samsung CL32B226KAJNNNE (22µF **25V** X7R 1210) as C1/C4. The original 22µF 50V 1210 spec (Murata GRM32ER71H226KE15L) was not available
+> from any distributor — 22µF at 50V in 1210 does not appear to be a commercial catalogue part. Maximum actual bus voltage on the hardest-stressed positions (C1, C4, C7, C8, C11, C12) is ~16.4V
+> (4S battery, 4.1V/cell max per DEC-005), giving 1.5× voltage derating at 25V rating — acceptable for prototype stage. C13 uses a different 10µF part. ⚠️ Note: X7R capacitors exhibit DC bias
+> derating; at 16V on a 25V-rated part (~64% of Vrated), effective capacitance is approximately 50–65% of nominal (≈11–14µF). Adequate for filtering but note when comparing to nominal 22µF value.
+> JLCPCB C21397 — verify exact specs (value, voltage, package) at jlcpcb.com before placing SMT assembly order.
+> * **C15–C24 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6. C23 (1µF timer) shares the same Murata GRM21BR71H105KA12L as C2/C5. C24 (10nF C_SS)
 > is a new part (Samsung CL05B103KB5NNNC).
 > * **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical
 > through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
