@@ -67,7 +67,7 @@ The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF trans
 **Key Parameters:**  
 
 | Parameter | Value |
-|---|---|
+|--- |--- |
 | Part | Coilcraft POE600F-12LD |
 | Output | 12V nominal |
 | Power | 60W (Type 4 PD, 72W class) |
@@ -318,7 +318,7 @@ Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-fil
 This section records all INC (inconsistency) items tracked during the design process. Each item was identified during design review, verified, and resolved. All items are closed.
 
 | INC | Area | Description | Original Value | Corrected Value | Status |
-|-----|------|-------------|----------------|-----------------|--------|
+|----- |------ |------------- |---------------- |----------------- |-------- |
 | INC-01 | Power Module eFuse | UVLO/OVLO thresholds inconsistent between README and Design_Spec | README: 12V UVLO / 16V OVP | 11.0V UVLO / 16.9V OVLO (per Design_Spec §5) | ✅ Resolved — README corrected |
 | INC-02 | Power Module eFuse | eFuse current limit insufficient for 75W USB-C path. TPS259474L max 5.5A with no headroom at 5.0A worst case | TPS259474L (5.5A ILIM) | TPS25980 (7A ILIM, 16.9V OVLO, VQFN-24). See DEC-005 | ✅ Resolved — DEC-005 |
 | INC-03 | Power Module 5V Buck | Single buck insufficient for CM5 25W + other loads | LM61460-Q1 (6A) | Dual LMQ61460-Q1 interleaved (12A total). See DEC-007 | ✅ Resolved — DEC-007 |
@@ -353,7 +353,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 ### Power Module
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-|-----|-------------|---------------|-----|-----------|------------|-------|
+|----- |------------- |--------------- |----- |----------- |------------ |------- |
 | J1 | Link-Alpha BtB — 80-pin socket to Controller Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Male header (ERM8). Mating female on Controller (ERF8). Gold-plated, 0.5A/pin |
 | J2 | RJ45 MagJack with integrated magnetics | Würth 7499111121A | 7499111121A | 710-7499111121A | 732-2174-ND | SMT, shielded, 2 integrated LEDs (green/yellow), 10/100/1000 PoE compatible |
 | J3 | Battery connector — 5-pin Micro-Fit 3.0 THT vertical | Molex 43650-0519 | 43650-0519 | 538-43650-0519 | WM7843-ND ⚠️ verify | 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. ⚠️ MPN corrected (43045-0512 does not exist) |
@@ -361,7 +361,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 ### Controller Board
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-|-----|-------------|---------------|-----|-----------|------------|-------|
+|----- |------------- |--------------- |----- |----------- |------------ |------- |
 | J1 | Link-Alpha BtB — 80-pin socket to Power Module | Samtec ERF8-040-05.0-S-DV-K-TR | ERF8-040 | 200-ERF8040050SDVKTR | SAM8621-ND ⚠️ verify | Female socket (ERF8). Mating male on Power Module (ERM8) |
 | J2 | Link-Beta BtB — 80-pin header to Stator Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Male header. Encryption/JTAG exit. Provides JTAG, Reset, 3V3_ENIG to Stator |
 | J3 | USB 3.0 — Dual-stacked Type-A port | Molex 48406-0003 | 48406-0003 | 538-0484060003 | WM1394-ND | Dual-stack Type-A, 5.0mm protrusion through chassis |
@@ -373,22 +373,22 @@ changes have inadvertently altered connector placement, orientation, or mating r
 ### Stator Board
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-|-----|-------------|---------------|-----|-----------|------------|-------|
+|----- |------------- |--------------- |----- |----------- |------------ |------- |
 | J1 | Link-Beta BtB — 80-pin socket from Controller Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Receives JTAG, Reset, 3V3_ENIG from Controller |
 | J2 | Rotor/Encoder power and data — 40-pin shrouded box header | Molex 22-23-2401 (2×20, 2.54mm) | 22-23-2401 | 538-22-23-2401 | WM2921-ND | THT, shrouded, keyed. Power (3V3_ENIG/GND), ENC_DATA, JTAG to each encoder slot |
 | J3 | Reflector/Extension — 20-pin shrouded box header | Molex 22-23-2201 (2×10, 2.54mm) | 22-23-2201 | 538-22-23-2201 | WM2911-ND | THT, shrouded. Power (3V3_ENIG/GND), ENC_DATA, TDO_Return |
-| — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|RST\|GND |
+| — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\ |TCK\ |GND\ |TMS\ |GND\ |TDI\ |GND\ |RST\ |GND |
 
 ### Rotor Board (×30)
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-|-----|-------------|---------------|-----|-----------|------------|-------|
+|----- |------------- |--------------- |----- |----------- |------------ |------- |
 | J1 | Stator edge-rate connector — 20-pin | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND | 0.8mm pitch edge-rate. ENIG pads for low-insertion-force hot-swap mating. Rated for high mating cycles |
 
 ### Encoder Board
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-|-----|-------------|---------------|-----|-----------|------------|-------|
+|----- |------------- |--------------- |----- |----------- |------------ |------- |
 | J1 | Plugboard jack sockets | 3.5mm / 4mm through-hole jacks | ??? | ??? | ??? | ⚠️ Part not yet selected — physical plug/jack type TBD |
 | J2 | Data link to Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J2 |
 | J3 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
@@ -396,21 +396,21 @@ changes have inadvertently altered connector placement, orientation, or mating r
 ### Reflector Board
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-|-----|-------------|---------------|-----|-----------|------------|-------|
+|----- |------------- |--------------- |----- |----------- |------------ |------- |
 | J1 | Interconnect from Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J3 |
 | J2 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
 
 ### Extension Board
 
 | Ref | Description | Part / Series | Notes |
-|-----|-------------|---------------|-------|
+|----- |------------- |--------------- |------- |
 | J1 | Interconnect from Stator | 20-pin 2.54mm shrouded | Mirrors Reflector/Extension slot on Stator J3 |
 | J2 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | Same pattern as Reflector J2 |
 
 ### JTAG Daughterboard (FT232H)
 
 | Ref | Description | Part / Series | Notes |
-|-----|-------------|---------------|-------|
+|----- |------------- |--------------- |------- |
 | J1 | USB 2.0 link from CM5 | 1×6 2.54mm header (power + USB) | Connects to Controller Board FT232H power/USB header |
 | J2 | JTAG chain output | 1×10 2.54mm shielded header | Drives HID Encoder CPLDs. 1:1 GND interleave on all JTAG signals |
 

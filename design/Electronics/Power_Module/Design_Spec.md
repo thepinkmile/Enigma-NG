@@ -122,7 +122,6 @@ GND ──────┴──────────────────�
 
 **Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears — provides a Faraday shield for the entire Power Module, supplementing conducted filtering with radiated attenuation.
 
-
 ### 5. Protection & Logic
 
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.

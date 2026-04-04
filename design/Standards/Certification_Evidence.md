@@ -58,7 +58,7 @@ All components are selected and operated to a standard described internally as "
 unpredictable environments. This drives the following binding design rules, applied system-wide:
 
 | Rule | Value | Rationale |
-|---|---|---|
+|--- |--- |--- |
 | Ceramic capacitor dielectric | X7R only | Y5V/Z5U exhibit >80% capacitance loss at rated voltage; unacceptable for precision filtering |
 | Power capacitor voltage derating | 2.5× rated voltage | Long-term reliability under voltage stress; mandatory for military cycling environments |
 | Resistor tolerance | 1% minimum; 0.1% for protection thresholds and current-sense paths | Accuracy of UVLO/OVLO/ILIM settings directly impacts protection behaviour |
@@ -109,7 +109,7 @@ junction temperatures across the power chain and supports IEC 60068-2 thermal te
 The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a resistor (UVLO) and external component selection (ILIM) to the following thresholds:
 
 | Parameter | Value | Rationale |
-|---|---|---|
+|--- |--- |--- |
 | UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~15V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
 | OVLO | **16.9V (fixed variant)** | Highest available option on TPS25980. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin above OVLO. See §3.2 Note on Battery Voltage. |
 | ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 8.5A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
@@ -118,7 +118,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 **Resistor ladder values (all 0.1% thin-film, 0603):**
 
 | Designator | Value | Purpose |
-|---|---|---|
+|--- |--- |--- |
 | R_UVLO_HI | 732 kΩ | UVLO upper resistor |
 | R_UVLO_LO | 28.7 kΩ | UVLO lower resistor |
 | R_OVLO | 53.6 kΩ | OVLO set resistor |
@@ -130,7 +130,6 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 > **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative
 > TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting EN 55032 Class B conducted
 > emissions compliance.
-
 
 ### 3.3 5V Buck Converters — Dual-Phase Interleaving Design Rationale
 
@@ -153,7 +152,7 @@ The dual 6A approach provides:
 The LMQ61460-Q1 is configurable from approximately 200 kHz to 2.2 MHz. **400 kHz** is selected for this design.
 
 | Consideration | 400 kHz | 2.2 MHz |
-|---|---|---|
+|--- |--- |--- |
 | AM broadcast band (525–1705 kHz) | Below band ✓ | Above band ✓ |
 | Harmonic at 3× | 1.2 MHz (in band) | 6.6 MHz (clear) |
 | Harmonic at 2× (with interleaving) | 800 kHz (near band) | 4.4 MHz (clear) |
@@ -205,7 +204,7 @@ inter-modulation products would appear at sum and difference frequencies, partia
 #### 3.3.4 EMI Benefit Quantification
 
 | Mechanism | Quantified Effect | Applicable Limit |
-|---|---|---|
+|--- |--- |--- |
 | 180° phase interleaving | Input capacitor RMS ripple current reduced by 50% | EN 55032 Class B conducted emissions (30Hz–10kHz) |
 | Effective ripple at 800kHz | Output filter requirement halved; lower-inductance filter reduces parasitic emission | EN 55032 Class B conducted emissions (10kHz–10MHz) |
 | DRSS ±5.5% | Peak conducted emission at switching frequency reduced ~10–15 dBµV | EN 55032 Class B conducted and radiated emissions |
@@ -217,7 +216,7 @@ inter-modulation products would appear at sum and difference frequencies, partia
 **Part selected: TI TPS7A8333P** (fixed 3.3V output variant, WSON-12)
 
 | Parameter | Value | Rationale |
-|---|---|---|
+|--- |--- |--- |
 | Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; well above TPS7A8333P 500mV dropout |
 | Output noise | 8.8 µVRMS | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | 72 dB | Attenuates Buck output ripple (800kHz effective) by >72dB — negligible at CPLD supply |
@@ -239,7 +238,7 @@ consistent with military component derating standards.
 **Peak load budget (5V_MAIN bus):**
 
 | Load | Current | Notes |
-|---|---|---|
+|--- |--- |--- |
 | Raspberry Pi CM5 (full rated) | 5.00A | Linux OS undervoltage threshold: 5V/5A (25W); full allocation maintained |
 | USB 3.0 (TPS2065C rated limit) | 1.60A | Single USB 3.0 port; TPS2065C current-limited |
 | HDMI (AP2331W rated limit) | 0.05A | Hot-plug current spike handled by AP2331W |
@@ -249,7 +248,7 @@ consistent with military component derating standards.
 **Component utilisation summary:**
 
 | Component | Function | Rated | Peak Load | Utilisation |
-|---|---|---|---|---|
+|--- |--- |--- |--- |--- |
 | 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.50A | **70.8%** ✓ |
 | TPS7A8333P | 3V3_ENIG LDO | 3A | 1.85A | **61.7%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.86A* | **69.4%** ✓ |
@@ -287,7 +286,7 @@ ambient temperature excursions consistent with IEC 60068-2 environmental test re
 The Power Module implements a two-stage common-mode and differential filter at the point of power entry (the "Iron Curtain"):
 
 | Stage | Component | Type | Function |
-|---|---|---|---|
+|--- |--- |--- |--- |
 | Primary | Würth Elektronik WE-CMBNC Nanocrystalline CMC | Common-mode choke | Broadband (1kHz–1GHz) common-mode noise attenuation |
 | Secondary | Würth WE-CMBNC 7448031002 | High-frequency nanocrystalline CMC (replaces discontinued Laird CM5022) | Broadband differential/common-mode noise attenuation 1kHz–30MHz |
 | Pi-filter | Moulded inductors + 50V X7R ceramic capacitors | LC Pi filter | Differential noise attenuation across Buck switching band |
@@ -322,7 +321,7 @@ All externally accessible connectors on the Power Module are protected against E
 GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
 
 | Interface | Protection Device | Package | Notes |
-|---|---|---|---|
+|--- |--- |--- |--- |
 | RJ45 Ethernet (MDI0/MDI1) | TPD4E05U06 (D4) | U-DFN-10 | One device per two differential pairs |
 | RJ45 Ethernet (MDI2/MDI3) | TPD4E05U06 (D5) | U-DFN-10 | One device per two differential pairs |
 | USB-C Power Input | TPD4E05U06 (D3) | U-DFN-10 | Covers CC1, CC2, VBUS, and SBU lines |
@@ -342,7 +341,7 @@ All components operate within the following derating limits. Calculations are ba
 stated. The thermal enclosure is sized to handle 70°C ambient at 100% utilisation, providing additional headroom for future military certification assessment.
 
 | Component Class | Parameter | Derating Applied | Basis |
-|---|---|---|---|
+|--- |--- |--- |--- |
 | Ceramic capacitors | Voltage | 2.5× rated | X7R capacitance loss at rated voltage; long-term reliability |
 | Electrolytic capacitors | Voltage | 2.0× rated | Not used in this design (all ceramic and film) |
 | Switching regulators | Current | ≤75% of Iout(max) | Thermal derating; junction temperature target |
@@ -360,7 +359,7 @@ stated. The thermal enclosure is sized to handle 70°C ambient at 100% utilisati
 The following table documents the IEEE 802.3 PoE standard capabilities and the rationale for the selection of 802.3bt Type 4.
 
 | Standard | PSE Output | PD Input Power | Input Current @15V | Pairs Used |
-|---|---|---|---|---|
+|--- |--- |--- |--- |--- |
 | 802.3af (PoE) | 15.4W | 12.95W | 0.86A | 2-pair |
 | 802.3at (PoE+) | 30W | 25.5W | 1.70A | 2-pair |
 | 802.3bt Type 3 (PoE++) | 60W | 51.0W | 3.40A | 4-pair |
@@ -369,7 +368,7 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 **Load vs. PoE standard comparison:**
 
 | Condition | System Load | Type 3 (51W) | Type 4 (71.3W) |
-|---|---|---|---|
+|--- |--- |--- |--- |
 | Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.6% ✓ |
 | Initial supercap charge (+2.87W Buck input for 0.5A @ 5V) | 45.4W | 89.0% ❌ | 63.6% ✓ |
 
@@ -404,7 +403,7 @@ mitigation plan are documented.
 ### 7.1 MAX II EPM240T100C5N (CPLD — Multiple Boards)
 
 | Attribute | Detail |
-|---|---|
+|--- |--- |
 | **Manufacturer** | Intel (formerly Altera) |
 | **Part Number** | EPM240T100C5N |
 | **Family** | MAX II |
@@ -454,7 +453,7 @@ Any replacement CPLD must be verified for:
 ### Open Actions (Required Before Certification Submission)
 
 | ID | Description | Owner | Priority |
-|---|---|---|---|
+|--- |--- |--- |--- |
 | OA-01 | Confirm TPS25980 16.9V OVLO variant exact part number suffix from TI ordering information. Verify OVLO threshold accuracy (±%) in full datasheet — must confirm lower tolerance ≥ 16.4V (battery BMS max charge). Recalculate UVLO/ILIM resistor values per TPS25980 datasheet programming equations. | Hardware Designer | High |
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~2 min charge from cold: 51.7W / 72W = 71.8% ✓. Steady-state: 48.9W / 72W = 67.9% ✓. Within 75% rule at all times on all sources. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
@@ -467,7 +466,7 @@ Any replacement CPLD must be verified for:
 ### Deferred Items (Post-Prototype Stage)
 
 | ID | Description | Deferred Until |
-|---|---|---|
+|--- |--- |--- |
 | DA-01 | ESD protection on Diagnostic Bank-A and Diagnostic Bank-B exposed ENIG pads. TVS arrays (TPD4E05U06 or equivalent) to GND_CHASSIS required before production release and any classroom deployment. | Post-prototype validation |
 | DA-02 | ESD policy for classroom deployment variant — define which internal BtB-accessible connections require additional ESD protection when the device is used in an educational/student-access configuration. | Pre-production (classroom variant) |
 | DA-03 | Full consistency documentation pass — INC-01 through INC-20 applied in current session. Remaining actions: Consolidated BOM update, Controller Board Board_Layout.md Link-Alpha pin map (80-pin allocation), TPS25980 suffix verification (OA-01). | Post-eFuse suffix confirmation |
