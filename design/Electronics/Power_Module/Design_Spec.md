@@ -243,7 +243,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 * **ESD:** 2× TPD4E05U06 (D4, D5) at the RJ45 entry (one per two GbE pairs), TPD4E05U06 (D3) at the USB-C entry, TPD2E2U06 on battery SMBus, and TPD1E10B06 on BATT_PRES_N.
 * **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching.
-* **Single-Point GND Bond:** Signal/power reference GND connects to GND_CHASSIS at one point only — located between the OR-ing diode network output and the eFuse input (the clean/dirty power boundary). See `Standards/Global_Routing_Spec.md §4` and `Standards/Certification_Evidence.md §2.2` for full rationale.
+* **Single-Point GND Bond:** Signal/power reference GND connects to GND_CHASSIS at one point only — located between the OR-ing diode
+  network output and the eFuse input (the clean/dirty power boundary). See `Standards/Global_Routing_Spec.md §4` and
+  `Standards/Certification_Evidence.md §2.2` for full rationale.
 * **Isolation:** 1500V Galvanic isolation via T2 ACF transformer (Coilcraft POE600F-12LD, ≥1500Vrms rated).
 
 ### 4. Mechanical Spacing (Supercap Block)
