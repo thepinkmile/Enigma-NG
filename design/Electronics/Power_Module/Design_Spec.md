@@ -51,7 +51,7 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 3. Telemetry & Power Management
 
-* **I2C Telemetry:** 4.7kΩ (0.1%) pull-up resistors (**R7, R8**) on SDA/SCL lines, tied to **3V3_ENIG**.
+* **I2C Telemetry:** 4.7kΩ (1%) pull-up resistors (**R7, R8**) on SDA/SCL lines, tied to **3V3_ENIG**.
 * **Reset Logic:** 10kΩ (0.1%) pull-up (**R9**) on SYS_RESET_N to prevent floating states.
 * **Battery Detection:** Dedicated BATT_PRES_N signal routed to CM5 GPIO 23.
 * **USB Telemetry:** USB Power Fault reported to CM5 GPIO 22 via TPS2065C.
@@ -122,6 +122,8 @@ GND ──────┴──────────────────�
 
 **Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears — provides a Faraday shield for the entire Power Module, supplementing conducted filtering with radiated attenuation.
 
+> **Note on L1/L2 placement:** L1 and L2 are cascaded common-mode chokes on the **combined post-OR-ing bus** (VIN_RAW), not per-input filters. All three input sources (PoE, USB-C, Battery) are OR-ed first via Q1–Q3 and U6, then the combined rail passes through L1→L2→L3 before reaching the eFuse (U1). Only the Battery input (J3) has no dedicated input-side ESD filter — D1/D2 provide transient protection at the connector.
+
 ### 5. Protection & Logic
 
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.
@@ -164,7 +166,7 @@ GND ──────┴──────────────────�
     * Soft-start capacitor on SS pin: 10nF (5ms ramp-up, **C24**).
 * **LDO Enable (ROTOR_EN):**
   * CM5 GPIO 16 (ROTOR_EN, 3.3V drive) drives the TPS7A8333P (U7) EN pin directly. The EN pin threshold is 1.2V typical — no level-shifting required.
-  * A 10kΩ pull-up resistor from the EN pin to **5V_MAIN** ensures the LDO is ON by default during power-up (before GPIO is configured). CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW
+  * A 10kΩ pull-up resistor from the EN pin to **3V3_ENIG** ensures the LDO is ON by default during power-up. Using 3V3_ENIG (derived from 5V_MAIN, present before CM5 boot) instead of 5V_MAIN prevents 5V from being applied to the CM5 BCM2712 GPIO 16 input (3.3V LVCMOS), which could cause clamp-diode conduction when the CM5 is unpowered. CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW
 
     disables the LDO in a controlled power-down sequence.
 
@@ -314,25 +316,27 @@ TPS25980 latches OFF under the following fault conditions:
 
 | Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L | 490-GRM32ER71H226KE15LCT-ND | ??? |
+| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE5L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
 | C2, C5 | Pi-filter mid-freq bypass | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
 | C3, C6 | Pi-filter HF bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ??? |
-| C9, C10 | 5V Buck output bulk cap (U2A OUT, U2B OUT) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ??? |
-| C11 | eFuse input bulk cap (U1 VIN) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ??? |
-| C12 | eFuse output bulk cap (U1 VOUT) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ??? |
+| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
+| C9, C10 | 5V Buck output bulk cap (U2A OUT, U2B OUT) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
+| C11 | eFuse input bulk cap (U1 VIN) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
+| C12 | eFuse output bulk cap (U1 VOUT) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
 | C13 | LDO input cap (U7 VIN from 5V_MAIN) | 10µF 25V X7R | 1206 | 81-GRM31CR72E106KA12L | 490-GRM31CR72E106KA12LCT-ND | C15850 |
-| C14 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ??? |
+| C14 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 50V X7R | 1210 | 81-GRM32ER71H226KE15L | 490-GRM32ER71H226KE15LCT-ND | ⚠️ search JLCPCB extended for GRM32ER71H226KE15L |
 | C15–C21 | IC VCC bypass (one per: U3, U4, U5, U6, U8, U9, U10) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C22 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
 | C24 | TPS23730 soft-start cap (C_SS, SS pin) | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1005-1-ND | C57112 |
 | C_SC1–4 | Supercaps (4× cells, 2S2P) | Tecate TPLH-2R7/22WR12X31 / 22F 2.7V −40°C to +85°C | THT Radial 12×31mm | — (direct/broker) | — | — |
 | D1 | BATT_PRES ESD | TPD1E10B06 | SOD-923 | 595-TPD1E10B06QDCKR | 296-TPD1E10B06QDCKRQ1CT-ND | C284765 |
-| D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-563 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
+| D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
 | D3 | USB-C ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
 | D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
 | D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
+| R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0V | P75.0BYCT-ND | C105872 |
+| C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC at board level) | 10nF 100V X7R 0402 | 0402 | 81-GRM155R72A103KA35D | 490-GRM155R72A103KA35DCT-ND | C57112 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
 | J1 | BtB Link | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM12064-ND | — |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | — |
@@ -349,7 +353,7 @@ TPS25980 latches OFF under the following fault conditions:
 | R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
 | R9 | SYS_RESET_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R10 | ROTOR_EN Pull-up (EN to 5V_MAIN) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R10 | ROTOR_EN Pull-up (EN to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
@@ -359,7 +363,7 @@ TPS25980 latches OFF under the following fault conditions:
 | R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS259803ONRGER (16.9V OVLO) ⚠️ verify PN before ordering | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | — |
-| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | WSON-8 2×2mm | 926-LMQ61460ARUMRNOPB | 296-LMQ61460ARUMR/NOPBCT-ND | — |
+| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | WSON-8 2×2mm | 595-LMQ61460ARUMR | 296-LMQ61460ARUMR/NOPBCT-ND | — |
 | U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
 | U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. ⚠️ Package is WQFN-38 6×4mm (REF) — **different from TPS25750 QFN-28; schematic and PCB footprint update required** | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — |
 | U5 | USB-C Sink Controller | STUSB4500LQTR | QFN-24 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 ⚠️ OOS |

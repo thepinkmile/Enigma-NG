@@ -17,7 +17,7 @@
 ## 3. Logic Passives  (0603 0.1% Thin-Film unless otherwise noted)
 
 * **4.7kΩ:** 10 units (I2C-1 Telemetry Bus).
-* **10kΩ:** 10 units (Reset, Battery Presence & ROTOR_EN pull-up to 5V_MAIN).
+* **10kΩ:** 10 units (Reset, Battery Presence & ROTOR_EN pull-up to 3V3_ENIG).
 * **22Ω:** 10 units (USB 2.0 / JTAG Damping).
 * **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
@@ -119,7 +119,7 @@
 | Designator | Part | Package | Mouser # | DigiKey # | JLCPCB # | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | U3 | LTC3350EUHF#PBF | QFN-38 5×7 | 584-LTC3350EUHF#PBF ✓ | 1469-1010-1-ND (tube) / **1469-1010-2-ND** (T&R) | — (not in library) | ~4.5k in stock Mouser (tube). T&R variant has ~7.5k DigiKey stock. JLCPCB custom-supply only. |
-| U5 | STUSB4500QTR | QFN-24 4×4 | 511-STUSB4500QTR ~ | **497-18060-1-ND** ✓ | C841785 (extended) | DigiKey ~7.8k in stock. ST prefix 511- is standard. JLCPCB extended library (verify C841785). |
+| U5 | STUSB4500LQTR | QFN-24 4×4 | 511-STUSB4500LQTR ~ | 497-STUSB4500LQTRCT-ND ~ ⚠️ verify | C841785 (non-L variant STUSB4500QTR — STUSB4500LQTR may not be in JLCPCB catalog) | Primary PN: STUSB4500LQTR (lower Iq ~160µA). If OOS, use STUSB4500QTR as alternative (non-L variant, ~210µA Iq, pin-compatible). |
 | U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 ~ | **296-LM74700QDBVRQ1CT-ND** ✓ | — (extended) | ⚠️ **BOM PART NUMBER INCORRECT** — LM74700-Q1DCKR does not exist. Correct automotive part is LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. |
 | U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450ELB ~ | **MCP121T-450E/LBCT-ND** ✓ | — (extended) | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. |
 | U1 | TPS259803ONRGER | VQFN-24 (RGE) | 595-TPS259803ONRGER ~ | 296-TPS259803ONRGERCT-ND ~ ⚠️ verify | — | 16.9V OVLO variant. Mouser/DigiKey PNs approximate — verify before ordering. Replaces placeholder TPS25980RPWR. |
@@ -135,12 +135,14 @@
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=30.1kΩ (ERA-3ARB3012V, Mouser 667-ERA-3ARB3012V, DigiKey P30.1KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.81V. |
 | U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERA series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Murata as C2/C5). |
+| R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0V | P75.0BYCT-ND | C105872 |
+| C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC at board level) | 10nF 100V X7R 0402 | 0402 | 81-GRM155R72A103KA35D | 490-GRM155R72A103KA35DCT-ND | C57112 |
 
 ### 9.0. Part Number Issues Requiring Action
 
 1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
 2. **U10** — Confirm whether TPS23730 in **PWP (HTSSOP-20)** or **RMT (VQFN-45)** or **RMTR (WQFN-20)** is the intended package. The BOM says "WQFN-20" which matches RMTR — update MPN accordingly.
-3. **U1** — Verify full orderable part number for TPS25980. Likely `TPS2598000RGER` (no OVLO) or `TPS2598030RGER` (3.7V OVLO) — the `RPWR` suffix may not be a valid TI orderable variant.
+3. **U1** — Updated to `TPS259803ONRGER` (16.9V OVLO VQFN-24 variant). Mouser/DigiKey approximate; verify before ordering.
 4. **U4** — Replaced with TPS25751DREFR (WQFN-38 6×4mm). See DEC-012. ⚠️ Schematic and PCB footprint update required (package change from QFN-28).
 
 ## 10. Suppliers
@@ -191,3 +193,8 @@ Product page links for all major components for design review and procurement ve
 | Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [ti.com/product/CSD17483F4](https://www.ti.com/product/CSD17483F4) |
 | U11 | MIC1555 — CMOS Timer, SOT-23-5 | Microchip Technology | [microchip.com/en-us/product/MIC1555](https://www.microchip.com/en-us/product/MIC1555) |
 | C_SC1–4 | TPLH-2R7/22WR12X31 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com (search TPLH-2R7-22WR)](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |
+| F1 | AC72ABD — 72°C SMD Thermal Cutoff (TCO) | Bourns | [bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72](https://www.bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72) |
+| D1 | TPD1E10B06 — Single-Channel 10V TVS ESD (BATT_PRES) | Texas Instruments | [ti.com/product/TPD1E10B06](https://www.ti.com/product/TPD1E10B06) |
+| D2 | TPD2E2U06 — Dual-Channel 5.5V SMBus ESD (Battery SMBus) | Texas Instruments | [ti.com/product/TPD2E2U06](https://www.ti.com/product/TPD2E2U06) |
+| D3, D4, D5 | TPD4E05U06 — 4-Channel 5V ESD Array (USB-C / RJ45 MDI) | Texas Instruments | [ti.com/product/TPD4E05U06](https://www.ti.com/product/TPD4E05U06) |
+| J1 | ERM8 / ERF8-040 — 80-pin 0.5mm-pitch BtB Connector Series | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |

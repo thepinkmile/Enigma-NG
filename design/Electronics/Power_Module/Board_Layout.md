@@ -23,9 +23,10 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |   [ eFuse U1 ] <--- TPS25980 + [0603 Thin-Film Ladder]                      |
 |                                                                             |
 |    ______________________             __________________________            |
-|   |   [C1]  [C2]  [C3]   |           |  [ Amber "Safety Glow" ] |           |
-|   |   [C4]  [C5]  [C6]   |           |  [  JST-PH Connector   ] |           |
-|   | (15F Supercap Block) |           |__________________________|           |
+|   |   [C_SC1]  [C_SC2]   |           |  [ Amber "Safety Glow" ] |           |
+|   |   [C_SC3]  [C_SC4]   |           |  [ J3 Molex 43650-0519 ] |           |
+|   | (11F/5.4V Supercap)  |
+|   | (22F×4 cells, 2S2P)   |           |__________________________|           |
 |   |______________________|                                                  |
 |                |                                                            |
 |         [ THERMAL HUB ] <--- Type VII Hex-Matrix Vias to Bottom Slug        |
@@ -193,9 +194,9 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
 |_____________________|         |    |                      |        | PINS 27-30: GND             |
                                 | [U1: TPS25980 eFuse]      |        | PINS 31-34: Status LEDs     |
        LADDER RESISTORS:        |    |                      |        | PINS 35-38: I2C Telemetry   |
-       R1: 732k (UVLO_HI) ------|--->|                      |        | PINS 39-44: 3V3_ENIG        |
+       R1: 232k (UVLO_HI) ------|--->|                      |        | PINS 39-44: 3V3_ENIG        |
        R2: 28.7k (UVLO_LO) -----|--->|                      |        | PIN  45: BATT_PRES_N        |
-       R3: 53.6k (GND) ---------|--->|                      |        | PINS 49-80: 5V_MAIN / GND   |
+       R3: 53.6k (OVLO) ---------|--->|                      |        | PINS 49-80: 5V_MAIN / GND   |
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
                                 | [5V_MAIN]-----------------|-------[U2A/U2B BUCK]--|
