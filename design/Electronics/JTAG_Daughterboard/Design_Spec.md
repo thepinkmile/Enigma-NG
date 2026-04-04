@@ -8,7 +8,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 * **Role:** Converts the CM5's USB 2.0 signals into high-speed JTAG (TCK, TMS, TDI, TDO) commands.
 * **Bridge IC:** [FT232H](https://ftdichip.com/wp-content/uploads/2023/09/DS_FT232H.pdf) High-Speed USB 2.0 to MPSSE.
 * **Function:** Dedicated JTAG programmer for the global chain (30x Rotor CPLDs + 3x Encoder CPLDs + 1x Stator CPLD).
-* **Configuration:** 12MHz crystal-controlled for high-speed programming via the CM5 GUI.
+* **Configuration:** 24MHz crystal-controlled for high-speed programming via the CM5 GUI.
 * **Integrated Driver:** Compatible with `OpenOCD` or `Quartus` via a custom Linux driver on the CM5.
 
 ## 2. Interface & Wiring

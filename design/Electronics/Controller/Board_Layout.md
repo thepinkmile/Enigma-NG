@@ -10,13 +10,17 @@
 * **Pins 21-22:** 5V_MAIN additional power (supplements pins 49-80 delivery cluster; combined 18 pins × 0.5A = 9A capacity)
 * **Pins 23-24:** GND additional return path
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
-* **Pins 27-30:** GND Isolation Moat
+* **Pins 27-28:** GND Isolation Moat
+* **Pin 29:** SYS_FAULT (eFuse fault from TPS25980; PM → CTRL; CM5 GPIO 25)
+* **Pin 30:** POE_STAT (PoE live status from TPS2372-4 /PG; PM → CTRL; CM5 GPIO 20)
 * **Pins 31-34:** SW_LED_R/G/B (RGB switch) + PWR_GD
-* **Pins 35-38:** I2C-1 Telemetry (SDA/SCL/GND/GND — to PD/eFuse)
+* **Pins 35-37:** I2C-1 Telemetry (SDA/SCL/GND — to PD/eFuse/STUSB4500)
+* **Pin 38:** USB_STAT (USB-C PD negotiated status from STUSB4500; PM → CTRL; CM5 GPIO 21)
 * **Pins 39-44:** 3V3_ENIG (Input from Power Module LDO — 6 pins, 3.0A capacity)
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection — Active Low, CM5 GPIO 23)
 * **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS7A8333P EN pin on Power Module)
-* **Pins 47-48:** SPARE (pin 47 → SW_LED_CTRL; pin 48 reserved for future use)
+* **Pin 47:** SW_LED_CTRL (CM5 GPIO 24 → disables MIC1555 hardware LED path; CTRL → PM)
+* **Pin 48:** GND (logic/power zone boundary separator)
 * **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — interleaved; combined with pins 21-22; 4-via Thermal Clusters)
 
 #### Full 80-Pin Map
@@ -47,12 +51,12 @@
 | 22 | 5V_MAIN | PM → CTRL | Supplemental power; 2oz trace; 0.5A/pin |
 | 23 | GND | — | Supplemental return |
 | 24 | GND | — | Supplemental return |
-| 25 | ETH_LED_LINK | PM → CTRL | Active-Low ETH link status LED |
-| 26 | ETH_LED_ACT | PM → CTRL | Active-Low ETH activity LED |
+| 25 | ETH_LED_LINK | CTRL → PM | Active-Low ETH link status LED |
+| 26 | ETH_LED_ACT | CTRL → PM | Active-Low ETH activity LED |
 | 27 | GND | — | Isolation moat |
 | 28 | GND | — | Isolation moat |
-| 29 | GND | — | Isolation moat |
-| 30 | GND | — | Isolation moat |
+| 29 | SYS_FAULT | PM → CTRL | eFuse fault from TPS25980 FAULT pin (CM5 GPIO 25); active-low |
+| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 20); active-high |
 | 31 | SW_LED_R | CTRL → PM | SW1 RGB switch red channel (CM5 GPIO 17) |
 | 32 | SW_LED_G | CTRL → PM | SW1 RGB switch green channel (CM5 GPIO 18) |
 | 33 | SW_LED_B | CTRL → PM | SW1 RGB switch blue channel (CM5 GPIO 19) |
@@ -60,7 +64,7 @@
 | 35 | I2C1_SDA | Bidir | I2C Telemetry bus data (CM5 GPIO 2; 4.7kΩ pull-up on PM) |
 | 36 | I2C1_SCL | Bidir | I2C Telemetry bus clock (CM5 GPIO 3; 4.7kΩ pull-up on PM) |
 | 37 | GND | — | I2C shield return |
-| 38 | GND | — | I2C shield return |
+| 38 | USB_STAT | PM → CTRL | USB-C PD negotiated from STUSB4500 (CM5 GPIO 21); active-low |
 | 39 | 3V3_ENIG | PM → CTRL | Logic rail from TPS7A8333P LDO; 0.5A/pin |
 | 40 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 41 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
@@ -70,7 +74,7 @@
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS7A8333P EN |
 | 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; disables MIC1555 hardware path (CM5 GPIO 24) |
-| 48 | SPARE | — | Reserved for future use |
+| 48 | GND | — | Logic/power zone boundary separator |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
 | 50 | GND | — | Interleaved return |
 | 51 | 5V_MAIN | PM → CTRL | Interleaved power |
@@ -107,6 +111,8 @@
 **5V_MAIN pin count:** Pins 21–22 (2) + Pins 49, 51, 53…79 (16 odd pins) = **18 pins × 0.5A = 9.0A total capacity** ✓
 **3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS7A8333P 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
+**Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25), Pin 30 = POE_STAT (GPIO 20), Pin 38 = USB_STAT (GPIO 21) — all PM → CTRL, active-low/high per signal definition.
+**GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
 
 ```text
        LINK-ALPHA (80-PIN SAMTEC)           SIGNAL TYPE          FUNCTION
@@ -166,6 +172,8 @@ _______________________________________    _____________    ____________________
 * **Pin  15-18:** SPARE (revered for future use)
 * **Pin  19:** GND_CHASSIS
 * **Pin  20:** GND
+
+> **Note:** RGB channel order in Diagnostic Bank (pins 9/10/11 = G/R/B) differs from BtB Link-Alpha order (pins 31/32/33 = R/G/B). This is intentional for PCB routing convenience. Silkscreen legend must label each pad individually to avoid probe confusion during bring-up.
 
 ### LINK-BETA (To Stator Board)
 

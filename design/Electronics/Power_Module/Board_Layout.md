@@ -180,7 +180,12 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 |                           |        |                           |        |                   |
 | [U8: MCP121T Supervisor] -|--------|--[ PIN 34: PWR_GD ] ------|------->| [ PWR_GD ]        |
 |                           |        |                           |        |  (Handshake)      |
+| [U1: TPS25980 FAULT pin] -|--------|--[ PIN 29: SYS_FAULT ] ---|------->| [ CM5 GPIO 25 ]   |
+| [U9: TPS2372-4 /PG ]     -|--------|--[ PIN 30: POE_STAT ]  ---|------->| [ CM5 GPIO 20 ]   |
+| [U5: STUSB4500 PG ]      -|--------|--[ PIN 38: USB_STAT ]  ---|------->| [ CM5 GPIO 21 ]   |
+|                           |        |                           |        |                   |
 | [U7 EN pin] <-------------|--------|--[ PIN 46: ROTOR_EN ] <---|--------| [ CM5 GPIO 16 ]   |
+| SW_LED circuit <----------|--------|--[ PIN 47: SW_LED_CTRL]<--|--------| [ CM5 GPIO 24 ]   |
 |                           |        |                           |        |                   |
 |___________________________|        |___________________________|        |___________________|
 ```
@@ -196,13 +201,19 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
 | [USB-C] (15V PD) ---|-------->| [WE-CMBNC L2]             |        | PINS 23-24: GND (+suppl)    |
 |                     |         |    |                      |        | PIN  25: ETH_LED_LINK       |
 | [BATT] (14.4V) -----|-------->| [F1: 72°C TCO]            |        | PIN  26: ETH_LED_ACT        |
-|_____________________|         |    |                      |        | PINS 27-30: GND             |
-                                | [U1: TPS25980 eFuse]      |        | PINS 31-33: SW_LED_R/G/B   |
-| PIN  34:    PWR_GD          |
-       LADDER RESISTORS:        |    |                      |        | PINS 35-38: I2C Telemetry   |
-       R1: 232k (UVLO_HI) ------|--->|                      |        | PINS 39-44: 3V3_ENIG        |
-       R2: 28.7k (UVLO_LO) -----|--->|                      |        | PIN  45: BATT_PRES_N        |
-       R3: 53.6k (OVLO) --------|--->|                      |        | PINS 49-80: 5V_MAIN / GND   |
+|_____________________|         |    |                      |        | PINS 27-28: GND (isolation) |
+                                | [U1: TPS25980 eFuse]      |        | PIN  29:    SYS_FAULT        |
+       LADDER RESISTORS:        |    |                      |        | PIN  30:    POE_STAT         |
+       R1: 232k (UVLO_HI) ------|--->|                      |        | PINS 31-33: SW_LED_R/G/B    |
+       R2: 28.7k (UVLO_LO) -----|--->|                      |        | PIN  34:    PWR_GD           |
+       R3: 53.6k (OVLO) --------|--->|                      |        | PINS 35-37: I2C Telemetry    |
+                                |    |                      |        | PIN  38:    USB_STAT         |
+                                |    |                      |        | PINS 39-44: 3V3_ENIG         |
+                                |    |                      |        | PIN  45:    BATT_PRES_N      |
+                                |    |                      |        | PIN  46:    ROTOR_EN         |
+                                |    |                      |        | PIN  47:    SW_LED_CTRL      |
+                                |    |                      |        | PIN  48:    GND (separator)  |
+                                |    |                      |        | PINS 49-80: 5V_MAIN / GND   |
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
                                 | [5V_MAIN]-----------------|-------[U2A/U2B BUCK]--|

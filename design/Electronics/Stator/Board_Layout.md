@@ -1,14 +1,33 @@
 # Stator V1.0 Master Pinout
 
-## J5: REFLECTOR / EXTENSION LINK (20-PIN)
+### J5 — Reflector / Extension Link (16-pin, 2×8, 2.54mm Shrouded Box Header)
 
-* **Pins 1-4:** 3V3_ENIG / GND Power Bus (2oz Copper)
-* **Pins 5-10:** ENC_IN [0:5] (Shielded 1:1 with GND)
-* **Pins 11-16:** ENC_OUT [0:5] (Shielded 1:1 with GND)
-* **Pin 17:** TDO_RETURN (JTAG return path)
-* **Pin 18:** GND (TDO Shield)
-* **Pins 19-20:** GND (Electrical end-stop)
-* **Note:** The ENC_IN/ENC_OUT arrangement implements the same bit ordering as the Encoder Data Link and Reflector 16-pin interconnect pinouts (split odd/even ribbon rows for physical 2x8 headers).
+Provides a direct power and data link to the Reflector (end-of-stack loopback) board,
+bypassing the full rotor stack to avoid cumulative contact resistance on the power rail
+and to provide a short TDO return path for the JTAG chain.
+
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | 3V3_ENIG | PM → Reflector | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
+| 2 | GND | — | Power return |
+| 3 | ENC_IN[0] | Stator → Reflector | Encoder input bit 0 |
+| 4 | ENC_IN[1] | Stator → Reflector | Encoder input bit 1 |
+| 5 | ENC_IN[2] | Stator → Reflector | Encoder input bit 2 |
+| 6 | ENC_IN[3] | Stator → Reflector | Encoder input bit 3 |
+| 7 | ENC_IN[4] | Stator → Reflector | Encoder input bit 4 |
+| 8 | ENC_IN[5] | Stator → Reflector | Encoder input bit 5 |
+| 9 | ENC_OUT[0] | Reflector → Stator | Encoder output bit 0 |
+| 10 | ENC_OUT[1] | Reflector → Stator | Encoder output bit 1 |
+| 11 | ENC_OUT[2] | Reflector → Stator | Encoder output bit 2 |
+| 12 | ENC_OUT[3] | Reflector → Stator | Encoder output bit 3 |
+| 13 | ENC_OUT[4] | Reflector → Stator | Encoder output bit 4 |
+| 14 | ENC_OUT[5] | Reflector → Stator | Encoder output bit 5 |
+| 15 | TDO_RETURN | Reflector → Stator | JTAG TDO return path (short route, bypasses rotor stack) |
+| 16 | GND | — | Signal return / shield |
+
+**Connector:** 2×8 2.54mm shrouded box header with polarisation key (e.g. Wurth 61201621621 or equiv).
+**Mating connector on Reflector:** J1 — same 16-pin 2×8 shrouded box header.
+**Power current capacity:** 1 pin × 1A = 1A maximum to Reflector. Reflector estimated draw ≤200mA — adequate with >4× margin.
 
 ## J2-J4: SATELLITE LINKS (40-PIN)
 

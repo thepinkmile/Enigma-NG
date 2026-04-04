@@ -95,9 +95,10 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **19** | **SW_LED_B** | PWM | 3.3V | RGB switch (SW1) — Blue channel. PoE active power source. |
 | **20** | **POE_STAT** | Input | 3.3V | Active High: PoE live (TPS2372-4 /PG signal asserted). |
 | **21** | **USB_STAT** | Input | 3.3V | Active Low: 12V/15V PD Negotiated. |
-| **22** | **BATT_STAT** | Input | 3.3V | Active Low: Battery Present. |
-| **23** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse Fault Interrupt. |
+| **22** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
+| **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |
 | **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware MIC1555 orange-flash path on Power Module. |
+| **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
 
 ## 7. Protection Notes
 
@@ -119,7 +120,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 * **L3 (Internal):** High-Speed Data Striplines (USB/HDMI/GBE).
   * 90Ω Diff: 5.5 mil width / 7.5 mil gap (USB 3.0).
   * 100Ω Diff: 4.5 mil width / 8.5 mil gap (HDMI, Ethernet).
-* **L4 (Internal):** High-Current Power Plane (5V_SYSTEM / 3V3_ENIG).
+* **L4 (Internal):** High-Current Power Plane (5V_MAIN / 3V3_ENIG).
 * **L5 (Internal):** Secondary GND Plane (Shielding).
 * **L6 (Bottom):** Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.
 
