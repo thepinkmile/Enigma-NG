@@ -313,6 +313,35 @@ Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-fil
 
 ---
 
+## DEC-014 — Controller Board Uses ERF8 (Female) on Both BtB Connectors for Blind-Mate Assembly
+
+**Date:** 2026-04-04  
+**Status:** ✅ RESOLVED  
+**Affects:** Controller J1 (Link-Alpha), Controller J2 (Link-Beta), Consolidated BOM connector inventory
+
+**Decision:**  
+Both BtB connectors on the Controller Board (J1 Link-Alpha and J2 Link-Beta) use the **ERF8-040-05.0-S-DV-K-TR female socket**. The mating male plugs (ERM8-040-05.0-S-DV-K-TR) are fitted to the Power Module (J1) and the Stator Board (J1) respectively.
+
+**Rationale:**  
+During mechanical assembly, the Controller Board slides into the enclosure and must simultaneously engage with two boards along its back edge — the Power Module (J1) to one side and the Stator (J2) to the other. Using female sockets on the Controller allows guided blind-mate engagement in a single insertion motion, with the mating male pins on the peripheral boards providing positive alignment. Placing male headers on the Controller would require both peripheral boards to be precisely pre-positioned before the Controller could be inserted, significantly complicating assembly.
+
+**Connector Assignment Summary:**
+
+| Board | Connector | Gender | Part |
+| :--- | :--- | :--- | :--- |
+| Controller | J1 (Link-Alpha, from Power Module) | Female | ERF8-040-05.0-S-DV-K-TR |
+| Controller | J2 (Link-Beta, to Stator Board) | Female | ERF8-040-05.0-S-DV-K-TR |
+| Power Module | J1 (Link-Alpha plug) | Male | ERM8-040-05.0-S-DV-K-TR |
+| Stator Board | J1 (Link-Beta plug) | Male | ERM8-040-05.0-S-DV-K-TR |
+
+**Impact:**  
+
+- Controller BOM J2 updated from ERM8 (male) to ERF8 (female); JLCPCB C-number to be verified.
+- Controller §2 narrative updated to reflect ERF8 on Link-Beta.
+- No electrical impact — connector is signal-transparent; pin assignments unchanged.
+
+---
+
 ## INC Review History
 
 This section records all INC (inconsistency) items tracked during the design process. Each item was identified during design review, verified, and resolved. All items are closed.

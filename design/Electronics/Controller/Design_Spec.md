@@ -9,6 +9,8 @@
 
 ## 2. Dual-Link Interface (Samtec ERx8)
 
+> **Assembly Note:** Both BtB connectors (J1 and J2) use ERF8 **female** sockets. This is a deliberate mechanical choice — the Controller slides into the enclosure and simultaneously blind-mates with the Power Module (J1) and Stator (J2) along the back edge in a single insertion motion. See DEC-014.
+
 * **Link-Alpha (Power/Entry):** ERF8 Female Socket 80-pin Power/Ethernet/Telemetry entry from Power Module.
   * Receives: 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
   * Provides: 3V3_SYSTEM for RJ45 Power and Status LED signals.
