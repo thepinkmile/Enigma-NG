@@ -52,6 +52,21 @@
 * **Samtec ERF8-040-05.0-S-DV-K-TR (Female):** Controller Alpha / Stator.
 * **Intel EPM240T100C5N:** 37 units (Standardized logic node).
 
+## 4a. Encoder Board — Plugboard Jacks & PCB Spade Terminals
+
+| Ref | Component | Part / Description | Qty | Supplier | Supplier Ref / Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip: ENC signal path; Switch contact: insertion-detect (→ CPLD INT); Sleeve: GND direct. **Already purchased.** | 64 | SaiBuy.Ltd (eBay) | eBay item 334364197440 — £1.66/unit (sold in packs of 3 for £4.99). [ebay.co.uk — SaiBuy.Ltd](https://www.ebay.co.uk/str/saibuyltd) |
+| BT1-64 | PCB blade terminals — ENC signal (Row 1) | Keystone 1285 — 6.35mm (0.250″) straight vertical PCB-mount male blade tab, through-hole. Accepts 6.35mm female crimp spade from jack Tip harness. | 64 | Mouser / DigiKey | Mouser: 534-1285 · DigiKey: 36-1285-ND |
+| BT65-128 | PCB blade terminals — INT detect (Row 2) | Keystone 1285 — same part as BT1-64. Accepts 6.35mm female crimp spade from jack Switch contact harness. | 64 | Mouser / DigiKey | Mouser: 534-1285 · DigiKey: 36-1285-ND |
+
+**Notes:**
+
+- 64 jack sockets mount in the plugboard panel (mechanical chassis). Each jack connects to the Encoder PCB via a 2-wire spade-terminal harness (Tip + Switch contact; Sleeve to chassis GND).
+- BT1-64 (Row 1) carry ENC signal paths → CPLD I/O bus. BT65-128 (Row 2) carry insertion-detect lines → CPLD interrupt inputs.
+- 128 PCB blade terminals total, arranged in two parallel rows of 64 at 2.54mm or standard blade pitch.
+- Stecker cables (plugboard patch cables) use standard 6.35mm mono jack plugs (TS, tip-sleeve) — not included in BOM; customer-supplied.
+
 ## 5. Controller Specifics
 
 * **CM5 Module:** Raspberry Pi SC1180 (8GB/32GB/Wireless).

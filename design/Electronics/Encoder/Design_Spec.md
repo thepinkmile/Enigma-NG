@@ -28,8 +28,16 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
   * 2x GND pins
   * 6x ENC_IN bits (0:5)
   * 6x ENC_OUT bits (0:5)
-* **I/O Terminals:** 2 rows of 64 spade terminal connections (inputs and outputs), one for each of the 64-character I/O path lines.
-  * These terminals connect externally to the mechanical encoder/hardward assembly via a field-installable harness.
+* **Stecker Jack Sockets (×64):** 6.35mm (¼″) mono switched panel-mount jack sockets, one per character position.
+  * Mounted in the plugboard panel; connect to the PCB via a field-installable spade-terminal harness.
+  * **Tip terminal** → ENC signal path (CPLD I/O bus, Row 1 spade bank BT1–BT64).
+  * **Switch contact** → insertion-detect interrupt line to CPLD (Row 2 spade bank BT65–BT128).
+  * **Sleeve** → chassis GND direct (no spade required).
+  * Part: 6.35mm (¼″) mono switched panel-mount jack — purchased (SaiBuy.Ltd, eBay item 334364197440, £1.66/unit × 64).
+* **PCB Spade Terminal Banks (×128):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs, 2 per jack (128 total).
+  * **BT1–BT64:** Row 1 — ENC signal paths (Tip connections).
+  * **BT65–BT128:** Row 2 — Insertion-detect lines (Switch contact connections).
+  * Arranged in two parallel rows of 64, pitched to accept a standard 6.35mm female crimp spade harness.
 * **Routing:** Flexible cable / harness interface secured to the chassis floor with conductive EMI tape from the Stator Board.
 * **Cornering:** 2.0mm Filleted PCB corners for enclosure fit.
 
@@ -54,8 +62,10 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 7. Plugboard Jack-Sensing
 
-* **Logic:** The CPLD monitors 64 "Interrupt" lines from the Jack-Sensing sockets.
-* **Latency:** Sub-microsecond detection of "Stecker" cable insertion, updating the internal encryption matrix instantly.
+* **Logic:** The CPLD monitors 64 insertion-detect lines (BT65–BT128, Switch contacts) from the Stecker jack sockets.
+* **Signal:** Each jack Switch contact is normally closed (connected to Tip) when no plug is inserted; the contact opens on plug insertion, pulling the CPLD input low via an internal or external pull-up.
+* **Latency:** Sub-microsecond detection of Stecker cable insertion, updating the internal encryption matrix instantly.
+* **Harness:** 64× 2-wire assemblies (Tip + Switch), each terminated with 6.35mm female crimp spade terminals, connecting the panel-mount jacks to BT1–BT128 on the PCB.
 
 ## 8. Thermal & ESD
 
@@ -77,7 +87,8 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C16 | Decoupling (8 per CPLD, 2x CPLDs) | 0.1µF X7R 10V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C17-C21 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Plugboard Jack Sockets | 3.5/4mm | Through-hole | ??? | ??? | ??? |
+| BT1-128 | PCB spade blade terminals (2 per jack, 128 total) | 6.35mm (¼″) straight vertical PCB-mount male blade tab — Row 1 (BT1-64): ENC Tip signal; Row 2 (BT65-128): Switch insertion-detect | Through-hole vertical | 534-1285 | A33376-ND | — |
+| J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | J2 | Data Link Connector | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
 | J3 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | SW1-64 | Keyboard Switches | Cherry MX style | 3-pin | ??? | ??? | ??? |
