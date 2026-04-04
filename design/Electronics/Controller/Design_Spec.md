@@ -46,13 +46,17 @@
 ### 2.2. Connectivity & Bus (on Link-Beta)
 
 * **High-Speed Interconnect (BtB Samtec):**
-  * **Connector:** [Samtec FTSH-RA](https://www.samtec.com) (Right-Angle).
-  * **Mating Style:** Flush-edge mounting with **Staggered THR (Through-Hole Reflow) Slotted Clips**.
-  * **Pin Mapping:**
-    * **Pins 1–8:** Ganged for **5A Rotor Rail** (Symmetrical Star Pattern capacitors).
-    * **Pins 9–32:** 12-bit Parallel Data Bus + JTAG signals (Interleaved with GND shields).
+  * **Connector:** Samtec ERF8-020 (Female Socket, 40-pin, 0.8mm pitch). See DEC-015.
+  * **Mating Style:** Board-to-Board vertical stack; SMT reflow. Mates with ERM8-020 (Male) on Stator.
+  * **Pin Summary:**
+    * **Pins 1–9:** JTAG chain + Reset, GND-shielded (5 internal GND pins).
+    * **Pins 10–11:** GND isolation moat.
+    * **Pins 12–24:** ENC_IN[0:5] and ENC_OUT[0:5] (interleaved with GND shields).
+    * **Pins 25–27:** TDO_RETURN + GND shields.
+    * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity).
+    * **Pins 36–40:** GND power return (5 pins).
+  * **Full pin table:** See `Controller/Board_Layout.md` LINK-BETA section.
 * **Programming:** Internal USB 2.0 link to the JTAG Daughterboard.
-* **Interface:** Samtec FTSH Gold-flashed headers for high-speed data distribution to the Stator.
 * **Encryption Sniffer Bus**
   * **Logic:** 12-bit binary encoded bus (6-in / 6-out) for 64-character alphabet monitoring.
   * **ENC_IN [0:5]:** GPIO 0-5 (Binary input from Keyboard CPLD).
@@ -62,7 +66,7 @@
 ### 2.3. Physical Connector Placement
 
 1. **Top Edge:** Order from Left to Right
-    * **Stator Link:** 80-pin Samtec (Flush with edge) to Stator Board.
+    * **Stator Link:** 40-pin Samtec ERF8-020 (Flush with edge, LINK-BETA) to Stator Board.
     * **Power In:** 80-pin Samtec (Flush with edge) from Power Module (USB-C, PoE+ & Smart Battery).
 2. **Right Edge:** Order from Top to Bottom to follow CM5 pinout flow:
     * **USB 3.0:** Dual-Stacked Type-A (Molex 48406-0003) with 5.0mm overhang.
@@ -137,12 +141,14 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 
 ## 7. Connectivity
 
-### Mating Header (Samtec FTSH)
+### Link-Beta Connector (Samtec ERF8-020)
 
-* **Specs:** [FTSH-120-01-L-DH](https://uk.rs-online.com/web/p/pcb-headers/7676792) (Right-angle, SMT pins,
-  Through-hole reflow clips).
-* **Pins:** 40-position, 1.27mm pitch.
-* **Decision:** THR (Through-Hole Reflow) slots for automated museum-grade assembly strength.
+* **Part:** ERF8-020-05.0-S-DV-K-TR (Female Socket, 40-pin, 0.8mm pitch, 5.0mm stack height).
+* **Mating Part (Stator):** ERM8-020-05.0-S-DV-K-TR (Male Header).
+* **Pitch:** 0.8mm.
+* **Stack Height:** 5.0mm.
+* **Assembly:** SMT reflow; no THR clips required.
+* **Decision:** See DEC-015 for 80→40 pin reduction rationale and poka-yoke safety note.
 
 ## 8. PCB Fabrication & Stackup
 
