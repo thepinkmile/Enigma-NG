@@ -412,7 +412,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > product page before ordering.
 > * **U11 MIC1555YM5-TR** — CMOS timer (Microchip). Timing components: R16=10.0kΩ (R_A), R17=715kΩ (R_B), C23=1µF (C_OSC) → 1Hz, ~50% duty cycle via formula f=1.44/((R_A+2R_B)×C). VCC bypass: C22
 > (100nF). Note: the 715kΩ E96 resistor (R17) is not common at all distributors — confirm stock at Mouser (667-ERJ-3EKF7153V) before BOM freeze.
-> * **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery). Three LM74700-Q1 instances (U6a, U6b, U6c) are required — one IC per MOSFET for correct per-channel ideal-diode gate drive (+7V above source via internal charge pump). Confirm U6a/U6b/U6c footprints at schematic capture.
+> * **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery).
+> Three LM74700-Q1 instances (U6a, U6b, U6c) are required — one IC per MOSFET for correct per-channel ideal-diode gate drive
+> (+7V above source via internal charge pump). Confirm U6a/U6b/U6c footprints at schematic capture.
 > * **J4 USB4135-GF-A** — GCT 24-pin USB Type-C SMT receptacle, 5A rated. THT/hand-place style; not in JLCPCB standard SMT catalog (similar to J2, J3 and the BtB connectors). CC1 and CC2 pins connect
 > to STUSB4500 (U5) for PD 15V negotiation.
 > * **R14/R15 BACKUP divider** — Sets LTC3350 BACKUP comparator trigger at 4.81V (V_thr=1.2V, R_TOP=30.1kΩ, R_BOT=10.0kΩ). Use 0.1% tolerance for accuracy; trigger window relative to PWR_GD threshold
@@ -422,7 +424,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > (4S battery, 4.1V/cell max per DEC-005), giving 1.5× voltage derating at 25V rating — acceptable for prototype stage. C13 uses a different 10µF part. ⚠️ Note: X7R capacitors exhibit DC bias
 > derating; at 16V on a 25V-rated part (~64% of Vrated), effective capacitance is approximately 50–65% of nominal (≈11–14µF). Adequate for filtering but note when comparing to nominal 22µF value.
 > JLCPCB C21397 — verify exact specs (value, voltage, package) at jlcpcb.com before placing SMT assembly order.
-> * **C15–C25 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6. Note: C15–C21 covers U3, U4, U5, U6a, U8, U9, U10 — two additional bypass caps for U6b and U6c will need to be assigned (C26, C27 suggested) at schematic capture. C23 (1µF timer) shares the same Murata GRM21BR71H105KA12L as C2/C5. C24 (10nF C_SS)
+> * **C15–C25 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6.
+> Note: C15–C21 covers U3, U4, U5, U6a, U8, U9, U10 — two additional bypass caps for U6b and U6c will need to be assigned
+> (C26, C27 suggested) at schematic capture. C23 (1µF timer) shares the same Murata GRM21BR71H105KA12L as C2/C5. C24 (10nF C_SS)
 > is a new part (Samsung CL05B103KB5NNNC).
 > * **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical
 > through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
