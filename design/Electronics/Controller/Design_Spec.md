@@ -170,7 +170,9 @@ All GPIOs are referenced to **+3V3_SYSTEM**. Total current draw is limited to <5
 * **ESD Protection:** [TPD12S016](https://www.ti.com) (HDMI) and [TPD4E05U06](https://www.ti.com) (USB 3.0) on Layer 1.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors at the Link-Alpha power-entry pins.
 * **Capacitor Bank Geometry:** Place in a **Symmetrical Star/Spoke pattern**
+
   (one hub capacitor at entry, four spoke capacitors around it) to minimize input-rail impedance and reduce brown-out risk during current transients.
+
 * **Status LED:** MIC1555-based 1Hz heartbeat flasher (Bilingual label: ACHTUNG: HEISS!).
 
 ### 3. Mating Header (Samtec FTSH)

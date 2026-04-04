@@ -29,13 +29,17 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 ### 2. Power & UPS Hub
 
 * **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up
+
   energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
+
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
   * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
   * Pin 5: BATT_PRES_N (Presence Detect).
   * **BMS Charge Voltage:** Smart Battery BMS must be configured for a maximum charge voltage of **4.1V/cell (16.4V total for 4S)**. This provides a ≥0.5V margin to the TPS25980 eFuse 16.9V OVLO
+
     threshold, preventing nuisance latch-off at full charge. BMS configurations using 4.2V/cell (16.8V) are not compatible without OVLO re-specification.
+
 * **Presence Logic:** Pin 5 is pulled to **3V3_ENIG** via 10kΩ resistor (R6). Battery internal shorts Pin 5 to GND.
   * Logic HIGH: Battery Disconnected.
   * Logic LOW: Battery Detected.
@@ -73,25 +77,35 @@ GND ──────┴──────────────────�
 > (differential filter caps).
 
 **Stage 1 — Primary CMC (L1: WE-CMBNC Nanocrystalline):**
+
 * Part: **Würth WE-CMBNC**, nanocrystalline core, ≥10A rated, ≥1.5mH CM inductance (e.g. 748441440 or equivalent — verify from Würth REDEXPERT tool; mouser.co.uk search: "WE-CMBNC 10A
+
   nanocrystalline").
+
 * Function: Broadband CM attenuation from ~1kHz to >10MHz. Nanocrystalline core maintains high permeability (µ_r > 50,000) well into the MHz range, providing >60dB CM insertion loss at 150kHz.
 
 **Stage 2 — Secondary HF CMC (L2: Würth WE-CMBNC 7448031002):**
+
 * Part: **Würth WE-CMBNC 7448031002** — same part as L1 (nanocrystalline CMC, THT, ≥10A). Original Laird CM5022 is discontinued (Laird EMC passives absorbed by TE Connectivity 2019). Twin
+
   nanocrystalline CMC approach provides broadband CM coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test.
+
 * Function: Supplementary CM attenuation above ~10MHz where nanocrystalline core permeability falls off. Provides a second CM filter pole to ensure >40dB CM attenuation to 30MHz+.
 
 **Stage 3 — Differential Mode Pi-filter (L3, C1–C6):**
 
 *Component selection:*
+
 * **L3** — Bourns `SRP1265A-100M`: 10µH, 15.5A I_sat, 10A I_rms, DCR = 16.5mΩ max, 13.5×12.5×6.2mm shielded molded SMD. ⚠️ Footprint differs from original Würth 7447789100 (12.5×12.5mm); update PCB
+
   land pattern.
+
 * **C1, C4** — 22µF, 50V, X7R, 1210 (Murata GRM32ER71H226KE15L or equiv).
 * **C2, C5** — 1µF, 50V, X7R, 0805 (Murata GRM21BR71H105KA12L or equiv).
 * **C3, C6** — 100nF, 50V, X7R, 0402 (Samsung CL05B104KB5NNNC or equiv).
 
 *Filter performance calculations:*
+
 * Effective capacitance per Pi leg: C₁‖C₂‖C₃ = 22µF + 1µF + 100nF ≈ **23.1µF** (capacitors in parallel).
 * Pi-filter −3dB corner frequency: `f_c = 1/(2π√(L3 × C)) = 1/(2π × √(10µH × 23.1µF))` = **10.5kHz**.
 * DM attenuation at 150kHz (EN 55032 Class B lower limit): 40dBdec × log(150k/10.5k) ≈ **−46dB** ✓
@@ -100,6 +114,7 @@ GND ──────┴──────────────────�
 * Combined with dual CMC stages: total insertion loss well exceeds EN 55032 Class B limits across 150kHz–10MHz.
 
 *Broadband capacitor stack rationale:*
+
 * C1/C4 (22µF): bulk DM filtering at f_c and 2nd–3rd harmonics.
 * C2/C5 (1µF): mid-frequency bypass; bridges impedance gap between 22µF ceramic SRF (~3MHz) and 100nF.
 * C3/C6 (100nF): HF bypass; low impedance at >10MHz where bulk caps become inductive.
@@ -114,37 +129,52 @@ GND ──────┴──────────────────�
 * **Internal Handshake:** TPS25751 PD Emulator (U4) provides **5V/5A** "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
 * **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the
+
   TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
+
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 732kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
 * **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where `VICHARGE = 1.485V` (LTC3350 internal reference), `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path). For `ICH =
+
     0.5A`: `RICHARGE = 1.485V / (0.5A × 0.010Ω) = 297Ω → use 301Ω (E96, 0.1%, 0603)`.
+
   * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; RSENSE must be a 4-terminal Kelvin-sense resistor to avoid trace resistance error.
   * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below ~4.81V (programmed via resistor divider R14=30.1kΩ / R15=10.0kΩ from 5V_MAIN to BACKUP pin; threshold = 1.2V
+
     × (R14+R15)/R15 = 4.81V). Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
+
 * **PoE Subsystem:**
   * **PD Interface:** TPS2372-4 (U9, QFN-16) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
+
     resistor is required.
+
   * **MPS Programming (RMPS):** An external resistor from the TPS2372-4 IMPS pin to GND programs the MPS (Maintain Power Signature) pulsed current amplitude required to keep the PSE port active.
+
     Formula: `RMPS = VIMPS / IMPS` where `VIMPS = 1.205V`. For target `IMPS = 10mA` (providing margin above the 7mA IEEE 802.3bt Type 4 minimum): `RMPS = 1.205 / 0.010 = 120.5kΩ → use 121kΩ (E96,
 0.1%, 0603)`.
+
     * ⚠️ Confirm IMPS target (7–15mA range acceptable) against TPS2372-4 datasheet before schematic freeze.
   * **DC-DC Controller:** TPS23730 (U10, WQFN-20) — ACF (Active Clamp Flyback) controller.
     * Configured for **Primary-Side Regulation (PSR)** using the VS pin and the POE600F-12LD auxiliary winding. PSR eliminates the need for an external TL431 shunt regulator and optocoupler on the
+
       secondary side.
+
     * Output voltage (12V nominal) is set by the POE600F-12LD transformer turns ratio, which Coilcraft has designed for 12V output in TPS23730 PSR mode.
     * Soft-start capacitor on SS pin: 10nF (5ms ramp-up, **C24**).
 * **LDO Enable (ROTOR_EN):**
   * CM5 GPIO 16 (ROTOR_EN, 3.3V drive) drives the TPS7A8333P (U7) EN pin directly. The EN pin threshold is 1.2V typical — no level-shifting required.
   * A 10kΩ pull-up resistor from the EN pin to **5V_MAIN** ensures the LDO is ON by default during power-up (before GPIO is configured). CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW
+
     disables the LDO in a controlled power-down sequence.
+
   * ROTOR_EN HIGH → LDO enabled → 3V3_ENIG present (CPLDs + rotor stack powered).
   * ROTOR_EN LOW → LDO disabled → 3V3_ENIG off (all rotor and CPLD loads de-energised).
 
 * **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
   * "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) remains active during capacitor discharge.
 * **Hardware Status Oscillator:** MIC1555 (U11, SOT-23-5) — CMOS timer providing the 1Hz hardware "Initialising" heartbeat pulse for the orange status LED, operating entirely independently of CM5
+
   firmware. Active from power-on until CM5 firmware takes control of the status LED GPIO. Also serves as a visible supercap state-of-charge indicator during hold-up mode. Timing network: R16
 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle.
 
@@ -171,8 +201,11 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | **Total** | **~14.8W** | **~19.5W** | Dissipated into 42mm Al 'Power Can' enclosure via bottom thermal pad |
 
 **Thermal Notes:**
+
 * The LDO (U7) is the critical thermal path. Without copper pour: θja ≈ 50°C/W → ΔTj ≈ 255°C at 5.1W (catastrophic). With ≥200mm² pour + Type VII vias: effective θja ≈ 10–15°C/W → ΔTj ≈ 51–77°C. At
+
   40°C ambient, Tjunction ≈ 91–117°C (max rated: 125°C). **Verify during first prototype thermal measurement.**
+
 * If LDO thermal headroom proves insufficient under sustained 3A load, consider converting 3V3_ENIG to a small synchronous buck (e.g. TPS62825). Log as DEC candidate.
 * The dedicated heat zone (shared with supercap bank area) connects via thermal pad to the metal enclosure, acting as a heatsink for the bottom of the board.
 
@@ -227,11 +260,15 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 ### 2. Startup Timeline
 
 1. **Input:** 11–17V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.8V). All three sources are within the TPS25980
+
    eFuse window (UVLO 11V / OVLO 16.9V).
+
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
 3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
 4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
+
    depleted state: approximately 2 minutes. Once fully charged, the bank provides approximately 14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
+
 5. **Supervisor:** Once 5V_MAIN hits 4.5V, MCP121T-450E asserts GLOBAL_EN HIGH after a 200ms delay.
 6. **Release:** CM5 PMIC begins internal 1.8V/1.1V sequencing.
 7. **Heartbeat:** MIC1555 starts the 1Hz Green "Initialising" pulse.
@@ -256,11 +293,13 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
 ### 4. eFuse Latch-Off Recovery
 
 TPS25980 latches OFF under the following fault conditions:
+
 * **Overvoltage (OV):** Input > 16.9V (OVLO threshold).
 * **Overcurrent (OC):** Output > 7A (ILIM threshold).
 * **Thermal (TCO F1):** TCO opens at 72°C board temperature.
 
 **Recovery procedure:**
+
 1. Identify and resolve the root fault (e.g., faulty PSE port, overcurrent load, ambient overtemperature).
 2. Remove **all** input sources (PoE cable, USB-C, battery).
 3. Wait ≥3 seconds for the input bulk capacitors to fully discharge.

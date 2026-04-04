@@ -103,6 +103,7 @@ More importantly, the two regulators are deliberately **timed 180° apart**: whe
 electrical noise largely cancels itself out before it reaches the rest of the circuit — the same principle used in noise-cancelling headphones.
 
 The practical effect:
+
 - The **output ripple** (small voltage fluctuation on the 5V rail) is halved compared to using a single regulator.
 - The **effective noise frequency** the rest of the system sees is **800 kHz** (double the 400 kHz each regulator runs at). Higher-frequency noise is much easier to filter with small components.
 - The **input-side ripple current** is also halved, reducing stress on the input capacitors and decreasing conducted noise back towards the power source.
@@ -116,9 +117,12 @@ power supplies of modern laptops and smartphones to pass EMC testing.
 #### The "Iron Curtain" Input Filter
 
 Before any switching occurs, the raw input power passes through a two-stage filter at the board entry point:
+
 - A **nanocrystalline common-mode choke** (wideband, from Würth Elektronik) blocks high-frequency noise arriving from the source.
 - A **high-frequency nanocrystalline CMC** (Würth WE-CMBNC 7448031002, same as L1) handles the narrower-band differential noise. The original Laird CM5022 was discontinued when Laird's EMC passives
+
   division was absorbed by TE Connectivity in 2019.
+
 - Pi-filter sections (inductors + capacitors) on each power path provide additional attenuation.
 
 Together, these three techniques — phase interleaving, spread spectrum, and input filtering — are designed to comfortably meet EN 55032 Class B conducted and radiated emission limits under CE/UKCA
@@ -145,8 +149,10 @@ When power is applied, the following sequence occurs automatically:
 1. **Input validation:** The eFuse checks that input voltage is within 11–17V and current is within limits. The thermal cutoff (TCO) provides over-temperature protection at 72°C.
 2. **Buck regulators start:** The dual 5V switching regulators (U2A/U2B) and the 3.3V LDO (U7) begin operating, establishing the 5V_MAIN and 3V3_ENIG power rails.
 3. **Supercap charging:** The LTC3350 supercap manager begins a controlled 0.5A soft-charge of the supercapacitor bank from the 5V_MAIN rail. This reduced charge rate keeps the system within power
+
    budget on all input sources. From a fully depleted state, the bank takes approximately **2 minutes** to reach full charge. Full hold-up protection (approximately 14 seconds) is available once
 charging is complete.
+
 4. **Rail supervision:** A voltage supervisor monitors the 5V_MAIN rail. Once it stabilises above 4.5V, a 200ms delay timer starts.
 5. **CM5 power-on:** After the 200ms delay, the CM5 module receives its enable signal and begins its internal power sequencing (1.8V, 1.1V rails).
 6. **Linux boot:** The CM5 boots Linux. The LOGIK-BEREIT LED pulses at 1Hz during this phase.

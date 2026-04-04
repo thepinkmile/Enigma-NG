@@ -55,7 +55,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |_____________________________________________________________________________|
 |                                                                             |
 |   [  TCO F1  ]   [ eFuse U1 ]   [ U2A/U2B 5V BUCK ×2 ]   [ U7 3V3 LDO ]     |
-|   [ U9 TPS2372-4 + U10 TPS23730 PoE DC-DC ]  [ T2 ACF XFMR ]                  |
+|   [ U9 TPS2372-4 + U10 TPS23730 PoE DC-DC ]  [ T2 ACF XFMR ]                |
 |                                                                             |
 |   ( All Passives/Caps/Inductors Cluster around their ICs on Top )           |
 |_____________________________________________________________________________|
@@ -124,15 +124,15 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 ## Power Flow
 
 ```text
-        INPUT A: PoE+              INPUT B: USB-C              INPUT C: Battery
-     [ J2 RJ45 MagJack ]        [ J4 USB-C 15V ]           [ J3 Locking Conn ]
-            |                          |                           |
+       INPUT A: PoE+             INPUT B: USB-C            INPUT C: Battery
+     [ J2 RJ45 MagJack ]        [ J4 USB-C 15V ]          [ J3 Locking Conn ]
+            |                          |                          |
   [D4/D5 ESD + L1 CMC  ]    [D3 ESD + L2 CMC    ]           [D1/D2 ESD]
   [U9 TPS2372-4 PD ctrl]    [U5 STUSB4500 PD ctrl]                |
   [U10 TPS23730 ACF+T2 ]      (negotiates 15V)                    |
    (PoE Type 4, 12V/51W)                                          |
-            |                          |                           |
-            \__________________________|___________________________/
+            |                          |                          |
+            \__________________________|__________________________/
                                        |
                           [U6 LM74700QDBVRQ1 + Q1/Q2/Q3]
                             (ideal-diode priority OR-ing)
@@ -163,14 +163,14 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
    POWER MODULE (INTERNAL)             SAMTEC BTB INTERFACE             CONTROLLER BOARD
  ___________________________          ___________________________          ___________________ 
 | [U1: eFuse / OR-ing]      |        |                           |        |                   |
-|                           |        | [ PINS 1-20: GbE  ] ------|------->| [ GbE Ethernet ]  |
+|                           |        |  [ PINS 1-20: GbE ] ------|------->| [ GbE Ethernet ]  |
 | [U2A/U2B: 5V BUCK×2 (12A)]|--------|--[ PINS 21-22: 5V ] ------|------->| [ +5V_MAIN ]      |
 |                           |--------|--[ PINS 49-80: 5V+GND ] --|------->|   (9A cluster)    |
 |                           |        |                           |        |                   |
 | [U7: TPS7A8333P 3.3V LDO] |--------|--[ PINS 39-44: 3V3_ENIG ] |------->| [ +3V3_ENIG ]     |
 |                           |        |                           |        |                   |
-| [J2: RJ45 LEDs] <---------|--------| [ PINS 25-26: ETH_LEDs ] <|--------| [ ETH_LED_L/A ]   |
-| (LED anodes: 3V3_ENIG)    |        |  (from CM5 GbE PHY)       |        |                   |
+| [J2: RJ45 LEDs] <---------|--------|  [ PINS 25-26: ETH_LEDs ] |<-------| [ ETH_LED_L/A ]   |
+| (LED anodes: 3V3_ENIG)    |        |   (from CM5 GbE PHY)      |        |                   |
 |                           |        |                           |        |                   |
 | [U8: MCP121T Supervisor] -|--------|--[ PIN 34: PWR_GD ] ------|------->| [ PWR_GD ]        |
 |                           |        |                           |        |  (Handshake)      |

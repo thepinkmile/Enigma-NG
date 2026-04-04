@@ -23,7 +23,9 @@
 ## 4. Cryptographic Visualization
 
 * **Signal Path Trace:** A "light-trail" animation showing the 12-bit signal traveling from the Keyboard, through the Plugboard, through the 30 rotors, hitting the Reflector, and returning to the
+
   Lampboard.
+
 * **Rotor Configurator:** Drag-and-drop interface to "program" historical wiring (I-VIII) into the CPLDs/FPGAs.
 
 ---

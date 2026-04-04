@@ -41,6 +41,7 @@
 | C24 | TPS23730 soft-start cap (C_SS) | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
 
 **Pi-filter performance summary (f_c = 10.5kHz):**
+
 - −46dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
 - −51dB at 200kHz (TPS23730 ACF switching frequency) ✓
 - −63dB at 400kHz (LMQ61460-Q1 buck switching frequency) ✓
@@ -87,6 +88,7 @@
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 0.1% Thin-Film | 121kΩ E96; IMPS = VIMPS/RMPS = 1.205V/121kΩ = 9.96mA (Type 4 MPS auto-stretch) | Mouser | 667-ERJ-3EKF1213V | ~£0.10 | ~£0.03 |
 
 **Notes:**
+
 - T2 is an **off-the-shelf catalogue part** — order direct from [coilcraft.com](https://www.coilcraft.com). 668 units confirmed in stock (Coilcraft Direct as of 2026-04-03).
 - TPS23730 operates in **PSR (Primary-Side Regulation) mode** using the auxiliary winding of the POE600F-12LD. No external TL431 or optocoupler required.
 - TPS2372-4 uses **Autoclass** for automatic 4-event IEEE 802.3bt Type 4 classification; no external RCLASS resistor required. R13 (RMPS) programs MPS pulse current only.

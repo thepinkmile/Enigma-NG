@@ -96,6 +96,7 @@ for CE/UKCA EMC compliance.
 ```
 
 **Input priority rationale:**
+
 - PoE is primary as it is the highest-capacity source (71.3W PD vs 75W USB-C adapter), and in fixed installations is the most reliable and managed power source.
 - USB-C is secondary as it depends on the availability of an appropriate adapter.
 - Battery is tertiary as its capacity is finite.
@@ -141,6 +142,7 @@ Two **TI LMQ61460-Q1** (3–36V input, 6A rated, VQFN-15-HR, automotive-grade AE
 
 A single 12A-class Buck regulator would satisfy the current requirement but would concentrate switching noise into one location, increase thermal density, and reduce component utilisation headroom.
 The dual 6A approach provides:
+
 - 70.8% utilisation of each IC (below the 75% rule) ✓
 - Thermal load distributed across two thermal pads
 - Redundant current delivery — loss of one IC degrades output to 6A (sufficient for CM5 safe shutdown)
@@ -161,6 +163,7 @@ The LMQ61460-Q1 is configurable from approximately 200 kHz to 2.2 MHz. **400 kHz
 | Thermal density in Power Can | Acceptable | Higher due to core loss |
 
 At 400 kHz with the DRSS ±5.5% modulation:
+
 - Fundamental range: 378–422 kHz (well below the 525 kHz AM lower boundary)
 - Phase-interleaved effective ripple frequency: 756–844 kHz (the second harmonic cluster, marginally entering the AM band at its upper extreme)
 - This residual overlap is managed by the Iron Curtain input filter and the board-level shielded enclosure
@@ -266,7 +269,9 @@ consistent with military component derating standards.
 The Power Module is housed in a 42mm aluminium "Power Can" enclosure with internal compression ribs. The thermal design provides a continuous heat path from component junctions to the enclosure:
 
 - **Switching regulator thermal pads** → type VII epoxy-filled VIPPO via matrix (hexagonal pattern) → L4 copper plane → exposed ENIG thermal pad on PCB bottom → Gelid GP-Ultimate thermal interface
+
   material (15 W/mK) → aluminium enclosure wall
+
 - **LDO thermal pad** → same via matrix → shared thermal zone with supercapacitor area
 - **Enclosure** → ambient via natural convection; no forced cooling required for rated load
 
@@ -374,11 +379,15 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 
 **PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design
 using:
+
 - **TPS2372-4** (TI, QFN-16): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
 - **TPS23730** (TI, WQFN-20): Active Clamp Forward (ACF) DC-DC controller, 200kHz, 12V output (R_VFB feedback resistors configured for 12V), PSR mode
 - **T2**: **Coilcraft POE600F-12LD** — off-the-shelf 60W ACF PoE isolation transformer; 12V output, 36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. Catalogue stock part ordered direct from
+
   Coilcraft (coilcraft.com). No custom winding required.
+
   - **OR-ing priority note:** PoE at 12V is lower than USB-C at 15V. The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal to enforce PoE priority when PoE is live. Battery
+
     path activates only if both higher-priority sources are absent.
 
 **System capacity: 72W** (TPS2372-4 external hotswap allows TPS23730 DC-DC to operate beyond the 51W Type 3 integrated limit; confirmed by TI PMP23365 reference design at 72W/Class 8 with TPS2372-4).
@@ -409,21 +418,28 @@ mitigation plan are documented.
 The MAX II EPM240T100C5N is accepted for use in the prototype design for the following reasons:
 
 1. **Cost effectiveness:** These devices are significantly lower in cost than their recommended successors (MAX 10, Cyclone 10 LP), making them well-suited for prototype-stage development where
+
    design changes are expected.
+
 2. **Developer tooling:** The designer holds a MAX II FPGA/CPLD development board, enabling direct verification of programming chains and JTAG connectivity prior to committing to PCB fabrication.
 3. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6–12 months) is considered acceptable,
+
    particularly given the availability of remaining stock from reputable distributors.
+
 4. **Pin and feature compatibility:** The MAX II EPM240T100C5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising
+
    development risk.
 
 **Mitigation Plan (Production Stage):**
 
 Before any production units are manufactured, the CPLD selection must be reviewed. Candidate replacements include:
+
 - **Intel MAX 10 10M02SCE144C8G** (EEPROM-based, single-supply, no external configuration memory required) — preferred drop-in successor to MAX II in terms of tooling familiarity
 - **Lattice MachXO2** family (lower cost, competitive tooling, active lifecycle)
 - **Lattice MachXO3** family (higher density options if needed)
 
 Any replacement CPLD must be verified for:
+
 - Pin-compatible TQFP-100 (or equivalent via adapter) footprint, or a PCB layout revision must be performed
 - JTAG chain compatibility with the FT232H-based USB-JTAG interface
 - 3.3V VCCIO (3V3_ENIG) compatibility
