@@ -39,7 +39,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 
 ## 4. Interconnects
 
-* **Controller Link (Link-Beta):** The **80-pin ERM8-040-05.0-S-DV-K-TR** male header on the Stator Board plugs into the matching ERF8-040 female socket on the Controller Board.
+* **Controller Link (Link-Beta):** The **40-pin ERM8-020-05.0-S-DV-K-TR** male header on the Stator Board plugs into the matching ERF8-020 female socket on the Controller Board.
   * **Data In:** Receives JTAG, Reset from Controller.
   * **Data Out:** Transmits 12-bit Sniffer data to Controller.
   * **Power:** Receives 3V3_ENIG via the Controller pass-through for all backplane CPLDs.
@@ -81,7 +81,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF (X7R) 50V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Link-Beta Connector | ERM8-040-05.0-S-DV-K-TR | 80-pin | 200-ERM8040050SDVKTR | SAM12064-ND | C123464 |
+| J1 | Link-Beta Connector | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | C123464 |
 | J2 | 40-pin Rotor & Encoder power/data | 2x20 2.54mm shrouded | through-hole | 538-22-23-2401 | WM2921-ND | ??? |
 | J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | 538-22-23-2201 | WM2911-ND | ??? |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ohm @ 100MHz, 3.5A | 1206 | 81-BLM31PG121SN1L | 490-1056-1-ND | BLM31PG121SN1L |

@@ -15,8 +15,10 @@ individual `Design_Spec.md` file.
 
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
 * **Eaton 15F Supercap:** Order 10 (MOQ) - (2x Spares + 2x Testing).
-* **Samtec ERM8 (Gold):** Order 3 (MOQ) - (1x Spare).
-* **Samtec ERF8 (Gold):** Order 3 (MOQ) - (1x Spare).
+* **Samtec ERM8-040 (Gold, 80-pin):** Order 3 (MOQ) — Power Module J1, (1× Spare). Order separately from ERM8-020.
+* **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J1, (1× Spare). Poka-yoke pair with ERF8-020.
+* **Samtec ERF8-040 (Gold, 80-pin):** Order 3 (MOQ) — Controller J1, (1× Spare).
+* **Samtec ERF8-020 (Gold, 40-pin):** Order 3 (MOQ) — Controller J2, (1× Spare). Poka-yoke pair with ERM8-020.
 * **0.1% Thin-Film Resistors:** Order 50 (MOQ) - (High attrition risk).
 
 ## 2. Common Passives
@@ -59,8 +61,10 @@ individual `Design_Spec.md` file.
 
 ## 4. High-Speed Interconnects
 
-* **Samtec ERM8-040-05.0-S-DV-K-TR (Male):** Power Module J1 / Stator J1.
-* **Samtec ERF8-040-05.0-S-DV-K-TR (Female):** Controller J1 (Link-Alpha) / Controller J2 (Link-Beta).
+* **Samtec ERM8-040-05.0-S-DV-K-TR (Male, 80-pin):** Power Module J1 (Link-Alpha).
+* **Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin):** Stator J1 (Link-Beta).
+* **Samtec ERF8-040-05.0-S-DV-K-TR (Female, 80-pin):** Controller J1 (Link-Alpha).
+* **Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin):** Controller J2 (Link-Beta).
 * **Intel EPM240T100C5N:** 37 units (Standardized logic node).
 
 ## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
@@ -169,7 +173,7 @@ Reference information for placing orders with key component suppliers.
 | S05 | **Texas Instruments** | IC manufacturer (TI store) | [ti.com/store](https://www.ti.com/store) | For TI parts (TPS2372-4, TPS23730, TPS25980, LMQ61460-Q1, LM74700-Q1, TPS25751DREFR, TPS7A8333P). Samples available via ti.com. |
 | S06 | **Analog Devices (ADI)** | IC manufacturer | [analog.com](https://www.analog.com) | For LTC3350 supercap manager. Samples available. |
 | S07 | **STMicroelectronics** | IC manufacturer | [st.com](https://www.st.com) | For STUSB4500 USB-C sink controller. Samples and eval kits available. |
-| S08 | **Samtec** | Connector manufacturer | [samtec.com](https://www.samtec.com) | For ERF8/ERM8 80-pin BtB connectors. Order direct or via Farnell/Mouser. Min order typically 3 units. |
+| S08 | **Samtec** | Connector manufacturer | [samtec.com](https://www.samtec.com) | For ERF8/ERM8 BtB connectors (80-pin Link-Alpha, 40-pin Link-Beta). Order direct or via Farnell/Mouser. Min order typically 3 units. |
 | S09 | **Würth Elektronik** | Passive / connector manufacturer | [we-online.com](https://www.we-online.com) | For RJ45 MagJack (7499111121A), EMI chokes (WE-CMBNC). Order via Farnell, Mouser, or direct. |
 | S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43650-0519 Micro-Fit 3.0, 5-pin vertical THT). Order via Mouser or DigiKey. |
 | S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
@@ -208,4 +212,5 @@ Product page links for all major components for design review and procurement ve
 | D1 | TPD1E10B06 — Single-Channel 10V TVS ESD (BATT_PRES) | Texas Instruments | [ti.com/product/TPD1E10B06](https://www.ti.com/product/TPD1E10B06) |
 | D2 | TPD2E2U06 — Dual-Channel 5.5V SMBus ESD (Battery SMBus) | Texas Instruments | [ti.com/product/TPD2E2U06](https://www.ti.com/product/TPD2E2U06) |
 | D3, D4, D5 | TPD4E05U06 — 4-Channel 5V ESD Array (USB-C / RJ45 MDI) | Texas Instruments | [ti.com/product/TPD4E05U06](https://www.ti.com/product/TPD4E05U06) |
-| J1 | ERM8 / ERF8-040 — 80-pin 0.5mm-pitch BtB Connector Series | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
+| J1 (Link-Alpha) | ERM8-040 / ERF8-040 — 80-pin 0.5mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
+| J2 (Link-Beta) | ERM8-020 / ERF8-020 — 40-pin 0.5mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |

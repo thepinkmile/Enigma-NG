@@ -178,31 +178,56 @@ _______________________________________    _____________    ____________________
 
 ### LINK-BETA (To Stator Board)
 
-* **Pins 1-9:** JTAG & Reset (GND-Shielded: GND|TCK|GND|TMS|GND|TDI|GND|RST|GND)
-* **Pins 10-20:** GND Isolation Bank
-* **Pins 41-46:** ENC_IN [0:5] (6-bit Sniffer Input)
-* **Pins 47-52:** ENC_OUT [0:5] (6-bit Sniffer Output)
-* **Pins 54-60:** 3V3_ENIG (Pass-Through Output to Stator)
-* **Note:** This companion 6-bit path and the 2x8 Diagnostic Bank are consistent with Encoder/Reflector body-level pinout conventions and odd/even ribbon orientation.
+**Connector:** Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin). Mating ERM8-020 male on Stator Board J1.
 
-```text
-  LINK-BETA (80-PIN SAMTEC)                         SIGNAL TYPE       FUNCTION
-_______________________________________________    _____________    _____________________________
+> ⚠️ **Poka-Yoke:** The 80-pin LINK-ALPHA (ERF8-040) and 40-pin LINK-BETA (ERF8-020) on this board are
+> physically incompatible — the mating connectors cannot be inserted into the wrong socket. This prevents
+> LINK-ALPHA and LINK-BETA mismating during prototype bring-up. See DEC-015.
 
-[ PINS 01 - 09 ] --------------------------------> [ 3.3V LOGIC] -> [ JTAG CHAIN & RESET     ]
- (Pattern: GND|TCK|GND|TMS|GND|TDI|GND|RST|GND)    (SHIELDED)       (To EPM240T100C5N CPLDs)
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | GND | — | JTAG leading shield |
+| 2 | TCK | CTRL→Stator | JTAG clock |
+| 3 | GND | — | TCK/TMS inter-pin shield |
+| 4 | TMS | CTRL→Stator | JTAG mode select |
+| 5 | GND | — | TMS/TDI inter-pin shield |
+| 6 | TDI | CTRL→Stator | JTAG data in |
+| 7 | GND | — | TDI/RST inter-pin shield |
+| 8 | RST | CTRL→Stator | SYS_RESET_N (active-low) |
+| 9 | GND | — | JTAG trailing shield |
+| 10 | GND | — | Isolation moat pin 1 |
+| 11 | GND | — | Isolation moat pin 2 |
+| 12 | ENC_IN[0] | CTRL→Stator | Encoder input bit 0 |
+| 13 | ENC_IN[1] | CTRL→Stator | Encoder input bit 1 |
+| 14 | ENC_IN[2] | CTRL→Stator | Encoder input bit 2 |
+| 15 | ENC_IN[3] | CTRL→Stator | Encoder input bit 3 |
+| 16 | ENC_IN[4] | CTRL→Stator | Encoder input bit 4 |
+| 17 | ENC_IN[5] | CTRL→Stator | Encoder input bit 5 |
+| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
+| 19 | ENC_OUT[0] | Stator→CTRL | Encoder output bit 0 |
+| 20 | ENC_OUT[1] | Stator→CTRL | Encoder output bit 1 |
+| 21 | ENC_OUT[2] | Stator→CTRL | Encoder output bit 2 |
+| 22 | ENC_OUT[3] | Stator→CTRL | Encoder output bit 3 |
+| 23 | ENC_OUT[4] | Stator→CTRL | Encoder output bit 4 |
+| 24 | ENC_OUT[5] | Stator→CTRL | Encoder output bit 5 |
+| 25 | GND | — | ENC_OUT / TDO_RETURN shield |
+| 26 | TDO_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
+| 27 | GND | — | TDO_RETURN shield |
+| 28 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 29 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 30 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 31 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 32 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 33 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 34 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 35 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
+| 36 | GND | — | Power return |
+| 37 | GND | — | Power return |
+| 38 | GND | — | Power return |
+| 39 | GND | — | Power return |
+| 40 | GND | — | Power return |
 
-[ PINS 10 - 20 ] --------------------------------> [ ISOLATION ] -> [ MASTER GND BANK        ]
-
-[ PINS 41 - 46 ] --------------------------------> [ 3.3V LOGIC] -> [ ENC_IN [0:5] (SNIFFER) ]
- (6-bit Binary Input)                              (SHIELDED)       (Monitoring Keyboard)
-
-[ PINS 47 - 52 ] --------------------------------> [ 3.3V LOGIC] -> [ ENC_OUT [0:5] (SNIFFER)]
- (6-bit Binary Output)                             (SHIELDED)       (Monitoring Reflector)
-
-[ PINS 54 - 60 ] --------------------------------> [ 2oz POWER ] -> [ 3V3_ENIG (OUTPUT)      ]
- (Direct 2oz Bridge from Alpha)                    (CLEAN OUT)      (To Stator/Rotor Logic)
-```
+**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for 30-rotor worst case (3.5A).
 
 ### DIAGNOSTIC BANK-BETA (Top-Left)
 
@@ -229,8 +254,8 @@ _______________________________________________    _____________    ____________
 |       |           |            |            |      |                [ 90Ω USB 3.0 ] |      |        [  (PROTRUDES) ]     |
 |       |       [ JTAG BUS ]  [ USB 2.0 ] ----|----->|                        |       |      |        [ 5.0mm OVER   ]     |
 |       |           |                         |      |                [ TPS2065C ]    |      |                             |
-|    [  LINK-BETA  (ERM8-040)  ]              |      |                [ TPD4E05U06 ]  |------|------> [ USB 3.0 DUAL ]     |
-|      (Male Header / 80-pin)                 |      |                                |      |        [   STACKED    ]     |
+|    [  LINK-BETA  (ERF8-020)  ]              |      |                [ TPD4E05U06 ]  |------|------> [ USB 3.0 DUAL ]     |
+|      (Female Socket / 40-pin)               |      |                                |      |        [   STACKED    ]     |
 |                                             |      |                                |      |        [   48406-0003 ]     |
 |                                             |      |                                |      |        [  (PROTRUDES) ]     |
 | (O)                    [ DIAG BANK (2x8) ]  |      |                                |      |        [ 5.0mm OVER   ]     |
@@ -242,8 +267,8 @@ _______________________________________________    _____________    ____________
 ```text
        TOP VIEW (BtB INTERFACES)
  ____________________________________________________________________
-| (O) [R]    [ LINK-BETA (ERM8) ]    [ LINK-ALPHA (ERF8) ]   [R] (O) |
-|            (Stator / Logic Out)    (Power / Ethernet In)           |
+| (O) [R]    [ LINK-BETA (ERF8-020) ]  [ LINK-ALPHA (ERF8-040) ]   [R] (O) |
+|            (Stator / Logic Out)      (Power / Ethernet In)           |
 |                   |                          |                     |
 |            [ DIAG BANK-B  ]        [ DIAG BANK-A      ]            |
 |            [ (ENCRYPTION) ]        [ (POWER & STATUS) ]            |

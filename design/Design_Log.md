@@ -330,15 +330,83 @@ During mechanical assembly, the Controller Board slides into the enclosure and m
 | Board | Connector | Gender | Part |
 | :--- | :--- | :--- | :--- |
 | Controller | J1 (Link-Alpha, from Power Module) | Female | ERF8-040-05.0-S-DV-K-TR |
-| Controller | J2 (Link-Beta, to Stator Board) | Female | ERF8-040-05.0-S-DV-K-TR |
+| Controller | J2 (Link-Beta, to Stator Board) | Female | ERF8-020-05.0-S-DV-K-TR |
 | Power Module | J1 (Link-Alpha plug) | Male | ERM8-040-05.0-S-DV-K-TR |
-| Stator Board | J1 (Link-Beta plug) | Male | ERM8-040-05.0-S-DV-K-TR |
+| Stator Board | J1 (Link-Beta plug) | Male | ERM8-020-05.0-S-DV-K-TR |
 
 **Impact:**  
 
 - Controller BOM J2 updated from ERM8 (male) to ERF8 (female); JLCPCB C-number to be verified.
 - Controller §2 narrative updated to reflect ERF8 on Link-Beta.
 - No electrical impact — connector is signal-transparent; pin assignments unchanged.
+
+---
+
+## DEC-015 — LINK-BETA Connector Reduced from 80-pin to 40-pin (ERF8-020 / ERM8-020)
+
+**Date:** 2026-04-04
+**Status:** ✅ RESOLVED
+**Affects:** Controller Board (J2), Stator Board (J1), Consolidated BOM
+
+**Decision:**
+The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-040) to **40-pin
+(ERF8-020-05.0-S-DV-K-TR / ERM8-020-05.0-S-DV-K-TR)**. The full 40-pin allocation is as follows:
+
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | GND | — | JTAG leading shield |
+| 2 | TCK | CTRL→Stator | JTAG clock |
+| 3 | GND | — | TCK/TMS inter-pin shield |
+| 4 | TMS | CTRL→Stator | JTAG mode select |
+| 5 | GND | — | TMS/TDI inter-pin shield |
+| 6 | TDI | CTRL→Stator | JTAG data in |
+| 7 | GND | — | TDI/RST inter-pin shield |
+| 8 | RST | CTRL→Stator | SYS_RESET_N (active-low) |
+| 9 | GND | — | JTAG trailing shield |
+| 10 | GND | — | Isolation moat pin 1 |
+| 11 | GND | — | Isolation moat pin 2 |
+| 12 | ENC_IN[0] | CTRL→Stator | Encoder input bit 0 |
+| 13 | ENC_IN[1] | CTRL→Stator | Encoder input bit 1 |
+| 14 | ENC_IN[2] | CTRL→Stator | Encoder input bit 2 |
+| 15 | ENC_IN[3] | CTRL→Stator | Encoder input bit 3 |
+| 16 | ENC_IN[4] | CTRL→Stator | Encoder input bit 4 |
+| 17 | ENC_IN[5] | CTRL→Stator | Encoder input bit 5 |
+| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
+| 19 | ENC_OUT[0] | Stator→CTRL | Encoder output bit 0 |
+| 20 | ENC_OUT[1] | Stator→CTRL | Encoder output bit 1 |
+| 21 | ENC_OUT[2] | Stator→CTRL | Encoder output bit 2 |
+| 22 | ENC_OUT[3] | Stator→CTRL | Encoder output bit 3 |
+| 23 | ENC_OUT[4] | Stator→CTRL | Encoder output bit 4 |
+| 24 | ENC_OUT[5] | Stator→CTRL | Encoder output bit 5 |
+| 25 | GND | — | ENC_OUT / TDO_RETURN shield |
+| 26 | TDO_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
+| 27 | GND | — | TDO_RETURN shield |
+| 28–35 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha; 8 pins × 0.5A = 4.0A |
+| 36–40 | GND | — | Power return (5 pins) |
+
+**Rationale:**
+Logic boards downstream of the Stator (Encoder, Reflector, Extension) are 3V3-only — they require
+no 5V_MAIN rail. Removing 5V_MAIN from LINK-BETA and rationalising the signal set results in exactly
+40 signals. The JTAG block has 5 internal GND shield pins (self-shielded at low-moderate MHz), so only
+a 2-pin GND moat is needed between JTAG and the data zone. 8 × 3V3_ENIG pins deliver 4.0A — adequate
+for the worst-case 30-rotor stack (3.5A). 5 GND return pins plus the 10 other GND pins throughout the
+connector provide adequate return paths.
+
+**Poka-Yoke Safety Note:**
+The 80-pin LINK-ALPHA (ERF8-040) and 40-pin LINK-BETA (ERF8-020) on the Controller Board are
+**physically incompatible** — the mating connectors cannot be inserted into the wrong socket. This
+provides a mechanical safeguard against mismating during prototype bring-up.
+
+**Alternatives Considered:**
+Keeping 80-pin connector with unused pins. Rejected: unnecessary connector cost and PCB area; larger
+connector on the Stator increases stack height with no benefit.
+
+**Impact:**
+* Controller J2: ERF8-040 → ERF8-020-05.0-S-DV-K-TR (female, 40-pin)
+* Stator J1: ERM8-040 → ERM8-020-05.0-S-DV-K-TR (male, 40-pin)
+* DEC-014 connector table updated (see cross-ref below).
+
+**Cross-ref:** DEC-014 (gender assignment rationale remains valid; part numbers updated).
 
 ---
 
@@ -372,7 +440,7 @@ If accepted, the following updates would be made:
 
 3. **All other boards (Controller, Stator, Encoder)** — Assess whether their enclosure ribs also warrant the same treatment and add matching callouts if so.
 
-4. **DEC-015** — Create a decision entry recording the EMC rationale, referencing the single-point GND_CHASSIS bond rule in Certification_Evidence.md §2.2.
+4. **DEC-016** — Create a decision entry recording the EMC rationale, referencing the single-point GND_CHASSIS bond rule in Certification_Evidence.md §2.2.
 
 ### Considerations
 
@@ -436,7 +504,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 | Link-Alpha BtB — 80-pin socket to Power Module | Samtec ERF8-040-05.0-S-DV-K-TR | ERF8-040 | 200-ERF8040050SDVKTR | SAM8621-ND ⚠️ verify | Female socket (ERF8). Mating male on Power Module (ERM8) |
-| J2 | Link-Beta BtB — 80-pin header to Stator Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Male header. Encryption/JTAG exit. Provides JTAG, Reset, 3V3_ENIG to Stator |
+| J2 | Link-Beta BtB — 40-pin socket to Stator Board | Samtec ERF8-020-05.0-S-DV-K-TR | ERF8-020 | 200-ERF8020050SDVKTR | SAM8622-ND ⚠️ verify | Female socket (ERF8). Mating male on Stator (ERM8-020). 40-pin per DEC-015 |
 | J3 | USB 3.0 — Dual-stacked Type-A port | Molex 48406-0003 | 48406-0003 | 538-0484060003 | WM1394-ND | Dual-stack Type-A, 5.0mm protrusion through chassis |
 | J4 | HDMI — Full-size Type-A | TE Connectivity 2007435-1 | 2007435-1 | 571-2007435-1 | A125057-ND | Full-size HDMI Type-A, 5.0mm protrusion through chassis |
 | — | Diagnostic Bank-Alpha | 2×8 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, placed behind BtB header. Not a separate connector; probed directly with logic analyser clips |
@@ -447,7 +515,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Link-Beta BtB — 80-pin socket from Controller Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Receives JTAG, Reset, 3V3_ENIG from Controller |
+| J1 | Link-Beta BtB — 40-pin plug to Controller Board | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | Male plug (ERM8). Mating female on Controller (ERF8-020). 40-pin per DEC-015 |
 | J2 | Rotor/Encoder power and data — 40-pin shrouded box header | Molex 22-23-2401 (2×20, 2.54mm) | 22-23-2401 | 538-22-23-2401 | WM2921-ND | THT, shrouded, keyed. Power (3V3_ENIG/GND), ENC_DATA, JTAG to each encoder slot |
 | J3 | Reflector/Extension — 20-pin shrouded box header | Molex 22-23-2201 (2×10, 2.54mm) | 22-23-2201 | 538-22-23-2201 | WM2911-ND | THT, shrouded. Power (3V3_ENIG/GND), ENC_DATA, TDO_Return |
 | — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|RST\|GND |
