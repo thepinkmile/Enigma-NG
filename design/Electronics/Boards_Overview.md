@@ -1,6 +1,7 @@
 # Enigma-NG Board Overview
 
-The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided into seven distinct modules to ensure maximum signal integrity, industrial-grade power protection, and mechanical robustness.
+The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided into seven distinct modules to ensure maximum signal integrity, industrial-grade power protection, and mechanical
+robustness.
 
 ## � Power Rail Glossary (Canonical naming)
 

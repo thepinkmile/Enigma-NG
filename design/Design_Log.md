@@ -1,6 +1,7 @@
 # Enigma-NG Design Decision Log
 
-This file records key architectural and component decisions made during the design of the Enigma-NG system. Each entry captures the decision taken, the rationale behind it, the alternatives that were considered, and any constraints or caveats that future designers should be aware of.
+This file records key architectural and component decisions made during the design of the Enigma-NG system. Each entry captures the decision taken, the rationale behind it, the alternatives that were
+considered, and any constraints or caveats that future designers should be aware of.
 
 Entries are numbered sequentially as **DEC-NNN**. Where a decision supersedes a previous one, the earlier entry is updated with a cross-reference.
 
@@ -12,10 +13,12 @@ Entries are numbered sequentially as **DEC-NNN**. Where a decision supersedes a 
 **Affects:** Power Module, Controller Board, Link-Alpha connector
 
 **Decision:**  
-The `3V3_SYSTEM` rail (sourced from the CM5 on the Controller Board) is **not** routed to the Power Module over the Link-Alpha BtB connector. All 3.3V logic within the Power Module (RJ45 LED anodes, I2C pull-ups, BATT_PRES_N pull-up, reset pull-up) is powered by `3V3_ENIG`, generated locally by the Power Module LDO (U7).
+The `3V3_SYSTEM` rail (sourced from the CM5 on the Controller Board) is **not** routed to the Power Module over the Link-Alpha BtB connector. All 3.3V logic within the Power Module (RJ45 LED anodes,
+I2C pull-ups, BATT_PRES_N pull-up, reset pull-up) is powered by `3V3_ENIG`, generated locally by the Power Module LDO (U7).
 
 **Rationale:**  
-- `3V3_SYSTEM` is a CM5-derived rail intended only for external peripheral interfaces (Ethernet, HDMI, USB 3.0 ports). Using it to power internal power-module logic would create a cross-domain dependency and complicate sequencing.
+- `3V3_SYSTEM` is a CM5-derived rail intended only for external peripheral interfaces (Ethernet, HDMI, USB 3.0 ports). Using it to power internal power-module logic would create a cross-domain
+  dependency and complicate sequencing.
 - Generating `3V3_ENIG` locally on the Power Module gives a clean, independently-controlled 3.3V supply that is always present when the Power Module is powered, regardless of CM5 boot state.
 - Removing `3V3_SYSTEM` from the Link-Alpha connector freed pins 21–24, which were reallocated to extend the 5V_MAIN delivery cluster and GND return path.
 
@@ -37,7 +40,8 @@ The `3V3_SYSTEM` rail (sourced from the CM5 on the Controller Board) is **not** 
 **Affects:** Power Module PoE subsystem, T2 transformer, TPS23730 feedback network
 
 **Decision:**  
-The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF transformer (12V output, 60W, 200kHz, ≥1500Vrms isolation, SMT package). The remainder of the PoE chain uses TPS2372-4 (802.3bt Type 4 PD interface) and TPS23730 (ACF controller), with TPS23730 feedback resistors adjusted for the 12V output.
+The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF transformer (12V output, 60W, 200kHz, ≥1500Vrms isolation, SMT package). The remainder of the PoE chain uses TPS2372-4
+(802.3bt Type 4 PD interface) and TPS23730 (ACF controller), with TPS23730 feedback resistors adjusted for the 12V output.
 
 **Rationale:**  
 - Replaces a custom-wound transformer design (Option A: 15V, 8–16 week lead time, ~£35–46 BOM) with a catalogue part available from Coilcraft Direct.
@@ -47,7 +51,8 @@ The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF trans
 
 **Alternatives Considered:**  
 - **Option A (Custom T2, 15V):** Higher voltage headroom. Rejected: custom winding, long lead time, cost.
-- **Option C (Silvertel Ag59812-LPB integrated module):** Higher integration, 95% efficiency, ~£19–27. Rejected: higher cost, fixed form factor, less flexibility for thermal management, vendor lock-in.
+- **Option C (Silvertel Ag59812-LPB integrated module):** Higher integration, 95% efficiency, ~£19–27. Rejected: higher cost, fixed form factor, less flexibility for thermal management, vendor
+  lock-in.
 - **Kinetic Technologies KPM5912:** 85W, 93% efficiency. Rejected: not stocked by any UK/EU distributor.
 
 **Key Parameters:**  
@@ -69,7 +74,8 @@ The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF trans
 **Affects:** Power Module PoE output, OR-ing diode (LM74700-Q1), eFuse input
 
 **Decision:**  
-PoE outputs 12V (not 15V) into the OR-ing stage. Because 12V < 15V USB-C input, passive OR-ing would always prefer USB-C and ignore PoE. Active enable logic is implemented: the TPS2372-4 `/PG` signal drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C path.
+PoE outputs 12V (not 15V) into the OR-ing stage. Because 12V < 15V USB-C input, passive OR-ing would always prefer USB-C and ignore PoE. Active enable logic is implemented: the TPS2372-4 `/PG` signal
+drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C path.
 
 **Rationale:**  
 - PoE is the primary field power source when no USB-C adapter is connected. It must not be silently overridden by USB-C passthrough.
@@ -206,7 +212,9 @@ ESD protection on the diagnostic bank connectors is **deferred** to post-prototy
 **Affects:** Power Module islands, Controller Board routing, rotor stack power source
 
 **Decision:**  
-All power rails are generated on the **Power Module**. The Controller Board's role is purely to **route** power rails onward to downstream boards — it does not generate any rails itself. The rotor stack is powered by the existing **3V3_ENIG** rail (TPS7A8333P LDO, 3A). There is no separate Rotor Buck; the erroneous "3.3V/5A Rotor Buck" specification was a confusion with the 5V/5A CM5 rail and has been removed.
+All power rails are generated on the **Power Module**. The Controller Board's role is purely to **route** power rails onward to downstream boards — it does not generate any rails itself. The rotor
+stack is powered by the existing **3V3_ENIG** rail (TPS7A8333P LDO, 3A). There is no separate Rotor Buck; the erroneous "3.3V/5A Rotor Buck" specification was a confusion with the 5V/5A CM5 rail and
+has been removed.
 
 **Rationale:**  
 - Centralising all power generation on the Power Module simplifies thermal management (all heat dissipation in one shielded enclosure with dedicated thermal zone).
@@ -216,7 +224,8 @@ All power rails are generated on the **Power Module**. The Controller Board's ro
 - ROTOR_EN (CM5 GPIO 16) enables/disables the 3V3_ENIG LDO for sequenced rotor power-up — a control signal only.
 
 **Architectural Rule (permanent):**  
-> All power rails are generated on the Power Module. The Controller Board routes rails to downstream boards only. No buck converters, LDOs, or other power-generating components belong on the Controller Board.
+> All power rails are generated on the Power Module. The Controller Board routes rails to downstream boards only. No buck converters, LDOs, or other power-generating components belong on the
+> Controller Board.
 
 **Files Updated:**  
 - `README.md`: Removed erroneous "Dedicated 3.3V/5A Buck" from Controller Board section; 3V3_ENIG correctly listed as Power Module output serving CPLDs, logic, and rotor stack.
@@ -241,7 +250,8 @@ Replace **TPS25750** (NRND — Not Recommended for New Designs) with **TPS25751D
 
 **Rationale:**  
 - PD emulation for U4 is required: the Raspberry Pi CM5 must negotiate a 5V/5A (25W) contract from the USB-C PD source to prevent the OS from issuing under-voltage warnings and throttling the system.
-- The TPS25751D variant includes the integrated 20V/5A bi-directional power path and a 5V/3A source switch in one package — appropriate for DRP operation that can advertise and deliver the 5V/5A profile to the CM5.
+- The TPS25751D variant includes the integrated 20V/5A bi-directional power path and a 5V/3A source switch in one package — appropriate for DRP operation that can advertise and deliver the 5V/5A
+  profile to the CM5.
 - TPS25751 is USB-IF PD3.1 certified (TID#10306); TPS25750 was PD2.0 only and is NRND.
 - STUSB4500 (U5) handles the USB-C sink path; TPS25751 (U4) handles the source/emulation path. These are separate and complementary roles.
 
@@ -266,7 +276,8 @@ Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-fil
 - Widely stocked: Farnell ~2,741 pcs; Mouser (`652-SRP1265A-100M`); DigiKey (`SRP1265A-100MCT-ND`).
 
 **Impact:**  
-- ⚠️ **Package footprint change**: SRP1265A-100M is 13.5×12.5×6.2mm vs 7447789100's 12.5×12.5×6.0mm. PCB land pattern for L3 must use the Bourns 13.5×12.5mm footprint. Clearance to adjacent components should be checked during layout.
+- ⚠️ **Package footprint change**: SRP1265A-100M is 13.5×12.5×6.2mm vs 7447789100's 12.5×12.5×6.0mm. PCB land pattern for L3 must use the Bourns 13.5×12.5mm footprint. Clearance to adjacent
+  components should be checked during layout.
 
 ---
 
@@ -304,7 +315,8 @@ This section records all INC (inconsistency) items tracked during the design pro
 
 ## Board Connector Inventory
 
-The following table lists all physical connectors across every board in the Enigma-NG system. This list should be manually verified against the original intended design to confirm no specification changes have inadvertently altered connector placement, orientation, or mating requirements.
+The following table lists all physical connectors across every board in the Enigma-NG system. This list should be manually verified against the original intended design to confirm no specification
+changes have inadvertently altered connector placement, orientation, or mating requirements.
 
 ### Power Module
 
@@ -372,4 +384,5 @@ The following table lists all physical connectors across every board in the Enig
 
 ---
 
-> **Note for manual review:** Items marked `???` or `⚠️ verify` require confirmation before the BOM is finalised for procurement. In particular: Encoder J1 plug/jack type has not been selected; Controller J1 (ERF8) DigiKey PN SAM8621-ND should be confirmed; Power Module J3 (43650-0519) DigiKey WM7843-ND should be verified at digikey.co.uk.
+> **Note for manual review:** Items marked `???` or `⚠️ verify` require confirmation before the BOM is finalised for procurement. In particular: Encoder J1 plug/jack type has not been selected;
+> Controller J1 (ERF8) DigiKey PN SAM8621-ND should be confirmed; Power Module J3 (43650-0519) DigiKey WM7843-ND should be verified at digikey.co.uk.

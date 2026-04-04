@@ -28,12 +28,14 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 2. Power & UPS Hub
 
-* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
+* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up
+  energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
   * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
   * Pin 5: BATT_PRES_N (Presence Detect).
-  * **BMS Charge Voltage:** Smart Battery BMS must be configured for a maximum charge voltage of **4.1V/cell (16.4V total for 4S)**. This provides a ≥0.5V margin to the TPS25980 eFuse 16.9V OVLO threshold, preventing nuisance latch-off at full charge. BMS configurations using 4.2V/cell (16.8V) are not compatible without OVLO re-specification.
+  * **BMS Charge Voltage:** Smart Battery BMS must be configured for a maximum charge voltage of **4.1V/cell (16.4V total for 4S)**. This provides a ≥0.5V margin to the TPS25980 eFuse 16.9V OVLO
+    threshold, preventing nuisance latch-off at full charge. BMS configurations using 4.2V/cell (16.8V) are not compatible without OVLO re-specification.
 * **Presence Logic:** Pin 5 is pulled to **3V3_ENIG** via 10kΩ resistor (R6). Battery internal shorts Pin 5 to GND.
   * Logic HIGH: Battery Disconnected.
   * Logic LOW: Battery Detected.
@@ -52,7 +54,8 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 ### 4. EMI & Filtering (The "Iron Curtain")
 
-The input filter uses a two-stage common-mode (CM) choke cascade followed by a differential-mode (DM) Pi-filter. This architecture addresses both CM and DM conducted noise across the full EN 55032 Class B frequency range (150kHz–30MHz).
+The input filter uses a two-stage common-mode (CM) choke cascade followed by a differential-mode (DM) Pi-filter. This architecture addresses both CM and DM conducted noise across the full EN 55032
+Class B frequency range (150kHz–30MHz).
 
 **Filter Topology (power flow left → right):**
 
@@ -66,20 +69,24 @@ VIN_RAW ─┬─[L1: WE-CMBNC CM Choke]─[L2: WE-CMBNC HF CM Choke]─┬─[L
 GND ──────┴───────────────────────────────────────────────────┴───────────────┴─ GND
 ```
 
-> **Note:** L1 and L2 are common-mode chokes — each has two coupled windings, one in the +VIN line and one in the GND return line. C1–C3 (input) and C4–C6 (output) are single capacitors to GND (differential filter caps).
+> **Note:** L1 and L2 are common-mode chokes — each has two coupled windings, one in the +VIN line and one in the GND return line. C1–C3 (input) and C4–C6 (output) are single capacitors to GND
+> (differential filter caps).
 
 **Stage 1 — Primary CMC (L1: WE-CMBNC Nanocrystalline):**
-* Part: **Würth WE-CMBNC**, nanocrystalline core, ≥10A rated, ≥1.5mH CM inductance (e.g. 748441440 or equivalent — verify from Würth REDEXPERT tool; mouser.co.uk search: "WE-CMBNC 10A nanocrystalline").
+* Part: **Würth WE-CMBNC**, nanocrystalline core, ≥10A rated, ≥1.5mH CM inductance (e.g. 748441440 or equivalent — verify from Würth REDEXPERT tool; mouser.co.uk search: "WE-CMBNC 10A
+  nanocrystalline").
 * Function: Broadband CM attenuation from ~1kHz to >10MHz. Nanocrystalline core maintains high permeability (µ_r > 50,000) well into the MHz range, providing >60dB CM insertion loss at 150kHz.
 
 **Stage 2 — Secondary HF CMC (L2: Würth WE-CMBNC 7448031002):**
-* Part: **Würth WE-CMBNC 7448031002** — same part as L1 (nanocrystalline CMC, THT, ≥10A). Original Laird CM5022 is discontinued (Laird EMC passives absorbed by TE Connectivity 2019). Twin nanocrystalline CMC approach provides broadband CM coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test.
+* Part: **Würth WE-CMBNC 7448031002** — same part as L1 (nanocrystalline CMC, THT, ≥10A). Original Laird CM5022 is discontinued (Laird EMC passives absorbed by TE Connectivity 2019). Twin
+  nanocrystalline CMC approach provides broadband CM coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test.
 * Function: Supplementary CM attenuation above ~10MHz where nanocrystalline core permeability falls off. Provides a second CM filter pole to ensure >40dB CM attenuation to 30MHz+.
 
 **Stage 3 — Differential Mode Pi-filter (L3, C1–C6):**
 
 *Component selection:*
-* **L3** — Bourns `SRP1265A-100M`: 10µH, 15.5A I_sat, 10A I_rms, DCR = 16.5mΩ max, 13.5×12.5×6.2mm shielded molded SMD. ⚠️ Footprint differs from original Würth 7447789100 (12.5×12.5mm); update PCB land pattern.
+* **L3** — Bourns `SRP1265A-100M`: 10µH, 15.5A I_sat, 10A I_rms, DCR = 16.5mΩ max, 13.5×12.5×6.2mm shielded molded SMD. ⚠️ Footprint differs from original Würth 7447789100 (12.5×12.5mm); update PCB
+  land pattern.
 * **C1, C4** — 22µF, 50V, X7R, 1210 (Murata GRM32ER71H226KE15L or equiv).
 * **C2, C5** — 1µF, 50V, X7R, 0805 (Murata GRM21BR71H105KA12L or equiv).
 * **C3, C6** — 100nF, 50V, X7R, 0402 (Samsung CL05B104KB5NNNC or equiv).
@@ -106,30 +113,40 @@ GND ──────┴──────────────────�
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.
 * **Internal Handshake:** TPS25751 PD Emulator (U4) provides **5V/5A** "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
-* **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
+* **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the
+  TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 732kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
 * **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
-  * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where `VICHARGE = 1.485V` (LTC3350 internal reference), `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path). For `ICH = 0.5A`: `RICHARGE = 1.485V / (0.5A × 0.010Ω) = 297Ω → use 301Ω (E96, 0.1%, 0603)`.
+  * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where `VICHARGE = 1.485V` (LTC3350 internal reference), `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path). For `ICH =
+    0.5A`: `RICHARGE = 1.485V / (0.5A × 0.010Ω) = 297Ω → use 301Ω (E96, 0.1%, 0603)`.
   * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; RSENSE must be a 4-terminal Kelvin-sense resistor to avoid trace resistance error.
-  * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below ~4.81V (programmed via resistor divider R14=30.1kΩ / R15=10.0kΩ from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15 = 4.81V). Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
+  * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below ~4.81V (programmed via resistor divider R14=30.1kΩ / R15=10.0kΩ from 5V_MAIN to BACKUP pin; threshold = 1.2V
+    × (R14+R15)/R15 = 4.81V). Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
 * **PoE Subsystem:**
-  * **PD Interface:** TPS2372-4 (U9, QFN-16) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS resistor is required.
-  * **MPS Programming (RMPS):** An external resistor from the TPS2372-4 IMPS pin to GND programs the MPS (Maintain Power Signature) pulsed current amplitude required to keep the PSE port active. Formula: `RMPS = VIMPS / IMPS` where `VIMPS = 1.205V`. For target `IMPS = 10mA` (providing margin above the 7mA IEEE 802.3bt Type 4 minimum): `RMPS = 1.205 / 0.010 = 120.5kΩ → use 121kΩ (E96, 0.1%, 0603)`.
+  * **PD Interface:** TPS2372-4 (U9, QFN-16) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
+    resistor is required.
+  * **MPS Programming (RMPS):** An external resistor from the TPS2372-4 IMPS pin to GND programs the MPS (Maintain Power Signature) pulsed current amplitude required to keep the PSE port active.
+    Formula: `RMPS = VIMPS / IMPS` where `VIMPS = 1.205V`. For target `IMPS = 10mA` (providing margin above the 7mA IEEE 802.3bt Type 4 minimum): `RMPS = 1.205 / 0.010 = 120.5kΩ → use 121kΩ (E96,
+0.1%, 0603)`.
     * ⚠️ Confirm IMPS target (7–15mA range acceptable) against TPS2372-4 datasheet before schematic freeze.
   * **DC-DC Controller:** TPS23730 (U10, WQFN-20) — ACF (Active Clamp Flyback) controller.
-    * Configured for **Primary-Side Regulation (PSR)** using the VS pin and the POE600F-12LD auxiliary winding. PSR eliminates the need for an external TL431 shunt regulator and optocoupler on the secondary side.
+    * Configured for **Primary-Side Regulation (PSR)** using the VS pin and the POE600F-12LD auxiliary winding. PSR eliminates the need for an external TL431 shunt regulator and optocoupler on the
+      secondary side.
     * Output voltage (12V nominal) is set by the POE600F-12LD transformer turns ratio, which Coilcraft has designed for 12V output in TPS23730 PSR mode.
     * Soft-start capacitor on SS pin: 10nF (5ms ramp-up, **C24**).
 * **LDO Enable (ROTOR_EN):**
   * CM5 GPIO 16 (ROTOR_EN, 3.3V drive) drives the TPS7A8333P (U7) EN pin directly. The EN pin threshold is 1.2V typical — no level-shifting required.
-  * A 10kΩ pull-up resistor from the EN pin to **5V_MAIN** ensures the LDO is ON by default during power-up (before GPIO is configured). CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW disables the LDO in a controlled power-down sequence.
+  * A 10kΩ pull-up resistor from the EN pin to **5V_MAIN** ensures the LDO is ON by default during power-up (before GPIO is configured). CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW
+    disables the LDO in a controlled power-down sequence.
   * ROTOR_EN HIGH → LDO enabled → 3V3_ENIG present (CPLDs + rotor stack powered).
   * ROTOR_EN LOW → LDO disabled → 3V3_ENIG off (all rotor and CPLD loads de-energised).
 
 * **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
   * "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) remains active during capacitor discharge.
-* **Hardware Status Oscillator:** MIC1555 (U11, SOT-23-5) — CMOS timer providing the 1Hz hardware "Initialising" heartbeat pulse for the orange status LED, operating entirely independently of CM5 firmware. Active from power-on until CM5 firmware takes control of the status LED GPIO. Also serves as a visible supercap state-of-charge indicator during hold-up mode. Timing network: R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle.
+* **Hardware Status Oscillator:** MIC1555 (U11, SOT-23-5) — CMOS timer providing the 1Hz hardware "Initialising" heartbeat pulse for the orange status LED, operating entirely independently of CM5
+  firmware. Active from power-on until CM5 firmware takes control of the status LED GPIO. Also serves as a visible supercap state-of-charge indicator during hold-up mode. Timing network: R16
+(R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle.
 
 ### 6. Traceability & Manufacturing
 
@@ -154,7 +171,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | **Total** | **~14.8W** | **~19.5W** | Dissipated into 42mm Al 'Power Can' enclosure via bottom thermal pad |
 
 **Thermal Notes:**
-* The LDO (U7) is the critical thermal path. Without copper pour: θja ≈ 50°C/W → ΔTj ≈ 255°C at 5.1W (catastrophic). With ≥200mm² pour + Type VII vias: effective θja ≈ 10–15°C/W → ΔTj ≈ 51–77°C. At 40°C ambient, Tjunction ≈ 91–117°C (max rated: 125°C). **Verify during first prototype thermal measurement.**
+* The LDO (U7) is the critical thermal path. Without copper pour: θja ≈ 50°C/W → ΔTj ≈ 255°C at 5.1W (catastrophic). With ≥200mm² pour + Type VII vias: effective θja ≈ 10–15°C/W → ΔTj ≈ 51–77°C. At
+  40°C ambient, Tjunction ≈ 91–117°C (max rated: 125°C). **Verify during first prototype thermal measurement.**
 * If LDO thermal headroom proves insufficient under sustained 3A load, consider converting 3V3_ENIG to a small synchronous buck (e.g. TPS62825). Log as DEC candidate.
 * The dedicated heat zone (shared with supercap bank area) connects via thermal pad to the metal enclosure, acting as a heatsink for the bottom of the board.
 
@@ -208,10 +226,12 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ### 2. Startup Timeline
 
-1. **Input:** 11–17V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.8V). All three sources are within the TPS25980 eFuse window (UVLO 11V / OVLO 16.9V).
+1. **Input:** 11–17V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.8V). All three sources are within the TPS25980
+   eFuse window (UVLO 11V / OVLO 16.9V).
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
 3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
-4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully depleted state: approximately 2 minutes. Once fully charged, the bank provides approximately 14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
+4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
+   depleted state: approximately 2 minutes. Once fully charged, the bank provides approximately 14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
 5. **Supervisor:** Once 5V_MAIN hits 4.5V, MCP121T-450E asserts GLOBAL_EN HIGH after a 200ms delay.
 6. **Release:** CM5 PMIC begins internal 1.8V/1.1V sequencing.
 7. **Heartbeat:** MIC1555 starts the 1Hz Green "Initialising" pulse.
@@ -230,7 +250,8 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
 8. **Power source removed:** User removes PoE cable, USB-C adapter, or battery. eFuse input drops to 0V.
 9. **System fully off:** All rails at 0V; no residual charge path.
 
-> **Note:** The "Safe Shutdown" button wired to CM5 GPIO (interrupt input) should trigger a software-debounced (100ms) shutdown command in the system daemon. The MCP121T manual reset pin provides a **hard PMIC reset only** (not a graceful shutdown); it must not be used for normal shutdown.
+> **Note:** The "Safe Shutdown" button wired to CM5 GPIO (interrupt input) should trigger a software-debounced (100ms) shutdown command in the system daemon. The MCP121T manual reset pin provides a
+> **hard PMIC reset only** (not a graceful shutdown); it must not be used for normal shutdown.
 
 ### 4. eFuse Latch-Off Recovery
 
@@ -311,22 +332,44 @@ TPS25980 latches OFF under the following fault conditions:
 | U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
 
 > **BOM Notes:**
-> - **U1 TPS259803ONRGER** — `TPS25980RPWR` was the original placeholder; research confirms `TPS259803ONRGER` as the 16.9V OVLO VQFN-24 variant. Verify against TI's current product page at ti.com/product/TPS25980 before ordering.
-> - **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also available Farnell 4029939.
-> - **U4 TPS25751DREFR** — Replaces NRND TPS25750. TPS25751 is PD3.1 USB-IF certified (TID#10306); D-variant integrates the full bi-directional 20V/5A power path required to source 5V/5A (25W) to the CM5 and prevent OS throttling. **Package changed to WQFN-38 6×4mm (REF)** — schematic pins and PCB footprint must be updated from the TPS25750 QFN-28 layout. Mouser: `595-TPS25751DREFR`; DigiKey: `TPS25751DREFR-ND`.
-> - **U5 STUSB4500LQTR** — JLCPCB C506650 currently **out of stock**. Alternative: C2678061 (`STUSB4500QTR`, non-L variant, 2,895 in stock). Both are pin-compatible; non-L variant has slightly higher Iq (~210µA vs 160µA).
-> - **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser 579-MCP121T-450ETTDITR) instead.
-> - **U10 TPS23730RMTR** — `PWPR` suffix (HTSSOP-20) was previously in error; correct WQFN-20 manufacturer PN is `TPS23730RMTR`. DigiKey catalogues as `296-TPS23730RMCT-ND`. Verify against TI's product page before ordering.
-> - **U11 MIC1555YM5-TR** — CMOS timer (Microchip). Timing components: R16=10.0kΩ (R_A), R17=715kΩ (R_B), C23=1µF (C_OSC) → 1Hz, ~50% duty cycle via formula f=1.44/((R_A+2R_B)×C). VCC bypass: C22 (100nF). Note: the 715kΩ E96 resistor (R17) is not common at all distributors — confirm stock at Mouser (667-ERJ-3EKF7153V) before BOM freeze.
-> - **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery). LM74700-Q1 drives the gate 7V above the source (charge-pump). Verify LM74700-Q1 (U6) instance count at schematic capture — one LM74700-Q1 is typically required per MOSFET for correct per-channel ideal-diode control.
-> - **J4 USB4135-GF-A** — GCT 24-pin USB Type-C SMT receptacle, 5A rated. THT/hand-place style; not in JLCPCB standard SMT catalog (similar to J2, J3 and the BtB connectors). CC1 and CC2 pins connect to STUSB4500 (U5) for PD 15V negotiation.
-> - **R14/R15 BACKUP divider** — Sets LTC3350 BACKUP comparator trigger at 4.81V (V_thr=1.2V, R_TOP=30.1kΩ, R_BOT=10.0kΩ). Use 0.1% tolerance for accuracy; trigger window relative to PWR_GD threshold (4.5V) is 310mV — supercap discharge begins ~310mV above the PWR_GD trip.
-> - **C7–C14 bulk/bypass caps** — All 22µF caps share the same Murata GRM32ER71H226KE15L part number as C1/C4. Simplifies procurement (single-line purchase for all 22µF 50V 1210 positions). C13 uses a different 10µF part. All are standard ceramic; no electrolytic capacitors used anywhere on the Power Module.
-> - **C15–C24 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6. C23 (1µF timer) shares the same Murata GRM21BR71H105KA2L as C2/C5. C24 (10nF C_SS) is a new part (Samsung CL05B103KB5NNNC).
-> - **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs. Mouser: `538-43650-0519`; DigiKey WM number: `WM7843-ND` ⚠️ verify exact WM number at digikey.co.uk.
-> - **R1 ERA-3ARB7323V (732kΩ)** — Part not widely listed on FindChips/Octopart (73.2kΩ variant ERA-3ARB7322V is more common). The 732kΩ value is a valid E96 standard value and should exist in Panasonic's range. Confirm stock at Mouser (667-ERA-3ARB7323V) or DigiKey before BOM freeze.
-> - **R4–R13 ERJ-3EKF series** — These are Panasonic **1% thick-film** resistors (corrected from "0.1% Thin-Film" in earlier drafts). The ERA-3ARB series (R1–R3) remains 0.1% thin-film for precision UVLO/OVLO dividers. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
-> - **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω range). Mouser: 652-CSS2H-2512R-R010ELF; DigiKey: CSS2H-2512R-R010ELF-ND.
-> - **L1/L2 WE-CMBNC 7448031002** — Both L1 and L2 now use the same Würth nanocrystalline CMC. L2 was originally Laird CM5022 but that part is **discontinued** (Laird EMC passives absorbed by TE Connectivity in 2019). No equivalent ≥10A HF ferrite CMC was found in current catalogs. Twin nanocrystalline CMCs provide adequate broadband CM attenuation from 1kHz–30MHz. Re-evaluate at EMC pre-compliance testing. Primary stock source: **Newark 75X1218** (561 pcs, ~$14.58). DigiKey 732-5584-ND has 0 stock with 32-week lead.
-> - **L3 SRP1265A-100M** — Replaces Würth 7447789100 (not available in public catalog). Bourns SRP1265A-100M: 10µH, **15.5A Isat** (21% headroom over 12A DC), 16.5mΩ DCR (better than original 20mΩ spec), 13.5×12.5×6.2mm SMD. ⚠️ Package is 13.5×12.5mm vs 7447789100's 12.5×12.5mm — update PCB land pattern. Farnell stock confirmed ~2,741 pcs; Mouser: `652-SRP1265A-100M`; DigiKey: `SRP1265A-100MCT-ND`.
+> - **U1 TPS259803ONRGER** — `TPS25980RPWR` was the original placeholder; research confirms `TPS259803ONRGER` as the 16.9V OVLO VQFN-24 variant. Verify against TI's current product page at
+> ti.com/product/TPS25980 before ordering.
+> - **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also
+> available Farnell 4029939.
+> - **U4 TPS25751DREFR** — Replaces NRND TPS25750. TPS25751 is PD3.1 USB-IF certified (TID#10306); D-variant integrates the full bi-directional 20V/5A power path required to source 5V/5A (25W) to the
+> CM5 and prevent OS throttling. **Package changed to WQFN-38 6×4mm (REF)** — schematic pins and PCB footprint must be updated from the TPS25750 QFN-28 layout. Mouser: `595-TPS25751DREFR`; DigiKey:
+> `TPS25751DREFR-ND`.
+> - **U5 STUSB4500LQTR** — JLCPCB C506650 currently **out of stock**. Alternative: C2678061 (`STUSB4500QTR`, non-L variant, 2,895 in stock). Both are pin-compatible; non-L variant has slightly higher
+> Iq (~210µA vs 160µA).
+> - **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
+> 579-MCP121T-450ETTDITR) instead.
+> - **U10 TPS23730RMTR** — `PWPR` suffix (HTSSOP-20) was previously in error; correct WQFN-20 manufacturer PN is `TPS23730RMTR`. DigiKey catalogues as `296-TPS23730RMCT-ND`. Verify against TI's
+> product page before ordering.
+> - **U11 MIC1555YM5-TR** — CMOS timer (Microchip). Timing components: R16=10.0kΩ (R_A), R17=715kΩ (R_B), C23=1µF (C_OSC) → 1Hz, ~50% duty cycle via formula f=1.44/((R_A+2R_B)×C). VCC bypass: C22
+> (100nF). Note: the 715kΩ E96 resistor (R17) is not common at all distributors — confirm stock at Mouser (667-ERJ-3EKF7153V) before BOM freeze.
+> - **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery). LM74700-Q1 drives the gate 7V above the source (charge-pump). Verify
+> LM74700-Q1 (U6) instance count at schematic capture — one LM74700-Q1 is typically required per MOSFET for correct per-channel ideal-diode control.
+> - **J4 USB4135-GF-A** — GCT 24-pin USB Type-C SMT receptacle, 5A rated. THT/hand-place style; not in JLCPCB standard SMT catalog (similar to J2, J3 and the BtB connectors). CC1 and CC2 pins connect
+> to STUSB4500 (U5) for PD 15V negotiation.
+> - **R14/R15 BACKUP divider** — Sets LTC3350 BACKUP comparator trigger at 4.81V (V_thr=1.2V, R_TOP=30.1kΩ, R_BOT=10.0kΩ). Use 0.1% tolerance for accuracy; trigger window relative to PWR_GD threshold
+> (4.5V) is 310mV — supercap discharge begins ~310mV above the PWR_GD trip.
+> - **C7–C14 bulk/bypass caps** — All 22µF caps share the same Murata GRM32ER71H226KE15L part number as C1/C4. Simplifies procurement (single-line purchase for all 22µF 50V 1210 positions). C13 uses
+> a different 10µF part. All are standard ceramic; no electrolytic capacitors used anywhere on the Power Module.
+> - **C15–C24 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6. C23 (1µF timer) shares the same Murata GRM21BR71H105KA2L as C2/C5. C24 (10nF C_SS)
+> is a new part (Samsung CL05B103KB5NNNC).
+> - **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical
+> through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
+> Mouser: `538-43650-0519`; DigiKey WM number: `WM7843-ND` ⚠️ verify exact WM number at digikey.co.uk.
+> - **R1 ERA-3ARB7323V (732kΩ)** — Part not widely listed on FindChips/Octopart (73.2kΩ variant ERA-3ARB7322V is more common). The 732kΩ value is a valid E96 standard value and should exist in
+> Panasonic's range. Confirm stock at Mouser (667-ERA-3ARB7323V) or DigiKey before BOM freeze.
+> - **R4–R13 ERJ-3EKF series** — These are Panasonic **1% thick-film** resistors (corrected from "0.1% Thin-Film" in earlier drafts). The ERA-3ARB series (R1–R3) remains 0.1% thin-film for precision
+> UVLO/OVLO dividers. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
+> - **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω
+> range). Mouser: 652-CSS2H-2512R-R010ELF; DigiKey: CSS2H-2512R-R010ELF-ND.
+> - **L1/L2 WE-CMBNC 7448031002** — Both L1 and L2 now use the same Würth nanocrystalline CMC. L2 was originally Laird CM5022 but that part is **discontinued** (Laird EMC passives absorbed by TE
+> Connectivity in 2019). No equivalent ≥10A HF ferrite CMC was found in current catalogs. Twin nanocrystalline CMCs provide adequate broadband CM attenuation from 1kHz–30MHz. Re-evaluate at EMC
+> pre-compliance testing. Primary stock source: **Newark 75X1218** (561 pcs, ~$14.58). DigiKey 732-5584-ND has 0 stock with 32-week lead.
+> - **L3 SRP1265A-100M** — Replaces Würth 7447789100 (not available in public catalog). Bourns SRP1265A-100M: 10µH, **15.5A Isat** (21% headroom over 12A DC), 16.5mΩ DCR (better than original 20mΩ
+> spec), 13.5×12.5×6.2mm SMD. ⚠️ Package is 13.5×12.5mm vs 7447789100's 12.5×12.5mm — update PCB land pattern. Farnell stock confirmed ~2,741 pcs; Mouser: `652-SRP1265A-100M`; DigiKey:
+> `SRP1265A-100MCT-ND`.
 

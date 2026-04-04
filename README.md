@@ -67,7 +67,8 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
   * **PoE+ (802.3bt Type 4):** Up to 71.3W Power-over-Ethernet via Power Module discrete TPS2372-4 + TPS23730 + T2 ACF design. Single Ethernet cable carries both data and power.
   * **USB-C PD:** 5V/5A negotiated input.
 * **Protection:** Over-voltage and over-current protection provided by Power Module eFuse upstream; local reverse-polarity and ESD protection on BtB interface.
-* **Rotor Rail:** The rotor stack is powered by the **3V3_ENIG** rail (TPS7A8333P LDO, 3A) generated on the Power Module; routed to rotor stack via Controller Board → Link-Beta. CM5 GPIO 16 (ROTOR_EN) gates the LDO enable for sequenced power-up.
+* **Rotor Rail:** The rotor stack is powered by the **3V3_ENIG** rail (TPS7A8333P LDO, 3A) generated on the Power Module; routed to rotor stack via Controller Board → Link-Beta. CM5 GPIO 16
+  (ROTOR_EN) gates the LDO enable for sequenced power-up.
 * **JTAG Master:** Embedded FT232H (Permanent USB Blaster) on internal USB 2.0.
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
 * **User Interface:** Illuminated Vintage Amber **Safe Shutdown Button**, Master Toggle, and Status LEDs.

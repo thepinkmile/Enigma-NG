@@ -20,7 +20,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |                                                                             |
 |   [  TCO F1  ] <--- 72°C Thermal Cutoff (In Series)                         |
 |                                                                             |
-|   [ eFuse U1 ] <--- TPS25980 + [0603 Thin-Film Ladder]                    |
+|   [ eFuse U1 ] <--- TPS25980 + [0603 Thin-Film Ladder]                      |
 |                                                                             |
 |    ______________________             __________________________            |
 |   |   [C1]  [C2]  [C3]   |           |  [ Amber "Safety Glow" ] |           |
@@ -94,13 +94,13 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
  ____________________      _________________     ________________________________         __________________
 |                    |    |                 |   |                                |       |                 |
 | RJ45 (Wurth        |    | [D4 TPD4E05U06] |   | [U9 TPS2372-4]                 |       | [U6 LM74700-Q1] |
-| 7499111121A)       |--->| [D5 TPD4E05U06] |-->|  Type 4 PD / Hotswap          |       | (OR-ing Input)  |
+| 7499111121A)       |--->| [D5 TPD4E05U06] |-->|  Type 4 PD / Hotswap           |       | (OR-ing Input)  |
 | (4-pair 37-57V CT) |    |________|________|   |  ↓                             |       |_________________|
 |                    |             |            | [U10 TPS23730 ACF DC-DC]       |
 | CONNECTOR SHIELD --|-------------|----------  |  + [T2: POE600F-12LD]          |
 |____________________|             V            |  Coilcraft / 60W / 12V out     |-----> [ +12V_POE ]
-                             [ GND_CHASSIS ]   |  >=1500Vrms / 200kHz / 51W     |       (to OR-ing)
-                                               |________________________________|
+                             [ GND_CHASSIS ]    |  >=1500Vrms / 200kHz / 51W     |       (to OR-ing)
+                                                |________________________________|
 
 Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer (12V out, 36-72V in, 200kHz, >=1500Vrms). Order direct: coilcraft.com.
 ```
@@ -113,7 +113,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 |                     |         |                    |                                      |                  |
 | VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _________________        | [ SAMTEC ERM8 ]  |
 |                     |         |         |          |            |                 |       |                  |
-| GND (4 PINS)  ------|-------->| [ WE-CMBNC L2  ] |----------->| [U5 LM74700-Q1] |       |                  |
+| GND (4 PINS)  ------|-------->| [ WE-CMBNC L2  ] --|----------->| [U5 LM74700-Q1] |       |                  |
 |                     |         |                    |            | (OR-ing Input)  |       |                  |
 |                     |         |                    |            |_________________|       |                  |
 | CC1 / CC2     ------|--[PD]-->| [U4 STUSB4500 ] ---|-I2C--------------------------------->| PIN 35 (I2C SDA) |
@@ -124,15 +124,15 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 ## Power Flow
 
 ```text
- BULKHEAD ENTRY         INPUT PROTECTION             OR-ING / SELECT           UPS & REGULATION                                                                     SAMTEC EXIT
-_________________      ____________________         ___________________        _________________________________________                                            _____________
+ BULKHEAD ENTRY         INPUT PROTECTION             OR-ING / SELECT           UPS & REGULATION                                                                              SAMTEC EXIT
+_________________      ____________________         ___________________        _________________________________________                                                     _____________
 
-[RJ45 PoE+] ---> [D4+D5 TPD4E05U06 ESD] ---> [U9 TPS2372-4 + U10 TPS23730 + T2 ACF] --\
+[RJ45 PoE+] ---> [D4+D5 TPD4E05U06 ESD] ---> [U9 TPS2372-4 + U10 TPS23730 + T2 ACF] ----\
                                                 (PoE Type 4 discrete DC-DC, 12V/51W)      \
-[USB-C 15V] ---> [TPD4E05U06 ESD] -------------------------------------------------------+---> [U6 LM74700-Q1 + Q1-Q3] -> [F1 TCO] -> [U1 TPS25980 eFuse]
+[USB-C 15V] ---> [TPD4E05U06 ESD] ---------------------------------------------------------+---> [U6 LM74700-Q1 + Q1-Q3] -> [F1 TCO] -> [U1 TPS25980 eFuse]
                                                                                           /           (Priority OR-ing)                      (7A / 11V / 16.9V)
 [BATTERY  ] ---> [D1+D2 ESD] ------------------------------------------------------------/                                                         |
-                                                                                                                                                    |
+                                                                                                                                                   |
                                                                     +-------------------------------------------------------------------> [U2A/U2B LMQ61460-Q1 Dual Buck]
                                                                     |                                                                              |
                                                                     |                                                                         [ 5V_MAIN BUS ]
@@ -145,9 +145,9 @@ _________________      ____________________         ___________________        _
                                                                     |                              |
                                                                     |                              +---------------------------------------------> [U4 TPS25751 PD Emu] ---> [ CM5 5V/5A ]
                                                                     |                              |
-                                                                    |                              +---------------------------------------------> [U7 TPS7A8333P LDO] --> [ +3V3_ENIG ]
+                                                                    |                              +---------------------------------------------> [U7 TPS7A8333P LDO] ----> [ +3V3_ENIG ]
                                                                     |                              |
-                                                                    |                              +---------------------------------------------> [U8 MCP121T-450E] --> [ PWR_GD ]
+                                                                    |                              +---------------------------------------------> [U8 MCP121T-450E] ------> [ PWR_GD ]
 ```
 
 * Thermal Matrix vias sit beneath the supercap and eFuse thermal island for heat-spreading only; they are not part of the electrical power path.
@@ -167,9 +167,9 @@ _________________      ____________________         ___________________        _
 | [J2: RJ45 LEDs] <---------|--------| [ PINS 25-26: ETH_LEDs ] <|--------| [ ETH_LED_L/A ]   |
 | (LED anodes: 3V3_ENIG)    |        |  (from CM5 GbE PHY)       |        |                   |
 |                           |        |                           |        |                   |
-| [U8: MCP121T Supervisor] -|--------|--[ PIN 34: PWR_GD ] -------|------->| [ PWR_GD ]        |
+| [U8: MCP121T Supervisor] -|--------|--[ PIN 34: PWR_GD ] ------|------->| [ PWR_GD ]        |
 |                           |        |                           |        |  (Handshake)      |
-| [U7 EN pin] <-------------|--------|--[ PIN 46: ROTOR_EN ] <----|--------| [ CM5 GPIO 16 ]   |
+| [U7 EN pin] <-------------|--------|--[ PIN 46: ROTOR_EN ] <---|--------| [ CM5 GPIO 16 ]   |
 |                           |        |                           |        |                   |
 |___________________________|        |___________________________|        |___________________|
 ```
@@ -188,16 +188,16 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
 |_____________________|         |    |                      |        | PINS 27-30: GND             |
                                 | [U1: TPS25980 eFuse]      |        | PINS 31-34: Status LEDs     |
        LADDER RESISTORS:        |    |                      |        | PINS 35-38: I2C Telemetry   |
-       R1: 732k (UVLO_HI) ---------|-->|                      |        | PINS 39-44: 3V3_ENIG        |
-       R2: 28.7k (UVLO_LO) --------|-->|                      |        | PIN  45: BATT_PRES_N        |
+       R1: 732k (UVLO_HI) ------|--->|                      |        | PINS 39-44: 3V3_ENIG        |
+       R2: 28.7k (UVLO_LO) -----|--->|                      |        | PIN  45: BATT_PRES_N        |
        R3: 53.6k (GND) ---------|--->|                      |        | PINS 49-80: 5V_MAIN / GND   |
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
                                 | [5V_MAIN]-----------------|-------[U2A/U2B BUCK]--|
-                                |    |                      |       [U7 3.3V LDO]--|
-                                | [LTC3350 + C_SC1-4]-------|                      |
-                                |    | (2x2 Block on 5V_MAIN|                      |
-                                |    |                      |       |[SUPERVISOR]---|
+                                |    |                      |       [U7 3.3V LDO]---|
+                                | [LTC3350 + C_SC1-4]-------|                       |
+                                |    | ( 2x2 Block on )     |                       |
+                                |    | ( 5V_MAIN )          |       |[SUPERVISOR]---|
                                 |    |                      |                       |
                                 | [5.1V ZENER GLOW] --------|--->[AMBER LED EXT]----+
                                 |___________________________|      (SAFETY)
@@ -236,9 +236,6 @@ SIDE VIEW (CROSS-SECTION)
 |                           |        |                           |           |                     |
 |                           |        |                           |           | 3V3_ENIG (local) -> |
 |___________________________|        |___________________________|           | [ LED ANODES ]      |
+                                                                             |_____________________|
                                                                       (R) = 330Ω Resistors
-```
-
-> **Note:** 3V3_ENIG powers RJ45 LED anodes locally on the Power Module.
-> The 3V3_SYSTEM rail is **not** routed on the BtB connector (see DEC-001).
 ```

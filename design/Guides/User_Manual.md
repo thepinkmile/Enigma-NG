@@ -22,9 +22,12 @@
 
 ## 1. Introduction
 
-The **Enigma-NG** is a precision recreation of the legendary Enigma cipher machine and its variants, reimagined as a museum-grade, military-deployable, and educational device. It faithfully replicates all major historical Enigma variants as well as Allied-developed adaptations, and adds a contemporary extension: a 64-character set supporting Base-64 encoded data transmission, enabling the machine to encrypt and transmit binary files using the same mechanical substitution principles as the original.
+The **Enigma-NG** is a precision recreation of the legendary Enigma cipher machine and its variants, reimagined as a museum-grade, military-deployable, and educational device. It faithfully
+replicates all major historical Enigma variants as well as Allied-developed adaptations, and adds a contemporary extension: a 64-character set supporting Base-64 encoded data transmission, enabling
+the machine to encrypt and transmit binary files using the same mechanical substitution principles as the original.
 
-At its core, the Enigma-NG is powered by a Raspberry Pi Compute Module 5 (CM5) running a full Linux-based control system, managing a stack of hardware Rotor logic implemented in dedicated logic chips (CPLDs). The entire system is built to exacting electrical standards — meeting civilian CE and UKCA certification requirements — making it suitable for deployment in demanding environments.
+At its core, the Enigma-NG is powered by a Raspberry Pi Compute Module 5 (CM5) running a full Linux-based control system, managing a stack of hardware Rotor logic implemented in dedicated logic chips
+(CPLDs). The entire system is built to exacting electrical standards — meeting civilian CE and UKCA certification requirements — making it suitable for deployment in demanding environments.
 
 ---
 
@@ -34,9 +37,11 @@ At its core, the Enigma-NG is powered by a Raspberry Pi Compute Module 5 (CM5) r
 
 ### Supercapacitor Discharge Warning
 
-The Power Module contains a bank of supercapacitors that store enough energy to power the system for approximately 14 seconds after the input power is removed. This is by design — it provides a graceful shutdown window so the operating system can save its state cleanly.
+The Power Module contains a bank of supercapacitors that store enough energy to power the system for approximately 14 seconds after the input power is removed. This is by design — it provides a
+graceful shutdown window so the operating system can save its state cleanly.
 
-**Do not open the enclosure if the amber "Safety Glow" LED is illuminated.** This LED indicates that the supercapacitors are still charged above a safe threshold (> 5.1V) and the internal circuitry is live.
+**Do not open the enclosure if the amber "Safety Glow" LED is illuminated.** This LED indicates that the supercapacitors are still charged above a safe threshold (> 5.1V) and the internal circuitry
+is live.
 
 **Before performing any internal maintenance:**
 
@@ -46,17 +51,20 @@ The Power Module contains a bank of supercapacitors that store enough energy to 
 
 ### Electrostatic Discharge (ESD)
 
-All external-facing connectors (Ethernet, USB-C, USB 3.0, HDMI, and battery) are protected against electrostatic discharge. However, internal diagnostic test points and board-to-board connectors are **not** individually ESD-protected in the prototype variant. Follow standard ESD precautions (wrist strap, anti-static mat) when working inside the enclosure.
+All external-facing connectors (Ethernet, USB-C, USB 3.0, HDMI, and battery) are protected against electrostatic discharge. However, internal diagnostic test points and board-to-board connectors are
+**not** individually ESD-protected in the prototype variant. Follow standard ESD precautions (wrist strap, anti-static mat) when working inside the enclosure.
 
 ---
 
 ## 3. The Power Module — System Power Overview
 
-The Power Module is a dedicated, independently shielded circuit board housed within the aluminium enclosure. Its job is to accept raw, potentially noisy power from any of three input sources and convert it into two clean, regulated power rails for the rest of the system.
+The Power Module is a dedicated, independently shielded circuit board housed within the aluminium enclosure. Its job is to accept raw, potentially noisy power from any of three input sources and
+convert it into two clean, regulated power rails for the rest of the system.
 
 ### 3.1 Input Sources and Priority
 
-The Enigma-NG can be powered from any of three sources simultaneously. An intelligent input selection circuit — using "ideal diode" transistors controlled by a priority-management chip — automatically selects the best available source without any interruption to the system. The priority order is:
+The Enigma-NG can be powered from any of three sources simultaneously. An intelligent input selection circuit — using "ideal diode" transistors controlled by a priority-management chip —
+automatically selects the best available source without any interruption to the system. The priority order is:
 
 | Priority | Source | Typical Voltage | Notes |
 |:---:|---|---|---|
@@ -64,9 +72,11 @@ The Enigma-NG can be powered from any of three sources simultaneously. An intell
 | 2nd | **USB-C (PD adapter)** | 15V | Requires a 75W USB-C PD adapter (15V/5A); adequate for normal operation |
 | 3rd | **Battery** | 11–16.8V | Lithium-based smart battery pack; tertiary source used when no mains is available |
 
-If a higher-priority source becomes available while a lower-priority one is in use, the system switches seamlessly. If the primary source fails, the system automatically falls back to the next available source, with the supercapacitor bank bridging any momentary gap during the transition.
+If a higher-priority source becomes available while a lower-priority one is in use, the system switches seamlessly. If the primary source fails, the system automatically falls back to the next
+available source, with the supercapacitor bank bridging any momentary gap during the transition.
 
-A thermal fuse (72°C) and electronic protection circuit (eFuse) guard the input against excessive current and out-of-range voltages. The system will not start if the input voltage is below **11V** or above **17V**, protecting all downstream components.
+A thermal fuse (72°C) and electronic protection circuit (eFuse) guard the input against excessive current and out-of-range voltages. The system will not start if the input voltage is below **11V** or
+above **17V**, protecting all downstream components.
 
 ### 3.2 Output Power Rails
 
@@ -81,13 +91,16 @@ The Power Module produces two regulated output rails:
 
 ### 3.3 How the Power System Stays Quiet
 
-The Enigma-NG must meet some of the strictest electromagnetic compatibility (EMC) standards available — both civilian and military. Keeping the power supply electrically "quiet" is therefore a central design goal. Three complementary techniques are used together:
+The Enigma-NG must meet some of the strictest electromagnetic compatibility (EMC) standards available — both civilian and military. Keeping the power supply electrically "quiet" is therefore a
+central design goal. Three complementary techniques are used together:
 
 #### Dual-Phase Switching Regulators
 
-The 5V_MAIN rail is generated by **two identical switching regulators working in tandem** (U2A and U2B). Running a single large regulator at full power would be both less efficient and noisier. Instead, each regulator handles half the load, operating at 70% of its rated capacity, giving excellent thermal headroom.
+The 5V_MAIN rail is generated by **two identical switching regulators working in tandem** (U2A and U2B). Running a single large regulator at full power would be both less efficient and noisier.
+Instead, each regulator handles half the load, operating at 70% of its rated capacity, giving excellent thermal headroom.
 
-More importantly, the two regulators are deliberately **timed 180° apart**: when one is switching its output transistor on, the other is switching it off. This "push-pull" rhythm means their electrical noise largely cancels itself out before it reaches the rest of the circuit — the same principle used in noise-cancelling headphones.
+More importantly, the two regulators are deliberately **timed 180° apart**: when one is switching its output transistor on, the other is switching it off. This "push-pull" rhythm means their
+electrical noise largely cancels itself out before it reaches the rest of the circuit — the same principle used in noise-cancelling headphones.
 
 The practical effect:
 - The **output ripple** (small voltage fluctuation on the 5V rail) is halved compared to using a single regulator.
@@ -96,16 +109,20 @@ The practical effect:
 
 #### Dual Random Spread Spectrum (DRSS)
 
-Each regulator also uses a built-in feature called **Dual Random Spread Spectrum (DRSS)**, which continuously and randomly varies its switching frequency by ±5.5% around the 400 kHz centre. Instead of concentrating switching noise into a single sharp peak at one frequency, DRSS smears it across a small band — reducing its peak amplitude significantly. This is the same technique used in the power supplies of modern laptops and smartphones to pass EMC testing.
+Each regulator also uses a built-in feature called **Dual Random Spread Spectrum (DRSS)**, which continuously and randomly varies its switching frequency by ±5.5% around the 400 kHz centre. Instead
+of concentrating switching noise into a single sharp peak at one frequency, DRSS smears it across a small band — reducing its peak amplitude significantly. This is the same technique used in the
+power supplies of modern laptops and smartphones to pass EMC testing.
 
 #### The "Iron Curtain" Input Filter
 
 Before any switching occurs, the raw input power passes through a two-stage filter at the board entry point:
 - A **nanocrystalline common-mode choke** (wideband, from Würth Elektronik) blocks high-frequency noise arriving from the source.
-- A **high-frequency nanocrystalline CMC** (Würth WE-CMBNC 7448031002, same as L1) handles the narrower-band differential noise. The original Laird CM5022 was discontinued when Laird's EMC passives division was absorbed by TE Connectivity in 2019.
+- A **high-frequency nanocrystalline CMC** (Würth WE-CMBNC 7448031002, same as L1) handles the narrower-band differential noise. The original Laird CM5022 was discontinued when Laird's EMC passives
+  division was absorbed by TE Connectivity in 2019.
 - Pi-filter sections (inductors + capacitors) on each power path provide additional attenuation.
 
-Together, these three techniques — phase interleaving, spread spectrum, and input filtering — are designed to comfortably meet EN 55032 Class B conducted and radiated emission limits under CE/UKCA certification.
+Together, these three techniques — phase interleaving, spread spectrum, and input filtering — are designed to comfortably meet EN 55032 Class B conducted and radiated emission limits under CE/UKCA
+certification.
 
 ### 3.4 Power Status Indicators
 
@@ -118,7 +135,8 @@ Two LEDs on the Power Module (visible through the enclosure window or on the fro
 | **Safety Glow** | Amber | Solid | Supercapacitors are charged (>5.1V); internal power is live |
 | **Safety Glow** | Amber | Off | Supercapacitors discharged; safe to open enclosure |
 
-The multi-colour status LED (controlled by the CM5) on the front panel provides higher-level system state information; refer to the Software User Guide for a full description of status colours and patterns.
+The multi-colour status LED (controlled by the CM5) on the front panel provides higher-level system state information; refer to the Software User Guide for a full description of status colours and
+patterns.
 
 ### 3.5 Startup Sequence
 
@@ -126,7 +144,9 @@ When power is applied, the following sequence occurs automatically:
 
 1. **Input validation:** The eFuse checks that input voltage is within 11–17V and current is within limits. The thermal cutoff (TCO) provides over-temperature protection at 72°C.
 2. **Buck regulators start:** The dual 5V switching regulators (U2A/U2B) and the 3.3V LDO (U7) begin operating, establishing the 5V_MAIN and 3V3_ENIG power rails.
-3. **Supercap charging:** The LTC3350 supercap manager begins a controlled 0.5A soft-charge of the supercapacitor bank from the 5V_MAIN rail. This reduced charge rate keeps the system within power budget on all input sources. From a fully depleted state, the bank takes approximately **2 minutes** to reach full charge. Full hold-up protection (approximately 14 seconds) is available once charging is complete.
+3. **Supercap charging:** The LTC3350 supercap manager begins a controlled 0.5A soft-charge of the supercapacitor bank from the 5V_MAIN rail. This reduced charge rate keeps the system within power
+   budget on all input sources. From a fully depleted state, the bank takes approximately **2 minutes** to reach full charge. Full hold-up protection (approximately 14 seconds) is available once
+charging is complete.
 4. **Rail supervision:** A voltage supervisor monitors the 5V_MAIN rail. Once it stabilises above 4.5V, a 200ms delay timer starts.
 5. **CM5 power-on:** After the 200ms delay, the CM5 module receives its enable signal and begins its internal power sequencing (1.8V, 1.1V rails).
 6. **Linux boot:** The CM5 boots Linux. The LOGIK-BEREIT LED pulses at 1Hz during this phase.
@@ -136,29 +156,38 @@ Total startup time from power application to operational readiness is typically 
 
 ### 3.6 Battery and Supercapacitor Hold-Up
 
-**Supercapacitors:** The Power Module contains four supercapacitor cells (22F each, arranged in a 2-series × 2-parallel configuration giving 11F at 5.4V, managed by the LTC3350 supercap controller) providing approximately **14 seconds of hold-up** at a 5W shutdown load. This is sufficient for the operating system to perform a clean, ordered shutdown, preventing filesystem and memory corruption.
+**Supercapacitors:** The Power Module contains four supercapacitor cells (22F each, arranged in a 2-series × 2-parallel configuration giving 11F at 5.4V, managed by the LTC3350 supercap controller)
+providing approximately **14 seconds of hold-up** at a 5W shutdown load. This is sufficient for the operating system to perform a clean, ordered shutdown, preventing filesystem and memory corruption.
 
-> **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 2 minutes from a cold start. The system is designed for operational sessions of 30 minutes or longer — the supercapacitors will be fully charged well before they could ever be needed in normal use.
+> **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 2 minutes from a cold start. The system is designed for operational sessions of 30 minutes or
+> longer — the supercapacitors will be fully charged well before they could ever be needed in normal use.
 
-The LTC3350 controller continuously monitors the supercapacitor bank, balances charge across all four cells, and automatically switches to supercap-powered operation within microseconds of detecting a loss of the main 5V rail. No user action is required — the switchover is completely transparent to the operating system.
+The LTC3350 controller continuously monitors the supercapacitor bank, balances charge across all four cells, and automatically switches to supercap-powered operation within microseconds of detecting
+a loss of the main 5V rail. No user action is required — the switchover is completely transparent to the operating system.
 
 The amber "Safety Glow" LED remains lit until the supercapacitor voltage drops below 5.1V. Even after the green LED goes out, treat the enclosure as live until the amber LED also extinguishes.
 
-**Battery (Smart Battery Pack):** The battery is connected via a locking 5-pin Micro-Fit connector on the side panel. The system communicates with the battery over SMBus (I2C) to read state-of-charge, health status, and cell voltages. The CM5 monitors these via GPIO and I2C and displays battery status through the front panel indicator LED. When no higher-priority source is available, the system runs from the battery; when a mains source becomes available, the battery charges automatically (charge management is handled by the battery pack's internal BMS).
+**Battery (Smart Battery Pack):** The battery is connected via a locking 5-pin Micro-Fit connector on the side panel. The system communicates with the battery over SMBus (I2C) to read
+state-of-charge, health status, and cell voltages. The CM5 monitors these via GPIO and I2C and displays battery status through the front panel indicator LED. When no higher-priority source is
+available, the system runs from the battery; when a mains source becomes available, the battery charges automatically (charge management is handled by the battery pack's internal BMS).
 
 ### 3.7 USB-C Power Input
 
-The USB-C port on the Power Module accepts **USB Power Delivery (PD)** adapters. The system automatically negotiates a 15V/5A (75W) power contract with the adapter. A standard 5V USB-C charger will **not** power the system — a PD-capable adapter rated at 75W or higher (supporting a 15V/5A PDO) is required.
+The USB-C port on the Power Module accepts **USB Power Delivery (PD)** adapters. The system automatically negotiates a 15V/5A (75W) power contract with the adapter. A standard 5V USB-C charger will
+**not** power the system — a PD-capable adapter rated at 75W or higher (supporting a 15V/5A PDO) is required.
 
 > **Recommended:** Any USB-C PD adapter rated at 90W or above with a 15V/5A profile will work reliably. Examples: most modern laptop chargers (65W+ GaN adapters that include a 15V PDO).
 
-The system also presents a PD power contract to the CM5's USB-C detection circuit so that the Linux operating system correctly identifies the power supply as adequate and does not generate power warning messages.
+The system also presents a PD power contract to the CM5's USB-C detection circuit so that the Linux operating system correctly identifies the power supply as adequate and does not generate power
+warning messages.
 
 ### 3.8 PoE+ (Power over Ethernet) Input
 
-The Enigma-NG accepts **IEEE 802.3bt Type 4 (4-pair PoE++)** power delivery over the Ethernet connection. This is the highest-power PoE standard currently available, supporting up to 71W delivered to the device — sufficient to run the Enigma-NG at full load without any additional power source.
+The Enigma-NG accepts **IEEE 802.3bt Type 4 (4-pair PoE++)** power delivery over the Ethernet connection. This is the highest-power PoE standard currently available, supporting up to 71W delivered to
+the device — sufficient to run the Enigma-NG at full load without any additional power source.
 
-Standard PoE (802.3af, 12.95W) and PoE+ (802.3at, 25.5W) are **not sufficient** to power the Enigma-NG at full load. If a lower-power PoE source is connected, the system will fall back to the USB-C or battery input if available, or operate at reduced load.
+Standard PoE (802.3af, 12.95W) and PoE+ (802.3at, 25.5W) are **not sufficient** to power the Enigma-NG at full load. If a lower-power PoE source is connected, the system will fall back to the USB-C
+or battery input if available, or operate at reduced load.
 
 When using PoE, no separate mains adapter is needed — a single Ethernet cable handles both data and power.
 

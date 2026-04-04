@@ -9,7 +9,8 @@
 > - **IEC 61000-4-5:** Electrical Fast Transient / Surge Immunity
 > - **IEC 60068-2:** Environmental Testing (Shock, Vibration, Temperature) — design basis 55°C maximum ambient (industrial)
 >
-> **Note:** Military standards compliance evidence (including UK MOD environmental and EMC standards) is deferred to a future phase requiring access to an appropriate accredited review environment. The design is architected conservatively and is expected to satisfy military requirements with minimal rework once that review pathway is available; this document will be updated at that stage.
+> **Note:** Military standards compliance evidence (including UK MOD environmental and EMC standards) is deferred to a future phase requiring access to an appropriate accredited review environment.
+> The design is architected conservatively and is expected to satisfy military requirements with minimal rework once that review pathway is available; this document will be updated at that stage.
 
 ---
 
@@ -38,9 +39,12 @@
 
 ## 1. Document Scope and Purpose
 
-This document records the design decisions and technical rationale for the Enigma-NG hardware, structured to support formal conformity assessment against the standards listed above. It serves as the primary evidence document for any independent test laboratory or Notified Body review.
+This document records the design decisions and technical rationale for the Enigma-NG hardware, structured to support formal conformity assessment against the standards listed above. It serves as the
+primary evidence document for any independent test laboratory or Notified Body review.
 
-The Enigma-NG is a purpose-built digital Enigma cipher machine recreation, intended for use in museum, military, and educational environments. The device must meet CE/UKCA electromagnetic compatibility requirements and is designed conservatively to a standard consistent with demanding operational environments. The design philosophy deliberately exceeds civilian CE/UKCA minimums to facilitate future military compliance assessment with minimal rework.
+The Enigma-NG is a purpose-built digital Enigma cipher machine recreation, intended for use in museum, military, and educational environments. The device must meet CE/UKCA electromagnetic
+compatibility requirements and is designed conservatively to a standard consistent with demanding operational environments. The design philosophy deliberately exceeds civilian CE/UKCA minimums to
+facilitate future military compliance assessment with minimal rework.
 
 This document is **living** — it will be updated as the design progresses through prototype, validation, and production stages. Sections referencing prototype-stage decisions will be clearly marked.
 
@@ -50,7 +54,8 @@ This document is **living** — it will be updated as the design progresses thro
 
 ### 2.1 "Museum-Grade" Design Standard
 
-All components are selected and operated to a standard described internally as "Museum-Grade": the design must remain functional and maintainable for decades, in the hands of non-technical users, in unpredictable environments. This drives the following binding design rules, applied system-wide:
+All components are selected and operated to a standard described internally as "Museum-Grade": the design must remain functional and maintainable for decades, in the hands of non-technical users, in
+unpredictable environments. This drives the following binding design rules, applied system-wide:
 
 | Rule | Value | Rationale |
 |---|---|---|
@@ -63,9 +68,13 @@ All components are selected and operated to a standard described internally as "
 
 ### 2.2 Single-Point Chassis Ground Architecture
 
-A single-point `GND_CHASSIS` bond is established between the OR-ing network output and the eFuse input — the electrical boundary between the "dirty" input side and the "clean" downstream side. All external connector ESD protection TVS diodes shunt to `GND_CHASSIS`, which connects to the aluminium enclosure and from there to protective earth. The signal and power reference ground connects to `GND_CHASSIS` at this one point only.
+A single-point `GND_CHASSIS` bond is established between the OR-ing network output and the eFuse input — the electrical boundary between the "dirty" input side and the "clean" downstream side. All
+external connector ESD protection TVS diodes shunt to `GND_CHASSIS`, which connects to the aluminium enclosure and from there to protective earth. The signal and power reference ground connects to
+`GND_CHASSIS` at this one point only.
 
-**Rationale:** Multiple chassis ground bonds create ground loops. Ground loop currents are a leading cause of common-mode radiated emissions failures (EN 55032 Class B radiated emissions) and can exacerbate susceptibility failures (EN 55035 / IEC 61000-4-3 radiated immunity). The single-point bond is the canonical solution specified in MIL-STD-461G §3.6 and is adopted here as best practice for CE/UKCA EMC compliance.
+**Rationale:** Multiple chassis ground bonds create ground loops. Ground loop currents are a leading cause of common-mode radiated emissions failures (EN 55032 Class B radiated emissions) and can
+exacerbate susceptibility failures (EN 55035 / IEC 61000-4-3 radiated immunity). The single-point bond is the canonical solution specified in MIL-STD-461G §3.6 and is adopted here as best practice
+for CE/UKCA EMC compliance.
 
 ---
 
@@ -91,7 +100,8 @@ A single-point `GND_CHASSIS` bond is established between the OR-ing network outp
 - USB-C is secondary as it depends on the availability of an appropriate adapter.
 - Battery is tertiary as its capacity is finite.
 
-The LM74700-Q1 + SISS22DN ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which directly reduces junction temperatures across the power chain and supports IEC 60068-2 thermal test compliance.
+The LM74700-Q1 + SISS22DN ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which directly reduces
+junction temperatures across the power chain and supports IEC 60068-2 thermal test compliance.
 
 ### 3.2 eFuse Settings — UVLO and OVLO Rationale
 
@@ -112,9 +122,13 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 | R_UVLO_LO | 28.7 kΩ | UVLO lower resistor |
 | R_OVLO | 53.6 kΩ | OVLO set resistor |
 
-> **Note on Battery Voltage — OVLO Margin:** The TPS25980 16.9V OVLO variant is 0.1V above the theoretical max battery voltage of 16.8V (4S Li-ion at 4.2V/cell). To maintain an engineering margin of ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)**. This specification must be enforced in the battery procurement specification and verified during incoming inspection. OVLO threshold accuracy must be confirmed against the TPS25980 datasheet (full threshold tolerance band required before production release — see §8, OA-01).
+> **Note on Battery Voltage — OVLO Margin:** The TPS25980 16.9V OVLO variant is 0.1V above the theoretical max battery voltage of 16.8V (4S Li-ion at 4.2V/cell). To maintain an engineering margin of
+> ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)**. This specification must be enforced in the battery procurement specification and verified
+> during incoming inspection. OVLO threshold accuracy must be confirmed against the TPS25980 datasheet (full threshold tolerance band required before production release — see §8, OA-01).
 
-> **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting EN 55032 Class B conducted emissions compliance.
+> **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative
+> TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting EN 55032 Class B conducted
+> emissions compliance.
 
 
 ### 3.3 5V Buck Converters — Dual-Phase Interleaving Design Rationale
@@ -125,7 +139,8 @@ Two **TI LMQ61460-Q1** (3–36V input, 6A rated, VQFN-15-HR, automotive-grade AE
 
 **Why two instead of one larger regulator?**
 
-A single 12A-class Buck regulator would satisfy the current requirement but would concentrate switching noise into one location, increase thermal density, and reduce component utilisation headroom. The dual 6A approach provides:
+A single 12A-class Buck regulator would satisfy the current requirement but would concentrate switching noise into one location, increase thermal density, and reduce component utilisation headroom.
+The dual 6A approach provides:
 - 70.8% utilisation of each IC (below the 75% rule) ✓
 - Thermal load distributed across two thermal pads
 - Redundant current delivery — loss of one IC degrades output to 6A (sufficient for CM5 safe shutdown)
@@ -178,9 +193,11 @@ U2A SW node
 
 Both SN74LVC1G14 instances are powered from 3V3_ENIG (available post-LDO startup). 100nF X7R decoupling capacitors are placed within 0.5mm of each VCC pin.
 
-**Phase accuracy:** At 400 kHz nominal, the RC delay produces a 180° offset. With DRSS modulation at ±5.5% (frequency range 378–422 kHz), the fixed RC delay introduces ±8° phase variation. The residual asymmetric ripple at this offset error is less than 5% of the single-phase ripple amplitude — acceptable for all certification purposes.
+**Phase accuracy:** At 400 kHz nominal, the RC delay produces a 180° offset. With DRSS modulation at ±5.5% (frequency range 378–422 kHz), the fixed RC delay introduces ±8° phase variation. The
+residual asymmetric ripple at this offset error is less than 5% of the single-phase ripple amplitude — acceptable for all certification purposes.
 
-**DRSS coherence:** Because U2B's SYNC pin tracks U2A's switching signal directly (including DRSS modulation), both ICs share coherent spread-spectrum dithering. If each IC ran independent DRSS, inter-modulation products would appear at sum and difference frequencies, partially defeating the spread-spectrum benefit. Coherent DRSS avoids this.
+**DRSS coherence:** Because U2B's SYNC pin tracks U2A's switching signal directly (including DRSS modulation), both ICs share coherent spread-spectrum dithering. If each IC ran independent DRSS,
+inter-modulation products would appear at sum and difference frequencies, partially defeating the spread-spectrum benefit. Coherent DRSS avoids this.
 
 #### 3.3.4 EMI Benefit Quantification
 
@@ -207,11 +224,14 @@ Both SN74LVC1G14 instances are powered from 3V3_ENIG (available post-LDO startup
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
-The 37 CPLDs (MAX II EPM240T100C5N) share this rail as their VCCIO (I/O voltage reference). Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and potential JTAG chain errors. A linear LDO with 72dB PSRR provides isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional filtering.
+The 37 CPLDs (MAX II EPM240T100C5N) share this rail as their VCCIO (I/O voltage reference). Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
+potential JTAG chain errors. A linear LDO with 72dB PSRR provides isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional
+filtering.
 
 ### 3.5 Component Utilisation Policy
 
-All active components are operated at ≤75% of their rated maximum under worst-case conditions (maximum ambient temperature, maximum specified load). This provides thermal and electrical derating consistent with military component derating standards.
+All active components are operated at ≤75% of their rated maximum under worst-case conditions (maximum ambient temperature, maximum specified load). This provides thermal and electrical derating
+consistent with military component derating standards.
 
 **Peak load budget (5V_MAIN bus):**
 
@@ -233,19 +253,25 @@ All active components are operated at ≤75% of their rated maximum under worst-
 | TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
 
-> *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.5A + LTC3350 supercap charge 1A (5V side) = 9.5A at 5V = 47.5W. Buck input (÷0.87) = 54.6W. At 12V PoE bus: 54.6W / 12V = **4.55A eFuse current**. eFuse utilisation (ILIM=7A): 4.55A / 7A = **65.0%** ✓. Steady state (no supercap charge): 8.5A × 5V / (0.87 × 12V) = 4.07A / 7A = **58.1%** ✓. At USB-C 15V: 54.6W / 15V = 3.64A / 7A = **52.0%** ✓. All cases within the 75% derating rule.
+> *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.5A + LTC3350 supercap charge 1A (5V side) = 9.5A at 5V = 47.5W. Buck
+> input (÷0.87) = 54.6W. At 12V PoE bus: 54.6W / 12V = **4.55A eFuse current**. eFuse utilisation (ILIM=7A): 4.55A / 7A = **65.0%** ✓. Steady state (no supercap charge): 8.5A × 5V / (0.87 × 12V) =
+> 4.07A / 7A = **58.1%** ✓. At USB-C 15V: 54.6W / 15V = 3.64A / 7A = **52.0%** ✓. All cases within the 75% derating rule.
 >
-> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~2 minutes from cold start), total 5V_MAIN load = 8.5A (system) + 0.5A (LTC3350 supercap charge) = 9.0A. Buck input at 87% efficiency = 9.0A × 5V / 0.87 = 51.7W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 51.7W / 72W = **71.8%** ✓. Steady-state utilisation (fully charged): 8.5A × 5V / 0.87 = 48.9W / 72W = **67.9%** ✓. Both within the 75% design rule at all times. OA-02 resolved — see Open Actions.
+> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~2 minutes from cold start), total 5V_MAIN load = 8.5A (system) + 0.5A
+> (LTC3350 supercap charge) = 9.0A. Buck input at 87% efficiency = 9.0A × 5V / 0.87 = 51.7W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 51.7W / 72W =
+> **71.8%** ✓. Steady-state utilisation (fully charged): 8.5A × 5V / 0.87 = 48.9W / 72W = **67.9%** ✓. Both within the 75% design rule at all times. OA-02 resolved — see Open Actions.
 
 ### 3.6 Thermal Management Design Intent
 
 The Power Module is housed in a 42mm aluminium "Power Can" enclosure with internal compression ribs. The thermal design provides a continuous heat path from component junctions to the enclosure:
 
-- **Switching regulator thermal pads** → type VII epoxy-filled VIPPO via matrix (hexagonal pattern) → L4 copper plane → exposed ENIG thermal pad on PCB bottom → Gelid GP-Ultimate thermal interface material (15 W/mK) → aluminium enclosure wall
+- **Switching regulator thermal pads** → type VII epoxy-filled VIPPO via matrix (hexagonal pattern) → L4 copper plane → exposed ENIG thermal pad on PCB bottom → Gelid GP-Ultimate thermal interface
+  material (15 W/mK) → aluminium enclosure wall
 - **LDO thermal pad** → same via matrix → shared thermal zone with supercapacitor area
 - **Enclosure** → ambient via natural convection; no forced cooling required for rated load
 
-The thermal system is designed to manage the heat dissipation resulting from 100% component utilisation, despite the 75% operational limit, providing a safety margin for unexpected load spikes and ambient temperature excursions consistent with IEC 60068-2 environmental test requirements.
+The thermal system is designed to manage the heat dissipation resulting from 100% component utilisation, despite the 75% operational limit, providing a safety margin for unexpected load spikes and
+ambient temperature excursions consistent with IEC 60068-2 environmental test requirements.
 
 ---
 
@@ -262,7 +288,8 @@ The Power Module implements a two-stage common-mode and differential filter at t
 | Pi-filter | Moulded inductors + 50V X7R ceramic capacitors | LC Pi filter | Differential noise attenuation across Buck switching band |
 | Y-capacitors | X7R ceramics, 50V, to GND_CHASSIS | Capacitive shunt to chassis | Common-mode current path to chassis; reduces conducted DM→CM conversion |
 
-Y-capacitors are placed at the power entry point, between the power rails and GND_CHASSIS, before any switching circuitry. This ensures common-mode noise from the source is shunted to chassis before entering the board.
+Y-capacitors are placed at the power entry point, between the power rails and GND_CHASSIS, before any switching circuitry. This ensures common-mode noise from the source is shunted to chassis before
+entering the board.
 
 ### 4.2 Conducted Emissions — Switching Regulator Strategy
 
@@ -275,15 +302,19 @@ See §3.3 for the full dual-phase interleaving design rationale. Key measures:
 
 ### 4.3 Radiated Emissions — Grounding Architecture
 
-**Single-point GND_CHASSIS bond:** As described in §2.2. The bond point is located physically between the OR-ing network and the eFuse, at the "clean/dirty" boundary. Copper pours for GND_CHASSIS and signal GND are separated everywhere except this one point, with a clear visual gap on all PCB layers maintained in the layout.
+**Single-point GND_CHASSIS bond:** As described in §2.2. The bond point is located physically between the OR-ing network and the eFuse, at the "clean/dirty" boundary. Copper pours for GND_CHASSIS and
+signal GND are separated everywhere except this one point, with a clear visual gap on all PCB layers maintained in the layout.
 
-**GND_CHASSIS ring:** A 4-layer GND_CHASSIS copper ring with 2.5mm staggered via-stitching runs the perimeter of the PCB, providing a low-impedance return path for ESD events and shielding the board interior from external fields.
+**GND_CHASSIS ring:** A 4-layer GND_CHASSIS copper ring with 2.5mm staggered via-stitching runs the perimeter of the PCB, providing a low-impedance return path for ESD events and shielding the board
+interior from external fields.
 
-**Aluminium enclosure:** The "Power Can" enclosure acts as a Faraday shield for radiated emissions above approximately 300 MHz. All screws connecting the PCB to the enclosure pass through GND_CHASSIS copper, maintaining shield continuity.
+**Aluminium enclosure:** The "Power Can" enclosure acts as a Faraday shield for radiated emissions above approximately 300 MHz. All screws connecting the PCB to the enclosure pass through GND_CHASSIS
+copper, maintaining shield continuity.
 
 ### 4.4 ESD Protection Coverage
 
-All externally accessible connectors on the Power Module are protected against ESD events per IEC 61000-4-2 (contact discharge ±4kV, air discharge ±8kV minimum). TVS protection arrays shunt to GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
+All externally accessible connectors on the Power Module are protected against ESD events per IEC 61000-4-2 (contact discharge ±4kV, air discharge ±8kV minimum). TVS protection arrays shunt to
+GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
 
 | Interface | Protection Device | Package | Notes |
 |---|---|---|---|
@@ -293,7 +324,8 @@ All externally accessible connectors on the Power Module are protected against E
 | Battery SMBus (SDA/SCL) | TPD2E2U06 (D2) | SON-6 | SMBus differential pair protection |
 | Battery Presence (BATT_PRES_N) | TPD1E10B06 (D1) | SOD-923 | Single-line presence detect |
 
-**Internal connections (Board-to-Board links):** Internal BtB connectors (Link-Alpha, Link-Beta) are not individually ESD-protected in the standard configuration, as they are considered internal interfaces not subject to user contact during normal operation.
+**Internal connections (Board-to-Board links):** Internal BtB connectors (Link-Alpha, Link-Beta) are not individually ESD-protected in the standard configuration, as they are considered internal
+interfaces not subject to user contact during normal operation.
 
 **Diagnostic test banks:** ESD protection on diagnostic banks is deferred to the post-prototype stage (see §8, deferred item DA-01).
 
@@ -301,7 +333,8 @@ All externally accessible connectors on the Power Module are protected against E
 
 ## 5. Component Derating Evidence
 
-All components operate within the following derating limits. Calculations are based on worst-case ambient temperature of **55°C** (IEC 60068-2 industrial maximum ambient; CE/UKCA design basis) unless stated. The thermal enclosure is sized to handle 70°C ambient at 100% utilisation, providing additional headroom for future military certification assessment.
+All components operate within the following derating limits. Calculations are based on worst-case ambient temperature of **55°C** (IEC 60068-2 industrial maximum ambient; CE/UKCA design basis) unless
+stated. The thermal enclosure is sized to handle 70°C ambient at 100% utilisation, providing additional headroom for future military certification assessment.
 
 | Component Class | Parameter | Derating Applied | Basis |
 |---|---|---|---|
@@ -335,13 +368,18 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 | Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.6% ✓ |
 | Initial supercap charge (+2.87W Buck input for 0.5A @ 5V) | 45.4W | 89.0% ❌ | 63.6% ✓ |
 
-> Initial supercap charge adds 2.87W (0.5A at 5V / 87% Buck efficiency) to PoE input load for approximately 2 minutes from cold start. Worst-case PoE utilisation during this window: 51.7W / 72W = 71.8% — within the 75% design rule. System must be powered for ≥2 minutes before full hold-up protection (14.5 seconds) is available. Normal minimum operational session is 30+ minutes; this constraint is not operationally significant.
+> Initial supercap charge adds 2.87W (0.5A at 5V / 87% Buck efficiency) to PoE input load for approximately 2 minutes from cold start. Worst-case PoE utilisation during this window: 51.7W / 72W =
+> 71.8% — within the 75% design rule. System must be powered for ≥2 minutes before full hold-up protection (14.5 seconds) is available. Normal minimum operational session is 30+ minutes; this
+> constraint is not operationally significant.
 
-**PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design using:
+**PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design
+using:
 - **TPS2372-4** (TI, QFN-16): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
 - **TPS23730** (TI, WQFN-20): Active Clamp Forward (ACF) DC-DC controller, 200kHz, 12V output (R_VFB feedback resistors configured for 12V), PSR mode
-- **T2**: **Coilcraft POE600F-12LD** — off-the-shelf 60W ACF PoE isolation transformer; 12V output, 36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. Catalogue stock part ordered direct from Coilcraft (coilcraft.com). No custom winding required.
-  - **OR-ing priority note:** PoE at 12V is lower than USB-C at 15V. The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal to enforce PoE priority when PoE is live. Battery path activates only if both higher-priority sources are absent.
+- **T2**: **Coilcraft POE600F-12LD** — off-the-shelf 60W ACF PoE isolation transformer; 12V output, 36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. Catalogue stock part ordered direct from
+  Coilcraft (coilcraft.com). No custom winding required.
+  - **OR-ing priority note:** PoE at 12V is lower than USB-C at 15V. The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal to enforce PoE priority when PoE is live. Battery
+    path activates only if both higher-priority sources are absent.
 
 **System capacity: 72W** (TPS2372-4 external hotswap allows TPS23730 DC-DC to operate beyond the 51W Type 3 integrated limit; confirmed by TI PMP23365 reference design at 72W/Class 8 with TPS2372-4).
 
@@ -351,7 +389,8 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 
 ## 7. Component Obsolescence Register
 
-This section records components that have active end-of-life (EOL) or product change notices (PCN) at the time of design. For each such component, the design team's acceptance rationale and any mitigation plan are documented.
+This section records components that have active end-of-life (EOL) or product change notices (PCN) at the time of design. For each such component, the design team's acceptance rationale and any
+mitigation plan are documented.
 
 ### 7.1 MAX II EPM240T100C5N (CPLD — Multiple Boards)
 
@@ -369,10 +408,13 @@ This section records components that have active end-of-life (EOL) or product ch
 
 The MAX II EPM240T100C5N is accepted for use in the prototype design for the following reasons:
 
-1. **Cost effectiveness:** These devices are significantly lower in cost than their recommended successors (MAX 10, Cyclone 10 LP), making them well-suited for prototype-stage development where design changes are expected.
+1. **Cost effectiveness:** These devices are significantly lower in cost than their recommended successors (MAX 10, Cyclone 10 LP), making them well-suited for prototype-stage development where
+   design changes are expected.
 2. **Developer tooling:** The designer holds a MAX II FPGA/CPLD development board, enabling direct verification of programming chains and JTAG connectivity prior to committing to PCB fabrication.
-3. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6–12 months) is considered acceptable, particularly given the availability of remaining stock from reputable distributors.
-4. **Pin and feature compatibility:** The MAX II EPM240T100C5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising development risk.
+3. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6–12 months) is considered acceptable,
+   particularly given the availability of remaining stock from reputable distributors.
+4. **Pin and feature compatibility:** The MAX II EPM240T100C5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising
+   development risk.
 
 **Mitigation Plan (Production Stage):**
 
