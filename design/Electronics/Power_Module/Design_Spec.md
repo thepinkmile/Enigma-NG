@@ -132,7 +132,7 @@ GND ──────┴──────────────────�
   TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
-  * R-Ladder: 732kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
+  * R-Ladder: 232kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
 * **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where:
     * `VICHARGE = 1.485V` (LTC3350 internal reference).
@@ -342,7 +342,7 @@ TPS25980 latches OFF under the following fault conditions:
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND ⚠️ 32-wk lead; alt: Newark 75X1218 | — |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND | — |
 | Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. ⚠️ Note: LM74700-Q1 controls one MOSFET per IC instance; verify whether U6 is singular or three instances at schematic capture. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — |
-| R1 | eFuse UVLO upper resistor | 732kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB7323V | P732KBYCT-ND | — |
+| R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2323V | P232KBYCT-ND | — |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2872V | P28.7KBYCT-ND | — |
 | R3 | eFuse OVLO set resistor | 53.6kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB5362V | P53.6KBYCT-ND | — |
 | R4, R5 | ETH Activity LEDs | 330Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
@@ -400,8 +400,7 @@ TPS25980 latches OFF under the following fault conditions:
 > * **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical
 > through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
 > Mouser: `538-43650-0519`; DigiKey WM number: `WM7843-ND` ⚠️ verify exact WM number at digikey.co.uk.
-> * **R1 ERA-3ARB7323V (732kΩ)** — Part not widely listed on FindChips/Octopart (73.2kΩ variant ERA-3ARB7322V is more common). The 732kΩ value is a valid E96 standard value and should exist in
-> Panasonic's range. Confirm stock at Mouser (667-ERA-3ARB7323V) or DigiKey before BOM freeze.
+> * **R1 ERA-3ARB2323V (232kΩ)** — Corrected from 732kΩ (calculation error). R1 = 28700 × (11/1.21 − 1) = 232kΩ for 11V UVLO threshold with R2 = 28.7kΩ. E96 standard value 232kΩ. Confirm stock at Mouser (667-ERA-3ARB2323V, Panasonic ERA-3ARB2323V) or DigiKey (P232KBYCT-ND) before BOM freeze.
 > * **R4–R13 ERJ-3EKF series** — These are Panasonic **1% thick-film** resistors (corrected from "0.1% Thin-Film" in earlier drafts). The ERA-3ARB series (R1–R3) remains 0.1% thin-film for precision
 > UVLO/OVLO dividers. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
 > * **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω
