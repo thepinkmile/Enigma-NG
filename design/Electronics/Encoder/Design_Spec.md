@@ -129,8 +129,8 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | C17-C21 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | BT1-128 | PCB spade blade terminals (2 per jack, 128 total) | 6.35mm (¼″) straight vertical PCB-mount male blade tab — Row 1 (BT1-64): ENC Tip signal; Row 2 (BT65-128): Switch insertion-detect | Through-hole vertical | 534-1285 | A33376-ND | — |
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
-| D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |
-| J2 | Data Link Connector | 26-pin 2×13 shrouded box header, 2.54mm | 2.54mm | ??? | ??? | ??? |
+| D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |
+| J2 | Data Link Connector | 26-pin 2×13 shrouded box header, 2.54mm | 2.54mm | 538-22-23-2261 | WM2913-ND | ??? |
 | J3 | Diagnostic probe pad bank (bare ENIG gold pads — logic analyser / ICT access) | 2×8 bare PCB pads | 2.54mm | N/A | N/A | N/A |
 | SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (lamp/redundancy TBD). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
 | BT129-192 | PCB spade blade terminals — KEY_COM (Row 3) | Keystone 1285 — 6.35mm straight vertical PCB-mount male blade tab. COM1 of each keyboard switch pole-1. | Through-hole vertical | 534-1285 | A33376-ND | — |

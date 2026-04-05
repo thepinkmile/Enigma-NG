@@ -20,7 +20,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 ## 3. Interface & Wiring
 
-* **USB:** Internal 4-pin header to the Controller Board's USB 2.0 Hub.
+* **Power + USB:** Internal **6-pin** header (J1: 3V3_ENIG, GND, VBUS, D−, D+, GND) connecting to the Controller Board's USB 2.0 Hub and 3V3_ENIG supply — see **JTAG_Daughterboard/Board_Layout.md** for pinout. GND_CHASSIS bond point is at J1.
 * **JTAG Pinout (MPSSE Mode):**
   * AD0 -> **TCK** (Clock)
   * AD1 -> **TDI** (Data In)
@@ -59,7 +59,7 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C4 | Decoupling | 0.1µF | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C5-C9 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | USB header | 4-pin | 2.54mm | 538-22-23-2041 | WM2897-ND | ??? |
+| J1 | Power + USB header (3V3_ENIG, GND, VBUS, D−, D+, GND) | **6-pin** 2×3 shrouded | 2.54mm | 538-22-23-2061 | WM2899-ND | ??? |
 | J2 | JTAG header | 10-pin | 2.54mm | 538-22-23-2101 | WM2901-ND | ??? |
 | R1, R2 | Series resistors (DEC-016 BtB/intra-board termination — JTAG output to LINK-BETA) | 33Ω | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |

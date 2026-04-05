@@ -5,7 +5,7 @@ This board implements our version of an Intel (Altera) USB Blaster II device for
 ## Component Areas
 
 ```text
-TOP VIEW (L1) - 2-Layer / 1oz Copper
+TOP VIEW (L1) - 4-Layer (DEC-017) / 2oz Copper
  _____________________________________________________________________________ 
 |                                                                             |
 |   [ POWER HEADER ] <--- 6-Pin Header (USB + Power)                          |

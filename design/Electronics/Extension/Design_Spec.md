@@ -44,7 +44,7 @@
 * **Finish:** ENIG (Gold) for connector and diagnostic pad surfaces.
 * **Layer Mapping:** L1: Signal (JTAG pass-through / routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
 * **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
-* **JTAG Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)**
+* **JTAG Trace Width Rule:** The Extension board carries only the **TDO_RETURN** signal on its J1/J2 pass-through path (TCK, TMS, and TDI travel to the rotor stack via Stator J2–J4, not via the Extension Port). TDO_RETURN traces on L1 shall be routed at **0.127 mm (5 mil)**
   over the L2 GND plane, targeting **50 Ω controlled impedance**. See
   `design/Electronics/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
 
@@ -53,8 +53,8 @@
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Extension Port IN header | 16-pin 2×8 shrouded box | 2.54mm | ??? | ??? | ??? |
-| J2 | Extension Port OUT header | 16-pin 2×8 shrouded box | 2.54mm | ??? | ??? | ??? |
+| J1 | Extension Port IN header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
+| J2 | Extension Port OUT header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
 | J3–J8 | Rotor interface connectors (3 per side × 2 sides — spec pending) | TBD | TBD | ??? | ??? | ??? |
 | J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |

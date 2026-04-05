@@ -7,8 +7,8 @@
 ## Overview
 
 The CM5 (Raspberry Pi Compute Module 5) must respond to two hardware power events:
-1. **LTC3350 BACKUP trigger** — early warning that mains power has failed and the supercap hold-up has begun (~310mV above the PWR_GD trip point, ~14.5 seconds of hold-up available)
-2. **PWR_GD LOW** — last-resort signal from MCP121T-450E voltage supervisor when 5V_MAIN falls below 4.5V
+1. **PWR_GD LOW** — primary early-warning signal from MCP121T-450E voltage supervisor when 5V_MAIN falls below 4.5V. With R14 corrected to 26.7kΩ (DEC-xxx, PM-06 fix), LTC3350 backup activates at 4.40V — *after* PWR_GD — so PWR_GD is now the primary shutdown trigger with ~14.5 seconds of supercap hold-up available once triggered.
+2. **LTC3350 BACKUP trigger** — secondary confirmation that supercap hold-up has engaged (activates ~100mV below PWR_GD threshold). Poll this to confirm hold-up is active and estimate remaining hold-up time.
 
 The recommended approach is **Option C**: poll the LTC3350 via I²C for the BACKUP alert as the primary early-warning mechanism, with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full 14.5-second hold-up window to perform a graceful shutdown.
 
@@ -17,7 +17,7 @@ The recommended approach is **Option C**: poll the LTC3350 via I²C for the BACK
 | Signal | GPIO | Pull-up | Source | Trigger |
 |---|---|---|---|---|
 | PWR_GD | TBD (see Controller/Design_Spec.md) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | Active LOW: 5V_MAIN < 4.5V |
-| LTC3350 ALERT | I²C (0x09 address) | R7/R8 4.7kΩ on SDA/SCL | LTC3350 U3 | BACKUP bit set when 5V_MAIN < 4.81V |
+| LTC3350 ALERT | I²C (0x09 address) | R7/R8 4.7kΩ on SDA/SCL | LTC3350 U3 | BACKUP bit set when 5V_MAIN < 4.40V (R14=26.7kΩ; see Power_Module/Design_Spec.md PM-06 fix) |
 
 ## Option C: Recommended Implementation
 
@@ -123,10 +123,11 @@ HandlePowerKey=poweroff
 
 | Event | Time from power loss | Action |
 |---|---|---|
-| 5V_MAIN < 4.81V | ~0ms | LTC3350 BACKUP asserted; I²C daemon detects within 500ms |
-| Daemon initiates `systemctl poweroff` | ~500ms | OS begins graceful shutdown |
+| 5V_MAIN < 4.50V | ~0ms | MCP121T fires; PWR_GD LOW → I²C daemon detects within 500ms; initiates graceful shutdown |
+| LTC3350 BACKUP activates | ~100mV / ~10ms later | Hold-up engaged; 14.5s window begins |
+| Daemon initiates `systemctl poweroff` | ~500ms from PWR_GD | OS begins graceful shutdown |
 | OS syncs filesystems, halts | ~10–15s | ROTOR_EN de-asserted; CM5 PMIC halted |
-| 5V_MAIN < 4.50V | ~14.5s | MCP121T fires; PWR_GD LOW (backstop, already halted) |
+| 5V_MAIN < 4.40V | ~shortly after PWR_GD | LTC3350 BACKUP asserted (supercaps holding) |
 | 5V_MAIN → 0V | ~15–16s | Supercap fully depleted |
 
 ## Dependencies
@@ -210,6 +211,51 @@ elif batt_active:
 else:
     set_led(1, 0, 0)   # Red — No known source (fault)
 ```
+
+## INA219 Rotor Stack Current Monitor
+
+The Stator board carries an INA219 (U1, I2C address **0x45**) monitoring the 3V3_ENIG current to the rotor stack via a **20mΩ shunt resistor** (R1 on Stator, 1206, 0.5W, Kelvin-sense).
+
+### Hardware Parameters
+
+| Parameter | Value | Notes |
+|---|---|---|
+| I2C address | 0x45 | Set by A0/A1 pin strapping on Stator INA219 |
+| Shunt resistance | **0.020 Ω (20mΩ)** | Must be hardcoded in firmware — do not read from config |
+| PGA range | ±80mV | Covers 0–4A range (3A LDO max → 60mV drop) |
+| ADC resolution | 12-bit | |
+| Current LSB | **2mA** | = 80mV full-scale / 2^11 steps / 0.020Ω |
+| Calibration register | **0x0400** (1024 decimal) | CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.002 × 0.020) |
+
+### Firmware Note
+
+> ⚠️ The INA219 calibration register must be written on every power-up before any current readings are taken. Use **CAL = 0x0400** (1024). If this is skipped, the `Current_Register` will read zero regardless of actual current.
+
+```python
+INA219_ADDR    = 0x45        # Rotor stack monitor on Stator board
+REG_CONFIG     = 0x00
+REG_CAL        = 0x05
+REG_SHUNT_V    = 0x01
+REG_CURRENT    = 0x04
+
+R_SHUNT        = 0.020       # 20mΩ — hardcoded; do not change without updating Stator BOM
+CURRENT_LSB    = 0.002       # 2mA per LSB
+
+# INA219 config: 32V bus range, PGA /2 (±80mV shunt), 12-bit, continuous
+CONFIG_VALUE   = 0x219F
+
+bus.write_word_data(INA219_ADDR, REG_CONFIG, CONFIG_VALUE)
+bus.write_word_data(INA219_ADDR, REG_CAL, 0x0400)  # CAL = 1024
+
+def read_rotor_current_mA():
+    raw = bus.read_word_data(INA219_ADDR, REG_CURRENT)
+    if raw > 32767: raw -= 65536   # signed 16-bit
+    return raw * CURRENT_LSB * 1000  # convert to mA
+```
+
+> **Cross-ref:** See `Controller/Design_Spec.md §4` for shunt resistor spec and `design/Power_Budgets.md` for expected current range (2.20A worst-case typical).
+
+The **INA219 Power Module Monitor** (for 5V_MAIN) is at I2C address **0x40** on the Power Module board (separate device, different rail).
 
 ## Open Items
 
