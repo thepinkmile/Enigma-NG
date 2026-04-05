@@ -32,14 +32,16 @@ There are also sensors used to detect the current position of the outer ring usi
 
 * **Mounting:** Each rotor PCB has two **M2.5 alignment holes**.
 * **Retention:** Once slotted into the Stator, a **threaded rod** (mimicking the original Enigma spindle) passes through the center of all 30 rotors to lock them into a single, rigid block.
-* **Hot-Swappable:** The Samtec Edge-Rate connectors are rated for high mating cycles, allowing individual rotors to be pulled for "repair" or reconfiguration without tools.
+* **Hot-Swappable:** The Samtec ERM8 Edge-Rate connectors are rated for high mating cycles, allowing individual rotors to be pulled for "repair" or reconfiguration without tools.
+* **Connector Configuration:** Each rotor carries **3 separate ERM8 connectors** (JTAG, Power, ENC\_DATA) mating into matching ERF8 female sockets on the Stator.
+  Physical separation of connector types provides keying — it is mechanically impossible to mismate a power connector into a JTAG socket.
 
 ## 3. Electrical Requirements
 
 ### 3.1 Power Management
 
 * **Input:** 3.3V/**50mA per rotor** (sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta).
-  See `design/Power_Budgets.md` for full budget — 30 rotors draw 1.50A typical; the 150mA/rotor figure previously used was a conservative overestimate.
+  See `design/Electronics/Power_Budgets.md` for full budget — 30 rotors draw 1.50A typical; the 150mA/rotor figure previously used was a conservative overestimate.
 * **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** capacitors near the power-entry pins in a **Symmetrical Star/Spoke pattern**.
 
@@ -59,10 +61,56 @@ There are also sensors used to detect the current position of the outer ring usi
   * **L4:** Signal (secondary routing + data plate silkscreen on bottom).
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)**
   width over the L2 GND plane, targeting **50 Ω controlled impedance** per the JLC04161H-7628
-  stackup (h=0.087mm, t=0.035mm, Eᵣ=4.4). See `design/Electronics/JTAG_Integrity.md` and DEC-016.
+  stackup (h=0.087mm, t=0.035mm, Eᵣ=4.4). See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **Shielding:** 4-layer PCB with solid GND plane (L2) to isolate digital switching from the high-accuracy magnetic encoder.
 
-### 3.4 PCB Fabrication (JLCPCB Specs)
+### 3.4 Connector Pinouts (Rotor Interface — Authority Document)
+
+> This section is the **authoritative pinout definition** for all Rotor-to-Stator connectors.
+> All other boards (Stator) cross-reference this section. See DEC-018 for ownership rationale.
+
+#### J1 — JTAG Interface (ERM8-005, 10-pin 2×5, 0.8mm pitch)
+
+| Pin | Row A | Pin | Row B |
+| :--- | :--- | :--- | :--- |
+| 1 | GND | 2 | TCK |
+| 3 | GND | 4 | TMS |
+| 5 | GND | 6 | TDI |
+| 7 | GND | 8 | SYS\_RESET\_N |
+| 9 | GND | 10 | TDO |
+
+#### J2 — Power Interface (ERM8-005, 10-pin 2×5, 0.8mm pitch)
+
+| Pin | Row A | Pin | Row B |
+| :--- | :--- | :--- | :--- |
+| 1 | 3V3\_ENIG | 2 | GND |
+| 3 | 3V3\_ENIG | 4 | GND |
+| 5 | 3V3\_ENIG | 6 | GND |
+| 7 | 3V3\_ENIG | 8 | GND |
+| 9 | 3V3\_ENIG | 10 | GND |
+
+> 5 pins × 2.2 A/pin = **11.0 A capacity** — far exceeds the 50 mA/rotor requirement.
+> 5 power + 5 GND ensures fully balanced current return paths.
+
+#### J3 — Encoder Data Interface (ERM8-010, 20-pin 2×10, 0.8mm pitch)
+
+| Pin | Row A | Pin | Row B |
+| :--- | :--- | :--- | :--- |
+| 1 | ENC\_IN\[0\] | 2 | ENC\_OUT\[0\] |
+| 3 | ENC\_IN\[1\] | 4 | ENC\_OUT\[1\] |
+| 5 | ENC\_IN\[2\] | 6 | ENC\_OUT\[2\] |
+| 7 | ENC\_IN\[3\] | 8 | ENC\_OUT\[3\] |
+| 9 | ENC\_IN\[4\] | 10 | ENC\_OUT\[4\] |
+| 11 | ENC\_IN\[5\] | 12 | ENC\_OUT\[5\] |
+| 13 | GND | 14 | GND |
+| 15 | GND | 16 | GND |
+| 17 | GND | 18 | GND |
+| 19 | GND | 20 | GND |
+
+> 12 signal pins + 8 GND fill pins. All spare pins assigned as GND for improved EMI shielding
+> and signal return paths around the encoder data bus.
+
+### 3.5 PCB Fabrication (JLCPCB Specs)
 
 * **Layers:** 4-Layer (JLC04161H-7628).
 * **Finish:** ENIG (Gold) for the edge-rate connector pads.
@@ -76,7 +124,9 @@ There are also sensors used to detect the current position of the outer ring usi
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 10V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Edge-rate connector (MALE header — ERM8-020-05.0-S-DV-K-TR, 40-pin) | Samtec ERM8 | 0.8mm pitch | 200-ERM8020050SDVKTR | SAM12065-ND | N/A — customer-supplied |
+| J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | ⚠️ verify | N/A — customer-supplied |
+| J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | SAM8610CT-ND (CT) / SAM8610TR-ND (T&R) / SAM8610DKR-ND (DKR) | C374877 |
+| J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND (CT) / SAM8610TR-ND (T&R) / SAM8610DKR-ND (DKR) | C374877 |
 | U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |
 

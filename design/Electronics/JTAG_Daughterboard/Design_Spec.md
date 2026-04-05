@@ -50,9 +50,9 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 * **JTAG Signal Integrity:**
   * **R1, R2 (33Ω):** Series termination on FT232H TDI and TCK outputs, placed within 2mm of the FT232H pins before the JTAG header (J2).
     Source impedance ≈ 53Ω, matched to the 50Ω controlled-impedance traces on the receiving board. Per DEC-016 intra-board/BtB termination rule.
-    See `design/Electronics/JTAG_Integrity.md`.
+    See `design/Electronics/Investigations/JTAG_Integrity.md`.
   * **Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over the L2 GND plane, targeting **50 Ω controlled impedance**. See DEC-016.
-  * **Pull Resistors:** TMS 10kΩ pull-up and TCK 10kΩ pull-down near J2 header to hold JTAG TAP in defined state when idle. See JTAG best-practice note in `design/Electronics/JTAG_Integrity.md`.
+  * **Pull Resistors:** TMS 10kΩ pull-up and TCK 10kΩ pull-down near J2 header to hold JTAG TAP in defined state when idle. See JTAG best-practice note in `design/Electronics/Investigations/JTAG_Integrity.md`.
 
 ---
 

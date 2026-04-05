@@ -15,8 +15,8 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ## 2. Core Features
 
-* **Modular Slots:** 30x [Samtec CLP Series](https://www.samtec.com) low-profile female sockets.
-* **Power Tree:** A 2oz copper pour for the `+3V3_ENIG` rail to handle the **2.20A worst-case** load without voltage sag (see `design/Power_Budgets.md`).
+* **Modular Slots:** 30x Samtec ERF8 female socket sets (3 connectors per slot: ERF8-005 JTAG, ERF8-005 Power, ERF8-010 ENC\_DATA) mating with the ERM8 male headers on each Rotor.
+* **Power Tree:** A 2oz copper pour for the `+3V3_ENIG` rail to handle the **2.20A worst-case** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
   The 5A figure previously quoted was a conservative design margin; the LDO hard limit is 3.0A.
 
 ### GND_CHASSIS Single-Point Bond
@@ -34,7 +34,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Decoupling Rule:** Use **8x 0.1µF X7R** local decoupling capacitors per EPM240T100C5N IC (one per VCC pin).
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the Link-Beta power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **Ferrite Bead Rule:** Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
-* **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Power_Budgets.md`); with 4 parallel feeds this is ~**375mA per bead** nominal sharing,
+* **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Electronics/Power_Budgets.md`); with 4 parallel feeds this is ~**375mA per bead** nominal sharing,
   well within the **3.5A** bead rating. Total 3V3_ENIG worst case including all CPLDs and encoders: 2.20A (27% headroom vs 3.0A LDO).
 * **JTAG Return:** Includes 10kΩ pull-up on TDO_RETURN at the Link-Beta exit (R2).
 * **JTAG Pull Resistors (×4, placed near Stator CPLD U1):**
@@ -45,7 +45,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
     out of reset by default.
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TCK, TMS, TDI, TDO, SYS_RESET_N) shall
   be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting **50 Ω controlled
-  impedance**. See `design/Electronics/JTAG_Integrity.md` and DEC-016.
+  impedance**. See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **JTAG Series Termination at Encoder Port Outputs (R7–R15):** 75 Ω series resistors placed within
   2 mm of each J6/J7/J8 connector pad **on the Stator PCB**, targeting 95 Ω source impedance to match the ~100 Ω IDC
   ribbon cable:
@@ -73,10 +73,11 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
     * `Extension/Design_Spec.md`
     * `Reflector/Design_Spec.md`
-* **Rotor Interconnect:** (Female on input side and Male on output side)
-  * **JTAG:** 2x5 2.54mm Shrouded Header (GND|TCK|GND|TMS|GND|TDI|GND|RST|GND).
-  * **Power:** 2X4 2.54mm Shrouded Header (4x3V3_ENIG, 4xGND).
-  * **ENC DATA:** 2x6 2.54mm Shouded Header (ENC_IN [0:5], ENC_OUT [0:5]).
+* **Rotor Interconnect:** Each of the 30 rotor slots uses 3 ERF8 female sockets (FEMALE, mating with ERM8 MALE headers on each Rotor PCB).
+  * **JTAG:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — TCK, TMS, TDI, TDO, SYS\_RESET\_N with interleaved GND.
+  * **Power:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — 5× 3V3\_ENIG, 5× GND. Same part as JTAG socket.
+  * **ENC DATA:** ERF8-010-05.0-S-DV-K-TR (20-pin 2×10, 0.8mm pitch) — ENC\_IN\[0:5\], ENC\_OUT\[0:5\], 8× GND fill.
+  * **Cross-ref:** Authoritative pinout is defined in `Rotor/Design_Spec.md §3.4` (DEC-018 ownership).
 * **Diagnostics:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
 
 ## 5. Power Telemetry (The "Encryption Load")
@@ -103,8 +104,8 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF (X7R) 50V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Link-Beta Connector (MALE header — mates with ERF8-020 female socket on Controller) | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | N/A — customer-supplied |
-| J2–J4 | Rotor Interface connectors (×3 rotor positions, one per position) | Type TBD — cross-ref **Rotor/Board_Layout.md** for pinout and mating spec | TBD pending mechanical design | ??? | ??? | ??? |
+| J1 | Link-Beta Connector (MALE header — mates with ERF8-020 female socket on Controller) | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM8611CT-ND (CT) / SAM8611TR-ND (T&R) / SAM8611DKR-ND (DKR) | C138400 |
+| J2–J4 | Rotor Interface sockets (×3 types per rotor slot, ×30 slots = 90 total) — **cross-ref Rotor/Design_Spec.md §3.4 for pinout** | ERF8-005 (JTAG ×30), ERF8-005 (Power ×30), ERF8-010 (ENC\_DATA ×30) — FEMALE sockets mating with ERM8 MALE headers on Rotor | 10-pin / 10-pin / 20-pin 0.8mm pitch | 200-ERF8005050SDVKTR (J2+J3) / 200-ERF8010050SDVKTR (J4) | SAM13517CT-ND (J2+J3 CT) / SAM8618CT-ND (J4 CT) | C7273978 (J2+J3) / C3646170 (J4) |
 | J5 | 16-pin Reflector/Extension port | 2x8 2.54mm shrouded | through-hole | 538-22-23-2161 | WM2907-ND | ??? |
 | J6–J8 | Encoder port connectors (×3 positions: HID + Plugboard A + Plugboard B) | 26-pin 2×13 2.54mm shrouded | through-hole | 538-22-23-2261 | WM2913-ND | ??? |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ohm @ 100MHz, 3.5A | 1206 | 81-BLM31PG121SN1L | 490-1056-1-ND | BLM31PG121SN1L |

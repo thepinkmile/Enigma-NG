@@ -41,7 +41,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TDO_RETURN and any in-board JTAG
   routing) shall be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting
   **50 Ω controlled impedance**. Stackup upgraded to 4-Layer per DEC-017.
-  See `design/Electronics/JTAG_Integrity.md` and DEC-016.
+  See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **JTAG Return:** TDO from Rotor 30 is routed to Pin 15 (TDO_RETURN) for return to the Stator.
 * **Loopback:** Directly routes 6-bit ENC_IN to 6-bit ENC_OUT via 2oz 10-mil traces.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:

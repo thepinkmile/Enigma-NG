@@ -26,7 +26,7 @@
 * **JTAG:** Pass-through for the serial chain; TDO_RETURN carried via Extension Port pin 15.
   * This board carries JTAG signals as a passive pass-through only. No active termination is
     required here; series termination is placed at the driving ends of each cable segment on
-    the Stator (R7–R15) and Encoder boards (R7, R8). See `design/Electronics/JTAG_Integrity.md`
+    the Stator (R7–R15) and Encoder boards (R7, R8). See `design/Electronics/Investigations/JTAG_Integrity.md`
     and DEC-016.
 * **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
@@ -47,7 +47,7 @@
 * **JTAG Trace Width Rule:** The Extension board carries only the **TDO_RETURN** signal on its J1/J2 pass-through path
   (TCK, TMS, and TDI travel to the rotor stack via Stator J2–J4, not via the Extension Port). TDO_RETURN traces on L1 shall be routed at **0.127 mm (5 mil)**
   over the L2 GND plane, targeting **50 Ω controlled impedance**. See
-  `design/Electronics/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
+  `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
 
 ## 5. Bill of Materials
 

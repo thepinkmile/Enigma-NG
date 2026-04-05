@@ -94,7 +94,7 @@
 * **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 37-device load across the machine.
 * **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each 74LVC1G125
   output on TCK, TMS, and TDI before LINK-BETA. Matches source impedance to 50Ω PCB traces
-  (Zo ≈ 53Ω). See `design/Electronics/JTAG_Integrity.md` and DEC-016.
+  (Zo ≈ 53Ω). See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for FT232H module schematics and assembly details.
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
@@ -228,8 +228,8 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Link-Alpha 80-pin Socket | ERF8 (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | N/A — customer-supplied |
-| J2 | Link-Beta 40-pin Socket | ERF8 (female) | Samtec | 200-ERF8020050SDVKTR | SAM8622-ND ⚠️ verify | N/A — customer-supplied |
+| J1 | Link-Alpha 80-pin Socket | ERF8-040-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | C3640808 |
+| J2 | Link-Beta 40-pin Socket | ERF8-020-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8020050SDVKTR | SAM8619CT-ND (CT) / SAM8619TR-ND (T&R) / SAM8619DKR-ND (DKR) | C6034565 |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
 | J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A125057-ND | C123459 |
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |

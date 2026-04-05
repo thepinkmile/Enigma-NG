@@ -262,7 +262,7 @@ def read_rotor_current_mA():
     return raw * CURRENT_LSB * 1000  # convert to mA
 ```
 
-> **Cross-ref:** See `Controller/Design_Spec.md §4` for shunt resistor spec and `design/Power_Budgets.md` for expected current range (2.20A worst-case typical).
+> **Cross-ref:** See `Controller/Design_Spec.md §4` for shunt resistor spec and `design/Electronics/Power_Budgets.md` for expected current range (2.20A worst-case typical).
 
 The **INA219 Power Module Monitor** (for 5V_MAIN) is at I2C address **0x40** on the Power Module board (separate device, different rail).
 
