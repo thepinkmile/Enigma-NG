@@ -104,9 +104,9 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Rotor 30 output interface — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J4 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
-| J2 | Rotor 30 output interface — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J5 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
-| J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | TBC – verify ERM8-010-05.0-S-DV-K-TR at digikey.co.uk before BOM freeze | C374877 |
+| J1 | Rotor 30 output interface — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J4 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 |
+| J2 | Rotor 30 output interface — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J5 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 |
+| J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
 | J4 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
 | J5 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | C25805 |

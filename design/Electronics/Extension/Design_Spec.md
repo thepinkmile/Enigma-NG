@@ -35,8 +35,8 @@
   | J6 | Output (receives next group's first rotor J3) | ENC Data (ENC_IN/ENC_OUT + GND) | ERF8-010 (20-pin, 0.8mm pitch, female) | ERF8-010-05.0-S-DV-K-TR |
 
   **Note:** The ERM8/ERF8 0.8mm pitch is physically incompatible with 2.54mm connectors — label distinctly on silkscreen.
-  Connector part numbers: ERM8-005 = Mouser 200-ERM8005050SDVKTR / DigiKey SAM8610CT-ND / JLCPCB C374877;
-  ERM8-010 = Mouser 200-ERM8010050SDVKTR / DigiKey TBC – verify ERM8-010-05.0-S-DV-K-TR at digikey.co.uk before BOM freeze / JLCPCB C374877;
+  Connector part numbers: ERM8-005 = Mouser 200-ERM8005050SDVKTR / DigiKey 612-ERM8-005-05.0-S-DV-K-TRCT-ND / JLCPCB C374877;
+  ERM8-010 = Mouser 200-ERM8010050SDVKTR / DigiKey SAM8610CT-ND / JLCPCB C374877;
   ERF8-005 = Mouser 200-ERF8005050SDVKTR / DigiKey SAM13517CT-ND / JLCPCB C7273978;
   ERF8-010 = Mouser 200-ERF8010050SDVKTR / DigiKey SAM8618CT-ND / JLCPCB C3646170.
 
@@ -90,9 +90,9 @@
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | C6 | 100nF X7R 50V bypass — U1 VCC | Samsung CL05B104KB5NNNC | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
-| J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
-| J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | SMT | 200-ERM8010050SDVKTR | TBC (ERM8-010 – see §2 note) | C374877 |
+| J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 |
+| J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 |
+| J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |

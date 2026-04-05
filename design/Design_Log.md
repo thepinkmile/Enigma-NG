@@ -833,8 +833,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | JLCPCB Part # | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- | ------- |
-| J1 | JTAG input — ERM8 male header (input side; plugs into Stator J1 ERF8 or Extension J4 ERF8) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Male (ERM8). Input side. Authority: Rotor/Design_Spec.md §3.4 |
-| J2 | Power input — ERM8 male header (3V3_ENIG ×5, GND ×5) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Male (ERM8). Input power side |
+| J1 | JTAG input — ERM8 male header (input side; plugs into Stator J1 ERF8 or Extension J4 ERF8) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Male (ERM8). Input side. Authority: Rotor/Design_Spec.md §3.4 |
+| J2 | Power input — ERM8 male header (3V3_ENIG ×5, GND ×5) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Male (ERM8). Input power side |
 | J3 | ENC Data input — ERM8 male header (ENC_IN/ENC_OUT + GND) | Samtec ERM8-010-05.0-S-DV-K-TR (20-pin, 0.8mm pitch) | ERM8-010 | 200-ERM8010050SDVKTR | SAM8612CT-ND | C374877 | Male (ERM8). Input ENC data |
 | J4 | JTAG output — ERF8 female socket (output side; receives next Rotor J1, Reflector J1, or Extension J1 ERM8 male) | Samtec ERF8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERF8-005 | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Female (ERF8). Output side. R1 (75Ω) in TTD output path |
 | J5 | Power output — ERF8 female socket (3V3_ENIG ×5, GND ×5) | Samtec ERF8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERF8-005 | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Female (ERF8). Output power side |
@@ -852,8 +852,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Rotor 30 output — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | Plugs into Rotor 30 J4 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
-| J2 | Rotor 30 output — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | Plugs into Rotor 30 J5 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J1 | Rotor 30 output — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | Plugs into Rotor 30 J4 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J2 | Rotor 30 output — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | Plugs into Rotor 30 J5 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
 | J3 | Rotor 30 output — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | Plugs into Rotor 30 J6 (ERF8-010 female). Definition owner: Rotor/Design_Spec.md §3.4 |
 | J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for **Stator J7** (or Extension J7/J8). Carries TDO_RETURN on pin 15. |
 | J5 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
@@ -862,8 +862,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | JLCPCB Part # | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- | ------- |
-| J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Plugs into previous rotor group's last rotor J4 (ERF8-005 female). Cross-ref: Rotor/Design_Spec.md §3.4 |
-| J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Plugs into previous rotor group's last rotor J5 (ERF8-005 female). |
+| J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Plugs into previous rotor group's last rotor J4 (ERF8-005 female). Cross-ref: Rotor/Design_Spec.md §3.4 |
+| J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Plugs into previous rotor group's last rotor J5 (ERF8-005 female). |
 | J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 | Plugs into previous rotor group's last rotor J6 (ERF8-010 female). |
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J1 (ERM8-005 male). Cross-ref: Rotor/Design_Spec.md §3.4 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J2 (ERM8-005 male). |
