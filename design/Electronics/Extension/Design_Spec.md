@@ -10,6 +10,29 @@
 * **Role:** Mechanical anchor and Power Injection for 5-rotor groups.
 * **Capacity:** Supports a 30-rotor maximum stack via modular 5-rotor increments.
 
+### Functional & Design Requirements
+
+#### Functional Requirements
+
+| ID | Functional Requirement | Notes |
+| :--- | :--- | :--- |
+| FR-EXT-01 | Act as a JTAG signal repeater between rotor sub-groups in extended stacks | Restores TCK/TMS drive strength mid-chain |
+| FR-EXT-02 | Buffer TCK and TMS signals to compensate for capacitive loading of upstream rotors | Dual-channel buffer preserves timing margins |
+| FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Passive pass-through on J2/J5 and J3/J6 |
+| FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) |
+| FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) |
+
+#### Design Requirements
+
+| ID | Design Requirement | Specification |
+| :--- | :--- | :--- |
+| DR-EXT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
+| DR-EXT-02 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) |
+| DR-EXT-03 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) |
+| DR-EXT-04 | JTAG buffer | U1 = SN74LVC2G125DCUR (dual-channel; TCK and TMS only; TDI passes unbuffered) |
+| DR-EXT-05 | Buffer output pin assignment | TCK → J4 pin 2; TMS → J4 pin 4 (per DEC-018 pinout) |
+| DR-EXT-06 | Buffer bypass capacitor | C6 = 100 nF 0402 within 2 mm of U1 VCC pin (L1) |
+
 ## 2. Connectivity
 
 * **Extension Port (J7 IN / J8 OUT):** 16-pin 2×8 shrouded box header.

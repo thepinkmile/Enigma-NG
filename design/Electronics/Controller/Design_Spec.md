@@ -21,6 +21,36 @@
 > **Full design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable
 > to this board.
 
+### Functional & Design Requirements
+
+#### Functional Requirements
+
+| ID | Functional Requirement | Notes |
+| :--- | :--- | :--- |
+| FR-CTL-01 | Host the Raspberry Pi Compute Module 5 as the system master processor | CM5 runs the Linux OS and all application logic |
+| FR-CTL-02 | Receive power from the Power Module and distribute to the CM5 and peripherals | Via Link-Alpha (J1) |
+| FR-CTL-03 | Provide external I/O interfaces for system management | GbE, HDMI, USB 3.0 |
+| FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and Link-Beta |
+| FR-CTL-05 | Monitor system power status and report to CM5 via GPIO | PoE presence, battery presence, USB fault, PWR_GD |
+| FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly |
+| FR-CTL-07 | Route Link-Beta signals between the CM5/JTAG Daughterboard and the Stator board | Via J2 |
+
+#### Design Requirements
+
+| ID | Design Requirement | Specification |
+| :--- | :--- | :--- |
+| DR-CTL-01 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) |
+| DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor) |
+| DR-CTL-03 | Link-Alpha connector | J1 = ERF8-040-05.0-S-DV-K-TR (80-pin female, 0.8 mm pitch) |
+| DR-CTL-04 | Link-Beta connector | J2 = ERF8-020-05.0-S-DV-K-TR (40-pin female, 0.8 mm pitch) |
+| DR-CTL-05 | JTAG signal buffer | U5 = SN74LVC2G125DCUR (dual-channel; TCK and TMS buffered; TDI unbuffered) |
+| DR-CTL-06 | USB current limit | 1.6 A via TPS2065C; fault output to GPIO 22 (USB_FAULT) |
+| DR-CTL-07 | RTC battery holder | BT1 = Keystone 3034 (THT horizontal CR2032 holder) |
+| DR-CTL-08 | RTC protection | D1 = Nexperia BAT54 Schottky diode (blocks PMIC VBAT charge path) |
+| DR-CTL-09 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 95, Hirose DF40 200-pin) |
+| DR-CTL-10 | GPIO mapping | GPIO 20 = POE_STAT (active-low), GPIO 22 = USB_FAULT, GPIO 23 = BATT_PRES_N, GPIO 24 = PWR_GD, GPIO 25 = SYS_RESET_N |
+| DR-CTL-11 | RTC configuration | `dtparam=rtc_bbat_vchg` must NOT be set in `/boot/firmware/config.txt` |
+
 ## 2. Dual-Link Interface (Samtec ERx8)
 
 > **Assembly Note:** Both BtB connectors (J1 and J2) use ERF8 **female** sockets. This is a deliberate mechanical

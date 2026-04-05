@@ -23,6 +23,35 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
   * **Cross-ref:** For the exact Link-Alpha mapping and signal naming conventions, See:
     * `Controller/Design_Spec.md`
 
+### Functional & Design Requirements
+
+#### Functional Requirements
+
+| ID | Functional Requirement | Notes |
+| :--- | :--- | :--- |
+| FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system |
+| FR-PM-02 | Maintain system power for ≥14.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS |
+| FR-PM-03 | Detect power-loss events and assert PWR_GD signal to the CM5 | Enables software-initiated graceful shutdown |
+| FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry |
+| FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring |
+| FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software |
+
+#### Design Requirements
+
+| ID | Design Requirement | Specification |
+| :--- | :--- | :--- |
+| DR-PM-01 | Input supply | PoE 802.3bt Type 4 (Class 8), 44–57 V, ≤71 W |
+| DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) |
+| DR-PM-03 | 3V3_ENIG rail | 3.3 V ±1%, ≤3.0 A maximum (TPS7A8333P LDO hard limit) |
+| DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460-Q1 pair |
+| DR-PM-05 | LDO | TPS7A8333P (3.3 V, 3.0 A, HTSSOP-20) |
+| DR-PM-06 | eFuse | TPS25980, 7 A trip current, OVLO = 16.9 V (R_OVLO = ERJ-3EKF1270V) |
+| DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V |
+| DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) |
+| DR-PM-09 | Holdup duration | ≥14.5 s at 5 W load (CM5 idle power) |
+| DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) |
+| DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) |
+
 ## Design
 
 > **NOTE:** All global rules defined in the Global_Routing_Spec.md should be applied to this design.

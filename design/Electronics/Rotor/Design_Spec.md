@@ -11,6 +11,32 @@ The Enigma-NG uses a 30-rotor stack. Unlike the original mechanical rotors, thes
 The outer rotating mechanism works like the outer ring of a bearing around the central static ring (this is the rotor PCB and enclosure).
 There are also sensors used to detect the current position of the outer ring using a single-track grey encoder.
 
+### Functional & Design Requirements
+
+#### Functional Requirements
+
+| ID | Functional Requirement | Notes |
+| :--- | :--- | :--- |
+| FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | Supports Rotors I–VIII, Beta, Gamma wiring tables |
+| FR-ROT-02 | Detect rotor angular position using a contactless magnetic encoder | 6-bit resolution; detects between-character positions |
+| FR-ROT-03 | Pass JTAG chain signals to the next rotor in the stack (or to the Reflector at position 30) | Serial daisy-chain; each rotor is one JTAG device |
+| FR-ROT-04 | Receive 3V3_ENIG power from the upstream board and forward to the downstream board | Passive power pass-through via J2/J5 |
+| FR-ROT-05 | Pass the encoder data bus through the rotor stack transparently | Via J3/J6 (ERM8-010 / ERF8-010) |
+| FR-ROT-06 | Be individually removable for maintenance or reconfiguration without tools | Samtec ERM8/ERF8 high-cycle connectors |
+
+#### Design Requirements
+
+| ID | Design Requirement | Specification |
+| :--- | :--- | :--- |
+| DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
+| DR-ROT-02 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100); emulates 64×64 cross-wiring |
+| DR-ROT-03 | Position sensor | AMS AS5600 magnetic encoder (6-bit resolution, contactless) |
+| DR-ROT-04 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) |
+| DR-ROT-05 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) |
+| DR-ROT-06 | Power consumption | ≤50 mA per rotor from 3V3_ENIG |
+| DR-ROT-07 | Stack quantity | 30 rotor boards in the complete system |
+| DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; retained by central threaded rod through all 30 rotors |
+
 ## 2. Core Design
 
 ### 2.1 Position Sensing (The "Zero-Wear" System)

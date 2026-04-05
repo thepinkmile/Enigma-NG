@@ -13,6 +13,34 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 * **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: ENIG Data.
 * **Role:** Master Switchboard for the 30-rotor stack and peripheral encoder boards.
 
+### Functional & Design Requirements
+
+#### Functional Requirements
+
+| ID | Functional Requirement | Notes |
+| :--- | :--- | :--- |
+| FR-STA-01 | Serve as the fixed mechanical and electrical backplane for the 30-rotor stack | Provides all power, JTAG, and data connectivity to rotors |
+| FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 |
+| FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 |
+| FR-STA-04 | Receive TDO_RETURN from the Reflector and forward to the Controller Board | Via J7 (16-pin Molex) → Link-Beta pin 26 |
+| FR-STA-05 | Interface with up to 6 HID encoder boards via IDC ribbon cables | J4/J5/J6 encoder ports |
+| FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM240 |
+| FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male |
+
+#### Design Requirements
+
+| ID | Design Requirement | Specification |
+| :--- | :--- | :--- |
+| DR-STA-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
+| DR-STA-02 | Layer mapping | L1 = Signal (JTAG/routing), L2 = GND, L3 = 3V3_ENIG, L4 = ENC Data |
+| DR-STA-03 | Rotor interface (per slot) | J1 = ERF8-005 (JTAG), J2 = ERF8-005 (Power), J3 = ERF8-010 (ENC); 30 slot sets |
+| DR-STA-04 | Encoder interface | J4/J5/J6 = 26-pin Molex IDC (HID encoder ports, one per encoder board) |
+| DR-STA-05 | TDO_RETURN input | J7 = 16-pin Molex; TDO_RETURN on pin 15 (from Reflector J4) |
+| DR-STA-06 | Link-Beta connector | J8 = ERM8-020-05.0-S-DV-K-TR (40-pin male, 0.8 mm pitch) to Controller J2 |
+| DR-STA-07 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) |
+| DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = 1206 package, rated ≥2.21 A |
+| DR-STA-09 | Maximum 3V3_ENIG load | 2.21 A worst-case (30 rotors + Stator CPLD + all encoders) |
+
 ## 2. Core Features
 
 * **Modular Slots:** 30x Samtec ERF8 female socket sets (3 connectors per slot: ERF8-005 JTAG, ERF8-005 Power, ERF8-010 ENC\_DATA) mating with the ERM8 male headers on each Rotor.

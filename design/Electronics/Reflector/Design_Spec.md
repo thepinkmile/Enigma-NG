@@ -10,6 +10,27 @@
 The Reflector Board sits at the far end of the 30-rotor stack. Its primary role is to receive the signals from the final rotor and return them back through the stack via a different electrical path.
 It also acts as the JTAG termination hub and returns the TDO_RETURN directly back to the Stator to reduce required Pin count in the Rotor Interconnects.
 
+### Functional & Design Requirements
+
+#### Functional Requirements
+
+| ID | Functional Requirement | Notes |
+| :--- | :--- | :--- |
+| FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs |
+| FR-REF-02 | Emulate the historical Enigma reflector (fixed symmetric substitution cipher) | Passive wiring — no CPLD required |
+| FR-REF-03 | Return the JTAG TDO_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J7 → Link-Beta pin 26 → FT232H |
+| FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain |
+
+#### Design Requirements
+
+| ID | Design Requirement | Specification |
+| :--- | :--- | :--- |
+| DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
+| DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) |
+| DR-REF-03 | TDO_RETURN output | J4 connector (mates with Stator J7); TDO_RETURN on J4 pin 15 |
+| DR-REF-04 | End-of-chain damping | R1 = 22 Ω 0402 on TDO line |
+| DR-REF-05 | Active logic | None — passive reflector function only; fixed wiring emulated in hardware |
+
 ## 2. Architecture
 
 * **PCB:** 4-Layer (JLC04161H-7628) / 2oz Finished Copper / ENIG Gold / 2.0mm Filleted Corners.

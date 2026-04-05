@@ -10,6 +10,29 @@
 A high-performance 64-node interface board.
 Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle real-time reciprocal encryption for the plugboard and de-bouncing for the 64-key QWERTY keyboard.
 
+### Functional & Design Requirements
+
+#### Functional Requirements
+
+| ID | Functional Requirement | Notes |
+| :--- | :--- | :--- |
+| FR-ENC-01 | Sense and encode rotary encoder position with sufficient resolution for character detection | Must detect between-character positions for jam detection |
+| FR-ENC-02 | Transmit encoded position data to the Stator Board via IDC ribbon cable | 26-pin IDC interface |
+| FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain |
+| FR-ENC-04 | Accept encoder input signal via audio jack interface | 6.35 mm (¼″) TRS jack |
+| FR-ENC-05 | Operate from 3V3_ENIG power supplied via the Stator ribbon cable | No local power regulation required |
+
+#### Design Requirements
+
+| ID | Design Requirement | Specification |
+| :--- | :--- | :--- |
+| DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
+| DR-ENC-02 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) |
+| DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with Stator J4, J5, or J6) |
+| DR-ENC-04 | Audio interface | J1 = 6.35 mm (¼″) TRS jack |
+| DR-ENC-05 | Supply voltage | 3.3 V ±5% from 3V3_ENIG via Stator ribbon cable |
+| DR-ENC-06 | Maximum encoder boards | 6 boards (one per Stator J4/J5/J6 port pair) |
+
 ## 2. Power Requirements
 
 * **Core:** 3.3V (Logic) from the **3V3_ENIG** rail, sourced from the Power Module LDO (TPS7A8333P) and
