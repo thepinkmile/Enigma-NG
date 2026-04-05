@@ -25,12 +25,12 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 ## 3. JTAG & Logic Hub
 
 * **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical).
-  > **Connector Definition Owner:** `Stator/Board_Layout.md — J5`.
+  > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
   > This board uses the mating connector (Molex 22-23-2161 or equivalent — see BOM). The authoritative
   > 16-pin pinout is defined on the Stator; Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
   > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TDO_RETURN, Pin 16 = GND.
 
-> **Compatibility note:** J1 pin allocation matches Stator J5 (16-pin 2×8). The Stator J5 was reduced from 20-pin to 16-pin in the design review (this revision) — J1 requires no changes.
+> **Compatibility note:** J4 pin allocation matches Stator J7 (16-pin 2×8). The Stator J7 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
 
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the interconnect power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **Termination:** R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
@@ -40,6 +40,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 > **Note:** TMS and TDI pull-up resistors (R2/R3) previously listed in this section have been removed.
 > TMS and TDI are NOT routed on J1 (pin 15 = TDO_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
 > Pull-up termination for TMS and TDI is already provided by the Stator (R3/R4) and Encoder boards (R3/R4) where those signals originate.
+
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TDO_RETURN and any in-board JTAG
   routing) shall be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting
   **50 Ω controlled impedance**. Stackup upgraded to 4-Layer per DEC-017.
@@ -52,28 +53,28 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 
 ## 3a. Rotor Interface Connectors
 
-The Reflector connects to the **output side** of Rotor 30 using the same ERF8 female socket family used
-on the Stator. One set of three connectors per the Rotor interface definition:
+The Reflector connects to the **output side** of Rotor 30 using the same ERM8 male header family used
+on each Rotor's output side (J4/J5/J6). One set of three connectors per the Rotor interface definition:
 
-> **Connector Definition Owner:** `Rotor/Board_Layout.md — Rotor Interface Connectors`.
-> This board provides the mating ERF8 female sockets for the Rotor 30 output ERM8 male headers.
+> **Connector Definition Owner:** `Rotor/Design_Spec.md §3.4`.
+> This board provides ERM8 male headers that plug into Rotor 30's J4/J5/J6 ERF8 female output sockets.
 
 | Ref | Type | Signal Group | Part Series | MPN |
 | --- | ---- | ------------ | ----------- | --- |
-| J3 | ERF8-005 (10-pin, female) | JTAG (TCK, TMS, TDI, TDO, SYS_RESET_N + power/GND) | Samtec ERF8 | ERF8-005-05.0-S-DV-K-TR |
-| J4 | ERF8-005 (10-pin, female) | Power (3V3_ENIG × 5, GND × 5) | Samtec ERF8 | ERF8-005-05.0-S-DV-K-TR |
-| J5 | ERF8-010 (20-pin, female) | ENC data (ENC_IN[0:5], ENC_OUT[0:5] + GND interleave) | Samtec ERF8 | ERF8-010-05.0-S-DV-K-TR |
+| J1 | ERM8-005 (10-pin, **male**) | JTAG (TCK, TMS, TTD, SYS_RESET_N + GND) | Samtec ERM8 | ERM8-005-05.0-S-DV-K-TR |
+| J2 | ERM8-005 (10-pin, **male**) | Power (3V3_ENIG × 5, GND × 5) | Samtec ERM8 | ERM8-005-05.0-S-DV-K-TR |
+| J3 | ERM8-010 (20-pin, **male**) | ENC data (ENC_IN[0:5], ENC_OUT[0:5] + GND interleave) | Samtec ERM8 | ERM8-010-05.0-S-DV-K-TR |
 
 **Orientation:** Facing the rotor output side (Rotor 30 top face), perpendicular to the rotor stack axis.
-The ERF8 socket pitch (0.8mm) is physically incompatible with 2.54mm connectors — label accordingly on silkscreen.
+The ERM8 header pitch (0.8mm) is physically incompatible with 2.54mm connectors — label accordingly on silkscreen.
 
 > **Note on §5 "26x Gold-plated friction pads":** This earlier notation referred to a draft mechanical
-> contact concept and is superseded by the ERF8 connector approach defined here. The 40 active contacts
-> (10 + 10 + 20) on J3–J5 provide the Reflector rotor interface; the friction pad concept is retired.
+> contact concept and is superseded by the ERM8 connector approach defined here. The 40 active contacts
+> (10 + 10 + 20) on J1–J3 provide the Reflector rotor interface; the friction pad concept is retired.
 
 Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-point GND_CHASSIS bond at its power entry connector.
 
-**Reflector GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J1 (Stator/Extension link connector, pin 16 GND).
+**Reflector GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J4 (Stator/Extension link connector, pin 16 GND).
 A single 0 Ω bond resistor (or direct via) connects the signal GND plane to the chassis copper pour at this point.
 No additional bonds are made on this board to avoid ground loops.
 
@@ -103,11 +104,11 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
-| J2 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
-| J3 | Rotor 30 output interface — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Mating with Rotor ERM8-005 | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J4 | Rotor 30 output interface — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Mating with Rotor ERM8-005 | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J5 | Rotor 30 output interface — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Mating with Rotor ERM8-010 | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
+| J1 | Rotor 30 output interface — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J4 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
+| J2 | Rotor 30 output interface — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J5 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
+| J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
+| J4 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
+| J5 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | C25805 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

@@ -47,15 +47,15 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting **50 Ω controlled
   impedance**. See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **JTAG Series Termination at Encoder Port Outputs (R7–R15):** 75 Ω series resistors placed within
-  2 mm of each J6/J7/J8 connector pad **on the Stator PCB**, targeting 95 Ω source impedance to match the ~100 Ω IDC
+  2 mm of each J4/J5/J6 connector pad **on the Stator PCB**, targeting 95 Ω source impedance to match the ~100 Ω IDC
   ribbon cable:
-  * **R7, R8, R9:** TCK → J6, J7, J8 respectively.
-  * **R10, R11, R12:** TMS → J6, J7, J8 respectively.
-  * **R13:** Stator CPLD TDO → J6 TDI (HID encoder cable drive). Placed on Stator within 2 mm of J6 pin 13.
-  * **R14:** J6 TDO return → J7 TDI (Plugboard A cable drive). Placed on Stator within 2 mm of J7 pin 13, on the
-    trace carrying J6's TDO return signal.
-  * **R15:** J7 TDO return → J8 TDI (Plugboard B cable drive). Placed on Stator within 2 mm of J8 pin 13, on the
-    trace carrying J7's TDO return signal.
+  * **R7, R8, R9:** TCK → J4, J5, J6 respectively.
+  * **R10, R11, R12:** TMS → J4, J5, J6 respectively.
+  * **R13:** Stator CPLD TDO → J4 TDI (HID encoder cable drive). Placed on Stator within 2 mm of J4 pin 13.
+  * **R14:** J4 TDO return → J5 TDI (Plugboard A cable drive). Placed on Stator within 2 mm of J5 pin 13, on the
+    trace carrying J4's TDO return signal.
+  * **R15:** J5 TDO return → J6 TDI (Plugboard B cable drive). Placed on Stator within 2 mm of J6 pin 13, on the
+    trace carrying J5's TDO return signal.
   * All R13–R15 are **Stator-side** resistors — no series resistors are required at the Encoder cable inputs.
 * **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail.
 
@@ -73,11 +73,16 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
     * `Extension/Design_Spec.md`
     * `Reflector/Design_Spec.md`
-* **Rotor Interconnect:** Each of the 30 rotor slots uses 3 ERF8 female sockets (FEMALE, mating with ERM8 MALE headers on each Rotor PCB).
-  * **JTAG:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — TCK, TMS, TDI, TDO, SYS\_RESET\_N with interleaved GND.
+* **Rotor Interconnect:** The Stator provides 1 rotor slot (Rotor 1 input side) using 3 ERF8 female sockets.
+  * **JTAG:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — TCK, TMS, TTD (TDI function on input side),
+    SYS\_RESET\_N with interleaved GND. **J1 pin 6 = TTD** (outgoing TDI to Rotor 1).
+    Pin 10 = spare/GND (TDO does NOT return via this connector — it returns via J7 pin 15).
   * **Power:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — 5× 3V3\_ENIG, 5× GND. Same part as JTAG socket.
   * **ENC DATA:** ERF8-010-05.0-S-DV-K-TR (20-pin 2×10, 0.8mm pitch) — ENC\_IN\[0:5\], ENC\_OUT\[0:5\], 8× GND fill.
   * **Cross-ref:** Authoritative pinout is defined in `Rotor/Design_Spec.md §3.4` (DEC-018 ownership).
+  * **Note:** Rotor-to-rotor connections beyond Rotor 1 are direct (each Rotor J4/J5/J6 output mates with
+    the next Rotor J1/J2/J3 input); Extension boards provide inter-group bridging at group boundaries in
+    the serial chain (Stator → Rotor 1 → … → Rotor 30 → Reflector J1–J3).
 * **Diagnostics:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
 
 ## 5. Power Telemetry (The "Encryption Load")
@@ -104,10 +109,10 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF (X7R) **10V** | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Link-Beta Connector (MALE header — mates with ERF8-020 female socket on Controller) | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM8611CT-ND (CT) / SAM8611TR-ND (T&R) / SAM8611DKR-ND (DKR) | C138400 |
-| J2–J4 | Rotor Interface sockets (×3 types per rotor slot, ×30 slots = 90 total) — **cross-ref Rotor/Design_Spec.md §3.4 for pinout** | ERF8-005 (JTAG ×30), ERF8-005 (Power ×30), ERF8-010 (ENC\_DATA ×30) — FEMALE sockets mating with ERM8 MALE headers on Rotor | 10-pin / 10-pin / 20-pin 0.8mm pitch | 200-ERF8005050SDVKTR (J2+J3) / 200-ERF8010050SDVKTR (J4) | SAM13517CT-ND (J2+J3 CT) / SAM8618CT-ND (J4 CT) | C7273978 (J2+J3) / C3646170 (J4) |
-| J5 | 16-pin Reflector/Extension port | 2x8 2.54mm shrouded | through-hole | 538-22-23-2161 | WM2907-ND | ??? |
-| J6–J8 | Encoder port connectors (×3 positions: HID + Plugboard A + Plugboard B) | 26-pin 2×13 2.54mm shrouded | through-hole | 538-22-23-2261 | WM2913-ND | ??? |
+| J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | SMT 0.8mm pitch | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) |
+| J4-J6 | Encoder port connectors (×3 positions: HID J4 + Plugboard A J5 + Plugboard B J6) | 26-pin 2×13 2.54mm shrouded | through-hole | 538-22-23-2261 | WM2913-ND | ??? |
+| J7 | 16-pin Reflector/Extension port | 2x8 2.54mm shrouded | through-hole | 538-22-23-2161 | WM2907-ND | ??? |
+| J8 | Link-Beta Connector (MALE header — mates with ERF8-020 female socket on Controller) | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM8611CT-ND (CT) / SAM8611TR-ND (T&R) / SAM8611DKR-ND (DKR) | C138400 |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ohm @ 100MHz, 3.5A | 1206 | 81-BLM31PG121SN1L | 490-1056-1-ND | BLM31PG121SN1L |
 | R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | 667-ERJ-6ENF20R0V | P20.0MYCT-ND | C123465 |
 | R2 | JTAG TDO_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
@@ -115,15 +120,15 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R5 | TCK pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R7 | TCK series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R8 | TCK series R → J7 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R9 | TCK series R → J8 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R10 | TMS series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R11 | TMS series R → J7 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R12 | TMS series R → J8 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R13 | TDI chain: Stator CPLD TDO → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R14 | TDI chain: J6 TDO return → J7 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R15 | TDI chain: J7 TDO return → J8 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R7 | TCK series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R8 | TCK series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R9 | TCK series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R10 | TMS series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R11 | TMS series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R12 | TMS series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R13 | TDI chain: Stator CPLD TDO → J4 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R14 | TDI chain: J4 TDO return → J5 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R15 | TDI chain: J5 TDO return → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | U1 | Stator Management CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |
 

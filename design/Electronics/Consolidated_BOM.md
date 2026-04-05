@@ -16,7 +16,7 @@ individual `Design_Spec.md` file.
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
 * **Tecate TPLH-2R7/22WR12X31 (22F/2.7V) Supercap:** Order 10 (MOQ) - (2x Spares + 2x Testing). Source via DigiKey consignment through JLCPCB global sourcing.
 * **Samtec ERM8-040 (Gold, 80-pin):** Order 3 (MOQ) — Power Module J1, (1× Spare). Order separately from ERM8-020.
-* **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J1, (1× Spare). Poka-yoke pair with ERF8-020.
+* **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J8, (1× Spare). Poka-yoke pair with ERF8-020.
 * **Samtec ERF8-040 (Gold, 80-pin):** Order 3 (MOQ) — Controller J1, (1× Spare).
 * **Samtec ERF8-020 (Gold, 40-pin):** Order 3 (MOQ) — Controller J2, (1× Spare). Poka-yoke pair with ERM8-020.
 * **0.1% Thin-Film Resistors:** Order 50 (MOQ) - (High attrition risk).
@@ -62,7 +62,7 @@ individual `Design_Spec.md` file.
 ## 4. High-Speed Interconnects
 
 * **Samtec ERM8-040-05.0-S-DV-K-TR (Male, 80-pin):** Power Module J1 (Link-Alpha).
-* **Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin):** Stator J1 (Link-Beta).
+* **Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin):** Stator J8 (Link-Beta).
 * **Samtec ERF8-040-05.0-S-DV-K-TR (Female, 80-pin):** Controller J1 (Link-Alpha).
 * **Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin):** Controller J2 (Link-Beta).
 * **Intel EPM240T100C5N:** 37 units (Standardized logic node).

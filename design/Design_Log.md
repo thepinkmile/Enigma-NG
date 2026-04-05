@@ -410,7 +410,7 @@ connector on the Stator increases stack height with no benefit.
 **Impact:**
 
 - Controller J2: ERF8-040 → ERF8-020-05.0-S-DV-K-TR (female, 40-pin)
-- Stator J1: ERM8-040 → ERM8-020-05.0-S-DV-K-TR (male, 40-pin)
+- Stator J8: ERM8-040 → ERM8-020-05.0-S-DV-K-TR (male, 40-pin)
 - DEC-014 connector table updated (see cross-ref below).
 
 **Cross-ref:** DEC-014 (gender assignment rationale remains valid; part numbers updated).
@@ -442,9 +442,9 @@ See `design/Electronics/Investigations/JTAG_Integrity.md`.
 | Board | Refs | Value | Purpose |
 | :--- | :--- | :--- | :--- |
 | Controller | R4, R5, R6 | 33 Ω 0603 | TCK / TMS / TDI series R after 74LVC1G125 buffer, before LINK-BETA |
-| Stator | R7–R9 | 75 Ω 0603 | TCK → J6 / J7 / J8 encoder port outputs |
-| Stator | R10–R12 | 75 Ω 0603 | TMS → J6 / J7 / J8 encoder port outputs |
-| Stator | R13–R15 | 75 Ω 0603 | TDI chain drive: Stator CPLD TDO→J6, J6 return→J7, J7 return→J8 |
+| Stator | R7–R9 | 75 Ω 0603 | TCK → J4 / J5 / J6 encoder port outputs |
+| Stator | R10–R12 | 75 Ω 0603 | TMS → J4 / J5 / J6 encoder port outputs |
+| Stator | R13–R15 | 75 Ω 0603 | TDI chain drive: Stator CPLD TDO→J4, J4 return→J5, J5 return→J6 |
 | Encoder | R7 | 33 Ω 0402 | CPLD1 TDO → CPLD2 TDI (intra-board, match 50 Ω PCB trace) |
 | Encoder | R8 | 75 Ω 0402 | CPLD2 TDO → J2 connector (ribbon cable drive back to Stator) |
 
@@ -567,10 +567,10 @@ definition is authoritative.
 | Interface | Connector(s) | Definition Owner | Authoritative Section |
 | :--- | :--- | :--- | :--- |
 | **LINK-ALPHA** | PM J1 ↔ Controller J1 (80-pin ERM8/ERF8) | **Power Module** | `Power_Module/Board_Layout.md — LINK-ALPHA` |
-| **LINK-BETA** | Controller J2 ↔ Stator J1 (40-pin ERM8/ERF8) | **Controller** | `Controller/Board_Layout.md — LINK-BETA` |
-| **Reflector/Extension Link** | Stator J5 ↔ Extension J1/J2 ↔ Reflector J1 (16-pin 2×8) | **Stator** | `Stator/Board_Layout.md — J5` |
-| **Encoder Ports** | Stator J6/J7/J8 ↔ Encoder J2 (26-pin 2×13) | **Stator** | `Stator/Board_Layout.md — J6–J8` |
-| **Rotor Interface** | Stator J2–J4 ↔ Extension ↔ Reflector (per-rotor set) | **Rotor** | `Rotor/Board_Layout.md — Rotor Interface Connectors` |
+| **LINK-BETA** | Controller J2 ↔ Stator J8 (40-pin ERM8/ERF8) | **Controller** | `Controller/Board_Layout.md — LINK-BETA` |
+| **Reflector/Extension Link** | Stator J7 ↔ Extension J7/J8 ↔ Reflector J4 (16-pin 2×8) | **Stator** | `Stator/Board_Layout.md — J7` |
+| **Encoder Ports** | Stator J4/J5/J6 ↔ Encoder J2 (26-pin 2×13) | **Stator** | `Stator/Board_Layout.md — J4–J6` |
+| **Rotor Interface** | Stator J1–J3 ↔ Rotor 1 → … → Rotor 30 → Reflector J1–J3 (serial chain; Extension J1–J6 at group boundaries) | **Rotor** | `Rotor/Design_Spec.md §3.4` |
 | **JTAG Daughterboard headers** | JDB J1 (USB 6-pin) + J2 (JTAG 10-pin) | **JTAG Daughterboard** | `JTAG_Daughterboard/Board_Layout.md` |
 
 ### Rationale
@@ -582,7 +582,7 @@ definition is authoritative.
 - **Reflector/Extension Link → Stator:** The Stator is the signal origin for all ENC data, power,
   and TDO_RETURN carried on this cable. Extension and Reflector are passive pass-throughs or endpoints.
 - **Encoder Ports → Stator:** The Stator drives all three encoder cables and has the complete chain
-  routing logic for TDI/TDO sequencing across J6/J7/J8. The Encoder boards are the downstream receivers.
+  routing logic for TDI/TDO sequencing across J4/J5/J6. The Encoder boards are the downstream receivers.
 - **Rotor Interface → Rotor:** The Rotor defines its own physical interface — both the connector
   type (mechanical) and the signal mapping. Stator, Extension, and Reflector must comply with the
   Rotor's mechanical interface, not the other way round.
@@ -719,6 +719,44 @@ If accepted, the following updates would be made:
 
 ---
 
+## QUE-002 — Prototype Bench-Testing Cable Strategy for Rotor Stack Connectors
+
+- **Status:** Open — deferred; revisit before prototype build
+- **Raised:** 2026-04-05
+- **Area:** All Boards — Rotor Interface Connectors (ERF8/ERM8 0.8mm pitch) & Extension/Reflector Links (2.54mm IDC)
+
+### Background
+
+The rotor-to-rotor, rotor-to-Stator, and rotor-to-Reflector/Extension connections all use the Samtec
+Edge-Rate ERF8/ERM8 0.8mm pitch family, which are direct board-to-board connectors with no off-the-shelf
+cable assembly equivalent at standard distributors. During prototype bench testing it will not always be
+practical to have all boards physically stacked.
+
+The Extension/Reflector link (J7 on Stator, J7/J8 on Extension, J4 on Reflector) and the Encoder ports
+(Stator J4-J6) use 2.54mm pitch shrouded IDC headers for which standard ribbon cable assemblies are
+readily available.
+
+### Questions to Resolve Before Prototype Build
+
+1. **ERF8/ERM8 0.8mm pitch:** Are Samtec ERCD/ERCC cable assemblies available and stocked at DigiKey
+   or Mouser for the ERF8-005 and ERF8-010 series? If not, what is the preferred bench-testing strategy
+   (e.g., small bridge PCBs, short rigid extender boards, or FPC/FFC with pitch adapter)?
+2. **Connector selection review:** Confirm that ERF8/ERM8 is still the correct family for the final
+   design before committing to prototype PCB orders — alternative connector families may offer
+   cable-assembly options without changing the electrical design.
+3. **2.54mm IDC cables:** Confirm standard IDC ribbon cable lengths and sources for Stator J7
+   (16-pin 2×8) and Stator J4-J6 encoder ports (26-pin 2×13).
+
+### Note
+
+This question was deferred to prioritise getting the connector definitions consolidated. The connector
+designators and signal assignments are considered stable (pending QUE-002 resolution). If a connector
+family change is required for prototype cabling, the affected documents are:
+`Stator/Design_Spec.md`, `Extension/Design_Spec.md`, `Reflector/Design_Spec.md`, `Rotor/Design_Spec.md`,
+`Consolidated_BOM.md`, and the Design_Log connector inventory.
+
+---
+
 ## INC Review History
 
 This section records all INC (inconsistency) items tracked during the design process. Each item was identified during design review, verified, and resolved. All items are closed.
@@ -780,10 +818,10 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Link-Beta BtB — 40-pin plug to Controller Board | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | Male plug (ERM8). Mating female on Controller (ERF8-020). 40-pin per DEC-015 |
-| J2 | Rotor/Encoder power and data — 40-pin shrouded box header | Molex 22-23-2401 (2×20, 2.54mm) | 22-23-2401 | 538-22-23-2401 | WM2921-ND | THT, shrouded, keyed. Power (3V3_ENIG/GND), ENC_DATA, JTAG to each encoder slot |
-| J5 | Reflector/Extension Link — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | THT, shrouded. Power, ENC_DATA, TDO_Return. Pinout definition owner — see Stator/Board_Layout.md J5 |
-| J6, J7, J8 | Encoder Port headers — 26-pin 2×13 shrouded box header (×3) | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J6–J8 |
+| J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) | ERF8 0.8mm pitch female sockets. Rotor 1 input side only (serial chain — not 30 slots). J1 pin 6 = TTD (outgoing TDI). |
+| J4-J6 | Encoder Port headers (×3: HID J4, Plugboard A J5, Plugboard B J6) — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J4–J6 |
+| J7 | Extension/Reflector Link — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | THT, shrouded. Power, ENC_DATA, TTD_RETURN (pin 15). Pinout definition owner — see Stator/Board_Layout.md J7 |
+| J8 | Link-Beta BtB — 40-pin plug to Controller Board | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | Male plug (ERM8). Mating female on Controller (ERF8-020). 40-pin per DEC-015 |
 | — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|RST\|GND |
 
 ### Rotor Board (×30)
@@ -797,27 +835,32 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 | Plugboard jack sockets | 3.5mm / 4mm through-hole jacks | ??? | ??? | ??? | ⚠️ Part not yet selected — physical plug/jack type TBD |
-| J2 | Data link to Stator — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | Mating connector for Stator J6/J7/J8. Cross-ref: Stator/Board_Layout.md J6–J8 |
+| J2 | Data link to Stator — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | Mating connector for Stator J4/J5/J6. Cross-ref: Stator/Board_Layout.md J4–J6 |
 | J3 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
 
 ### Reflector Board
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Interconnect from Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for **Stator J5** |
-| J2 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
-| J3 | Rotor 30 output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | Mating with Rotor 30 ERM8-005. Definition owner: Rotor/Board_Layout.md |
-| J4 | Rotor 30 output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | Mating with Rotor 30 ERM8-005. Definition owner: Rotor/Board_Layout.md |
-| J5 | Rotor 30 output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | ERF8-010-05.0-S-DV-K-TR | 200-ERF8010050SDVKTR | SAM8618CT-ND | Mating with Rotor 30 ERM8-010. Definition owner: Rotor/Board_Layout.md |
+| J1 | Rotor 30 output — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | Plugs into Rotor 30 J4 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J2 | Rotor 30 output — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | Plugs into Rotor 30 J5 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J3 | Rotor 30 output — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | Plugs into Rotor 30 J6 (ERF8-010 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for **Stator J7** (or Extension J7/J8). Carries TTD_RETURN on pin 15. |
+| J5 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
 
 ### Extension Board
 
-| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-| ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Extension Port IN — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J5. Cross-ref: Stator/Board_Layout.md J5 |
-| J2 | Extension Port OUT — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Feeds next Extension J1 or Reflector J1. Cross-ref: Stator/Board_Layout.md J5 |
-| J3–J8 | Rotor interface connectors (J3/J4/J5 = input side; J6/J7/J8 = output side) | Samtec ERF8 (ERF8-005 × 4, ERF8-010 × 2) | ERF8-005-05.0-S-DV-K-TR (J3/J4/J6/J7); ERF8-010-05.0-S-DV-K-TR (J5/J8) | 200-ERF8005050SDVKTR (J3/J4/J6/J7) / 200-ERF8010050SDVKTR (J5/J8) | SAM13517CT-ND (ERF8-005) / SAM8618CT-ND (ERF8-010) | ERF8 0.8mm pitch. Must match Stator J2–J4. Cross-ref: Rotor/Board_Layout.md |
-| J9 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector |
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | JLCPCB Part # | Notes |
+| ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- | ------- |
+| J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Plugs into previous rotor group's last rotor J4 (ERF8-005 female). Cross-ref: Rotor/Design_Spec.md §3.4 |
+| J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Plugs into previous rotor group's last rotor J5 (ERF8-005 female). |
+| J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 | Plugs into previous rotor group's last rotor J6 (ERF8-010 female). |
+| J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J1 (ERM8-005 male). Cross-ref: Rotor/Design_Spec.md §3.4 |
+| J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J2 (ERM8-005 male). |
+| J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | ERF8-010-05.0-S-DV-K-TR | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 | Receives next rotor group's first rotor J3 (ERM8-010 male). |
+| J7 | Extension Port IN — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | ??? | Mating connector for Stator J7 (or previous Extension J8). Cross-ref: Stator/Board_Layout.md J7 |
+| J8 | Extension Port OUT — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | ??? | Feeds next Extension J7 or Reflector J4. Cross-ref: Stator/Board_Layout.md J7 |
+| J9 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | — | 2.54mm pitch. Not a separate connector |
 
 ### JTAG Daughterboard (FT232H)
 

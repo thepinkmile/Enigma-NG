@@ -23,7 +23,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 |   [ 8x 0.1uF LOCAL ] <--- Per CPLD VCC pin                                 |
 |                                                                             |
 |   [ EDGE-RATE CONTACTS ] <--- Gold-plated friction pads (Samtec ERM8)      |
-|   (Input side — mates with Stator/Extension J2–J4 input connectors)        |
+|   (Input side — mates with Stator J1–J3 or Extension J1–J3 output connectors)        |
 |                                                                             |
 |   [ EDGE-RATE CONTACTS ] <--- Gold-plated friction pads (Samtec ERM8)      |
 |   (Output side — mates with next rotor input or Reflector last contacts)   |
@@ -35,11 +35,15 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 ## Rotor Interface Connectors
 
 > **Connector Definition Owner:** This board. All other boards hosting rotor interface connectors
-> (Stator J2–J4, Extension rotor connectors, Reflector contacts) cross-reference here.
+> (Stator J1–J3, Extension J1–J6, Reflector J1–J3) cross-reference here.
 
 Each rotor position uses **three connectors** — one for ENC data in, one for ENC data out, and one for power/JTAG.
 These three connectors must be **positionally identical** across every board that mates with rotors
 (Stator input side, Extension mid-stack, Reflector final output) to allow any rotor to mate at any position.
+
+> **⚠️ Note:** The signal maps below (ENC-IN, ENC-OUT, PWR/JTAG) describe an earlier draft pinout and are
+> superseded by the authoritative connector definitions in `Rotor/Design_Spec.md §3.4`.
+> Use the Design_Spec §3.4 tables for all schematic and PCB layout work.
 
 ### Connector Type
 
@@ -48,7 +52,7 @@ Mating connector: **Samtec CLP Series** low-profile female socket on Stator/Exte
 ENIG-finished pads; rated for high mating cycles; hot-swap capable.
 
 > **⚠️ Note:** The Rotor connector is a 0.8mm pitch Samtec Edge-Rate series. It is **not** compatible
-> with 2.54mm shrouded headers. Stator J2–J4 and Extension rotor connectors must use the matching
+> with 2.54mm shrouded headers. Stator J1–J3 and Extension rotor connectors must use the matching
 > Samtec CLP female socket, not standard IDC headers.
 
 ### ENC-IN Connector Signal Map
@@ -100,4 +104,4 @@ ENIG-finished pads; rated for high mating cycles; hot-swap capable.
 
 TDO does not chain back through the Extension Port individually per rotor. Each rotor passes TDO to the
 **next rotor's TDI** directly via the PWR/JTAG connector. Only **Rotor 30** (last in chain) routes its
-TDO to the Reflector TDO_RETURN pad, which carries it back to the Stator via the Extension Port (J5 Pin 15).
+TDO to the Reflector TDO_RETURN pad, which carries it back to the Stator via the Extension Port (J7 Pin 15).

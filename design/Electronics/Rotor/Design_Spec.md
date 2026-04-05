@@ -47,7 +47,7 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 3.2 Communication Bus
 
-* **The Data Path:** 12-bit parallel bus (D0-D11) passes through every rotor in a daisy-chain or star-bus configuration.
+* **The Data Path:** 12-bit parallel bus (D0-D11) passes through every rotor in a serial daisy-chain (Stator → Rotor 1 → … → Rotor 30 → Reflector → TDO_RETURN → Stator).
 * **Control:** Shared I2C bus for position telemetry.
 * **JTAG:** Pass-through JTAG lines allow the **USB Blaster** on the Controller Board to program the entire 30-rotor stack in one "daisy-chain" operation.
 
@@ -62,6 +62,15 @@ There are also sensors used to detect the current position of the outer ring usi
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)**
   width over the L2 GND plane, targeting **50 Ω controlled impedance** per the JLC04161H-7628
   stackup (h=0.087mm, t=0.035mm, Eᵣ=4.4). See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
+* **Series Termination — TDO Output (R1, 75Ω):** Placed within 2 mm of CPLD TDO pin, on the
+  trace to J4 pin 6 (TTD output side). Source impedance ≈ 95 Ω, targeting the ~100 Ω inter-rotor segment on the
+  Stator PCB. Consistent with Encoder R8 (DEC-016). One resistor per rotor board.
+* **Pull Resistors (R2–R5, 10kΩ, per CPLD):**
+  * **TMS (R2):** 10kΩ pull-up to 3V3_ENIG — ensures JTAG TAP resets to Test-Logic-Reset on power-up.
+  * **TDI (R3):** 10kΩ pull-up to 3V3_ENIG — holds TDI at logic-1 (BYPASS) when not actively driven.
+  * **TCK (R4):** 10kΩ pull-down to GND — prevents spurious clocking when TCK is floating.
+  * **SYS\_RESET\_N (R5):** 10kΩ pull-up to 3V3_ENIG — active-low; pull-up holds CPLD out of reset by default.
+  These are present on every rotor board. With 30 rotors, 30 sets of pull resistors exist in the full stack; this is intentional and consistent with making each rotor independently safe in any stack position.
 * **Shielding:** 4-layer PCB with solid GND plane (L2) to isolate digital switching from the high-accuracy magnetic encoder.
 
 ### 3.4 Connector Pinouts (Rotor Interface — Authority Document)
@@ -75,9 +84,15 @@ There are also sensors used to detect the current position of the outer ring usi
 | :--- | :--- | :--- | :--- |
 | 1 | GND | 2 | TCK |
 | 3 | GND | 4 | TMS |
-| 5 | GND | 6 | TDI |
+| 5 | GND | 6 | TTD |
 | 7 | GND | 8 | SYS\_RESET\_N |
-| 9 | GND | 10 | TDO |
+| 9 | GND | 10 | spare/GND |
+
+> **TTD Net Name:** The JTAG serial chain data pin is designated **TTD** (JTAG Transmission Data) at pin 6
+> on both input and output connectors. On J1 (input side), TTD carries incoming TDI; on J4 (output side),
+> TTD carries outgoing TDO to the next rotor's TDI. This unified net name avoids the TDI/TDO direction
+> confusion when viewing connector pinouts in isolation. Consistent with the T-prefix JTAG signal naming
+> convention (TCK, TMS, TDI, TDO → TTD).
 
 #### J2 — Power Interface (ERM8-005, 10-pin 2×5, 0.8mm pitch)
 
@@ -110,6 +125,53 @@ There are also sensors used to detect the current position of the outer ring usi
 > 12 signal pins + 8 GND fill pins. All spare pins assigned as GND for improved EMI shielding
 > and signal return paths around the encoder data bus.
 
+#### J4 — JTAG Interface Output (ERF8-005, 10-pin 2×5, 0.8mm pitch, FEMALE socket)
+
+Mates with the next rotor's J1 (ERM8-005 male header) or Reflector J1.
+
+| Pin | Row A | Pin | Row B |
+| :--- | :--- | :--- | :--- |
+| 1 | GND | 2 | TCK |
+| 3 | GND | 4 | TMS |
+| 5 | GND | 6 | TTD |
+| 7 | GND | 8 | SYS\_RESET\_N |
+| 9 | GND | 10 | spare/GND |
+
+> Pin 6 = TTD (CPLD TDO output — feeds next stage's J1 pin 6 TTD input). Pin 10 = spare/GND (no TDO_RETURN path here; return travels via Reflector → Extension Port → Stator J7).
+
+#### J5 — Power Interface Output (ERF8-005, 10-pin 2×5, 0.8mm pitch, FEMALE socket)
+
+Mates with the next rotor's J2 (ERM8-005 male header) or Reflector J2.
+
+| Pin | Row A | Pin | Row B |
+| :--- | :--- | :--- | :--- |
+| 1 | 3V3\_ENIG | 2 | GND |
+| 3 | 3V3\_ENIG | 4 | GND |
+| 5 | 3V3\_ENIG | 6 | GND |
+| 7 | 3V3\_ENIG | 8 | GND |
+| 9 | 3V3\_ENIG | 10 | GND |
+
+> Power pass-through from J2 input side. 3V3_ENIG and GND rails continue to the next rotor in the stack.
+
+#### J6 — Encoder Data Interface Output (ERF8-010, 20-pin 2×10, 0.8mm pitch, FEMALE socket)
+
+Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
+
+| Pin | Row A | Pin | Row B |
+| :--- | :--- | :--- | :--- |
+| 1 | ENC\_IN\[0\] | 2 | ENC\_OUT\[0\] |
+| 3 | ENC\_IN\[1\] | 4 | ENC\_OUT\[1\] |
+| 5 | ENC\_IN\[2\] | 6 | ENC\_OUT\[2\] |
+| 7 | ENC\_IN\[3\] | 8 | ENC\_OUT\[3\] |
+| 9 | ENC\_IN\[4\] | 10 | ENC\_OUT\[4\] |
+| 11 | ENC\_IN\[5\] | 12 | ENC\_OUT\[5\] |
+| 13 | GND | 14 | GND |
+| 15 | GND | 16 | GND |
+| 17 | GND | 18 | GND |
+| 19 | GND | 20 | GND |
+
+> ENC pass-through from J3 input side. Signal positions are identical — pin mapping is symmetric so the same CPLD logic applies regardless of stack position.
+
 ### 3.5 PCB Fabrication (JLCPCB Specs)
 
 * **Layers:** 4-Layer (JLC04161H-7628).
@@ -127,6 +189,14 @@ There are also sensors used to detect the current position of the outer ring usi
 | J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | ⚠️ verify | N/A — customer-supplied |
 | J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | SAM8610CT-ND (CT) / SAM8610TR-ND (T&R) / SAM8610DKR-ND (DKR) | C374877 |
 | J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND (CT) / SAM8610TR-ND (T&R) / SAM8610DKR-ND (DKR) | C374877 |
+| J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
+| R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | ??? |
+| R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |
 
