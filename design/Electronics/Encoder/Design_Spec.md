@@ -70,12 +70,22 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 * **Buffering:** [74LVC1G125](https://www.ti.com) buffers on the TCK and TMS lines to maintain signal integrity across the long chain (2x I/O CPLDs + 30 Rotor FPGAs).
 * **Termination:** 47Ω series resistors on the JTAG data lines to prevent reflections.
+* **Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over
+  the L2 GND plane, targeting **50 Ω controlled impedance**. See
+  `design/Electronics/JTAG_Integrity.md` and DEC-016.
 * **Pull Resistors (×4, placed near CPLDs):**
   * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up and when controller is idle.
   * **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS instruction) when not actively driven.
   * **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK line is floating.
   * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low signal; pull-up ensures CPLDs remain out of reset by default.
-  * One set of four is sufficient per board; TCK, TMS and SYS_RESET_N are broadcast nets shared between both CPLDs.
+  * One set of four is sufficient per board; TCK, TMS and SYS_RESET_N are broadcast nets
+    shared between both CPLDs.
+* **Series Termination — Inter-CPLD (R7, 33Ω):** Placed within 2 mm of CPLD1 TDO, on the trace
+  to CPLD2 TDI. Source impedance ≈ 53 Ω, matched to the 50 Ω intra-board PCB trace.
+  See `JTAG_Integrity.md` Option D.
+* **Series Termination — Cable Output (R8, 75Ω):** Placed within 2 mm of CPLD2 TDO, before J2
+  connector pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
+  Full logic swing is maintained at the Stator via the open-circuit reflection doubling effect.
 * **Chain Position:** The I/O CPLDs sit at the start of the JTAG chain, followed by the 30 Rotor FPGAs.
 * **Programming:** Allows for "In-System Sources and Probes" debugging via the CM5 GUI.
 
@@ -127,6 +137,8 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R7 | Inter-CPLD series R (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | ??? |
+| R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | ??? |
 | U3 | LDO Regulator | TLV755P | SOT-23 | 595-TLV755PDBVR | 296-TLV755PDBVRCT-ND | C291923 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

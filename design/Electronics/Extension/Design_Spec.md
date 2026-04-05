@@ -22,6 +22,10 @@
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the input header power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **JTAG:** Pass-through for the serial chain; TDO_RETURN carried via Extension Port pin 15.
+  * This board carries JTAG signals as a passive pass-through only. No active termination is
+    required here; series termination is placed at the driving ends of each cable segment on
+    the Stator (R7–R15) and Encoder boards (R7, R8). See `design/Electronics/JTAG_Integrity.md`
+    and DEC-016.
 * **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
@@ -32,7 +36,17 @@
 * **Diagnostics:** Integrated 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (Mid-Stack troubleshooting).
 * **Identity:** 2oz Copper / Inverted White Data Plate (V1.0 traceability).
 
-## 4. Bill of Materials
+## 4. PCB Specs (JLCPCB)
+
+* **Layers:** 4-Layer (JLC04161H-7628).
+* **Finish:** ENIG (Gold) for connector and diagnostic pad surfaces.
+* **Layer Mapping:** L1: Signal (JTAG pass-through / routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
+* **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
+* **JTAG Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)**
+  over the L2 GND plane, targeting **50 Ω controlled impedance**. See
+  `design/Electronics/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
+
+## 5. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

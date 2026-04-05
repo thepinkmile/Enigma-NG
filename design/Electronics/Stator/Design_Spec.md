@@ -39,7 +39,19 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up and when controller is idle.
   * **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS) when not actively driven by the Controller.
   * **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK line is floating.
-  * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low signal; pull-up ensures CPLD remains out of reset by default.
+  * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low signal; pull-up ensures CPLD remains
+    out of reset by default.
+* **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TCK, TMS, TDI, TDO, SYS_RESET_N) shall
+  be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting **50 Ω controlled
+  impedance**. See `design/Electronics/JTAG_Integrity.md` and DEC-016.
+* **JTAG Series Termination at Encoder Port Outputs (R7–R15):** 75 Ω series resistors placed within
+  2 mm of each J6/J7/J8 connector pad, targeting 95 Ω source impedance to match the ~100 Ω IDC
+  ribbon cable:
+  * **R7, R8, R9:** TCK → J6, J7, J8 respectively.
+  * **R10, R11, R12:** TMS → J6, J7, J8 respectively.
+  * **R13:** Stator CPLD TDO → J6 TDI (HID encoder cable drive).
+  * **R14:** J6 TDO return → J7 TDI (Plugboard A cable drive).
+  * **R15:** J7 TDO return → J8 TDI (Plugboard B cable drive).
 * **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail.
 
 ## 4. Interconnects
@@ -96,6 +108,15 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R5 | TCK pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R7 | TCK series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R8 | TCK series R → J7 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R9 | TCK series R → J8 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R10 | TMS series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R11 | TMS series R → J7 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R12 | TMS series R → J8 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R13 | TDI chain: Stator CPLD TDO → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R14 | TDI chain: J6 TDO return → J7 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R15 | TDI chain: J7 TDO return → J8 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

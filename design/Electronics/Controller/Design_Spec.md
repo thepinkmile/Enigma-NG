@@ -91,6 +91,9 @@
     5. **JTAG Chain** → **Stator (Intel MAX II EPM240T100C5N CPLD)**.
     6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N CPLD)** via Stator Backplane.
 * **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 37-device load across the machine.
+* **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each 74LVC1G125
+  output on TCK, TMS, and TDI before LINK-BETA. Matches source impedance to 50Ω PCB traces
+  (Zo ≈ 53Ω). See `design/Electronics/JTAG_Integrity.md` and DEC-016.
 * **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for FT232H module schematics and assembly details.
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
@@ -179,6 +182,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | :--- | :--- | :--- | :--- |
 | **USB 3.0** | 90Ω Differential | 10.0 mil / 6.0 mil | L1 |
 | **Ethernet/HDMI** | 100Ω Differential | 10.0 mil / 8.0 mil | L1 |
+| **JTAG signals** | 50Ω Single-ended | **5.0 mil (0.127 mm)** | L6 |
 | **5A Power Rail** | N/A (Low Drop) | 60.0 mil (Min) | L3 Island |
 | **Logic/I2C** | N/A | 6.0 mil | L4 / L6 |
 
@@ -230,6 +234,9 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R4 | JTAG TCK series termination (after 74LVC1G125, before LINK-BETA pin 2) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R5 | JTAG TMS series termination (after 74LVC1G125, before LINK-BETA pin 4) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R6 | JTAG TDI series termination (after 74LVC1G125, before LINK-BETA pin 6) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | ??? | ??? |
 | U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |

@@ -410,6 +410,130 @@ connector on the Stator increases stack height with no benefit.
 
 ---
 
+## DEC-016 — JTAG Controlled Impedance and Series Termination
+
+**Date:** 2026-04-05
+**Status:** ✅ ADOPTED
+**Affects:** Controller Board, Stator Board, Encoder Board, Reflector Board (noted), Extension Board (noted)
+
+**Decision:**
+All JTAG signal traces on 4-layer and 6-layer PCBs are specified at **50 Ω controlled impedance**
+(0.127 mm / 5 mil trace width on outer layers over a contiguous GND plane). Series termination
+resistors are added at every cable-driving JTAG output using **75 Ω** (to match the ~100 Ω
+impedance of alternating-GND IDC ribbon cable), and at every intra-board or BtB-driving JTAG output
+using **33 Ω** (to match the 50 Ω PCB trace impedance).
+
+Full signal-swing analysis confirms the destination CPLD receives full logic swing (3.3 V) in all
+cases. The open-circuit reflection at the high-impedance CPLD input doubles the incoming wave back
+to full voltage; the series resistor controls the return reflection, not the final voltage.
+
+**Full analysis, all options considered, and trace width calculations:**
+See `design/Electronics/JTAG_Integrity.md`.
+
+**Summary of additions per board:**
+
+| Board | Refs | Value | Purpose |
+| :--- | :--- | :--- | :--- |
+| Controller | R4, R5, R6 | 33 Ω 0603 | TCK / TMS / TDI series R after 74LVC1G125 buffer, before LINK-BETA |
+| Stator | R7–R9 | 75 Ω 0603 | TCK → J6 / J7 / J8 encoder port outputs |
+| Stator | R10–R12 | 75 Ω 0603 | TMS → J6 / J7 / J8 encoder port outputs |
+| Stator | R13–R15 | 75 Ω 0603 | TDI chain drive: Stator CPLD TDO→J6, J6 return→J7, J7 return→J8 |
+| Encoder | R7 | 33 Ω 0402 | CPLD1 TDO → CPLD2 TDI (intra-board, match 50 Ω PCB trace) |
+| Encoder | R8 | 75 Ω 0402 | CPLD2 TDO → J2 connector (ribbon cable drive back to Stator) |
+
+**Trace width rule added to all 4-layer and 6-layer boards:** 0.127 mm (5 mil) for all JTAG signal
+traces on outer layers over a GND plane.
+
+**2-layer boards (Reflector, Extension):** Controlled impedance not practical — 50 Ω would require
+a 2.82 mm trace (see `JTAG_Integrity.md §4`). Series termination at cable-driving ends of adjacent
+boards provides sufficient protection. Existing Reflector R1 (22 Ω) retained as end-of-chain damping.
+
+> **Superseded (partial):** The Reflector and Extension 2-layer limitations above are superseded by
+> DEC-017, which upgrades both boards to 4-Layer JLC04161H-7628. Both boards now have a solid L2 GND
+> plane and route JTAG on L1 at 0.127 mm (50 Ω), consistent with all other 4-layer boards.
+
+**Rationale:**
+Achieving 100 Ω PCB traces (to perfectly match the IDC ribbon cable impedance) is physically
+impossible on JLCPCB standard 4-layer/6-layer stackups — the required trace width is negative
+(see calculation in `JTAG_Integrity.md §4`). The 50 Ω + 75 Ω hybrid approach provides the best
+achievable impedance match to the cable while remaining within manufacturing design rules.
+
+**Alternatives Considered:**
+- **No termination (Option A):** Rejected — multiple re-reflections at 10 MHz risk false TCK edges.
+- **50 Ω PCB + 33 Ω series R (Option B):** Acceptable but leaves 33% reflection at PCB-to-cable
+  transition unabsorbed.
+- **100 Ω PCB + 82 Ω series R (Option C, ideal):** Rejected — not achievable on standard stackup.
+
+**Cost Impact:**
+Additional BOM cost per full system < £0.05. No JLCPCB impedance certification required for
+prototype; trace widths self-calculated and within ±10% of target. See `JTAG_Integrity.md §9`.
+
+---
+
+## DEC-017 — Minimum 4-Layer Stackup for All Non-Controller Boards
+
+**Date:** 2026-04-05
+**Status:** ✅ ADOPTED
+**Affects:** Reflector Board, Extension Board (all other boards already compliant)
+
+**Decision:**
+All PCBs in the Enigma-NG system shall use a minimum of **4-layer stackup** (JLCPCB
+JLC04161H-7628). The Controller Board is the sole exception and retains its 6-layer
+JLC06161H-2116 stackup for high-speed 5 Gbps differential pair requirements.
+
+**Standard 4-layer layer mapping for all non-Controller boards:**
+
+| Layer | Function |
+| :--- | :--- |
+| L1 | Signal (JTAG, data routing) — top |
+| L2 | GND plane — solid contiguous copper |
+| L3 | 3V3_ENIG power plane |
+| L4 | Signal (data routing, branding data plate) — bottom |
+
+**Boards affected (updated):**
+
+| Board | Previous | New |
+| :--- | :--- | :--- |
+| Reflector | 2-Layer 1.6mm FR4 / 1oz | 4-Layer JLC04161H-7628 / 2oz |
+| Extension | Layer count unspecified | 4-Layer JLC04161H-7628 / 2oz |
+
+**Boards already compliant (no change):**
+
+| Board | Stackup | Notes |
+| :--- | :--- | :--- |
+| Stator | 4-Layer JLC04161H-7628 | ✅ Unchanged |
+| Encoder | 4-Layer JLC04161H-7628 | ✅ Unchanged |
+| Rotor | 4-Layer JLC04161H-7628 | ✅ Unchanged |
+| Controller | 6-Layer JLC06161H-2116 | ✅ Exception — high-speed stackup retained |
+
+**Impact on DEC-016 / JTAG_Integrity.md:**
+The "2-layer uncontrolled impedance" notes for Reflector and Extension in DEC-016 are superseded.
+Both boards now have a solid L2 GND plane and can route JTAG on L1 at 0.127 mm (50 Ω controlled
+impedance), consistent with all other 4-layer boards. `JTAG_Integrity.md §3.1`, `§3.3` (now
+historical), and `§8` trace table have been updated accordingly.
+
+**Rationale:**
+
+1. **Uniform stackup:** Consistent JLC04161H-7628 across all non-Controller boards eliminates
+   stackup-dependent trace impedance variation, reducing signal behaviour differences between boards.
+2. **Solid GND on every board:** All boards now have a contiguous L2 GND plane, enabling 50 Ω
+   controlled impedance JTAG routing across the entire system.
+3. **EMC/EMI improvement:** Solid GND and power planes on all boards reduce radiated emissions and
+   improve common-mode noise rejection across the rotor stack and encoder cabling.
+4. **Manufacturing speed:** JLC04161H-7628 is JLCPCB's most common 4-layer stackup, with higher
+   stock availability and faster turnaround than 2-layer special orders or less common stackups.
+5. **Cost:** Marginal price difference between 2-layer and 4-layer at JLCPCB prototype quantities;
+   outweighed by signal integrity and EMC benefits.
+
+**Alternatives Considered:**
+
+- **Retain 2-layer Reflector/Extension:** Rejected — inconsistent stackup creates impedance
+  discontinuities in the JTAG chain and leaves an uncontrolled segment at the reflector end.
+- **Use different 4-layer stackup per board:** Rejected — non-uniform dielectric parameters would
+  require separate trace width calculations per board and add unnecessary design complexity.
+
+---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.

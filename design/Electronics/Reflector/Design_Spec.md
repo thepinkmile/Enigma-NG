@@ -12,7 +12,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 
 ## 2. Architecture
 
-* **PCB:** 2oz Finished Copper / ENIG Gold / 2.0mm Filleted Corners.
+* **PCB:** 4-Layer (JLC04161H-7628) / 2oz Finished Copper / ENIG Gold / 2.0mm Filleted Corners.
 * **Standard:** Includes Inverted White Data Plate on bottom layer.
 
 ### System Role: The "Turnaround"
@@ -35,7 +35,15 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 > **Compatibility note:** J1 pin allocation matches Stator J5 (16-pin 2×8). The Stator J5 was reduced from 20-pin to 16-pin in the design review (this revision) — J1 requires no changes.
 
 * **Bulk Entry Bank Rule:**Use **5x 10uF X7R 50V** bulk decoupling capacitors near the interconnect power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **Termination:** 22Ω series resistor on TDO and 10kΩ pull-ups on TMS/TDI for end-of-chain stability.
+* **Termination:** R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
+  signal from Rotor 30). It provides impedance damping at the final rotor output before the signal
+  re-enters the Extension Port for return to the Stator.
+* **Pull Resistors (R2–R3, 10kΩ):** TMS pull-up to 3V3_ENIG and TDI pull-up to 3V3_ENIG —
+  ensures the JTAG TAP holds a defined state at the chain end when the controller is idle.
+* **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TDO_RETURN and any in-board JTAG
+  routing) shall be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting
+  **50 Ω controlled impedance**. Stackup upgraded to 4-Layer per DEC-017.
+  See `design/Electronics/JTAG_Integrity.md` and DEC-016.
 * **JTAG Return:** TDO from Rotor 30 is routed to Pin 16 for return to the Stator.
 * **Loopback:** Directly routes 6-bit ENC_IN to 6-bit ENC_OUT via 2oz 10-mil traces.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
@@ -60,14 +68,15 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 
 ## 5. PCB & Mechanical Specs
 
-* **Stackup:** 2-Layer / 1oz Copper.
+* **Stackup:** 4-Layer (JLC04161H-7628) / 2oz Finished Copper.
+* **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
 * **Contacts:** 26x Gold-plated friction pads matching the Rotor Module pitch.
 * **Fillets:** 2.0mm Rounded PCB corners for consistent "Museum-Grade" enclosure fit.
 * **Routing:** Global **0.5mm Fixed-Radius Circular Arcs** for all loopback traces.
 
 ## 6. Branding & Traceability
 
-* **Data Plate:** Inverted white silkscreen "Data Plate" on Bottom (L2) containing the Enigma silhouette, "ENIGMA-NG" text, and JLC Serial Number block.
+* **Data Plate:** Inverted white silkscreen "Data Plate" on Bottom (L4) containing the Enigma silhouette, "ENIGMA-NG" text, and JLC Serial Number block.
 * **Label:** `REFLEKTOR-EINHEIT [Reflector Unit]` in ALL-CAPS German typewriter font.
 
 ## 7. Bill of Materials
