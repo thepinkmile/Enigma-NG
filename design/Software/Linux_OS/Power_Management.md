@@ -131,12 +131,12 @@ HandlePowerKey=poweroff
 
 | Event | Time from power loss | Action |
 | --- | --- | --- |
-| 5V_MAIN < 4.50V | ~0ms | MCP121T fires; PWR_GD LOW → I²C daemon detects within 500ms; initiates graceful shutdown |
-| LTC3350 BACKUP activates | ~100mV / ~10ms later | Hold-up engaged; 14.5s window begins |
-| Daemon initiates `systemctl poweroff` | ~500ms from PWR_GD | OS begins graceful shutdown |
+| Mains fails / PoE drops | t = 0 | Input source lost |
+| PWR_GD deasserts | ~10ms | MCP121T fires; 5V_MAIN < 4.5V; PWR_GD goes LOW |
+| 5V_MAIN < 4.40V — LTC3350 BACKUP asserted (supercaps take over) | ~shortly after PWR_GD | Hold-up engaged; 14.5s window begins |
+| Daemon reads PWR_GD, initiates `systemctl poweroff` | ~50ms from power loss | OS begins graceful shutdown |
 | OS syncs filesystems, halts | ~10–15s | ROTOR_EN de-asserted; CM5 PMIC halted |
-| 5V_MAIN < 4.40V | ~shortly after PWR_GD | LTC3350 BACKUP asserted (supercaps holding) |
-| 5V_MAIN → 0V | ~15–16s | Supercap fully depleted |
+| Supercaps depleted / system off | ~14.5s from power loss | 5V_MAIN → 0V |
 
 ## Dependencies
 
@@ -163,7 +163,7 @@ sequence and colour states are defined below.
 3. **CM5 drives `SW_LED_CTRL` HIGH (GPIO 24):** Hardware Q_HW gate disabled → MIC1555 path cut.
    CM5 now has exclusive control of SW_LED_R/G/B.
 
-4. **Power source detection:** Read POE_STAT (GPIO 20), USB_STAT (GPIO 21), BATT_STAT (GPIO 22)
+4. **Power source detection:** Read POE_STAT (GPIO 20), USB_STAT (GPIO 21), BATT_PRES_N (GPIO 23)
    and set LED colour per table below.
 
 ### LED Colour Table
@@ -206,9 +206,9 @@ def set_led(r, g, b):
     GPIO.output(SW_LED_G, g)
     GPIO.output(SW_LED_B, b)
 
-poe_active  = GPIO.input(20)   # POE_STAT active high
+poe_active  = not GPIO.input(20)  # Active-low: LOW = PoE live
 usb_active  = not GPIO.input(21)  # USB_STAT active low
-batt_active = not GPIO.input(22)  # BATT_STAT active low
+batt_active = not GPIO.input(23)  # BATT_PRES_N active low
 
 if usb_active:
     set_led(0, 1, 0)   # Green — USB-C

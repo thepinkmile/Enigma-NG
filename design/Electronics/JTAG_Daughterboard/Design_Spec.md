@@ -51,6 +51,7 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
   * **R1, R2 (33Ω):** Series termination on FT232H TDI and TCK outputs, placed within 2mm of the FT232H pins before the JTAG header (J2).
     Source impedance ≈ 53Ω, matched to the 50Ω controlled-impedance traces on the receiving board. Per DEC-016 intra-board/BtB termination rule.
     See `design/Electronics/Investigations/JTAG_Integrity.md`.
+  * **R3 (33Ω):** Series damping on TMS output — same function as R1 (TCK) and R2 (TDI). All three JTAG drive outputs have series termination at the FT232H.
   * **Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over the L2 GND plane, targeting **50 Ω controlled impedance**. See DEC-016.
   * **Pull Resistors:** TMS 10kΩ pull-up and TCK 10kΩ pull-down near J2 header to hold JTAG TAP in defined state when idle. See JTAG best-practice note in `design/Electronics/Investigations/JTAG_Integrity.md`.
 
@@ -65,6 +66,7 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 | J1 | Power + USB header (3V3_ENIG, GND, VBUS, D−, D+, GND) | **6-pin** 2×3 shrouded | 2.54mm | 538-22-23-2061 | WM2899-ND | ??? |
 | J2 | JTAG header | 10-pin | 2.54mm | 538-22-23-2101 | WM2901-ND | ??? |
 | R1, R2 | Series resistors (DEC-016 BtB/intra-board termination — JTAG output to LINK-BETA) | 33Ω | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R3 | 33Ω 1% 0402 | TMS series damping | 603-FRC0402J33RTS | Mouser 603-FRC0402J33RTS | DigiKey 13-FRC0402J33RTSCT-ND | JLCPCB C25879 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |
 | Y1 | Crystal | 24MHz | HC-49 | 520-ABL-24.000MHZ-B2 | 644-1053-1-ND | C123468 |
 

@@ -41,7 +41,7 @@ Stator CPLD (U1)
     │                                         Plugboard Encoder B CPLD2
     │              75Ω ◀─ J6 TDO return ◀───────────────────────
     │
-    └─▶ Rotor Stack (via J2–J4 rotor connectors)
+    └─▶ Rotor Stack (via Stator J1–J3 rotor interface → Rotor 1 J1–J3 → … → Rotor 30 J4–J6)
             └─▶ Rotor 1 … Rotor 30 … Reflector
                     └─▶ TDO_RETURN via J7 Extension Port ─▶ LINK-BETA pin 26 ─▶ FT232H
 ```
@@ -71,7 +71,7 @@ Transmission line effects are negligible; no series resistor required.
 
 ## 3. Physical Parameters by Board Stackup
 
-### 3.1 JLCPCB JLC04161H-7628 — 4-Layer 1.6mm (Stator, Encoder, Reflector, Extension)
+### 3.1 JLCPCB JLC04161H-7628 — 4-Layer 1.6mm (Stator, Encoder, Rotor, Reflector, Extension)
 
 | Parameter | Value | Source |
 | --- | --- | --- |
@@ -147,6 +147,13 @@ w = 0.119 mm → rounded to 0.127 mm (5 mil) for design rule consistency
 ```
 
 ✅ **0.127 mm is achievable** (JLCPCB minimum = 0.127 mm; confirmed by their online calculator)
+
+> **Note on copper weight:** The IPC-2141A formula uses t = base copper thickness before plating.
+> JLCPCB's 2oz finished specification starts from 1oz (t=0.035mm) base copper plus plating.
+> Using t=0.035mm in the formula is correct for the geometric model. Actual finished Zo with
+> 2oz plating build-up is approximately 40–50Ω depending on plating thickness. At JTAG operating
+> frequencies of 1–10MHz, this variance is functionally tolerable; the 33Ω series resistors
+> provide additional mismatch absorption.
 
 ### Solving for 100Ω (w = ?)
 
@@ -391,7 +398,7 @@ distance on the trace.
 | --- | --- | --- | --- | --- |
 | Controller | R4 | 33 Ω | 1 | TCK after 74LVC1G125 buffer, before LINK-BETA pin 2 |
 | Controller | R5 | 33 Ω | 1 | TMS after 74LVC1G125 buffer, before LINK-BETA pin 4 |
-| Controller | R6 | 33 Ω | 1 | TDI after 74LVC1G125 buffer, before LINK-BETA pin 6 |
+| Controller | R6 | 33 Ω | 1 | TDI series damping (not buffered — TDI drives only the first device in chain; 33Ω at FT232H output before LINK-BETA) |
 | Stator | R7 | 75 Ω | 1 | TCK → J4 encoder port output |
 | Stator | R8 | 75 Ω | 1 | TCK → J5 encoder port output |
 | Stator | R9 | 75 Ω | 1 | TCK → J6 encoder port output |

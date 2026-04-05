@@ -400,7 +400,7 @@ Logic boards downstream of the Stator (Encoder, Reflector, Extension) are 3V3-on
 no 5V_MAIN rail. Removing 5V_MAIN from LINK-BETA and rationalising the signal set results in exactly
 40 signals. The JTAG block has 5 internal GND shield pins (self-shielded at low-moderate MHz), so only
 a 2-pin GND moat is needed between JTAG and the data zone. 8 × 3V3_ENIG pins deliver 4.0A — adequate
-for the worst-case 30-rotor stack (3.5A). 5 GND return pins plus the 10 other GND pins throughout the
+for the worst-case 30-rotor stack (2.21A per Power_Budgets.md). 5 GND return pins plus the 10 other GND pins throughout the
 connector provide adequate return paths.
 
 **Poka-Yoke Safety Note:**

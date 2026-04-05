@@ -61,7 +61,8 @@ There are also sensors used to detect the current position of the outer ring usi
   * **L4:** Signal (secondary routing + data plate silkscreen on bottom).
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)**
   width over the L2 GND plane, targeting **50 Ω controlled impedance** per the JLC04161H-7628
-  stackup (h=0.087mm, t=0.035mm, Eᵣ=4.4). See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
+  stackup (h=0.087mm, t=0.035mm, Eᵣ=4.4). See `design/Electronics/Investigations/JTAG_Integrity.md §3.1`
+  for the copper-weight note (2oz finished uses 1oz base copper t=0.035mm in the IPC-2141A formula) and DEC-016.
 * **Series Termination — TDO Output (R1, 75Ω):** Placed within 2 mm of CPLD TDO pin, on the
   trace to J4 pin 6 (TTD output side). Source impedance ≈ 95 Ω, targeting the ~100 Ω inter-rotor segment on the
   Stator PCB. Consistent with Encoder R8 (DEC-016). One resistor per rotor board.
@@ -188,7 +189,7 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | ⚠️ verify | N/A — customer-supplied |
 | J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | SAM8610CT-ND (CT) / SAM8610TR-ND (T&R) / SAM8610DKR-ND (DKR) | C374877 |
-| J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND (CT) / SAM8610TR-ND (T&R) / SAM8610DKR-ND (DKR) | C374877 |
+| J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | TBC – verify ERM8-010-05.0-S-DV-K-TR at digikey.co.uk before BOM freeze | C374877 |
 | J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |

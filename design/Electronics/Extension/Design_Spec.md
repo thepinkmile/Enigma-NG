@@ -36,15 +36,15 @@
 
   **Note:** The ERM8/ERF8 0.8mm pitch is physically incompatible with 2.54mm connectors — label distinctly on silkscreen.
   Connector part numbers: ERM8-005 = Mouser 200-ERM8005050SDVKTR / DigiKey SAM8610CT-ND / JLCPCB C374877;
-  ERM8-010 = Mouser 200-ERM8010050SDVKTR / DigiKey SAM8610CT-ND / JLCPCB C374877;
+  ERM8-010 = Mouser 200-ERM8010050SDVKTR / DigiKey TBC – verify ERM8-010-05.0-S-DV-K-TR at digikey.co.uk before BOM freeze / JLCPCB C374877;
   ERF8-005 = Mouser 200-ERF8005050SDVKTR / DigiKey SAM13517CT-ND / JLCPCB C7273978;
   ERF8-010 = Mouser 200-ERF8010050SDVKTR / DigiKey SAM8618CT-ND / JLCPCB C3646170.
 
 * **JTAG Signal Buffering:** The Extension board provides JTAG re-buffering for the 5-rotor group
   connected to its output side (J4–J6). A **74LVC2G125** dual-channel 3-state buffer (U1) buffers the
   **TCK and TMS** lines, providing a fresh drive from the Extension board's 3V3_ENIG rail:
-  * TCK buffer output → J4 pin 1 (TCK) and broadcast to all 5 rotors in the output group.
-  * TMS buffer output → J4 pin 3 (TMS) and broadcast.
+  * TCK buffer output → J4 pin **2** (TCK) and broadcast to all 5 rotors in the output group.
+  * TMS buffer output → J4 pin **4** (TMS) and broadcast.
   * Buffer enable (OE#): tied to GND permanently (always enabled).
   * Part: SN74LVC2G125DCUR (TI, SOT-23-6) — Mouser 595-SN74LVC2G125DCUR,
     DigiKey 296-SN74LVC2G125DCURCT-ND, JLCPCB C15281.
@@ -82,15 +82,17 @@
   (TCK, TMS, and TDI travel to the rotor stack via Stator J1–J3, not via the Extension Port). TDO_RETURN traces on L1 shall be routed at **0.127 mm (5 mil)**
   over the L2 GND plane, targeting **50 Ω controlled impedance**. See
   `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
+* **U1 Bypass:** C6 (100nF) must be placed within 2mm of U1 VCC pin on L1.
 
 ## 5. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| C6 | 100nF X7R 50V bypass — U1 VCC | Samsung CL05B104KB5NNNC | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
 | J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 |
-| J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
+| J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | SMT | 200-ERM8010050SDVKTR | TBC (ERM8-010 – see §2 note) | C374877 |
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |

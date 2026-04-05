@@ -59,7 +59,6 @@ Power Module ←—Link-Alpha (80-pin ERM8)—→ Controller Board
 The Stator is the central backplane:
 
 - Connects to the Controller Board via **Link-Beta** (J8, ERM8-020 40-pin male, 0.8mm pitch).
-- Connects to the Controller Board via **Link-Beta** (40-pin ERM8).
 - Connects to the first Rotor via **J1–J3** (ERF8-005/010 female sockets receive Rotor 1 J1–J3 ERM8
   male).
 - Connects to the Extension chain / Reflector via **J7** (16-pin Molex 2.54mm).

@@ -23,15 +23,15 @@ individual `Design_Spec.md` file.
 
 ## 2. Common Passives
 
-* **0.1uF Decoupling:** Samsung CL10B104KB8NNNC (0603).
-* **10uF Bulk:** Murata GRM188R61C106MA73D (0603).
+* **0.1uF Decoupling:** Samsung CL05B104KB5NNNC (0402).
+* **10uF Bulk:** Samsung CL31B106KBHNNNE (1206).
 * **10k Pull-ups:** Panasonic ERJ-3EKF1002V (0603).
 
 ## 3. Logic Passives  (0603 0.1% Thin-Film unless otherwise noted)
 
 * **4.7kΩ:** 10 units (I2C-1 Telemetry Bus).
 * **10kΩ:** 10 units (Reset, Battery Presence & ROTOR_EN pull-up to 3V3_ENIG).
-* **22Ω:** 10 units (USB 2.0 / JTAG Damping).
+* **22Ω:** 10 units (JTAG end-of-chain damping — Reflector R1 × 1; spares).
 * **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
 * **10mΩ / 5A (2512 Kelvin):** 5 units (LTC3350 RSENSE — charge path current sense, R12; Bourns CSS2H-2512R-**R010**ELF).
@@ -119,7 +119,7 @@ individual `Design_Spec.md` file.
 ## 7. Power & Telemetry Sensors
 
 * **INA219AIDR:** 1 unit (Stator Board - 0x45).
-* **20mΩ 0805 Shunt:** 2 units (Stator Load / Spare).
+* **20mΩ 1206 Shunt:** 2 units (Stator Load / Spare).
 
 ## 8. Power Module — PoE Subsystem
 

@@ -68,9 +68,8 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 ### 3. Telemetry & Power Management
 
 * **I2C Telemetry:** 4.7kΩ (1%) pull-up resistors (**R7, R8**) on SDA/SCL lines, tied to **3V3_ENIG**.
-* **Reset Logic:** 10kΩ (0.1%) pull-up (**R9**) on SYS_RESET_N to prevent floating states.
+* **Reset Logic:** 10kΩ (1%) pull-up (**R9**) on SYS_RESET_N to prevent floating states.
 * **Battery Detection:** Dedicated BATT_PRES_N signal routed to CM5 GPIO 23.
-* **USB Telemetry:** USB Power Fault reported to CM5 GPIO 22 via TPS2065C.
 
 ### 4. EMI & Filtering (The "Iron Curtain")
 

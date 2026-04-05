@@ -6,8 +6,8 @@
 
 ## 1. Overview
 
-The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided into seven distinct
-modules to ensure maximum signal integrity, industrial-grade power protection, and mechanical
+The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided into eight distinct
+boards to ensure maximum signal integrity, industrial-grade power protection, and mechanical
 robustness.
 
 ## Power Rail Glossary (Canonical naming)
@@ -50,7 +50,7 @@ The logic heart of the machine, hosting the Raspberry Pi CM5.
 * **Stackup:** 6-Layer JLC06161H-2116 for 5Gbps signal integrity.
 * **Aesthetics:** Dark Green mask with ENIG Gold finish and Bilingual Typewriter silkscreen.
 * **Diagnostics:** 2x8 Gold-plated diagnostic bank for real-time bus monitoring.
-* **UI:** 40-pin flush-edge Samtec link to the Stator/Encoder bus.
+* **UI:** 40-pin flush-edge Samtec link to the Stator.
 
 ## 4. Encoder Module (Dual-Use)
 

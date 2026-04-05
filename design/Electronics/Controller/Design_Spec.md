@@ -28,7 +28,7 @@
 > Stator (J2) along the back edge in a single insertion motion. See DEC-014.
 
 * **Link-Alpha (Power/Entry):** ERF8 Female Socket 80-pin Power/Ethernet/Telemetry entry from Power Module.
-  * Receives: 5V/6A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
+  * Receives: 5V/9.0A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
   * Provides: 3V3_ENIG for RJ45 Power and Status LED signals.
   * **Cross-ref:** See `Power_Module/Design_Spec.md` and `Power_Module/Board_Layout.md` for the matching Link-Alpha
     pin allocation and power flow definitions.
@@ -91,8 +91,8 @@
     5. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J6.
     6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N)** via Stator Backplane.
     7. **TDO_RETURN** ← Reflector → Extension Port → Stator J7 pin 15 → LINK-BETA pin 26 → FT232H.
-* **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 37-device load across the machine.
-* **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each 74LVC1G125
+* **Signal Integrity:** **SN74LVC2G125DCUR dual-channel buffer (TCK and TMS)** to drive the heavy 37-device load across the machine.
+* **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each SN74LVC2G125DCUR
   output on TCK, TMS, and TDI before LINK-BETA. Matches source impedance to 50Ω PCB traces
   (Zo ≈ 53Ω). See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for FT232H module schematics and assembly details.
@@ -270,12 +270,12 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R4 | JTAG TCK series termination (after 74LVC1G125, before LINK-BETA pin 2) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | R5 | JTAG TMS series termination (after 74LVC1G125, before LINK-BETA pin 4) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
-| R6 | JTAG TDI series termination (after 74LVC1G125, before LINK-BETA pin 6) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R6 | JTAG TDI series damping resistor (FT232H TDI → LINK-BETA pin 8; TDI is not buffered — it drives only the first device in the chain) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | ??? | ??? |
 | U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
 | U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
-| U5 | 74LVC1G125 | Bus Buffer | SOT-23 | 771-74LVC1G125DBVR | 296-74LVC1G125DBVRCT-ND | C123463 |
+| U5 | SN74LVC2G125DCUR | Dual-channel 3-state buffer — TCK and TMS to LINK-BETA | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C2688 |
 
 ### BOM Notes
 

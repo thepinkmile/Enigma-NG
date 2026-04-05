@@ -91,7 +91,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45) — dedicated rotor-stack usage telemetry.
 * **Placement:** Inserted on L1 (Top Layer) connected to the 3V3_ENIG rail immediately before the rotor stack.
   * Minimum 15mm isolation from Intel MAX II EPM240T100C5N CPLD logic core.
-* **Shunt:** 20mΩ (1%) 0805 Current Sense Resistor (Rated for 2A continuous).
+* **Shunt:** 20mΩ (1%) 1206 Current Sense Resistor (Rated for ≥2.21A worst-case load (2A continuous per IPC-2221; 1206 package selected for thermal margin)).
 * **Interface:** I2C-1 Telemetry Bus (via Link-Beta, Shared with Power Module).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
 
@@ -114,7 +114,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | J7 | 16-pin Reflector/Extension port | 2x8 2.54mm shrouded | through-hole | 538-22-23-2161 | WM2907-ND | ??? |
 | J8 | Link-Beta Connector (MALE header — mates with ERF8-020 female socket on Controller) | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM8611CT-ND (CT) / SAM8611TR-ND (T&R) / SAM8611DKR-ND (DKR) | C138400 |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ohm @ 100MHz, 3.5A | 1206 | 81-BLM31PG121SN1L | 490-1056-1-ND | BLM31PG121SN1L |
-| R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | 667-ERJ-6ENF20R0V | P20.0MYCT-ND | C123465 |
+| R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 1206 | 667-ERJ-6ENF20R0V | P20.0MYCT-ND | C123465 |
 | R2 | JTAG TDO_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R3 | TMS pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |

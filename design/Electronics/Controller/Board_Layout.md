@@ -240,7 +240,7 @@ _______________________________________    _____________    ____________________
 | 39 | GND | — | Power return |
 | 40 | GND | — | Power return |
 
-**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for 30-rotor worst case (3.5A).
+**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for the 30-rotor worst case (2.21A per Power_Budgets.md).
 
 ### DIAGNOSTIC BANK-BETA (Top-Left)
 
