@@ -34,6 +34,8 @@ _____________________________________________________________________________
 |_____________________________________________________________________________|
 ```
 
+> **Connector Definition Owner:** This board. All other boards connecting to the JTAG Daughterboard cross-reference here.
+
 ## JTAG Header Pinout (10-Pin)
 
 ```text

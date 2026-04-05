@@ -3,7 +3,7 @@
 ## Component Areas
 
 ```text
-TOP VIEW (L1) - 2-Layer / 2oz Copper
+TOP VIEW (L1) - 4-Layer / 2oz Copper
  _____________________________________________________________________________ 
 |                                                                             |
 |   [ 16-PIN INTERCONNECT HEADER ] <--- Vertical Shrouded Box Header          |
@@ -15,7 +15,7 @@ TOP VIEW (L1) - 2-Layer / 2oz Copper
 |   [ DIAGNOSTIC BANK ] <--- 2x8 ENIG Gold Probe Bank                         |
 |   (2.54mm Pitch, L1)                                                        |
 |                                                                             |
-|   [ DATA PLATE ] <--- Inverted White Silkscreen on L2                       |
+|   [ DATA PLATE ] <--- Inverted White Silkscreen on L4                       |
 |   (Enigma Silhouette + JLC Serial)                                          |
 |                                                                             |
 |   [ FILLETED CORNERS ] <--- 2.0mm Rounded PCB Edges                         |

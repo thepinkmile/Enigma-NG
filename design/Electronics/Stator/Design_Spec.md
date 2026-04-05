@@ -10,7 +10,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 ## 1. Overview
 
 * **Stackup:** 4-Layer / 2oz Finished Copper.
-* **Layer Mapping:** L1: JTAG | L2: GND | L3: 3V3_ENIG | L4: ENIG Data.
+* **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: ENIG Data.
 * **Role:** Master Switchboard for the 30-rotor stack and peripheral encoder boards.
 
 ## 2. Core Features
@@ -45,13 +45,16 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting **50 Ω controlled
   impedance**. See `design/Electronics/JTAG_Integrity.md` and DEC-016.
 * **JTAG Series Termination at Encoder Port Outputs (R7–R15):** 75 Ω series resistors placed within
-  2 mm of each J6/J7/J8 connector pad, targeting 95 Ω source impedance to match the ~100 Ω IDC
+  2 mm of each J6/J7/J8 connector pad **on the Stator PCB**, targeting 95 Ω source impedance to match the ~100 Ω IDC
   ribbon cable:
   * **R7, R8, R9:** TCK → J6, J7, J8 respectively.
   * **R10, R11, R12:** TMS → J6, J7, J8 respectively.
-  * **R13:** Stator CPLD TDO → J6 TDI (HID encoder cable drive).
-  * **R14:** J6 TDO return → J7 TDI (Plugboard A cable drive).
-  * **R15:** J7 TDO return → J8 TDI (Plugboard B cable drive).
+  * **R13:** Stator CPLD TDO → J6 TDI (HID encoder cable drive). Placed on Stator within 2 mm of J6 pin 13.
+  * **R14:** J6 TDO return → J7 TDI (Plugboard A cable drive). Placed on Stator within 2 mm of J7 pin 13, on the
+    trace carrying J6's TDO return signal.
+  * **R15:** J7 TDO return → J8 TDI (Plugboard B cable drive). Placed on Stator within 2 mm of J8 pin 13, on the
+    trace carrying J7's TDO return signal.
+  * All R13–R15 are **Stator-side** resistors — no series resistors are required at the Encoder cable inputs.
 * **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail.
 
 ## 4. Interconnects
@@ -62,7 +65,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **Power:** Receives 3V3_ENIG via the Controller pass-through for all backplane CPLDs.
   * **Cross-ref:** See `Controller/Design_Spec.md` Link-Beta mapping for explicit pin-number allocation; this Stator document mirrors that mapping for compatibility and implementation validation.
 * **Encoder Interconnects:** 40-pin (2x20) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
-* **Reflector/Extension Interconnect:** 20-pin (2x10) Vertical Shrouded Header (Power, ENC_DATA, TDO_Return).
+* **Reflector/Extension Interconnect:** 16-pin (2x8) Vertical Shrouded Header (Power, ENC_DATA, TDO_Return).
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).
   * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
@@ -100,7 +103,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | J1 | Link-Beta Connector | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | C123464 |
 | J2 | 40-pin Rotor & Encoder power/data | 2x20 2.54mm shrouded | through-hole | 538-22-23-2401 | WM2921-ND | ??? |
-| J3 | 20-pin Reflector/Extension | 2x10 2.54mm shrouded | through-hole | 538-22-23-2201 | WM2911-ND | ??? |
+| J3 | 16-pin Reflector/Extension | 2x8 2.54mm shrouded | through-hole | 538-22-23-2161 | WM2907-ND | ??? |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ohm @ 100MHz, 3.5A | 1206 | 81-BLM31PG121SN1L | 490-1056-1-ND | BLM31PG121SN1L |
 | R1 | Shunt Resistor | 20mΩ (1%) 0.5W | 0805 | 667-ERJ-6ENF20R0V | P20.0MYCT-ND | C123465 |
 | R2 | JTAG TDO_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |

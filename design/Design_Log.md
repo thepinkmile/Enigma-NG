@@ -534,6 +534,62 @@ historical), and `§8` trace table have been updated accordingly.
 
 ---
 
+## DEC-018 — Connector Pinout Ownership Model
+
+- **Status:** Adopted
+- **Date:** 2026-04-05
+- **Area:** All Boards — Documentation Architecture
+
+### Decision
+
+Each multi-board connector interface shall have a single **Definition Owner** — the board whose
+`Board_Layout.md` (or `Design_Spec.md` where no Board_Layout exists) contains the authoritative
+pin-by-pin table for that interface. All other boards that mate with that connector must
+**not** duplicate the pin table; instead they include a short cross-reference note of the form:
+
+> **Connector Definition Owner:** `[OwnerBoard]/Board_Layout.md — [Section]`. This board uses the
+> mating connector. See BOM for part number.
+
+This rule prevents the class of drift errors where two boards define the same connector differently
+(e.g. Pin 2 = GND on one board, SYS_RESET_N on another). When a conflict is found, the owner's
+definition is authoritative.
+
+### Ownership Register
+
+| Interface | Connector(s) | Definition Owner | Authoritative Section |
+| :--- | :--- | :--- | :--- |
+| **LINK-ALPHA** | PM J1 ↔ Controller J1 (80-pin ERM8/ERF8) | **Power Module** | `Power_Module/Board_Layout.md — LINK-ALPHA` |
+| **LINK-BETA** | Controller J2 ↔ Stator J1 (40-pin ERM8/ERF8) | **Controller** | `Controller/Board_Layout.md — LINK-BETA` |
+| **Reflector/Extension Link** | Stator J5 ↔ Extension J1/J2 ↔ Reflector J1 (16-pin 2×8) | **Stator** | `Stator/Board_Layout.md — J5` |
+| **Encoder Ports** | Stator J6/J7/J8 ↔ Encoder J2 (26-pin 2×13) | **Stator** | `Stator/Board_Layout.md — J6–J8` |
+| **Rotor Interface** | Stator J2–J4 ↔ Extension ↔ Reflector (per-rotor set) | **Rotor** | `Rotor/Board_Layout.md — Rotor Interface Connectors` |
+| **JTAG Daughterboard headers** | JDB J1 (USB 6-pin) + J2 (JTAG 10-pin) | **JTAG Daughterboard** | `JTAG_Daughterboard/Board_Layout.md` |
+
+### Rationale
+
+- **LINK-ALPHA → Power Module:** The Power Module is the upstream power provider; it defines what
+  rails and signals it places on the cable. The Controller is the downstream consumer.
+- **LINK-BETA → Controller:** The Controller is the JTAG chain master. It originates TCK, TMS, TDI,
+  SYS_RESET_N, and the ENC data bus. The Stator is the passive backplane receiver.
+- **Reflector/Extension Link → Stator:** The Stator is the signal origin for all ENC data, power,
+  and TDO_RETURN carried on this cable. Extension and Reflector are passive pass-throughs or endpoints.
+- **Encoder Ports → Stator:** The Stator drives all three encoder cables and has the complete chain
+  routing logic for TDI/TDO sequencing across J6/J7/J8. The Encoder boards are the downstream receivers.
+- **Rotor Interface → Rotor:** The Rotor defines its own physical interface — both the connector
+  type (mechanical) and the signal mapping. Stator, Extension, and Reflector must comply with the
+  Rotor's mechanical interface, not the other way round.
+- **JTAG Daughterboard → itself:** Self-contained module with no cross-board mating conflicts.
+
+**Alternatives Considered:**
+
+- **Central `Interfaces.md` document:** Rejected — separates pin definitions from the board they belong
+  to, making it harder to keep in sync during incremental design changes. Per-board ownership with
+  cross-references is more maintainable.
+- **Both sides document the full table:** Rejected — this is the exact pattern that caused the REF-03
+  Pin 2 conflict and the REF-01 16/20-pin mismatch found in the April 2026 deep-dive review.
+
+---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.
@@ -641,21 +697,22 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 | Link-Beta BtB — 40-pin plug to Controller Board | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | Male plug (ERM8). Mating female on Controller (ERF8-020). 40-pin per DEC-015 |
 | J2 | Rotor/Encoder power and data — 40-pin shrouded box header | Molex 22-23-2401 (2×20, 2.54mm) | 22-23-2401 | 538-22-23-2401 | WM2921-ND | THT, shrouded, keyed. Power (3V3_ENIG/GND), ENC_DATA, JTAG to each encoder slot |
-| J3 | Reflector/Extension — 20-pin shrouded box header | Molex 22-23-2201 (2×10, 2.54mm) | 22-23-2201 | 538-22-23-2201 | WM2911-ND | THT, shrouded. Power (3V3_ENIG/GND), ENC_DATA, TDO_Return |
+| J5 | Reflector/Extension Link — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | THT, shrouded. Power, ENC_DATA, TDO_Return. Pinout definition owner — see Stator/Board_Layout.md J5 |
+| J6, J7, J8 | Encoder Port headers — 26-pin 2×13 shrouded box header (×3) | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J6–J8 |
 | — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|RST\|GND |
 
 ### Rotor Board (×30)
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Stator edge-rate connector — 20-pin | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND | 0.8mm pitch edge-rate. ENIG pads for low-insertion-force hot-swap mating. Rated for high mating cycles |
+| J1 | Rotor interface connector set | Samtec ERM8-020 (0.8mm pitch) | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND | 0.8mm pitch Edge-Rate. Definition owner — see Rotor/Board_Layout.md. NOT compatible with 2.54mm headers. |
 
 ### Encoder Board
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 | Plugboard jack sockets | 3.5mm / 4mm through-hole jacks | ??? | ??? | ??? | ⚠️ Part not yet selected — physical plug/jack type TBD |
-| J2 | Data link to Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J2 |
+| J2 | Data link to Stator — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | Mating connector for Stator J6/J7/J8. Cross-ref: Stator/Board_Layout.md J6–J8 |
 | J3 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
 
 ### Reflector Board
@@ -667,10 +724,12 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 ### Extension Board
 
-| Ref | Description | Part / Series | Notes |
-| ----- | ------------- | --------------- | ------- |
-| J1 | Interconnect from Stator | 20-pin 2.54mm shrouded | Mirrors Reflector/Extension slot on Stator J3 |
-| J2 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | Same pattern as Reflector J2 |
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
+| ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
+| J1 | Extension Port IN — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J5. Cross-ref: Stator/Board_Layout.md J5 |
+| J2 | Extension Port OUT — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Feeds next Extension J1 or Reflector J1. Cross-ref: Stator/Board_Layout.md J5 |
+| J3–J8 | Rotor interface connectors (3 per rotor × 5 positions = 15 total) | Samtec CLP series (spec pending) | TBD | ??? | ??? | Must match Stator J2–J4. Cross-ref: Rotor/Board_Layout.md |
+| J9 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector |
 
 ### JTAG Daughterboard (FT232H)
 

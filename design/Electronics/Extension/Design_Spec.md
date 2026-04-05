@@ -12,9 +12,11 @@
 
 ## 2. Connectivity
 
-* **Extension Port (J1 IN / J2 OUT):** 16-pin 2×8 shrouded box header (same format as Stator J5 and Reflector J1).
-  Carries 3V3_ENIG, SYS_RESET_N, ENC_IN[0:5], ENC_OUT[0:5], TDO_RETURN, and GND. Forms the daisy-chain from
-  Stator → Extension(s) → Reflector.
+* **Extension Port (J1 IN / J2 OUT):** 16-pin 2×8 shrouded box header.
+  > **Connector Definition Owner:** `Stator/Board_Layout.md — J5`.
+  > This board uses the mating connector on both J1 and J2 (Molex 22-23-2161 or equivalent — see BOM).
+  > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
+  > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TDO_RETURN, Pin 16 = GND.
 * **Rotor Interface Connectors (3 per rotor-facing side):** ENC-IN, ENC-OUT, and PWR/JTAG connector set. Must be
   **positionally identical** to the matching set on the Stator (Rotor 1 input) and Reflector (last rotor output).
   See `Stator/Board_Layout.md` J2–J4 section for planned signal groups. Exact pin count and connector type are

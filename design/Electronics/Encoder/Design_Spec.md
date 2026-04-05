@@ -30,13 +30,12 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 4. Interconnects
 
-* **Data Link:** 26-pin (2×13) 2.54mm shrouded box header with polarisation key. Signals:
-  * 2× 3V3_ENIG power pins (pins 1, 26) — 2.0A capacity; estimated load ~208mA
-  * 6× ENC_IN[0:5] (pins 2–7)
-  * 6× ENC_OUT[0:5] (pins 19–24)
-  * JTAG: TCK, TMS, TDI, TDO, SYS_RESET_N (pins 9–17, GND-shielded between each signal)
-  * 7× GND (group separators + inter-JTAG shields + trailing return)
-  * See `Stator/Board_Layout.md` J6–J8 for full pin table and JTAG chain order.
+* **Data Link (J2):** 26-pin (2×13) 2.54mm shrouded box header with polarisation key.
+  > **Connector Definition Owner:** `Stator/Board_Layout.md — J6–J8`.
+  > This board uses the mating connector (see BOM for part number). The authoritative 26-pin pinout
+  > is defined on the Stator; Pin 1 = 3V3_ENIG, Pins 2–7 = ENC_IN[0:5], Pin 8 = GND, Pins 9–17 = JTAG
+  > (TCK/GND/TMS/GND/TDO/GND/TDI/GND/SYS_RESET_N), Pin 18 = GND, Pins 19–24 = ENC_OUT[0:5],
+  > Pin 25 = GND, Pin 26 = 3V3_ENIG. See `Stator/Board_Layout.md` J6–J8 for full pin table.
 * **Status LEDs (×2):** One active-low debug LED per CPLD. CPLD output LOW = LED ON.
   330Ω current-limiting resistor per LED; ~4mA drive current at 3.3V.
 * **Stecker Jack Sockets (×64):** 6.35mm (¼″) mono switched panel-mount jack sockets, one per character position.

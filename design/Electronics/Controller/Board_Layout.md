@@ -6,6 +6,9 @@
 
 ### LINK-ALPHA (To Power Module)
 
+> **Connector Definition Owner:** `Power_Module/Board_Layout.md — LINK-ALPHA`.
+> The pin table below is reproduced here for layout reference. In case of conflict, the Power Module definition is authoritative.
+
 * **Pins 1-20:** Gigabit Ethernet (GND-Shielded: GND|DA+/-|GND|DB+/-|GND...)
 * **Pins 21-22:** 5V_MAIN additional power (supplements pins 49-80 delivery cluster; combined 18 pins × 0.5A = 9A capacity)
 * **Pins 23-24:** GND additional return path
@@ -179,6 +182,8 @@ _______________________________________    _____________    ____________________
 ### LINK-BETA (To Stator Board)
 
 **Connector:** Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin). Mating ERM8-020 male on Stator Board J1.
+
+> **Connector Definition Owner:** This board. All other boards using this connector cross-reference here.
 
 > ⚠️ **Poka-Yoke:** The 80-pin LINK-ALPHA (ERF8-040) and 40-pin LINK-BETA (ERF8-020) on this board are
 > physically incompatible — the mating connectors cannot be inserted into the wrong socket. This prevents
