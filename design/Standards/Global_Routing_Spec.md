@@ -49,8 +49,10 @@
 
 **Every board must connect its signal/power reference ground (GND) to GND_CHASSIS at exactly one point.**
 
-* **Rule:** One and only one galvanic bridge between the GND reference plane and GND_CHASSIS per board. Multiple bond points create ground loops, which are a leading cause of common-mode radiated emissions and conducted susceptibility failures.
-* **Placement:** The bond point must be located as close as possible to the incoming power rails — at the boundary between the "dirty" (external/input) side and the "clean" (internal signal) side of the board.
+* **Rule:** One and only one galvanic bridge between the GND reference plane and GND_CHASSIS per board.
+  Multiple bond points create ground loops, which are a leading cause of common-mode radiated emissions and conducted susceptibility failures.
+* **Placement:** The bond point must be located as close as possible to the incoming power rails
+  — at the boundary between the "dirty" (external/input) side and the "clean" (internal signal) side of the board.
 * **Implementation:** A dedicated 0Ω link, copper bridge, or direct via connection at the defined bond point. Mark clearly on silkscreen and schematic.
 * **Per-board guidance:**
   * **Power Module:** Bond point between OR-ing diode network output and eFuse input (the clean/dirty boundary). See `Certification_Evidence.md §2.2`.

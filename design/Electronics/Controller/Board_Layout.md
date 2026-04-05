@@ -184,7 +184,7 @@ _______________________________________    _____________    ____________________
 **Connector:** Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin). Mating ERM8-020 male on Stator Board J1.
 
 > **Connector Definition Owner:** This board. All other boards using this connector cross-reference here.
-
+>
 > ⚠️ **Poka-Yoke:** The 80-pin LINK-ALPHA (ERF8-040) and 40-pin LINK-BETA (ERF8-020) on this board are
 > physically incompatible — the mating connectors cannot be inserted into the wrong socket. This prevents
 > LINK-ALPHA and LINK-BETA mismating during prototype bring-up. See DEC-015.

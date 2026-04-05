@@ -1,4 +1,4 @@
-# Linux OS: Power Management
+﻿# Linux OS: Power Management
 
 **Status:** Draft
 **Version:** v1.0.0
@@ -7,15 +7,20 @@
 ## Overview
 
 The CM5 (Raspberry Pi Compute Module 5) must respond to two hardware power events:
-1. **PWR_GD LOW** — primary early-warning signal from MCP121T-450E voltage supervisor when 5V_MAIN falls below 4.5V. With R14 corrected to 26.7kΩ (DEC-xxx, PM-06 fix), LTC3350 backup activates at 4.40V — *after* PWR_GD — so PWR_GD is now the primary shutdown trigger with ~14.5 seconds of supercap hold-up available once triggered.
-2. **LTC3350 BACKUP trigger** — secondary confirmation that supercap hold-up has engaged (activates ~100mV below PWR_GD threshold). Poll this to confirm hold-up is active and estimate remaining hold-up time.
 
-The recommended approach is **Option C**: poll the LTC3350 via I²C for the BACKUP alert as the primary early-warning mechanism, with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full 14.5-second hold-up window to perform a graceful shutdown.
+1. **PWR_GD LOW** — primary early-warning signal from MCP121T-450E voltage supervisor when 5V_MAIN falls below 4.5V.
+   With R14 corrected to 26.7kΩ (DEC-xxx, PM-06 fix), LTC3350 backup activates at 4.40V — *after* PWR_GD — so PWR_GD is now the
+   primary shutdown trigger with ~14.5 seconds of supercap hold-up available once triggered.
+2. **LTC3350 BACKUP trigger** — secondary confirmation that supercap hold-up has engaged (activates ~100mV below PWR_GD threshold).
+   Poll this to confirm hold-up is active and estimate remaining hold-up time.
+
+The recommended approach is **Option C**: poll the LTC3350 via I²C for the BACKUP alert as the primary early-warning mechanism,
+with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full 14.5-second hold-up window to perform a graceful shutdown.
 
 ## Hardware Signals
 
 | Signal | GPIO | Pull-up | Source | Trigger |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | PWR_GD | TBD (see Controller/Design_Spec.md) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | Active LOW: 5V_MAIN < 4.5V |
 | LTC3350 ALERT | I²C (0x09 address) | R7/R8 4.7kΩ on SDA/SCL | LTC3350 U3 | BACKUP bit set when 5V_MAIN < 4.40V (R14=26.7kΩ; see Power_Module/Design_Spec.md PM-06 fix) |
 
@@ -91,9 +96,11 @@ Add to `/boot/firmware/config.txt`:
 dtoverlay=gpio-shutdown,gpio_pin=<TBD>,active_low=1,gpio_pull=up
 ```
 
-Replace `<TBD>` with the actual CM5 GPIO number assigned to PWR_GD (see `Controller/Design_Spec.md` GPIO mapping table). The `gpio_pull=up` parameter enables the CM5 internal weak pull-up as a secondary pull-up alongside the external R3 (10kΩ).
+Replace `<TBD>` with the actual CM5 GPIO number assigned to PWR_GD (see `Controller/Design_Spec.md` GPIO mapping table).
+The `gpio_pull=up` parameter enables the CM5 internal weak pull-up as a secondary pull-up alongside the external R3 (10kΩ).
 
-The `gpio-shutdown` overlay triggers `systemctl poweroff` on a falling edge of the specified GPIO. With the external R3 and MCP121T open-drain output, the signal is normally HIGH (5V_MAIN stable) and goes LOW only when 5V_MAIN drops below 4.5V.
+The `gpio-shutdown` overlay triggers `systemctl poweroff` on a falling edge of the specified GPIO.
+With the external R3 and MCP121T open-drain output, the signal is normally HIGH (5V_MAIN stable) and goes LOW only when 5V_MAIN drops below 4.5V.
 
 #### Alternative: Manual device tree node
 
@@ -114,6 +121,7 @@ For more control (e.g., custom pre-shutdown actions), use a gpio-keys node inste
 ```
 
 Handle `KEY_POWER` in `/etc/systemd/logind.conf`:
+
 ```ini
 [Login]
 HandlePowerKey=poweroff
@@ -122,7 +130,7 @@ HandlePowerKey=poweroff
 ## Shutdown Timing Budget
 
 | Event | Time from power loss | Action |
-|---|---|---|
+| --- | --- | --- |
 | 5V_MAIN < 4.50V | ~0ms | MCP121T fires; PWR_GD LOW → I²C daemon detects within 500ms; initiates graceful shutdown |
 | LTC3350 BACKUP activates | ~100mV / ~10ms later | Hold-up engaged; 14.5s window begins |
 | Daemon initiates `systemctl poweroff` | ~500ms from PWR_GD | OS begins graceful shutdown |
@@ -161,7 +169,7 @@ sequence and colour states are defined below.
 ### LED Colour Table
 
 | State | GPIO 17 (R) | GPIO 18 (G) | GPIO 19 (B) | Colour | Control |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | Booting (pre-CM5) | 1Hz PWM | 1Hz PWM | Off | 🟠 Orange flash | Hardware (MIC1555) |
 | CM5 ready, USB-C active | Off | On | Off | 🟢 Solid green | CM5 GPIO |
 | CM5 ready, PoE active | Off | Off | On | 🔵 Solid blue | CM5 GPIO |
@@ -219,7 +227,7 @@ The Stator board carries an INA219 (U1, I2C address **0x45**) monitoring the 3V3
 ### Hardware Parameters
 
 | Parameter | Value | Notes |
-|---|---|---|
+| --- | --- | --- |
 | I2C address | 0x45 | Set by A0/A1 pin strapping on Stator INA219 |
 | Shunt resistance | **0.020 Ω (20mΩ)** | Must be hardcoded in firmware — do not read from config |
 | PGA range | ±80mV | Covers 0–4A range (3A LDO max → 60mV drop) |
@@ -229,7 +237,8 @@ The Stator board carries an INA219 (U1, I2C address **0x45**) monitoring the 3V3
 
 ### Firmware Note
 
-> ⚠️ The INA219 calibration register must be written on every power-up before any current readings are taken. Use **CAL = 0x0400** (1024). If this is skipped, the `Current_Register` will read zero regardless of actual current.
+> ⚠️ The INA219 calibration register must be written on every power-up before any current readings are taken.
+> Use **CAL = 0x0400** (1024). If this is skipped, the `Current_Register` will read zero regardless of actual current.
 
 ```python
 INA219_ADDR    = 0x45        # Rotor stack monitor on Stator board

@@ -263,7 +263,6 @@ SIDE VIEW (CROSS-SECTION)
                                                                       (R) = 330Ω Resistors
 ```
 
-
 ## LINK-ALPHA (80-Pin ERM8 — To Controller Board)
 
 > **Connector Definition Owner:** This board. All other boards using this connector cross-reference here.

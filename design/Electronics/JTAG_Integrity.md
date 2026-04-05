@@ -1,4 +1,4 @@
-# JTAG Signal Integrity — Analysis and Design Decision
+﻿# JTAG Signal Integrity — Analysis and Design Decision
 
 **Status:** Adopted — see DEC-016 in `design/Design_Log.md`
 **Version:** v1.0
@@ -17,7 +17,7 @@ design decision adopted.
 
 ### JTAG Chain Topology
 
-```
+```text
 FT232H (Controller L6)
     │  33Ω series R on TCK, TMS, TDI
     ▼
@@ -60,7 +60,7 @@ Transmission line effects are negligible; no series resistor required.
 ## 2. Signal Characteristics
 
 | Signal | Direction | Type | JTAG frequency | Rise time (EPM240) |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | TCK | FT232H → all CPLDs | Clock (broadcast) | 1–10 MHz | ~2–3 ns |
 | TMS | FT232H → all CPLDs | State (broadcast) | Transitions with TCK | ~2–3 ns |
 | TDI | FT232H → CPLD chain | Serial data | Stable on TCK edge | ~2–3 ns |
@@ -74,7 +74,7 @@ Transmission line effects are negligible; no series resistor required.
 ### 3.1 JLCPCB JLC04161H-7628 — 4-Layer 1.6mm (Stator, Encoder, Reflector, Extension)
 
 | Parameter | Value | Source |
-|---|---|---|
+| --- | --- | --- |
 | Prepreg (L1→L2) | 2116 style | JLCPCB stackup document |
 | Dielectric height h | **0.087 mm** | Verified: JLCPCB calculator gives 50Ω at 0.127mm for this stackup |
 | Copper thickness t | 0.035 mm (1oz outer) | Standard |
@@ -93,7 +93,7 @@ Transmission line effects are negligible; no series resistor required.
 ### 3.2 JLCPCB JLC06161H-2116 — 6-Layer 1.6mm (Controller)
 
 | Parameter | Value | Source |
-|---|---|---|
+| --- | --- | --- |
 | Prepreg (L5→L6) | 2116 style | JLCPCB 6-layer stackup |
 | Dielectric height h | **~0.087 mm** | Similar outer prepreg to 4-layer; same calculator result |
 | Copper thickness t | 0.035 mm (1oz outer) | Standard |
@@ -108,7 +108,7 @@ Transmission line effects are negligible; no series resistor required.
 > boards are retained for historical reference only. These boards now use the §3.1 parameters.
 
 | Parameter | Value | Notes |
-|---|---|---|
+| --- | --- | --- |
 | Dielectric height h | **1.53 mm** | Full board thickness minus both copper layers |
 | Copper thickness t | 0.035 mm (1oz) | Standard |
 | Dielectric constant Eᵣ | 4.4 | FR4 |
@@ -118,7 +118,7 @@ Transmission line effects are negligible; no series resistor required.
 
 ## 4. Impedance Formula (IPC-2141A Microstrip)
 
-```
+```text
 Z₀ = (87 / √(Eᵣ + 1.41)) × ln(5.98h / (0.8w + t))
 
 Where:
@@ -131,13 +131,13 @@ Where:
 
 For the 4-layer/6-layer outer-layer stackup (h = 0.087 mm, t = 0.035 mm, Eᵣ = 4.4):
 
-```
+```text
 K = 87 / √(4.4 + 1.41) = 87 / √5.81 = 87 / 2.410 = 36.1
 ```
 
-### Solving for 50Ω (w = ?):
+### Solving for 50Ω (w = ?)
 
-```
+```text
 50 = 36.1 × ln(5.98 × 0.087 / (0.8w + 0.035))
 50 = 36.1 × ln(0.520 / (0.8w + 0.035))
 1.385 = ln(0.520 / (0.8w + 0.035))
@@ -148,9 +148,9 @@ w = 0.119 mm → rounded to 0.127 mm (5 mil) for design rule consistency
 
 ✅ **0.127 mm is achievable** (JLCPCB minimum = 0.127 mm; confirmed by their online calculator)
 
-### Solving for 100Ω (w = ?):
+### Solving for 100Ω (w = ?)
 
-```
+```text
 100 = 36.1 × ln(0.520 / (0.8w + 0.035))
 2.770 = ln(0.520 / (0.8w + 0.035))
 15.96 = 0.520 / (0.8w + 0.035)
@@ -163,9 +163,9 @@ w = 0.119 mm → rounded to 0.127 mm (5 mil) for design rule consistency
 that 100Ω would require a trace narrower than 0 mm. This is a fundamental physics constraint,
 not a manufacturer limitation.
 
-### 2-Layer Board — 50Ω Calculation (h = 1.53 mm):
+### 2-Layer Board — 50Ω Calculation (h = 1.53 mm)
 
-```
+```text
 50 = 36.1 × ln(5.98 × 1.53 / (0.8w + 0.035))
 50 = 36.1 × ln(9.15 / (0.8w + 0.035))
 1.385 = ln(9.15 / (0.8w + 0.035))
@@ -176,9 +176,9 @@ w = 2.82 mm
 ❌ **2.82 mm trace — impractical** for signal routing on a space-constrained PCB.
 Controlled impedance is not specified for 2-layer boards (Reflector, Extension).
 
-### 2-Layer Board — 100Ω Calculation (h = 1.53 mm):
+### 2-Layer Board — 100Ω Calculation (h = 1.53 mm)
 
-```
+```text
 100 = 36.1 × ln(9.15 / (0.8w + 0.035))
 2.770 = ln(9.15 / (0.8w + 0.035))
 15.96 = 9.15 / (0.8w + 0.035)
@@ -197,7 +197,7 @@ termination resistors at the driving ends of each cable segment are sufficient.
 Standard 2.54 mm pitch IDC flat ribbon cable has the following impedance characteristics:
 
 | Configuration | Approx. Zo | Notes |
-|---|---|---|
+| --- | --- | --- |
 | All-signal (no interleaved GND) | 130–150 Ω | Worst case; no shielding |
 | Alternating signal/GND | **~100 Ω** | Confirmed by Belden/3M cable datasheets |
 | Shielded ribbon (overall foil) | ~100 Ω | Foil improves EMI; minimal Zo change |
@@ -223,7 +223,7 @@ The Intel MAX II EPM240T100C5N has a typical I/O output impedance (Zo_driver) of
 
 ### Option A — No Series Termination (Baseline)
 
-```
+```text
 Source impedance = 20 Ω (driver alone)
 PCB trace Zo     = uncontrolled (~50–150 Ω depending on routing)
 Cable Zo         = ~100 Ω
@@ -240,7 +240,7 @@ At 10 MHz with 3 ns rise times, false clock edges are possible on longer cables.
 
 ### Option B — 50Ω PCB + 33Ω Series Resistor (Match PCB Trace)
 
-```
+```text
 Series R        = 33 Ω
 Total source Z  = 20 + 33 = 53 Ω ≈ 50 Ω (matched to PCB trace)
 PCB trace Zo    = 50 Ω (controlled, 0.127 mm)
@@ -248,19 +248,19 @@ PCB trace Zo    = 50 Ω (controlled, 0.127 mm)
 
 **At PCB→cable transition (50 Ω → 100 Ω):**
 
-```
+```text
 Γ_forward = (100 − 50) / (100 + 50) = +0.33   (33% reflection toward source)
 ```
 
 **Returning reflection hits source (53 Ω):**
 
-```
+```text
 Γ_source = (50 − 53) / (50 + 53) ≈ 0.0   (reflection almost fully absorbed ✓)
 ```
 
 **At cable end (high-Z CPLD input):**
 
-```
+```text
 V_launched onto cable = 3.3 × 100 / (53 + 100) = 2.16 V  (on first wave)
 V_at_destination = V_launched + reflected = 2.16 + (0.33 × 2.16) ≈ 2.87 V
 ```
@@ -277,7 +277,7 @@ travels to the source, gets absorbed, but leaves a partial glitch on the cable d
 
 ### Option C — 100Ω PCB + 82Ω Series Resistor (Ideal — Not Achievable)
 
-```
+```text
 Series R        = 82 Ω
 Total source Z  = 20 + 82 = 102 Ω ≈ 100 Ω (matched to cable)
 PCB trace Zo    = 100 Ω — REQUIRES w ≈ −0.002 mm (impossible)
@@ -297,7 +297,7 @@ See §4 trace width calculation.
 This approach decouples PCB trace impedance from source termination. The **series resistor targets
 the cable impedance (100 Ω)** rather than the PCB trace impedance (50 Ω).
 
-```
+```text
 Series R        = 75 Ω
 Total source Z  = 20 + 75 = 95 Ω ≈ 100 Ω (matched to cable Zo)
 PCB trace Zo    = 50 Ω (controlled, 0.127 mm — achievable)
@@ -305,13 +305,13 @@ PCB trace Zo    = 50 Ω (controlled, 0.127 mm — achievable)
 
 **At PCB→cable transition (50 Ω → 100 Ω):**
 
-```
+```text
 Γ_forward = (100 − 50) / (100 + 50) = +0.33   (33% reflection toward source)
 ```
 
 **Returning reflection hits source (95 Ω):**
 
-```
+```text
 Γ_source = (50 − 95) / (50 + 95) = −0.31   (31% re-reflected, with inversion)
 ```
 
@@ -320,7 +320,7 @@ The PCB-to-cable discontinuity is not perfectly eliminated, but the return refle
 
 **Signal swing at destination (high-Z CPLD input):**
 
-```
+```text
 V_launched onto cable = 3.3 × 100 / (95 + 100) = 1.69 V
 V_at_destination = 2 × V_launched = 2 × 1.69 = 3.38 V ≈ 3.3 V  ✓  (full logic swing)
 ```
@@ -335,7 +335,7 @@ the system is 50 Ω PCB throughout. Use **33 Ω series R** (source Z = 53 Ω ≈
 
 **Critical length check (do these traces actually need termination?):**
 
-```
+```text
 Critical trace length = (Rise time × propagation speed) / 6
                       = (3 ns × 200 mm/ns) / 6  =  100 mm
 ```
@@ -351,7 +351,7 @@ cable lengths of 200–500 mm the 75 Ω resistors are functionally necessary.
 ### Option Summary Table
 
 | Option | PCB Zo | Series R | Source Z | Cable Zo match | PCB-trace match | Achievable? | Verdict |
-|---|---|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- | --- | --- |
 | A — No termination | Uncontrolled | None | 20 Ω | ❌ Poor | ❌ Poor | Yes | Rejected |
 | B — Match PCB | 50 Ω | 33 Ω | 53 Ω | ⚠️ Partial | ✅ Excellent | Yes | Acceptable |
 | C — Match cable (ideal) | 100 Ω | 82 Ω | 102 Ω | ✅ Excellent | ✅ Excellent | **No** | Not possible |
@@ -364,7 +364,7 @@ cable lengths of 200–500 mm the 75 Ω resistors are functionally necessary.
 ### 7.1 Series Resistor Values
 
 | Placement | R value | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | Driving a ribbon cable (~100 Ω IDC) | **75 Ω** | Source Z = 95 Ω ≈ cable Zo |
 | Intra-board (CPLD output → same-board CPLD input) | **33 Ω** | Source Z = 53 Ω ≈ PCB Zo |
 | FT232H output → LINK-BETA (BtB, no cable) | **33 Ω** | Short BtB trace; match 50 Ω PCB |
@@ -378,7 +378,7 @@ distance on the trace.
 ### 7.3 Signals Requiring Series Resistors
 
 | Signal | Cable-driving | Intra-board | Notes |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | TCK | 75 Ω (at each Stator encoder port output) | — | Clock — most critical |
 | TMS | 75 Ω (at each Stator encoder port output) | — | State machine control |
 | TDI | 75 Ω (at each Stator→encoder cable drive) | 33 Ω (inter-CPLD on Encoder) | Chained data |
@@ -388,7 +388,7 @@ distance on the trace.
 ### 7.4 Per-Board Implementation
 
 | Board | New refs | Value | Qty | Location |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Controller | R4 | 33 Ω | 1 | TCK after 74LVC1G125 buffer, before LINK-BETA pin 2 |
 | Controller | R5 | 33 Ω | 1 | TMS after 74LVC1G125 buffer, before LINK-BETA pin 4 |
 | Controller | R6 | 33 Ω | 1 | TDI after 74LVC1G125 buffer, before LINK-BETA pin 6 |
@@ -415,7 +415,7 @@ distance on the trace.
 ## 8. Trace Width Design Rule
 
 | Board | Stackup | JTAG Layer | Target Zo | Trace width | Status |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | Controller | JLC06161H-2116 (6L) | L6 over L5 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §8 trace table |
 | Stator | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §3 |
 | Encoder | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §6 |
@@ -427,7 +427,7 @@ distance on the trace.
 ## 9. Cost Analysis
 
 | Item | Unit cost | Qty (full system) | Total |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | 75 Ω 1% 0603 (Stator R7–R15) | ~£0.002 | 9 | <£0.02 |
 | 75 Ω 1% 0402 (Encoder R8, ×3 boards) | ~£0.001 | 3 | <£0.01 |
 | 33 Ω 1% 0402 (Encoder R7, ×3 boards) | ~£0.001 | 3 | <£0.01 |

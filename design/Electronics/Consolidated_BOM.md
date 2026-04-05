@@ -81,7 +81,8 @@ individual `Design_Spec.md` file.
 **Notes:**
 
 * **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip + Switch contact; Sleeve to chassis GND). Rows 1–2 (BT1–128).
-* **Keyboard switches (SW1-64):** mount in the keyboard panel. Each switch connects via a 2-wire harness (COM1 + NO1 from Pole 1 only). Pole 2 pins are mechanically soldered for physical anchoring — no electrical connection. Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard. Rows 3–4 (BT129–256).
+* **Keyboard switches (SW1-64):** mount in the keyboard panel. Each switch connects via a 2-wire harness (COM1 + NO1 from Pole 1 only). Pole 2 pins are mechanically soldered for physical anchoring
+  — no electrical connection. Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard. Rows 3–4 (BT129–256).
 * **Total PCB blade terminals: 256** — four rows of 64, all Keystone 1285.
 * Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
 

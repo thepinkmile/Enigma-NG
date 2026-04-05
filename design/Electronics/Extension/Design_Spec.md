@@ -44,7 +44,8 @@
 * **Finish:** ENIG (Gold) for connector and diagnostic pad surfaces.
 * **Layer Mapping:** L1: Signal (JTAG pass-through / routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
 * **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
-* **JTAG Trace Width Rule:** The Extension board carries only the **TDO_RETURN** signal on its J1/J2 pass-through path (TCK, TMS, and TDI travel to the rotor stack via Stator J2–J4, not via the Extension Port). TDO_RETURN traces on L1 shall be routed at **0.127 mm (5 mil)**
+* **JTAG Trace Width Rule:** The Extension board carries only the **TDO_RETURN** signal on its J1/J2 pass-through path
+  (TCK, TMS, and TDI travel to the rotor stack via Stator J2–J4, not via the Extension Port). TDO_RETURN traces on L1 shall be routed at **0.127 mm (5 mil)**
   over the L2 GND plane, targeting **50 Ω controlled impedance**. See
   `design/Electronics/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
 

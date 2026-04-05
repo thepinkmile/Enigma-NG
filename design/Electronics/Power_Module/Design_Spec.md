@@ -105,7 +105,9 @@ GND ──────┴──────────────────�
 
 * Function: Supplementary CM attenuation above ~10MHz where nanocrystalline core permeability falls off. Provides a second CM filter pole to ensure >40dB CM attenuation to 30MHz+.
 
-* **Fallback option:** If WE-CMBNC 7448031002 becomes unavailable, a ferrite-core CMC (e.g. Würth WE-CMB 744860220 or equivalent ≥10A ferrite THT CMC) may be substituted for L2 only. Ferrite CMCs have lower CM inductance below ~10kHz but perform equivalently above 1MHz. ⚠️ Re-verify CM insertion loss at 150kHz with the ferrite substitute before schematic freeze — add an external X2 cap (e.g. 10nF Y1-rated) across the CM choke if >6dB insertion loss is lost at 150kHz.
+* **Fallback option:** If WE-CMBNC 7448031002 becomes unavailable, a ferrite-core CMC (e.g. Würth WE-CMB 744860220 or equivalent ≥10A ferrite THT CMC) may be substituted for L2 only.
+  Ferrite CMCs have lower CM inductance below ~10kHz but perform equivalently above 1MHz. ⚠️ Re-verify CM insertion loss at 150kHz with the ferrite substitute before schematic freeze
+  — add an external X2 cap (e.g. 10nF Y1-rated) across the CM choke if >6dB insertion loss is lost at 150kHz.
 
 **Stage 3 — Differential Mode Pi-filter (L3, C1–C6):**
 
@@ -152,7 +154,9 @@ GND ──────┴──────────────────�
 
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 232kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
-  * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH. **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition, then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
+  * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
+    **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
+    then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
   * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
 * **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where:
@@ -160,12 +164,16 @@ GND ──────┴──────────────────�
     * `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path).
     * For `ICH = 0.5A`: `RICHARGE = 1.485V / (0.5A × 0.010Ω) = 297Ω → use 301Ω (E96, 0.1%, 0603)`.
 
-  * ⚠️ **RICHARGE tolerance:** VICHARGE = 1.485V ±0.5% (LTC3350 spec); RICHARGE (301Ω) should be 0.1% E96 Thin-Film to keep combined error ≤±0.6% → charge current error ≤±3mA at 500mA target. This is negligible for supercap charging.
-  * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; **R12 (RSENSE) must be a 4-terminal Kelvin-sense resistor** with independent sense traces to avoid trace resistance adding to the measured value (even 1mΩ trace adds 10% error on a 10mΩ sense resistor).
+  * ⚠️ **RICHARGE tolerance:** VICHARGE = 1.485V ±0.5% (LTC3350 spec); RICHARGE (301Ω) should be 0.1% E96 Thin-Film to keep combined error ≤±0.6%
+    → charge current error ≤±3mA at 500mA target. This is negligible for supercap charging.
+  * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; **R12 (RSENSE) must be a 4-terminal Kelvin-sense resistor**
+    with independent sense traces to avoid trace resistance adding to the measured value (even 1mΩ trace adds 10% error on a 10mΩ sense resistor).
   * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below the programmed threshold (resistor divider R14/R15 from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15).
     * **Current values (as-designed):** R14=30.1kΩ / R15=10.0kΩ → threshold = 4.81V.
-    * ⚠️ **Dead-zone issue:** PWR_GD (MCP121T-450E) deasserts at 4.50V. With R14=30.1kΩ, backup activates at 4.81V — *before* the CM5 receives a PWR_GD low warning. The CM5 is therefore unaware that hold-up has engaged until the voltage drops a further 0.31V.
-    * **Recommended fix:** Change R14 to **26.7kΩ** (E96, 0.1%, 0603). New threshold = 1.2V × (26.7k+10k)/10k = **4.40V** — 100mV below PWR_GD assertion (4.50V), ensuring the CM5 is warned before hold-up engages and has time to initiate graceful shutdown.
+    * ⚠️ **Dead-zone issue:** PWR_GD (MCP121T-450E) deasserts at 4.50V. With R14=30.1kΩ, backup activates at 4.81V — *before* the CM5 receives a PWR_GD low warning.
+      The CM5 is therefore unaware that hold-up has engaged until the voltage drops a further 0.31V.
+    * **Recommended fix:** Change R14 to **26.7kΩ** (E96, 0.1%, 0603). New threshold = 1.2V × (26.7k+10k)/10k = **4.40V** — 100mV below PWR_GD assertion (4.50V),
+      ensuring the CM5 is warned before hold-up engages and has time to initiate graceful shutdown.
     * Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
@@ -367,10 +375,10 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0V | P75.0BYCT-ND | C105872 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC at board level) | 10nF 100V X7R 0402 | 0402 | 81-GRM155R72A103KA35D | 490-GRM155R72A103KA35DCT-ND | C57112 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
-| J1 | BtB Link | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM12064-ND | — |
+| J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM12064-ND | N/A — customer-supplied |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | — |
 | J3 | Battery Conn | Molex 43650-0519 (⚠️ **PN corrected** — 43045-0512 does not exist; 43045=SMT/RA series, 43650=vertical THT. 43650-0519: 5-circuit, 1-row, gold contacts, board lock, 3mm pitch) | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM7843-ND ⚠️ verify | — |
-| J4 | USB-C Power Input | GCT USB4135-GF-A — 24-pin USB Type-C receptacle, 5A VBUS rated, includes CC1, CC2, SBU1, SBU2. SMT vertical (top-entry). Connects to STUSB4500 (U5) CC pins for PD negotiation. ⚠️ THT / hand-place only — not in JLCPCB SMT catalog | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — |
+| J4 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must penetrate Power Module enclosure wall and sit flush with outer machine enclosure — verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | C5438410 |
 | L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND ⚠️ 32-wk lead; alt: Newark 75X1218 (561 in stock) | — |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND ⚠️ 32-wk lead; alt: Newark 75X1218 | — |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND | — |
@@ -386,7 +394,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
-| R14 | LTC3350 BACKUP divider upper (R_TOP) | 30.1kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.75V → R_TOP/R_BOT=2.958 → R_BOT=10kΩ → R_TOP=29.58kΩ → E96=30.1kΩ → actual trigger: 4.81V] | 0603 | 667-ERA-3ARB3012V | P30.1KBYCT-ND | — |
+| R14 | LTC3350 BACKUP divider upper (R_TOP) — **UPDATED per PM-06 fix** | 26.7kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.40V → R_TOP/R_BOT=(4.40/1.2)−1=2.667 → R_BOT=10kΩ → R_TOP=26.67kΩ → E96=26.7kΩ → actual trigger: 4.40V, 100mV below PWR_GD at 4.50V] | 0603 | 667-ERA-3ARB2672V | P26.7KBYCT-ND | — |
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB1002V | P10.0KBYCT-ND | — |
 | R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
@@ -429,10 +437,23 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > * **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery).
 > Three LM74700-Q1 instances (U6a, U6b, U6c) are required — one IC per MOSFET for correct per-channel ideal-diode gate drive
 > (+7V above source via internal charge pump). Confirm U6a/U6b/U6c footprints at schematic capture.
-> * **J4 USB4135-GF-A** — GCT 24-pin USB Type-C SMT receptacle, 5A rated. THT/hand-place style; not in JLCPCB standard SMT catalog (similar to J2, J3 and the BtB connectors). CC1 and CC2 pins connect
+> * **J1 ERM8-040-05.0-S-DV-K-TR (Power Module) + ERF8-040-05.0-S-DV-K-TR (Controller)** — Samtec BtB connector pair.
+>   **ERM8 = MALE header (pins pointing up)** on Power Module; **ERF8 = FEMALE socket** on Controller. Both are Samtec proprietary parts, NOT in JLCPCB/LCSC catalog.
+>   Assembly paths: (a) JLCPCB customer-supplied component service — procure from Mouser and select "consigned components" option; (b) Hand-solder after PCB assembly.
+>   Current rating: **2.2A per pin** (Samtec ERM8 specification) — ensure adequate VBUS/GND pin count per Power_Module/Board_Layout.md LINK-ALPHA table.
+>   Stack height "05.0" in PN refers to individual header height; total PCB-to-PCB gap ≈ 7mm mated (ERM8 5mm + ERF8 2mm).
+>   ⚠️ Verify exact ERF8 mating height at schematic capture to confirm enclosure fit.
+> * **J4 USB4135-GF-A** — GCT **6-position, right-angle SMT** USB-C receptacle (confirmed via Octopart; JLCPCB C5438410 verified by user).
+>   The 6 positions cover VBUS(×2), GND(×2), CC1, CC2 — exactly what STUSB4500 needs for PD negotiation.
+>   **Right-angle (R/A) mounting**: connector sits on the board edge with the USB-C port facing outward — correct for the Power Module's panel-mount power input.
+>   ⚠️ **Mechanical caveat**: the connector must penetrate the Power Module enclosure wall and sit flush with the outer machine enclosure.
+>   Verify protrusion depth vs enclosure wall thickness at prototype stage — may need a panel cutout with bezel, a panel-mount USB-C extension, or a revised connector with longer reach.
+>   Available at DigiKey (2073-USB4135-GF-A-ND) and JLCPCB (C5438410). CC1 and CC2 pins connect
 > to STUSB4500 (U5) for PD 15V negotiation.
-> * **R14/R15 BACKUP divider** — Sets LTC3350 BACKUP comparator trigger at 4.81V (V_thr=1.2V, R_TOP=30.1kΩ, R_BOT=10.0kΩ). Use 0.1% tolerance for accuracy; trigger window relative to PWR_GD threshold
-> (4.5V) is 310mV — supercap discharge begins ~310mV above the PWR_GD trip.
+> * **R14/R15 BACKUP divider** — **UPDATED (PM-06 fix):** R14 changed from 30.1kΩ to **26.7kΩ** (ERA-3ARB2672V).
+>   Sets LTC3350 BACKUP comparator trigger at **4.40V** (V_thr=1.2V, R_TOP=26.7kΩ, R_BOT=10.0kΩ).
+>   This fires **after** PWR_GD asserts at 4.50V — supercap backup engages 100mV below PWR_GD, preventing the dead-zone that the original 4.81V threshold created.
+>   Use 0.1% tolerance on both R14 and R15 for threshold accuracy.
 > * **C7–C14 bulk/bypass caps** — All 22µF caps use Samsung CL32B226KAJNNNE (22µF **25V** X7R 1210) as C1/C4. The original 22µF 50V 1210 spec (Murata GRM32ER71H226KE15L) was not available
 > from any distributor — 22µF at 50V in 1210 does not appear to be a commercial catalogue part. Maximum actual bus voltage on the hardest-stressed positions (C1, C4, C7, C8, C11, C12) is ~16.4V
 > (4S battery, 4.1V/cell max per DEC-005), giving 1.5× voltage derating at 25V rating — acceptable for prototype stage. C13 uses a different 10µF part. ⚠️ Note: X7R capacitors exhibit DC bias

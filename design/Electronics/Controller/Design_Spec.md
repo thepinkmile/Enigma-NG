@@ -228,8 +228,8 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Link-Alpha 80-pin Socket | ERF8 (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | ??? |
-| J2 | Link-Beta 40-pin Socket | ERF8 (female) | Samtec | 200-ERF8020050SDVKTR | SAM8622-ND ⚠️ verify | ??? |
+| J1 | Link-Alpha 80-pin Socket | ERF8 (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | N/A — customer-supplied |
+| J2 | Link-Beta 40-pin Socket | ERF8 (female) | Samtec | 200-ERF8020050SDVKTR | SAM8622-ND ⚠️ verify | N/A — customer-supplied |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
 | J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A125057-ND | C123459 |
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |

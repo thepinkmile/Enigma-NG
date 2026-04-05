@@ -1,8 +1,9 @@
-# Enigma-NG Certification Evidence Record (V1.0 — DRAFT)
+﻿# Enigma-NG Certification Evidence Record (V1.0 — DRAFT)
 
 > **Document Status:** Draft — Power Module design rationale complete; additional sections to be added as design review progresses.
 >
 > **Applicable Standards:**
+>
 > - **CE Marking:** EN 55032:2015+A2:2021 (Multimedia Equipment EMC), EN 55035:2017+A11:2020, EN IEC 61000-3-2, EN IEC 61000-3-3
 > - **UKCA:** UKCA equivalent to the above CE directives under UK Statutory Instrument 2016/1091
 > - **IEC 61000-4-2:** Electrostatic Discharge Immunity
@@ -84,7 +85,7 @@ for CE/UKCA EMC compliance.
 
 **Full power chain (input to output):**
 
-```
+```text
 [PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 51W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
   → LM74700-Q1 OR-ing controller + SISS22DN ideal-diode FETs (×3)
   → TCO F1 (72°C thermal fuse)
@@ -126,7 +127,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 > **Note on Battery Voltage — OVLO Margin:** The TPS25980 16.9V OVLO variant is 0.1V above the theoretical max battery voltage of 16.8V (4S Li-ion at 4.2V/cell). To maintain an engineering margin of
 > ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)**. This specification must be enforced in the battery procurement specification and verified
 > during incoming inspection. OVLO threshold accuracy must be confirmed against the TPS25980 datasheet (full threshold tolerance band required before production release — see §8, OA-01).
-
+>
 > **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative
 > TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting EN 55032 Class B conducted
 > emissions compliance.
@@ -173,7 +174,7 @@ At 400 kHz with the DRSS ±5.5% modulation:
 
 **Slave IC (U2B):** FSET/SYNC pin driven by an external phase-shifted replica of U2A's switching signal, constructed as follows:
 
-```
+```text
 U2A SW node
     │
    [R_SW: 10kΩ 1% 0402]          (isolates SW ringing from delay chain)
@@ -476,7 +477,8 @@ Any replacement CPLD must be verified for:
 
 ## 9. Future Military & Defence Certification Considerations
 
-The following table records alignment of the current Enigma-NG Power Module design against relevant military and defence standards. **No design changes are required at this stage.** This section is for reporting purposes and to support future MOD (UK Ministry of Defence) or equivalent certification submissions.
+The following table records alignment of the current Enigma-NG Power Module design against relevant military and defence standards.
+**No design changes are required at this stage.** This section is for reporting purposes and to support future MOD (UK Ministry of Defence) or equivalent certification submissions.
 
 > **Status key:** ✅ Aligned — design meets intent; ⚠️ Partial — some requirements met, gaps identified; ❌ Not addressed; 🔵 Reference only — voltage/platform class mismatch, philosophy only
 
@@ -514,7 +516,8 @@ The following table records alignment of the current Enigma-NG Power Module desi
 
 ### 9.5 Notes for Future Certification Submissions
 
-1. **Platform classification (DEF STAN 59-411 / MIL-STD-461G):** The applicable test levels depend on classification (e.g., Ship Above Deck, Ground Vehicle, Airborne). This must be determined before any EMC pre-compliance testing.
+1. **Platform classification (DEF STAN 59-411 / MIL-STD-461G):** The applicable test levels depend on classification (e.g., Ship Above Deck, Ground Vehicle, Airborne).
+   This must be determined before any EMC pre-compliance testing.
 2. **FMEA/SHA (MIL-STD-882E):** A formal Failure Mode & Effects Analysis should be conducted at PDR (Preliminary Design Review) stage prior to any MOD contract submission.
 3. **Conformal coating:** Decision required at production design stage. Acrylic or silicone coating would support DEF STAN 00-035 humidity and fungal resistance requirements.
 4. **Vibration profile:** No vibration specification has been defined. A target operational environment must be stated to determine whether vibration testing (MIL-STD-810H Method 514) is applicable.

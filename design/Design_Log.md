@@ -320,10 +320,16 @@ Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-fil
 **Affects:** Controller J1 (Link-Alpha), Controller J2 (Link-Beta), Consolidated BOM connector inventory
 
 **Decision:**  
-Both BtB connectors on the Controller Board (J1 Link-Alpha and J2 Link-Beta) use the **ERF8-040-05.0-S-DV-K-TR female socket**. The mating male plugs (ERM8-040-05.0-S-DV-K-TR) are fitted to the Power Module (J1) and the Stator Board (J1) respectively.
+Both BtB connectors on the Controller Board (J1 Link-Alpha and J2 Link-Beta) use the **ERF8-040-05.0-S-DV-K-TR female socket**.
+The mating male plugs (ERM8-040-05.0-S-DV-K-TR) are fitted to the Power Module (J1) and the Stator Board (J1) respectively.
 
 **Rationale:**  
-During mechanical assembly, the Controller Board slides into the enclosure and must simultaneously engage with two boards along its back edge — the Power Module (J1) to one side and the Stator (J2) to the other. Using female sockets on the Controller allows guided blind-mate engagement in a single insertion motion, with the mating male pins on the peripheral boards providing positive alignment. Placing male headers on the Controller would require both peripheral boards to be precisely pre-positioned before the Controller could be inserted, significantly complicating assembly.
+During mechanical assembly, the Controller Board slides into the enclosure and must simultaneously engage with two boards along its back edge
+— the Power Module (J1) to one side and the Stator (J2) to the other.
+Using female sockets on the Controller allows guided blind-mate engagement in a single insertion motion,
+with the mating male pins on the peripheral boards providing positive alignment.
+Placing male headers on the Controller would require both peripheral boards to be precisely pre-positioned before the Controller could be inserted,
+significantly complicating assembly.
 
 **Connector Assignment Summary:**
 
@@ -402,9 +408,10 @@ Keeping 80-pin connector with unused pins. Rejected: unnecessary connector cost 
 connector on the Stator increases stack height with no benefit.
 
 **Impact:**
-* Controller J2: ERF8-040 → ERF8-020-05.0-S-DV-K-TR (female, 40-pin)
-* Stator J1: ERM8-040 → ERM8-020-05.0-S-DV-K-TR (male, 40-pin)
-* DEC-014 connector table updated (see cross-ref below).
+
+- Controller J2: ERF8-040 → ERF8-020-05.0-S-DV-K-TR (female, 40-pin)
+- Stator J1: ERM8-040 → ERM8-020-05.0-S-DV-K-TR (male, 40-pin)
+- DEC-014 connector table updated (see cross-ref below).
 
 **Cross-ref:** DEC-014 (gender assignment rationale remains valid; part numbers updated).
 
@@ -459,6 +466,7 @@ impossible on JLCPCB standard 4-layer/6-layer stackups — the required trace wi
 achievable impedance match to the cable while remaining within manufacturing design rules.
 
 **Alternatives Considered:**
+
 - **No termination (Option A):** Rejected — multiple re-reflections at 10 MHz risk false TCK edges.
 - **50 Ω PCB + 33 Ω series R (Option B):** Acceptable but leaves 33% reflection at PCB-to-cable
   transition unabsorbed.
@@ -604,16 +612,21 @@ Questions raised during design review that are deferred pending further investig
 
 ### Background
 
-The Power Module enclosure uses internal aluminium compression ribs that locate the PCB within the "Power Can". The supercap block §4 defines a **2.0mm rib clearway** (14mm pitch, 12mm cell body) as a no-fly zone for traces on all layers. A separate GND_CHASSIS copper pour already exists in the supercap shadow zone beneath the cells (§5).
+The Power Module enclosure uses internal aluminium compression ribs that locate the PCB within the "Power Can".
+The supercap block §4 defines a **2.0mm rib clearway** (14mm pitch, 12mm cell body) as a no-fly zone for traces on all layers.
+A separate GND_CHASSIS copper pour already exists in the supercap shadow zone beneath the cells (§5).
 
-The question is whether the rib clearway should have an **explicit solder mask opening (exposed ENIG)** on the top copper layer, connected to the GND_CHASSIS net, so that when the PCB seats in the enclosure the aluminium ribs make direct electrical contact with the board's chassis ground. This is a standard EMC bonding technique used in Eurocard/VME card-cage designs.
+The question is whether the rib clearway should have an **explicit solder mask opening (exposed ENIG)** on the top copper layer, connected to the GND_CHASSIS net,
+so that when the PCB seats in the enclosure the aluminium ribs make direct electrical contact with the board's chassis ground.
+This is a standard EMC bonding technique used in Eurocard/VME card-cage designs.
 
 ### What the change would involve
 
 If accepted, the following updates would be made:
 
 1. **Power Module Design_Spec.md §4** — Add bullet:
-   > - **Rib Clearway ENIG Bond:** A solder mask opening (exposed ENIG) is placed in the 2.0mm rib clearway gap on the top copper layer, connected to GND_CHASSIS. Contact with the aluminium enclosure rib creates a distributed chassis ground bond at the supercap block location.
+   > - **Rib Clearway ENIG Bond:** A solder mask opening (exposed ENIG) is placed in the 2.0mm rib clearway gap on the top copper layer, connected to GND_CHASSIS.
+   >   Contact with the aluminium enclosure rib creates a distributed chassis ground bond at the supercap block location.
 
 2. **Power Module Board_Layout.md** — Add keepout note:
    > Rib clearway gap: solder mask open, GND_CHASSIS copper strip, min 1.5mm wide × full rib depth.
