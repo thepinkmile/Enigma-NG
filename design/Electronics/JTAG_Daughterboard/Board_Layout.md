@@ -1,6 +1,11 @@
 # JTAG Daughterboard Layout Visualisations
 
-This board implements our version of an Intel (Altera) USB Blaster II device for programming CPLDs.
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-05
+
+This board implementsour version of an Intel (Altera) USB Blaster II device for programming CPLDs.
 
 ## Component Areas
 

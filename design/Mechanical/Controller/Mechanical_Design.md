@@ -1,5 +1,10 @@
 # Mechanical Design Requirements
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-03-30
+
 ## 1. Form Factor
 
 * **Geometry:** Rectangular Controller Board designed to sit flush in front of the rotor stack.

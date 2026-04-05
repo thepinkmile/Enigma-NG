@@ -1,5 +1,10 @@
 # Enigma-NG Global Routing Specification (V1.0)
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-05
+
 ## 1. Trace & Via Geometry
 
 * **Arcs:** All directional changes must use Full Circular Arcs (0.5mm Logic / 1.0mm Power).

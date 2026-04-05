@@ -1,5 +1,10 @@
 # Encoder Board Layout Visualisations
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-05
+
 ## Component Areas
 
 ```text

@@ -1,5 +1,10 @@
 # Enigma-NG Maintenance Guide
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-03-30
+
 ## 1. Safety Procedures
 
 * **Safety Glow (Amber):** If the external Amber LED is lit, the Supercapacitors are discharging (>5.1V). Do not open the machine.

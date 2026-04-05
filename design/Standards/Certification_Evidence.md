@@ -1,5 +1,10 @@
 ﻿# Enigma-NG Certification Evidence Record (V1.0 — DRAFT)
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-05
+
 > **Document Status:** Draft — Power Module design rationale complete; additional sections to be added as design review progresses.
 >
 > **Applicable Standards:**

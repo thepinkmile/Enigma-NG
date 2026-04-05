@@ -23,7 +23,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 |   [ 8x 0.1uF LOCAL ] <--- Per CPLD VCC pin                                 |
 |                                                                             |
 |   [ EDGE-RATE CONTACTS ] <--- Gold-plated friction pads (Samtec ERM8)      |
-|   (Input side — mates with Stator J1–J3 or Extension J1–J3 output connectors)        |
+|   (Input side — mates with Stator J1–J3 ERF8 female sockets or the previous Rotor's J4–J6 ERF8 female output sockets) |
 |                                                                             |
 |   [ EDGE-RATE CONTACTS ] <--- Gold-plated friction pads (Samtec ERM8)      |
 |   (Output side — mates with next rotor input or Reflector last contacts)   |
@@ -41,67 +41,26 @@ Each rotor position uses **three connectors** — one for ENC data in, one for E
 These three connectors must be **positionally identical** across every board that mates with rotors
 (Stator input side, Extension mid-stack, Reflector final output) to allow any rotor to mate at any position.
 
-> **⚠️ Note:** The signal maps below (ENC-IN, ENC-OUT, PWR/JTAG) describe an earlier draft pinout and are
-> superseded by the authoritative connector definitions in `Rotor/Design_Spec.md §3.4`.
+> **⚠️ Note:** The earlier draft signal maps (ENC-IN, ENC-OUT, PWR/JTAG with 8-pin and 14-pin tables)
+> have been removed. All connector definitions now live exclusively in `Rotor/Design_Spec.md §3.4`.
 > Use the Design_Spec §3.4 tables for all schematic and PCB layout work.
 
-### Connector Type
+### Connector Summary
 
-**Samtec ERM8-020-05.0-S-DV-K-TR** (Male, 40-pin, 0.8mm pitch, 5.0mm stack height).
-Mating connector: **Samtec CLP Series** low-profile female socket on Stator/Extension/Reflector boards.
-ENIG-finished pads; rated for high mating cycles; hot-swap capable.
+Each rotor carries **six connectors** — three male ERM8 headers on the input side (J1–J3) and three female
+ERF8 sockets on the output side (J4–J6). See `Rotor/Design_Spec.md §3.4` for the authoritative pinout tables.
 
-> **⚠️ Note:** The Rotor connector is a 0.8mm pitch Samtec Edge-Rate series. It is **not** compatible
-> with 2.54mm shrouded headers. Stator J1–J3 and Extension rotor connectors must use the matching
-> Samtec CLP female socket, not standard IDC headers.
+| Designator | Type | Part | Pins | Function |
+| :--- | :--- | :--- | :--- | :--- |
+| J1 | ERM8-005 male | 200-ERM8005050SDVKTR | 10 (2×5) | JTAG input |
+| J2 | ERM8-005 male | 200-ERM8005050SDVKTR | 10 (2×5) | Power input |
+| J3 | ERM8-010 male | 200-ERM8010050SDVKTR | 20 (2×10) | Encoder data input |
+| J4 | ERF8-005 female | 200-ERF8005050SDVKTR | 10 (2×5) | JTAG output → next rotor J1 |
+| J5 | ERF8-005 female | 200-ERF8005050SDVKTR | 10 (2×5) | Power output → next rotor J2 |
+| J6 | ERF8-010 female | 200-ERF8010050SDVKTR | 20 (2×10) | Encoder data output → next rotor J3 |
 
-### ENC-IN Connector Signal Map
+### TTD Routing Note
 
-| Pin | Signal | Direction | Notes |
-| :--- | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | In | Logic power supply |
-| 2 | ENC_IN[0] | In | Encryption input bit 0 (from previous stage) |
-| 3 | ENC_IN[1] | In | Encryption input bit 1 |
-| 4 | ENC_IN[2] | In | Encryption input bit 2 |
-| 5 | ENC_IN[3] | In | Encryption input bit 3 |
-| 6 | ENC_IN[4] | In | Encryption input bit 4 |
-| 7 | ENC_IN[5] | In | Encryption input bit 5 |
-| 8 | GND | — | Signal return |
-
-### ENC-OUT Connector Signal Map
-
-| Pin | Signal | Direction | Notes |
-| :--- | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | Out | Logic power pass-through |
-| 2 | ENC_OUT[0] | Out | Encryption output bit 0 (to next stage) |
-| 3 | ENC_OUT[1] | Out | Encryption output bit 1 |
-| 4 | ENC_OUT[2] | Out | Encryption output bit 2 |
-| 5 | ENC_OUT[3] | Out | Encryption output bit 3 |
-| 6 | ENC_OUT[4] | Out | Encryption output bit 4 |
-| 7 | ENC_OUT[5] | Out | Encryption output bit 5 |
-| 8 | GND | — | Signal return |
-
-### PWR/JTAG Connector Signal Map
-
-| Pin | Signal | Direction | Notes |
-| :--- | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | In | Main power supply for CPLD and logic |
-| 2 | GND | — | Power return |
-| 3 | TCK | In | JTAG clock (broadcast from Stator) |
-| 4 | GND | — | TCK shield |
-| 5 | TMS | In | JTAG mode select (broadcast from Stator) |
-| 6 | GND | — | TMS shield |
-| 7 | TDI | In | JTAG data in (daisy-chain from previous rotor) |
-| 8 | GND | — | TDI shield |
-| 9 | SYS_RESET_N | In | Active-low CPLD reset (from Controller GPIO 26) |
-| 10 | GND | — | SYS_RESET_N shield |
-| 11 | TDO | Out | JTAG data out (daisy-chain to next rotor; TDO_RETURN on last rotor) |
-| 12 | GND | — | TDO shield |
-| 13 | 3V3_ENIG | In | Additional power pin (parallel with pin 1) |
-| 14 | GND | — | Power return |
-
-### TDO Routing Note
-
-TDO does not chain back through the Extension Port individually per rotor. Each rotor passes TDO to the
-**next rotor's TDI** directly via the PWR/JTAG connector. Only **Rotor 30** (last in chain) routes its
-TDO to the Reflector TDO_RETURN pad, which carries it back to the Stator via the Extension Port (J7 Pin 15).
+TTD (JTAG Transmission Data) does not chain back through the Extension Port individually per rotor. Each
+rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Rotor J1 pin 6. Only **Rotor 30**
+(last in chain) routes its TDO via the Reflector back to Stator J7 pin 15 as TDO_RETURN.

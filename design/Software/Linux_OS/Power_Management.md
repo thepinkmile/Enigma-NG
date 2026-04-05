@@ -1,8 +1,8 @@
-﻿# Linux OS: Power Management
+# Linux OS: Power Management
 
 **Status:** Draft
 **Version:** v1.0.0
-**Last Updated:** 2026-04-04
+**Last Updated:** 2026-04-05
 
 ## Overview
 

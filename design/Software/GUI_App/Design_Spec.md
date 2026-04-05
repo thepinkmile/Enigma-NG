@@ -1,5 +1,10 @@
 # Enigma-NG Software Design: C# GUI Application
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-05
+
 ## 1. Core Framework
 
 * **Version:** .NET 10.0 (C#)

@@ -1,6 +1,11 @@
 # Enigma-NG User Manual (V1.0 — DRAFT)
 
-> **Document Status:** Draft — Power Module sections complete; additional board sections to follow as design review progresses.
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-04
+
+> **Document Status:** Draft— Power Module sections complete; additional board sections to follow as design review progresses.
 
 ---
 

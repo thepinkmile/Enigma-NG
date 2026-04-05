@@ -1,5 +1,10 @@
 # PAS-PWR-V1.0: Power Module Acceptance Specification
 
+**Status:** Draft
+**Version:** v1.0.0
+**Associated Hardware Revision:** Rev A
+**Last Updated:** 2026-04-03
+
 ## ⚠️ HINWEIS: THERMISCHE GRENZFLÄCHE (Thermal Interface)
 
 * The exposed ENIG zones can become extremely hot under full load (>5A).
