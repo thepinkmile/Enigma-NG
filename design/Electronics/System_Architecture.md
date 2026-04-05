@@ -1,6 +1,8 @@
 # Enigma-NG System Architecture
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -220,7 +222,7 @@ Keypress
 | Connector | Type | Pins | Purpose |
 | :--- | :--- | :--- | :--- |
 | Link-Alpha (PM → Ctrl) | ERM8-040 male / ERF8-040 female | 80 | Power + Ethernet + Telemetry |
-| Link-Beta (Ctrl → Stator) | ERM8-020 male / ERF8-020 female | 40 | 3V3_ENIG + JTAG + Control signals |
+| Link-Beta (Ctrl → Stator) | Controller J2 (ERF8-020 female) ↔ Stator J8 (ERM8-020 male) | 40 | 3V3_ENIG + JTAG + Control signals |
 | Stator J1–J3 | ERF8-005/010 female | 10/10/20 | Rotor 1 interface |
 | Stator J4–J6 | 26-pin THT | 26 | Encoder board connections |
 | Stator J7 | 16-pin (Molex 2.54mm) | 16 | Extension/Reflector port (carries TDO_RETURN on pin 15) |

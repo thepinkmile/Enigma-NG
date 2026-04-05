@@ -1,6 +1,8 @@
 # Enigma-NG Design Decision Log
 
 **Status:** Active
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -835,7 +837,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- | ------- |
 | J1 | JTAG input — ERM8 male header (input side; plugs into Stator J1 ERF8 or Extension J4 ERF8) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Male (ERM8). Input side. Authority: Rotor/Design_Spec.md §3.4 |
 | J2 | Power input — ERM8 male header (3V3_ENIG ×5, GND ×5) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Male (ERM8). Input power side |
-| J3 | ENC Data input — ERM8 male header (ENC_IN/ENC_OUT + GND) | Samtec ERM8-010-05.0-S-DV-K-TR (20-pin, 0.8mm pitch) | ERM8-010 | 200-ERM8010050SDVKTR | SAM8612CT-ND | C374877 | Male (ERM8). Input ENC data |
+| J3 | ENC Data input — ERM8 male header (ENC_IN/ENC_OUT + GND) | Samtec ERM8-010-05.0-S-DV-K-TR (20-pin, 0.8mm pitch) | ERM8-010 | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 | Male (ERM8). Input ENC data |
 | J4 | JTAG output — ERF8 female socket (output side; receives next Rotor J1, Reflector J1, or Extension J1 ERM8 male) | Samtec ERF8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERF8-005 | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Female (ERF8). Output side. R1 (75Ω) in TTD output path |
 | J5 | Power output — ERF8 female socket (3V3_ENIG ×5, GND ×5) | Samtec ERF8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERF8-005 | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Female (ERF8). Output power side |
 | J6 | ENC Data output — ERF8 female socket (ENC_IN/ENC_OUT + GND) | Samtec ERF8-010-05.0-S-DV-K-TR (20-pin, 0.8mm pitch) | ERF8-010 | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 | Female (ERF8). Output ENC data |
@@ -868,8 +870,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J1 (ERM8-005 male). Cross-ref: Rotor/Design_Spec.md §3.4 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J2 (ERM8-005 male). |
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | ERF8-010-05.0-S-DV-K-TR | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 | Receives next rotor group's first rotor J3 (ERM8-010 male). |
-| J7 | Extension Port IN — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | ??? | Mating connector for Stator J7 (or previous Extension J8). Cross-ref: Stator/Board_Layout.md J7 |
-| J8 | Extension Port OUT — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | ??? | Feeds next Extension J7 or Reflector J4. Cross-ref: Stator/Board_Layout.md J7 |
+| J7 | Extension Port IN — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey | Mating connector for Stator J7 (or previous Extension J8). Cross-ref: Stator/Board_Layout.md J7 |
+| J8 | Extension Port OUT — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey | Feeds next Extension J7 or Reflector J4. Cross-ref: Stator/Board_Layout.md J7 |
 | J9 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | — | 2.54mm pitch. Not a separate connector |
 
 ### JTAG Daughterboard (FT232H)

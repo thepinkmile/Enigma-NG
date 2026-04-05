@@ -1,6 +1,8 @@
 # Rotor Detailed Design
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -219,7 +221,7 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 | J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
-| R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | ??? |
+| R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | *Open item — verify JLCPCB part number* |
 | R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |

@@ -1,6 +1,8 @@
 ﻿# JTAG Signal Integrity — Analysis and Design Decision
 
 **Status:** Adopted — see DEC-016 in `design/Design_Log.md`
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0
 **Date:** 2026-04-05
 **Affects:** Controller, Stator, Encoder, Reflector, Extension boards

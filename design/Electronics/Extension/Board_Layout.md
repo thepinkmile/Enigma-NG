@@ -1,6 +1,8 @@
 # Extension Board Layout Visualisations
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05

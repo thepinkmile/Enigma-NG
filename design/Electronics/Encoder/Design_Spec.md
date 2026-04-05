@@ -1,6 +1,8 @@
 # Encoder Module (V1.0) Design Specification
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -162,9 +164,9 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | BT1-128 | PCB spade blade terminals (2 per jack, 128 total) | 6.35mm (¼″) straight vertical PCB-mount male blade tab — Row 1 (BT1-64): ENC Tip signal; Row 2 (BT65-128): Switch insertion-detect | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |
-| J2 | Data Link Connector | 26-pin 2×13 shrouded box header, 2.54mm | 2.54mm | 538-22-23-2261 | WM2913-ND | ??? |
+| J2 | Data Link Connector | 26-pin 2×13 shrouded box header, 2.54mm | 2.54mm | 538-22-23-2261 | WM2913-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
 | J3 | Diagnostic probe pad bank (bare ENIG gold pads — logic analyser / ICT access) | 2×8 bare PCB pads | 2.54mm | N/A | N/A | N/A |
-| SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (lamp/redundancy TBD). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
+| SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (*Open item — lamp/redundancy function TBD*). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
 | BT129-192 | PCB spade blade terminals — KEY_COM (Row 3) | Keystone 1285-ST — 6.35mm straight vertical PCB-mount male blade tab. COM1 of each keyboard switch pole-1. | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
 | BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285-ST — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
 | U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
@@ -174,6 +176,6 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | C25808 |
-| R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | ??? |
+| R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | *Open item — verify JLCPCB part number* |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

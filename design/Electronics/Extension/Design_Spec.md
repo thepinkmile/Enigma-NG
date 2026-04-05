@@ -1,6 +1,8 @@
 # Detailed Design: Extension Board (V1.0)
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -119,9 +121,9 @@
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
-| J7 | Extension Port IN header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
-| J8 | Extension Port OUT header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
-| J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
+| J7 | Extension Port IN header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey |
+| J8 | Extension Port OUT header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey |
+| J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
 | R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | R2 | GND_CHASSIS single-point bond | 0Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C15281 |

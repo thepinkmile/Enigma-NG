@@ -1,6 +1,8 @@
 # Linux OS: Power Management
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Last Updated:** 2026-04-05
 
@@ -21,7 +23,7 @@ with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full 1
 
 | Signal | GPIO | Pull-up | Source | Trigger |
 | --- | --- | --- | --- | --- |
-| PWR_GD | TBD (see Controller/Design_Spec.md) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | Active LOW: 5V_MAIN < 4.5V |
+| PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | Active LOW: 5V_MAIN < 4.5V |
 | LTC3350 ALERT | I²C (0x09 address) | R7/R8 4.7kΩ on SDA/SCL | LTC3350 U3 | BACKUP bit set when 5V_MAIN < 4.40V (R14=26.7kΩ; see Power_Module/Design_Spec.md PM-06 fix) |
 
 ## Option C: Recommended Implementation
@@ -93,7 +95,7 @@ Add to `/boot/firmware/config.txt`:
 
 ```ini
 # PWR_GD emergency shutdown backstop (MCP121T-450E, active-low)
-dtoverlay=gpio-shutdown,gpio_pin=<TBD>,active_low=1,gpio_pull=up
+dtoverlay=gpio-shutdown,gpio_pin=27,active_low=1,gpio_pull=up
 ```
 
 Replace `<TBD>` with the actual CM5 GPIO number assigned to PWR_GD (see `Controller/Design_Spec.md` GPIO mapping table).
@@ -112,7 +114,7 @@ For more control (e.g., custom pre-shutdown actions), use a gpio-keys node inste
         compatible = "gpio-keys";
         pwr-good {
             label = "PWR_GD";
-            gpios = <&gpio <TBD> GPIO_ACTIVE_LOW>;
+            gpios = <&gpio 27 GPIO_ACTIVE_HIGH>;
             linux,code = <KEY_POWER>;
             debounce-interval = <50>; /* ms */
         };
@@ -314,7 +316,7 @@ sudo hwclock --show
 
 ## Open Items
 
-- [ ] Confirm CM5 GPIO pin number for PWR_GD (update `<TBD>` above once GPIO mapping is finalised in Controller/Design_Spec.md)
+- [x] PWR_GD assigned to CM5 GPIO 27 (BCM) — see Controller/Design_Spec.md §6
 - [ ] Verify LTC3350 I²C address (0x09 is default; may change based on ADDR pin strapping — check schematic)
 - [ ] Test hold-up timing under actual CM5 load profile (5W assumed; measure at first prototype)
 - [ ] Consider adding LTC3350 charge status polling (SOC readout) for optional status LED control from software

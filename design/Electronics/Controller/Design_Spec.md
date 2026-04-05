@@ -1,6 +1,8 @@
 # Controller Board (V1.0) Design Specification
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -48,7 +50,7 @@
 | DR-CTL-07 | RTC battery holder | BT1 = Keystone 3034 (THT horizontal CR2032 holder) |
 | DR-CTL-08 | RTC protection | D1 = Nexperia BAT54 Schottky diode (blocks PMIC VBAT charge path) |
 | DR-CTL-09 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 95, Hirose DF40 200-pin) |
-| DR-CTL-10 | GPIO mapping | GPIO 20 = POE_STAT (active-low), GPIO 22 = USB_FAULT, GPIO 23 = BATT_PRES_N, GPIO 24 = PWR_GD, GPIO 25 = SYS_RESET_N |
+| DR-CTL-10 | GPIO mapping | GPIO 20 = POE_STAT (active-low), GPIO 22 = USB_FAULT, GPIO 23 = BATT_PRES_N, GPIO 24 = SW_LED_CTRL, GPIO 25 = SYS_FAULT (active-low), GPIO 26 = SYS_RESET_N (active-low output), GPIO 27 = PWR_GD |
 | DR-CTL-11 | RTC configuration | `dtparam=rtc_bbat_vchg` must NOT be set in `/boot/firmware/config.txt` |
 
 ## 2. Dual-Link Interface (Samtec ERx8)
@@ -187,6 +189,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware MIC1555 orange-flash path on Power Module. |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
 | **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100C5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
+| **27** | **PWR_GD** | Input | 3.3V | Active High: power-good signal from MCP121T-450E (4.50V threshold). HIGH = 5V_MAIN stable; deasserts on power loss, triggering graceful shutdown daemon. Arrives via Link-Alpha pin 34. |
 
 ## 7. Protection & EMI
 
@@ -301,7 +304,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | R4 | JTAG TCK series termination (after 74LVC1G125, before LINK-BETA pin 2) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | R5 | JTAG TMS series termination (after 74LVC1G125, before LINK-BETA pin 4) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | R6 | JTAG TDI series damping resistor (FT232H TDI → LINK-BETA pin 8; TDI is not buffered — it drives only the first device in the chain) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
-| U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | ??? | ??? |
+| U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
 | U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |

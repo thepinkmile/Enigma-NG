@@ -1,6 +1,8 @@
 # Power Module: Board Layout Visualisations
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -10,7 +12,7 @@
 ## Component Areas
 
 ```text
-TOP VIEW (L1) - 4-Layer / 2oz Copper
+TOP VIEW (L1) - 6-Layer / 2oz Copper
  _____________________________________________________________________________ 
 | [R] [R] [R]  <-- 2.0mm Filleted Corners                                     |
 |  |   |   |                                                                  |

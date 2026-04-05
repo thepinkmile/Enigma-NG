@@ -1,6 +1,8 @@
 # Enigma-NG Board Overview
 
 **Status:** Reference
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Last Updated:** 2026-04-04
 
@@ -38,7 +40,7 @@ robustness.
 | **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 2oz | **Design Locked** |
 | **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TDO_RETURN | 4-Layer / 2oz | Draft |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
-| **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 4-Layer / 2oz | **Design Locked** |
+| **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 6-Layer / 2oz | **Design Locked** |
 | **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
 | **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100C5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
 | **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 2oz | **Design Locked** |

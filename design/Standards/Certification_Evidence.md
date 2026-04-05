@@ -1,6 +1,8 @@
 ﻿# Enigma-NG Certification Evidence Record (V1.0 — DRAFT)
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -356,7 +358,7 @@ stated. The thermal enclosure is sized to handle 70°C ambient at 100% utilisati
 | Resistors (power) | Power | ≤50% of rated | Long-term stability; 50% derating is standard for resistors |
 | Resistors (precision, 0.1%) | Power | ≤25% of rated | Maintains temperature coefficient specification |
 | PCB traces (power) | Current | Per IPC-2221B at 70°C | 2oz copper; trace width calculated per IPC standard |
-| BtB connector (power pins) | Current | ≤0.6A per contact | Samtec ERF8 rated 0.5A/contact; 0.6A accepted with 2oz copper thermal analysis (evidence TBD) |
+| BtB connector (power pins) | Current | ≤0.5A per contact | ≤0.5A per contact (Samtec ERM8/ERF8 design limit, consistent with 18 pins × 0.5A = 9.0A Link-Alpha capacity; 2oz copper thermal margin confirmed by trace width calculations in Power_Module/Design_Spec.md §5 and Controller/Board_Layout.md) |
 
 ---
 
@@ -464,7 +466,7 @@ Any replacement CPLD must be verified for:
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~2 min charge from cold: 51.7W / 72W = 71.8% ✓. Steady-state: 48.9W / 72W = 67.9% ✓. Within 75% rule at all times on all sources. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
-| OA-05 | Thermal simulation of BtB connector zone to verify 0.6A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
+| OA-05 | Thermal simulation of BtB connector zone to verify 0.5A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
 | OA-06 | Verify TPS25751DREFR CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W). | Hardware Designer | High |
 | ~~OA-07~~ | ~~Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md.~~ | ~~Hardware Designer~~ | **CLOSED** — DEC-001 confirmed: pins 21-22 = 5V_MAIN, pins 23-24 = GND. Formally documented in Controller/Board_Layout.md BtB Link-Alpha table (all 80 pins assigned). |
 | ~~OA-08~~ | ~~Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** — Superseded by selection of Coilcraft POE600F-12LD (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, catalogue stock). No custom winding required. |

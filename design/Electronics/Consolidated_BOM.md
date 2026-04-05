@@ -1,6 +1,8 @@
 # Enigma-NG Consolidated BOM & Spares
 
 **Status:** Draft — pending schematic freeze
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Last Updated:** 2026-04-05
 

@@ -1,6 +1,8 @@
 # Power Module: Design Spec
 
 **Status:** Draft
+**Project:** Enigma-NG
+**Author:** Enigma-NG Hardware Team
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -58,10 +60,10 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 ### 1. PCB Architecture
 
-* **Stackup:** 4-Layer / 2oz Finished Copper (JLC04161H-7628).
+* **Stackup:** 6-Layer / 2oz Finished Copper (JLC06161H-2116).
   For production runs requiring verified controlled impedance, specify JLCPCB's 'Controlled Impedance'
   service (TDR-verified, ±10% tolerance). Prototype orders may omit this service per DEC-017
-  (calculated trace widths within ±10% of target based on JLC04161H-7628 datasheet parameters).
+  (calculated trace widths within ±10% of target based on JLC06161H-2116 datasheet parameters).
 * **Substrate:** High-Tg FR4 for thermal stability.
 * **Finish:** ENIG (Gold) for all user-touch points and thermal pads.
 * **Enclosure:** 42mm Aluminium "Power Can" with internal compression ribs.
@@ -281,8 +283,8 @@ GND ──────┴──────────────────�
 
 To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp-up, we use an automated voltage supervisor combined with a manual override.
 
-* **Power Toggle (SW1):** Panel-mount latching SPST rocker switch (Marquardt 1800 series, RGB LED — TBD
-  exact variant) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line. When SW1
+* **Power Toggle (SW1):** Panel-mount latching SPST rocker switch (Marquardt 1800 series, RGB LED —
+  *Open item — select during mechanical design phase*) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line. When SW1
   is open (ON position), R22 (10kΩ to 3V3_ENIG) holds EN HIGH → eFuse enabled. When SW1 is closed
   (OFF position), EN is pulled to GND → eFuse output cut, all downstream power off.
   * **Current rating:** Low-current logic signal only (EN pin draws microamps) — no high-current switch
@@ -430,7 +432,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB1002V | P10.0KBYCT-ND | — |
 | R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
-| SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — TBD exact Marquardt PN (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | TBD (Marquardt 1800 series) | TBD | — |
+| SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — *Open item — select during mechanical design phase* (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | *Open item — select during mechanical design phase* | *Open item — select during mechanical design phase* | — |
 | SW2 | CM5 Hard Reset | Tactile SMT pushbutton, momentary SPST, in parallel with MCP121T-450E (U8) RESET output on GLOBAL_EN line. Pulls GLOBAL_EN to GND on press. No pull-up needed (R9 on GLOBAL_EN line serves this purpose). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
