@@ -160,6 +160,9 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 ### PCB Fabrication (JLCPCB Specs)
 
 * **Layers:** **6-Layer** (JLC06161H-2116 stackup).
+  For production runs requiring verified controlled impedance (differential pairs: USB/HDMI/GbE),
+  specify JLCPCB's 'Controlled Impedance' service (TDR-verified, ±10% tolerance). Prototype orders
+  may omit this per DEC-017.
 * **Finish:** **ENIG (Gold)** for all pads and diagnostic loops.
 * **Solder Mask:** **Dark Green** (Vintage Industrial Lacquer aesthetic).
 * **Silkscreen:** **White**, **Typewriter-style font**, Bilingual (ALL-CAPS GERMAN / Sentence-case English).

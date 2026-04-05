@@ -30,7 +30,7 @@ _____________________________________________________________________________
 |                                                                            |
 |   [ SPADE TERMINAL BANK ]      [ CPLDs ]      [ DATA LINK ]                |
 |                                                                            |
-|   (64x Inputs/Outputs)       (Logic Core)   (16-Pin Ribbon Bus)            |
+|   (64x Inputs/Outputs)       (Logic Core)   (26-Pin Ribbon Bus)            |
 |                                                                            |
 |   [ DIAGNOSTIC BANK ]                                                      |
 |____________________________________________________________________________|

@@ -120,7 +120,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 
 | Designator | Value | Purpose |
 | --- | --- | --- |
-| R_UVLO_HI | 732 kΩ | UVLO upper resistor |
+| R_UVLO_HI | 232 kΩ | UVLO upper resistor |
 | R_UVLO_LO | 28.7 kΩ | UVLO lower resistor |
 | R_OVLO | 53.6 kΩ | OVLO set resistor |
 
@@ -221,9 +221,9 @@ inter-modulation products would appear at sum and difference frequencies, partia
 | Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; well above TPS7A8333P 500mV dropout |
 | Output noise | 8.8 µVRMS | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | 72 dB | Attenuates Buck output ripple (800kHz effective) by >72dB — negligible at CPLD supply |
-| Max output current | 3A | Peak load: 37 CPLDs × 50mA avg = 1.85A → **61.7% utilisation** ✓ |
+| Max output current | 3A | Peak load: 37 CPLDs × 59.4mA avg = **2,196mA → 73.3% utilisation** ✓ (per Power_Budgets.md worst-case analysis) |
 | Package | WSON-12 (3.5×3.5mm) | Exposed pad enables thermal transfer to PCB copper pour |
-| Input power dissipation | 1.7V × 1.85A = **3.15W** | Managed by Power Module thermal zone (Gelid GP-Ultimate pad, 15W/mK to enclosure) |
+| Input power dissipation | 1.7V × 2.196A = **3.73W** | Managed by Power Module thermal zone (Gelid GP-Ultimate pad, 15W/mK to enclosure) |
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
@@ -243,15 +243,15 @@ consistent with military component derating standards.
 | Raspberry Pi CM5 (full rated) | 5.00A | Linux OS undervoltage threshold: 5V/5A (25W); full allocation maintained |
 | USB 3.0 (TPS2065C rated limit) | 1.60A | Single USB 3.0 port; TPS2065C current-limited |
 | HDMI (AP2331W rated limit) | 0.05A | Hot-plug current spike handled by AP2331W |
-| 3V3_ENIG LDO input (37 CPLDs) | 1.85A | 37 × 50mA average; 3A LDO peak |
-| **Total peak** | **8.50A** | **70.8% of 12A rated Buck output** ✓ |
+| 3V3_ENIG LDO input (37 CPLDs) | 2.20A | 37 CPLDs at 59.4mA average per Power_Budgets.md; 3A LDO peak |
+| **Total peak** | **8.85A** | **73.8% of 12A rated Buck output** ✓ |
 
 **Component utilisation summary:**
 
 | Component | Function | Rated | Peak Load | Utilisation |
 | --- | --- | --- | --- | --- |
 | 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.50A | **70.8%** ✓ |
-| TPS7A8333P | 3V3_ENIG LDO | 3A | 1.85A | **61.7%** ✓ |
+| TPS7A8333P | 3V3_ENIG LDO | 3A | 2.196A | **73.3%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.86A* | **69.4%** ✓ |
 | TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |

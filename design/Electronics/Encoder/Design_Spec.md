@@ -12,8 +12,11 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 2. Power Requirements
 
-* **Core:** 3.3V (Logic) powered directly from the AP22652 current-limited output on the Controller Board.
-  No local LDO is fitted on the Encoder board — the 3V3_ENIG rail arrives via J2 (Data Link, pin 1 and pin 26) from the Stator, which distributes it from the Controller AP22652 output.
+* **Core:** 3.3V (Logic) from the **3V3_ENIG** rail, sourced from the Power Module LDO (TPS7A8333P) and
+  distributed by the Stator. Power arrives at J2 (Data Link, pin 1 = 3V3_ENIG, pin 26 = 3V3_ENIG) via
+  the 26-pin LINK-BETA ribbon cable from the Stator J6/J7/J8 port. The AP22652 current-limited output
+  mentioned in earlier drafts does not apply — the Controller Board has no direct power path to the Encoder.
+  The 3V3_ENIG rail is the sole logic supply for this board.
 * **Filtering:** Dedicated 0.1µF X7R decoupling per VCC pin.
 * **Rule:** Intel MAX II EPM240T100C5N uses **8x 0.1µF** local decoupling capacitors per IC (one per VCC pin).
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the Data Link power-entry pins in a **Symmetrical Star/Spoke pattern**.
@@ -71,8 +74,14 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 6. JTAG Chain Integrity
 
-* **Buffering:** [74LVC1G125](https://www.ti.com) buffers on the TCK and TMS lines to maintain signal integrity across the long chain (2x I/O CPLDs + 30 Rotor FPGAs).
-* **Termination:** 47Ω series resistors on the JTAG data lines to prevent reflections.
+* **Buffering:** No active buffers are fitted on the Encoder board. The JTAG signal chain is driven from
+  the FT232H (JTAG Daughterboard) via the Controller Board and Stator. Signal integrity across the full
+  chain is maintained by DEC-016 controlled impedance (50Ω) and series termination (see below).
+  For long rotor stacks, JTAG signal re-buffering (74LVC2G125 dual buffer, TCK and TMS) is provided
+  by the **Extension Board** at every 5-rotor group interval — see Extension/Design_Spec.md §2.
+* **Termination:** **33Ω** (R7, inter-CPLD, CPLD1 TDO → CPLD2 TDI) and **75Ω** (R8, cable output,
+  CPLD2 TDO → J2 pin 13) series resistors per DEC-016. The previous 47Ω value in earlier drafts is
+  superseded by DEC-016.
 * **Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over
   the L2 GND plane, targeting **50 Ω controlled impedance**. See
   `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
@@ -141,6 +150,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | C25808 |
 | R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | ??? |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

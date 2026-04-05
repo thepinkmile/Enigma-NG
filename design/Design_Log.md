@@ -659,6 +659,17 @@ industry practice for catalogue magnetics.
 
 ---
 
+## DEC-020 — GND_CHASSIS Rib Clearway ENIG Bond (Pending)
+
+- **Status:** Placeholder — pending investigation (see QUE-001)
+- **Date:** TBD
+- **Decision:** TBD — whether to expose ENIG on rib clearway zones for distributed chassis GND bonding
+- **Context:** QUE-001 raises the question of whether aluminium enclosure rib contact zones should have
+  solder mask openings (exposed ENIG) to create a direct electrical bond between GND_CHASSIS and the
+  aluminium enclosure. This placeholder reserves the DEC-020 number to prevent QUE-001 becoming stale.
+
+---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.
@@ -694,7 +705,7 @@ If accepted, the following updates would be made:
 
 3. **All other boards (Controller, Stator, Encoder)** — Assess whether their enclosure ribs also warrant the same treatment and add matching callouts if so.
 
-4. **DEC-016** — Create a decision entry recording the EMC rationale, referencing the single-point GND_CHASSIS bond rule in Certification_Evidence.md §2.2.
+4. **DEC-020** — Create a decision entry recording the EMC rationale, referencing the single-point GND_CHASSIS bond rule in Certification_Evidence.md §2.2.
 
 ### Considerations
 
@@ -793,8 +804,11 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Interconnect from Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J3 |
+| J1 | Interconnect from Stator — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for **Stator J5** |
 | J2 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
+| J3 | Rotor 30 output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | Mating with Rotor 30 ERM8-005. Definition owner: Rotor/Board_Layout.md |
+| J4 | Rotor 30 output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | Mating with Rotor 30 ERM8-005. Definition owner: Rotor/Board_Layout.md |
+| J5 | Rotor 30 output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | ERF8-010-05.0-S-DV-K-TR | 200-ERF8010050SDVKTR | SAM8618CT-ND | Mating with Rotor 30 ERM8-010. Definition owner: Rotor/Board_Layout.md |
 
 ### Extension Board
 
@@ -802,7 +816,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 | Extension Port IN — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for Stator J5. Cross-ref: Stator/Board_Layout.md J5 |
 | J2 | Extension Port OUT — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Feeds next Extension J1 or Reflector J1. Cross-ref: Stator/Board_Layout.md J5 |
-| J3–J8 | Rotor interface connectors (3 per rotor × 5 positions = 15 total) | Samtec CLP series (spec pending) | TBD | ??? | ??? | Must match Stator J2–J4. Cross-ref: Rotor/Board_Layout.md |
+| J3–J8 | Rotor interface connectors (J3/J4/J5 = input side; J6/J7/J8 = output side) | Samtec ERF8 (ERF8-005 × 4, ERF8-010 × 2) | ERF8-005-05.0-S-DV-K-TR (J3/J4/J6/J7); ERF8-010-05.0-S-DV-K-TR (J5/J8) | 200-ERF8005050SDVKTR (J3/J4/J6/J7) / 200-ERF8010050SDVKTR (J5/J8) | SAM13517CT-ND (ERF8-005) / SAM8618CT-ND (ERF8-010) | ERF8 0.8mm pitch. Must match Stator J2–J4. Cross-ref: Rotor/Board_Layout.md |
 | J9 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector |
 
 ### JTAG Daughterboard (FT232H)

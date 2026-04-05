@@ -17,8 +17,10 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 |                                                                             |
 |   [ BULK DECOUPLING ] <--- 5x 10uF X7R star/spoke near J1                  |
 |                                                                             |
-|   [ ROTOR INTERFACE CONNECTORS ] <--- 3 connectors per rotor slot (×5)     |
-|   (Samtec CLP female sockets — positionally identical to Stator J2–J4)     |
+|   [ ROTOR INTERFACE CONNECTORS ] <--- ERF8 female sockets (0.8mm pitch)      |
+|   (J3-J5: input side; J6-J8: output side — see Design_Spec §2)               |
+|                                                                             |
+|   [ JTAG BUFFER (U1) ] <--- SN74LVC2G125DCUR, TCK+TMS re-drive for output   |
 |                                                                             |
 |   [ DIAGNOSTIC BANK ] <--- 2x8 ENIG Gold Probe Pads                        |
 |                                                                             |
@@ -47,11 +49,23 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 
 ---
 
-## J3–J8 — Rotor Interface Connectors (Specification Pending)
+## J3–J8 — Rotor Interface Connectors (ERF8 Family, 0.8mm Pitch)
 
 > **Connector Definition Owner:** `Rotor/Board_Layout.md — Rotor Interface Connectors`.
-> This board hosts the mating connectors for 5 rotor positions (3 connectors per position = 15 connectors total).
-> Mechanical finalisation and part numbers are pending. Must be positionally identical to Stator J2–J4.
+> This board hosts ERF8 female sockets on both sides to mate with rotor ERM8 male headers.
+> Signal groups per side are defined in Design_Spec §2.
+
+| Ref | Side | Signal Group | Type | JLCPCB PN |
+| --- | ---- | ------------ | ---- | --------- |
+| J3 | Input (from previous group) | JTAG | ERF8-005-05.0-S-DV-K-TR (10-pin) | C7273978 |
+| J4 | Input (from previous group) | Power | ERF8-005-05.0-S-DV-K-TR (10-pin) | C7273978 |
+| J5 | Input (from previous group) | ENC Data | ERF8-010-05.0-S-DV-K-TR (20-pin) | C3646170 |
+| J6 | Output (to next group) | JTAG | ERF8-005-05.0-S-DV-K-TR (10-pin) | C7273978 |
+| J7 | Output (to next group) | Power | ERF8-005-05.0-S-DV-K-TR (10-pin) | C7273978 |
+| J8 | Output (to next group) | ENC Data | ERF8-010-05.0-S-DV-K-TR (20-pin) | C3646170 |
+
+**Important:** ERF8 0.8mm pitch — physically incompatible with any 2.54mm connector.
+Mark clearly on silkscreen: `ERF8 / 0.8mm / NICHT 2.54mm`.
 
 ---
 

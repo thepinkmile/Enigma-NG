@@ -29,7 +29,10 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 ### 1. PCB Architecture
 
-* **Stackup:** 4-Layer / 2oz Finished Copper (JLC04201H-7628).
+* **Stackup:** 4-Layer / 2oz Finished Copper (JLC04161H-7628).
+  For production runs requiring verified controlled impedance, specify JLCPCB's 'Controlled Impedance'
+  service (TDR-verified, ±10% tolerance). Prototype orders may omit this service per DEC-017
+  (calculated trace widths within ±10% of target based on JLC04161H-7628 datasheet parameters).
 * **Substrate:** High-Tg FR4 for thermal stability.
 * **Finish:** ENIG (Gold) for all user-touch points and thermal pads.
 * **Enclosure:** 42mm Aluminium "Power Can" with internal compression ribs.
@@ -330,7 +333,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 | Component | Normal Dissipation | Worst Case | Notes |
 | :--- | :--- | :--- | :--- |
-| U1 TPS25980 eFuse | 0.56W | 0.65W (7A) | 4mΩ Ron + ~0.5W quiescent |
+| U1 TPS25980 eFuse | 0.56W | 0.65W (7A) | 3mΩ Ron (typ.) + ~0.5W quiescent |
 | U2A + U2B LMQ61460-Q1 (×2) | 5.2W total | 6.7W (15V USB-C, 90% η) | 2.6W per device at 92% η; exposed pads to GND vias |
 | U7 TPS7A8333P LDO | 3.1W (1.85A load) | 5.1W (3A max) | ⚠️ Highest W/cm²: 1.7V dropout × 3A = 5.1W in WSON-12 (3.5×3.5mm); **requires ≥200mm² copper pour on L1 plus Type VII thermal vias to L2/L3 GND planes** |
 | T2 POE600F-12LD | 5.1W | 5.7W | At 90–88% efficiency, 51–57W load |

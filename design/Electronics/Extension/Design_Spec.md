@@ -17,10 +17,42 @@
   > This board uses the mating connector on both J1 and J2 (Molex 22-23-2161 or equivalent — see BOM).
   > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
   > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TDO_RETURN, Pin 16 = GND.
-* **Rotor Interface Connectors (3 per rotor-facing side):** ENC-IN, ENC-OUT, and PWR/JTAG connector set. Must be
-  **positionally identical** to the matching set on the Stator (Rotor 1 input) and Reflector (last rotor output).
-  See `Stator/Board_Layout.md` J2–J4 section for planned signal groups. Exact pin count and connector type are
-  pending mechanical design finalisation.
+* **Rotor Interface Connectors (3 per rotor-facing side × 2 sides = 6 connectors total):**
+  The Extension board provides ERF8 female sockets on **both** the input side (J3–J5, facing the
+  previous rotor group's output ERM8 headers) and the output side (J6–J8, facing the next rotor
+  group's input ERM8 headers). The connector type matches the Stator rotor interface exactly:
+
+  > **Connector Definition Owner:** `Rotor/Board_Layout.md — Rotor Interface Connectors`.
+  > This board uses mating ERF8 female sockets on both sides. Signal groups per side:
+
+  | Ref | Side | Signal Group | Type | MPN |
+  | --- | ---- | ------------ | ---- | --- |
+  | J3 | Input (from previous group output) | JTAG | ERF8-005 (10-pin, 0.8mm pitch, female) | ERF8-005-05.0-S-DV-K-TR |
+  | J4 | Input (from previous group output) | Power (3V3_ENIG × 5, GND × 5) | ERF8-005 (10-pin, 0.8mm pitch, female) | ERF8-005-05.0-S-DV-K-TR |
+  | J5 | Input (from previous group output) | ENC Data (ENC_IN/ENC_OUT + GND) | ERF8-010 (20-pin, 0.8mm pitch, female) | ERF8-010-05.0-S-DV-K-TR |
+  | J6 | Output (to next group input) | JTAG | ERF8-005 (10-pin, 0.8mm pitch, female) | ERF8-005-05.0-S-DV-K-TR |
+  | J7 | Output (to next group input) | Power (3V3_ENIG × 5, GND × 5) | ERF8-005 (10-pin, 0.8mm pitch, female) | ERF8-005-05.0-S-DV-K-TR |
+  | J8 | Output (to next group input) | ENC Data (ENC_IN/ENC_OUT + GND) | ERF8-010 (20-pin, 0.8mm pitch, female) | ERF8-010-05.0-S-DV-K-TR |
+
+  **Note:** The ERF8 0.8mm pitch is physically incompatible with 2.54mm connectors — label distinctly on silkscreen.
+  Connector part numbers: ERF8-005 = Mouser 200-ERF8005050SDVKTR / DigiKey SAM13517CT-ND / JLCPCB C7273978;
+  ERF8-010 = Mouser 200-ERF8010050SDVKTR / DigiKey SAM8618CT-ND / JLCPCB C3646170.
+
+* **JTAG Signal Buffering:** The Extension board provides JTAG re-buffering for the 5-rotor group
+  connected to its output side (J6–J8). A **74LVC2G125** dual-channel 3-state buffer (U1) buffers the
+  **TCK and TMS** lines, providing a fresh drive from the Extension board's 3V3_ENIG rail:
+  * TCK buffer output → J6 pin 1 (TCK) and broadcast to all 5 rotors in the output group.
+  * TMS buffer output → J6 pin 3 (TMS) and broadcast.
+  * Buffer enable (OE#): tied to GND permanently (always enabled).
+  * Part: SN74LVC2G125DCUR (TI, SOT-23-6) — Mouser 595-SN74LVC2G125DCUR,
+    DigiKey 296-SN74LVC2G125DCURCT-ND, JLCPCB C15281.
+  * At 5 rotors per group, signal integrity analysis confirms this buffer interval is sufficient:
+    5 rotors × EPM240 input capacitance (≈6pF) = 30pF total load; τ = 95Ω × 30pF = 2.85ns,
+    well within the 50ns half-period at 10MHz TCK.
+
+* **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §4`, a single
+  0Ω bond resistor (R2) or direct via connects signal GND to chassis copper pour at J1 pin 16 (GND).
+  No additional bonds on this board to prevent ground loops.
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the input header power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **JTAG:** Pass-through for the serial chain; TDO_RETURN carried via Extension Port pin 15.
@@ -56,8 +88,15 @@
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | J1 | Extension Port IN header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
 | J2 | Extension Port OUT header | 16-pin 2×8 shrouded box | 2.54mm | 538-22-23-2161 | WM2907-ND | ??? |
-| J3–J8 | Rotor interface connectors (3 per side × 2 sides — spec pending) | TBD | TBD | ??? | ??? | ??? |
+| J3 | Rotor input side — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Mating with incoming-rotor ERM8-005 | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J4 | Rotor input side — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Mating with incoming-rotor ERM8-005 | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J5 | Rotor input side — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Mating with incoming-rotor ERM8-010 | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
+| J6 | Rotor output side — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Mating with outgoing-rotor ERM8-005 | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J7 | Rotor output side — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Mating with outgoing-rotor ERM8-005 | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J8 | Rotor output side — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Mating with outgoing-rotor ERM8-010 | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
 | J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
-| R1 | Power resistors | 0Ω or 10Ω (optional) | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
+| R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
+| R2 | GND_CHASSIS single-point bond | 0Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
+| U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C15281 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

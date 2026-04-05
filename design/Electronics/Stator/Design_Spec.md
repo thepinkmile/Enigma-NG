@@ -102,7 +102,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C8 | Decoupling (8 per CPLD) | 0.1µF (X7R) 50V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
+| C1-C8 | Decoupling (8 per CPLD) | 0.1µF (X7R) **10V** | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | J1 | Link-Beta Connector (MALE header — mates with ERF8-020 female socket on Controller) | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM8611CT-ND (CT) / SAM8611TR-ND (T&R) / SAM8611DKR-ND (DKR) | C138400 |
 | J2–J4 | Rotor Interface sockets (×3 types per rotor slot, ×30 slots = 90 total) — **cross-ref Rotor/Design_Spec.md §3.4 for pinout** | ERF8-005 (JTAG ×30), ERF8-005 (Power ×30), ERF8-010 (ENC\_DATA ×30) — FEMALE sockets mating with ERM8 MALE headers on Rotor | 10-pin / 10-pin / 20-pin 0.8mm pitch | 200-ERF8005050SDVKTR (J2+J3) / 200-ERF8010050SDVKTR (J4) | SAM13517CT-ND (J2+J3 CT) / SAM8618CT-ND (J4 CT) | C7273978 (J2+J3) / C3646170 (J4) |
@@ -124,6 +124,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | R13 | TDI chain: Stator CPLD TDO → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | R14 | TDI chain: J6 TDO return → J7 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | R15 | TDI chain: J7 TDO return → J8 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| U1 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | SOT-23-6 | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |
+| U1 | Stator Management CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
+| U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

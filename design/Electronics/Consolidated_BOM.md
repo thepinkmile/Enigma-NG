@@ -14,7 +14,7 @@ individual `Design_Spec.md` file.
 ## 1. Critical Spares (MOQ Recommendations)
 
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
-* **Eaton 15F Supercap:** Order 10 (MOQ) - (2x Spares + 2x Testing).
+* **Tecate TPLH-2R7/22WR12X31 (22F/2.7V) Supercap:** Order 10 (MOQ) - (2x Spares + 2x Testing). Source via DigiKey consignment through JLCPCB global sourcing.
 * **Samtec ERM8-040 (Gold, 80-pin):** Order 3 (MOQ) — Power Module J1, (1× Spare). Order separately from ERM8-020.
 * **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J1, (1× Spare). Poka-yoke pair with ERF8-020.
 * **Samtec ERF8-040 (Gold, 80-pin):** Order 3 (MOQ) — Controller J1, (1× Spare).
@@ -101,7 +101,7 @@ individual `Design_Spec.md` file.
 ## 6. Backplane & Extension Components
 
 * **40-Pin Box Header (Vertical):** Harting 09185406914 or equivalent (4x per Stator).
-* **20-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (2x per Extension/Reflector).
+* **16-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (2x per Extension/Reflector).
 * **12-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
 * **10-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
 * **8-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
@@ -143,7 +143,7 @@ individual `Design_Spec.md` file.
 | U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). ⚠️ Package changed from QFN-28 to WQFN-38 — schematic symbol and PCB footprint update required. |
 | U7 | TPS7A8333PRMWR | WSON-12 | 595-TPS7A8333PRMWR ~ | 296-TPS7A8333PRMWR-ND ~ ⚠️ verify | — | Fixed 3.3V, WSON-12. Harmonized with Design_Spec primary PN. Mouser/DigiKey approximate — verify before ordering. |
 | U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | — (extended) | DigiKey temporarily out of stock (~6-week lead time). $3.09/1. VQFN-20 per TI. |
-| U10 | TPS23730PWPR | HTSSOP-20 (PWP) | **595-TPS23730PWPR** (provided) | 296-TPS23730PWPR-ND ~ | — | ⚠️ **PACKAGE DISCREPANCY** — TI product page shows TPS23730 in VQFN-45 (RMT 7×5mm). PWP suffix = PowerPAD HTSSOP-20. These cannot be the same; verify correct package variant. WQFN-20 variant is TPS23730RMTR (296-TPS23730RMCT-ND, ~5.6k in stock). |
+| U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | — | ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | — (extended) | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
 | J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
 | J3 | Molex 43650-0519 | THT Micro-Fit 3.0 | 538-43650-0519 ~ | WM7843-ND ⚠️ verify | — (THT) | ⚠️ **MPN corrected** — `43045-0512` does not exist. Correct series is `43650` (vertical THT). 43650-0519: 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. DigiKey WM7843-ND inferred; **verify exact WM number**. JLCPCB does not stock THT connectors. |
@@ -157,7 +157,7 @@ individual `Design_Spec.md` file.
 ### 9.0. Part Number Issues Requiring Action
 
 1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
-2. **U10** — Confirm whether TPS23730 in **PWP (HTSSOP-20)** or **RMT (VQFN-45)** or **RMTR (WQFN-20)** is the intended package. The BOM says "WQFN-20" which matches RMTR — update MPN accordingly.
+2. **U10** — ✅ Resolved: TPS23730 correct package is **RMTR (WQFN-20)** — MPN updated to `TPS23730RMTR` in BOM and Design_Spec.
 3. **U1** — Updated to `TPS259803ONRGER` (16.9V OVLO VQFN-24 variant). Mouser/DigiKey approximate; verify before ordering.
 4. **U4** — Replaced with TPS25751DREFR (WQFN-38 6×4mm). See DEC-012. ⚠️ Schematic and PCB footprint update required (package change from QFN-28).
 

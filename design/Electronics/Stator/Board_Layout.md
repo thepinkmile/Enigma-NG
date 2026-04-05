@@ -46,7 +46,7 @@ so any rotor can mate at any position without re-wiring.
 > This board uses the mating ERM8-020-05.0-S-DV-K-TR (Male) connector. See BOM for part number.
 
 **Connector:** Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin). Mating ERF8-020 female on Controller Board J2.
-**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for 30-rotor worst case (3.5A).
+**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for 30-rotor worst case (2.20A typical; LDO hard limit 3.0A). Note: L1-L4 ferrite bead 3.5A rating is the component current rating, not the system load.
 **Power telemetry path:**
 
 ```text
