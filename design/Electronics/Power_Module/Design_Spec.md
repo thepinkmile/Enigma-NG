@@ -172,11 +172,11 @@ GND ──────┴──────────────────�
   * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; **R12 (RSENSE) must be a 4-terminal Kelvin-sense resistor**
     with independent sense traces to avoid trace resistance adding to the measured value (even 1mΩ trace adds 10% error on a 10mΩ sense resistor).
   * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below the programmed threshold (resistor divider R14/R15 from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15).
-    * **Current values (as-designed):** R14=30.1kΩ / R15=10.0kΩ → threshold = 4.81V.
-    * ⚠️ **Dead-zone issue:** PWR_GD (MCP121T-450E) deasserts at 4.50V. With R14=30.1kΩ, backup activates at 4.81V — *before* the CM5 receives a PWR_GD low warning.
-      The CM5 is therefore unaware that hold-up has engaged until the voltage drops a further 0.31V.
-    * **Recommended fix:** Change R14 to **26.7kΩ** (E96, 0.1%, 0603). New threshold = 1.2V × (26.7k+10k)/10k = **4.40V** — 100mV below PWR_GD assertion (4.50V),
-      ensuring the CM5 is warned before hold-up engages and has time to initiate graceful shutdown.
+    * **Applied values (PM-06 fix):** R14=26.7kΩ (ERA-3ARB2672V) / R15=10.0kΩ → threshold = **4.40V** — 100mV below PWR_GD assertion (4.50V),
+      ensuring the CM5 receives the PWR_GD warning before backup hold-up engages.
+    * ⚠️ **Design note:** The original as-drawn value of R14=30.1kΩ set a threshold of 4.81V — above the PWR_GD assertion voltage (4.50V),
+      causing a dead-zone where backup could engage without the CM5 receiving a warning. This was resolved in PM-06.
+      See BOM R14 entry and the R14/R15 BOM note for details.
     * Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
@@ -444,7 +444,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > * **J1 ERM8-040-05.0-S-DV-K-TR (Power Module) + ERF8-040-05.0-S-DV-K-TR (Controller)** — Samtec BtB connector pair.
 >   **ERM8 = MALE header (pins pointing up)** on Power Module; **ERF8 = FEMALE socket** on Controller. Both are Samtec proprietary parts, NOT in JLCPCB/LCSC catalog.
 >   Assembly paths: (a) JLCPCB customer-supplied component service — procure from Mouser and select "consigned components" option; (b) Hand-solder after PCB assembly.
->   Current rating: **2.2A per pin** (Samtec ERM8 specification) — ensure adequate VBUS/GND pin count per Power_Module/Board_Layout.md LINK-ALPHA table.
+>   Current rating: **0.5A per pin** continuous (design derating per Certification_Evidence.md §5; 2oz copper applied —
+>   18 power pins × 0.5A = 9.0A total capacity) — ensure adequate VBUS/GND pin count per Power_Module/Board_Layout.md LINK-ALPHA table.
 >   Stack height "05.0" in PN refers to individual header height; total PCB-to-PCB gap ≈ 7mm mated (ERM8 5mm + ERF8 2mm).
 >   ⚠️ Verify exact ERF8 mating height at schematic capture to confirm enclosure fit.
 > * **J4 USB4135-GF-A** — GCT **6-position, right-angle SMT** USB-C receptacle (confirmed via Octopart; JLCPCB C5438410 verified by user).

@@ -26,27 +26,27 @@ LINK-BETA (BtB, no cable)
     ▼
 Stator CPLD (U1)
     │
-    ├─ 75Ω ─▶ J6 ribbon cable (~100Ω IDC) ─▶ HID Encoder CPLD1
+    ├─ 75Ω ─▶ J4 ribbon cable (~100Ω IDC) ─▶ HID Encoder CPLD1
     │                                             33Ω (inter-CPLD)
     │                                         HID Encoder CPLD2
-    │              75Ω ◀─ J6 TDO return ◀───────────────────────
+    │              75Ω ◀─ J4 TDO return ◀───────────────────────
     │
-    ├─ 75Ω ─▶ J7 ribbon cable (~100Ω IDC) ─▶ Plugboard Encoder A CPLD1
+    ├─ 75Ω ─▶ J5 ribbon cable (~100Ω IDC) ─▶ Plugboard Encoder A CPLD1
     │                                             33Ω
     │                                         Plugboard Encoder A CPLD2
-    │              75Ω ◀─ J7 TDO return ◀───────────────────────
+    │              75Ω ◀─ J5 TDO return ◀───────────────────────
     │
-    ├─ 75Ω ─▶ J8 ribbon cable (~100Ω IDC) ─▶ Plugboard Encoder B CPLD1
+    ├─ 75Ω ─▶ J6 ribbon cable (~100Ω IDC) ─▶ Plugboard Encoder B CPLD1
     │                                             33Ω
     │                                         Plugboard Encoder B CPLD2
-    │              75Ω ◀─ J8 TDO return ◀───────────────────────
+    │              75Ω ◀─ J6 TDO return ◀───────────────────────
     │
     └─▶ Rotor Stack (via J2–J4 rotor connectors)
             └─▶ Rotor 1 … Rotor 30 … Reflector
-                    └─▶ TDO_RETURN via J5 Extension Port ─▶ LINK-BETA pin 26 ─▶ FT232H
+                    └─▶ TDO_RETURN via J7 Extension Port ─▶ LINK-BETA pin 26 ─▶ FT232H
 ```
 
-**TCK and TMS** are broadcast to all devices. On the Stator they fan out to J6, J7, and J8
+**TCK and TMS** are broadcast to all devices. On the Stator they fan out to J4, J5, and J6
 encoder ports, each requiring its own series resistor before the ribbon cable.
 
 **TDI/TDO** are serial-chained. Each cable-driving TDI output needs a series resistor; each
@@ -203,7 +203,7 @@ Standard 2.54 mm pitch IDC flat ribbon cable has the following impedance charact
 | Shielded ribbon (overall foil) | ~100 Ω | Foil improves EMI; minimal Zo change |
 
 The Enigma-NG 26-pin encoder port connector already specifies **alternating GND pins between all JTAG
-signals** (J6–J8 pin table in `Stator/Board_Layout.md`). This places the cable Zo at approximately
+signals** (J4–J6 pin table in `Stator/Board_Layout.md`). This places the cable Zo at approximately
 **100 Ω**.
 
 > **Key implication:** The PCB-to-cable impedance discontinuity is from 50 Ω (PCB trace) to 100 Ω
@@ -392,15 +392,15 @@ distance on the trace.
 | Controller | R4 | 33 Ω | 1 | TCK after 74LVC1G125 buffer, before LINK-BETA pin 2 |
 | Controller | R5 | 33 Ω | 1 | TMS after 74LVC1G125 buffer, before LINK-BETA pin 4 |
 | Controller | R6 | 33 Ω | 1 | TDI after 74LVC1G125 buffer, before LINK-BETA pin 6 |
-| Stator | R7 | 75 Ω | 1 | TCK → J6 encoder port output |
-| Stator | R8 | 75 Ω | 1 | TCK → J7 encoder port output |
-| Stator | R9 | 75 Ω | 1 | TCK → J8 encoder port output |
-| Stator | R10 | 75 Ω | 1 | TMS → J6 encoder port output |
-| Stator | R11 | 75 Ω | 1 | TMS → J7 encoder port output |
-| Stator | R12 | 75 Ω | 1 | TMS → J8 encoder port output |
-| Stator | R13 | 75 Ω | 1 | Stator CPLD TDO → J6 TDI (ribbon drive) |
-| Stator | R14 | 75 Ω | 1 | J6 TDO return → J7 TDI (ribbon drive) |
-| Stator | R15 | 75 Ω | 1 | J7 TDO return → J8 TDI (ribbon drive) |
+| Stator | R7 | 75 Ω | 1 | TCK → J4 encoder port output |
+| Stator | R8 | 75 Ω | 1 | TCK → J5 encoder port output |
+| Stator | R9 | 75 Ω | 1 | TCK → J6 encoder port output |
+| Stator | R10 | 75 Ω | 1 | TMS → J4 encoder port output |
+| Stator | R11 | 75 Ω | 1 | TMS → J5 encoder port output |
+| Stator | R12 | 75 Ω | 1 | TMS → J6 encoder port output |
+| Stator | R13 | 75 Ω | 1 | Stator CPLD TDO → J4 TDI (ribbon drive) |
+| Stator | R14 | 75 Ω | 1 | J4 TDO return → J5 TDI (ribbon drive) |
+| Stator | R15 | 75 Ω | 1 | J5 TDO return → J6 TDI (ribbon drive) |
 | Encoder | R7 | 33 Ω | 1 | CPLD1 TDO → CPLD2 TDI (intra-board 50 Ω trace) |
 | Encoder | R8 | 75 Ω | 1 | CPLD2 TDO → J2 connector pin 13 (ribbon drive back to Stator) |
 | Reflector | R1 (existing) | 22 Ω | 1 | TDO end-of-chain series damping (unchanged) |

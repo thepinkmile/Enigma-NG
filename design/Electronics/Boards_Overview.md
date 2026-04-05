@@ -34,12 +34,13 @@ robustness.
 
 | Board Name | Role | Stackup | Status |
 | :--- | :--- | :--- | :--- |
-| **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 1oz | **Design Locked** |
+| **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 2oz | **Design Locked** |
 | **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 1oz | **Design Locked** |
-| **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 2-Layer / 1oz | **Design Locked** |
+| **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TDO_RETURN | 4-Layer / 2oz | Draft |
+| **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 4-Layer / 2oz | **Design Locked** |
-| **Reflector Board** | Terminating board for the rotor stack return path. | 2-Layer / 1oz | **Design Locked** |
-| **Rotor Module** | Smart encryption units (30x) with MAX II EMP240T100C CPLDs. | 4-Layer / 1oz | **Architecture Set** |
+| **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
+| **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100C5N CPLDs. | 4-Layer / 1oz | **Architecture Set** |
 | **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 1oz | **Design Locked** |
 
 ## 3. Controller Board
@@ -71,7 +72,7 @@ The internal "USB Blaster" that makes the Enigma-NG self-contained.
 The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** enclosure.
 
 * **EMI Shielding:** Nanocrystalline dual-choke filtering for CE/UKCA compliance.
-* **UPS Function:** 2.5F Supercapacitor bank providing >20s "Last-Gasp" hold-time.
+* **UPS Function:** 22F Supercapacitor bank providing ~14.5 seconds "Last-Gasp" hold-time.
 * **Safety:** 72°C SMD Thermal Cutoff (TCO) and TPS25980 eFuse.
 * **Interface:** Shielded PoE+, USB-C PD, and Smart Battery inputs.
 

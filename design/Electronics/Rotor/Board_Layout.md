@@ -22,10 +22,10 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 |   [ BULK DECOUPLING ] <--- 5x 10uF X7R star/spoke                          |
 |   [ 8x 0.1uF LOCAL ] <--- Per CPLD VCC pin                                 |
 |                                                                             |
-|   [ EDGE-RATE CONTACTS ] <--- Gold-plated friction pads (Samtec ERM8)      |
+|   [ EDGE-RATE CONTACTS ] <--- J1–J3: ERM8 male headers (input side — JTAG, Power, ENC Data)    |
 |   (Input side — mates with Stator J1–J3 ERF8 female sockets or the previous Rotor's J4–J6 ERF8 female output sockets) |
 |                                                                             |
-|   [ EDGE-RATE CONTACTS ] <--- Gold-plated friction pads (Samtec ERM8)      |
+|   [ EDGE-RATE CONTACTS ] <--- J4–J6: ERF8 female sockets (output side — JTAG, Power, ENC Data) |
 |   (Output side — mates with next rotor input or Reflector last contacts)   |
 |_____________________________________________________________________________|
 ```

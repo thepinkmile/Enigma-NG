@@ -210,9 +210,9 @@ Keypress
 
 | Stator Connector | Board | Function |
 | :--- | :--- | :--- |
-| J4 | HID Encoder | Keyboard matrix input + lightboard output (26-pin SMT) |
-| J5 | Plugboard Encoder 1 | Plugboard wiring matrix, bank 1 (26-pin SMT) |
-| J6 | Plugboard Encoder 2 | Plugboard wiring matrix, bank 2 (26-pin SMT) |
+| J4 | HID Encoder | Keyboard matrix input + lightboard output (26-pin THT 2×13 2.54mm) |
+| J5 | Plugboard Encoder 1 | Plugboard wiring matrix, bank 1 (26-pin THT 2×13 2.54mm) |
+| J6 | Plugboard Encoder 2 | Plugboard wiring matrix, bank 2 (26-pin THT 2×13 2.54mm) |
 
 ---
 
@@ -238,7 +238,7 @@ See `design/Design_Log.md` for the complete list. Key decisions relevant to syst
 | Decision | Summary | DEC # |
 | :--- | :--- | :--- |
 | 3V3_SYSTEM retired → 3V3_ENIG | Unified rail name used throughout | DEC-001 |
-| JTAG serial daisy-chain topology | Not hub-and-spoke; each CPLD in series | DEC-015 |
+| JTAG serial daisy-chain topology | Not hub-and-spoke; each CPLD in series | DEC-016 |
 | JTAG trace 50Ω controlled impedance | JLC04161H-7628 stackup | DEC-016 |
 | 4-layer stackup | JLC04161H-7628 | DEC-017 |
 | Rotor connector definition ownership | Rotor Design_Spec §3.4 is authoritative | DEC-018 |

@@ -831,9 +831,14 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 ### Rotor Board (×30)
 
-| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-| ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Rotor interface connector set | Samtec ERM8-020 (0.8mm pitch) | ERM8-020 | 200-ERM8020050SDVKTR | SAM12065-ND | 0.8mm pitch Edge-Rate. Definition owner — see Rotor/Board_Layout.md. NOT compatible with 2.54mm headers. |
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | JLCPCB Part # | Notes |
+| ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- | ------- |
+| J1 | JTAG input — ERM8 male header (input side; plugs into Stator J1 ERF8 or Extension J4 ERF8) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Male (ERM8). Input side. Authority: Rotor/Design_Spec.md §3.4 |
+| J2 | Power input — ERM8 male header (3V3_ENIG ×5, GND ×5) | Samtec ERM8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERM8-005 | 200-ERM8005050SDVKTR | SAM8610CT-ND | C374877 | Male (ERM8). Input power side |
+| J3 | ENC Data input — ERM8 male header (ENC_IN/ENC_OUT + GND) | Samtec ERM8-010-05.0-S-DV-K-TR (20-pin, 0.8mm pitch) | ERM8-010 | 200-ERM8010050SDVKTR | SAM8612CT-ND | C374877 | Male (ERM8). Input ENC data |
+| J4 | JTAG output — ERF8 female socket (output side; receives next Rotor J1, Reflector J1, or Extension J1 ERM8 male) | Samtec ERF8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERF8-005 | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Female (ERF8). Output side. R1 (75Ω) in TTD output path |
+| J5 | Power output — ERF8 female socket (3V3_ENIG ×5, GND ×5) | Samtec ERF8-005-05.0-S-DV-K-TR (10-pin, 0.8mm pitch) | ERF8-005 | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Female (ERF8). Output power side |
+| J6 | ENC Data output — ERF8 female socket (ENC_IN/ENC_OUT + GND) | Samtec ERF8-010-05.0-S-DV-K-TR (20-pin, 0.8mm pitch) | ERF8-010 | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 | Female (ERF8). Output ENC data |
 
 ### Encoder Board
 

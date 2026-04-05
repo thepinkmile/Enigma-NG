@@ -51,16 +51,17 @@ being an unachievable worst-case peak).
 | Rotor CPLDs (EPM240 ×30) | 30 | 50 | 1500 | All rotors cipher-active simultaneously |
 | Rotor AS5600 magnetic encoders (×30) | 30 | 6.5 | 195 | Continuous position polling |
 | INA219 current monitor (Stator) | 1 | 1 | 1 | Negligible |
+| Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
 | Controller-local (RJ45 LEDs, logic) | — | — | 50 | Controller overhead subtracted at LINK-ALPHA |
-| **Typical total** | | | **2,196 mA** | |
-| **Rounded budget** | | | **≤ 2.20 A** | |
+| **Typical total** | | | **2,206 mA** | |
+| **Rounded budget** | | | **≤ 2.21 A** | |
 
 ### Headroom vs LDO Limit
 
 | Limit | Value | Margin |
 | :--- | :--- | :--- |
 | LDO hard limit | 3.00 A | — |
-| Typical worst-case load | 2.20 A | **+0.80 A (27%)** |
+| Typical worst-case load | 2.21 A | **+0.79 A (26%)** |
 | LINK-BETA connector capacity | 4.00 A | Not the constraint |
 
 > ✅ **Conclusion:** The 3A TPS7A8333P LDO provides 27% headroom above the worst-case typical load.

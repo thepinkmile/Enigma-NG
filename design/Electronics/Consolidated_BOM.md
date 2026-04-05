@@ -101,11 +101,8 @@ individual `Design_Spec.md` file.
 
 ## 6. Backplane & Extension Components
 
-* **40-Pin Box Header (Vertical):** Harting 09185406914 or equivalent (4x per Stator).
-* **16-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (2x per Extension/Reflector).
-* **12-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
-* **10-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
-* **8-Pin Box Header (Vertical):** 2.54mm Gold-plated Shrouded (1x per Stator/Rotor).
+* **40-pin Inter-Board Link (Molex 22-23-2161, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TDO_RETURN path.
+* See individual board BOMs: Rotor/Board_Layout.md, Stator/Board_Layout.md, Extension/Board_Layout.md, Reflector/Board_Layout.md for authoritative connector part numbers.
 * **Copper Shielding Tape:** 50mm (2.0") Conductive Adhesive (Manual cable wrap).
 
 ## 7. Power & Telemetry Sensors
@@ -214,5 +211,5 @@ Product page links for all major components for design review and procurement ve
 | D1 | TPD1E10B06 — Single-Channel 10V TVS ESD (BATT_PRES) | Texas Instruments | [ti.com/product/TPD1E10B06](https://www.ti.com/product/TPD1E10B06) |
 | D2 | TPD2E2U06 — Dual-Channel 5.5V SMBus ESD (Battery SMBus) | Texas Instruments | [ti.com/product/TPD2E2U06](https://www.ti.com/product/TPD2E2U06) |
 | D3, D4, D5 | TPD4E05U06 — 4-Channel 5V ESD Array (USB-C / RJ45 MDI) | Texas Instruments | [ti.com/product/TPD4E05U06](https://www.ti.com/product/TPD4E05U06) |
-| J1 (Link-Alpha) | ERM8-040 / ERF8-040 — 80-pin 0.5mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
-| J2 (Link-Beta) | ERM8-020 / ERF8-020 — 40-pin 0.5mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
+| J1 (Link-Alpha) | ERM8-040 / ERF8-040 — 80-pin 0.8mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
+| J2 (Link-Beta) | ERM8-020 / ERF8-020 — 40-pin 0.8mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
