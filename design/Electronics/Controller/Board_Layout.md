@@ -64,7 +64,7 @@
 | 27 | GND | — | Isolation moat |
 | 28 | GND | — | Isolation moat |
 | 29 | SYS_FAULT | PM → CTRL | eFuse fault from TPS25980 FAULT pin (CM5 GPIO 25); active-low |
-| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 20); active-high |
+| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 20); active-low (LOW = PoE live, per DEC-003) |
 | 31 | SW_LED_R | CTRL → PM | SW1 RGB switch red channel (CM5 GPIO 17) |
 | 32 | SW_LED_G | CTRL → PM | SW1 RGB switch green channel (CM5 GPIO 18) |
 | 33 | SW_LED_B | CTRL → PM | SW1 RGB switch blue channel (CM5 GPIO 19) |
@@ -158,7 +158,10 @@ _______________________________________    _____________    ____________________
 [ PIN  46      ] ------------------------> [ 3.3V LOGIC] -> [ ROTOR_EN                   ]
                                            (GPIO OUT)       (CM5 GPIO 16 → TPS7A8333P EN)
 
-[ PINS 47 - 48 ] ------------------------> [ SPARE     ] -> [ RESERVED (PIN 47: SW_LED_CTRL) ]
+[ PIN 47       ] ------------------------> [ 3.3V LOGIC] -> [ SW_LED_CTRL                ]
+                                           (GPIO OUT)       (CM5 GPIO 24 — HIGH = CM5 in control of SW1 RGB)
+
+[ PIN 48       ] ------------------------> [ GND       ] -> [ GND (ZONE BOUNDARY)        ]
 
 [ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (9A DELIVERY)      ]
  (16× 5V + 16× GND interleaved)           (BULK DC)        (To CM5 VCC_IN; incl. pins 21-22)

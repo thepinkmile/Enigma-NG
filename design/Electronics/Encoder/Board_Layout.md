@@ -43,11 +43,11 @@ _____________________________________________________________________________
 
 ## Data Link Pinout (26-Pin Connector)
 
-> **Connector Definition Owner:** `Stator/Board_Layout.md — J6–J8`.
+> **Connector Definition Owner:** `Stator/Board_Layout.md — J4–J6`.
 > The pin table below is reproduced here for layout reference. In case of conflict, the Stator definition is authoritative.
 
 This is a 2×13 (26-pin) 2.54mm shrouded box header with polarisation key. Connects to matching
-header on Stator (J6 = HID Unit, J7 = Plugboard A, J8 = Plugboard B).
+header on Stator (J4 = HID Unit, J5 = Plugboard A, J6 = Plugboard B).
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |

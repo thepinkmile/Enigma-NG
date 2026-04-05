@@ -24,7 +24,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 Per `design/Standards/Global_Routing_Spec.md §4`, each PCB in the Enigma-NG system must have a documented single-point GND_CHASSIS bond at its power entry connector.
 
 **Stator GND_CHASSIS bond point:** The GND_CHASSIS connection is made at the LINK-BETA connector
-(J4 or equivalent power input connector receiving 5V_MAIN and 3V3_ENIG from the Power Module via the BtB rotor stack).
+(J8, ERM8-020, power input from Controller Board).
 A single 0 Ω bond resistor (or direct via) in a dedicated keepout zone connects the signal/power GND plane
 to the chassis copper pour at this entry point. No additional chassis bonds are made on this board to avoid ground loops.
 
@@ -66,7 +66,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **Data Out:** Transmits 12-bit Sniffer data to Controller.
   * **Power:** Receives 3V3_ENIG via the Controller pass-through for all backplane CPLDs.
   * **Cross-ref:** See `Controller/Design_Spec.md` Link-Beta mapping for explicit pin-number allocation; this Stator document mirrors that mapping for compatibility and implementation validation.
-* **Encoder Interconnects:** 40-pin (2x20) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
+* **Encoder Interconnects:** 26-pin (2×13) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
 * **Reflector/Extension Interconnect:** 16-pin (2x8) Vertical Shrouded Header (Power, ENC_DATA, TDO_Return).
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).

@@ -14,7 +14,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |   [ 16-PIN INTERCONNECT HEADER ] <--- Vertical Shrouded Box Header          |
 |   (2x8, 2.54mm Pitch)                                                       |
 |                                                                             |
-|   [ REFLECTOR CONTACTS ] <--- 26x Gold-Plated Friction Pads                 |
+|   [ J1–J3: ERM8 CONNECTORS ] <--- ERM8-005 (×2) + ERM8-010 (×1), male headers                 |
 |   (Matching Rotor Pitch)                                                    |
 |                                                                             |
 |   [ DIAGNOSTIC BANK ] <--- 2x8 ENIG Gold Probe Bank                         |

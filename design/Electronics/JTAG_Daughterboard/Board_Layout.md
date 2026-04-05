@@ -17,7 +17,7 @@ TOP VIEW (L1) - 4-Layer (DEC-017) / 2oz Copper
 |   (One Side, 2.54mm Pitch)                                                  |
 |                                                                             |
 |   [ FT232H IC ] <--- High-Speed USB to MPSSE Bridge                         |
-|   (Main IC for JTAG Blaster, 12MHz Crystal Attached)                        |
+|   (Main IC for JTAG Blaster, 24MHz Crystal Attached)                        |
 |                                                                             |
 |   [ JTAG HEADER ] <--- 10-Pin Shrouded Header (Asymmetrical)                |
 |   (Opposite Side, 2.54mm Pitch, 1:1 GND Shielding)                          |

@@ -14,7 +14,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 * **Core:** 3.3V (Logic) from the **3V3_ENIG** rail, sourced from the Power Module LDO (TPS7A8333P) and
   distributed by the Stator. Power arrives at J2 (Data Link, pin 1 = 3V3_ENIG, pin 26 = 3V3_ENIG) via
-  the 26-pin LINK-BETA ribbon cable from the Stator J6/J7/J8 port. The AP22652 current-limited output
+  the 26-pin IDC ribbon cable from the Stator J4/J5/J6 port. The AP22652 current-limited output
   mentioned in earlier drafts does not apply — the Controller Board has no direct power path to the Encoder.
   The 3V3_ENIG rail is the sole logic supply for this board.
 * **Filtering:** Dedicated 0.1µF X7R decoupling per VCC pin.
@@ -34,11 +34,11 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 ## 4. Interconnects
 
 * **Data Link (J2):** 26-pin (2×13) 2.54mm shrouded box header with polarisation key.
-  > **Connector Definition Owner:** `Stator/Board_Layout.md — J6–J8`.
+  > **Connector Definition Owner:** `Stator/Board_Layout.md — J4–J6`.
   > This board uses the mating connector (see BOM for part number). The authoritative 26-pin pinout
   > is defined on the Stator; Pin 1 = 3V3_ENIG, Pins 2–7 = ENC_IN[0:5], Pin 8 = GND, Pins 9–17 = JTAG
   > (TCK/GND/TMS/GND/TDO/GND/TDI/GND/SYS_RESET_N), Pin 18 = GND, Pins 19–24 = ENC_OUT[0:5],
-  > Pin 25 = GND, Pin 26 = 3V3_ENIG. See `Stator/Board_Layout.md` J6–J8 for full pin table.
+  > Pin 25 = GND, Pin 26 = 3V3_ENIG. See `Stator/Board_Layout.md` J4–J6 for full pin table.
 * **Status LEDs (×2):** One active-low debug LED per CPLD. CPLD output LOW = LED ON.
   330Ω current-limiting resistor per LED; ~4mA drive current at 3.3V.
 * **Stecker Jack Sockets (×64):** 6.35mm (¼″) mono switched panel-mount jack sockets, one per character position.

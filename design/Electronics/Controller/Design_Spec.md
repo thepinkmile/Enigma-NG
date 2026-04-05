@@ -86,11 +86,11 @@
 * **JTAG Chain Flow:**
     1. **CM5 USB 2.0** → **FT232H Daughterboard**.
     2. **JTAG Out** → **Stator CPLD (Intel MAX II EPM240T100C5N)** — first device in chain.
-    3. **JTAG Chain** → **HID Encoder (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J6.
-    4. **JTAG Chain** → **Plugboard Encoder #1 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J7.
-    5. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J8.
+    3. **JTAG Chain** → **HID Encoder (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J4.
+    4. **JTAG Chain** → **Plugboard Encoder #1 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J5.
+    5. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J6.
     6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N)** via Stator Backplane.
-    7. **TDO_RETURN** ← Reflector → Extension Port → Stator J5 pin 15 → LINK-BETA pin 26 → FT232H.
+    7. **TDO_RETURN** ← Reflector → Extension Port → Stator J7 pin 15 → LINK-BETA pin 26 → FT232H.
 * **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 37-device load across the machine.
 * **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each 74LVC1G125
   output on TCK, TMS, and TDI before LINK-BETA. Matches source impedance to 50Ω PCB traces
@@ -123,7 +123,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **17** | **SW_LED_R** | PWM | 3.3V | RGB switch (SW1) — Red channel. Fault / graceful shutdown indicator. |
 | **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |
 | **19** | **SW_LED_B** | PWM | 3.3V | RGB switch (SW1) — Blue channel. PoE active power source. |
-| **20** | **POE_STAT** | Input | 3.3V | Active High: PoE live (TPS2372-4 /PG signal asserted). |
+| **20** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
 | **21** | **USB_STAT** | Input | 3.3V | Active Low: 12V/15V PD Negotiated. |
 | **22** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |

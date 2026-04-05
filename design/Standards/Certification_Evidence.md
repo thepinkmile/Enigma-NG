@@ -92,10 +92,10 @@ for CE/UKCA EMC compliance.
 
 ```text
 [PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 51W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
-  → LM74700-Q1 OR-ing controller + SISS22DN ideal-diode FETs (×3)
+  → LM74700-Q1 OR-ing controller + CSD17483F4T ideal-diode FETs (×3)
   → TCO F1 (72°C thermal fuse)
   → TPS25980 eFuse (7A ILIM, 11.0V UVLO, 16.9V OVLO fixed variant, VQFN 4×4mm)
-  → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 4× Tecate TPLH-2R7/22WR12X31 supercaps (11F/5.4V, 2S2P)]
+  → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 4× Tecate TPLH-2R7/22WR12X31 supercaps (22F/5.4V, 2S2P)]
   → 5V_MAIN bus
   → [CM5 via TPS25751 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS7A8333P 3V3 LDO]
   → 3V3_ENIG (all CPLDs + USB-JTAG)
@@ -107,7 +107,7 @@ for CE/UKCA EMC compliance.
 - USB-C is secondary as it depends on the availability of an appropriate adapter.
 - Battery is tertiary as its capacity is finite.
 
-The LM74700-Q1 + SISS22DN ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which directly reduces
+The LM74700-Q1 + CSD17483F4T ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which directly reduces
 junction temperatures across the power chain and supports IEC 60068-2 thermal test compliance.
 
 ### 3.2 eFuse Settings — UVLO and OVLO Rationale

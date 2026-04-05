@@ -90,7 +90,7 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 
 * **Stackup:** 4-Layer (JLC04161H-7628) / 2oz Finished Copper.
 * **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
-* **Contacts:** 26x Gold-plated friction pads matching the Rotor Module pitch.
+* **Contacts:** ERM8-005 (×2, 10-pin, JTAG and Power) + ERM8-010 (×1, 20-pin, ENC Data) — male headers on J1–J3.
 * **Fillets:** 2.0mm Rounded PCB corners for consistent "Museum-Grade" enclosure fit.
 * **Routing:** Global **0.5mm Fixed-Radius Circular Arcs** for all loopback traces.
 

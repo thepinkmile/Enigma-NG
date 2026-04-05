@@ -62,7 +62,7 @@ The Stator is the central backplane:
 - Connects to the Controller Board via **Link-Beta** (40-pin ERM8).
 - Connects to the first Rotor via **J1–J3** (ERF8-005/010 female sockets receive Rotor 1 J1–J3 ERM8
   male).
-- Connects to the Extension chain / Reflector via **J7** (16-pin Molex 0.5mm).
+- Connects to the Extension chain / Reflector via **J7** (16-pin Molex 2.54mm).
 
 Rotors chain directly: Rotor N output (J4–J6 ERF8 female) receives Rotor N+1 input (J1–J3 ERM8 male).
 Extension boards bridge between groups of 5 rotors. The Reflector sits at the end of the chain
@@ -155,7 +155,7 @@ The JTAG TDO return does **not** travel back through the rotor stack. Instead:
 
 ```text
 Reflector J4 pin 15 (TDO_RETURN)
-  → Extension Port / J7 (16-pin Molex 0.5mm)
+  → Extension Port / J7 (16-pin Molex 2.54mm)
     → Stator J7 pin 15 (TDO_RETURN arrives at Controller)
 ```
 
@@ -220,14 +220,14 @@ Keypress
 
 | Connector | Type | Pins | Purpose |
 | :--- | :--- | :--- | :--- |
-| Link-Alpha (PM → Ctrl) | ERM8-020 male / ERF8-020 female | 80 | Power + Ethernet + Telemetry |
+| Link-Alpha (PM → Ctrl) | ERM8-040 male / ERF8-040 female | 80 | Power + Ethernet + Telemetry |
 | Link-Beta (Ctrl → Stator) | ERM8-020 male / ERF8-020 female | 40 | 3V3_ENIG + JTAG + Control signals |
 | Stator J1–J3 | ERF8-005/010 female | 10/10/20 | Rotor 1 interface |
 | Stator J4–J6 | 26-pin SMT | 26 | Encoder board connections |
-| Stator J7 | 16-pin (Molex 0.5mm) | 16 | Extension/Reflector port (carries TDO_RETURN on pin 15) |
+| Stator J7 | 16-pin (Molex 2.54mm) | 16 | Extension/Reflector port (carries TDO_RETURN on pin 15) |
 | Stator J8 | ERM8-020 / ERF8-020 | 40 | Link-Beta (Controller Board) |
-| Extension J7/J8 | 16-pin (Molex 0.5mm) | 16 | Extension IN/OUT port for chaining |
-| Reflector J4 | 16-pin (Molex 0.5mm) | 16 | Stator/Extension return port |
+| Extension J7/J8 | 16-pin (Molex 2.54mm) | 16 | Extension IN/OUT port for chaining |
+| Reflector J4 | 16-pin (Molex 2.54mm) | 16 | Stator/Extension return port |
 
 ---
 
