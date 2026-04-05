@@ -189,7 +189,7 @@ _______________________________________    _____________    ____________________
 
 ### LINK-BETA (To Stator Board)
 
-**Connector:** Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin). Mating ERM8-020 male on Stator Board J1.
+**Connector:** Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin). Mating ERM8-020 male on Stator Board J8.
 
 > **Connector Definition Owner:** This board. All other boards using this connector cross-reference here.
 >

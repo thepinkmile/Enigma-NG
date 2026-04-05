@@ -101,7 +101,7 @@ individual `Design_Spec.md` file.
 
 ## 6. Backplane & Extension Components
 
-* **40-pin Inter-Board Link (Molex 22-23-2161, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TDO_RETURN path.
+* **16-pin Inter-Board Link (Molex 22-23-2161, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TDO_RETURN path.
 * See individual board BOMs: Rotor/Board_Layout.md, Stator/Board_Layout.md, Extension/Board_Layout.md, Reflector/Board_Layout.md for authoritative connector part numbers.
 * **Copper Shielding Tape:** 50mm (2.0") Conductive Adhesive (Manual cable wrap).
 
@@ -176,7 +176,7 @@ Reference information for placing orders with key component suppliers.
 | S09 | **Würth Elektronik** | Passive / connector manufacturer | [we-online.com](https://www.we-online.com) | For RJ45 MagJack (7499111121A), EMI chokes (WE-CMBNC). Order via Farnell, Mouser, or direct. |
 | S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43650-0519 Micro-Fit 3.0, 5-pin vertical THT). Order via Mouser or DigiKey. |
 | S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
-| S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04201H-7628 (4-layer, 2oz). |
+| S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04161H-7628 (4-layer, 2oz). |
 | S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. L1/L2 WE-CMBNC 7448031002 available as Newark #75X1218 (~561 pcs, ~$14.58 each). Same-group as Farnell/element14. |
 
 ---

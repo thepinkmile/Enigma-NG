@@ -844,7 +844,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Plugboard jack sockets | 3.5mm / 4mm through-hole jacks | ??? | ??? | ??? | ⚠️ Part not yet selected — physical plug/jack type TBD |
+| J1 (×64) | Plugboard cipher jack sockets (one per key/lamp position) | 6.35mm (¼″) mono switched panel-mount jack socket — already purchased (eBay: SaiBuy.Ltd item 334364197440) | — | — | — | THT panel-mount. 64× per board (26 input + 26 output + 10 plugboard positions + 2 spare). Purchased. |
 | J2 | Data link to Stator — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | Mating connector for Stator J4/J5/J6. Cross-ref: Stator/Board_Layout.md J4–J6 |
 | J3 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
 

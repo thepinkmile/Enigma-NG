@@ -35,13 +35,13 @@ robustness.
 | Board Name | Role | Stackup | Status |
 | :--- | :--- | :--- | :--- |
 | **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 2oz | **Design Locked** |
-| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 1oz | **Design Locked** |
+| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 2oz | **Design Locked** |
 | **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TDO_RETURN | 4-Layer / 2oz | Draft |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 4-Layer / 2oz | **Design Locked** |
 | **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
-| **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100C5N CPLDs. | 4-Layer / 1oz | **Architecture Set** |
-| **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 1oz | **Design Locked** |
+| **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100C5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
+| **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 2oz | **Design Locked** |
 
 ## 3. Controller Board
 
@@ -95,7 +95,7 @@ Modular units containing the encryption logic.
 
 The mechanical and electrical backbone.
 
-* **Distribution:** A backplane providing 5A power distribution and signal routing for the rotor stack.
+* **Distribution:** A backplane providing ~2.2A worst-case 3V3_ENIG distribution and signal routing for the rotor stack.
 * **Connectivity:** Bridges the Controller, Encoder, and Rotor stack into a single parallel bus.
 * **Programmability:** An Intel MAX II EPM240T100C5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
   * Before the rotor stack.

@@ -20,7 +20,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
 * **Logic Type:** Passive (Loopback).
 * **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100C5N CPLD** located on the Stator Board.
 * **CPLD support:** PCB passive routing (no discrete component).
-* **Signal Path:** Rotor 30 Out → Reflector Contacts → 60-pin FPC → Stator CPLD → 60-pin FPC → Reflector Contacts → Rotor 30 In.
+* **Signal Path:** Rotor 30 J4–J6 (ERF8 female) → Reflector J1–J3 (ERM8 male) → passive loopback traces → ENC cipher data reflected back; TDO_RETURN exits via J4 (16-pin Molex, pin 15) → Stator J7.
 
 ## 3. JTAG & Logic Hub
 
@@ -38,7 +38,7 @@ It also acts as the JTAG termination hub and returns the JTAG_TDO directly back 
   re-enters the Extension Port for return to the Stator.
 
 > **Note:** TMS and TDI pull-up resistors (R2/R3) previously listed in this section have been removed.
-> TMS and TDI are NOT routed on J1 (pin 15 = TDO_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
+> TMS and TDI are NOT routed on J4 (pin 15 = TDO_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
 > Pull-up termination for TMS and TDI is already provided by the Stator (R3/R4) and Encoder boards (R3/R4) where those signals originate.
 
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TDO_RETURN and any in-board JTAG
