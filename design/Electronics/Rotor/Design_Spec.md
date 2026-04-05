@@ -38,7 +38,7 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 3.1 Power Management
 
-* **Input:** 3.3V/150mA per rotor (sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta).
+* **Input:** 3.3V/**50mA per rotor** (sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta). See `design/Power_Budgets.md` for full budget — 30 rotors draw 1.50A typical; the 150mA/rotor figure previously used was a conservative overestimate.
 * **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** capacitors near the power-entry pins in a **Symmetrical Star/Spoke pattern**.
 
@@ -50,8 +50,16 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 3.3 Signal Integrity
 
-* **Impedance:** 50Ω single-ended traces for the 12-bit data bus to prevent "ringing" across the 30-module length.
-* **Shielding:** 4-layer PCB with solid GND planes (L2/L3) to isolate digital switching from the high-accuracy magnetic encoder.
+* **Impedance:** 50Ω single-ended traces for JTAG and data lines to prevent reflections.
+* **Layer Stack (4-Layer DEC-017):**
+  * **L1:** Signal (JTAG routing + data traces). JTAG traces run on L1 over L2 GND plane.
+  * **L2:** GND plane (solid, contiguous) — provides reference for L1 controlled-impedance traces.
+  * **L3:** 3V3_ENIG power plane — provides local decoupling reference.
+  * **L4:** Signal (secondary routing + data plate silkscreen on bottom).
+* **JTAG Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)**
+  width over the L2 GND plane, targeting **50 Ω controlled impedance** per the JLC04161H-7628
+  stackup (h=0.087mm, t=0.035mm, Eᵣ=4.4). See `design/Electronics/JTAG_Integrity.md` and DEC-016.
+* **Shielding:** 4-layer PCB with solid GND plane (L2) to isolate digital switching from the high-accuracy magnetic encoder.
 
 ### 3.4 PCB Fabrication (JLCPCB Specs)
 

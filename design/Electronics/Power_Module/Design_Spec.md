@@ -105,6 +105,8 @@ GND ──────┴──────────────────�
 
 * Function: Supplementary CM attenuation above ~10MHz where nanocrystalline core permeability falls off. Provides a second CM filter pole to ensure >40dB CM attenuation to 30MHz+.
 
+* **Fallback option:** If WE-CMBNC 7448031002 becomes unavailable, a ferrite-core CMC (e.g. Würth WE-CMB 744860220 or equivalent ≥10A ferrite THT CMC) may be substituted for L2 only. Ferrite CMCs have lower CM inductance below ~10kHz but perform equivalently above 1MHz. ⚠️ Re-verify CM insertion loss at 150kHz with the ferrite substitute before schematic freeze — add an external X2 cap (e.g. 10nF Y1-rated) across the CM choke if >6dB insertion loss is lost at 150kHz.
+
 **Stage 3 — Differential Mode Pi-filter (L3, C1–C6):**
 
 *Component selection:*
@@ -150,16 +152,21 @@ GND ──────┴──────────────────�
 
 * **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 232kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
+  * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH. **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition, then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
+  * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
 * **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where:
     * `VICHARGE = 1.485V` (LTC3350 internal reference).
     * `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path).
     * For `ICH = 0.5A`: `RICHARGE = 1.485V / (0.5A × 0.010Ω) = 297Ω → use 301Ω (E96, 0.1%, 0603)`.
 
-  * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; RSENSE must be a 4-terminal Kelvin-sense resistor to avoid trace resistance error.
-  * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below ~4.81V (programmed via resistor divider R14=30.1kΩ / R15=10.0kΩ from 5V_MAIN to BACKUP pin; threshold = 1.2V
-
-    × (R14+R15)/R15 = 4.81V). Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
+  * ⚠️ **RICHARGE tolerance:** VICHARGE = 1.485V ±0.5% (LTC3350 spec); RICHARGE (301Ω) should be 0.1% E96 Thin-Film to keep combined error ≤±0.6% → charge current error ≤±3mA at 500mA target. This is negligible for supercap charging.
+  * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; **R12 (RSENSE) must be a 4-terminal Kelvin-sense resistor** with independent sense traces to avoid trace resistance adding to the measured value (even 1mΩ trace adds 10% error on a 10mΩ sense resistor).
+  * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below the programmed threshold (resistor divider R14/R15 from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15).
+    * **Current values (as-designed):** R14=30.1kΩ / R15=10.0kΩ → threshold = 4.81V.
+    * ⚠️ **Dead-zone issue:** PWR_GD (MCP121T-450E) deasserts at 4.50V. With R14=30.1kΩ, backup activates at 4.81V — *before* the CM5 receives a PWR_GD low warning. The CM5 is therefore unaware that hold-up has engaged until the voltage drops a further 0.31V.
+    * **Recommended fix:** Change R14 to **26.7kΩ** (E96, 0.1%, 0603). New threshold = 1.2V × (26.7k+10k)/10k = **4.40V** — 100mV below PWR_GD assertion (4.50V), ensuring the CM5 is warned before hold-up engages and has time to initiate graceful shutdown.
+    * Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
   * **PD Interface:** TPS2372-4 (U9, QFN-16) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
@@ -189,6 +196,13 @@ GND ──────┴──────────────────�
 
   * ROTOR_EN HIGH → LDO enabled → 3V3_ENIG present (CPLDs + rotor stack powered).
   * ROTOR_EN LOW → LDO disabled → 3V3_ENIG off (all rotor and CPLD loads de-energised).
+  * **Thermal Budget (TPS7A8333P):**
+    * V_dropout = 5.0V − 3.3V = 1.7V. At max 3A load: P_diss = 1.7V × 3A = **5.1W**.
+    * At expected worst-case load (~2.2A, see `design/Power_Budgets.md`): P_diss = 1.7V × 2.2A = **3.7W**.
+    * The dedicated thermal heat zone (ENIG thermal halos + Type VII via matrix to aluminium enclosure, shared with the supercap block) targets θ_JA ≈ 7°C/W with the lid closed.
+    * At 2.2A and 40°C ambient: T_J ≈ 3.7W × 7°C/W + 40°C = **66°C** — well within 150°C max. ✓
+    * At absolute 3A max: T_J ≈ 5.1W × 7°C/W + 40°C = **76°C** — still within limits. ✓
+    * ⚠️ Verify θ_JA achievable at layout freeze. If via density is insufficient, add copper pour area beneath U7 pad or specify Gelid GP-Ultimate pad between U7 and enclosure rib.
 
 * **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
   * "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) remains active during capacitor discharge.

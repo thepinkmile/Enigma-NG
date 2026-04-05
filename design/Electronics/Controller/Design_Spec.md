@@ -85,11 +85,12 @@
   header for clean logic analyzer probing.
 * **JTAG Chain Flow:**
     1. **CM5 USB 2.0** → **FT232H Daughterboard**.
-    2. **JTAG Out** → **HID Encoder (Dual Intel MAX II EPM240T100C5N CPLD)**.
-    3. **JTAG Chain** → **Plugboard Encoder #1 (Dual Intel MAX II EPM240T100C5N CPLD)**.
-    4. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)**.
-    5. **JTAG Chain** → **Stator (Intel MAX II EPM240T100C5N CPLD)**.
-    6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N CPLD)** via Stator Backplane.
+    2. **JTAG Out** → **Stator CPLD (Intel MAX II EPM240T100C5N)** — first device in chain.
+    3. **JTAG Chain** → **HID Encoder (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J6.
+    4. **JTAG Chain** → **Plugboard Encoder #1 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J7.
+    5. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J8.
+    6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N)** via Stator Backplane.
+    7. **TDO_RETURN** ← Reflector → Extension Port → Stator J5 pin 15 → LINK-BETA pin 26 → FT232H.
 * **Signal Integrity:** **74LVC1G125** buffers on TCK/TMS lines to drive the heavy 37-device load across the machine.
 * **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each 74LVC1G125
   output on TCK, TMS, and TDI before LINK-BETA. Matches source impedance to 50Ω PCB traces
@@ -98,10 +99,10 @@
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
 
-* **Rotor Shunt:** **10mΩ (1206, 1%, 1W)** metal strip resistor.
+* **Rotor Shunt:** **20mΩ (1206, 1%, 0.25W)** metal strip resistor on Stator board (Stator owns this component — see `Stator/Design_Spec.md`).
 * **Sensing:** **Kelvin-connection (4-wire)** with 10Ω/0.1µF RC noise filtering.
-* **Shunt Resistor:** 10mΩ (1206, 1%, 1W).
-* **Configuration:** Kelvin-sensing (4-wire) directly to pins for high-current accuracy.
+* **Shunt Resistor:** 20mΩ (1206, 1%, 0.25W). Firmware must use R_SHUNT = 0.020Ω in the INA219 current calculation (I = V_shunt / R_shunt).
+  * At 3A max: V_drop = 60mV — fits the INA219 ±80mV PGA range; 3.0A resolution ÷ 2¹² = 0.73mA/LSB.
 * **Filtering:** 10Ω + 0.1µF RC filter on sensing lines to suppress rotor switching noise.
 * **I2C Map:**
   * **INA219 Power Module Monitor**: I2C @ 0x40 on Power Module.

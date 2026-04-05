@@ -3,7 +3,7 @@
 ## Component Areas
 
 ```text
-TOP VIEW (L1) - 4-Layer / 1oz Copper
+TOP VIEW (L1) - 4-Layer / 2oz Copper
  ____________________________________________________________________________ 
 |                                                                            |
 |   [ SPADE TERMINAL BANK ] <--- External I/O Interface (Mechanical board)   |
@@ -12,8 +12,8 @@ TOP VIEW (L1) - 4-Layer / 1oz Copper
 |   [ CPLD ARRAY ] <--- Intel MAX II EPM240T100C5N                           |
 |   (Dual Logic Units for I/O Management)                                    |
 |                                                                            |
-|   [ DATA LINK HEADER ] <--- 16-pin Header (2x8, 2.54mm Pitch)              |
-|   (2x 3V3_ENIG, 2x GND, ENC_IN[0:5], ENC_OUT[0:5])                         |
+|   [ DATA LINK HEADER ] <--- 26-pin Header (2×13, 2.54mm Pitch)             |
+|   (3V3_ENIG, ENC_IN[0:5], JTAG w/GND shields, ENC_OUT[0:5], 3V3_ENIG)     |
 |                                                                            |
 |   [ DIAGNOSTIC BANK ] <--- 2x8 ENIG Gold Probe Bank                        |
 |   (2.54mm Pitch, L1)                                                       |

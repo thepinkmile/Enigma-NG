@@ -12,11 +12,11 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 2. Power Requirements
 
-* **Core:** 3.3V (Logic) & 1.8V (Internal) if required by CPLD variant.
+* **Core:** 3.3V (Logic) powered directly from the AP22652 current-limited output on the Controller Board.
+  No local LDO is fitted on the Encoder board — the 3V3_ENIG rail arrives via J2 (Data Link, pin 1 and pin 26) from the Stator, which distributes it from the Controller AP22652 output.
 * **Filtering:** Dedicated 0.1µF X7R decoupling per VCC pin.
 * **Rule:** Intel MAX II EPM240T100C5N uses **8x 0.1µF** local decoupling capacitors per IC (one per VCC pin).
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the Data Link power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **Protection:** AP22652 current-limited 3.3V rail from the Controller Board.
 
 ## 3. Dual-Role Architecture
 
@@ -58,7 +58,11 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 * **PCB Spade Terminal Banks — Keyboard (×128):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs, 2 per switch (128 total).
   * **BT129–BT192:** Row 3 — KEY_COM lines (switch COM1 to CPLD input reference rail).
   * **BT193–BT256:** Row 4 — KEY_NO lines (switch NO1 → CPLD key-press input, active-low via pull-up).
-* **Cornering:** 2.0mm Filleted PCB corners for enclosure fit.
+* **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54mm pitch.
+  Not a separate connector — bare gold pads probed directly with logic analyser clips or ICT fixtures.
+  Mirrors the Data Link signals: Row 1 = 3V3_ENIG, GND, ENC_IN[0:5]; Row 2 = 3V3_ENIG, GND, ENC_OUT[0:5].
+  See `Encoder/Board_Layout.md` Diagnostic Bank section for full pad map.
+  Part number: N/A (PCB footprint only — no mating connector required).
 
 ## 5. Aesthetics
 
@@ -85,7 +89,8 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 * **Series Termination — Cable Output (R8, 75Ω):** Placed within 2 mm of CPLD2 TDO, before J2
   connector pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
   Full logic swing is maintained at the Stator via the open-circuit reflection doubling effect.
-* **Chain Position:** The I/O CPLDs sit at the start of the JTAG chain, followed by the 30 Rotor FPGAs.
+* **Chain Position:** The I/O CPLDs (HID/Plugboard) sit second in the JTAG chain, after the Stator CPLD.
+  Full order: FT232H → Stator CPLD → HID Encoder CPLD1→CPLD2 → Plugboard A CPLD1→CPLD2 → Plugboard B CPLD1→CPLD2 → Rotors → Reflector → TDO_RETURN.
 * **Programming:** Allows for "In-System Sources and Probes" debugging via the CM5 GUI.
 
 ## 7. Key Mapping (64-Way QWERTY for Keyboard)
@@ -126,7 +131,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |
 | J2 | Data Link Connector | 26-pin 2×13 shrouded box header, 2.54mm | 2.54mm | ??? | ??? | ??? |
-| J3 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | ??? | ??? | ??? |
+| J3 | Diagnostic probe pad bank (bare ENIG gold pads — logic analyser / ICT access) | 2×8 bare PCB pads | 2.54mm | N/A | N/A | N/A |
 | SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (lamp/redundancy TBD). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
 | BT129-192 | PCB spade blade terminals — KEY_COM (Row 3) | Keystone 1285 — 6.35mm straight vertical PCB-mount male blade tab. COM1 of each keyboard switch pole-1. | Through-hole vertical | 534-1285 | A33376-ND | — |
 | BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285 — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285 | A33376-ND | — |
@@ -136,8 +141,6 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R7 | Inter-CPLD series R (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | ??? |
 | R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | ??? |
-| U3 | LDO Regulator | TLV755P | SOT-23 | 595-TLV755PDBVR | 296-TLV755PDBVRCT-ND | C291923 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.
