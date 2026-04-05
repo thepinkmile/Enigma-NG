@@ -103,7 +103,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF (X7R) 50V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Link-Beta Connector | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | C123464 |
+| J1 | Link-Beta Connector (MALE header — mates with ERF8-020 female socket on Controller) | ERM8-020-05.0-S-DV-K-TR | 40-pin | 200-ERM8020050SDVKTR | SAM12065-ND ⚠️ verify | N/A — customer-supplied |
 | J2–J4 | Rotor Interface connectors (×3 rotor positions, one per position) | Type TBD — cross-ref **Rotor/Board_Layout.md** for pinout and mating spec | TBD pending mechanical design | ??? | ??? | ??? |
 | J5 | 16-pin Reflector/Extension port | 2x8 2.54mm shrouded | through-hole | 538-22-23-2161 | WM2907-ND | ??? |
 | J6–J8 | Encoder port connectors (×3 positions: HID + Plugboard A + Plugboard B) | 26-pin 2×13 2.54mm shrouded | through-hole | 538-22-23-2261 | WM2913-ND | ??? |

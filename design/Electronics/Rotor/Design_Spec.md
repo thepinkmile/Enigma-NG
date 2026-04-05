@@ -76,7 +76,7 @@ There are also sensors used to detect the current position of the outer ring usi
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 10V | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Edge-rate connector | Samtec ERM8 | 0.8mm pitch | 200-ERM8020050SDVKTR | SAM12065-ND | C123469 |
+| J1 | Edge-rate connector (MALE header — ERM8-020-05.0-S-DV-K-TR, 40-pin) | Samtec ERM8 | 0.8mm pitch | 200-ERM8020050SDVKTR | SAM12065-ND | N/A — customer-supplied |
 | U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |
 
