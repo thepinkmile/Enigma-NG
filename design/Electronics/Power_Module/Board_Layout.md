@@ -30,7 +30,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |    ______________________             __________________________            |
 |   |   [C_SC1]  [C_SC2]   |           |                          |           |
 |   |   [C_SC3]  [C_SC4]   |           |  [ Amber "Safety Glow" ] |           |
-|   | (11F/5.4V Supercap)  |           |  [ J3 Molex 43650-0519 ] |           |
+|   | (22F/5.4V Supercap)  |           |  [ J3 Molex 43650-0519 ] |           |
 |   | (22F×4 cells, 2S2P)  |           |__________________________|           |
 |   |______________________|                                                  |
 |                |                                                            |
@@ -156,7 +156,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
           +---------------------------+-------------+--------------------+
           |                           |             |                    |
  [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS7A8333P]  [U8 MCP121T-450E]
- [C_SC1-4: 11F / 5.4V    ]   PD Emulator         3.3V LDO          Supervisor
+ [C_SC1-4: 22F / 5.4V    ]   PD Emulator         3.3V LDO          Supervisor
  (4x Tecate 22F/2.7V 2S2P) -> CM5 5V/5A          -> 3V3_ENIG        -> PWR_GD
                               (via J1 BtB)         (3A / 3.3V)      (open-drain)
 ```

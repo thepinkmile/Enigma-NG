@@ -44,7 +44,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 ### 2. Power & UPS Hub
 
-* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 11F at 5.4V. Hold-up
+* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 22F at 5.4V. Hold-up
 
   energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 
@@ -161,7 +161,7 @@ GND ──────┴──────────────────�
     **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
     then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
   * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
-* **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 11F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
+* **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 22F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where:
     * `VICHARGE = 1.485V` (LTC3350 internal reference).
     * `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path).
@@ -282,7 +282,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
 3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
-4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (11F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
+4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (22F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
 
    depleted state: approximately 2 minutes. Once fully charged, the bank provides approximately 14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
 
@@ -377,6 +377,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0V | P75.0BYCT-ND | C105872 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC at board level) | 10nF 100V X7R 0402 | 0402 | 81-GRM155R72A103KA35D | 490-GRM155R72A103KA35DCT-ND | C57112 |
+| C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
 | J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM12064-ND | C5358550 |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
@@ -463,8 +464,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > derating; at 16V on a 25V-rated part (~64% of Vrated), effective capacitance is approximately 50–65% of nominal (≈11–14µF). Adequate for filtering but note when comparing to nominal 22µF value.
 > JLCPCB C21397 — verify exact specs (value, voltage, package) at jlcpcb.com before placing SMT assembly order.
 > * **C15–C25 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6.
-> Note: C15–C21 covers U3, U4, U5, U6a, U8, U9, U10 — two additional bypass caps for U6b and U6c will need to be assigned
-> (C26, C27 suggested) at schematic capture. C23 (1µF timer) shares the same Murata GRM21BR71H105KA12L as C2/C5. C24 (10nF C_SS)
+> C15–C21 covers U3, U4, U5, U6a, U8, U9, U10; C26 and C27 (100nF bypass for U6b and U6c respectively) are now formally
+> defined in the BOM table above (same Samsung CL05B104KB5NNNC / C1525). C23 (1µF timer) shares the same Murata GRM21BR71H105KA12L as C2/C5. C24 (10nF C_SS)
 > is a new part (Samsung CL05B103KB5NNNC).
 > * **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical
 > through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
