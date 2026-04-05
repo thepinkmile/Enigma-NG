@@ -301,6 +301,30 @@ _______________________________________    _____________    ____________________
 
 ```
 
+## RTC Battery Backup Routing
+
+```text
+        CM5 DF40 CONNECTOR                  VBAK CIRCUIT                    BT1 (BATTERY)
+  ___________________________          ____________________          ____________________________
+ |                           |        |                    |        |                            |
+ | [ CM5 VBAK PIN (TBD) ] ---|------->| [ C6: 100nF ]      |        | [ BT1: Keystone 3034 ]     |
+ |                           |   |    | (to GND)           |        | (CR2032 click-in holder)   |
+ |___________________________|   |    |____________________|        | (Left edge of board)       |
+                                 |    |                    |        |                            |
+                                 +----| [ D1: BAT54 ]      |<-------| [ CR2032 (+) ]             |
+                                      | (Schottky diode)   |        | 3.0V nom / 220mAh          |
+                                      | (anode = BT1(+))   |        |____________________________|
+                                      | (cathode = VBAK)   |        (BT1(-) → GND local pour)
+                                      |____________________|
+```
+
+> **Routing rules:**
+>
+> * VBAK trace: 6mil minimum, L1, direct route from CM5 DF40 pin to D1 cathode; max 20mm.
+> * C6 placed within 5mm of CM5 DF40 VBAK pin (before D1).
+> * BT1 on left edge of board; keep VBAK trace well away from GbE, USB 3.0, and HDMI striplines.
+> * CM5 VBAK pin number **TBD — confirm from CM5 datasheet before PCB layout**.
+
 ## Interface Component Connectivity
 
 ```text

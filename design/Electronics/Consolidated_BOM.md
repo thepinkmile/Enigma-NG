@@ -99,6 +99,17 @@ individual `Design_Spec.md` file.
 * **AP2331W-7:** HDMI Current Limiter (SOT-25) (50mA Limit).
 * **TPD4E05U06DQNR:** 4-Channel ESD Protection (U-DFN1010-10).
 
+### Controller Board — RTC Battery Circuit
+
+> **Note:** C6 (100nF X7R 0402, Samsung CL05B104KB5NNNC) uses the common 100nF 0402 passive from
+> §2 Common Passives — not duplicated here.
+
+| Ref | Component | Description | Qty | Supplier | Part Number |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| BT1 | Keystone 3034 | CR2032 THT horizontal coin cell holder — RTC backup battery for CM5 MXL7704 PMIC | 1 | Mouser: 534-3034 / DigiKey: 36-3034-ND | Keystone 3034 |
+| D1 (CTRL) | Nexperia BAT54 | SOT-23 Schottky — VBAK charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 771-BAT54215 / DigiKey: 1727-1064-1-ND | BAT54 |
+| — | Renata CR2032 | CR2032 3V coin cell (not fitted at PCB assembly — installed at commissioning) | 1 | Mouser: 614-CR2032 / DigiKey: P189-ND | Renata CR2032 |
+
 ## 6. Backplane & Extension Components
 
 * **16-pin Inter-Board Link (Molex 22-23-2161, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TDO_RETURN path.

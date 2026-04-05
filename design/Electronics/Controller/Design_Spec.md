@@ -110,7 +110,35 @@
   * **STUSB4500 (PD Controller):** I2C @ 0x28 on Power Module.
   * **Smart Battery (SMBus):** I2C @ 0x0B on Power Module.
 
-## 5. CM5 GPIO Mapping Matrix (Enigma-NG)
+## 5. RTC Backup Battery
+
+The CM5's MXL7704 PMIC contains an integrated RTC. To maintain timekeeping through power cycles,
+a 3V coin cell is required on the CM5's VBAK pin (exposed on the CM5 Hirose DF40 200-pin connector —
+**pin TBD; confirm from CM5 datasheet at schematic capture**).
+
+### 5.1. Circuit Design
+
+* **Battery (BT1):** Keystone 3034 CR2032 THT horizontal click-in holder. CR2032 = 3.0V, 220mAh.
+  Estimated service life >25 years at <1µA RTC quiescent draw.
+* **Protection Diode (D1):** Nexperia BAT54 Schottky diode (SOT-23, 30V, 200mA).
+  Connected in series: BT1(+) → D1(anode), D1(cathode) → CM5 VBAK. Vf ≈ 0.3V @ 100µA; delivers
+  ~2.7V to VBAK pin (within MXL7704 VBAK operating range). **This diode is mandatory with a CR2032 —
+  it physically prevents the PMIC charging circuit from reaching the battery.**
+* **Bypass Cap (C6):** 100nF X7R 0402 (Samsung CL05B104KB5NNNC) from VBAK to GND, placed within 5mm
+  of the CM5 DF40 connector VBAK pin.
+
+> ⚠️ **Do NOT substitute ML2032 for CR2032 without removing D1.** The ML2032 is rechargeable and
+> must connect directly to VBAK (no diode). The software charging-disable note in
+> `Software/Linux_OS/Power_Management.md` also applies.
+
+### 5.2. Placement
+
+* **BT1:** Left edge of board, minimum 20mm from any high-speed trace (GbE pairs, USB 3.0, HDMI).
+  Orient so the battery ejects away from the board centre for service access.
+* **Battery replacement:** Classified as a **service-by-disassembly** task — not field-replaceable in-situ.
+  Expected interval: >25 years under normal use. See `design/Guides/Maintenance_Guide.md`.
+
+## 6. CM5 GPIO Mapping Matrix (Enigma-NG)
 
 All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50mA across all pins.
 
@@ -131,7 +159,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
 | **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100C5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
 
-## 6. Protection & EMI
+## 7. Protection & EMI
 
 * **External Links:** All inputs (Status) feature 10kΩ series resistors to protect CM5 pins from transient spikes.
 * **Voltage:** 5V signals are strictly forbidden on these pins.
@@ -144,7 +172,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 * **Ferrite Beads:** Moved exclusively to the **Stator Board** to keep rotor switching noise isolated from the
   Controller logic.
 
-## 7. Connectivity
+## 8. Connectivity
 
 ### Link-Beta Connector (Samtec ERF8-020)
 
@@ -155,7 +183,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 * **Assembly:** SMT reflow; no THR clips required.
 * **Decision:** See DEC-015 for 80→40 pin reduction rationale and poka-yoke safety note.
 
-## 8. PCB Fabrication & Stackup
+## 9. PCB Fabrication & Stackup
 
 ### PCB Fabrication (JLCPCB Specs)
 
@@ -202,7 +230,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 * **Copper:** 2oz Finished Copper (L1-L6).
 * **Finish:** **ENIG (Electroless Nickel Immersion Gold)** mandatory for 0.4mm pitch integrity.
 
-## 9. Thermal, Branding & Diagnostics
+## 10. Thermal, Branding & Diagnostics
 
 ### Thermal & Branding
 
@@ -226,11 +254,14 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
   SYS_RESET_N.
 * **JTAG Shielding:** JTAG_TCK (Pin 15) isolated from TDI/TMS via GND buffer (Pin 16).
 
-## 10. Bill of Materials
+## 11. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| C6 | VBAK bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1005-1-ND | CL05B104KB5NNNC |
+| BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034 | THT horizontal | 534-3034 | 36-3034-ND | C70377 |
+| D1 | VBAK Schottky protection (blocks CR2032 charge path) | Nexperia BAT54 | SOT-23 | 771-BAT54215 | 1727-1064-1-ND | C8598 |
 | J1 | Link-Alpha 80-pin Socket | ERF8-040-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | C3640808 |
 | J2 | Link-Beta 40-pin Socket | ERF8-020-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8020050SDVKTR | SAM8619CT-ND (CT) / SAM8619TR-ND (T&R) / SAM8619DKR-ND (DKR) | C6034565 |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
@@ -250,4 +281,4 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 ### BOM Notes
 
 Telemetry shunt specifications and Kelvin-sensing notes are detailed in §4. Protection, ESD, and bulk decoupling
-capacitor placement rules are detailed in §6. Mating header assembly specifications are in §7.
+capacitor placement rules are detailed in §7. Mating header assembly specifications are in §8.

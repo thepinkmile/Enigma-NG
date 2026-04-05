@@ -266,6 +266,52 @@ def read_rotor_current_mA():
 
 The **INA219 Power Module Monitor** (for 5V_MAIN) is at I2C address **0x40** on the Power Module board (separate device, different rail).
 
+## RTC Battery Configuration
+
+The CM5 MXL7704 PMIC includes a battery charging circuit for the RTC backup battery. When a
+**non-rechargeable CR2032** is fitted (as specified in `Controller/Design_Spec.md §5`), the
+charging circuit must be disabled in software as a belt-and-suspenders measure alongside the
+hardware Schottky diode (D1) that physically blocks the charge path.
+
+### config.txt Setting
+
+Ensure the following line is **absent from** `/boot/firmware/config.txt` (do NOT include it):
+
+```ini
+# DO NOT add this line — it enables PMIC battery charging at 3.0V and will degrade a CR2032:
+# dtparam=rtc_bbat_vchg=3000000
+```
+
+As an explicit belt-and-suspenders disable, you may instead add:
+
+```ini
+# Explicitly disable RTC backup battery charging (CR2032 is non-rechargeable)
+dtparam=rtc_bbat_vchg=0
+```
+
+> **Note:** The hardware Schottky diode (D1, Nexperia BAT54) already physically prevents the
+> PMIC from charging the CR2032 regardless of this software setting. The config.txt setting is
+> a secondary safeguard. If the battery is ever changed to a rechargeable ML2032, remove D1
+> from the PCB AND set `dtparam=rtc_bbat_vchg=3000000` to enable correct charging.
+
+### RTC Time Synchronisation
+
+The CM5 will use `systemd-timesyncd` (NTP) to synchronise the RTC on boot when network
+is available. On first boot, or after battery replacement, the RTC may show an incorrect time
+until network sync completes. This is expected behaviour.
+
+To force an immediate RTC sync from the system clock (after NTP has synced):
+
+```bash
+sudo hwclock --systohc
+```
+
+To read the current RTC time:
+
+```bash
+sudo hwclock --show
+```
+
 ## Open Items
 
 - [ ] Confirm CM5 GPIO pin number for PWR_GD (update `<TBD>` above once GPIO mapping is finalised in Controller/Design_Spec.md)
@@ -275,3 +321,4 @@ The **INA219 Power Module Monitor** (for 5V_MAIN) is at I2C address **0x40** on 
 - [ ] Confirm Marquardt 1800 series exact PN for RGB LED rocker (select at mechanical design stage for panel cutout dimensions)
 - [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
 - [ ] Add SW_LED_CTRL (GPIO 24) to BtB Link-Alpha connector wiring list in Controller Board_Layout.md (pin 47)
+- [ ] Verify CM5 DF40 connector VBAK pin number from CM5 datasheet and update Controller/Board_Layout.md RTC routing note and Design_Spec.md §5.
