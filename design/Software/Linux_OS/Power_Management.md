@@ -271,7 +271,7 @@ The **INA219 Power Module Monitor** (for 5V_MAIN) is at I2C address **0x40** on 
 The CM5 MXL7704 PMIC includes a battery charging circuit for the RTC backup battery. When a
 **non-rechargeable CR2032** is fitted (as specified in `Controller/Design_Spec.md §5`), the
 charging circuit must be disabled in software as a belt-and-suspenders measure alongside the
-hardware Schottky diode (D1) that physically blocks the charge path.
+hardware Schottky diode (D1) that physically blocks the charge path at CM5 VBAT (Pin 95).
 
 ### config.txt Setting
 
@@ -321,4 +321,4 @@ sudo hwclock --show
 - [ ] Confirm Marquardt 1800 series exact PN for RGB LED rocker (select at mechanical design stage for panel cutout dimensions)
 - [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
 - [ ] Add SW_LED_CTRL (GPIO 24) to BtB Link-Alpha connector wiring list in Controller Board_Layout.md (pin 47)
-- [ ] Verify CM5 DF40 connector VBAK pin number from CM5 datasheet and update Controller/Board_Layout.md RTC routing note and Design_Spec.md §5.
+- [ ] Verify CM5 VBAT (Pin 95) is correctly identified in the CM5 Hirose DF40 200-pin connector datasheet before PCB layout.

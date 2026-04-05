@@ -107,7 +107,7 @@ individual `Design_Spec.md` file.
 | Ref | Component | Description | Qty | Supplier | Part Number |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | BT1 | Keystone 3034 | CR2032 THT horizontal coin cell holder — RTC backup battery for CM5 MXL7704 PMIC | 1 | Mouser: 534-3034 / DigiKey: 36-3034-ND | Keystone 3034 |
-| D1 (CTRL) | Nexperia BAT54 | SOT-23 Schottky — VBAK charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 771-BAT54215 / DigiKey: 1727-1064-1-ND | BAT54 |
+| D1 (CTRL) | Nexperia BAT54 | SOT-23 Schottky — VBAT (Pin 95) charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 771-BAT54215 / DigiKey: 1727-1064-1-ND | BAT54 |
 | — | Renata CR2032 | CR2032 3V coin cell (not fitted at PCB assembly — installed at commissioning) | 1 | Mouser: 614-CR2032 / DigiKey: P189-ND | Renata CR2032 |
 
 ## 6. Backplane & Extension Components

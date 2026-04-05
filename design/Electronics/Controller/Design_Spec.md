@@ -113,22 +113,21 @@
 ## 5. RTC Backup Battery
 
 The CM5's MXL7704 PMIC contains an integrated RTC. To maintain timekeeping through power cycles,
-a 3V coin cell is required on the CM5's VBAK pin (exposed on the CM5 Hirose DF40 200-pin connector —
-**pin TBD; confirm from CM5 datasheet at schematic capture**).
+a 3V coin cell is required on the CM5's VBAT pin (**Pin 95** on the CM5 Hirose DF40 200-pin connector).
 
 ### 5.1. Circuit Design
 
 * **Battery (BT1):** Keystone 3034 CR2032 THT horizontal click-in holder. CR2032 = 3.0V, 220mAh.
   Estimated service life >25 years at <1µA RTC quiescent draw.
 * **Protection Diode (D1):** Nexperia BAT54 Schottky diode (SOT-23, 30V, 200mA).
-  Connected in series: BT1(+) → D1(anode), D1(cathode) → CM5 VBAK. Vf ≈ 0.3V @ 100µA; delivers
-  ~2.7V to VBAK pin (within MXL7704 VBAK operating range). **This diode is mandatory with a CR2032 —
+  Connected in series: BT1(+) → D1(anode), D1(cathode) → CM5 VBAT (Pin 95). Vf ≈ 0.3V @ 100µA; delivers
+  ~2.7V to VBAT pin (within MXL7704 VBAT operating range). **This diode is mandatory with a CR2032 —
   it physically prevents the PMIC charging circuit from reaching the battery.**
-* **Bypass Cap (C6):** 100nF X7R 0402 (Samsung CL05B104KB5NNNC) from VBAK to GND, placed within 5mm
-  of the CM5 DF40 connector VBAK pin.
+* **Bypass Cap (C6):** 100nF X7R 0402 (Samsung CL05B104KB5NNNC) from VBAT to GND, placed within 5mm
+  of the CM5 DF40 connector Pin 95.
 
 > ⚠️ **Do NOT substitute ML2032 for CR2032 without removing D1.** The ML2032 is rechargeable and
-> must connect directly to VBAK (no diode). The software charging-disable note in
+> must connect directly to VBAT (no diode). The software charging-disable note in
 > `Software/Linux_OS/Power_Management.md` also applies.
 
 ### 5.2. Placement
@@ -259,9 +258,9 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| C6 | VBAK bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1005-1-ND | CL05B104KB5NNNC |
+| C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1005-1-ND | CL05B104KB5NNNC |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034 | THT horizontal | 534-3034 | 36-3034-ND | C70377 |
-| D1 | VBAK Schottky protection (blocks CR2032 charge path) | Nexperia BAT54 | SOT-23 | 771-BAT54215 | 1727-1064-1-ND | C8598 |
+| D1 | VBAT Schottky protection (blocks CR2032 charge path) | Nexperia BAT54 | SOT-23 | 771-BAT54215 | 1727-1064-1-ND | C8598 |
 | J1 | Link-Alpha 80-pin Socket | ERF8-040-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621-ND | C3640808 |
 | J2 | Link-Beta 40-pin Socket | ERF8-020-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8020050SDVKTR | SAM8619CT-ND (CT) / SAM8619TR-ND (T&R) / SAM8619DKR-ND (DKR) | C6034565 |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
