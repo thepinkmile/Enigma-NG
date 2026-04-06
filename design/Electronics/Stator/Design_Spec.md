@@ -113,7 +113,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **Note:** Rotor-to-rotor connections beyond Rotor 1 are direct (each Rotor J4/J5/J6 output mates with
     the next Rotor J1/J2/J3 input); Extension boards provide inter-group bridging at group boundaries in
     the serial chain (Stator → Rotor 1 → … → Rotor 30 → Reflector J1–J3).
-* **Diagnostics:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
+* **Diagnostics:** 2x10 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
 
 ## 5. Power Telemetry (The "Encryption Load")
 

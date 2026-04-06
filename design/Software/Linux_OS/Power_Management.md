@@ -153,7 +153,7 @@ sequence and colour states are defined below.
 
 ### Boot Handoff Sequence
 
-1. **Power on (CM5 not yet booted):** `SW_LED_CTRL` (GPIO 24) is floating/low (CM5 GPIO in input mode).
+1. **Power on (CM5 not yet booted):** `SW_LED_CTRL` (GPIO 20) is floating/low (CM5 GPIO in input mode).
    Hardware path active: MIC1555 (U11) oscillator drives Q_HW → BAT54 diodes → SW_LED_R + SW_LED_G
    simultaneously → 1Hz orange flash on SW1. Identical orange heartbeat to the Controller status LED.
 
@@ -161,10 +161,10 @@ sequence and colour states are defined below.
    Before asserting `SW_LED_CTRL`, pre-set SW_LED_R/G/B GPIOs to desired initial state (orange solid:
    GPIO 17 HIGH, GPIO 18 HIGH, GPIO 19 LOW).
 
-3. **CM5 drives `SW_LED_CTRL` HIGH (GPIO 24):** Hardware Q_HW gate disabled → MIC1555 path cut.
+3. **CM5 drives `SW_LED_CTRL` HIGH (GPIO 20):** Hardware Q_HW gate disabled → MIC1555 path cut.
    CM5 now has exclusive control of SW_LED_R/G/B.
 
-4. **Power source detection:** Read POE_STAT (GPIO 20), USB_STAT (GPIO 21), BATT_PRES_N (GPIO 23)
+4. **Power source detection:** Read POE_STAT (GPIO 24), USB_STAT (GPIO 21), BATT_PRES_N (GPIO 23)
    and set LED colour per table below.
 
 ### LED Colour Table
@@ -189,7 +189,7 @@ import RPi.GPIO as GPIO
 SW_LED_R    = 17
 SW_LED_G    = 18
 SW_LED_B    = 19
-SW_LED_CTRL = 24
+SW_LED_CTRL = 20
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup([SW_LED_R, SW_LED_G, SW_LED_B, SW_LED_CTRL], GPIO.OUT, initial=GPIO.LOW)
@@ -207,7 +207,7 @@ def set_led(r, g, b):
     GPIO.output(SW_LED_G, g)
     GPIO.output(SW_LED_B, b)
 
-poe_active  = not GPIO.input(20)  # Active-low: LOW = PoE live
+poe_active  = not GPIO.input(24)  # Active-low: LOW = PoE live
 usb_active  = not GPIO.input(21)  # USB_STAT active low
 batt_active = not GPIO.input(23)  # BATT_PRES_N active low
 
@@ -320,5 +320,5 @@ sudo hwclock --show
 - [ ] Consider adding LTC3350 charge status polling (SOC readout) for optional status LED control from software
 - [ ] Confirm Marquardt 1800 series exact PN for RGB LED rocker (select at mechanical design stage for panel cutout dimensions)
 - [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
-- [x] SW_LED_CTRL (GPIO 24) added to Link-Alpha pin 47 wiring — completed; see Controller/Board_Layout.md LINK-ALPHA table.
+- [x] SW_LED_CTRL (GPIO 20) added to Link-Alpha pin 47 wiring — completed; see Controller/Board_Layout.md LINK-ALPHA table.
 - [ ] Verify CM5 VBAT (Pin 95) is correctly identified in the CM5 Hirose DF40 200-pin connector datasheet before PCB layout.

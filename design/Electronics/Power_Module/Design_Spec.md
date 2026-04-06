@@ -294,7 +294,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
   * **RGB LED circuit:** SW1 integrates an RGB LED status indicator. The LED is driven by a hardware
     handoff circuit: before CM5 boot, the MIC1555 oscillator (U11) drives the Red and Green channels
     via Q4 (BSS138 NMOSFET gate) to produce a 1Hz orange flash (R+G simultaneously). Once CM5
-    firmware asserts SW_LED_CTRL (BtB pin 47, CM5 GPIO 24) HIGH, Q4 is disabled and CM5 drives
+    firmware asserts SW_LED_CTRL (BtB pin 47, CM5 GPIO 20) HIGH, Q4 is disabled and CM5 drives
     SW_LED_R/G/B (BtB pins 31/32/33, CM5 GPIOs 17/18/19) directly.
   * **LED colour scheme:** Orange flash = booting; Solid green = USB-C active; Solid blue = PoE active;
     Solid orange = Battery active; Red = fault or graceful shutdown in progress.
