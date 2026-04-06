@@ -32,14 +32,14 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | DR-JDB-04 | TDI series damping | R2 = 33 Ω 0402 at FT232H TDI output | §5 Electrical Requirements; BOM R1, R2 (33Ω) |
 | DR-JDB-05 | TMS series damping | R3 = 33 Ω 0402 at FT232H TMS output | §5 Electrical Requirements; BOM R3 (33Ω) |
 | DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) | §2 Core Logic; BOM U1 (FT232H) |
-| DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port | §3 Interface & Wiring; BOM J1 (6-pin USB header), Y1 (24MHz crystal) |
+| DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port | §3 Interface & Wiring; BOM J1 (6-pin USB header), Y1 (12MHz crystal) |
 
 ## 2. Core Logic
 
 * **Role:** Converts the CM5's USB 2.0 signals into high-speed JTAG (TCK, TMS, TDI, TDO) commands.
 * **Bridge IC:** [FT232H](https://ftdichip.com/wp-content/uploads/2023/09/DS_FT232H.pdf) High-Speed USB 2.0 to MPSSE.
 * **Function:** Dedicated JTAG programmer for the global chain (30x Rotor CPLDs + 6x Encoder CPLDs + 1x Stator CPLD).
-* **Configuration:** 24MHz crystal-controlled for high-speed programming via the CM5 GUI.
+* **Configuration:** 12MHz crystal-controlled for stable JTAG programming via the CM5. See DEC-021.
 * **Integrated Driver:** Compatible with `OpenOCD` or `Quartus` via a custom Linux driver on the CM5.
 
 ## 3. Interface & Wiring
@@ -70,7 +70,8 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 
 * **Voltage:** FT232H core VCC is bus-powered from VBUS (5 V via USB-C, internal LDO → 3.3 V); VCCIO and all 3.3 V logic are powered from the +3V3_ENIG rail via the hat-header interconnect.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the USB/power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **Clocking:** Dedicated 24MHz crystal for the FT232H to ensure JTAG clock stability across the 37-device chain.
+* **Clocking:** Dedicated 12MHz SMD crystal (Y1) for the FT232H reference clock. The FT232H internal PLL requires 12MHz; CM5 GPCLK
+  option was considered and rejected — see DEC-021. Crystal load capacitors C10–C11 (33pF C0G) set the 20pF crystal load capacitance.
 * **JTAG Signal Integrity:**
   * **R1, R2 (33Ω):** Series termination on FT232H TDI and TCK outputs, placed within 2mm of the FT232H pins before the JTAG header (J2).
     Source impedance ≈ 53Ω, matched to the 50Ω controlled-impedance traces on the receiving board. Per DEC-016 intra-board/BtB termination rule.
@@ -92,6 +93,7 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 | R1, R2 | Series resistors (DEC-016 BtB/intra-board termination — JTAG output to 10-pin JTAG header J2) | 33Ω | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | R3 | 33Ω 1% 0402 | TMS series damping | 603-FRC0402J33RTS | Mouser 603-FRC0402J33RTS | DigiKey 13-FRC0402J33RTSCT-ND | JLCPCB C25879 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |
-| Y1 | Crystal | 24MHz | HC-49 | 520-ABL-24.000MHZ-B2 | 644-1053-1-ND | C123468 |
+| C10, C11 | Crystal load capacitors | 33pF C0G/NP0 0402 | 0402 | 81-GRM1555C1H330JA01D | 490-1318-1-ND | C1639 |
+| Y1 | Crystal — FT232H reference clock (per DEC-021) | 12MHz 20pF ±20ppm | SMD3225-4P | 815-ABM8-12.000MHZ-B2-T | 535-9977-1-ND | C9002 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.
