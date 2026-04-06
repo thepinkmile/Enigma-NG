@@ -71,7 +71,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C25806) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | 20 mΩ 1% 1206 current-sense shunt (ERJ-6ENF20R0V / C123465) | — | — | — | — | — | — | — | — | — | — | — |
-| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | — | — | 1 | — | — | — | — | — | — | — | 1 |
+| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
 | 121 kΩ 1% 0603 PoE MPS current set (ERJ-3EKF1213V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 301 Ω 1% 0603 charge current set (ERJ-3EKF3010V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -137,7 +137,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **22Ω:** 10 units (JTAG end-of-chain damping — Reflector R1 × 1; spares).
 * **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
-* **10mΩ / 5A (2512 Kelvin):** 2 build + 3 spares (R1 — Stator INA219 U2 rotor-stack shunt; Bourns CSS2H-2512R-**R010**ELF).
+* **10mΩ / 5A (2512 Kelvin):** 2 build + 3 spares (PM R23 INA219 U12 + Stator R1 INA219 U2; Bourns CSS2H-2512R-**R010**ELF).
 
 ## 3a. EMI Filter Passives
 
@@ -223,7 +223,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 * **INA219AIDR:** 2 units — PM U12 @ I²C 0x40 (5V\_MAIN current monitoring); Stator U2 @ I²C 0x45 (rotor telemetry).
 * **20mΩ 1206 Shunt (ERJ-6ENF20R0V):** 0 units — retired from Stator; replaced by CSS2H-2512R-R010ELF.
-* **10mΩ 2512 Kelvin Shunt (CSS2H-2512R-R010ELF):** 1 unit — Stator R1 (INA219 U2 rotor-stack shunt). **Stator ONLY.**
+* **10mΩ 2512 Kelvin Shunt (CSS2H-2512R-R010ELF):** 2 build + 3 spares — PM R23 (INA219 U12, 0x40) + Stator R1 (INA219 U2, 0x45).
 
 ## 8. Power Module — PoE Subsystem
 
