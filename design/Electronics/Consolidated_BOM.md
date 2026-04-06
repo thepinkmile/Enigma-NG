@@ -137,7 +137,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **22Ω:** 10 units (JTAG end-of-chain damping — Reflector R1 × 1; spares).
 * **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
-* **10mΩ / 5A (2512 Kelvin):** 5 units (LTC3350 RSENSE — charge path current sense, R12; Bourns CSS2H-2512R-**R010**ELF).
+* **10mΩ / 5A (2512 Kelvin):** 5 units — 2 build + 3 spares (R12 — LTC3350 RSENSE charge-path current sense; R23 — INA219 U12 5V_MAIN shunt; Bourns CSS2H-2512R-**R010**ELF).
 
 ## 3a. EMI Filter Passives
 

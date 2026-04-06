@@ -21,7 +21,7 @@ robustness.
 
 ## Telemetry Sensor Responsibility
 
-* Power Module INA219 (I2C address 0x40): monitors Power Module generated rails (5V_MAIN, 3V3_ENIG, battery input state).
+* Power Module INA219 (I2C address 0x40): monitors 5V_MAIN current and power (10mΩ CSS2H R23 shunt).
 * Stator INA219 (I2C address 0x45): monitors rotor stack power usage via 20mΩ shunt on the 3V3_ENIG bus.
 
 ## I2C Bus Map
@@ -29,7 +29,7 @@ robustness.
 * I2C1 (SCL/SDA): routed through Controller → Power Module → Stator → Rotor chain.
   * 0x0B: Smart Battery / SMBus monitoring.
   * 0x28: STUSB4500 USB PD controller on Power Module.
-  * 0x40: INA219 on Power Module (input/rail generation telemetry, including 5V_MAIN and 3V3_ENIG).
+  * 0x40: INA219 on Power Module (5V_MAIN current/power telemetry).
   * 0x45: INA219 on Stator (rotor stack draw telemetry on the 3V3_ENIG bus).
 
 ## 2. System Architecture & Status (Alphabetical)
