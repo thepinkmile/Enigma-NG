@@ -131,9 +131,9 @@
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
 
-* **Rotor Shunt:** **20mΩ (1206, 1%, 0.25W)** metal strip resistor on Stator board (Stator owns this component — see `Stator/Design_Spec.md`).
+* **Rotor Shunt:** **20mΩ (1206, 1%, 0.5W preferred; ≥0.25W minimum)** metal strip resistor on Stator board (Stator owns this component — see `Stator/Design_Spec.md`).
 * **Sensing:** **Kelvin-connection (4-wire)** with 10Ω/0.1µF RC noise filtering.
-* **Shunt Resistor:** 20mΩ (1206, 1%, 0.25W). Firmware must use R_SHUNT = 0.020Ω in the INA219 current calculation (I = V_shunt / R_shunt).
+* **Shunt Resistor:** 20mΩ (1206, 1%, 0.5W preferred; ≥0.25W minimum). Firmware must use R_SHUNT = 0.020Ω in the INA219 current calculation (I = V_shunt / R_shunt).
   * At 3A max: V_drop = 60mV — fits the INA219 ±80mV PGA range; 3.0A resolution ÷ 2¹² = 0.73mA/LSB.
 * **Filtering:** 10Ω + 0.1µF RC filter on sensing lines to suppress rotor switching noise.
 * **I2C Map:**

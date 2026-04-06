@@ -25,7 +25,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 | §2 Core Features; §3 Encryption & JTAG Hub; BOM L1–L4 (ferrite beads) |
 | FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100C5N) |
 | FR-STA-04 | Receive TDO_RETURN from the Reflector and forward to the Controller Board | Via J7 (16-pin Molex) → Link-Beta pin 26 | §3 Encryption & JTAG Hub; BOM J7, R2 (10kΩ pull-up) |
-| FR-STA-05 | Interface with up to 6 HID encoder boards via IDC ribbon cables | J4/J5/J6 encoder ports | §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
+| FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables | J4/J5/J6 encoder ports (one board per port) | §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM240 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100C5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 
