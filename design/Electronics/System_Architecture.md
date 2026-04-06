@@ -15,7 +15,7 @@ The Enigma-NG system comprises the following boards:
 
 - **Controller Board (CM5)** — Raspberry Pi CM5 carrier; hosts the Linux SoC and manages JTAG, GPIO and
   Ethernet.
-- **Power Module** — Generates +5V and +3V3_ENIG rails from ~12V input; connects to Controller via
+- **Power Module** — Generates 5V_MAIN and 3V3_ENIG rails from ~12V input; connects to Controller via
   Link-Alpha.
 - **Stator** — Central backplane; the first fixed stage of the cipher path. Connects to all other boards.
 - **Rotors (×30)** — Arranged in groups of 5, chaining directly output-to-input. An Extension Board sits
@@ -127,9 +127,9 @@ sockets on the **output side** of the previous board.
 
 The Power Module generates two rails from a ~12V input source:
 
-- **+5V** — Up to 12A; dual-phase interleaved **LMQ61460-Q1**. Powers the CM5 module. The CM5 requires up
+- **5V_MAIN** — Up to 12A; dual-phase interleaved **LMQ61460-Q1**. Powers the CM5 module. The CM5 requires up
   to 25W (5V @ 5A); the Linux kernel logs undervoltage warnings if supply capacity is below this.
-- **+3V3_ENIG** — Clean 3.3V; **TPS7A8333P** LDO post-regulator. Unified logic rail for all CPLDs, USB-JTAG
+- **3V3_ENIG** — Clean 3.3V; **TPS7A8333P** LDO post-regulator. Unified logic rail for all CPLDs, USB-JTAG
   interface, I2C logic, status indicators, and the full rotor stack.
 
 > **NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. **3V3_ENIG** is the single unified 3.3V

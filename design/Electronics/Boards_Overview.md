@@ -27,6 +27,7 @@ robustness.
 ## I2C Bus Map
 
 * I2C1 (SCL/SDA): routed through Controller → Power Module → Stator → Rotor chain.
+  * 0x09: LTC3350 Supercap Charger on Power Module (supercap health monitoring and charge management).
   * 0x0B: Smart Battery / SMBus monitoring.
   * 0x28: STUSB4500 USB PD controller on Power Module.
   * 0x40: INA219 on Power Module (5V_MAIN current/power telemetry).

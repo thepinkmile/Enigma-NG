@@ -19,7 +19,7 @@
 
 ## 2. Live Input Verification
 
-* [ ] **PoE+ Entry:** Apply 48V to RJ45; verify 15V at the eFuse input.
+* [ ] **PoE+ Entry:** Apply 48V to RJ45; verify 12V at the eFuse input.
 * [ ] **USB-C PD:** Connect 15V PD source; verify negotiated voltage and stable rail.
 * [ ] **Battery:** Connect 14.4V battery; verify SMBus pull-ups are active.
 

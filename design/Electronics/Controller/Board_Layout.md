@@ -261,7 +261,7 @@ _______________________________________    _____________    ____________________
 | (O) [  LINK-ALPHA (ERF8-040)  ] --(5V/GBE)--|----->| [ CM5 COMPUTE MODULE ]         |      | (O)                         |
 | (1)  (Female Socket / 80-pin)               |      |  (Wireless/8GB/32GB)           |      | (3)                         |
 |        |                 |                  |      |                                |      |                             |
-|  [ +3V3_ENIG ]     [ SNIFFER BUS (12-bit) ] |<---->| [ 12-bit GPIO ]  [ 100Ω HDMI ] |      |                             |
+|  [ 3V3_ENIG  ]     [ SNIFFER BUS (12-bit) ] |<---->| [ 12-bit GPIO ]  [ 100Ω HDMI ] |      |                             |
 |  (2oz L3 BRIDGE)   (6-In / 6-Out Binary)    |      |                        |       |      |                             |
 |       |                                     |      |                  [ AP2331W   ] |      |                             |
 |       |       [ JTAG DAUGHTERBOARD ]        |      |                  [ TPD4E05U06] |------|------> [ HDMI TYPE-A  ]     |

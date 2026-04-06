@@ -15,6 +15,7 @@
 
 | I2C Address | Device | Module | Function |
 | :--- | :--- | :--- | :--- |
+| 0x09 | LTC3350 | Power Module | Supercap charger / health monitor |
 | 0x28 | STUSB4500 | Power Module | USB-C PD Controller |
 | 0x40 | INA219 | Power Module | 5V_MAIN current/power monitoring (10mΩ CSS2H R23 shunt) |
 | 0x45 | INA219 | Stator | Rotor stack power telemetry (3V3_ENIG shunt) |

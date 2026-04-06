@@ -172,10 +172,10 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
  ___________________________          ___________________________          ___________________ 
 | [U1: eFuse / OR-ing]      |        |                           |        |                   |
 |                           |        |  [ PINS 1-20: GbE ] ------|------->| [ GbE Ethernet ]  |
-| [U2A/U2B: 5V BUCK×2 (12A)]|--------|--[ PINS 21-22: 5V ] ------|------->| [ +5V_MAIN ]      |
+| [U2A/U2B: 5V BUCK×2 (12A)]|--------|--[ PINS 21-22: 5V ] ------|------->| [ 5V_MAIN  ]      |
 |                           |--------|--[ PINS 49-80: 5V+GND ] --|------->|   (9A cluster)    |
 |                           |        |                           |        |                   |
-| [U7: TPS7A8333P 3.3V LDO] |--------|--[ PINS 39-44: 3V3_ENIG ] |------->| [ +3V3_ENIG ]     |
+| [U7: TPS7A8333P 3.3V LDO] |--------|--[ PINS 39-44: 3V3_ENIG ] |------->| [ 3V3_ENIG ]      |
 |                           |        |                           |        |                   |
 | [J2: RJ45 LEDs] <---------|--------|  [ PINS 25-26: ETH_LEDs ] |<-------| [ ETH_LED_L/A ]   |
 | (LED anodes: 3V3_ENIG)    |        |   (from CM5 GbE PHY)      |        |                   |

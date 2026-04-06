@@ -46,7 +46,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 ## 2. Core Features
 
 * **Modular Slots:** 30x Samtec ERF8 female socket sets (3 connectors per slot: ERF8-005 JTAG, ERF8-005 Power, ERF8-010 ENC\_DATA) mating with the ERM8 male headers on each Rotor.
-* **Power Tree:** A 2oz copper pour for the `+3V3_ENIG` rail to handle the **2.20A worst-case** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
+* **Power Tree:** A 2oz copper pour for the `3V3_ENIG` rail to handle the **2.20A worst-case** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
   The 5A figure previously quoted was a conservative design margin; the LDO hard limit is 3.0A.
 
 ### GND_CHASSIS Single-Point Bond

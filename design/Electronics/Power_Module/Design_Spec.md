@@ -13,8 +13,8 @@ This Power Module is a custom power board that is independently shielded and pro
 It provides the basis of the clean power rails into the controller board and other peripheral boards.
 It produces 2 power rails from a common ~12V input source. These power rails are:
 
-* **+5V** Providing up to 12A for powering the CM5 module (dual-phase interleaved LMQ61460-Q1).
-* **+3V3_ENIG** Providing clean 3.3V power for CPLDs, USB-JTAG interface, I2C logic, status indicator logic, and the full rotor stack.
+* **5V_MAIN** Providing up to 12A for powering the CM5 module (dual-phase interleaved LMQ61460-Q1).
+* **3V3_ENIG** Providing clean 3.3V power for CPLDs, USB-JTAG interface, I2C logic, status indicator logic, and the full rotor stack.
 
 **NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. The **3V3_ENIG** rail (generated on this Power Module by the TPS7A8333P LDO) is the unified 3.3V rail supplying
 CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG power crosses to the Controller Board via BtB Link-Alpha pins 39–44.
