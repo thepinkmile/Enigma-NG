@@ -118,7 +118,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 
 | Parameter | Value | Rationale |
 | --- | --- | --- |
-| UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~15V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
+| UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~12V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
 | OVLO | **16.9V (fixed variant)** | Highest available option on TPS25980. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin above OVLO. See §3.2 Note on Battery Voltage. |
 | ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 9.05A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
 | Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~2 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to keep PoE utilisation within 75% rule on all sources. |
