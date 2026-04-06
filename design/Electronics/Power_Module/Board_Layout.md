@@ -137,8 +137,8 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
             |                          |                          |
   [D4/D5 ESD + L1 CMC  ]    [D3 ESD + L2 CMC    ]           [D1/D2 ESD]
   [U9 TPS2372-4 PD ctrl]    [U5 STUSB4500 PD ctrl]                |
-  [U10 TPS23730 ACF+T2 ]      (negotiates 15V)                    |
-   (PoE Type 4, 12V/51W)                                          |
+  [U10 TPS23730 ACF+T2 ]      (negotiates 15V/5A USB-C PD)        |
+    (48V->12V ACF converter)                                      |
             |                          |                          |
             \__________________________|__________________________/
                                        |
