@@ -16,23 +16,23 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 #### Functional Requirements
 
-| ID | Functional Requirement | Notes |
-| :--- | :--- | :--- |
-| FR-JDB-01 | Provide a USB-to-JTAG programming interface for all 37 CPLDs in the system | 1 Stator + 6 Encoder + 30 Rotor CPLDs |
-| FR-JDB-02 | Generate series-damped drive signals suitable for the controlled-impedance JTAG chain | 33 Ω resistors at all JTAG outputs |
-| FR-JDB-03 | Interface with the CM5 via USB 2.0 for JTAG programming software control | Presented as FTDI JTAG device to OpenOCD/equivalent |
+| ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| FR-JDB-01 | Provide a USB-to-JTAG programming interface for all 37 CPLDs in the system | 1 Stator + 6 Encoder + 30 Rotor CPLDs | §2 Core Logic; BOM U1 (FT232H) |
+| FR-JDB-02 | Generate series-damped drive signals suitable for the controlled-impedance JTAG chain | 33 Ω resistors at all JTAG outputs | §5 Electrical Requirements; BOM R1 (TCK 33Ω), R2 (TDI 33Ω), R3 (TMS 33Ω) |
+| FR-JDB-03 | Interface with the CM5 via USB 2.0 for JTAG programming software control | Presented as FTDI JTAG device to OpenOCD/equivalent | §3 Interface & Wiring; BOM J1 (USB header), U1 (FT232H) |
 
 #### Design Requirements
 
-| ID | Design Requirement | Specification |
-| :--- | :--- | :--- |
-| DR-JDB-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
-| DR-JDB-02 | USB-to-JTAG bridge | FTDI FT232H (U1) in MPSSE mode |
-| DR-JDB-03 | TCK series damping | R1 = 33 Ω 0402 at FT232H TCK output |
-| DR-JDB-04 | TDI series damping | R2 = 33 Ω 0402 at FT232H TDI output |
-| DR-JDB-05 | TMS series damping | R3 = 33 Ω 0402 at FT232H TMS output |
-| DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) |
-| DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port |
+| ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| DR-JDB-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 Aesthetics & Mounting |
+| DR-JDB-02 | USB-to-JTAG bridge | FTDI FT232H (U1) in MPSSE mode | §2 Core Logic; BOM U1 (FT232H QFN-56) |
+| DR-JDB-03 | TCK series damping | R1 = 33 Ω 0402 at FT232H TCK output | §5 Electrical Requirements; BOM R1, R2 (33Ω) |
+| DR-JDB-04 | TDI series damping | R2 = 33 Ω 0402 at FT232H TDI output | §5 Electrical Requirements; BOM R1, R2 (33Ω) |
+| DR-JDB-05 | TMS series damping | R3 = 33 Ω 0402 at FT232H TMS output | §5 Electrical Requirements; BOM R3 (33Ω) |
+| DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) | §2 Core Logic; BOM U1 (FT232H) |
+| DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port | §3 Interface & Wiring; BOM J1 (6-pin USB header), Y1 (24MHz crystal) |
 
 ## 2. Core Logic
 

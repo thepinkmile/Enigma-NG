@@ -29,30 +29,30 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 #### Functional Requirements
 
-| ID | Functional Requirement | Notes |
-| :--- | :--- | :--- |
-| FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system |
-| FR-PM-02 | Maintain system power for ≥14.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS |
-| FR-PM-03 | Detect power-loss events and assert PWR_GD signal to the CM5 | Enables software-initiated graceful shutdown |
-| FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry |
-| FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring |
-| FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software |
+| ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460-Q1), U7 (TPS7A8333P) |
+| FR-PM-02 | Maintain system power for ≥14.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 (supercaps) |
+| FR-PM-03 | Detect power-loss events and assert PWR_GD signal to the CM5 | Enables software-initiated graceful shutdown | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
+| FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
+| FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups) |
+| FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software | §5 Protection & Logic; BOM U1 (TPS25980 eFuse), R1–R3 |
 
 #### Design Requirements
 
-| ID | Design Requirement | Specification |
-| :--- | :--- | :--- |
-| DR-PM-01 | Input supply | PoE 802.3bt Type 4 (Class 8), 44–57 V, ≤71 W |
-| DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) |
-| DR-PM-03 | 3V3_ENIG rail | 3.3 V ±1%, ≤3.0 A maximum (TPS7A8333P LDO hard limit) |
-| DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460-Q1 pair |
-| DR-PM-05 | LDO | TPS7A8333P (3.3 V, 3.0 A, HTSSOP-20) |
-| DR-PM-06 | eFuse | TPS25980, 7 A trip current, OVLO = 16.9 V (R_OVLO = ERJ-3EKF1270V) |
-| DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V |
-| DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) |
-| DR-PM-09 | Holdup duration | ≥14.5 s at 5 W load (CM5 idle power) |
-| DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) |
-| DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) |
+| ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| DR-PM-01 | Input supply | PoE 802.3bt Type 4 (Class 8), 44–57 V, ≤71 W | §5 Protection & Logic; BOM U9 (TPS2372-4), J2 (RJ45) |
+| DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |
+| DR-PM-03 | 3V3_ENIG rail | 3.3 V ±1%, ≤3.0 A maximum (TPS7A8333P LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
+| DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460-Q1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |
+| DR-PM-05 | LDO | TPS7A8333P (3.3 V, 3.0 A, HTSSOP-20) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
+| DR-PM-06 | eFuse | TPS25980, 7 A trip current, OVLO = 16.9 V (R_OVLO = ERJ-3EKF1270V) | §5 Protection & Logic; BOM U1 (TPS25980), R1 (232kΩ), R2 (28.7kΩ), R3 (53.6kΩ) |
+| DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 |
+| DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) | §5 Protection & Logic; BOM R14 (26.7kΩ), R15 (10.0kΩ) |
+| DR-PM-09 | Holdup duration | ≥14.5 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–4 (22F/2.7V), U3 (LTC3350) |
+| DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
+| DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
 
 ## Design
 

@@ -16,24 +16,24 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 #### Functional Requirements
 
-| ID | Functional Requirement | Notes |
-| :--- | :--- | :--- |
-| FR-ENC-01 | Sense and encode rotary encoder position with sufficient resolution for character detection | Must detect between-character positions for jam detection |
-| FR-ENC-02 | Transmit encoded position data to the Stator Board via IDC ribbon cable | 26-pin IDC interface |
-| FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain |
-| FR-ENC-04 | Accept encoder input signal via audio jack interface | 6.35 mm (¼″) TRS jack |
-| FR-ENC-05 | Operate from 3V3_ENIG power supplied via the Stator ribbon cable | No local power regulation required |
+| ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| FR-ENC-01 | Sense and encode rotary encoder position with sufficient resolution for character detection | Must detect between-character positions for jam detection | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100C5N) |
+| FR-ENC-02 | Transmit encoded position data to the Stator Board via IDC ribbon cable | 26-pin IDC interface | §4 Interconnects; BOM J2 (26-pin shrouded header) |
+| FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain | §6 JTAG Chain Integrity; BOM U1, U2 (EPM240T100C5N) |
+| FR-ENC-04 | Accept encoder input signal via audio jack interface | 6.35 mm (¼″) TRS jack | §4 Interconnects; BOM J1 (×64 6.35 mm jack sockets) |
+| FR-ENC-05 | Operate from 3V3_ENIG power supplied via the Stator ribbon cable | No local power regulation required | §2 Power Requirements; BOM J2 (pin 1/pin 26 = 3V3_ENIG) |
 
 #### Design Requirements
 
-| ID | Design Requirement | Specification |
-| :--- | :--- | :--- |
-| DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
-| DR-ENC-02 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) |
-| DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with Stator J4, J5, or J6) |
-| DR-ENC-04 | Audio interface | J1 = 6.35 mm (¼″) TRS jack |
-| DR-ENC-05 | Supply voltage | 3.3 V ±5% from 3V3_ENIG via Stator ribbon cable |
-| DR-ENC-06 | Maximum encoder boards | 6 boards (one per Stator J4/J5/J6 port pair) |
+| ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §10 PCB Specs |
+| DR-ENC-02 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100C5N) |
+| DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with Stator J4, J5, or J6) | §4 Interconnects; BOM J2 (26-pin 2×13 shrouded) |
+| DR-ENC-04 | Audio interface | J1 = 6.35 mm (¼″) TRS jack | §4 Interconnects; BOM J1 (×64 Stecker jack sockets) |
+| DR-ENC-05 | Supply voltage | 3.3 V ±5% from 3V3_ENIG via Stator ribbon cable | §2 Power Requirements; BOM J2 (Data Link) |
+| DR-ENC-06 | Maximum encoder boards | 6 boards (one per Stator J4/J5/J6 port pair) | §6 JTAG Chain Integrity; Stator/Design_Spec.md BOM J4–J6 |
 
 ## 2. Power Requirements
 

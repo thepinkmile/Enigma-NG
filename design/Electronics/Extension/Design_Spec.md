@@ -16,24 +16,24 @@
 
 #### Functional Requirements
 
-| ID | Functional Requirement | Notes |
-| :--- | :--- | :--- |
-| FR-EXT-01 | Act as a JTAG signal repeater between rotor sub-groups in extended stacks | Restores TCK/TMS drive strength mid-chain |
-| FR-EXT-02 | Buffer TCK and TMS signals to compensate for capacitive loading of upstream rotors | Dual-channel buffer preserves timing margins |
-| FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Passive pass-through on J2/J5 and J3/J6 |
-| FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) |
-| FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) |
+| ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| FR-EXT-01 | Act as a JTAG signal repeater between rotor sub-groups in extended stacks | Restores TCK/TMS drive strength mid-chain | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR) |
+| FR-EXT-02 | Buffer TCK and TMS signals to compensate for capacitive loading of upstream rotors | Dual-channel buffer preserves timing margins | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR), C6 (100nF bypass) |
+| FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Passive pass-through on J2/J5 and J3/J6 | §2 Connectivity; BOM J2, J5 (ERM8/ERF8-005), J3, J6 (ERM8/ERF8-010) |
+| FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) | §2 Connectivity; BOM J1–J3 (ERM8-005/010) |
+| FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) | §2 Connectivity; BOM J4–J6 (ERF8-005/010) |
 
 #### Design Requirements
 
-| ID | Design Requirement | Specification |
-| :--- | :--- | :--- |
-| DR-EXT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) |
-| DR-EXT-02 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) |
-| DR-EXT-03 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) |
-| DR-EXT-04 | JTAG buffer | U1 = SN74LVC2G125DCUR (dual-channel; TCK and TMS only; TDI passes unbuffered) |
-| DR-EXT-05 | Buffer output pin assignment | TCK → J4 pin 2; TMS → J4 pin 4 (per DEC-018 pinout) |
-| DR-EXT-06 | Buffer bypass capacitor | C6 = 100 nF 0402 within 2 mm of U1 VCC pin (L1) |
+| ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
+| :--- | :--- | :--- | :--- |
+| DR-EXT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 PCB Specs |
+| DR-EXT-02 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §2 Connectivity; BOM J1–J3 |
+| DR-EXT-03 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §2 Connectivity; BOM J4–J6 |
+| DR-EXT-04 | JTAG buffer | U1 = SN74LVC2G125DCUR (dual-channel; TCK and TMS only; TDI passes unbuffered) | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR) |
+| DR-EXT-05 | Buffer output pin assignment | TCK → J4 pin 2; TMS → J4 pin 4 (per DEC-018 pinout) | §2 Connectivity; Design_Log.md DEC-018 |
+| DR-EXT-06 | Buffer bypass capacitor | C6 = 100 nF 0402 within 2 mm of U1 VCC pin (L1) | §4 PCB Specs; BOM C6 (100nF X7R) |
 
 ## 2. Connectivity
 
