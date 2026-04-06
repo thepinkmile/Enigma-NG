@@ -10,11 +10,10 @@
 
 The CM5 (Raspberry Pi Compute Module 5) must respond to two hardware power events:
 
-1. **PWR_GD LOW** — primary early-warning signal from MCP121T-450E voltage supervisor when 5V_MAIN falls below 4.5V.
-   With R14 corrected to 26.7kΩ (DEC-xxx, PM-06 fix), LTC3350 backup activates at 4.40V — *after* PWR_GD — so PWR_GD is now the
-   primary shutdown trigger with ~14.5 seconds of supercap hold-up available once triggered.
-2. **LTC3350 BACKUP trigger** — secondary confirmation that supercap hold-up has engaged (activates ~100mV below PWR_GD threshold).
-   Poll this to confirm hold-up is active and estimate remaining hold-up time.
+1. **LTC3350 BACKUP trigger (I²C polling)** — primary early-warning mechanism; the BACKUP bit is set when 5V_MAIN falls below 4.40V
+   (R14=26.7kΩ; DEC-xxx, PM-06 fix), triggering a graceful shutdown with the full ~14.5-second supercap hold-up window available.
+2. **PWR_GD (GPIO 27 interrupt)** — secondary hard-backstop from MCP121T-450E voltage supervisor; asserts when 5V_MAIN < 4.5V.
+   Triggers an emergency sync-and-halt if the I²C daemon fails to catch the BACKUP event.
 
 The recommended approach is **Option C**: poll the LTC3350 via I²C for the BACKUP alert as the primary early-warning mechanism,
 with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full 14.5-second hold-up window to perform a graceful shutdown.
@@ -23,7 +22,7 @@ with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full 1
 
 | Signal | GPIO | Pull-up | Source | Trigger |
 | --- | --- | --- | --- | --- |
-| PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | Active LOW: 5V_MAIN < 4.5V |
+| PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | Active HIGH: 5V_MAIN ≥ 4.5V (HIGH = power good, LOW = fault event) |
 | LTC3350 ALERT | I²C (0x09 address) | R7/R8 4.7kΩ on SDA/SCL | LTC3350 U3 | BACKUP bit set when 5V_MAIN < 4.40V (R14=26.7kΩ; see Power_Module/Design_Spec.md PM-06 fix) |
 
 ## Option C: Recommended Implementation
@@ -94,11 +93,11 @@ If the I²C daemon fails to catch the BACKUP event (e.g., I²C bus error, daemon
 Add to `/boot/firmware/config.txt`:
 
 ```ini
-# PWR_GD emergency shutdown backstop (MCP121T-450E, active-low)
+# PWR_GD emergency shutdown backstop — GPIO 27 is active-high (good=high); gpio-shutdown triggers on falling edge (fault=low)
 dtoverlay=gpio-shutdown,gpio_pin=27,active_low=1,gpio_pull=up
 ```
 
-Replace `<TBD>` with the actual CM5 GPIO number assigned to PWR_GD (see `Controller/Design_Spec.md` GPIO mapping table).
+GPIO 27 is the assigned PWR_GD input (see Controller Board Design_Spec §6).
 The `gpio_pull=up` parameter enables the CM5 internal weak pull-up as a secondary pull-up alongside the external R3 (10kΩ).
 
 The `gpio-shutdown` overlay triggers `systemctl poweroff` on a falling edge of the specified GPIO.
@@ -114,7 +113,7 @@ For more control (e.g., custom pre-shutdown actions), use a gpio-keys node inste
         compatible = "gpio-keys";
         pwr-good {
             label = "PWR_GD";
-            gpios = <&gpio 27 GPIO_ACTIVE_HIGH>;
+            gpios = <&gpio 27 GPIO_ACTIVE_LOW>; /* GPIO 27 is active-high (good=high); gpio-shutdown triggers on falling edge (fault=low) */
             linux,code = <KEY_POWER>;
             debounce-interval = <50>; /* ms */
         };
@@ -284,12 +283,7 @@ Ensure the following line is **absent from** `/boot/firmware/config.txt` (do NOT
 # dtparam=rtc_bbat_vchg=3000000
 ```
 
-As an explicit belt-and-suspenders disable, you may instead add:
-
-```ini
-# Explicitly disable RTC backup battery charging (CR2032 is non-rechargeable)
-dtparam=rtc_bbat_vchg=0
-```
+Ensure the `rtc_bbat_vchg` parameter is absent from `/boot/firmware/config.txt` — the CM5 defaults to no charging without it.
 
 > **Note:** The hardware Schottky diode (D1, Nexperia BAT54) already physically prevents the
 > PMIC from charging the CR2032 regardless of this software setting. The config.txt setting is

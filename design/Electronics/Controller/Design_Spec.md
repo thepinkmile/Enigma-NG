@@ -301,14 +301,14 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R4 | JTAG TCK series termination (after 74LVC1G125, before LINK-BETA pin 2) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
-| R5 | JTAG TMS series termination (after 74LVC1G125, before LINK-BETA pin 4) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
-| R6 | JTAG TDI series damping resistor (FT232H TDI → LINK-BETA pin 8; TDI is not buffered — it drives only the first device in the chain) | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R4 | JTAG TCK series termination (after 74LVC1G125, before LINK-BETA pin 2) ⚠️ Open item: verify whether these are needed given JDB R1–R3 source termination — review in Controller detailed design | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R5 | JTAG TMS series termination (after 74LVC1G125, before LINK-BETA pin 4) ⚠️ Open item: verify whether these are needed given JDB R1–R3 source termination — review in Controller detailed design | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R6 | JTAG TDI series damping resistor (FT232H TDI → LINK-BETA pin 8; TDI is not buffered — it drives only the first device in the chain) ⚠️ Open item: verify whether these are needed given JDB R1–R3 source termination — review in Controller detailed design | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
 | U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
-| U5 | SN74LVC2G125DCUR | Dual-channel 3-state buffer — TCK and TMS to LINK-BETA | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C2688 |
+| U5 | SN74LVC2G125DCUR | Dual-channel 3-state buffer — TCK and TMS to LINK-BETA ⚠️ Open item: review whether this buffer is required during Controller detailed design | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C2688 |
 
 ### BOM Notes
 

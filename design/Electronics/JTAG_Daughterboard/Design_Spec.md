@@ -89,7 +89,7 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 | C5-C9 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
 | J1 | Power + USB header (3V3_ENIG, GND, VBUS, D−, D+, GND) | **6-pin** 2×3 shrouded | 2.54mm | 538-22-23-2061 | WM2899-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
 | J2 | JTAG header | 10-pin | 2.54mm | 538-22-23-2101 | WM2901-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
-| R1, R2 | Series resistors (DEC-016 BtB/intra-board termination — JTAG output to LINK-BETA) | 33Ω | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
+| R1, R2 | Series resistors (DEC-016 BtB/intra-board termination — JTAG output to 10-pin JTAG header J2) | 33Ω | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | R3 | 33Ω 1% 0402 | TMS series damping | 603-FRC0402J33RTS | Mouser 603-FRC0402J33RTS | DigiKey 13-FRC0402J33RTSCT-ND | JLCPCB C25879 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |
 | Y1 | Crystal | 24MHz | HC-49 | 520-ABL-24.000MHZ-B2 | 644-1053-1-ND | C123468 |

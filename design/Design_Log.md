@@ -7,7 +7,7 @@
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
 
-This file records key architecturaland component decisions made during the design of the Enigma-NG system. Each entry captures the decision taken, the rationale behind it, the alternatives that were
+This file records key architectural and component decisions made during the design of the Enigma-NG system. Each entry captures the decision taken, the rationale behind it, the alternatives that were
 considered, and any constraints or caveats that future designers should be aware of.
 
 Entries are numbered sequentially as **DEC-NNN**. Where a decision supersedes a previous one, the earlier entry is updated with a cross-reference.
@@ -182,6 +182,8 @@ Two **LMQ61460-Q1** buck regulators are used in a **dual interleaved** configura
 ---
 
 ## DEC-008 — TPS25750 Emulates 5V/5A PD Profile to CM5
+
+> ⚠️ **Superseded by DEC-012** — TPS25750 replaced with TPS25751DREFR. See DEC-012.
 
 **Date:** 2025  
 **Affects:** CM5 USB-C PD emulator (TPS25750)
