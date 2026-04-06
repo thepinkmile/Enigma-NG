@@ -223,18 +223,18 @@ else:
 
 ## INA219 Rotor Stack Current Monitor
 
-The Stator board carries an INA219 (U2, I2C address **0x45**) monitoring the 3V3_ENIG current to the rotor stack via a **20mΩ shunt resistor** (R1 on Stator, 1206, 0.5W, Kelvin-sense).
+The Stator board carries an INA219 (U2, I2C address **0x45**) monitoring the 3V3_ENIG current to the rotor stack via a **10mΩ CSS2H-2512R-R010ELF shunt resistor** (R1 on Stator, 2512 Kelvin-sense, Stator ONLY).
 
 ### Hardware Parameters
 
 | Parameter | Value | Notes |
 | --- | --- | --- |
 | I2C address | 0x45 | Set by A0/A1 pin strapping on Stator INA219 |
-| Shunt resistance | **0.020 Ω (20mΩ)** | Must be hardcoded in firmware — do not read from config |
-| PGA range | ±80mV | Covers 0–4A range (3A LDO max → 60mV drop) |
+| Shunt resistance | **0.010 Ω (10mΩ)** | CSS2H-2512R-R010ELF; hardcoded in firmware — do not change without updating Stator BOM |
+| PGA range | ±80mV | Covers 0–8A range (3A LDO max → 30mV drop) |
 | ADC resolution | 12-bit | |
-| Current LSB | **2mA** | = 80mV full-scale / 2^11 steps / 0.020Ω |
-| Calibration register | **0x0400** (1024 decimal) | CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.002 × 0.020) |
+| Current LSB | **4mA** | = 80mV full-scale / 2^11 steps / 0.010Ω |
+| Calibration register | **0x0400** (1024 decimal) | CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.004 × 0.010) |
 
 ### Firmware Note
 
@@ -248,8 +248,8 @@ REG_CAL        = 0x05
 REG_SHUNT_V    = 0x01
 REG_CURRENT    = 0x04
 
-R_SHUNT        = 0.020       # 20mΩ — hardcoded; do not change without updating Stator BOM
-CURRENT_LSB    = 0.002       # 2mA per LSB
+R_SHUNT        = 0.010       # 10mΩ CSS2H-2512R-R010ELF — hardcoded; do not change without updating Stator BOM
+CURRENT_LSB    = 0.004       # 4mA per LSB
 
 # INA219 config: 32V bus range, PGA /2 (±80mV shunt), 12-bit, continuous
 CONFIG_VALUE   = 0x219F

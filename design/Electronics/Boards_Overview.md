@@ -21,8 +21,8 @@ robustness.
 
 ## Telemetry Sensor Responsibility
 
-* Power Module INA219 (I2C address 0x40): monitors 5V_MAIN current and power (10mΩ CSS2H R23 shunt).
-* Stator INA219 (I2C address 0x45): monitors rotor stack power usage via 20mΩ shunt on the 3V3_ENIG bus.
+* Power Module INA219 (I2C address 0x40): monitors 5V_MAIN current and power (10mΩ Kelvin-sense shunt R23).
+* Stator INA219 (I2C address 0x45): monitors rotor stack power usage via CSS2H-2512R-R010ELF 10mΩ shunt (R1) on the 3V3_ENIG bus.
 
 ## I2C Bus Map
 

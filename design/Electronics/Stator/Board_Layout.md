@@ -58,7 +58,7 @@ LDO hard limit 3.0A). Note: L1-L4 ferrite bead 3.5A rating is the component curr
 **Power telemetry path:**
 
 ```text
-[ LINK-BETA (ERM8-020) ] --(3V3_ENIG, pins 28-35)--> [ 20mΩ SHUNT ] --(CLEAN 3V3)--> [ ROTOR BUS ]
+[ LINK-BETA (ERM8-020) ] --(3V3_ENIG, pins 28-35)--> [ CSS2H 10mΩ SHUNT ] --(CLEAN 3V3)--> [ ROTOR BUS ]
               |                                            |
               +------ (I2C-1) -------- [ INA219 ] --------+
 ```

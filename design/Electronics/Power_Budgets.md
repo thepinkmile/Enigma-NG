@@ -79,15 +79,17 @@ being an unachievable worst-case peak).
 | Stator §2 "5A peak" | 5.0 A | **2.20 A** worst-case typical | ✅ Complete — Stator §2 updated to 2.20A worst-case; 5A figure retired |
 | LINK-BETA capacity | 4.0 A | 4.0 A (connector limit — not the constraint) | No change — correct, just not the bottleneck |
 | Rotor ×30 claim "4.5A" | 4.5 A | **1.50 A** (30 × 50 mA) | ✅ Complete — Rotor DR-ROT-06 and §3.1 updated to ≤50 mA per rotor; 150 mA figure retired |
-| Shunt resistor | Stator: 20 mΩ, Controller: 10 mΩ | **20 mΩ** (Stator owns; Controller corrected) | Controller §4 corrected to 20 mΩ (done this session) |
+| Shunt resistor | Stator: 20 mΩ, Controller: 10 mΩ | **10 mΩ CSS2H** (Stator R1 = CSS2H-2512R-R010ELF; Controller has no shunt) | ✅ Complete — Stator R1 updated to CSS2H-2512R-R010ELF (10mΩ, 2512 Kelvin) |
 
-**INA219 shunt selection rationale (20 mΩ):**
+**INA219 shunt selection rationale (10 mΩ CSS2H-2512R-R010ELF):**
 
-* V_drop at 2.20A: 2.20 × 0.020 = **44 mV** — within INA219 ±80 mV PGA range.
-* V_drop at 3.00A max: 3.00 × 0.020 = **60 mV** — within ±80 mV range.
-* Resolution: with 12-bit ADC at ±80 mV range, LSB = 2×80mV/4096 ≈ **39 µV/LSB** → I_LSB = 39µV/0.020Ω ≈ **2 mA** current resolution.
-* Power dissipation at 2.20A: 2.20² × 0.020 = **97 mW** — 1206 package (rated ≥0.25W) is adequate.
-* Power dissipation at 3.00A max: 3.00² × 0.020 = **180 mW** — 1206 package ≥0.25W still OK; 0.5W rated 1206 preferred for margin.
+* V_drop at 2.20A: 2.20 × 0.010 = **22 mV** — within INA219 ±80 mV PGA range.
+* V_drop at 3.00A max: 3.00 × 0.010 = **30 mV** — within ±80 mV range.
+* Resolution: with 12-bit ADC at ±80 mV range, LSB = 2×80mV/4096 ≈ **39 µV/LSB** → I_LSB = 39µV/0.010Ω ≈ **4 mA** current resolution.
+* Power dissipation at 2.20A: 2.20² × 0.010 = **48 mW** — 2512 Kelvin package (rated ≥0.5W) is adequate with >10× margin.
+* Power dissipation at 3.00A max: 3.00² × 0.010 = **90 mW** — 2512 Kelvin package ≥0.5W still OK.
+* CAL register: 0x0400 (1024) — unchanged. CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.004 × 0.010) = 1024 ✓
+* Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). **Stator ONLY.**
 
 ---
 
