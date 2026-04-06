@@ -304,7 +304,7 @@ _______________________________________    _____________    ____________________
 |      (Female Socket / 40-pin)               |      |                                |      |        [   STACKED    ]     |
 |                                             |      |                                |      |        [   48406-0003 ]     |
 |                                             |      |                                |      |        [  (PROTRUDES) ]     |
-| (O)                    [ DIAG BANK (2x8) ]  |      |                                |      |        [ 5.0mm OVER   ]     |
+| (O)                    [ DIAG BANK (2x10)]  |      |                                |      |        [ 5.0mm OVER   ]     |
 | (4)                      (Exposed ENIG)     |      |                                |      | (O)   (V1.0) DATA PLATE (2) |
 |_____________________________________________|      |________________________________|      |_____________________________|
  (O) = M3 Star-Burst Grounding PTH                   [R] = 2.0mm Fillet Corner               (1-4) = Star-Pattern Torque Sequence

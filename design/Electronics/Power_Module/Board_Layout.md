@@ -106,7 +106,7 @@ TOP VIEW (L1) - 6-Layer / 2oz Copper
 | (4-pair 37-57V CT) |    |________|________|   |  ↓                             |       |_________________|
 |                    |             |            | [U10 TPS23730 ACF DC-DC]       |
 | CONNECTOR SHIELD --|-------------|----------  |  + [T2: POE600F-12LD]          |
-|____________________|             V            |  Coilcraft / 60W / 12V out     |-----> [ +12V_POE ]
+|____________________|             V            |  Coilcraft / 60W / 12V out     |-----> [ 12V_POE  ]
                              [ GND_CHASSIS ]    |  >=1500Vrms / 200kHz / 51W     |       (to OR-ing)
                                                 |________________________________|
 
