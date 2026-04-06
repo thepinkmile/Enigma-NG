@@ -55,17 +55,17 @@ being an unachievable worst-case peak).
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
 | Controller-local (RJ45 LEDs, logic) | — | — | 50 | Controller overhead subtracted at LINK-ALPHA |
 | **Typical total** | | | **2,117 mA** | |
-| **Rounded budget** | | | **≤ 2.12 A** | |
+| **Rounded budget** | | | **≤ 2.20 A** | |
 
 ### Headroom vs LDO Limit
 
 | Limit | Value | Margin |
 | :--- | :--- | :--- |
 | LDO hard limit | 3.00 A | — |
-| Typical worst-case load | 2.12 A | **+0.88 A (29%)** |
+| Typical worst-case load | 2.20 A | **+0.80 A (27%)** |
 | LINK-BETA connector capacity | 4.00 A | Not the constraint |
 
-> ✅ **Conclusion:** The 3A TPS7A8333P LDO provides 29% headroom above the worst-case typical load.
+> ✅ **Conclusion:** The 3A TPS7A8333P LDO provides 27% headroom above the worst-case typical load.
 > No LDO upgrade is required for the current 30-rotor design.
 
 ---
@@ -99,8 +99,15 @@ being an unachievable worst-case peak).
 | 3V3_ENIG LDO quiescent (TPS7A8333P) | 2.20 A max | Sourced from 5V_MAIN; P_in = 5V × 2.2A = 11W |
 | Status LEDs, RJ45, misc. | 0.1 A | |
 | FT232H VCC (JTAG Daughterboard — via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
-| **Total 5V_MAIN worst case** | **7.4 A** | |
-| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 38% headroom ✓ |
+| USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |
+| HDMI sink device | 0.05 A | System boundary: connected HDMI sink; AP2331W-limited |
+| **Total 5V_MAIN worst case (system boundary)** | **8.85 A** | |
+| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 73.8% utilisation (8.85/12.0) ✓ |
+
+> **Scope note:** The 7.4 A board-level budget (CM5 + LDO + LEDs + FT232H) covers internal consumers only.
+> The 8.85 A system worst-case includes connected device loads (USB 3.0 devices at TPS2065C rated limit
+> plus HDMI sink) at the system boundary. Component utilisation figures (e.g. LMQ61460-Q1) are calculated
+> against the 8.85 A system worst-case.
 
 ---
 

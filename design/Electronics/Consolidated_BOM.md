@@ -26,7 +26,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | EPM240T100C5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | 1 | 30 | — | — | — | 37 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
 | AS5600 — Magnetic Position Encoder (DFN-8) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| SN74LVC2G125DCUR — Dual 3-State Buffer (SOT-23-6) | — | 1 | — | — | — | — | — | — | 1 | — | 2 |
+| SN74LVC2G125DCUR — Dual 3-State Buffer (SOT-23-6) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | TPS7A8333PRMWR — 3.3 V LDO Regulator (WSON-12) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -60,11 +60,11 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 22 F / 2.7 V Supercapacitor (Tecate TPLH-2R7/22WR12X31) | 4 | — | — | — | — | — | — | — | — | — | 4 |
 | | | | | | | | | | | | |
 | 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 5 | 2 | 5 | — | — | — | — | — | — | — | 12 |
-| 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | — | — | — | 4 | 24 | 4 | 120 | — | — | — | 144 |
+| 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | — | — | — | 4 | 24 | 4 | 120 | — | — | 2 | 146 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | 9 |
 | 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | 37 |
-| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | 3 | — | — | — | — | — | — | — | — | 3 |
-| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 3 | 7 |
+| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | — | — | — | — | — | — | — | — | — | — |
+| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 6 | 10 |
 | 22 Ω 0603 JTAG end-of-chain damping (ERJ-3EKF2200V / C25805) | — | — | — | — | — | — | — | 1 | — | — | 1 |
 | 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
 | 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | 2 | — | — | — | — | — | — | — | — | — | 2 |

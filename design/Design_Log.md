@@ -404,7 +404,7 @@ Logic boards downstream of the Stator (Encoder, Reflector, Extension) are 3V3-on
 no 5V_MAIN rail. Removing 5V_MAIN from LINK-BETA and rationalising the signal set results in exactly
 40 signals. The JTAG block has 5 internal GND shield pins (self-shielded at low-moderate MHz), so only
 a 2-pin GND moat is needed between JTAG and the data zone. 8 × 3V3_ENIG pins deliver 4.0A — adequate
-for the worst-case 30-rotor stack (2.21A per Power_Budgets.md). 5 GND return pins plus the 10 other GND pins throughout the
+for the worst-case 30-rotor stack (2.20 A per Power_Budgets.md). 5 GND return pins plus the 10 other GND pins throughout the
 connector provide adequate return paths.
 
 **Poka-Yoke Safety Note:**
@@ -450,12 +450,19 @@ See `design/Electronics/Investigations/JTAG_Integrity.md`.
 
 | Board | Refs | Value | Purpose |
 | :--- | :--- | :--- | :--- |
-| Controller | R4, R5, R6 | 33 Ω 0603 | TCK / TMS / TDI series R after 74LVC1G125 buffer, before LINK-BETA |
+| Controller | R4, R5, R6 | 33 Ω 0603 | ~~TCK / TMS / TDI series R after 74LVC1G125 buffer, before LINK-BETA~~ **Moved to JDB — see DEC-023** |
 | Stator | R7–R9 | 75 Ω 0603 | TCK → J4 / J5 / J6 encoder port outputs |
 | Stator | R10–R12 | 75 Ω 0603 | TMS → J4 / J5 / J6 encoder port outputs |
 | Stator | R13–R15 | 75 Ω 0603 | TDI chain drive: Stator CPLD TDO→J4, J4 return→J5, J5 return→J6 |
 | Encoder | R7 | 33 Ω 0402 | CPLD1 TDO → CPLD2 TDI (intra-board, match 50 Ω PCB trace) |
 | Encoder | R8 | 75 Ω 0402 | CPLD2 TDO → J2 connector (ribbon cable drive back to Stator) |
+| JDB | R6, R7, R8 | 33 Ω 0402 | TCK / TMS (after U5 buffer) / TDI series damping — before J2 JTAG header |
+
+> **Update (detailed design):** U5 (SN74LVC2G125DCUR buffer) and series damping resistors relocated
+> from Controller to JDB during detailed design. LINK-BETA is confirmed as a direct Board-to-Board
+> connector (no cable), so 33 Ω series damping applies throughout (not 75 Ω cable-driving rule).
+> Controller JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are pass-through — routed directly from
+> JDB hat-header to LINK-BETA without active components. See DEC-023.
 
 **Trace width rule added to all 4-layer and 6-layer boards:** 0.127 mm (5 mil) for all JTAG signal
 traces on outer layers over a GND plane.
@@ -764,6 +771,45 @@ via, or `GND_CHASSIS` net is present on the JDB.
 
 - **Standoff bonding to Controller GND_CHASSIS:** Technically implementable but adds a separate net, a copper pour, and design rules for no measurable EMC gain on a low-EMI internal board. Rejected.
 - **No mounting holes at all:** Rejected — mechanical retention via standoffs is required to prevent the board from flexing on the hat-headers during connector insertion/removal.
+
+---
+
+## DEC-023 — JDB is Complete JTAG Master; Controller JTAG Lines Are Pass-Through
+
+- **Status:** Decided
+- **Date:** 2026-04-06
+- **Area:** JTAG Architecture — Controller and JTAG Daughterboard
+
+### Decision
+
+The JTAG Daughterboard (JDB) is the complete JTAG master. The SN74LVC2G125DCUR dual-channel
+buffer (U5) for TCK and TMS, and all 33 Ω series damping resistors (R6 TCK after U5, R7 TMS after
+U5, R8 TDI direct from FT232H) are located on the JDB, before the J2 JTAG header. The Controller
+board routes JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) as pass-through from the JDB hat-header
+to the LINK-BETA BtB connector without any active components.
+
+LINK-BETA is a direct Board-to-Board connector (no cable). Therefore 33 Ω series damping (matched
+to 50 Ω PCB trace impedance) applies throughout — not the 75 Ω cable-driving resistors specified
+for ribbon cable connections. See DEC-016 for the full 75 Ω / 33 Ω rationale.
+
+### Rationale
+
+- **Simpler Controller BOM:** Removing U5, R4, R5, R6 from the Controller reduces complexity and
+  potential assembly errors on the main board.
+- **Cohesive JTAG subsystem:** All JTAG active components and termination are co-located on the JDB,
+  which is the natural owner of the JTAG function.
+- **BtB confirmation:** LINK-BETA is a Samtec ERF8-020 / ERM8-020 direct board-to-board stack (no
+  ribbon cable). The 33 Ω source termination after U5 is the correct value for 50 Ω PCB traces.
+
+### Impact
+
+- `Controller/Design_Spec.md`: U5 removed from BOM; R4, R5, R6 removed; §3 updated to reflect
+  pass-through routing; DR-CTL-05 updated; FR-CTL-04 reference to U5 removed.
+- `JTAG_Daughterboard/Design_Spec.md`: U5 added to BOM; R6, R7, R8 (33 Ω 0402) added.
+- `Electronics/Consolidated_BOM.md`: SN74LVC2G125DCUR moved from CTL column to JDB column;
+  33 Ω 0402 count increased in JDB; 33 Ω 0603 row removed from CTL.
+- `Electronics/Investigations/JTAG_Integrity.md`: §7.4 and §8 updated to reflect JDB location.
+- `Design_Log.md DEC-016`: Update note added.
 
 ---
 

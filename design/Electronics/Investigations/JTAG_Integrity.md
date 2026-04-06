@@ -20,8 +20,12 @@ design decision adopted.
 ### JTAG Chain Topology
 
 ```text
-FT232H (Controller L6)
-    │  33Ω series R on TCK, TMS, TDI
+FT232H (JDB)
+    │  R1/R3 33Ω series R at TCK/TMS FT232H outputs → U5 buffer input
+    │  U5 SN74LVC2G125DCUR buffer (TCK, TMS)
+    │  R6/R7 33Ω after U5 output (TCK/TMS); R2 33Ω at FT232H TDI; R8 33Ω before J2 (TDI)
+    ▼
+J2 JTAG header → Controller hat-header (pass-through: no active components)
     ▼
 LINK-BETA (BtB, no cable)
     │
@@ -380,7 +384,7 @@ cable lengths of 200–500 mm the 75 Ω resistors are functionally necessary.
 | --- | --- | --- |
 | Driving a ribbon cable (~100 Ω IDC) | **75 Ω** | Source Z = 95 Ω ≈ cable Zo |
 | Intra-board (CPLD output → same-board CPLD input) | **33 Ω** | Source Z = 53 Ω ≈ PCB Zo |
-| FT232H output → LINK-BETA (BtB, no cable) | **33 Ω** | Short BtB trace; match 50 Ω PCB |
+| JDB U5 output → LINK-BETA (BtB, no cable) | **33 Ω** | Short BtB trace; match 50 Ω PCB; U5 out Z (15Ω) + 33Ω ≈ 48Ω |
 
 ### 7.2 Placement Rule
 
@@ -402,9 +406,9 @@ distance on the trace.
 
 | Board | New refs | Value | Qty | Location |
 | --- | --- | --- | --- | --- |
-| Controller | R4 | 33 Ω | 1 | TCK after 74LVC1G125 buffer, before LINK-BETA pin 2 |
-| Controller | R5 | 33 Ω | 1 | TMS after 74LVC1G125 buffer, before LINK-BETA pin 4 |
-| Controller | R6 | 33 Ω | 1 | TDI series damping (not buffered — TDI drives only the first device in chain; 33Ω at FT232H output before LINK-BETA) |
+| JDB | R6 | 33 Ω | 1 | TCK after U5 buffer, before J2 JTAG header pin 1 (TCK) |
+| JDB | R7 | 33 Ω | 1 | TMS after U5 buffer, before J2 JTAG header pin 7 (TMS) |
+| JDB | R8 | 33 Ω | 1 | TDI series damping (not buffered — from FT232H), before J2 JTAG header pin 3 (TDI) |
 | Stator | R7 | 75 Ω | 1 | TCK → J4 encoder port output |
 | Stator | R8 | 75 Ω | 1 | TCK → J5 encoder port output |
 | Stator | R9 | 75 Ω | 1 | TCK → J6 encoder port output |
@@ -418,6 +422,10 @@ distance on the trace.
 | Encoder | R8 | 75 Ω | 1 | CPLD2 TDO → J2 connector pin 13 (ribbon drive back to Stator) |
 | Reflector | R1 (existing) | 22 Ω | 1 | TDO end-of-chain series damping (unchanged) |
 
+> **Controller JTAG pass-through:** The Controller board carries no active JTAG components. All
+> buffering (U5 SN74LVC2G125DCUR) and series damping (R6–R8, 33 Ω 0402) are located on the JDB.
+> LINK-BETA is a direct BtB connector (no cable), so 33 Ω applies (not 75 Ω). See DEC-023.
+>
 > **Reflector and Extension:** Upgraded to 4-layer JLC04161H-7628 per DEC-017. Both boards now
 > have a solid L2 GND plane. JTAG traces route on L1 at 0.127 mm (50 Ω controlled impedance),
 > consistent with all other 4-layer boards. The "uncontrolled impedance" note from DEC-016 is
@@ -429,12 +437,12 @@ distance on the trace.
 
 | Board | Stackup | JTAG Layer | Target Zo | Trace width | Status |
 | --- | --- | --- | --- | --- | --- |
-| Controller | JLC06161H-2116 (6L) | L6 over L5 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §8 trace table |
+| JDB | JLC04161H-7628 (4L) | L2 over L1 GND | 50 Ω | **0.127 mm (5 mil)** | JDB is the complete JTAG master. U5 buffer and R6–R8 series damping on JDB. Controller is pass-through. |
+| Controller | JLC06161H-2116 (6L) | L6 over L5 GND | 50 Ω | **0.127 mm (5 mil)** | Pass-through only — no active JTAG components on Controller (see DEC-023) |
 | Stator | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §3 |
 | Encoder | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §6 |
 | Reflector | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017 |
 | Extension | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017 |
-| JTAG Daughterboard | JLC04161H-7628 (4L) | L2 over L1 GND | 50 Ω | **0.127 mm (5 mil)** | Added post-DEC-017; JDB inverted stackup — signals on L2 |
 
 ---
 

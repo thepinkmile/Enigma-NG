@@ -15,7 +15,7 @@
 * **Role:** Master traffic controller for Power (Alpha) and Encryption Logic (Beta).
 * **Stackup:** 6-Layer / 2oz Finished Copper (JLC06161H-2116) for 5Gbps differential pair integrity.
 * **Shielding:** High-speed signals (Ethernet, USB 3.0, HDMI) routed as Striplines on L3, shielded by L2/L5 GND planes
-  and L4 (Internal) for 6A Power Plane.
+  and L4 (Internal) for High-Current Power Plane (5V_MAIN / 3V3_ENIG).
 * **USB-C:** 16-pin "Power Only" to maximize mechanical durability in classroom settings.
 * **Status LED:** **MIC1555 Hardware Heartbeat** (1Hz pulse) triggers on power-up before CM5 boot for instant status
   confirmation.
@@ -32,7 +32,7 @@
 | FR-CTL-01 | Host the Raspberry Pi Compute Module 5 as the system master processor | CM5 runs the Linux OS and all application logic | BOM U1 (CM5) |
 | FR-CTL-02 | Receive power from the Power Module and distribute to the CM5 and peripherals | Via Link-Alpha (J1) | §2 Dual-Link Interface; BOM J1 (ERF8-040) |
 | FR-CTL-03 | Provide external I/O interfaces for system management | GbE, HDMI, USB 3.0 | §2 Connectivity; BOM J3 (USB 3.0), J4 (HDMI) |
-| FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and Link-Beta | §3 JTAG Programming Subsystem; BOM U5 (SN74LVC2G125DCUR), J2 (Link-Beta) |
+| FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and Link-Beta | §3 JTAG Programming Subsystem; BOM J2 (Link-Beta) |
 | FR-CTL-05 | Monitor system power status and report to CM5 via GPIO | PoE presence, battery presence, USB fault, PWR_GD | §6 CM5 GPIO Mapping Matrix; §4 Telemetry & Logic |
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
 | FR-CTL-07 | Route Link-Beta signals between the CM5/JTAG Daughterboard and the Stator board | Via J2 | §2 Dual-Link Interface; BOM J2 (ERF8-020) |
@@ -45,7 +45,7 @@
 | DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor) | BOM U1 (CM5) |
 | DR-CTL-03 | Link-Alpha connector | J1 = ERF8-040-05.0-S-DV-K-TR (80-pin female, 0.8 mm pitch) | BOM J1 (ERF8-040-05.0-S-DV-K-TR) |
 | DR-CTL-04 | Link-Beta connector | J2 = ERF8-020-05.0-S-DV-K-TR (40-pin female, 0.8 mm pitch) | BOM J2 (ERF8-020-05.0-S-DV-K-TR) |
-| DR-CTL-05 | JTAG signal buffer | U5 = SN74LVC2G125DCUR (dual-channel; TCK and TMS buffered; TDI unbuffered) | §3 JTAG Programming Subsystem; BOM U5 (SN74LVC2G125DCUR) |
+| DR-CTL-05 | JTAG signal buffer | U5 = SN74LVC2G125DCUR relocated to JDB (see DEC-023); Controller JTAG lines are pass-through — no active components | §3 JTAG Programming Subsystem; JDB Design_Spec BOM U5 |
 | DR-CTL-06 | USB current limit | 1.6 A via TPS2065C; fault output to GPIO 22 (USB_FAULT) | BOM U2 (TPS2065C); §6 GPIO Mapping (GPIO 22) |
 | DR-CTL-07 | RTC battery holder | BT1 = Keystone 3034 (THT horizontal CR2032 holder) | §5 RTC Backup Battery; BOM BT1 (Keystone 3034) |
 | DR-CTL-08 | RTC protection | D1 = Nexperia BAT54 Schottky diode (blocks PMIC VBAT charge path) | §5 RTC Backup Battery; BOM D1 (BAT54) |
@@ -123,11 +123,15 @@
     5. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J6.
     6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N)** via Stator Backplane.
     7. **TTD_RETURN** ← Reflector → Extension Port → Stator J7 pin 15 → LINK-BETA pin 26 → FT232H.
-* **Signal Integrity:** **SN74LVC2G125DCUR dual-channel buffer (TCK and TMS)** to drive the heavy 37-device load across the machine.
-* **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each SN74LVC2G125DCUR
-  output on TCK, TMS, and TDI before LINK-BETA. Matches source impedance to 50Ω PCB traces
-  (Zo ≈ 53Ω). See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
+* **Signal Integrity (JDB):** All JTAG buffering and series termination is located on the JDB (see DEC-023).
+  The SN74LVC2G125DCUR dual-channel buffer (U5) drives TCK and TMS for the 37-device chain load.
+  Series damping resistors (R6 TCK, R7 TMS after U5; R8 TDI direct from FT232H) are placed before
+  the J2 JTAG header on JDB, matching the 50 Ω PCB trace impedance on LINK-BETA (BtB, no cable).
+* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly
+  from the JDB hat-header (J_JDB) to LINK-BETA (J2) on the Controller board without any active
+  components. No buffer or series resistors reside on the Controller for JTAG signals.
 * **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for FT232H module schematics and assembly details.
+  See DEC-016, DEC-023.
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
 
@@ -172,6 +176,12 @@ a 3V coin cell is required on the CM5's VBAT pin (**Pin 95** on the CM5 Hirose D
 ## 6. CM5 GPIO Mapping Matrix (Enigma-NG)
 
 All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50mA across all pins.
+
+> **CM5 VDD_GPIO_REF:** The CM5 module VDD_GPIO_REF pin on the Hirose DF40 200-pin module connector
+> must be connected to **3V3_ENIG** (not to the CM5-internal 3V3_SYSTEM rail, which is not used as a
+> logic reference on this board). This ensures GPIO logic levels match all 3V3_ENIG-powered peripherals
+> (CPLDs, FT232H VCCIO, etc.). Failure to connect VDD_GPIO_REF to 3V3_ENIG will result in incorrect
+> GPIO logic levels for the entire system.
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -244,11 +254,13 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 
 | Net Class | Target Impedance | Width / Spacing | Layer |
 | :--- | :--- | :--- | :--- |
-| **USB 3.0** | 90Ω Differential | 10.0 mil / 6.0 mil | L1 |
-| **Ethernet/HDMI** | 100Ω Differential | 10.0 mil / 8.0 mil | L1 |
+| **USB 3.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
+| **Ethernet/HDMI** | 100Ω Differential | 4.5 mil / 8.5 mil | L3 (Stripline) |
 | **JTAG signals** | 50Ω Single-ended | **5.0 mil (0.127 mm)** | L6 |
-| **5A Power Rail** | N/A (Low Drop) | 60.0 mil (Min) | L3 Island |
+| **Power Rails (5V_MAIN / 3V3_ENIG)** | N/A (Low Drop) | 60.0 mil (Min) — 8.85A worst-case system / 12A LMQ capacity | L4 Island |
 | **Logic/I2C** | N/A | 6.0 mil | L4 / L6 |
+| **USB 2.0** | 90Ω Differential | TBD | TBD — pending trace-width-analysis investigation |
+| **3V3_ENIG power** | N/A | TBD | TBD — pending trace-width-analysis investigation at 2.20A worst-case |
 
 ### Vias & Teardrops
 
@@ -301,14 +313,10 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R4 | JTAG TCK series termination (after 74LVC1G125, before LINK-BETA pin 2) ⚠️ Open item: verify whether these are needed given JDB R1–R3 source termination — review in Controller detailed design | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
-| R5 | JTAG TMS series termination (after 74LVC1G125, before LINK-BETA pin 4) ⚠️ Open item: verify whether these are needed given JDB R1–R3 source termination — review in Controller detailed design | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
-| R6 | JTAG TDI series damping resistor (FT232H TDI → LINK-BETA pin 8; TDI is not buffered — it drives only the first device in the chain) ⚠️ Open item: verify whether these are needed given JDB R1–R3 source termination — review in Controller detailed design | 33Ω 1% | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
 | U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
-| U5 | SN74LVC2G125DCUR | Dual-channel 3-state buffer — TCK and TMS to LINK-BETA ⚠️ Open item: review whether this buffer is required during Controller detailed design | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C2688 |
 
 ### BOM Notes
 
