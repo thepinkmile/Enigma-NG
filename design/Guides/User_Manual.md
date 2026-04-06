@@ -167,7 +167,7 @@ Total startup time from power application to operational readiness is typically 
 
 ### 3.6 Battery and Supercapacitor Hold-Up
 
-**Supercapacitors:** The Power Module contains four supercapacitor cells (22F each, arranged in a 2-series × 2-parallel configuration giving 11F at 5.4V, managed by the LTC3350 supercap controller)
+**Supercapacitors:** The Power Module contains four supercapacitor cells (22F each, arranged in a 2-series × 2-parallel configuration giving 22F at 5.4V, managed by the LTC3350 supercap controller)
 providing approximately **14 seconds of hold-up** at a 5W shutdown load. This is sufficient for the operating system to perform a clean, ordered shutdown, preventing filesystem and memory corruption.
 
 > **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 2 minutes from a cold start. The system is designed for operational sessions of 30 minutes or

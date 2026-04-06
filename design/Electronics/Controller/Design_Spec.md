@@ -111,7 +111,7 @@
 
 * **Bridge Architecture:** Dedicated **FT232H** (High-Speed USB 2.0 to JTAG/MPSSE).
 * **Module Type:** Removable **Daughterboard** (2.54mm header) for future-proofing and ease of repair.
-* **Interface:** Asymmetrical 1x6 (Power/USB) and 1x10 (Shielded JTAG) 2.54mm ENIG headers.
+* **Interface:** Asymmetrical 1×5 (Power/USB) and 1×10 (Shielded JTAG) 2.54mm ENIG headers.
 * **Shielding:** 1:1 Signal-to-Ground ratio on JTAG header to prevent clock crosstalk.
 * **Diagnostic Looped Probe Pad Bank:** 2x8 2.54mm grid with gold-plated loops, positioned in-line with the BtB
   header for clean logic analyzer probing.

@@ -580,7 +580,7 @@ definition is authoritative.
 | **Reflector/Extension Link** | Stator J7 ↔ Extension J7/J8 ↔ Reflector J4 (16-pin 2×8) | **Stator** | `Stator/Board_Layout.md — J7` |
 | **Encoder Ports** | Stator J4/J5/J6 ↔ Encoder J2 (26-pin 2×13) | **Stator** | `Stator/Board_Layout.md — J4–J6` |
 | **Rotor Interface** | Stator J1–J3 ↔ Rotor 1 → … → Rotor 30 → Reflector J1–J3 (serial chain; Extension J1–J6 at group boundaries) | **Rotor** | `Rotor/Design_Spec.md §3.4` |
-| **JTAG Daughterboard headers** | JDB J1 (USB 6-pin) + J2 (JTAG 10-pin) | **JTAG Daughterboard** | `JTAG_Daughterboard/Board_Layout.md` |
+| **JTAG Daughterboard headers** | JDB J1 (USB 5-pin) + J2 (JTAG 10-pin) | **JTAG Daughterboard** | `JTAG_Daughterboard/Board_Layout.md` |
 
 ### Rationale
 
