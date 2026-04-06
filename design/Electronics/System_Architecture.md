@@ -20,8 +20,8 @@ The Enigma-NG system comprises the following boards:
 - **Stator** — Central backplane; the first fixed stage of the cipher path. Connects to all other boards.
 - **Rotors (×30)** — Arranged in groups of 5, chaining directly output-to-input. An Extension Board sits
   between each group of 5 to re-buffer broadcast signals.
-- **Extension Boards (up to ×5)** — Bridge between rotor groups; re-buffer TCK and TMS; carry
-  TDO_RETURN on their J7/J8 16-pin port.
+- **Extension Board (×1)** — Bridges between rotor groups; re-buffers TCK and TMS; Rev A uses one
+  Extension board between Rotor 5 and Rotor 6.
 - **Reflector** — End of the rotor chain (after Rotor 30); performs the cipher reversal redirect and
   routes TDO_RETURN back to the Stator.
 - **Encoder Boards (×3)** — 1 HID board (keyboard + lightboard), 2 Plugboard encoder boards. Connect to

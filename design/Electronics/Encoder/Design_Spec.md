@@ -31,7 +31,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 | DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §10 PCB Specs |
 | DR-ENC-02 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100C5N) |
 | DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with Stator J4, J5, or J6) | §4 Interconnects; BOM J2 (26-pin 2×13 shrouded) |
-| DR-ENC-04 | Audio interface | J1 = 6.35 mm (¼″) TRS jack | §4 Interconnects; BOM J1 (×64 Stecker jack sockets) |
+| DR-ENC-04 | Audio interface | J1 = 6.35 mm (¼″) mono switched jack (Tip + Switch contact; Sleeve to chassis GND) | §4 Interconnects; BOM J1 (×64 Stecker jack sockets) |
 | DR-ENC-05 | Supply voltage | 3.3 V ±5% from 3V3_ENIG via Stator ribbon cable | §2 Power Requirements; BOM J2 (Data Link) |
 | DR-ENC-06 | Maximum encoder boards | 3 boards (one per Stator J4, J5, J6 port) | §6 JTAG Chain Integrity; Stator/Design_Spec.md BOM J4–J6 |
 

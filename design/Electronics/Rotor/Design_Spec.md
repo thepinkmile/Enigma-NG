@@ -75,7 +75,11 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 3.2 Communication Bus
 
-* **The Data Path:** 12-bit parallel bus (D0-D11) passes through every rotor in a serial daisy-chain (Stator → Rotor 1 → … → Rotor 30 → Reflector → TDO_RETURN → Stator).
+* **The ENC Data Path:** The 12-bit parallel cipher bus (ENC_IN[0:5] / ENC_OUT[0:5]) passes through every
+  rotor as a daisy-chain: Stator → Rotor 1 → … → Rotor 30 → Reflector (cipher data only; this path is
+  entirely separate from JTAG TDO_RETURN).
+* **JTAG TDO_RETURN Path:** After the Reflector processes the cipher reversal, TDO_RETURN travels
+  separately: Reflector J4 → Stator J7 → Link-Beta pin 26 → FT232H on JDB (JTAG chain closure only).
 * **Control:** Shared I2C bus for position telemetry.
 * **JTAG:** Pass-through JTAG lines allow the **USB Blaster** on the Controller Board to program the entire 30-rotor stack in one "daisy-chain" operation.
 
