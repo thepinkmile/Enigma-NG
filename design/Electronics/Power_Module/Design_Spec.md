@@ -33,7 +33,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | :--- | :--- | :--- | :--- |
 | FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460-Q1), U7 (TPS7A8333P) |
 | FR-PM-02 | Maintain system power for ≥14.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 (supercaps) |
-| FR-PM-03 | Detect power-loss events and assert PWR_GD signal to the CM5 | Enables software-initiated graceful shutdown | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
+| FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW on power-loss event to trigger graceful shutdown | Enables software-initiated graceful shutdown; PWR_GD is healthy-HIGH, fault-LOW | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
 | FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
 | FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups) |
 | FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software | §5 Protection & Logic; BOM U1 (TPS25980 eFuse), R1–R3 |
