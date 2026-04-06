@@ -50,8 +50,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 | BAT54 — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | 3 |
 | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap | 12 | 1 | 8 | 16 | 96 | 8 | 240 | — | 1 | 4 | 362 |
-| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 5 | 5 | 205 |
+| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 5 | — | 200 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 9 | — | — | — | — | — | — | — | — | — | 9 |
+| 4.7 µF X5R/X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | 1 µF X7R 50 V 0805 (GRM21BR71H105KA12L) | 3 | — | — | — | — | — | — | — | — | — | 3 |
 | 10 µF 25 V X7R 1206 LDO input cap (GRM31CR72E106KA12L) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10 nF X7R 50 V 0402 soft-start cap (CL05B103KB5NNNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -62,8 +63,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | — | — | — | 4 | 24 | 4 | 120 | — | — | — | 144 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | 9 |
 | 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | 37 |
-| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | 3 | — | — | — | — | — | — | — | 3 | 6 |
-| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 1 | 4 |
+| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | 3 | — | — | — | — | — | — | — | — | 3 |
+| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 3 | 7 |
 | 22 Ω 0603 JTAG end-of-chain damping (ERJ-3EKF2200V / C25805) | — | — | — | — | — | — | — | 1 | — | — | 1 |
 | 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
 | 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | 2 | — | — | — | — | — | — | — | — | — | 2 |
@@ -92,15 +93,15 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
 | 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
 | 16-pin 2×8 Molex Shrouded Header 2.54 mm (22-23-2161) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
-| 6-pin 2×3 Power + USB Header (Molex 22-23-2061) | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| 10-pin 2×5 JTAG Header (Molex 22-23-2101) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| 1×5 2.54mm female IDC header — JDB J1 INPUT (5V_USB, 3V3_ENIG, D+, D−, GND) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| 1×10 2.54mm female IDC header — JDB J2 JTAG OUTPUT (10-pin interleaved GND) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | HDMI Type-A Full-Size (TE 2007435-1) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | USB-C SMT Receptacle 6-pos (GCT USB4135-GF-A) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | RJ45 MagJack (Würth 7499111121A) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | Battery Connector 5-pin Micro-Fit 3.0 (Molex 43650-0519) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | |
-| 24 MHz Crystal HC-49 (Abracon ABL-24.000MHz-B2) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| 12 MHz Crystal SMD (Abracon ABM8-12.000MHz-B2-T / C9002) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | 72°C SMD Thermal Cutoff (Bourns AC72ABD) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | CR2032 Coin Cell Holder (Keystone 3034) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | PoE ACF Isolation Transformer (Coilcraft POE600F-12LD) | 1 | — | — | — | — | — | — | — | — | — | 1 |

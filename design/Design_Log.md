@@ -903,7 +903,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J4 | HDMI — Full-size Type-A | TE Connectivity 2007435-1 | 2007435-1 | 571-2007435-1 | A125057-ND | Full-size HDMI Type-A, 5.0mm protrusion through chassis |
 | — | Diagnostic Bank-Alpha | 2×8 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, placed behind BtB header. Not a separate connector; probed directly with logic analyser clips |
 | — | Diagnostic Bank-Beta | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, L1 layer. Monitors 12-bit Sniffer, JTAG, SYS_RESET_N |
-| — | JTAG Daughterboard link (to FT232H board) | 1×6 power/USB header + 1×10 JTAG header | — | — | — | 2.54mm ENIG headers. 1:1 signal-to-ground ratio on JTAG header. USB 2.0 from CM5 |
+| — | JTAG Daughterboard link (to FT232H board) | 1×5 INPUT header + 1×10 JTAG header | — | — | — | 2.54mm ENIG male headers on Controller. JDB female headers mate here. USB 2.0 to CM5 internally |
 
 ### Stator Board
 
@@ -962,8 +962,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 | Ref | Description | Part / Series | Notes |
 | ----- | ------------- | --------------- | ------- |
-| J1 | USB 2.0 link from CM5 | 1×6 2.54mm header (power + USB) | Connects to Controller Board FT232H power/USB header |
-| J2 | JTAG chain output | 1×10 2.54mm shielded header | Drives HID Encoder CPLDs. 1:1 GND interleave on all JTAG signals |
+| J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | 1×5 2.54mm female IDC | Power in (5V_USB + 3V3_ENIG) + internal USB 2.0 to CM5 via hat-header |
+| J2 | JTAG OUTPUT header (10-pin interleaved GND) | 1×10 2.54mm female IDC | TCK/GND/TDI/GND/TDO/GND/TMS/GND/VREF/GND |
 
 ---
 

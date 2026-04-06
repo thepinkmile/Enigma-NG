@@ -20,7 +20,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | :--- | :--- | :--- | :--- |
 | FR-JDB-01 | Provide a USB-to-JTAG programming interface for all 37 CPLDs in the system | 1 Stator + 6 Encoder + 30 Rotor CPLDs | §2 Core Logic; BOM U1 (FT232H) |
 | FR-JDB-02 | Generate series-damped drive signals suitable for the controlled-impedance JTAG chain | 33 Ω resistors at all JTAG outputs | §5 Electrical Requirements; BOM R1 (TCK 33Ω), R2 (TDI 33Ω), R3 (TMS 33Ω) |
-| FR-JDB-03 | Interface with the CM5 via USB 2.0 for JTAG programming software control | Presented as FTDI JTAG device to OpenOCD/equivalent | §3 Interface & Wiring; BOM J1 (USB header), U1 (FT232H) |
+| FR-JDB-03 | Interface with the CM5 via USB 2.0 for JTAG programming software control | Presented as FTDI JTAG device to OpenOCD via libftdi; no custom driver required | §3 Interface & Wiring; BOM J1 (INPUT 5-pin header), U1 (FT232H) |
 
 #### Design Requirements
 
@@ -32,7 +32,11 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | DR-JDB-04 | TDI series damping | R2 = 33 Ω 0402 at FT232H TDI output | §5 Electrical Requirements; BOM R1, R2 (33Ω) |
 | DR-JDB-05 | TMS series damping | R3 = 33 Ω 0402 at FT232H TMS output | §5 Electrical Requirements; BOM R3 (33Ω) |
 | DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) | §2 Core Logic; BOM U1 (FT232H) |
-| DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port | §3 Interface & Wiring; BOM J1 (6-pin USB header), Y1 (12MHz crystal) |
+| DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port; D+/D− route via hat-header J1 | §3 Interface & Wiring; BOM J1 (5-pin INPUT header), Y1 (12MHz crystal) |
+| DR-JDB-08 | Power source | 5V_USB and 3V3_ENIG from Controller Board via hat-header J1; FT232H self-powered USB mode | §5 Electrical Requirements |
+| DR-JDB-09 | Hat-style connectors | J1 = 1×5 2.54mm female IDC (INPUT); J2 = 1×10 2.54mm female IDC (JTAG OUTPUT) | §3 Interface & Wiring; BOM J1, J2 |
+| DR-JDB-10 | GND_CHASSIS not implemented | JDB is internal daughterboard; mounting holes tied to GND per DEC-022 | §3 Interface & Wiring |
+| DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4 per-IC decoupling + C5 4.7µF entry filter | §5 Electrical Requirements; BOM C1–C5 |
 
 ## 2. Core Logic
 
@@ -40,36 +44,97 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 * **Bridge IC:** [FT232H](https://ftdichip.com/wp-content/uploads/2023/09/DS_FT232H.pdf) High-Speed USB 2.0 to MPSSE.
 * **Function:** Dedicated JTAG programmer for the global chain (30x Rotor CPLDs + 6x Encoder CPLDs + 1x Stator CPLD).
 * **Configuration:** 12MHz crystal-controlled for stable JTAG programming via the CM5. See DEC-021.
-* **Integrated Driver:** Compatible with `OpenOCD` or `Quartus` via a custom Linux driver on the CM5.
+* **Software Stack:** `ftdi_sio` kernel module for USB enumeration; `OpenOCD` with `libftdi` for JTAG/MPSSE
+  operation (no custom driver required). CM5 enumerates the FT232H on Linux boot via `ftdi_sio`.
 
 ## 3. Interface & Wiring
 
-* **Power + USB:** Internal **6-pin** header (J1: 3V3_ENIG, GND, VBUS, D−, D+, GND) connecting to the Controller Board's USB 2.0 Hub and 3V3_ENIG supply
-  — see **JTAG_Daughterboard/Board_Layout.md** for pinout. GND_CHASSIS bond point is at J1.
-* **JTAG Pinout (MPSSE Mode):**
-  * AD0 -> **TCK** (Clock)
-  * AD1 -> **TDI** (Data In)
-  * AD2 -> **TDO** (Data Out)
-  * AD3 -> **TMS** (State Machine)
-* **Voltage:** 3.3V logic level with 5V-tolerant I/O.
+### J1 — INPUT Header (5-Pin, USB/Power Side)
 
-### GND_CHASSIS Single-Point Bond
+* **Type:** Single-row 2.54mm pitch female IDC header, 5 pins
+* **Pinout:** Pin 1 = 5V_USB | Pin 2 = 3V3_ENIG | Pin 3 = D+ | Pin 4 = D− | Pin 5 = GND
+* **Purpose:** System power in (5V_USB + GND from Controller Board TPS2065C-protected USB rail);
+  JTAG signal voltage reference (3V3_ENIG from Controller Board); internal USB 2.0 data to CM5 (D+/D−)
+* **Physical location:** One edge of the board (INPUT side)
+* **JLCPCB:** C50950 (1×5 2.54mm female pin header) — see Board_Layout.md for full pinout
 
-Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-point GND_CHASSIS bond at its power entry connector.
+### J2 — JTAG OUTPUT Header (10-Pin)
 
-**JTAG Daughterboard GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J1
-(the USB-B or BtB power input connector receiving 3V3_ENIG from the Controller board).
-A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis copper pour at this entry point only.
+* **Type:** Single-row 2.54mm pitch female IDC header, 10 pins
+* **Physical location:** Opposing edge of the board (OUTPUT side), physically opposite J1
+* **JLCPCB:** C2337 or equivalent 1×10 2.54mm female pin header — see Board_Layout.md for full pinout
+
+> **No external connectors:** The JDB has no external connectors. USB is entirely internal via J1.
+> No USB-C connector exists on the JDB. CC pins are irrelevant (USB 2.0 only).
+
+### J2 JTAG Pinout (10-Pin, Interleaved GND)
+
+| Pin | Signal | Description |
+| :--- | :--- | :--- |
+| 1 | TCK | JTAG Clock |
+| 2 | GND | Ground |
+| 3 | TDI | JTAG Data In |
+| 4 | GND | Ground |
+| 5 | TDO | JTAG Data Out |
+| 6 | GND | Ground |
+| 7 | TMS | JTAG Mode Select |
+| 8 | GND | Ground |
+| 9 | VREF (3V3_ENIG) | Voltage Reference |
+| 10 | GND | Ground |
+
+### FT232H JTAG Signal Mapping (MPSSE Mode)
+
+* AD0 → **TCK** (Clock)
+* AD1 → **TDI** (Data In)
+* AD2 → **TDO** (Data Out)
+* AD3 → **TMS** (State Machine)
+
+### Voltage
+
+3.3V logic level (VCCIO = 3V3_ENIG). FT232H VCC = 5V_USB. 5V-tolerant I/O.
+
+### GND_CHASSIS Not Implemented
+
+GND_CHASSIS is not implemented on the JDB — see DEC-022. The JDB is an internal daughterboard
+with no chassis surface to bond to. Mounting holes connect to GND (circuit return), not GND_CHASSIS.
 
 ## 4. Aesthetics & Mounting
 
 * **Visibility:** Completely hidden internally.
-* **Mounting:** Small **4-layer** PCB (DEC-017) mounted via 3M VHB tape or standoffs near the Controller.
+* **Mounting:** Small **4-layer** PCB (DEC-017) mounted as a hat on the Controller Board via conductive
+  standoffs. Mounting holes tie to GND per DEC-022.
+
+### PCB Stackup — JLC04161H-7628 (4-Layer)
+
+**Stackup:** JLC04161H-7628 (JLCPCB standard 4-layer, same as all other non-CTL/PM boards in the system)
+
+| Layer | Role | Notes |
+| :--- | :--- | :--- |
+| L1 | GND plane + SMT component pads (component side) | Faces toward the Controller Board when JDB is mounted as a hat |
+| L2 | All signal traces (inner layer) | Shielded between L1 GND reference and L3 power |
+| L3 | Power distribution pours (5V_USB + 3V3_ENIG) | Inner power layer |
+| L4 | GND pour shield | Faces away from the Controller (exterior/top when mounted) |
+
+**Rationale:** Board mounts face-down on Controller (L1 toward Controller PCB). L4 GND provides exterior
+shielding. L2 signals are sandwiched between two reference planes for good signal integrity. Single-side
+assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 
 ## 5. Electrical Requirements
 
-* **Voltage:** FT232H core VCC is bus-powered from VBUS (5 V via USB-C, internal LDO → 3.3 V); VCCIO and all 3.3 V logic are powered from the +3V3_ENIG rail via the hat-header interconnect.
-* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the USB/power-entry pins in a **Symmetrical Star/Spoke pattern**.
+* **Power Architecture:**
+  * FT232H VCC = **5V_USB** (5V) via hat-header J1 Pin 1 — from the Controller Board's TPS2065C-protected
+    USB power rail (same current-limited rail as the USB 3.0 ports, 1.6A limit).
+  * FT232H VCCIO = **3V3_ENIG** (3.3V) via hat-header J1 Pin 2 — sets JTAG signal voltage to match
+    CPLD I/O logic levels (same role as CM5 GPIO reference voltage).
+  * FT232H VBUS pin tied to **5V_USB** (always-on; USB connection to CM5 is internal — no VBUS monitoring needed).
+  * USB connection is **entirely internal**: D+ and D− travel from FT232H via J1 hat-header through the
+    Controller Board PCB directly to the CM5 USB 2.0 port. No USB-C connector on the JDB.
+  * FT232H operates in **self-powered USB mode** — power from system (5V_USB), not from USB host.
+  * CM5 enumerates the FT232H when Linux boots and ftdi_sio loads; no JDB-side power sequencing required.
+  * Controller TPS2065C is the upstream current limiter; no additional current limiter on JDB.
+* **Bulk Capacitor Exception:** The JDB is exempt from the standard 5× bulk entry bank rule. The Controller
+  Board upstream provides a fully-bypassed power rail. Per-IC decoupling per FT232H datasheet (C1–C4)
+  plus a single 4.7µF entry filter (C5) on 5V_USB is sufficient.
 * **Clocking:** Dedicated 12MHz SMD crystal (Y1) for the FT232H reference clock. The FT232H internal PLL requires 12MHz; CM5 GPCLK
   option was considered and rejected — see DEC-021. Crystal load capacitors C10–C11 (33pF C0G) set the 20pF crystal load capacitance.
 * **JTAG Signal Integrity:**
@@ -87,11 +152,10 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C4 | Decoupling | 0.1µF | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
-| C5-C9 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| J1 | Power + USB header (3V3_ENIG, GND, VBUS, D−, D+, GND) | **6-pin** 2×3 shrouded | 2.54mm | 538-22-23-2061 | WM2899-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
-| J2 | JTAG header | 10-pin | 2.54mm | 538-22-23-2101 | WM2901-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
-| R1, R2 | Series resistors (DEC-016 BtB/intra-board termination — JTAG output to 10-pin JTAG header J2) | 33Ω | 0603 | 667-ERJ-3EKF33R0V | P33.0BYCT-ND | C25819 |
-| R3 | 33Ω 1% 0402 | TMS series damping | 603-FRC0402J33RTS | Mouser 603-FRC0402J33RTS | DigiKey 13-FRC0402J33RTSCT-ND | JLCPCB C25879 |
+| C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X5R/X7R | 0402 | — | — | C19666 |
+| J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | 1×5 female IDC | 2.54mm | — | — | C50950 |
+| J2 | JTAG OUTPUT header (10-pin interleaved GND) | 1×10 female IDC | 2.54mm | — | — | C2337 |
+| R1–R3 | Series termination on TCK (R1), TDI (R2), TMS (R3) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |
 | C10, C11 | Crystal load capacitors | 33pF C0G/NP0 0402 | 0402 | 81-GRM1555C1H330JA01D | 490-1318-1-ND | C1639 |
 | Y1 | Crystal — FT232H reference clock (per DEC-021) | 12MHz 20pF ±20ppm | SMD3225-4P | 815-ABM8-12.000MHZ-B2-T | 535-9977-1-ND | C9002 |
