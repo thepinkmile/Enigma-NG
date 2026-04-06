@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -124,7 +124,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
   connector pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
   Full logic swing is maintained at the Stator via the open-circuit reflection doubling effect.
 * **Chain Position:** The I/O CPLDs (HID/Plugboard) sit second in the JTAG chain, after the Stator CPLD.
-  Full order: FT232H → Stator CPLD → HID Encoder CPLD1→CPLD2 → Plugboard A CPLD1→CPLD2 → Plugboard B CPLD1→CPLD2 → Rotors → Reflector → TDO_RETURN.
+  Full order: FT232H → Stator CPLD → HID Encoder CPLD1→CPLD2 → Plugboard A CPLD1→CPLD2 → Plugboard B CPLD1→CPLD2 → Rotors → Reflector → TTD_RETURN.
 * **Programming:** Allows for "In-System Sources and Probes" debugging via the CM5 GUI.
 
 ## 7. Key Mapping (64-Way QWERTY for Keyboard)

@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -39,7 +39,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
 > This board uses the mating connector on J7. See BOM for part number.
 > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
-> Pins 9–14 = ENC_OUT[0:5], Pin 15 = TDO_RETURN, Pin 16 = GND.
+> Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
 
 ---
 

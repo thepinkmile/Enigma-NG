@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -65,4 +65,4 @@ ERF8 sockets on the output side (J4–J6). See `Rotor/Design_Spec.md §3.4` for 
 
 TTD (JTAG Transmission Data) does not chain back through the Extension Port individually per rotor. Each
 rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Rotor J1 pin 6. Only **Rotor 30**
-(last in chain) routes its TDO via the Reflector back to Stator J7 pin 15 as TDO_RETURN.
+(last in chain) routes its TDO via the Reflector back to Stator J7 pin 15 as TTD_RETURN.

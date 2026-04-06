@@ -2,7 +2,7 @@
 
 **Status:** Reference
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Last Updated:** 2026-04-04
 
@@ -38,7 +38,7 @@ robustness.
 | :--- | :--- | :--- | :--- |
 | **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 2oz | **Design Locked** |
 | **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 2oz | **Design Locked** |
-| **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TDO_RETURN | 4-Layer / 2oz | Draft |
+| **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TTD_RETURN. Up to ×5 in full build; Rev A uses ×1. | 4-Layer / 2oz | Draft |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 6-Layer / 2oz | **Design Locked** |
 | **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |

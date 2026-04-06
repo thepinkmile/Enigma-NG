@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -225,9 +225,9 @@ _______________________________________    _____________    ____________________
 | 22 | ENC_OUT[3] | Stator→CTRL | Encoder output bit 3 |
 | 23 | ENC_OUT[4] | Stator→CTRL | Encoder output bit 4 |
 | 24 | ENC_OUT[5] | Stator→CTRL | Encoder output bit 5 |
-| 25 | GND | — | ENC_OUT / TDO_RETURN shield |
-| 26 | TDO_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
-| 27 | GND | — | TDO_RETURN shield |
+| 25 | GND | — | ENC_OUT / TTD_RETURN shield |
+| 26 | TTD_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
+| 27 | GND | — | TTD_RETURN shield |
 | 28 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
 | 29 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
 | 30 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |

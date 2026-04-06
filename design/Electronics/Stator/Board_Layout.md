@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -31,7 +31,7 @@ and to provide a short TDO return path for the JTAG chain.
 | 12 | ENC_OUT[3] | Reflector → Stator | Encoder output bit 3 |
 | 13 | ENC_OUT[4] | Reflector → Stator | Encoder output bit 4 |
 | 14 | ENC_OUT[5] | Reflector → Stator | Encoder output bit 5 |
-| 15 | TDO_RETURN | Reflector → Stator | JTAG TDO return path (short route, bypasses rotor stack) |
+| 15 | TTD_RETURN | Reflector → Stator | JTAG TDO return path (short route, bypasses rotor stack) |
 | 16 | GND | — | Signal return / shield |
 
 **Connector:** 2×8 2.54mm shrouded box header with polarisation key (e.g. Wurth 61201621621 or equiv).
@@ -100,7 +100,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 3. J4 TDO → **J5 (Plugboard Encoder #1)** TDI *(internal Stator trace)*
 4. J5 TDO → **J6 (Plugboard Encoder #2)** TDI *(internal Stator trace)*
 5. J6 TDO → **Rotor stack** TDI (via J1–J3 PWR/JTAG connector) *(internal Stator trace)*
-6. Rotor stack TDO returns via J7 Extension Port TDO_RETURN
+6. Rotor stack TDO returns via J7 Extension Port TTD_RETURN
 
 > **Connector Definition Owner:** This board. All other boards using this connector cross-reference here.
 

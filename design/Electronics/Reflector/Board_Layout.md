@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -63,7 +63,7 @@ PIN | SIGNAL          | DESCRIPTION
 12  | ENC_OUT[3]      | Encryption Output Bit 3
 13  | ENC_OUT[4]      | Encryption Output Bit 4
 14  | ENC_OUT[5]      | Encryption Output Bit 5
-15  | TDO_RETURN      | JTAG Data Out Return
+15  | TTD_RETURN      | JTAG Data Out Return
 16  | GND             | Ground (TDO Shield)
 ```
 
@@ -72,6 +72,6 @@ PIN | SIGNAL          | DESCRIPTION
 ```text
 ROW | COL1 | COL2 | COL3 | COL4 | COL5 | COL6 | COL7 | COL8
 ----|------|------|------|------|------|------|------|------
-1   | ENC_IN[0] | ENC_IN[1] | ENC_IN[2] | ENC_IN[3] | ENC_IN[4] | ENC_IN[5] | GND | TDO_RETURN
+1   | ENC_IN[0] | ENC_IN[1] | ENC_IN[2] | ENC_IN[3] | ENC_IN[4] | ENC_IN[5] | GND | TTD_RETURN
 2   | ENC_OUT[0]| ENC_OUT[1]| ENC_OUT[2]| ENC_OUT[3]| ENC_OUT[4]| ENC_OUT[5]| 3V3_ENIG | GND
 ```

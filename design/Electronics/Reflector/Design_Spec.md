@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -10,7 +10,7 @@
 ## 1. Overview
 
 The Reflector Board sits at the far end of the 30-rotor stack. Its primary role is to receive the signals from the final rotor and return them back through the stack via a different electrical path.
-It also acts as the JTAG termination hub and returns the TDO_RETURN directly back to the Stator to reduce required Pin count in the Rotor Interconnects.
+It also acts as the JTAG termination hub and returns the TTD_RETURN directly back to the Stator to reduce required Pin count in the Rotor Interconnects.
 
 ### Functional & Design Requirements
 
@@ -20,7 +20,7 @@ It also acts as the JTAG termination hub and returns the TDO_RETURN directly bac
 | :--- | :--- | :--- | :--- |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs | §3 JTAG & Logic Hub; BOM J1–J3 (ERM8) |
 | FR-REF-02 | Emulate the historical Enigma reflector (fixed symmetric substitution cipher) | Passive wiring — no CPLD required | §2 Architecture; BOM J1–J3 (passive loopback traces) |
-| FR-REF-03 | Return the JTAG TDO_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J7 → Link-Beta pin 26 → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
+| FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J7 → Link-Beta pin 26 → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω 0402) |
 
 #### Design Requirements
@@ -29,7 +29,7 @@ It also acts as the JTAG termination hub and returns the TDO_RETURN directly bac
 | :--- | :--- | :--- | :--- |
 | DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §5 PCB & Mechanical Specs |
 | DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §3a Rotor Interface Connectors; BOM J1–J3 |
-| DR-REF-03 | TDO_RETURN output | J4 connector (mates with Stator J7); TDO_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
+| DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J7); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
 | DR-REF-04 | End-of-chain damping | R1 = 22 Ω 0402 on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive reflector function only; fixed wiring emulated in hardware | §2 Architecture |
 
@@ -43,7 +43,7 @@ It also acts as the JTAG termination hub and returns the TDO_RETURN directly bac
 * **Logic Type:** Passive (Loopback).
 * **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100C5N CPLD** located on the Stator Board.
 * **CPLD support:** PCB passive routing (no discrete component).
-* **Signal Path:** Rotor 30 J4–J6 (ERF8 female) → Reflector J1–J3 (ERM8 male) → passive loopback traces → ENC cipher data reflected back; TDO_RETURN exits via J4 (16-pin Molex, pin 15) → Stator J7.
+* **Signal Path:** Rotor 30 J4–J6 (ERF8 female) → Reflector J1–J3 (ERM8 male) → passive loopback traces → ENC cipher data reflected back; TTD_RETURN exits via J4 (16-pin Molex, pin 15) → Stator J7.
 
 ## 3. JTAG & Logic Hub
 
@@ -51,7 +51,7 @@ It also acts as the JTAG termination hub and returns the TDO_RETURN directly bac
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
   > This board uses the mating connector (Molex 22-23-2161 or equivalent — see BOM). The authoritative
   > 16-pin pinout is defined on the Stator; Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
-  > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TDO_RETURN, Pin 16 = GND.
+  > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
 
 > **Compatibility note:** J4 pin allocation matches Stator J7 (16-pin 2×8). The Stator J7 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
 
@@ -61,16 +61,16 @@ It also acts as the JTAG termination hub and returns the TDO_RETURN directly bac
   re-enters the Extension Port for return to the Stator.
 
 > **Note:** TMS and TDI pull-up resistors (R2/R3) previously listed in this section have been removed.
-> TMS and TDI are NOT routed on J4 (pin 15 = TDO_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
+> TMS and TDI are NOT routed on J4 (pin 15 = TTD_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
 > Pull-up termination for TMS and TDI is already provided by the Stator (R3/R4) and Encoder boards (R3/R4) where those signals originate.
 
-* **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TDO_RETURN and any in-board JTAG
+* **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TTD_RETURN and any in-board JTAG
   routing) shall be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting
   **50 Ω controlled impedance**. Stackup upgraded to 4-Layer per DEC-017.
   See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
-* **JTAG Return:** TDO from Rotor 30 is routed to Pin 15 (TDO_RETURN) for return to the Stator.
+* **JTAG Return:** TDO from Rotor 30 is routed to Pin 15 (TTD_RETURN) for return to the Stator.
 * **Loopback:** Directly routes 6-bit ENC_IN to 6-bit ENC_OUT via 2oz 10-mil traces.
-* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
+* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
   * `Extension/Design_Spec.md`
 

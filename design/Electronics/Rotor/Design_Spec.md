@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -77,8 +77,8 @@ There are also sensors used to detect the current position of the outer ring usi
 
 * **The ENC Data Path:** The 12-bit parallel cipher bus (ENC_IN[0:5] / ENC_OUT[0:5]) passes through every
   rotor as a daisy-chain: Stator → Rotor 1 → … → Rotor 30 → Reflector (cipher data only; this path is
-  entirely separate from JTAG TDO_RETURN).
-* **JTAG TDO_RETURN Path:** After the Reflector processes the cipher reversal, TDO_RETURN travels
+  entirely separate from JTAG TTD_RETURN).
+* **JTAG TTD_RETURN Path:** After the Reflector processes the cipher reversal, TTD_RETURN travels
   separately: Reflector J4 → Stator J7 → Link-Beta pin 26 → FT232H on JDB (JTAG chain closure only).
 * **Control:** Shared I2C bus for position telemetry.
 * **JTAG:** Pass-through JTAG lines allow the **USB Blaster** on the Controller Board to program the entire 30-rotor stack in one "daisy-chain" operation.
@@ -170,7 +170,7 @@ Mates with the next rotor's J1 (ERM8-005 male header) or Reflector J1.
 | 7 | GND | 8 | SYS\_RESET\_N |
 | 9 | GND | 10 | spare/GND |
 
-> Pin 6 = TTD (CPLD TDO output — feeds next stage's J1 pin 6 TTD input). Pin 10 = spare/GND (no TDO_RETURN path here; return travels via Reflector → Extension Port → Stator J7).
+> Pin 6 = TTD (CPLD TDO output — feeds next stage's J1 pin 6 TTD input). Pin 10 = spare/GND (no TTD_RETURN path here; return travels via Reflector → Extension Port → Stator J7).
 
 #### J5 — Power Interface Output (ERF8-005, 10-pin 2×5, 0.8mm pitch, FEMALE socket)
 

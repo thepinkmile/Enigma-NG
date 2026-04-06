@@ -2,7 +2,7 @@
 
 **Status:** Draft — pending schematic freeze
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Last Updated:** 2026-04-05
 
@@ -15,7 +15,11 @@ individual `Design_Spec.md` file.
 
 ## Component Usage Summary
 
-This table shows the component count per board instance and system-wide totals, accounting for ×3 Encoder boards and ×30 Rotor boards in the complete system.
+This table shows the component count per board instance and system-wide totals, accounting for
+×3 Encoder boards and ×30 Rotor boards in the complete system. The EXT column shows per-board
+quantities for one Extension board; Rev A uses ×1 Extension board, while the full 30-rotor build
+requires ×5 Extension boards (one between each pair of 5-rotor groups). System Total reflects
+the Rev A single-Extension configuration unless otherwise noted.
 
 | MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -210,7 +214,7 @@ This table shows the component count per board instance and system-wide totals, 
 
 ## 6. Backplane & Extension Components
 
-* **16-pin Inter-Board Link (Molex 22-23-2161, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TDO_RETURN path.
+* **16-pin Inter-Board Link (Molex 22-23-2161, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TTD_RETURN path.
 * See individual board BOMs: Rotor/Board_Layout.md, Stator/Board_Layout.md, Extension/Board_Layout.md, Reflector/Board_Layout.md for authoritative connector part numbers.
 * **Copper Shielding Tape:** 50mm (2.0") Conductive Adhesive (Manual cable wrap).
 

@@ -2,7 +2,7 @@
 
 **Status:** Adopted — see DEC-016 in `design/Design_Log.md`
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0
 **Date:** 2026-04-05
 **Affects:** Controller, Stator, Encoder, Reflector, Extension boards
@@ -45,7 +45,7 @@ Stator CPLD (U1)
     │
     └─▶ Rotor Stack (via Stator J1–J3 rotor interface → Rotor 1 J1–J3 → … → Rotor 30 J4–J6)
             └─▶ Rotor 1 … Rotor 30 … Reflector
-                    └─▶ TDO_RETURN via J7 Extension Port ─▶ LINK-BETA pin 26 ─▶ FT232H
+                    └─▶ TTD_RETURN via J7 Extension Port ─▶ LINK-BETA pin 26 ─▶ FT232H
 ```
 
 **TCK and TMS** are broadcast to all devices. On the Stator they fan out to J4, J5, and J6

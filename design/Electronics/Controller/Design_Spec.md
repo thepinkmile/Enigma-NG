@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -84,7 +84,7 @@
     * **Pins 1–9:** JTAG chain + Reset, GND-shielded (5 internal GND pins).
     * **Pins 10–11:** GND isolation moat.
     * **Pins 12–24:** ENC_IN[0:5] and ENC_OUT[0:5] (interleaved with GND shields).
-    * **Pins 25–27:** TDO_RETURN + GND shields.
+    * **Pins 25–27:** TTD_RETURN + GND shields.
     * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity).
     * **Pins 36–40:** GND power return (5 pins).
   * **Full pin table:** See `Controller/Board_Layout.md` LINK-BETA section.
@@ -122,7 +122,7 @@
     4. **JTAG Chain** → **Plugboard Encoder #1 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J5.
     5. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J6.
     6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N)** via Stator Backplane.
-    7. **TDO_RETURN** ← Reflector → Extension Port → Stator J7 pin 15 → LINK-BETA pin 26 → FT232H.
+    7. **TTD_RETURN** ← Reflector → Extension Port → Stator J7 pin 15 → LINK-BETA pin 26 → FT232H.
 * **Signal Integrity:** **SN74LVC2G125DCUR dual-channel buffer (TCK and TMS)** to drive the heavy 37-device load across the machine.
 * **JTAG Series Termination:** 33Ω series resistors (R4–R6) placed within 2 mm of each SN74LVC2G125DCUR
   output on TCK, TMS, and TDI before LINK-BETA. Matches source impedance to 50Ω PCB traces

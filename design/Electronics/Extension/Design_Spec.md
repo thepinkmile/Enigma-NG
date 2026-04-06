@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -10,7 +10,11 @@
 ## 1. Modular "Mini-Stack" Logic
 
 * **Role:** Mechanical anchor and Power Injection for 5-rotor groups.
-* **Capacity:** Supports a 30-rotor maximum stack via modular 5-rotor increments.
+* **Capacity:** Up to ×5 Extension boards in a full 30-rotor build (Rev A power budget). Rev A
+  prototype validates with 1 Extension board (10 rotors). Minimum configuration requires 0 Extensions
+  (5 rotors: Stator → [5 Rotors] → Reflector). Each Extension board adds one further group of 5
+  rotors. The 30-rotor / 5-extension limit is a power budget constraint — the architecture is
+  theoretically scalable beyond 30 rotors with increased power.
 
 ### Functional & Design Requirements
 
@@ -18,7 +22,7 @@
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-EXT-01 | Act as a JTAG signal repeater between rotor sub-groups in extended stacks | Restores TCK/TMS drive strength mid-chain | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR) |
+| FR-EXT-01 | Act as a JTAG signal repeater between rotor sub-groups in extended stacks | Restores TCK/TMS drive strength mid-chain; up to ×5 units in system | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR) |
 | FR-EXT-02 | Buffer TCK and TMS signals to compensate for capacitive loading of upstream rotors | Dual-channel buffer preserves timing margins | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR), C6 (100nF bypass) |
 | FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Passive pass-through on J2/J5 and J3/J6 | §2 Connectivity; BOM J2, J5 (ERM8/ERF8-005), J3, J6 (ERM8/ERF8-010) |
 | FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) | §2 Connectivity; BOM J1–J3 (ERM8-005/010) |
@@ -34,6 +38,7 @@
 | DR-EXT-04 | JTAG buffer | U1 = SN74LVC2G125DCUR (dual-channel; TCK and TMS only; TDI passes unbuffered) | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR) |
 | DR-EXT-05 | Buffer output pin assignment | TCK → J4 pin 2; TMS → J4 pin 4 (per DEC-018 pinout) | §2 Connectivity; Design_Log.md DEC-018 |
 | DR-EXT-06 | Buffer bypass capacitor | C6 = 100 nF 0402 within 2 mm of U1 VCC pin (L1) | §4 PCB Specs; BOM C6 (100nF X7R) |
+| DR-EXT-07 | System quantity | Up to ×5 Extension boards per system (Rev A power budget); Rev A prototype uses ×1 | §1 Modular Logic; System_Architecture.md |
 
 ## 2. Connectivity
 
@@ -41,7 +46,7 @@
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
   > This board uses the mating connector on both J7 and J8 (Molex 22-23-2161 or equivalent — see BOM).
   > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
-  > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TDO_RETURN, Pin 16 = GND.
+  > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
 * **Rotor Interface Connectors (3 per rotor-facing side × 2 sides = 6 connectors total):**
   The Extension board provides ERM8 male headers on the **input side** (J1–J3, plugging into the
   previous rotor group's last rotor J4/J5/J6 ERF8 output sockets) and ERF8 female sockets on the
@@ -82,13 +87,13 @@
   No additional bonds on this board to prevent ground loops.
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the input header power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **JTAG:** Pass-through for the serial chain; TDO_RETURN carried via Extension Port pin 15.
+* **JTAG:** Pass-through for the serial chain; TTD_RETURN carried via Extension Port pin 15.
   * This board carries JTAG signals as a passive pass-through only. No active termination is
     required here; series termination is placed at the driving ends of each cable segment on
     the Stator (R7–R15) and Encoder boards (R7, R8). See `design/Electronics/Investigations/JTAG_Integrity.md`
     and DEC-016.
 * **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
-* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TDO_RETURN lines used for reflector loopback/plugboard mapping, See:
+* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
   * `Reflector/Design_Spec.md`
 
@@ -103,8 +108,8 @@
 * **Finish:** ENIG (Gold) for connector and diagnostic pad surfaces.
 * **Layer Mapping:** L1: Signal (JTAG pass-through / routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
 * **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
-* **JTAG Trace Width Rule:** The Extension board carries only the **TDO_RETURN** signal on its J7/J8 pass-through path
-  (TCK, TMS, and TDI travel to the rotor stack via Stator J1–J3, not via the Extension Port). TDO_RETURN traces on L1 shall be routed at **0.127 mm (5 mil)**
+* **JTAG Trace Width Rule:** The Extension board carries only the **TTD_RETURN** signal on its J7/J8 pass-through path
+  (TCK, TMS, and TDI travel to the rotor stack via Stator J1–J3, not via the Extension Port). TTD_RETURN traces on L1 shall be routed at **0.127 mm (5 mil)**
   over the L2 GND plane, targeting **50 Ω controlled impedance**. See
   `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
 * **U1 Bypass:** C6 (100nF) must be placed within 2mm of U1 VCC pin on L1.

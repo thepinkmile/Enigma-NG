@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Author:** Enigma-NG Hardware Team
+**Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
@@ -20,10 +20,15 @@ The Enigma-NG system comprises the following boards:
 - **Stator** — Central backplane; the first fixed stage of the cipher path. Connects to all other boards.
 - **Rotors (×30)** — Arranged in groups of 5, chaining directly output-to-input. An Extension Board sits
   between each group of 5 to re-buffer broadcast signals.
-- **Extension Board (×1)** — Bridges between rotor groups; re-buffers TCK and TMS; Rev A uses one
-  Extension board between Rotor 5 and Rotor 6.
+- **Extension Board (up to ×5 within Rev A power budget)** — Bridges between rotor groups;
+  re-buffers TCK and TMS. Minimum configuration: Stator → [5 Rotors] → Reflector (0 Extensions,
+  5 rotors). Full build: 6 groups of 5 rotors separated by 5 Extension boards, terminated by the
+  Reflector (30 rotors total). The 30-rotor / 5-extension limit is a power budget constraint, not a
+  physical or architectural limit — the design is theoretically scalable beyond 30 rotors in groups
+  of 5 with increased power supply capacity. Rev A prototype validates with 1 Extension board
+  (10 rotors). Formula: Extensions = (Rotor groups) − 1; minimum 0, maximum 5 for current budget.
 - **Reflector** — End of the rotor chain (after Rotor 30); performs the cipher reversal redirect and
-  routes TDO_RETURN back to the Stator.
+  routes TTD_RETURN back to the Stator.
 - **Encoder Boards (×3)** — 1 HID board (keyboard + lightboard), 2 Plugboard encoder boards. Connect to
   Stator J4–J6.
 - **JTAG Daughterboard** — USB Blaster II implementation for programming CPLDs.
@@ -40,23 +45,49 @@ Power Module ←—Link-Alpha (80-pin ERM8)—→ Controller Board
                               J1–J3    J4–J6   J7
                                |         |      |
                             Rotor 1  Encoders  Extension/Reflector port
-                               |
-                            Rotor 2
-                               ·
                                ·
                             Rotor 5
                                |
-                         Extension Board 1
+                         Extension Board 1   ← (up to 5 Extension boards; each adds one 5-rotor group)
                                |
                             Rotor 6
                                ·
+                            Rotor 10
+                               |
+                         Extension Board 2
+                               |
+                            Rotor 11
+                               ·
+                            Rotor 15
+                               |
+                         Extension Board 3
+                               |
+                            Rotor 16
+                               ·
+                            Rotor 20
+                               |
+                         Extension Board 4
+                               |
+                            Rotor 21
+                               ·
+                            Rotor 25
+                               |
+                         Extension Board 5
+                               |
+                            Rotor 26
                                ·
                             Rotor 30
                                |
                            Reflector
                                |
-                     TDO_RETURN → Stator J7 pin 15
+                     TTD_RETURN → Stator J7 pin 15
 ```
+
+> **NOTE — Scalability:** The diagram shows the full 30-rotor / 5-extension configuration
+> (maximum within the Rev A power budget). The architecture is theoretically unbounded;
+> 30 rotors is a power budget ceiling, not a physical or architectural limit. Minimum
+> configuration is Stator → [5 Rotors] → Reflector (0 Extensions). Rev A prototype
+> validates with 1 Extension board (10 rotors total).
 
 The Stator is the central backplane:
 
@@ -88,7 +119,7 @@ sockets on the **output side** of the previous board.
 | Rotor | J1 ERM8-005, J2 ERM8-005, J3 ERM8-010 (male) | J4 ERF8-005, J5 ERF8-005, J6 ERF8-010 (female) |
 | Stator | — (Stator is the chain origin) | J1 ERF8-005, J2 ERF8-005, J3 ERF8-010 (female, receives Rotor 1) |
 | Extension | J1 ERM8-005, J2 ERM8-005, J3 ERM8-010 (male, plugs into prev group last Rotor J4–J6) | J4 ERF8-005, J5 ERF8-005, J6 ERF8-010 (female, receives next group Rotor 1) |
-| Reflector | J1 ERM8-005, J2 ERM8-005, J3 ERM8-010 (male, plugs into Rotor 30 J4–J6) | J4 16-pin Molex (TDO_RETURN back to Stator J7) |
+| Reflector | J1 ERM8-005, J2 ERM8-005, J3 ERM8-010 (male, plugs into Rotor 30 J4–J6) | J4 16-pin Molex (TTD_RETURN back to Stator J7) |
 
 ---
 
@@ -130,7 +161,7 @@ connectors (J1 and J4 on rotors). This unified name avoids TDI/TDO direction con
 - On the **input side** (J1 pin 6): TTD carries incoming TDI from the previous stage.
 - On the **output side** (J4 pin 6): TTD carries outgoing TDO to the next stage's TDI.
 
-### Serial Chain Path (Stator → Reflector → TDO_RETURN)
+### Serial Chain Path (Stator → Reflector → TTD_RETURN)
 
 ```text
 Stator J1 pin 6 (TTD/TDI out)
@@ -141,8 +172,8 @@ Stator J1 pin 6 (TTD/TDI out)
   → ... [repeat for all 30 rotors]
   → Rotor 30 J4 pin 6 (TTD/TDO out)
   → Reflector J1 pin 6 (TTD in) → [R1 22Ω termination]
-  → Reflector J4 pin 15 (TDO_RETURN)
-  → Stator J7 pin 15 (TDO_RETURN arrives back)
+  → Reflector J4 pin 15 (TTD_RETURN)
+  → Stator J7 pin 15 (TTD_RETURN arrives back)
 ```
 
 ### TCK and TMS — Broadcast Signals
@@ -150,17 +181,17 @@ Stator J1 pin 6 (TTD/TDI out)
 **TCK** and **TMS** are broadcast signals. They travel from Stator J1 pins 2 and 4 down the entire rotor
 chain **in parallel** (not daisy-chained). Every rotor receives the same TCK and TMS simultaneously.
 
-### TDO_RETURN Path
+### TTD_RETURN Path
 
 The JTAG TDO return does **not** travel back through the rotor stack. Instead:
 
 ```text
-Reflector J4 pin 15 (TDO_RETURN)
+Reflector J4 pin 15 (TTD_RETURN)
   → Extension Port / J7 (16-pin Molex 2.54mm)
-    → Stator J7 pin 15 (TDO_RETURN arrives at Controller)
+    → Stator J7 pin 15 (TTD_RETURN arrives at Controller)
 ```
 
-Stator J7 and Reflector J4 exist specifically to carry TDO_RETURN directly back to the Stator, bypassing
+Stator J7 and Reflector J4 exist specifically to carry TTD_RETURN directly back to the Stator, bypassing
 all rotors. This is architecturally essential for JTAG chain closure.
 
 ### Extension Board Signal Buffering
@@ -225,7 +256,7 @@ Keypress
 | Link-Beta (Ctrl → Stator) | Controller J2 (ERF8-020 female) ↔ Stator J8 (ERM8-020 male) | 40 | 3V3_ENIG + JTAG + Control signals |
 | Stator J1–J3 | ERF8-005/010 female | 10/10/20 | Rotor 1 interface |
 | Stator J4–J6 | 26-pin THT | 26 | Encoder board connections |
-| Stator J7 | 16-pin (Molex 2.54mm) | 16 | Extension/Reflector port (carries TDO_RETURN on pin 15) |
+| Stator J7 | 16-pin (Molex 2.54mm) | 16 | Extension/Reflector port (carries TTD_RETURN on pin 15) |
 | Stator J8 | ERM8-020 / ERF8-020 | 40 | Link-Beta (Controller Board) |
 | Extension J7/J8 | 16-pin (Molex 2.54mm) | 16 | Extension IN/OUT port for chaining |
 | Reflector J4 | 16-pin (Molex 2.54mm) | 16 | Stator/Extension return port |
