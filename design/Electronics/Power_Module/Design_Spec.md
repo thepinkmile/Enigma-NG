@@ -21,7 +21,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 * **Controller Link (Link-Alpha):** 80-pin ERM8 connector for power/ethernet/telemetry handshake with the Controller Board.
   * **Provided to Controller:** 5V_MAIN, 3V3_ENIG, GBE signals, and PWR_GD.
-  * **Returned by Controller:** I2C telemetry chain only. 3V3_SYSTEM no longer crosses to Power Module — RJ45 LED anodes and pull-up logic are powered by 3V3_ENIG (generated locally on Power Module).
+  * **Returned by Controller (CTRL→PM via LINK-ALPHA):** Status LED drive signals (SW_LED_R, SW_LED_G, SW_LED_B / SW_LED_CTRL), Ethernet LED signals (ETH_LED_LINK, ETH_LED_ACT), and ROTOR_EN.
   * **Cross-ref:** For the exact Link-Alpha mapping and signal naming conventions, See:
     * `Controller/Design_Spec.md`
 

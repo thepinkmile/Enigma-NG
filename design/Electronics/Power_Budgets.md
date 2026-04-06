@@ -76,9 +76,9 @@ being an unachievable worst-case peak).
 
 | Document | Old figure | Resolved value | Action |
 | :--- | :--- | :--- | :--- |
-| Stator §2 "5A peak" | 5.0 A | **2.20 A** worst-case typical | Stator §2 to be updated |
+| Stator §2 "5A peak" | 5.0 A | **2.20 A** worst-case typical | ✅ Complete — Stator §2 updated to 2.20A worst-case; 5A figure retired |
 | LINK-BETA capacity | 4.0 A | 4.0 A (connector limit — not the constraint) | No change — correct, just not the bottleneck |
-| Rotor ×30 claim "4.5A" | 4.5 A | **1.50 A** (30 × 50 mA) | Rotor §3.1 to be updated from 150 mA to 50 mA |
+| Rotor ×30 claim "4.5A" | 4.5 A | **1.50 A** (30 × 50 mA) | ✅ Complete — Rotor DR-ROT-06 and §3.1 updated to ≤50 mA per rotor; 150 mA figure retired |
 | Shunt resistor | Stator: 20 mΩ, Controller: 10 mΩ | **20 mΩ** (Stator owns; Controller corrected) | Controller §4 corrected to 20 mΩ (done this session) |
 
 **INA219 shunt selection rationale (20 mΩ):**
