@@ -52,7 +52,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 0.1 µF X7R 0402 decoupling cap | 12 | 1 | 8 | 16 | 96 | 8 | 240 | — | 1 | 4 | 362 |
 | 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 5 | — | 200 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 9 | — | — | — | — | — | — | — | — | — | 9 |
-| 4.7 µF X5R/X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| 4.7 µF X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | 1 µF X7R 50 V 0805 (GRM21BR71H105KA12L) | 3 | — | — | — | — | — | — | — | — | — | 3 |
 | 10 µF 25 V X7R 1206 LDO input cap (GRM31CR72E106KA12L) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10 nF X7R 50 V 0402 soft-start cap (CL05B103KB5NNNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |

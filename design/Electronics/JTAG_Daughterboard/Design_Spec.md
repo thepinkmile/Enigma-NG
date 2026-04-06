@@ -172,7 +172,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C4 | Decoupling | 0.1µF | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
-| C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X5R/X7R | 0402 | — | — | C19666 |
+| C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R | 0402 | — | — | C19666 |
 | J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | 1×5 female IDC | 2.54mm | — | — | C50950 |
 | J2 | JTAG OUTPUT header (10-pin interleaved GND) | 1×10 female IDC | 2.54mm | — | — | C2337 |
 | R1 | Series termination on FT232H TCK output (before U5 buffer input) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
@@ -185,7 +185,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | R8 | TDI series damping before J2 pin 3 (TDI) — DEC-023 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |
 | U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-023 | Dual 3-state buffer | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C2688 |
-| C10, C11 | Crystal load capacitors | 33pF C0G/NP0 0402 | 0402 | 81-GRM1555C1H330JA01D | 490-1318-1-ND | C1639 |
+| C10, C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 81-GRM1555C1H330JA01D | 490-1318-1-ND | C1639 |
 | Y1 | Crystal — FT232H reference clock (per DEC-021) | 12MHz 20pF ±20ppm | SMD3225-4P | 815-ABM8-12.000MHZ-B2-T | 535-9977-1-ND | C9002 |
 
 > **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

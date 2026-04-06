@@ -259,8 +259,8 @@ consistent with military component derating standards.
 | --- | --- | --- | --- | --- |
 | 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 9.05A | **75.4%** ✓ † |
 | TPS7A8333P | 3V3_ENIG LDO | 3A | 2.20A | **73.3%** ✓ |
-| TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.86A* | **69.4%** ✓ |
-| TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
+| TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.82A* | **68.9%** ✓ |
+| TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 52.0W (steady) | **72.2%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
 
 > † LMQ61460-Q1 operates at 75.4% — marginally above the ≤75% policy. This exceedance is accepted and documented (see §3.3.1: dual-phase interleaving provides redundancy, thermal distribution, and an upgrade path). All other components comply with the ≤75% rule without exception.
