@@ -193,7 +193,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |
 | **19** | **SW_LED_B** | PWM | 3.3V | RGB switch (SW1) — Blue channel. PoE active power source. |
 | **20** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
-| **21** | **USB_STAT** | Input | 3.3V | Active Low: 12V/15V PD Negotiated. |
+| **21** | **USB_STAT** | Input | 3.3V | Active Low: 15V/5A PD Negotiated (STUSB4500). |
 | **22** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |
 | **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware MIC1555 orange-flash path on Power Module. |
