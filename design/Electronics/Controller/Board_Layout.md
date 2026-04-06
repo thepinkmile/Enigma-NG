@@ -22,14 +22,14 @@
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
 * **Pins 27-28:** GND Isolation Moat
 * **Pin 29:** SYS_FAULT (eFuse fault from TPS25980; PM → CTRL; CM5 GPIO 25)
-* **Pin 30:** POE_STAT (PoE live status from TPS2372-4 /PG; PM → CTRL; CM5 GPIO 20)
+* **Pin 30:** POE_STAT (PoE live status from TPS2372-4 /PG; PM → CTRL; CM5 GPIO 24)
 * **Pins 31-34:** SW_LED_R/G/B (RGB switch) + PWR_GD
 * **Pins 35-37:** I2C-1 Telemetry (SDA/SCL/GND — to PD/eFuse/STUSB4500)
 * **Pin 38:** USB_STAT (USB-C PD negotiated status from STUSB4500; PM → CTRL; CM5 GPIO 21)
 * **Pins 39-44:** 3V3_ENIG (Input from Power Module LDO — 6 pins, 3.0A capacity)
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection — Active Low, CM5 GPIO 23)
 * **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS7A8333P EN pin on Power Module)
-* **Pin 47:** SW_LED_CTRL (CM5 GPIO 24 → disables MIC1555 hardware LED path; CTRL → PM)
+* **Pin 47:** SW_LED_CTRL (CM5 GPIO 20 → LED arbitration; CTRL → PM)
 * **Pin 48:** GND (logic/power zone boundary separator)
 * **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — interleaved; combined with pins 21-22; 4-via Thermal Clusters)
 
@@ -66,7 +66,7 @@
 | 27 | GND | — | Isolation moat |
 | 28 | GND | — | Isolation moat |
 | 29 | SYS_FAULT | PM → CTRL | eFuse fault from TPS25980 FAULT pin (CM5 GPIO 25); active-low |
-| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 20); active-low (LOW = PoE live, per DEC-003) |
+| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 24); active-low (LOW = PoE live, per DEC-003) |
 | 31 | SW_LED_R | CTRL → PM | SW1 RGB switch red channel (CM5 GPIO 17) |
 | 32 | SW_LED_G | CTRL → PM | SW1 RGB switch green channel (CM5 GPIO 18) |
 | 33 | SW_LED_B | CTRL → PM | SW1 RGB switch blue channel (CM5 GPIO 19) |
@@ -83,7 +83,7 @@
 | 44 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin; combined 6 pins = 3.0A |
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS7A8333P EN |
-| 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; disables MIC1555 hardware path (CM5 GPIO 24) |
+| 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; LED arbitration (CM5 GPIO 20) |
 | 48 | GND | — | Logic/power zone boundary separator |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
 | 50 | GND | — | Interleaved return |
@@ -121,7 +121,7 @@
 **5V_MAIN pin count:** Pins 21–22 (2) + Pins 49, 51, 53…79 (16 odd pins) = **18 pins × 0.5A = 9.0A total capacity** ✓
 **3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS7A8333P 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
-**Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25), Pin 30 = POE_STAT (GPIO 20), Pin 38 = USB_STAT (GPIO 21) — all PM → CTRL, active-low/high per signal definition.
+**Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25), Pin 30 = POE_STAT (GPIO 24), Pin 38 = USB_STAT (GPIO 21) — all PM → CTRL, active-low/high per signal definition.
 **GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
 
 ```text
@@ -167,7 +167,7 @@ _______________________________________    _____________    ____________________
                                            (GPIO OUT)       (CM5 GPIO 16 → TPS7A8333P EN)
 
 [ PIN 47       ] ------------------------> [ 3.3V LOGIC] -> [ SW_LED_CTRL                ]
-                                           (GPIO OUT)       (CM5 GPIO 24 — HIGH = CM5 in control of SW1 RGB)
+                                           (GPIO OUT)       (CM5 GPIO 20 — HIGH = CM5 in control of SW1 RGB)
 
 [ PIN 48       ] ------------------------> [ GND       ] -> [ GND (ZONE BOUNDARY)        ]
 
@@ -177,20 +177,28 @@ _______________________________________    _____________    ____________________
 
 ### DIAGNOSTIC BANK-ALPHA (Top-Right)
 
-* **Pins 1-2:** 5V_MAIN
-* **Pins 3-4:** 3V3_ENIG
-* **Pins 5-6:** I2C_TELE
-* **Pin  7:** ETH_LED_LINK
-* **Pin  8:** ETH_LED_ACT
-* **Pin  9:** SW_LED_G (RGB switch green)
-* **Pin  10:** SW_LED_R (RGB switch red)
-* **Pin  11:** SW_LED_B (RGB switch blue)
-* **Pin  12:** PWR_GD
-* **Pin  13:** BATT_PRES_N
-* **Pin  14:** GND (previously 3V3_SYSTEM — rail removed; reassigned to GND for improved return path)
-* **Pin  15-18:** SPARE (revered for future use)
-* **Pin  19:** GND_CHASSIS
-* **Pin  20:** GND
+| Pin | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1 | 5V_MAIN | PM → CTRL | 5V power rail probe point |
+| 2 | 5V_MAIN | PM → CTRL | 5V power rail (redundant) |
+| 3 | 3V3_ENIG | PM → CTRL | 3.3V logic rail probe point |
+| 4 | 3V3_ENIG | PM → CTRL | 3.3V logic rail (redundant) |
+| 5 | I2C1_SDA | Bidir | I²C Telemetry bus data |
+| 6 | I2C1_SCL | Bidir | I²C Telemetry bus clock |
+| 7 | ETH_LED_LINK | CTRL → PM | Ethernet link status LED |
+| 8 | ETH_LED_ACT | CTRL → PM | Ethernet activity LED |
+| 9 | SW_LED_G | CTRL → PM | RGB LED green channel (GPIO 18) |
+| 10 | SW_LED_R | CTRL → PM | RGB LED red channel (GPIO 17) |
+| 11 | SW_LED_B | CTRL → PM | RGB LED blue channel (GPIO 19) |
+| 12 | PWR_GD | PM → CTRL | Power-good signal (GPIO 27) |
+| 13 | BATT_PRES_N | PM → CTRL | Battery presence active-low (GPIO 23) |
+| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 20) |
+| 15 | SPARE | — | Reserved for future use |
+| 16 | SPARE | — | Reserved for future use |
+| 17 | SPARE | — | Reserved for future use |
+| 18 | SPARE | — | Reserved for future use |
+| 19 | GND_CHASSIS | — | Chassis ground reference |
+| 20 | GND | — | Signal/power ground return |
 
 > **Note:** RGB channel order in Diagnostic Bank (pins 9/10/11 = G/R/B) differs from BtB Link-Alpha order (pins 31/32/33 = R/G/B).
 > This is intentional for PCB routing convenience. Silkscreen legend must label each pad individually to avoid probe confusion during bring-up.
@@ -252,11 +260,28 @@ _______________________________________    _____________    ____________________
 
 ### DIAGNOSTIC BANK-BETA (Top-Left)
 
-* **Pins 1-6 / 9-14:** ENC_IN [0:5] / ENC_OUT [0:5] (Sniffer Bus)
-* **Pin 7:** SYS_RESET_N (Manual Clear Point)
-* **Pin 15:** JTAG_TCK (Clock Sniffer)
-* **Pin 16:** GND (Clock Shield)
-* **Pins 17-20:** TMS / TDI / TDI / TDO (JTAG State)
+| Pin | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1 | ENC_IN[0] | CTRL → Stator | Encoder input bit 0 |
+| 2 | ENC_IN[1] | CTRL → Stator | Encoder input bit 1 |
+| 3 | ENC_IN[2] | CTRL → Stator | Encoder input bit 2 |
+| 4 | ENC_IN[3] | CTRL → Stator | Encoder input bit 3 |
+| 5 | ENC_IN[4] | CTRL → Stator | Encoder input bit 4 |
+| 6 | ENC_IN[5] | CTRL → Stator | Encoder input bit 5 |
+| 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
+| 8 | GND | — | Ground reference |
+| 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |
+| 10 | ENC_OUT[1] | Stator → CTRL | Encoder output bit 1 |
+| 11 | ENC_OUT[2] | Stator → CTRL | Encoder output bit 2 |
+| 12 | ENC_OUT[3] | Stator → CTRL | Encoder output bit 3 |
+| 13 | ENC_OUT[4] | Stator → CTRL | Encoder output bit 4 |
+| 14 | ENC_OUT[5] | Stator → CTRL | Encoder output bit 5 |
+| 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
+| 16 | GND | — | TCK shield / clock return |
+| 17 | TMS | JDB → Stator | JTAG mode select |
+| 18 | TDI | JDB → Stator | JTAG data in |
+| 19 | TDO | Stator → JDB | JTAG data out (TTD_RETURN) |
+| 20 | GND | — | JTAG trailing shield |
 
 ### BtB Connectivity Routing
 

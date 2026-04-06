@@ -52,7 +52,7 @@ The logic heart of the machine, hosting the Raspberry Pi CM5.
 
 * **Stackup:** 6-Layer JLC06161H-2116 for 5Gbps signal integrity.
 * **Aesthetics:** Dark Green mask with ENIG Gold finish and Bilingual Typewriter silkscreen.
-* **Diagnostics:** 2x8 Gold-plated diagnostic bank for real-time bus monitoring.
+* **Diagnostics:** Two 2×10 Gold-plated diagnostic banks (Bank-Alpha: power/status monitoring; Bank-Beta: encryption/JTAG monitoring) for real-time bus monitoring.
 * **UI:** 40-pin flush-edge Samtec link to the Stator.
 
 ## 4. Encoder Module (Dual-Use)

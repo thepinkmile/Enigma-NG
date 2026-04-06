@@ -79,3 +79,15 @@ To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Dat
 * **Font:** All text must use the "KiCad Font" with a typewriter-style appearance.
 * **Language:** Bilingual German/English (e.g., `SICHERHEITS-PROBE [Safety Probe]`).
 * **Warning Labels:** High-voltage or high-energy zones must be demarcated with a 0.2mm border box.
+
+## 6. Vias & Teardrops
+
+These rules apply to all boards in the Enigma-NG system.
+
+* **VIPPO (Via-in-Pad):** 0.2mm Drill / 0.45mm Diameter (Plugged & Capped).
+* **Standard Via:** 0.3mm Drill / 0.6mm Diameter (Staggered zigzag pattern).
+  * **Spec-A (Premium):** Blind/Buried Vias (L1-L3) and Back-drilling for all 5Gbps differential pairs to eliminate stubs.
+  * **Spec-B (Standard):** Through-hole Vias using POFV (Via-in-Pad). Vias MUST be Epoxy Filled and Capped (IPC-4761 Type VII) to provide a flat solderable surface for CM5/Samtec pads.
+* **Teardrops:** Enabled on all signal and power pads to reduce stress and impedance steps.
+* **Copper:** 2oz Finished Copper (L1-L6 on 6-layer boards; L1-L4 on 4-layer boards).
+* **Finish:** ENIG (Electroless Nickel Immersion Gold) mandatory for 0.4mm pitch integrity (all BtB connector pads and diagnostic probe loops).

@@ -17,11 +17,8 @@
 * **Shielding:** High-speed signals (Ethernet, USB 3.0, HDMI) routed as Striplines on L3, shielded by L2/L5 GND planes
   and L4 (Internal) for High-Current Power Plane (5V_MAIN / 3V3_ENIG).
 * **USB-C:** 16-pin "Power Only" to maximize mechanical durability in classroom settings.
-* **Status LED:** **MIC1555 Hardware Heartbeat** (1Hz pulse) triggers on power-up before CM5 boot for instant status
-  confirmation.
+* **Status LED:** Hardware heartbeat (1Hz pulse, generated on Power Module) triggers on power-up before CM5 boot for instant status confirmation.
 
-> **Full design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable
-> to this board.
 
 ### Functional & Design Requirements
 
@@ -33,7 +30,7 @@
 | FR-CTL-02 | Receive power from the Power Module and distribute to the CM5 and peripherals | Via Link-Alpha (J1) | §2 Dual-Link Interface; BOM J1 (ERF8-040) |
 | FR-CTL-03 | Provide external I/O interfaces for system management | GbE, HDMI, USB 3.0 | §2 Connectivity; BOM J3 (USB 3.0), J4 (HDMI) |
 | FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and Link-Beta | §3 JTAG Programming Subsystem; BOM J2 (Link-Beta) |
-| FR-CTL-05 | Monitor system power status and report to CM5 via GPIO | PoE presence, battery presence, USB fault, PWR_GD | §6 CM5 GPIO Mapping Matrix; §4 Telemetry & Logic |
+| FR-CTL-05 | Monitor system power and load telemetry via I²C and report discrete power status signals to CM5 via GPIO | Telemetry: INA219 ×2 (PM U12 @ 0x40 for 5V_MAIN; Stator U2 @ 0x45 for rotor stack) and LTC3350 @ 0x09; Discrete: PoE presence, battery presence, USB fault, PWR_GD | §4 Telemetry & Logic; §6 CM5 GPIO Mapping Matrix |
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
 | FR-CTL-07 | Route Link-Beta signals between the CM5/JTAG Daughterboard and the Stator board | Via J2 | §2 Dual-Link Interface; BOM J2 (ERF8-020) |
 
@@ -42,16 +39,15 @@
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-CTL-01 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §9 PCB Fabrication & Stackup |
-| DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor) | BOM U1 (CM5) |
+| DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor). Minimum spec: 8 GB RAM, 4 GB eMMC. CM5 Lite (no onboard wireless, no onboard flash) is NOT permitted. BOM reference: various (e.g. CM5008032). | BOM U1 |
 | DR-CTL-03 | Link-Alpha connector | J1 = ERF8-040-05.0-S-DV-K-TR (80-pin female, 0.8 mm pitch) | BOM J1 (ERF8-040-05.0-S-DV-K-TR) |
 | DR-CTL-04 | Link-Beta connector | J2 = ERF8-020-05.0-S-DV-K-TR (40-pin female, 0.8 mm pitch) | BOM J2 (ERF8-020-05.0-S-DV-K-TR) |
-| DR-CTL-05 | JTAG signal buffer | U5 = SN74LVC2G125DCUR relocated to JDB (see DEC-023); Controller JTAG lines are pass-through — no active components | §3 JTAG Programming Subsystem; JDB Design_Spec BOM U5 |
 | DR-CTL-06 | USB current limit | 1.6 A via TPS2065C; fault output to GPIO 22 (USB_FAULT) | BOM U2 (TPS2065C); §6 GPIO Mapping (GPIO 22) |
 | DR-CTL-07 | RTC battery holder | BT1 = Keystone 3034 (THT horizontal CR2032 holder) | §5 RTC Backup Battery; BOM BT1 (Keystone 3034) |
 | DR-CTL-08 | RTC protection | D1 = Nexperia BAT54 Schottky diode (blocks PMIC VBAT charge path) | §5 RTC Backup Battery; BOM D1 (BAT54) |
 | DR-CTL-09 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 95, Hirose DF40 200-pin) | §5 RTC Backup Battery; BOM C6 |
-| DR-CTL-10 | GPIO mapping | GPIO 20 = POE_STAT (active-low), GPIO 22 = USB_FAULT, GPIO 23 = BATT_PRES_N, GPIO 24 = SW_LED_CTRL, GPIO 25 = SYS_FAULT (active-low), GPIO 26 = SYS_RESET_N (active-low output), GPIO 27 = PWR_GD | §6 CM5 GPIO Mapping Matrix |
-| DR-CTL-11 | RTC configuration | `dtparam=rtc_bbat_vchg` must NOT be set in `/boot/firmware/config.txt` | §5 RTC Backup Battery §5.1 |
+| DR-CTL-10 | RGB LED interface | Controller must provide PWM-capable GPIO outputs for SW1 RGB LED (3 channels: SW_LED_R, SW_LED_G, SW_LED_B) and a separate logic output (SW_LED_CTRL) to arbitrate firmware vs hardware LED control. Pin-level details in §6 GPIO matrix. | §6 CM5 GPIO Mapping Matrix |
+| DR-CTL-11 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
 
 ## 2. Dual-Link Interface (Samtec ERx8)
 
@@ -60,15 +56,15 @@
 > Stator (J2) along the back edge in a single insertion motion. See DEC-014.
 
 * **Link-Alpha (Power/Entry):** ERF8 Female Socket 80-pin Power/Ethernet/Telemetry entry from Power Module.
-  * Receives: 5V/9.0A, 3V3_ENIG, GBE and PWR_GD Data from Power Module.
-  * Provides: 3V3_ENIG for RJ45 Power and Status LED signals.
+  * Receives: 5V_MAIN, 3V3_ENIG, GbE, I²C Telemetry bus, and PWR_GD from Power Module.
+  * Provides to PM: SW_LED_R, SW_LED_G, SW_LED_B (RGB LED channels), ETH_LED_LINK, ETH_LED_ACT (Ethernet status LEDs), ROTOR_EN (LDO enable), SW_LED_CTRL (LED arbitration).
   * **Cross-ref:** See `Power_Module/Design_Spec.md` and `Power_Module/Board_Layout.md` for the matching Link-Alpha
     pin allocation and power flow definitions.
 * **Link-Beta (Logic/Stator):** ERF8 Female Socket 40-pin Encryption/JTAG interface to Stator Board.
   * Provides: JTAG, Reset, and 3V3_ENIG to Stator.
   * **Cross-ref:** See `Stator/Design_Spec.md` and `Stator/Board_Layout.md` for explicit pin mapping and connector
     compliance. See DEC-015 for 40-pin reduction rationale and poka-yoke safety note.
-* **3V3_ENIG Bridge:** Passive 2oz copper highway on L3, directly linking Alpha and Beta for noise isolation.
+* **3V3_ENIG:** The Controller is an active consumer of 3V3_ENIG — CM5 VDD_GPIO_REF and on-board peripherals are powered from this rail via the LINK-ALPHA tap node. Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design phase). The 2oz copper L3 highway continues to link Alpha and Beta for the rotor stack pass-through.
 
 ### 2.1. High-Speed Routing (on Link-Alpha)
 
@@ -109,42 +105,28 @@
 
 ## 3. JTAG Programming Subsystem (USB Blaster)
 
-* **Bridge Architecture:** Dedicated **FT232H** (High-Speed USB 2.0 to JTAG/MPSSE).
-* **Module Type:** Removable **Daughterboard** (2.54mm header) for future-proofing and ease of repair.
-* **Interface:** Asymmetrical 1×5 (Power/USB) and 1×10 (Shielded JTAG) 2.54mm ENIG headers.
-* **Shielding:** 1:1 Signal-to-Ground ratio on JTAG header to prevent clock crosstalk.
-* **Diagnostic Looped Probe Pad Bank:** 2x8 2.54mm grid with gold-plated loops, positioned in-line with the BtB
-  header for clean logic analyzer probing.
-* **JTAG Chain Flow:**
-    1. **CM5 USB 2.0** → **FT232H Daughterboard**.
-    2. **JTAG Out** → **Stator CPLD (Intel MAX II EPM240T100C5N)** — first device in chain.
-    3. **JTAG Chain** → **HID Encoder (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J4.
-    4. **JTAG Chain** → **Plugboard Encoder #1 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J5.
-    5. **JTAG Chain** → **Plugboard Encoder #2 (Dual Intel MAX II EPM240T100C5N CPLD)** via Stator J6.
-    6. **JTAG Chain** → **30x Rotor CPLDs (Intel MAX II EPM240T100C5N)** via Stator Backplane.
-    7. **TTD_RETURN** ← Reflector → Extension Port → Stator J7 pin 15 → LINK-BETA pin 26 → FT232H.
-* **Signal Integrity (JDB):** All JTAG buffering and series termination is located on the JDB (see DEC-023).
-  The SN74LVC2G125DCUR dual-channel buffer (U5) drives TCK and TMS for the 37-device chain load.
-  Series damping resistors (R6 TCK, R7 TMS after U5; R8 TDI direct from FT232H) are placed before
-  the J2 JTAG header on JDB, matching the 50 Ω PCB trace impedance on LINK-BETA (BtB, no cable).
-* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly
-  from the JDB hat-header (J_JDB) to LINK-BETA (J2) on the Controller board without any active
-  components. No buffer or series resistors reside on the Controller for JTAG signals.
-* **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for FT232H module schematics and assembly details.
-  See DEC-016, DEC-023.
+The Controller provides JTAG pass-through only. All JTAG chain architecture, device ordering, buffering, termination, and timing specifications are defined in the JDB Design_Spec.
+
+* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly from the JDB hat-header (J_JDB) to LINK-BETA (J2) on the Controller board without any active components. No buffer or series resistors reside on the Controller for JTAG signals.
+* **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for all JTAG chain architecture, FT232H module schematics, buffering, and assembly details. See DEC-016, DEC-023.
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
 
-* **Rotor Shunt:** **20mΩ (1206, 1%, 0.5W preferred; ≥0.25W minimum)** metal strip resistor on Stator board (Stator owns this component — see `Stator/Design_Spec.md`).
-* **Sensing:** **Kelvin-connection (4-wire)** with 10Ω/0.1µF RC noise filtering.
-* **Shunt Resistor:** 20mΩ (1206, 1%, 0.5W preferred; ≥0.25W minimum). Firmware must use R_SHUNT = 0.020Ω in the INA219 current calculation (I = V_shunt / R_shunt).
-  * At 3A max: V_drop = 60mV — fits the INA219 ±80mV PGA range; 3.0A resolution ÷ 2¹² = 0.73mA/LSB.
-* **Filtering:** 10Ω + 0.1µF RC filter on sensing lines to suppress rotor switching noise.
-* **I2C Map:**
-  * **INA219 Power Module Monitor**: I2C @ 0x40 on Power Module.
-  * **INA219 Rotor Monitor**: I2C @ 0x45 on Stator (rotor stack current/voltage).
-  * **STUSB4500 (PD Controller):** I2C @ 0x28 on Power Module.
-  * **Smart Battery (SMBus):** I2C @ 0x0B on Power Module.
+Rotor current monitoring is implemented on the Stator board (see Stator Design_Spec §5).
+
+Driver configuration (INA219 shunt resistance, DT binding) is specified in the Linux OS design spec.
+
+### I²C Bus Topology
+
+All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through LINK-ALPHA to the Power Module and Stator.
+
+| Address | Device | Location | Function |
+| :--- | :--- | :--- | :--- |
+| 0x09 | LTC3350 | Power Module | Supercap charger/monitor |
+| 0x0B | Smart Battery | Power Module | SMBus battery monitoring |
+| 0x28 | STUSB4500 | Power Module | USB-C PD controller |
+| 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |
+| 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
 
 ## 5. RTC Backup Battery
 
@@ -175,7 +157,7 @@ a 3V coin cell is required on the CM5's VBAT pin (**Pin 95** on the CM5 Hirose D
 
 ## 6. CM5 GPIO Mapping Matrix (Enigma-NG)
 
-All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50mA across all pins.
+All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate per GPIO bank.
 
 > **CM5 VDD_GPIO_REF:** The CM5 module VDD_GPIO_REF pin on the Hirose DF40 200-pin module connector
 > must be connected to **3V3_ENIG** (not to the CM5-internal 3V3_SYSTEM rail, which is not used as a
@@ -185,18 +167,17 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **0 / 1** | **ID_EEPROM** | I2C | 3.3V | Reserved for CM5 HAT ID. |
-| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** INA219, STUSB4500, Smart Battery. |
+| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45. |
 | **4–15** | **DATA_BUS** | Output | 3.3V | **12-bit Parallel Bus** (D0-D11) to Stator/Rotors. |
 | **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ENIG LDO for sequenced rotor stack power-up. |
 | **17** | **SW_LED_R** | PWM | 3.3V | RGB switch (SW1) — Red channel. Fault / graceful shutdown indicator. |
 | **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |
 | **19** | **SW_LED_B** | PWM | 3.3V | RGB switch (SW1) — Blue channel. PoE active power source. |
-| **20** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
+| **20** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware LED fallback path on Power Module. Groups LED signals with GPIOs 17–19. |
 | **21** | **USB_STAT** | Input | 3.3V | Active Low: 15V/5A PD Negotiated (STUSB4500). |
 | **22** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |
-| **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware MIC1555 orange-flash path on Power Module. |
+| **24** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
 | **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100C5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
 | **27** | **PWR_GD** | Input | 3.3V | Active High: power-good signal from MCP121T-450E (4.50V threshold). HIGH = 5V_MAIN stable; deasserts on power loss, triggering graceful shutdown daemon. Arrives via Link-Alpha pin 34. |
@@ -204,17 +185,75 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 ## 7. Protection & EMI
 
 * **External Links:** All inputs (Status) feature 10kΩ series resistors to protect CM5 pins from transient spikes.
-* **Voltage:** 5V signals are strictly forbidden on these pins.
+* **Voltage:** 5V signals are strictly forbidden on: CM5 GPIO pins, I²C SDA/SCL lines, JTAG (TDI/TDO/TCK/TMS), and all logic-level signals on LINK-ALPHA.
 * **ESD Protection:** [TPD12S016](https://www.ti.com) (HDMI) and [TPD4E05U06](https://www.ti.com) (USB 3.0) on Layer 1.
-* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors at the Link-Alpha power-entry pins.
-* **Capacitor Bank Geometry:** Place in a **Symmetrical Star/Spoke pattern**
-  (one hub capacitor at entry, four spoke capacitors around it) to minimize input-rail impedance and reduce
-  brown-out risk during current transients.
-* **Status LED:** MIC1555-based 1Hz heartbeat flasher (Bilingual label: ACHTUNG: HEISS!).
-* **Ferrite Beads:** Moved exclusively to the **Stator Board** to keep rotor switching noise isolated from the
-  Controller logic.
+* **Bulk Entry Bank Rule (5V_MAIN):** Use **5× 10µF X7R 50V** bulk decoupling capacitors placed at the LINK-ALPHA connector entry point (5V_MAIN entry pins). Place in a **Symmetrical Star/Spoke pattern** (one hub capacitor at entry, four spoke capacitors around it) to minimise input-rail impedance and reduce brown-out risk during current transients.
+* **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design phase). These are distinct from the 5V_MAIN entry bank above.
+* **Hardware LED Fallback:** The hardware LED fallback path (MIC1555 oscillator) is located on the Power Module.
+* **Ferrite Beads:** Ferrite bead filtering is implemented on the Stator board.
 
 ## 8. Connectivity
+
+### Link-Alpha Connector (Samtec ERF8-040)
+
+* **Part:** ERF8-040-05.0-S-DV-K-TR (Female Socket, 80-pin, 0.8mm pitch, 5.0mm stack height).
+* **Mating Part (Power Module):** ERM8-040-05.0-S-DV-K-TR (Male Header).
+* **Full Pin Table:** See `Controller/Board_Layout.md` LINK-ALPHA section for the authoritative 80-pin table.
+* **Pin Summary:**
+
+| Pins | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1–20 | GbE (MDI0±/MDI1±/MDI2±/MDI3±) + GND | Bidir | 100Ω diff pairs, GND-shielded |
+| 21–22 | 5V_MAIN | PM → CTRL | Supplemental power entry |
+| 23–24 | GND | — | Supplemental return |
+| 25 | ETH_LED_LINK | CTRL → PM | Active-low Ethernet link LED |
+| 26 | ETH_LED_ACT | CTRL → PM | Active-low Ethernet activity LED |
+| 27–28 | GND | — | Isolation moat |
+| 29 | SYS_FAULT | PM → CTRL | eFuse fault (active-low, CM5 GPIO 25) |
+| 30 | POE_STAT | PM → CTRL | PoE live status (active-low, CM5 GPIO 24) |
+| 31 | SW_LED_R | CTRL → PM | RGB LED red channel (CM5 GPIO 17) |
+| 32 | SW_LED_G | CTRL → PM | RGB LED green channel (CM5 GPIO 18) |
+| 33 | SW_LED_B | CTRL → PM | RGB LED blue channel (CM5 GPIO 19) |
+| 34 | PWR_GD | PM → CTRL | Power-good from MCP121T-450E (CM5 GPIO 27) |
+| 35 | I2C1_SDA | Bidir | I²C bus data (CM5 GPIO 2) |
+| 36 | I2C1_SCL | Bidir | I²C bus clock (CM5 GPIO 3) |
+| 37 | GND | — | I²C shield return |
+| 38 | USB_STAT | PM → CTRL | USB-C PD status (CM5 GPIO 21) |
+| 39–44 | 3V3_ENIG | PM → CTRL | Logic rail, 6 pins = 3.0A |
+| 45 | BATT_PRES_N | PM → CTRL | Battery presence (active-low, CM5 GPIO 23) |
+| 46 | ROTOR_EN | CTRL → PM | LDO enable (CM5 GPIO 16) |
+| 47 | SW_LED_CTRL | CTRL → PM | LED arbitration (CM5 GPIO 20) |
+| 48 | GND | — | Zone boundary separator |
+| 49–80 | 5V_MAIN / GND (interleaved) | PM → CTRL | 9A delivery cluster |
+
+### JDB Hat Connectors
+
+The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
+
+#### J_JDB_PWR — Power/USB Header (1×5, 2.54mm)
+
+| Pin | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1 | 5V_USB | CTRL → JDB | 5V USB power (from TPS2065C rail) |
+| 2 | 3V3_ENIG | CTRL → JDB | 3.3V logic rail (JTAG signal reference) |
+| 3 | USB_D+ | Bidir | USB 2.0 D+ to CM5 |
+| 4 | USB_D− | Bidir | USB 2.0 D− to CM5 |
+| 5 | GND | — | Power/signal return |
+
+#### J_JDB_JTAG — JTAG Output Header (1×10, 2.54mm)
+
+| Pin | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1 | TCK | JDB → CTRL | JTAG clock (buffered via U5) |
+| 2 | GND | — | Ground |
+| 3 | TDI | JDB → CTRL | JTAG data in |
+| 4 | GND | — | Ground |
+| 5 | TDO | CTRL → JDB | JTAG data out (TTD_RETURN) |
+| 6 | GND | — | Ground |
+| 7 | TMS | JDB → CTRL | JTAG mode select (buffered via U5) |
+| 8 | GND | — | Ground |
+| 9 | VREF (3V3_ENIG) | CTRL → JDB | Voltage reference for JTAG logic |
+| 10 | GND | — | Ground |
 
 ### Link-Beta Connector (Samtec ERF8-020)
 
@@ -235,9 +274,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
   may omit this per DEC-017.
 * **Finish:** **ENIG (Gold)** for all pads and diagnostic loops.
 * **Solder Mask:** **Dark Green** (Vintage Industrial Lacquer aesthetic).
-* **Silkscreen:** **White**, **Typewriter-style font**, Bilingual (ALL-CAPS GERMAN / Sentence-case English).
-* **Branding:** Top-Left corner features the **Shielded Enigma-NG Square Emblem** (Exposed ENIG Gold tied to
-  GND_CHASSIS).
+* **Silkscreen:** White, Typewriter-style font, Bilingual (ALL-CAPS GERMAN / Sentence-case English).
 
 ### Advanced Layer Stackup (6-Layer / 2oz) [JLCPCB JLC06161H-2116]
 
@@ -256,7 +293,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | :--- | :--- | :--- | :--- |
 | **USB 3.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
 | **Ethernet/HDMI** | 100Ω Differential | 4.5 mil / 8.5 mil | L3 (Stripline) |
-| **JTAG signals** | 50Ω Single-ended | **5.0 mil (0.127 mm)** | L6 |
+| **JTAG signals** | 50Ω Single-ended | 5.0 mil (0.127 mm) | L6 |
 | **Power Rails (5V_MAIN / 3V3_ENIG)** | N/A (Low Drop) | 60.0 mil (Min) — 9.05A worst-case system / 12A LMQ capacity | L4 Island |
 | **Logic/I2C** | N/A | 6.0 mil | L4 / L6 |
 | **USB 2.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) — same geometry as USB 3.0 |
@@ -264,39 +301,77 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 
 ### Vias & Teardrops
 
-* **VIPPO (Via-in-Pad):** 0.2mm Drill / 0.45mm Diameter (Plugged & Capped).
-* **Standard Via:** 0.3mm Drill / 0.6mm Diameter (Staggered zigzag pattern).
-  * **Spec-A (Premium):** Blind/Buried Vias (L1-L3) and Back-drilling for all 5Gbps differential pairs to eliminate
-    stubs.
-  * **Spec-B (Standard):** Through-hole Vias using **POFV (Via-in-Pad)**. Vias MUST be **Epoxy Filled and Capped**
-    (IPC-4761 Type VII) to provide a flat solderable surface for CM5/Samtec pads.
-* **Teardrops:** Enabled on all signal and power pads to reduce stress and impedance steps.
-* **Copper:** 2oz Finished Copper (L1-L6).
-* **Finish:** **ENIG (Electroless Nickel Immersion Gold)** mandatory for 0.4mm pitch integrity.
+See `design/Standards/Global_Routing_Spec.md §6` for via and teardrop rules applicable to all boards.
 
 ## 10. Thermal, Branding & Diagnostics
 
-### Thermal & Branding
+### Thermal
 
-* **Logo:** Top-left 10mm "Enigma-NG" shielded gold emblem.
-* **eFuse:** Top-right near power inputs with dedicated "Caution: Hot" silkscreen.
+* **LINK-ALPHA Power Entry:** The LINK-ALPHA connector carries 5V_MAIN at up to 9A. Add a **"Caution: High Current"** silkscreen label adjacent to the connector.
+* **CM5 Module:** The CM5 has its own integrated thermal management. No additional heatsink is specified at the Controller board level.
 
 ### Diagnostics & Aesthetics
 
-* **Bank:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank for real-time bus monitoring.
-  * **Placement:** 2x8 2.54mm ENIG Gold Looped Probe Pad Bank placed directly behind the BtB header.
-  * **Orientation:** Facing Upwards for easy logic analyser ribbon cable connection.
-  * **Visuals:** Typewriter-style bilingual silkscreen legend on the bottom layer.
-* **Silkscreen:** Dark Green mask with White Bilingual Typewriter font.
-* **Branding:** Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom).
+* **Placement:** 2×10 2.54mm ENIG Gold Looped Probe Pad Banks placed on L1, directly behind their respective BtB connectors.
+* **Orientation:** Facing upwards for easy logic analyser ribbon cable connection.
+* **Silkscreen:** Dark Green mask with White Bilingual Typewriter font. Silkscreen legend must label each pad individually.
+* **Branding:** Top-left 10mm "Enigma-NG" shielded gold emblem (Exposed ENIG Gold tied to GND_CHASSIS). Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom). See `design/Standards/Global_Routing_Spec.md §4` for full branding specification.
 
-#### Symmetrical Diagnostics
+#### Diagnostic Bank-Alpha (Power/Entry) — 2×10
 
-* **Bank-Alpha (Power/Entry):** 2x10 ENIG Gold Looped Probe Pads (L1). Monitors 5V/3.3V, I2C Telemetry, Status LEDs,
-  and BATT_PRES.
-* **Bank-Beta (Logic/Exit):** 2x10 ENIG Gold Looped Probe Pads (L1). Monitors 12-bit Sniffer (ENC_IN/OUT), JTAG, and
-  SYS_RESET_N.
-* **JTAG Shielding:** JTAG_TCK (Pin 15) isolated from TDI/TMS via GND buffer (Pin 16).
+Monitors 5V_MAIN, 3V3_ENIG, I²C Telemetry, Status LEDs, and BATT_PRES.
+
+| Pin | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1 | 5V_MAIN | PM → CTRL | 5V power rail probe point |
+| 2 | 5V_MAIN | PM → CTRL | 5V power rail (redundant) |
+| 3 | 3V3_ENIG | PM → CTRL | 3.3V logic rail probe point |
+| 4 | 3V3_ENIG | PM → CTRL | 3.3V logic rail (redundant) |
+| 5 | I2C1_SDA | Bidir | I²C Telemetry bus data |
+| 6 | I2C1_SCL | Bidir | I²C Telemetry bus clock |
+| 7 | ETH_LED_LINK | CTRL → PM | Ethernet link status LED |
+| 8 | ETH_LED_ACT | CTRL → PM | Ethernet activity LED |
+| 9 | SW_LED_G | CTRL → PM | RGB LED green channel (GPIO 18) |
+| 10 | SW_LED_R | CTRL → PM | RGB LED red channel (GPIO 17) |
+| 11 | SW_LED_B | CTRL → PM | RGB LED blue channel (GPIO 19) |
+| 12 | PWR_GD | PM → CTRL | Power-good signal (GPIO 27) |
+| 13 | BATT_PRES_N | PM → CTRL | Battery presence active-low (GPIO 23) |
+| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 20) |
+| 15 | SPARE | — | Reserved for future use |
+| 16 | SPARE | — | Reserved for future use |
+| 17 | SPARE | — | Reserved for future use |
+| 18 | SPARE | — | Reserved for future use |
+| 19 | GND_CHASSIS | — | Chassis ground reference |
+| 20 | GND | — | Signal/power ground return |
+
+> **Note:** RGB channel order in Bank-Alpha (pins 9/10/11 = G/R/B) differs from BtB LINK-ALPHA order (pins 31/32/33 = R/G/B). This is intentional for PCB routing convenience. Silkscreen legend must label each pad individually.
+
+#### Diagnostic Bank-Beta (Logic/Exit) — 2×10
+
+Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
+
+| Pin | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1 | ENC_IN[0] | CTRL → Stator | Encoder input bit 0 |
+| 2 | ENC_IN[1] | CTRL → Stator | Encoder input bit 1 |
+| 3 | ENC_IN[2] | CTRL → Stator | Encoder input bit 2 |
+| 4 | ENC_IN[3] | CTRL → Stator | Encoder input bit 3 |
+| 5 | ENC_IN[4] | CTRL → Stator | Encoder input bit 4 |
+| 6 | ENC_IN[5] | CTRL → Stator | Encoder input bit 5 |
+| 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
+| 8 | GND | — | Ground reference |
+| 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |
+| 10 | ENC_OUT[1] | Stator → CTRL | Encoder output bit 1 |
+| 11 | ENC_OUT[2] | Stator → CTRL | Encoder output bit 2 |
+| 12 | ENC_OUT[3] | Stator → CTRL | Encoder output bit 3 |
+| 13 | ENC_OUT[4] | Stator → CTRL | Encoder output bit 4 |
+| 14 | ENC_OUT[5] | Stator → CTRL | Encoder output bit 5 |
+| 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
+| 16 | GND | — | TCK shield / clock return |
+| 17 | TMS | JDB → Stator | JTAG mode select |
+| 18 | TDI | JDB → Stator | JTAG data in |
+| 19 | TDO | Stator → JDB | JTAG data out (TTD_RETURN) |
+| 20 | GND | — | JTAG trailing shield |
 
 ## 11. Bill of Materials
 
@@ -313,7 +388,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| U1 | Raspberry Pi Compute Module 5 (CM5) | N/A | CM5 | CM5 | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
+| U1 | Raspberry Pi Compute Module 5 (CM5) — 8GB RAM / 4GB eMMC minimum; CM5 Lite NOT permitted | N/A | CM5 (SO-DIMM) | various (e.g. CM5008032) | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065C | SOIC-8 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
 | U4 | USB/HDMI ESD | TPD4E05U06 | VQFN | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
