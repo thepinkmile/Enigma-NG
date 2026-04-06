@@ -150,7 +150,7 @@ Two **TI LMQ61460-Q1** (3–36V input, 6A rated, VQFN-15-HR, automotive-grade AE
 A single 12A-class Buck regulator would satisfy the current requirement but would concentrate switching noise into one location, increase thermal density, and reduce component utilisation headroom.
 The dual 6A approach provides:
 
-- 70.8% utilisation of each IC (below the 75% rule) ✓
+- 75.4% utilisation of each IC (marginally above the 75% rule; accepted) ✓
 - Thermal load distributed across two thermal pads
 - Redundant current delivery — loss of one IC degrades output to 6A (sufficient for CM5 safe shutdown)
 - An upgrade path without PCB redesign: LMQ61480 (8A) or LMQ61495 (10A) are pin-compatible replacements

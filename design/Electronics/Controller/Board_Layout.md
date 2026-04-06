@@ -140,7 +140,13 @@ _______________________________________    _____________    ____________________
 [ PINS 25 - 26 ] ------------------------> [ 2oz POWER ] -> [ ETH_LED_LINK / ETH_LED_ACT ]
                                            (GPIO OUT)       (Active Low indicators)
 
-[ PINS 27 - 30 ] ------------------------> [ ISOLATION ] -> [ MASTER GND BANK            ]
+[ PINS 27 - 28 ] ------------------------> [ ISOLATION ] -> [ MASTER GND BANK            ]
+
+[ PIN  29      ] ------------------------> [ 3.3V LOGIC] -> [ SYS_FAULT                  ]
+                                           (GPIO IN)        (PM → CTRL, active-low)
+
+[ PIN  30      ] ------------------------> [ 3.3V LOGIC] -> [ POE_STAT                   ]
+                                           (GPIO IN)        (PM → CTRL, active-low)
 
 [ PINS 31 - 33 ] ------------------------> [ 3.3V LOGIC] -> [ SW_LED_R/G/B (RGB switch) ]
                                            (GPIO OUT)       (SW1 RGB LED channels)
