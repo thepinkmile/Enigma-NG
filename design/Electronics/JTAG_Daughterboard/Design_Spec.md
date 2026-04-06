@@ -144,7 +144,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 * **Clocking:** Dedicated 12MHz SMD crystal (Y1) for the FT232H reference clock. The FT232H internal PLL requires 12MHz; CM5 GPCLK
   option was considered and rejected — see DEC-021. Crystal load capacitors C10–C11 (33pF C0G) set the 20pF crystal load capacitance.
 * **JTAG Signal Integrity:**
-  * **R1, R2 (33Ω):** Series termination on FT232H TDI and TCK outputs, placed within 2mm of the FT232H pins before the JTAG buffer (U5) / header (J2).
+  * **R1, R2 (33Ω):** Series termination on FT232H TCK and TDI outputs, placed within 2mm of the FT232H pins before the JTAG buffer (U5) / header (J2).
     Source impedance ≈ 53Ω, matched to the 50Ω controlled-impedance traces on the receiving board. Per DEC-016 intra-board/BtB termination rule.
     See `design/Electronics/Investigations/JTAG_Integrity.md`.
   * **R3 (33Ω):** Series damping on TMS output — same function as R1 (TCK) and R2 (TDI). All three JTAG drive outputs have series termination at the FT232H.

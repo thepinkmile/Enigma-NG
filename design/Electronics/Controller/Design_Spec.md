@@ -257,7 +257,7 @@ All GPIOs are referenced to **+3V3_ENIG**. Total current draw is limited to <50m
 | **USB 3.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
 | **Ethernet/HDMI** | 100Ω Differential | 4.5 mil / 8.5 mil | L3 (Stripline) |
 | **JTAG signals** | 50Ω Single-ended | **5.0 mil (0.127 mm)** | L6 |
-| **Power Rails (5V_MAIN / 3V3_ENIG)** | N/A (Low Drop) | 60.0 mil (Min) — 8.85A worst-case system / 12A LMQ capacity | L4 Island |
+| **Power Rails (5V_MAIN / 3V3_ENIG)** | N/A (Low Drop) | 60.0 mil (Min) — 9.05A worst-case system / 12A LMQ capacity | L4 Island |
 | **Logic/I2C** | N/A | 6.0 mil | L4 / L6 |
 | **USB 2.0** | 90Ω Differential | TBD | TBD — pending trace-width-analysis investigation |
 | **3V3_ENIG power** | N/A | TBD | TBD — pending trace-width-analysis investigation at 2.20A worst-case |
