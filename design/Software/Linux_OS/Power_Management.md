@@ -223,7 +223,7 @@ else:
 
 ## INA219 Rotor Stack Current Monitor
 
-The Stator board carries an INA219 (U2, I2C address **0x45**) monitoring the 3V3_ENIG current to the rotor stack via a **10mΩ CSS2H-2512R-R010ELF shunt resistor** (R1 on Stator, 2512 Kelvin-sense, Stator ONLY).
+The Stator board carries an INA219 (U2, I2C address **0x45**) monitoring the 3V3_ENIG current to the rotor stack via a **10mΩ CSS2H-2512R-R010ELF shunt resistor** (R1 on Stator, 2512 Kelvin-sense; PM R23 is the second system CSS2H instance — total build qty: 2).
 
 ### Hardware Parameters
 
