@@ -257,11 +257,13 @@ consistent with military component derating standards.
 
 | Component | Function | Rated | Peak Load | Utilisation |
 | --- | --- | --- | --- | --- |
-| 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 9.05A | **75.4%** ✓ |
+| 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 9.05A | **75.4%** ✓ † |
 | TPS7A8333P | 3V3_ENIG LDO | 3A | 2.20A | **73.3%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.86A* | **69.4%** ✓ |
 | TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
+
+> † LMQ61460-Q1 operates at 75.4% — marginally above the ≤75% policy. This exceedance is accepted and documented (see §3.3.1: dual-phase interleaving provides redundancy, thermal distribution, and an upgrade path). All other components comply with the ≤75% rule without exception.
 
 > *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 9.05A + LTC3350 supercap charge 1A (5V side) = 10.05A at 5V = 50.25W. Buck
 > input (÷0.87) = 57.8W. At 12V PoE bus: 57.8W / 12V = **4.82A eFuse current**. eFuse utilisation (ILIM=7A): 4.82A / 7A = **68.9%** ✓. Steady state (no supercap charge): 9.05A × 5V / (0.87 × 12V) =
