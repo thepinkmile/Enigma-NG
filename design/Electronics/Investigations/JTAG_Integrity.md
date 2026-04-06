@@ -91,6 +91,10 @@ Transmission line effects are negligible; no series resistor required.
 > functionally acceptable but less ideal. **L1 is therefore the mandatory JTAG routing layer on
 > all 4-layer boards.** This decision is EMC-optimal for this stackup: the contiguous L2 GND plane
 > immediately below L1 provides consistent return-current path and low radiated-field coupling.
+> **Exception:** the JTAG Daughterboard (JDB) uses an inverted stackup (L1=GND/SMT, L2=signals,
+> L3=Power, L4=GND) to orient SMT components toward the Controller Board when mounted as a hat.
+> On the JDB, JTAG signals are routed on L2 over the L1 GND reference plane. See
+> `JTAG_Daughterboard/Design_Spec.md §4` and DEC-017.
 
 ### 3.2 JLCPCB JLC06161H-2116 — 6-Layer 1.6mm (Controller)
 
@@ -430,6 +434,7 @@ distance on the trace.
 | Encoder | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §6 |
 | Reflector | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017 |
 | Extension | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017 |
+| JTAG Daughterboard | JLC04161H-7628 (4L) | L2 over L1 GND | 50 Ω | **0.127 mm (5 mil)** | Added post-DEC-017; JDB inverted stackup — signals on L2 |
 
 ---
 

@@ -47,24 +47,24 @@ being an unachievable worst-case peak).
 | HID Encoder CPLDs (EPM240 ×2) | 2 | 50 | 100 | Keyboard decode + lightboard CPLD |
 | Plugboard Encoder A CPLDs (EPM240 ×2) | 2 | 50 | 100 | Stecker map CPLD |
 | Plugboard Encoder B CPLDs (EPM240 ×2) | 2 | 50 | 100 | Stecker map CPLD |
-| FT232H (JTAG Daughterboard) | 1 | 100 | 100 | USB HS active, full-speed JTAG programming |
+| FT232H VCCIO (JTAG Daughterboard) | 1 | 10 | 10 | VCCIO domain only; VCC (100 mA) is 5V_USB-sourced — see 5V_MAIN table |
 | Rotor CPLDs (EPM240 ×30) | 30 | 50 | 1500 | All rotors cipher-active simultaneously |
 | Rotor AS5600 magnetic encoders (×30) | 30 | 6.5 | 195 | Continuous position polling |
 | INA219 current monitor (Stator) | 1 | 1 | 1 | Negligible |
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
 | Controller-local (RJ45 LEDs, logic) | — | — | 50 | Controller overhead subtracted at LINK-ALPHA |
-| **Typical total** | | | **2,206 mA** | |
-| **Rounded budget** | | | **≤ 2.21 A** | |
+| **Typical total** | | | **2,116 mA** | |
+| **Rounded budget** | | | **≤ 2.12 A** | |
 
 ### Headroom vs LDO Limit
 
 | Limit | Value | Margin |
 | :--- | :--- | :--- |
 | LDO hard limit | 3.00 A | — |
-| Typical worst-case load | 2.21 A | **+0.79 A (26%)** |
+| Typical worst-case load | 2.12 A | **+0.88 A (29%)** |
 | LINK-BETA connector capacity | 4.00 A | Not the constraint |
 
-> ✅ **Conclusion:** The 3A TPS7A8333P LDO provides 27% headroom above the worst-case typical load.
+> ✅ **Conclusion:** The 3A TPS7A8333P LDO provides 29% headroom above the worst-case typical load.
 > No LDO upgrade is required for the current 30-rotor design.
 
 ---
@@ -97,8 +97,9 @@ being an unachievable worst-case peak).
 | CM5 (Raspberry Pi Compute Module 5) | 5.0 A max | CM5 boot-to-load current profile; 25W at 5V = 5A |
 | 3V3_ENIG LDO quiescent (TPS7A8333P) | 2.20 A max | Sourced from 5V_MAIN; P_in = 5V × 2.2A = 11W |
 | Status LEDs, RJ45, misc. | 0.1 A | |
-| **Total 5V_MAIN worst case** | **7.3 A** | |
-| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 39% headroom ✓ |
+| FT232H VCC (JTAG Daughterboard — via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
+| **Total 5V_MAIN worst case** | **7.4 A** | |
+| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 38% headroom ✓ |
 
 ---
 

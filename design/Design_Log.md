@@ -507,6 +507,12 @@ JLC06161H-2116 stackup for high-speed 5 Gbps differential pair requirements.
 | L3 | 3V3_ENIG power plane |
 | L4 | Signal (data routing, branding data plate) — bottom |
 
+> **Exception — JTAG Daughterboard:** The JDB uses an inverted stackup: L1=GND plane + SMT
+> component pads (component side, faces Controller), L2=signal traces, L3=power pours,
+> L4=GND shield (exterior face). This inversion places components on the face that mates
+> with the Controller Board hat-headers, consistent with single-side JLCPCB assembly.
+> See `JTAG_Daughterboard/Design_Spec.md §4`.
+
 **Boards affected (updated):**
 
 | Board | Previous | New |
