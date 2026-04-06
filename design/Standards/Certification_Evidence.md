@@ -416,7 +416,7 @@ mitigation plan are documented.
 | **Part Number** | EPM240T100C5N |
 | **Family** | MAX II |
 | **Function** | CPLD — Rotor logic emulation (VCCIO from 3V3_ENIG rail) |
-| **Quantity** | 37 devices (across Rotor stack boards) |
+| **Quantity** | 37 devices (1 Stator + 6 Encoder + 30 Rotor CPLDs) |
 | **EOL/PCN Status** | Active lifecycle notice issued by Intel |
 | **Notice Type** | Product Discontinuation / Last-Time-Buy notification |
 

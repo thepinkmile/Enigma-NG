@@ -15,11 +15,11 @@ individual `Design_Spec.md` file.
 
 ## Component Usage Summary
 
-This table shows the component count per board instance and system-wide totals, accounting for ×6 Encoder boards and ×30 Rotor boards in the complete system.
+This table shows the component count per board instance and system-wide totals, accounting for ×3 Encoder boards and ×30 Rotor boards in the complete system.
 
-| MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×6) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | System Total |
+| MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| EPM240T100C5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 12 | 1 | 30 | — | — | — | 43 |
+| EPM240T100C5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | 1 | 30 | — | — | — | 37 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | — | — | 1 | — | — | — | — | — | — | — | 1 |
 | AS5600 — Magnetic Position Encoder (DFN-8) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
 | SN74LVC2G125DCUR — Dual 3-State Buffer (SOT-23-6) | — | 1 | — | — | — | — | — | — | 1 | — | 2 |
@@ -57,11 +57,11 @@ This table shows the component count per board instance and system-wide totals, 
 | 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 5 | 2 | 5 | — | — | — | — | — | — | — | 12 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | — | — | — | 4 | 24 | 4 | 120 | — | — | — | 144 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | 9 |
-| 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 6 | 1 | 30 | — | — | — | 40 |
-| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | 3 | — | — | — | — | — | — | — | 2 | 5 |
-| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 6 | — | — | — | — | 1 | 7 |
+| 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | 37 |
+| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | 3 | — | — | — | — | — | — | — | 3 | 6 |
+| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 1 | 4 |
 | 22 Ω 0603 JTAG end-of-chain damping (ERJ-3EKF2200V / C25805) | — | — | — | — | — | — | — | 1 | — | — | 1 |
-| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 2 | 12 | — | — | — | — | — | 12 |
+| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
 | 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C25806) | — | 1 | — | — | — | — | — | — | — | — | 1 |
@@ -86,7 +86,7 @@ This table shows the component count per board instance and system-wide totals, 
 | ERF8-005 10-pin Samtec Female Socket 0.8 mm (Rotor interface) | — | — | 2 | — | — | 2 | 60 | — | 2 | — | 64 |
 | ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | 32 |
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
-| 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) | — | — | 3 | 1 | 6 | — | — | — | — | — | 9 |
+| 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
 | 16-pin 2×8 Molex Shrouded Header 2.54 mm (22-23-2161) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
 | 6-pin 2×3 Power + USB Header (Molex 22-23-2061) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | 10-pin 2×5 JTAG Header (Molex 22-23-2101) | — | — | — | — | — | — | — | — | — | 1 | 1 |

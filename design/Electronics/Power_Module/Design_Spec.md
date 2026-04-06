@@ -46,8 +46,8 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |
 | DR-PM-03 | 3V3_ENIG rail | 3.3 V ±1%, ≤3.0 A maximum (TPS7A8333P LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460-Q1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |
-| DR-PM-05 | LDO | TPS7A8333P (3.3 V, 3.0 A, HTSSOP-20) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
-| DR-PM-06 | eFuse | TPS25980, 7 A trip current, OVLO = 16.9 V (R_OVLO = ERJ-3EKF1270V) | §5 Protection & Logic; BOM U1 (TPS25980), R1 (232kΩ), R2 (28.7kΩ), R3 (53.6kΩ) |
+| DR-PM-05 | LDO | TPS7A8333P (3.3 V, 3.0 A, WSON-12 (3.5×3.5 mm)) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
+| DR-PM-06 | eFuse | TPS25980, 7 A trip current, OVLO = 16.9 V (R_OVLO = ERA-3ARB5362V (53.6 kΩ, 0.1% thin-film)) | §5 Protection & Logic; BOM U1 (TPS25980), R1 (232kΩ), R2 (28.7kΩ), R3 (53.6kΩ) |
 | DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 |
 | DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) | §5 Protection & Logic; BOM R14 (26.7kΩ), R15 (10.0kΩ) |
 | DR-PM-09 | Holdup duration | ≥14.5 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–4 (22F/2.7V), U3 (LTC3350) |

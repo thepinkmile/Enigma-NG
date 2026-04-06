@@ -285,6 +285,10 @@ Ensure the following line is **absent from** `/boot/firmware/config.txt` (do NOT
 
 Ensure the `rtc_bbat_vchg` parameter is absent from `/boot/firmware/config.txt` — the CM5 defaults to no charging without it.
 
+> **Note:** The following describes a non-standard alternative configuration only. For the
+> Rev A production design (CR2032 + D1 Schottky), the `rtc_bbat_vchg` parameter must remain
+> **absent** from `config.txt`. Do not apply the ML2032 configuration to Rev A hardware.
+>
 > **Note:** The hardware Schottky diode (D1, Nexperia BAT54) already physically prevents the
 > PMIC from charging the CR2032 regardless of this software setting. The config.txt setting is
 > a secondary safeguard. If the battery is ever changed to a rechargeable ML2032, remove D1
