@@ -11,7 +11,7 @@
 The CM5 (Raspberry Pi Compute Module 5) must respond to two hardware power events:
 
 1. **LTC3350 BACKUP trigger (I²C polling)** — primary early-warning mechanism; the BACKUP bit is set when 5V_MAIN falls below 4.40V
-   (R14=26.7kΩ; see Power_Module/Design_Spec.md DR-PM-08), triggering a graceful shutdown with the full ~14.5-second supercap hold-up window available.
+   (R14=26.7kΩ; see Power_Module/Design_Spec.md DR-PM-08), triggering a graceful shutdown with the full ≥14.5-second supercap hold-up window available.
 2. **PWR_GD (GPIO 27 interrupt)** — secondary hard-backstop from MCP121T-450E voltage supervisor; deasserts (goes LOW) when 5V_MAIN < 4.5V.
    Triggers an emergency sync-and-halt if the I²C daemon fails to catch the BACKUP event.
 
@@ -137,7 +137,7 @@ HandlePowerKey=poweroff
 | 5V_MAIN < 4.40V — LTC3350 BACKUP asserted (supercaps take over) | ~shortly after PWR_GD | Hold-up engaged; 14.5s window begins |
 | Daemon detects LTC3350 BACKUP asserted and initiates `systemctl poweroff` | ~50ms from power loss | OS begins graceful shutdown |
 | OS syncs filesystems, halts | ~10–15s | ROTOR_EN de-asserted; CM5 PMIC halted |
-| Supercaps depleted / system off | ~14.5s from power loss | 5V_MAIN → 0V |
+| Supercaps depleted / system off | ≥14.5s from power loss | 5V_MAIN → 0V |
 
 ## Dependencies
 

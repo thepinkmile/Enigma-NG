@@ -77,7 +77,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 * **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 22F at 5.4V. Hold-up
 
-  energy: 72.4J (~14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
+  energy: 72.4J (≥14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
@@ -209,7 +209,7 @@ GND ──────┴──────────────────�
     * ⚠️ **Design note:** The original as-drawn value of R14=30.1kΩ set a threshold of 4.81V — above the PWR_GD assertion voltage (4.50V),
       causing a dead-zone where backup could engage without the CM5 receiving a warning. This was resolved in PM-06.
       See BOM R14 entry and the R14/R15 BOM note for details.
-    * Hold-up duration from fully-charged bank: ~14.5 seconds at 5W CM5 graceful-shutdown load.
+    * Hold-up duration from fully-charged bank: ≥14.5 seconds at 5W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
   * **PD Interface:** TPS2372-4 (U9, QFN-16) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
@@ -316,7 +316,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
 4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (22F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
 
-   depleted state: approximately 2 minutes. Once fully charged, the bank provides approximately 14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
+   depleted state: approximately 2 minutes. Once fully charged, the bank provides ≥14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
 
 5. **Supervisor:** Once 5V_MAIN hits 4.5V, MCP121T-450E asserts GLOBAL_EN HIGH after a 200ms delay.
 6. **Release:** CM5 PMIC begins internal 1.8V/1.1V sequencing.
