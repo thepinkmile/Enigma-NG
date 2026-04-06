@@ -68,7 +68,7 @@ A single 0 Ω bond resistor (or direct via) connects signal GND to the chassis c
 
 ## 5. Electrical Requirements
 
-* **Voltage:** Powered by the `+3V3_ENIG` rail from the Power Module via the BtB interconnect.
+* **Voltage:** FT232H core VCC is bus-powered from VBUS (5 V via USB-C, internal LDO → 3.3 V); VCCIO and all 3.3 V logic are powered from the +3V3_ENIG rail via the hat-header interconnect.
 * **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the USB/power-entry pins in a **Symmetrical Star/Spoke pattern**.
 * **Clocking:** Dedicated 24MHz crystal for the FT232H to ensure JTAG clock stability across the 37-device chain.
 * **JTAG Signal Integrity:**
