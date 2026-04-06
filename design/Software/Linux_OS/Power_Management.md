@@ -135,7 +135,7 @@ HandlePowerKey=poweroff
 | Mains fails / PoE drops | t = 0 | Input source lost |
 | PWR_GD deasserts | ~10ms | MCP121T fires; 5V_MAIN < 4.5V; PWR_GD goes LOW |
 | 5V_MAIN < 4.40V — LTC3350 BACKUP asserted (supercaps take over) | ~shortly after PWR_GD | Hold-up engaged; 14.5s window begins |
-| Daemon reads PWR_GD, initiates `systemctl poweroff` | ~50ms from power loss | OS begins graceful shutdown |
+| Daemon detects LTC3350 BACKUP asserted and initiates `systemctl poweroff` | ~50ms from power loss | OS begins graceful shutdown |
 | OS syncs filesystems, halts | ~10–15s | ROTOR_EN de-asserted; CM5 PMIC halted |
 | Supercaps depleted / system off | ~14.5s from power loss | 5V_MAIN → 0V |
 
@@ -320,5 +320,5 @@ sudo hwclock --show
 - [ ] Consider adding LTC3350 charge status polling (SOC readout) for optional status LED control from software
 - [ ] Confirm Marquardt 1800 series exact PN for RGB LED rocker (select at mechanical design stage for panel cutout dimensions)
 - [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
-- [ ] Add SW_LED_CTRL (GPIO 24) to BtB Link-Alpha connector wiring list in Controller Board_Layout.md (pin 47)
+- [x] SW_LED_CTRL (GPIO 24) added to Link-Alpha pin 47 wiring — completed; see Controller/Board_Layout.md LINK-ALPHA table.
 - [ ] Verify CM5 VBAT (Pin 95) is correctly identified in the CM5 Hirose DF40 200-pin connector datasheet before PCB layout.

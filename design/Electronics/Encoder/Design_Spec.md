@@ -18,7 +18,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-ENC-01 | Sense and encode rotary encoder position with sufficient resolution for character detection | Must detect between-character positions for jam detection | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100C5N) |
+| FR-ENC-01 | Sense and encode 64-key keyboard and plugboard jack states with sufficient resolution for per-character detection | Must detect individual keypresses and plugboard patch states without ghosting or chatter | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100C5N) |
 | FR-ENC-02 | Transmit encoded position data to the Stator Board via IDC ribbon cable | 26-pin IDC interface | §4 Interconnects; BOM J2 (26-pin shrouded header) |
 | FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain | §6 JTAG Chain Integrity; BOM U1, U2 (EPM240T100C5N) |
 | FR-ENC-04 | Accept encoder input signal via audio jack interface | 6.35 mm (¼″) TRS jack | §4 Interconnects; BOM J1 (×64 6.35 mm jack sockets) |
