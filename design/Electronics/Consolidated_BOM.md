@@ -221,8 +221,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 ## 7. Power & Telemetry Sensors
 
-* **INA219AIDR:** 1 unit (Stator Board - 0x45).
-* **20mΩ 1206 Shunt:** 2 units (Stator Load / Spare).
+* **INA219AIDR:** 2 units — PM U12 @ I²C 0x40 (5V\_MAIN current monitoring); Stator U2 @ I²C 0x45 (rotor telemetry).
+* **20mΩ 1206 Shunt (ERJ-6ENF20R0V):** 1 unit — Stator R (load current sense).
+* **10mΩ 2512 Kelvin Shunt (CSS2H-2512R-R010ELF):** 2 units — PM R12 (LTC3350 RSENSE, charge-path current sense); PM R23 (INA219 U12 shunt).
 
 ## 8. Power Module — PoE Subsystem
 
