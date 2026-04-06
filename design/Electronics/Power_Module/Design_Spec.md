@@ -35,7 +35,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | FR-PM-02 | Maintain system power for ≥14.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 (supercaps) |
 | FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW on power-loss event to trigger graceful shutdown | Enables software-initiated graceful shutdown; PWR_GD is healthy-HIGH, fault-LOW | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
 | FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
-| FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups) |
+| FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups), U12 (INA219 at 0x40), R23 (10mΩ shunt) |
 | FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software | §5 Protection & Logic; BOM U1 (TPS25980 eFuse), R1–R3 |
 
 #### Design Requirements
@@ -99,6 +99,8 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 ### 3. Telemetry & Power Management
 
 * **I2C Telemetry:** 4.7kΩ (1%) pull-up resistors (**R7, R8**) on SDA/SCL lines, tied to **3V3_ENIG**.
+* **5V_MAIN Current Monitor:** TI INA219AIDR (U12) zero-drift power monitor at I²C address 0x40. Placed in the 5V_MAIN supply path
+  with a 10mΩ Kelvin-sense shunt resistor (R23, CSS2H-2512R-R010ELF) to provide real-time current and power telemetry to the CM5 via I²C. Satisfies FR-PM-05.
 * **Reset Logic:** 10kΩ (1%) pull-up (**R9**) on SYS_RESET_N to prevent floating states.
 * **Battery Detection:** Dedicated BATT_PRES_N signal routed to CM5 GPIO 23.
 
@@ -435,6 +437,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — *Open item — select during mechanical design phase* (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | *Open item — select during mechanical design phase* | *Open item — select during mechanical design phase* | — |
 | SW2 | CM5 Hard Reset | Tactile SMT pushbutton, momentary SPST, in parallel with MCP121T-450E (U8) RESET output on GLOBAL_EN line. Pulls GLOBAL_EN to GND on press. No pull-up needed (R9 on GLOBAL_EN line serves this purpose). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A (CSS2H-2512R-R010ELF) | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | C17329 |
 | D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
@@ -450,6 +453,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | U9 | PoE PD Interface (Type 4) | TPS2372-4 | QFN-16 | 595-TPS2372-4RGWR | 296-52795-1-ND | — |
 | U10 | PoE DC-DC Controller (ACF) | TPS23730RMTR — PSR mode; 12V output set by POE600F-12LD transformer turns ratio; VS pin to aux winding; no external feedback divider required. | WQFN-20 | 595-TPS23730RMTR | 296-TPS23730RMCT-ND | — |
 | U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
+| U12 | 5V_MAIN Current Monitor | INA219AIDR — Zero-Drift Current/Power Monitor (I²C 0x40) | SOIC-8 | 595-INA219AIDR | 296-INA219AIDRCT-ND | C7430 |
 
 > **BOM Notes:**
 >

@@ -24,7 +24,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | EPM240T100C5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | 1 | 30 | — | — | — | 37 |
-| INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | — | — | 1 | — | — | — | — | — | — | — | 1 |
+| INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
 | AS5600 — Magnetic Position Encoder (DFN-8) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
 | SN74LVC2G125DCUR — Dual 3-State Buffer (SOT-23-6) | — | 1 | — | — | — | — | — | — | 1 | — | 2 |
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
@@ -71,7 +71,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C25806) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | 20 mΩ 1% 1206 current-sense shunt (ERJ-6ENF20R0V / C123465) | — | — | 1 | — | — | — | — | — | — | — | 1 |
-| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 121 kΩ 1% 0603 PoE MPS current set (ERJ-3EKF1213V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 301 Ω 1% 0603 charge current set (ERJ-3EKF3010V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
