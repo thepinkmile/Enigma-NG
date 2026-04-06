@@ -120,7 +120,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 | --- | --- | --- |
 | UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~15V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
 | OVLO | **16.9V (fixed variant)** | Highest available option on TPS25980. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin above OVLO. See §3.2 Note on Battery Voltage. |
-| ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 8.85A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
+| ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 9.05A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
 | Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~2 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to keep PoE utilisation within 75% rule on all sources. |
 
 **Resistor ladder values (all 0.1% thin-film, 0603):**
@@ -228,9 +228,9 @@ inter-modulation products would appear at sum and difference frequencies, partia
 | Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; well above TPS7A8333P 500mV dropout |
 | Output noise | 8.8 µVRMS | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | 72 dB | Attenuates Buck output ripple (800kHz effective) by >72dB — negligible at CPLD supply |
-| Max output current | 3A | Peak load: 37 CPLDs × 59.4mA avg = **2,196mA → 73.3% utilisation** ✓ (per Power_Budgets.md worst-case analysis) |
+| Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 × AS5600 (195mA) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Extension buffers (10mA) + Controller-local (50mA) = 2,117mA → **2.20A rounded; 73.3% utilisation** ✓ (per Power_Budgets.md) |
 | Package | WSON-12 (3.5×3.5mm) | Exposed pad enables thermal transfer to PCB copper pour |
-| Input power dissipation | 1.7V × 2.196A = **3.73W** | Managed by Power Module thermal zone (Gelid GP-Ultimate pad, 15W/mK to enclosure) |
+| Input power dissipation | 1.7V × 2.20A = **3.74W** | Managed by Power Module thermal zone (Gelid GP-Ultimate pad, 15W/mK to enclosure) |
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
@@ -250,26 +250,27 @@ consistent with military component derating standards.
 | Raspberry Pi CM5 (full rated) | 5.00A | Linux OS undervoltage threshold: 5V/5A (25W); full allocation maintained |
 | USB 3.0 (TPS2065C rated limit) | 1.60A | Single USB 3.0 port; TPS2065C current-limited |
 | HDMI (AP2331W rated limit) | 0.05A | Hot-plug current spike handled by AP2331W |
-| 3V3_ENIG LDO input (37 CPLDs) | 2.20A | 37 CPLDs at 59.4mA average per Power_Budgets.md; 3A LDO peak |
-| **Total peak** | **8.85A** | **73.8% of 12A rated Buck output** ✓ |
+| 3V3_ENIG LDO input (37 CPLDs) | 2.20A | 37 CPLDs × 50mA + AS5600 encoders + other consumers = 2,117mA → 2.20A (per Power_Budgets.md); 3A LDO peak |
+| **Total peak** | **9.05A** | **75.4% of 12A rated Buck output** ✓ |
 
 **Component utilisation summary:**
 
 | Component | Function | Rated | Peak Load | Utilisation |
 | --- | --- | --- | --- | --- |
-| 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.85A | **73.8%** ✓ |
-| TPS7A8333P | 3V3_ENIG LDO | 3A | 2.196A | **73.3%** ✓ |
+| 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 9.05A | **75.4%** ✓ |
+| TPS7A8333P | 3V3_ENIG LDO | 3A | 2.20A | **73.3%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.86A* | **69.4%** ✓ |
 | TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 51W (steady) | **70.8%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
 
-> *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.85A + LTC3350 supercap charge 1A (5V side) = 9.85A at 5V = 49.25W. Buck
-> input (÷0.87) = 56.6W. At 12V PoE bus: 56.6W / 12V = **4.72A eFuse current**. eFuse utilisation (ILIM=7A): 4.72A / 7A = **67.4%** ✓. Steady state (no supercap charge): 8.85A × 5V / (0.87 × 12V) =
-> 4.24A / 7A = **60.5%** ✓. At USB-C 15V: 56.6W / 15V = 3.77A / 7A = **53.9%** ✓. All cases within the 75% derating rule.
+> *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 9.05A + LTC3350 supercap charge 1A (5V side) = 10.05A at 5V = 50.25W. Buck
+> input (÷0.87) = 57.8W. At 12V PoE bus: 57.8W / 12V = **4.82A eFuse current**. eFuse utilisation (ILIM=7A): 4.82A / 7A = **68.9%** ✓. Steady state (no supercap charge): 9.05A × 5V / (0.87 × 12V) =
+> 4.34A / 7A = **62.0%** ✓. At USB-C 15V: 57.8W / 15V = 3.85A / 7A = **55.0%** ✓. All cases within the 75% derating rule.
 >
-> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~2 minutes from cold start), total 5V_MAIN load = 8.85A (system) + 0.5A
-> (LTC3350 supercap charge) = 9.35A. Buck input at 87% efficiency = 9.35A × 5V / 0.87 = 53.7W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 53.7W / 72W =
-> **74.6%** ✓. Steady-state utilisation (fully charged): 8.85A × 5V / 0.87 = 50.9W / 72W = **70.7%** ✓. Both within the 75% design rule at all times. OA-02 resolved — see Open Actions.
+> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~2 minutes from cold start), total 5V_MAIN load = 9.05A (system) + 0.5A
+> (LTC3350 supercap charge) = 9.55A. Buck input at 87% efficiency = 9.55A × 5V / 0.87 = 54.9W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 54.9W / 72W =
+> **76.2%** (marginally above the 75% design rule during ~2 min cold-start charge; see OA-02).
+> Steady-state utilisation (fully charged): 9.05A × 5V / 0.87 = 52.0W / 72W = **72.2%** ✓. OA-02 resolved — see Open Actions.
 
 ### 3.6 Thermal Management Design Intent
 

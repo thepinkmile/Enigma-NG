@@ -40,8 +40,8 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-05 | TTD_RETURN input | J7 = 16-pin Molex; TTD_RETURN on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 (16-pin Molex) |
 | DR-STA-06 | Link-Beta connector | J8 = ERM8-020-05.0-S-DV-K-TR (40-pin male, 0.8 mm pitch) to Controller J2 | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 | DR-STA-07 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100C5N) |
-| DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = 1206 package, rated ≥2.21 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (20mΩ shunt) |
-| DR-STA-09 | Maximum 3V3_ENIG load | 2.21 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
+| DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = 1206 package, rated ≥2.20 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (20mΩ shunt) |
+| DR-STA-09 | Maximum 3V3_ENIG load | 2.20 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
 
 ## 2. Core Features
 
@@ -121,7 +121,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45) — dedicated rotor-stack usage telemetry.
 * **Placement:** Inserted on L1 (Top Layer) connected to the 3V3_ENIG rail immediately before the rotor stack.
   * Minimum 15mm isolation from Intel MAX II EPM240T100C5N CPLD logic core.
-* **Shunt:** 20mΩ (1%) 1206 Current Sense Resistor (Rated for ≥2.21A worst-case load (2A continuous per IPC-2221; 1206 package selected for thermal margin)).
+* **Shunt:** 20mΩ (1%) 1206 Current Sense Resistor (Rated for ≥2.20A worst-case load (2A continuous per IPC-2221; 1206 package selected for thermal margin)).
 * **Interface:** I2C-1 Telemetry Bus (via Link-Beta, Shared with Power Module).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
 

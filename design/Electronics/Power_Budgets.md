@@ -101,13 +101,12 @@ being an unachievable worst-case peak).
 | FT232H VCC (JTAG Daughterboard — via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
 | USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |
 | HDMI sink device | 0.05 A | System boundary: connected HDMI sink; AP2331W-limited |
-| **Total 5V_MAIN worst case (system boundary)** | **8.85 A** | |
-| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 73.8% utilisation (8.85/12.0) ✓ |
+| **Total 5V_MAIN worst case (system boundary)** | **9.05 A** | |
+| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 75.4% utilisation (9.05/12.0) ✓ |
 
-> **Scope note:** The 7.4 A board-level budget (CM5 + LDO + LEDs + FT232H) covers internal consumers only.
-> The 8.85 A system worst-case includes connected device loads (USB 3.0 devices at TPS2065C rated limit
-> plus HDMI sink) at the system boundary. Component utilisation figures (e.g. LMQ61460-Q1) are calculated
-> against the 8.85 A system worst-case.
+> **Scope note:** The 7.40 A board-level budget (internal consumers: CM5 + LDO + misc + FT232H) covers internal consumers only.
+> External device loads (USB 3.0 + HDMI) add 1.65 A, giving a system total of 9.05 A.
+> Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 9.05 A system total.
 
 ---
 
