@@ -121,7 +121,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 | UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~12V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
 | OVLO | **16.9V (fixed variant)** | Highest available option on TPS25980. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin above OVLO. See §3.2 Note on Battery Voltage. |
 | ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 9.05A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
-| Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~2 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to keep PoE utilisation within 75% rule on all sources. |
+| Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~2 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to limit peak PoE utilisation to 76.2% during cold-start charge (54.9W / 72W); marginally above the 75% rule but accepted exception (see §3.5). |
 
 **Resistor ladder values (all 0.1% thin-film, 0603):**
 
@@ -466,7 +466,7 @@ Any replacement CPLD must be verified for:
 | ID | Description | Owner | Priority |
 | --- | --- | --- | --- |
 | OA-01 | Confirm TPS25980 16.9V OVLO variant exact part number suffix from TI ordering information. Verify OVLO threshold accuracy (±%) in full datasheet — must confirm lower tolerance ≥ 16.4V (battery BMS max charge). Recalculate UVLO/ILIM resistor values per TPS25980 datasheet programming equations. | Hardware Designer | High |
-| OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~2 min charge from cold: 53.7W / 72W = 74.6% ✓. Steady-state: 50.9W / 72W = 70.7% ✓. Within 75% rule at all times on all sources. |
+| OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~2 min charge from cold: 54.9W / 72W = 76.2% — marginally above the 75% design rule; accepted exception (see §3.5). Steady-state: 52.0W / 72W = 72.2% ✓. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
 | OA-05 | Thermal simulation of BtB connector zone to verify 0.5A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |

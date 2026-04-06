@@ -113,7 +113,7 @@ drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C pat
 **Affects:** LTC3350 supercap charger, PoE power budget
 
 **Decision:**  
-When running on PoE (802.3bt Type 4, 72W budget), the supercap charge current is reduced to **0.5A** (vs. up to 2A on USB-C/Battery). This limits peak PoE utilisation to 71.8% (51.7W / 72W).
+When running on PoE (802.3bt Type 4, 72W budget), the supercap charge current is reduced to **0.5A** (vs. up to 2A on USB-C/Battery). This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the 75% design rule; accepted exception (see Certification_Evidence §3.5).
 
 **Rationale:**  
 
@@ -124,7 +124,7 @@ When running on PoE (802.3bt Type 4, 72W budget), the supercap charge current is
 
 **Constraints:**  
 
-- Steady-state PoE load (after caps charged): 48.9W / 72W = **67.9%** utilisation ✓
+- Steady-state PoE load (after caps charged): 52.0W / 72W = **72.2%** utilisation ✓
 
 ---
 

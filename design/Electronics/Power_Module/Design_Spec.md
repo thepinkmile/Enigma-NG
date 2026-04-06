@@ -330,7 +330,7 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
 2. **OS Shutdown:** CM5 OS saves state, syncs filesystems, and executes `halt`.
 3. **ROTOR_EN LOW:** CM5 GPIO 16 is de-asserted before halt completes, disabling the TPS7A8333P LDO → 3V3_ENIG off (CPLDs and rotor stack de-energised).
 4. **CM5 PMIC halt:** CM5 internal PMIC drops 1.8V/1.1V rails. Total time from trigger to PMIC halt: ~10–15 seconds.
-5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≤14.5 seconds.
+5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≥14.5 seconds.
 6. **PWR_GD drop:** Once 5V_MAIN falls below 4.5V, MCP121T-450E deasserts PWR_GD.
 7. **Rail collapse:** After CM5 load is gone, 5V_MAIN falls to 0V. LTC3350 stops discharge.
 8. **Power source removed:** User removes PoE cable, USB-C adapter, or battery. eFuse input drops to 0V.
