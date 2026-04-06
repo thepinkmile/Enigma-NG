@@ -142,7 +142,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
     Source impedance ≈ 53Ω, matched to the 50Ω controlled-impedance traces on the receiving board. Per DEC-016 intra-board/BtB termination rule.
     See `design/Electronics/Investigations/JTAG_Integrity.md`.
   * **R3 (33Ω):** Series damping on TMS output — same function as R1 (TCK) and R2 (TDI). All three JTAG drive outputs have series termination at the FT232H.
-  * **Trace Width Rule:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over the L2 GND plane, targeting **50 Ω controlled impedance**. See DEC-016.
+  * **Trace Width Rule:** All JTAG signal traces on L2 (signal layer) shall be routed at **0.127 mm (5 mil)** over the L1 GND reference plane, targeting **50 Ω controlled impedance**. See DEC-016.
   * **Pull Resistors:** TMS 10kΩ pull-up and TCK 10kΩ pull-down near J2 header to hold JTAG TAP in defined state when idle. See JTAG best-practice note in `design/Electronics/Investigations/JTAG_Integrity.md`.
 
 ---

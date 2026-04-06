@@ -24,7 +24,7 @@ TOP VIEW (L1) - 4-Layer (DEC-017) / 2oz Copper
 |   [ JTAG HEADER ] <--- 10-Pin Shrouded Header (Asymmetrical)                |
 |   (Opposite Side, 2.54mm Pitch, 1:1 GND Shielding)                          |
 |                                                                             |
-|   [ DATA PLATE ] <--- Inverted White Silkscreen on L2                       |
+|   [ DATA PLATE ] <--- Inverted White Silkscreen on L4 (B.Silkscreen / exterior face)   |
 |   (Enigma Silhouette + JLC Serial)                                          |
 |_____________________________________________________________________________|
 ```
