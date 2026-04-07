@@ -11,7 +11,10 @@
 
 ## 1. Overview
 
-The Controller Board is a custom carrier board for the Raspberry Pi Compute Module 5 (CM5), providing the central processing and supervisory function for the Enigma-NG system. It interfaces with the Power Module and Stator board via the 80-pin Link-Alpha and 40-pin Link-Beta board-to-board connectors respectively, and hosts the JTAG Daughterboard hat connectors for debug access.
+The Controller Board is a custom carrier board for the Raspberry Pi Compute Module 5 (CM5), providing the
+central processing and supervisory function for the Enigma-NG system. It interfaces with the Power Module
+and Stator board via the 80-pin Link-Alpha and 40-pin Link-Beta board-to-board connectors respectively,
+and hosts the JTAG Daughterboard hat connectors for debug access.
 
 * **Module:** Raspberry Pi Compute Module 5 (CM5).
 * **Role:** Master traffic controller for Power (Alpha) and Encryption Logic (Beta).
@@ -338,7 +341,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Pinout:**
 
 | Pin | Signal | Source |
-|-----|--------|--------|
+| --- | ------ | ------ |
 | 1 | 5V_MAIN | Controller 5V_MAIN rail |
 | 2 | GND | Controller GND |
 | 3 | FAN_TACH | CM5 module connector Pin 16 |
