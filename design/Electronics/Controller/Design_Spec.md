@@ -120,7 +120,7 @@ Driver configuration (INA219 shunt resistance, DT binding) is specified in the L
 
 ### I²C Bus Topology
 
-All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through LINK-ALPHA to the Power Module and Stator.
+All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through to the Power Module (LINK-ALPHA) and Stator (LINK-BETA).
 
 | Address | Device | Location | Function |
 | :--- | :--- | :--- | :--- |
@@ -334,10 +334,6 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | **Logic/I2C** | N/A | 6.0 mil | L4 / L6 |
 | **USB 2.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) — same geometry as USB 3.0 |
 | **3V3_ENIG power** | N/A (Power) | 0.80 mm (31.5 mil) — 3.0A LDO max output; consistent with PM §9 and Global_Routing_Spec §1.1 Medium supply (1.0–3.0A); 2oz copper system-wide | L1/L6 or L4 Power Plane |
-
-### Vias & Teardrops
-
-See `design/Standards/Global_Routing_Spec.md §6` for via and teardrop rules applicable to all boards.
 
 ## 10. Thermal, Branding & Diagnostics
 
