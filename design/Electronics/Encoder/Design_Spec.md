@@ -1,4 +1,4 @@
-# Encoder Module (V1.0) Design Specification
+﻿# Encoder Module (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -9,7 +9,17 @@
 
 ## 1. Overview
 
-A multi-purpose Human Interface Device (HID). Comprised of 2 Altera MAX II CPLDs and dual banks of 64 spade connectors ensuring this board can be used as a single plugboard pass, or a dual function keyboard and lightboard. When utilised for a plugboard, 2 of these boards will be required, enabling the plugboard to be connected in 2 possible locations (e.g. the original Enigma machine had this connected both between the Keyboard and first rotor for input and between the first rotor and lightboard (a.k.a. lampboard) for the output). When used for the dual function of keyboard and lightboard, one half of the board acts as the keyboard input encoder and provides the 6-bit digital input to the system and the other half acts as the lightboard decoder and consumes the final 6-bit digital output to highlight the relevant character light. Regardless of the physical plugboard, keyboard or lightboard features, this board will be the same for all devices (e.g. a 26 character set plugboard is the same as a 64 character set plugboard, with the only difference being the number of Keys, Lights or Plug Jacks connected to the spade terminals).
+A multi-purpose Human Interface Device (HID). Comprised of 2 Altera MAX II CPLDs and dual banks of 64 spade
+connectors ensuring this board can be used as a single plugboard pass, or a dual function keyboard and lightboard.
+When utilised for a plugboard, 2 of these boards will be required, enabling the plugboard to be connected in 2 possible
+locations (e.g. the original Enigma machine had this connected both between the Keyboard and first rotor for input and
+between the first rotor and lightboard (a.k.a. lampboard) for the output).
+When used for the dual function of keyboard and lightboard, one half of the board acts as the keyboard input encoder and
+provides the 6-bit digital input to the system and the other half acts as the lightboard decoder and consumes the final
+6-bit digital output to highlight the relevant character light.
+Regardless of the physical plugboard, keyboard or lightboard features, this board will be the same for all devices
+(e.g. a 26 character set plugboard is the same as a 64 character set plugboard, with the only difference being the
+number of Keys, Lights or Plug Jacks connected to the spade terminals).
 
 ### Functional & Design Requirements
 
@@ -63,7 +73,9 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
 * **PCB Spade Terminal Banks (2× banks of 64):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs.
   * **Bank 1 (BT1–BT64):** Maps to CPLD 1.
   * **Bank 2 (BT65–BT128):** Maps to CPLD 2.
-  * On the PCB, the two banks are horizontally aligned and vertically stacked so that corresponding pins are correlated, enabling correct plugboard wiring (where pin pairing matters). When used as a HID keyboard or lightboard, pin correlation is not functionally significant.
+  * On the PCB, the two banks are horizontally aligned and vertically stacked so that corresponding pins are correlated,
+    enabling correct plugboard wiring (where pin pairing matters). When used as a HID keyboard or lightboard,
+    pin correlation is not functionally significant.
 * **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54mm pitch.
   Not a separate connector — bare gold pads probed directly with logic analyser clips or ICT fixtures.
   Mirrors the Data Link signals: Row 1 = 3V3_ENIG, GND, ENC_IN[0:5]; Row 2 = 3V3_ENIG, GND, ENC_OUT[0:5].
@@ -82,22 +94,30 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
   * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low; pull-up ensures CPLDs remain out of reset by default.
   * TCK, TMS, and SYS_RESET_N are broadcast nets shared between both CPLDs.
 * **Termination:**
-  * **Inter-CPLD (R7, 33Ω):** Series resistor placed within 2 mm of CPLD 1 TDO, on the trace to CPLD 2 TDI. Source impedance ≈ 53 Ω, matched to the 50 Ω intra-board PCB trace. See `design/Electronics/Investigations/JTAG_Integrity.md` Option D.
+  * **Inter-CPLD (R7, 33Ω):** Series resistor placed within 2 mm of CPLD 1 TDO, on the trace to CPLD 2 TDI.
+    Source impedance ≈ 53 Ω, matched to the 50 Ω intra-board PCB trace.
+    See `design/Electronics/Investigations/JTAG_Integrity.md` Option D.
   * **Cable Output (R8, 75Ω):** Series resistor placed within 2 mm of CPLD 2 TDO, before J2 pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
 * **Programming:** Supports "In-System Sources and Probes" debugging via the CM5 GUI.
 
 ## 6. Key Mapping (64-Way QWERTY for Keyboard)
 
-> ⚠️ **Manual Review Required:** This section contains content that may need to be relocated to `design/Mechanical/Keyboard/Design_Spec.md`. Content should be reviewed and reworked into a generic HID interface description. Do not apply automated changes to this section.
+> ⚠️ **Manual Review Required:** This section contains content that may need to be relocated to
+> `design/Mechanical/Keyboard/Design_Spec.md`. Content should be reviewed and reworked into a generic
+> HID interface description. Do not apply automated changes to this section.
 
 * **Layout:** Standard QWERTY + Numbers + Symbols + Shift.
-* **Debouncing:** Hardware RC de-bounce circuit per input line (10kΩ pull-up + 100nF X7R cap to GND). ⚠️ TBD: EPM240T100C5N Schmitt trigger input and weak pull-up capability to be verified by hardware test on development board.
+* **Debouncing:** Hardware RC de-bounce circuit per input line (10kΩ pull-up + 100nF X7R cap to GND).
+  ⚠️ TBD: EPM240T100C5N Schmitt trigger input and weak pull-up capability to be verified by hardware test
+  on development board.
 * **Implementation:** The Shift keys (Left/Right) act as logic-level triggers for the CPLD state machine.
 * **LED Drive:** CPLDs directly drive the **Shift Status LEDs** and the 64-character lamp matrix (via MOSFET arrays).
 
 ## 7. Plugboard Jack-Sensing
 
-> ⚠️ **Manual Review Required:** This section contains content that may need to be relocated to `design/Mechanical/Plugboard/Design_Spec.md`. Content should be reviewed and reworked into a generic HID interface description. Do not apply automated changes to this section.
+> ⚠️ **Manual Review Required:** This section contains content that may need to be relocated to
+> `design/Mechanical/Plugboard/Design_Spec.md`. Content should be reviewed and reworked into a generic
+> HID interface description. Do not apply automated changes to this section.
 
 * **Logic:** The CPLD monitors 64 insertion-detect lines (BT65–BT128, Switch contacts) from the Stecker jack sockets.
 * **Signal:** Each jack Switch contact is normally closed (connected to Tip) when no plug is inserted;
@@ -141,4 +161,3 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | C25808 |
 | R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LBCT-ND | *Open item — verify JLCPCB part number* |
-
