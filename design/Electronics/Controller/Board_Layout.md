@@ -22,14 +22,14 @@
 * **Pins 25-26:** ETH_LED_LINK / ETH_LED_ACT (Active Low indicators)
 * **Pins 27-28:** GND Isolation Moat
 * **Pin 29:** SYS_FAULT (eFuse fault from TPS25980; PM → CTRL; CM5 GPIO 25)
-* **Pin 30:** POE_STAT (PoE live status from TPS2372-4 /PG; PM → CTRL; CM5 GPIO 24)
+* **Pin 30:** POE_STAT (PoE live status from TPS2372-4 /PG; PM → CTRL; CM5 GPIO 20)
 * **Pins 31-34:** SW_LED_R/G/B (RGB switch) + PWR_GD
 * **Pins 35-37:** I2C-1 Telemetry (SDA/SCL/GND — to PD/eFuse/STUSB4500)
 * **Pin 38:** USB_STAT (USB-C PD negotiated status from STUSB4500; PM → CTRL; CM5 GPIO 21)
 * **Pins 39-44:** 3V3_ENIG (Input from Power Module LDO — 6 pins, 3.0A capacity)
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection — Active Low, CM5 GPIO 23)
 * **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS75733KTTRG3 EN pin on Power Module)
-* **Pin 47:** SW_LED_CTRL (CM5 GPIO 20 → LED arbitration; CTRL → PM)
+* **Pin 47:** SW_LED_CTRL (CM5 GPIO 24 → LED arbitration; CTRL → PM)
 * **Pin 48:** GND (logic/power zone boundary separator)
 * **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — interleaved; combined with pins 21-22; 4-via Thermal Clusters)
 
@@ -66,7 +66,7 @@
 | 27 | GND | — | Isolation moat |
 | 28 | GND | — | Isolation moat |
 | 29 | SYS_FAULT | PM → CTRL | eFuse fault from TPS25980 FAULT pin (CM5 GPIO 25); active-low |
-| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 24); active-low (LOW = PoE live, per DEC-003) |
+| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 20); active-low (LOW = PoE live, per DEC-003) |
 | 31 | SW_LED_R | CTRL → PM | SW1 RGB switch red channel (CM5 GPIO 17) |
 | 32 | SW_LED_G | CTRL → PM | SW1 RGB switch green channel (CM5 GPIO 18) |
 | 33 | SW_LED_B | CTRL → PM | SW1 RGB switch blue channel (CM5 GPIO 19) |
@@ -83,7 +83,7 @@
 | 44 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin; combined 6 pins = 3.0A |
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW) |
-| 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; LED arbitration (CM5 GPIO 20) |
+| 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; LED arbitration (CM5 GPIO 24) |
 | 48 | GND | — | Logic/power zone boundary separator |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
 | 50 | GND | — | Interleaved return |
@@ -121,7 +121,7 @@
 **5V_MAIN pin count:** Pins 21–22 (2) + Pins 49, 51, 53…79 (16 odd pins) = **18 pins × 0.5A = 9.0A total capacity** ✓
 **3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS75733KTTRG3 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
-**Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25), Pin 30 = POE_STAT (GPIO 24), Pin 38 = USB_STAT (GPIO 21) — all PM → CTRL, active-low/high per signal definition.
+**Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25), Pin 30 = POE_STAT (GPIO 20), Pin 38 = USB_STAT (GPIO 21) — all PM → CTRL, active-low/high per signal definition.
 **GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
 
 ```text
@@ -167,7 +167,7 @@ _______________________________________    _____________    ____________________
                                            (GPIO OUT)       (CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW))
 
 [ PIN 47       ] ------------------------> [ 3.3V LOGIC] -> [ SW_LED_CTRL                ]
-                                           (GPIO OUT)       (CM5 GPIO 20 — HIGH = CM5 in control of SW1 RGB)
+                                           (GPIO OUT)       (CM5 GPIO 24 — HIGH = CM5 in control of SW1 RGB)
 
 [ PIN 48       ] ------------------------> [ GND       ] -> [ GND (ZONE BOUNDARY)        ]
 
@@ -192,7 +192,7 @@ _______________________________________    _____________    ____________________
 | 11 | SW_LED_B | CTRL → PM | RGB LED blue channel (GPIO 19) |
 | 12 | PWR_GD | PM → CTRL | Power-good signal (GPIO 27) |
 | 13 | BATT_PRES_N | PM → CTRL | Battery presence active-low (GPIO 23) |
-| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 20) |
+| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 24) |
 | 15 | SPARE | — | Reserved for future use |
 | 16 | SPARE | — | Reserved for future use |
 | 17 | SPARE | — | Reserved for future use |
