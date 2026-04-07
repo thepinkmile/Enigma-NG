@@ -239,7 +239,7 @@ GND ──────┴──────────────────�
   * ROTOR_EN LOW → LDO **enabled** → 3V3_ENIG present (CPLDs + rotor stack powered).
   * **Thermal Budget (TPS75733):**
     * V_dropout ≈ 0.18V (TPS75733 typical at 1.85A). Typical dissipation: **~0.33W** (1.85A load, Vdo≈0.18V).
-    * At worst-case 2.2A: P_diss ≈ 0.22V × 2.2A = **~0.48W**. Absolute max at 3A: P_diss ≈ 0.15V × 3A = **~0.45W**.
+    * At worst-case 2.2A load: P_diss ≈ 0.22V × 2.2A ≈ **~0.45W** worst-case.
     * Standard TO-263 package thermal pad and ground vias are sufficient at this dissipation level. The ≥200mm² copper pour requirement from the previous WSON-12 design is removed.
     * At 40°C ambient with standard PCB copper: T_J well within 125°C limit. ✓
 
@@ -363,7 +363,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | :--- | :--- | :--- | :--- |
 | U1 TPS25980 eFuse | 0.56W | 0.65W (7A) | 3mΩ Ron (typ.) + ~0.5W quiescent |
 | U2A + U2B LMQ61460-Q1 (×2) | 5.2W total | 6.7W (15V USB-C, 90% η) | 2.6W per device at 92% η; exposed pads to GND vias |
-| U7 TPS75733 LDO | 0.33W (1.85A load) | 0.45W (3A max) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
+| U7 TPS75733 LDO | 0.33W (1.85A load) | 0.45W (2.2A load, Vdo≈0.22V) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 | T2 POE600F-12LD | 5.1W | 5.7W | At 90–88% efficiency, 51–57W load |
 | U3 LTC3350 | 0.3W | 0.5W | Charge path only (0.5A); low concern |
 | U9 TPS2372-4 | ~0.2W | ~0.3W | QFN thermal pad to GND pour |
@@ -460,7 +460,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > * **U5 STUSB4500LQTR** — JLCPCB C506650 confirmed in stock (L-variant). Both are pin-compatible; non-L variant STUSB4500QTR has slightly higher Iq (~210µA vs 160µA).
 > * **U7 TPS75733KTTRG3** — Replaces TPS7A8333PRMWR. Fixed 3.3V output, 3A continuous, TO-263 (KTT) 5-pin 10.16×15.24mm package. **Active-LOW enable:** EN LOW = LDO enabled; EN HIGH = shutdown.
 > R10 changed to pull-down (10kΩ to GND) to ensure LDO is ON by default at power-up. Firmware must drive GPIO 16 HIGH to disable the LDO (inverted vs original TPS7A8333P logic).
-> Thermal dissipation greatly improved: ~0.33W typical (1.85A, Vdo≈0.18V) vs 3.1W with the previous part — ≥200mm² copper pour requirement removed. Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`. — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
+> Thermal dissipation greatly improved: ~0.33W typical (1.85A, Vdo≈0.18V) vs 3.1W with the previous part — ≥200mm² copper pour requirement removed. Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`.
+> * **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
 > 579-MCP121T-450ETTDITR) instead. JLCPCB C52146050 confirmed; note JLCPCB lists this device with a TP prefix on the MPN but is the same device.
 > * **U10 TPS23730RMTR** — `PWPR` suffix (HTSSOP-20) was previously in error; correct WQFN-20 manufacturer PN is `TPS23730RMTR`. DigiKey catalogues as `296-TPS23730RMCT-ND`. Verify against TI's
 > product page before ordering.

@@ -225,7 +225,7 @@ inter-modulation products would appear at sum and difference frequencies, partia
 
 | Parameter | Value | Rationale |
 | --- | --- | --- |
-| Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; TPS75733 Vdo ≈ 0.18V at 2.2A — well above minimum input requirement |
+| Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; TPS75733 Vdo ≈ 0.22V worst-case at 2.2A — well above minimum input requirement |
 | Output noise | Low-noise linear LDO | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | High PSRR linear LDO | Attenuates Buck output ripple (800kHz effective) — negligible at CPLD supply |
 | Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 × AS5600 (195mA) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Extension buffers (10mA) + Controller-local (50mA) = 2,117mA → **2.20A rounded; 73.3% utilisation** ✓ (per Power_Budgets.md) |
