@@ -14,8 +14,6 @@ The Extension Board acts as a mid-stack JTAG signal repeater and power injection
 compensate for capacitive loading, and bridges the TTD_RETURN signal and 3V3_ENIG power rail
 transparently between rotor groups via the Extension Port connectors (J7/J8).
 
-## 2. Modular "Mini-Stack" Logic
-
 * **Role:** Mechanical anchor and Power Injection for 5-rotor groups.
 * **Capacity:** Up to ×5 Extension boards in a full 30-rotor build (Rev A power budget). Rev A
   prototype validates with 1 Extension board (10 rotors). Minimum configuration requires 0 Extensions

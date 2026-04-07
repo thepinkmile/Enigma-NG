@@ -276,7 +276,7 @@ Monitors the 5V_MAIN power rail on the Power Module board. See `Power_Module/Des
 ### Hardware Parameters
 
 | Parameter | Value | Notes |
-|---|---|---|
+| --- | --- | --- |
 | I²C address | 0x40 | A0/A1 = GND on U12 |
 | Shunt resistance | 0.010 Ω (10mΩ) | CSS2H-2512R-R010ELF R23, Power Module |
 | PGA range | ±160mV | Covers 0–16A; 9A worst-case → 90mV drop |
