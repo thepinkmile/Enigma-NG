@@ -12,6 +12,8 @@ The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided 
 boards to ensure maximum signal integrity, industrial-grade power protection, and mechanical
 robustness.
 
+The `design/Standards/Global_Routing_Spec.md` applies to all boards in the Enigma-NG system except where a board's design spec explicitly documents an exemption from a specific rule.
+
 ## 2. Power Rail Glossary (Canonical naming)
 
 * **3V3_ENIG**: Provided by Power Module TPS75733KTTRG3 LDO (3.3V fixed); powers all CPLDs, JTAG interface, I2C logic, rotor stack, and Controller digital I/O.
@@ -40,8 +42,8 @@ robustness.
 | Board Name | Role | Stackup | Status |
 | :--- | :--- | :--- | :--- |
 | **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 2oz | **Design Locked** |
-| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 2oz | **Design Locked** |
-| **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TTD_RETURN. Up to ×5 in full build; Rev A uses ×1. | 4-Layer / 2oz | Draft |
+| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 2oz | **In Review** |
+| **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TTD_RETURN. Up to ×5 in full build; Rev A uses ×1. | 4-Layer / 2oz | **Design Locked** |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 6-Layer / 2oz | **Design Locked** |
 | **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
@@ -107,3 +109,5 @@ The mechanical and electrical backbone.
   * After the rotor stack.
   * Before and After the rotor stack.
   * Completely removed from the rotor stack.
+
+> **Design decisions:** All formal design decisions (DEC-xxx) applicable across boards are recorded in `design/Design_Log.md`.

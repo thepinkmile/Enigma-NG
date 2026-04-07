@@ -222,8 +222,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 * **External Links:** All inputs (Status) feature 10kΩ series resistors to protect CM5 pins from transient spikes.
 * **Voltage:** 5V signals are strictly forbidden on: CM5 GPIO pins, I²C SDA/SCL lines, JTAG (TDI/TDO/TCK/TMS), and all logic-level signals on LINK-ALPHA.
 * **ESD Protection:** [TPD12S016](https://www.ti.com) (HDMI) and [TPD4E05U06](https://www.ti.com) (USB 3.0) on Layer 1.
-* **Bulk Entry Bank Rule (5V_MAIN):** Use **5× 10µF X7R 50V** bulk decoupling capacitors placed at the LINK-ALPHA connector entry point (5V_MAIN entry pins). Place in a **Symmetrical
-  Star/Spoke pattern** (one hub capacitor at entry, four spoke capacitors around it) to minimise input-rail impedance and reduce brown-out risk during current transients.
+* **5V_MAIN Bulk Entry:** 5× 10µF X7R 50V at LINK-ALPHA 5V_MAIN entry pins per Global_Routing_Spec Bulk Entry Bank Rule.
 * **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design
   phase). These are distinct from the 5V_MAIN entry bank above.
 * **Hardware LED Fallback:** The hardware LED fallback path (MIC1555 oscillator) is located on the Power Module.

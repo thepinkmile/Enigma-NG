@@ -51,8 +51,8 @@ There are also sensors used to detect the current position of the outer ring usi
 ### 2.2 Logic & Transposition
 
 * **Logic:** The **Intel MAX II EPM240T100C5N CPLD** emulates the 64x64 cross-wiring.
-* **Decoupling Rule:** Use **8x 0.1µF X7R** local decoupling capacitors per EPM240T100C5N IC (one per VCC pin).
-* **Role:** Performs the instantaneous dual 6-bit parallel transposition (substitution cipher) for the forward and backward signal paths.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* **Role:**Performs the instantaneous dual 6-bit parallel transposition (substitution cipher) for the forward and backward signal paths.
 * **Memory:** Stores the 26-position wiring table for any historical rotor (I-VIII, Beta, Gamma) selectable via the CM5.
 * **Latency:** Sub-10ns transposition time, ensuring the entire 30-rotor "trip" happens well within one CPU clock cycle.
 * **Configuration:** CM5 loads the "Rotor Type" (e.g., Rotor I, II, III) into the CPLD's SRAM at boot via the JTAG Chain.
@@ -72,7 +72,7 @@ There are also sensors used to detect the current position of the outer ring usi
 * **Input:** 3.3V/**50mA per rotor** (sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta).
   See `design/Electronics/Power_Budgets.md` for full budget — 30 rotors draw 1.50A typical; the 150mA/rotor figure previously used was a conservative overestimate.
 * **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
-* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** capacitors near the power-entry pins in a **Symmetrical Star/Spoke pattern**.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
 
 ### 3.2 Communication Bus
 
@@ -234,5 +234,3 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |
-
-> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

@@ -31,7 +31,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 | Signal / CI | < 0.5 A | 0.20 mm | 0.254 mm (10 mil); CI exception (DEC-016) applies to outer layers only | Logic, I2C, GPIO; JTAG/diff CI at 0.127 mm on outer layers per DEC-016 |
 | Low-power supply | 0.5 A – 1.0 A | 0.50 mm | 0.75 mm | 3V3 feeds to low-draw loads |
 | Medium supply | 1.0 A – 3.0 A | 0.50 mm – 1.00 mm | 1.00 mm – 2.00 mm | 12 V feeds |
-| **3V3_ENIG (canonical)** | **≤ 3.0 A** | **0.80 mm (system-wide fixed)** | **copper pour (L3)** | **Fixed at 0.80 mm on ALL boards regardless of local load; inner L3 pour carries bus current. Any 3V3_ENIG surface trace below 0.80 mm is non-conformant.** |
+| 3V3_ENIG (canonical) | ≤ 3.0 A | 0.80 mm (system-wide fixed) | copper pour (L3) | Fixed at 0.80 mm on ALL boards regardless of local load; inner L3 pour carries bus current. Any 3V3_ENIG surface trace below 0.80 mm is non-conformant. |
 | High-current | 3.0 A – 5.5 A | 1.00 mm – 1.50 mm | copper pour | 5 V/12 V power inputs, OR-ing rails |
 | Very high current | > 5.5 A | 2.00 mm + copper pour | copper pour | 5V_MAIN bus; teardrops + 20 mil spokes mandatory per §2.1 |
 
@@ -64,7 +64,14 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 * **Component Placement:** All active and passive components (CPLDs, ICs, SMT Passives) MUST be placed on the Top Layer (L1) for the V1.0 prototype.
 * **Bottom Layer (L_MAX):** Reserved strictly for Diagnostic Banks, Data Plates, and global GND_CHASSIS pours.
 
-## 3. Mechanical Grounding
+## 3. Power Decoupling
+
+These rules apply to all boards in the Enigma-NG system unless a board's design spec explicitly documents an exemption.
+
+* **CPLD Decoupling Rule:** All EPM240T100C5N ICs require **8× 100nF (0.1µF) X7R** decoupling capacitors, one per VCC pin, placed within 2 mm of each pin.
+* **Bulk Entry Bank Rule:** All boards must place **5× 10µF X7R 50V** bulk decoupling capacitors at each power-entry connector in a **Symmetrical Star/Spoke pattern**. Exception: The JTAG Daughterboard is exempt from this rule — see `JTAG_Daughterboard/Design_Spec.md` DR-JDB-11.
+
+## 4. Mechanical Grounding
 
 * **Mounting Holes:** 3.2mm PTH for M3 screws.
 * **Pattern:** Star-Burst (Radial) copper relief (8 spokes, 20-mil width) for mechanical flex.
@@ -73,7 +80,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 * **EMI Landing Zones:** 10mm unmasked ENIG gold landing strips required on board edges for compression-fit cable shielding (Stator, Extension & Reflector).
 * **Structural Ground:** Combine PCB mounting points with EMI zones using M3 PTH bonded to GND_CHASSIS.
 
-## 4. Single-Point GND_CHASSIS Bond (Global Rule)
+## 5. Single-Point GND_CHASSIS Bond (Global Rule)
 
 **Every board must connect its signal/power reference ground (GND) to GND_CHASSIS at exactly one point.**
 
@@ -87,7 +94,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
   * **All other boards:** Bond point at the power entry connector (BtB or power header), on the GND pin side, before any local decoupling.
 * **Reference:** MIL-STD-461G §3.6; documented rationale in `Standards/Certification_Evidence.md §2.2`.
 
-## 5. Branding & Identity (The "Data Plate")
+## 6. Branding & Identity (The "Data Plate")
 
 To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Data Plate on the **Bottom Silkscreen (B.Silkscreen)** layer.
 
@@ -97,13 +104,13 @@ To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Dat
 * **Metadata:** Must include `AUSGABE [Rev] V1.0` in ALL-CAPS German typewriter font.
 * **Placement:** Positioned in a "Quiet Zone" on the bottom layer, away from critical test points.
 
-## 6. Silkscreen Standards
+## 7. Silkscreen Standards
 
 * **Font:** All text must use the "KiCad Font" with a typewriter-style appearance.
 * **Language:** Bilingual German/English (e.g., `SICHERHEITS-PROBE [Safety Probe]`).
 * **Warning Labels:** High-voltage or high-energy zones must be demarcated with a 0.2mm border box.
 
-## 7. Vias & Teardrops
+## 8. Vias & Teardrops
 
 These rules apply to all boards in the Enigma-NG system.
 

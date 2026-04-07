@@ -61,9 +61,8 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 ## 3. Encryption & JTAG Hub
 
 * **CPLD:** Intel MAX II EPM240T100C5N CPLD (Logic Router).
-* **Decoupling Rule:** Use **8x 0.1µF X7R** local decoupling capacitors per EPM240T100C5N IC (one per VCC pin).
-* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the Link-Beta power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **Ferrite Bead Rule:** Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
 * **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Electronics/Power_Budgets.md`);
   with 4 parallel feeds this is ~**375mA per bead** nominal sharing,
   well within the **3.5A** bead rating. Total 3V3_ENIG worst case including all CPLDs and encoders: 2.20A (27% headroom vs 3.0A LDO).
@@ -178,5 +177,3 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | R15 | TDI chain: J5 TDO return → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | U1 | Stator Management CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |
-
-> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

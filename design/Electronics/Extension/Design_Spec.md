@@ -91,8 +91,8 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   0Ω bond resistor (R2) or direct via connects signal GND to chassis copper pour at J7 pin 16 (GND).
   No additional bonds on this board to prevent ground loops.
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
-* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the input header power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **JTAG:** Pass-through for the serial chain; TTD_RETURN carried via Extension Port pin 15.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* **JTAG:** Pass-through for the serial chain;TTD_RETURN carried via Extension Port pin 15.
   * This board carries JTAG signals as a passive pass-through only. No active termination is
     required here; series termination is placed at the driving ends of each cable segment on
     the Stator (R7–R15) and Encoder boards (R7, R8). See `design/Electronics/Investigations/JTAG_Integrity.md`
@@ -142,5 +142,3 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 | R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | R2 | GND_CHASSIS single-point bond | 0Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C15281 |
-
-> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

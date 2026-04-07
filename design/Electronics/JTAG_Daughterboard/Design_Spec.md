@@ -193,5 +193,3 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-023 | Dual 3-state buffer | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C2688 |
 | C10, C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 81-GRM1555C1H330JA01D | 490-1318-1-ND | C1639 |
 | Y1 | Crystal — FT232H reference clock (per DEC-021) | 12MHz 20pF ±20ppm | SMD3225-4P | 815-ABM8-12.000MHZ-B2-T | 535-9977-1-ND | C9002 |
-
-> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.

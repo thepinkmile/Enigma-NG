@@ -55,8 +55,8 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 
 > **Compatibility note:** J4 pin allocation matches Stator J7 (16-pin 2×8). The Stator J7 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
 
-* **Bulk Entry Bank Rule:** Use **5x 10uF X7R 50V** bulk decoupling capacitors near the interconnect power-entry pins in a **Symmetrical Star/Spoke pattern**.
-* **Termination:** R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* **Termination:**R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
   signal from Rotor 30). It provides impedance damping at the final rotor output before the signal
   re-enters the Extension Port for return to the Stator.
 
@@ -133,5 +133,3 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 | J4 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
 | J5 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | C25805 |
-
-> **Design decision history:** See `design/Design_Log.md` for all formal design decisions (DEC-xxx) applicable to this board.
