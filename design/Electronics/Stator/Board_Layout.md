@@ -158,7 +158,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 | JTAG fan-out to encoder ports (L1, cable-drive side) | signal | — | 0.20 mm | **0.20 mm** | L1 | Traces from series resistors R7–R15 to J4/J5/J6 connector pads (post-termination section) |
 | 3V3_ENIG entry trace (LINK-BETA → shunt R1) | 2.20 A | 0.33 mm | 0.80 mm | **0.80 mm** | L1 | Carries full rotor-stack + encoder load; series path through CSS2H 10 mΩ Kelvin shunt; consistent with PM §9 and Global_Routing_Spec §1.1 |
 | 3V3_ENIG fan-out (post-shunt → L3 pour via-down) | 2.20 A | 0.33 mm | 0.80 mm | **0.80 mm** | L1 | Entry to inner power pour via thermal via cluster |
-| 3V3_ENIG per-slot feed (L1 → each rotor ERF8-005 socket) | 57 mA | 0.009 mm | 0.50 mm | **0.50 mm** | L1 | Power minimum; one trace per 30 rotor slots |
+| 3V3_ENIG per-slot feed (L1 → each rotor ERF8-005 socket) | 57 mA | 0.009 mm | 0.80 mm | **0.80 mm** | L1 | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); one trace per 30 rotor slots |
 | 3V3_ENIG distribution (inner power pour) | 2.20 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary 3V3_ENIG distribution |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Solid GND reference plane; must be uninterrupted under all CI traces on L1 |
 

@@ -117,7 +117,7 @@ Total worst-case: **208 mA** from the 3V3_ENIG rail supplied via J2 (Data Link) 
 | Signal (ENC_IN/OUT, insertion-detect, key-press lines) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic; CPLD I/O; spade-terminal connection traces |
 | JTAG signals: TCK, TMS, TDI, TDO (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. |
 | Inter-CPLD trace: CPLD1 TDO → R7 → CPLD2 TDI | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | Same 50 Ω CI rule intra-board; 53 Ω source impedance via R7 (33 Ω) matching the 50 Ω trace |
-| 3V3_ENIG power (J2 pin 1/26 → CPLDs + LEDs) | 208 mA | 0.031 mm | 0.50 mm | **0.50 mm** | L1 + L3 pour | Power-rail minimum; 2× EPM240 + 2× status LED total load |
+| 3V3_ENIG power (J2 pin 1/26 → CPLDs + LEDs) | 208 mA | 0.031 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); 2× EPM240 + 2× status LED total load |
 | 3V3_ENIG distribution (inner power pour) | 208 mA | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
 
