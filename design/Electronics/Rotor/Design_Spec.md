@@ -9,7 +9,8 @@
 
 ## 1. Overview
 
-The Enigma-NG uses a 30-rotor stack. Unlike the original mechanical rotors, these are **Smart Digital Rotors** where the internal scrambled wiring is emulated by a dedicated logic chip on each module.
+The Enigma-NG uses a 30-rotor stack. Unlike the original mechanical rotors, these are **Smart Digital Rotors**
+where the internal scrambled wiring is emulated by a dedicated logic chip on each module.
 The outer rotating mechanism works like the outer ring of a bearing around the central static ring (this is the rotor PCB and enclosure).
 There are also sensors used to detect the current position of the outer ring using a single-track grey encoder.
 

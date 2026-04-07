@@ -156,7 +156,8 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
     to 50Ω BtB trace impedance per DEC-023.
   * **R7 (33Ω):** Series damping on U5 TMS output — same function as R6 (TCK). Placed before J2 (TMS pin).
   * **R8 (33Ω):** Series damping on TDI signal (not buffered) before J2 (TDI pin). Combined with R2 at FT232H, provides damping at both ends of the FT232H-to-J2 TDI path.
-  * **Pull Resistors:** TMS 10kΩ pull-up (R4) and TCK 10kΩ pull-down (R5) near J2 header to hold JTAG TAP in defined state when idle (see §5 and JTAG best-practice note in `design/Electronics/Investigations/JTAG_Integrity.md`).
+  * **Pull Resistors:** TMS 10kΩ pull-up (R4) and TCK 10kΩ pull-down (R5) near J2 header to hold JTAG TAP in defined state
+    when idle (see §5 and JTAG best-practice note in `design/Electronics/Investigations/JTAG_Integrity.md`).
   * **Trace Width Rule:** All JTAG signal traces on L2 (signal layer) shall be routed at **0.127 mm (5 mil)** over the L1 GND reference plane, targeting **50 Ω controlled impedance**. See DEC-016.
 
 > **Signal Integrity note (JDB as complete JTAG master):** The JDB hosts all JTAG buffering and
