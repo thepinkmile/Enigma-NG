@@ -104,7 +104,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 5V_USB (J1 pin 1 → FT232H VCC) | 400 mA | 0.06 mm | 0.50 mm | **0.50 mm** | L1 + L3 pour | FT232H absolute max VCC draw; power-rail minimum applies |
 | 3V3_ENIG (J1 pin 2 → FT232H VCCIO) | 15 mA | 0.002 mm | 0.50 mm | **0.50 mm** | L1 + L3 pour | VCCIO domain; power-rail minimum applies |
-| JTAG signals: TCK, TMS, TDI, TDO (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L2 (inner) | 50 Ω controlled impedance over L1 GND reference plane; per DEC-016. **CI exception** — overrides 10 mil inner-layer minimum in Global_Routing_Spec §1. |
+| JTAG signals: TCK, TMS, TDI, TDO (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L2 (inner) | JDB inverted stackup (DEC-017): L2 is immediately below the L1 GND plane (buried microstrip, h ≈ 0.087 mm); 0.127 mm achieves ≈50 Ω, equivalent to outer-layer microstrip. DEC-016 CI exception (outer layers only) does not apply; JDB-specific buried-microstrip topology. |
 | USB D+ / D− differential pair | signal | — | 0.15 mm | **0.15 mm (6 mil)** | L2 (inner) | 90 Ω differential USB 2.0; must be length-matched to within 0.1 mm; routed as a tightly-coupled pair |
 | GND pours (outer layers) | — | — | pour | **copper pour** | L1 + L4 | Both outer layers = solid GND; provides dual-sided shielding for L2 signals |
 | Power pours (inner power layer) | ≤ 400 mA | — | pour | **copper pour** | L3 | Separate pour zones for 5V_USB and 3V3_ENIG |
@@ -114,7 +114,9 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 * All JTAG traces on L2 are sandwiched between the L1 GND reference (top) and L3 power pour (bottom),
   providing inherent shielding and a well-defined impedance environment.
 * The 0.127 mm JTAG trace width is calculated for the JLC04161H-7628 stackup
-  (h = 0.087 mm dielectric, t = 0.035 mm copper, Eᵣ = 4.4) targeting 50 Ω per DEC-016.
+  (h = 0.087 mm dielectric, t = 0.035 mm copper, Eᵣ = 4.4) targeting 50 Ω buried-microstrip
+  impedance. This calculation is identical to the outer-layer microstrip at the same h value;
+  applicable here because L2 is immediately adjacent to the L1 GND plane (DEC-017 inverted stackup).
   See `design/Electronics/Investigations/JTAG_Integrity.md §3.1`.
 * USB D+/D− traces at 0.15 mm over the L1 GND plane yield approximately 90 Ω differential
   on the JLC04161H-7628 inner signal layer — correct for USB 2.0 Full Speed.

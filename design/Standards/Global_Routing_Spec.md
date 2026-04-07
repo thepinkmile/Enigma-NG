@@ -28,7 +28,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 
 | Category | Current Range | Min Width — External (2oz) | Min Width — Internal (2oz) | Notes |
 | :--- | :--- | :--- | :--- | :--- |
-| Signal / CI | < 0.5 A | 0.20 mm | 0.127 mm (CI only — see exception above) | Logic, I2C, GPIO; JTAG/diff CI at 0.127 mm per DEC-016 |
+| Signal / CI | < 0.5 A | 0.20 mm | 0.254 mm (10 mil); CI exception (DEC-016) applies to outer layers only | Logic, I2C, GPIO; JTAG/diff CI at 0.127 mm on outer layers per DEC-016 |
 | Low-power supply | 0.5 A – 1.0 A | 0.50 mm | 0.75 mm | 3V3 feeds to low-draw loads |
 | Medium supply | 1.0 A – 3.0 A | 0.50 mm – 1.00 mm | 1.00 mm – 2.00 mm | 3V3_ENIG distribution, 12 V feeds |
 | High-current | 3.0 A – 5.5 A | 1.00 mm – 1.50 mm | copper pour | 5 V/12 V power inputs, OR-ing rails |
