@@ -263,8 +263,10 @@ consistent with military component derating standards.
 | TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 52.0W (steady) | **72.2%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
 
-> † LMQ61460-Q1 operates at 75.4% — marginally above the ≤75% policy. This exceedance is accepted and documented (see §3.3.1: dual-phase interleaving provides redundancy, thermal distribution, and an upgrade path). All other components comply with the ≤75% rule without exception.
-
+> † LMQ61460-Q1 operates at 75.4% — marginally above the ≤75% policy.
+> This exceedance is accepted and documented (see §3.3.1: dual-phase interleaving provides redundancy, thermal distribution, and an upgrade path).
+> All other components comply with the ≤75% rule without exception.
+>
 > *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 9.05A + LTC3350 supercap charge 1A (5V side) = 10.05A at 5V = 50.25W. Buck
 > input (÷0.87) = 57.8W. At 12V PoE bus: 57.8W / 12V = **4.82A eFuse current**. eFuse utilisation (ILIM=7A): 4.82A / 7A = **68.9%** ✓. Steady state (no supercap charge): 9.05A × 5V / (0.87 × 12V) =
 > 4.34A / 7A = **62.0%** ✓. At USB-C 15V: 57.8W / 15V = 3.85A / 7A = **55.0%** ✓. All cases within the 75% derating rule.
@@ -383,9 +385,11 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 | Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.0% ✓ |
 | Initial supercap charge (+2.87W Buck input for 0.5A @ 5V) | 45.4W | 89.0% ❌ | 63.1% ✓ |
 
-> Initial supercap charge (0.5A at 5V, ~2 minutes from cold start) raises total 5V_MAIN load to 9.55A (9.05A system + 0.5A LTC3350 charge). Buck input at 87% efficiency = 9.55A × 5V / 0.87 = 54.9W PoE input. Worst-case PoE utilisation during this window: 54.9W / 72W =
-> 76.2% — marginally above the 75% design rule during ~2 min cold-start charge (see §3.5 OA-02; accepted exception). System must be powered for ≥2 minutes before full hold-up protection (≥14.5 seconds) is available. Normal minimum operational session is 30+ minutes; this
-> constraint is not operationally significant.
+> Initial supercap charge (0.5A at 5V, ~2 minutes from cold start) raises total 5V_MAIN load to 9.55A (9.05A system + 0.5A LTC3350 charge).
+> Buck input at 87% efficiency = 9.55A × 5V / 0.87 = 54.9W PoE input.
+> Worst-case PoE utilisation during this window: 54.9W / 72W = 76.2% — marginally above the 75% design rule during ~2 min cold-start charge (see §3.5 OA-02; accepted exception).
+> System must be powered for ≥2 minutes before full hold-up protection (≥14.5 seconds) is available.
+> Normal minimum operational session is 30+ minutes; this constraint is not operationally significant.
 
 **PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design
 using:

@@ -14,7 +14,8 @@ robustness.
 
 ## Power Rail Glossary (Canonical naming)
 
-* **3V3_ENIG**: Provided by Power Module TPS75733KTTRG3 LDO (3.3V fixed); powers all CPLDs, JTAG interface, I2C logic, rotor stack, and Controller digital I/O. Replaces the former 3V3_SYSTEM rail (see DEC-001).
+* **3V3_ENIG**: Provided by Power Module TPS75733KTTRG3 LDO (3.3V fixed); powers all CPLDs, JTAG interface, I2C logic, rotor stack, and Controller digital I/O.
+  Replaces the former 3V3_SYSTEM rail (see DEC-001).
 * **5V_MAIN**: Provided by Power Module 5V buck; powers CM5 main supplies and 5V system bus.
 * **GND**: Common power and signal ground reference. Shared across all boards via BtB connectors and chassis bond points.
 * **GND_CHASSIS**: Safety earth / EMI reference plane.

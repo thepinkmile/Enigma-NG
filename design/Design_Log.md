@@ -113,7 +113,8 @@ drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C pat
 **Affects:** LTC3350 supercap charger, PoE power budget
 
 **Decision:**  
-When running on PoE (802.3bt Type 4, 72W budget), the supercap charge current is reduced to **0.5A** (vs. up to 2A on USB-C/Battery). This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the 75% design rule; accepted exception (see Certification_Evidence §3.5).
+When running on PoE (802.3bt Type 4, 72W budget), the supercap charge current is reduced to **0.5A** (vs. up to 2A on USB-C/Battery).
+This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the 75% design rule; accepted exception (see Certification_Evidence §3.5).
 
 **Rationale:**  
 
@@ -204,7 +205,9 @@ The TPS25750 PD emulator advertises a **5V/5A** profile to the CM5 internal USB-
 **Affects:** Controller Board Diagnostic Bank-Alpha connector
 
 **Decision:**  
-Diagnostic Bank-Alpha pin 14 was initially reassigned from `3V3_SYSTEM` to **GND**, following the removal of the `3V3_SYSTEM` rail from all BtB interconnects (see DEC-001). In the subsequent design pass that added `SW_LED_CTRL` (GPIO 20) to the Link-Alpha signal set, pin 14 was reallocated to **SW_LED_CTRL** to expose the LED-arbitration handshake at the diagnostic header.
+Diagnostic Bank-Alpha pin 14 was initially reassigned from `3V3_SYSTEM` to **GND**, following the removal of the `3V3_SYSTEM` rail from all BtB interconnects (see DEC-001).
+In the subsequent design pass that added `SW_LED_CTRL` (GPIO 20) to the Link-Alpha signal set,
+pin 14 was reallocated to **SW_LED_CTRL** to expose the LED-arbitration handshake at the diagnostic header.
 
 **Final assignment:** Bank-Alpha Pin 14 = `SW_LED_CTRL` (GPIO 20, CTRL → PM, HIGH = CM5 in control of SW1 RGB LED).
 

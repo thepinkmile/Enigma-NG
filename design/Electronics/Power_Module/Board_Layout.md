@@ -394,6 +394,7 @@ solving for w at I=1A, ΔT=10°C gives w ≈ 0.15 mm). See Global_Routing_Spec.m
   in 4-via thermal clusters. Teardrop fillets mandatory on all 5V_MAIN pads and vias.
   Thermal relief spokes on high-current pads: **20 mil (0.5 mm) wide, 4-spoke orthogonal** per §2.1.
 * **VIN_RAW / VIN_SAFE (7 A):** Teardrops required. No acute-angle bends — arcs ≥ 1.0 mm radius per §1.
-* **3V3_ENIG pour:** The TPS75733KTTRG3 (TO-263 KTT, 5-pin 10.16×15.24mm) requires standard thermal pad soldering and local ground vias only — the ≥200mm² copper pour requirement of the previous WSON-12 design is removed (P_diss ≤0.45W worst-case).
+* **3V3_ENIG pour:** The TPS75733KTTRG3 (TO-263 KTT, 5-pin 10.16×15.24mm) requires standard thermal pad soldering and local ground vias only —
+  the ≥200mm² copper pour requirement of the previous WSON-12 design is removed (P_diss ≤0.45W worst-case).
 * **INA219 shunt (R23, CSS2H 10 mΩ):** Force and sense traces must be independent **0.20 mm** 4-wire
   Kelvin routes to avoid trace resistance corrupting the 10 mΩ measurement (1 mΩ trace = 10% error).

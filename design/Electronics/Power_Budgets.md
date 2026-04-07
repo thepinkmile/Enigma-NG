@@ -89,7 +89,8 @@ being an unachievable worst-case peak).
 * Power dissipation at 2.20A: 2.20² × 0.010 = **48 mW** — 2512 Kelvin package (rated ≥0.5W) is adequate with >10× margin.
 * Power dissipation at 3.00A max: 3.00² × 0.010 = **90 mW** — 2512 Kelvin package ≥0.5W still OK.
 * CAL register: 0x0400 (1024) — unchanged. CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.004 × 0.010) = 1024 ✓
-* Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). Used on **PM R23** (INA219 U12, 0x40, 5V_MAIN monitoring) and **Stator R1** (INA219 U2, 0x45, rotor-stack monitoring). Total build qty: 2.
+* Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). Used on **PM R23** (INA219 U12, 0x40, 5V_MAIN monitoring) and **Stator R1** (INA219 U2, 0x45, rotor-stack monitoring).
+  Total build qty: 2.
 
 ---
 
