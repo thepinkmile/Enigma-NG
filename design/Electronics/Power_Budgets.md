@@ -9,7 +9,7 @@
 
 ## Design Constraint Hierarchy
 
-1. **TPS7A8333P LDO** (Power Module U7): **3.0A maximum output** — hard limit, component not to be changed.
+1. **TPS75733KTTRG3 LDO** (Power Module U7): **3.0A maximum output** — hard limit, component not to be changed.
 2. **LINK-ALPHA 3V3_ENIG pins** (pins 39–44): 6 pins × 0.5A = 3.0A capacity — matches LDO limit.
 3. **LINK-BETA 3V3_ENIG pins** (pins 28–35): 8 pins × 0.5A = 4.0A capacity — above LDO limit; connector is
    not the bottleneck, the LDO is.
@@ -65,7 +65,7 @@ being an unachievable worst-case peak).
 | Typical worst-case load | 2.20 A | **+0.80 A (27%)** |
 | LINK-BETA connector capacity | 4.00 A | Not the constraint |
 
-> ✅ **Conclusion:** The 3A TPS7A8333P LDO provides 27% headroom above the worst-case typical load.
+> ✅ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides 27% headroom above the worst-case typical load.
 > No LDO upgrade is required for the current 30-rotor design.
 
 ---
@@ -98,7 +98,7 @@ being an unachievable worst-case peak).
 | Consumer | Current | Notes |
 | :--- | :--- | :--- |
 | CM5 (Raspberry Pi Compute Module 5) | 5.0 A max | CM5 boot-to-load current profile; 25W at 5V = 5A |
-| 3V3_ENIG LDO quiescent (TPS7A8333P) | 2.20 A max | Sourced from 5V_MAIN; P_in = 5V × 2.2A = 11W |
+| 3V3_ENIG LDO quiescent (TPS75733KTTRG3) | 2.20 A max | Sourced from 5V_MAIN; P_in = 5V × 2.2A = 11W |
 | Status LEDs, RJ45, misc. | 0.1 A | |
 | FT232H VCC (JTAG Daughterboard — via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
 | USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |

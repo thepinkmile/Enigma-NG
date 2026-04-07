@@ -129,7 +129,7 @@ The Power Module generates two rails from a ~12V input source:
 
 - **5V_MAIN** — Up to 12A; dual-phase interleaved **LMQ61460-Q1**. Powers the CM5 module. The CM5 requires up
   to 25W (5V @ 5A); the Linux kernel logs undervoltage warnings if supply capacity is below this.
-- **3V3_ENIG** — Clean 3.3V; **TPS7A8333P** LDO post-regulator. Unified logic rail for all CPLDs, USB-JTAG
+- **3V3_ENIG** — Clean 3.3V; **TPS75733KTTRG3** LDO post-regulator. Unified logic rail for all CPLDs, USB-JTAG
   interface, I2C logic, status indicators, and the full rotor stack.
 
 > **NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. **3V3_ENIG** is the single unified 3.3V
@@ -138,7 +138,7 @@ The Power Module generates two rails from a ~12V input source:
 ### 3V3_ENIG Power Flow
 
 ```text
-Power Module (TPS7A8333P LDO)
+Power Module (TPS75733KTTRG3 LDO)
   → Controller Board (via Link-Alpha pins 39–44)
     → Stator (via Link-Beta)
       → Rotor 1 J2 (PWR input)

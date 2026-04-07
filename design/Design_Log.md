@@ -247,7 +247,7 @@ ESD protection on the diagnostic bank connectors is **deferred** to post-prototy
 
 **Decision:**  
 All power rails are generated on the **Power Module**. The Controller Board's role is purely to **route** power rails onward to downstream boards — it does not generate any rails itself. The rotor
-stack is powered by the existing **3V3_ENIG** rail (TPS7A8333P LDO, 3A). There is no separate Rotor Buck; the erroneous "3.3V/5A Rotor Buck" specification was a confusion with the 5V/5A CM5 rail and
+stack is powered by the existing **3V3_ENIG** rail (TPS75733KTTRG3 LDO, 3A). There is no separate Rotor Buck; the erroneous "3.3V/5A Rotor Buck" specification was a confusion with the 5V/5A CM5 rail and
 has been removed.
 
 **Rationale:**  
@@ -946,7 +946,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 | Link-Alpha BtB — 80-pin socket to Controller Board | Samtec ERM8-040-05.0-S-DV-K-TR | ERM8-040 | 200-ERM8040050SDVKTR | SAM12064-ND | Male header (ERM8). Mating female on Controller (ERF8). Gold-plated, 0.5A/pin |
 | J2 | RJ45 MagJack with integrated magnetics | Würth 7499111121A | 7499111121A | 710-7499111121A | 732-2174-ND | SMT, shielded, 2 integrated LEDs (green/yellow), 10/100/1000 PoE compatible |
-| J3 | Battery connector — 5-pin Micro-Fit 3.0 THT vertical | Molex 43650-0519 | 43650-0519 | 538-43650-0519 | WM7843-ND ⚠️ verify | 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. ⚠️ MPN corrected (43045-0512 does not exist) |
+| J3 | Battery connector — 5-pin Micro-Fit 3.0 THT vertical | Molex 43650-0519 | 43650-0519 | 538-43650-0519 | WM14587-ND | 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. ⚠️ MPN corrected (43045-0512 does not exist) |
 
 ### Controller Board
 
@@ -1023,4 +1023,4 @@ changes have inadvertently altered connector placement, orientation, or mating r
 ---
 
 > **Note for manual review:** Items marked `???` or `⚠️ verify` require confirmation before the BOM is finalised for procurement. In particular: Encoder J1 plug/jack type has not been selected;
-> Controller J1 (ERF8) DigiKey PN SAM8621-ND should be confirmed; Power Module J3 (43650-0519) DigiKey WM7843-ND should be verified at digikey.co.uk.
+> Controller J1 (ERF8) DigiKey PN SAM8621-ND should be confirmed; Power Module J3 (43650-0519) DigiKey WM14587-ND (confirmed).

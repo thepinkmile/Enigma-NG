@@ -28,7 +28,7 @@
 * **Pin 38:** USB_STAT (USB-C PD negotiated status from STUSB4500; PM → CTRL; CM5 GPIO 21)
 * **Pins 39-44:** 3V3_ENIG (Input from Power Module LDO — 6 pins, 3.0A capacity)
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection — Active Low, CM5 GPIO 23)
-* **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS7A8333P EN pin on Power Module)
+* **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS75733KTTRG3 EN pin on Power Module)
 * **Pin 47:** SW_LED_CTRL (CM5 GPIO 20 → LED arbitration; CTRL → PM)
 * **Pin 48:** GND (logic/power zone boundary separator)
 * **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — interleaved; combined with pins 21-22; 4-via Thermal Clusters)
@@ -75,14 +75,14 @@
 | 36 | I2C1_SCL | Bidir | I2C Telemetry bus clock (CM5 GPIO 3; 4.7kΩ pull-up on PM) |
 | 37 | GND | — | I2C shield return |
 | 38 | USB_STAT | PM → CTRL | USB-C PD negotiated from STUSB4500 (CM5 GPIO 21); active-low |
-| 39 | 3V3_ENIG | PM → CTRL | Logic rail from TPS7A8333P LDO; 0.5A/pin |
+| 39 | 3V3_ENIG | PM → CTRL | Logic rail from TPS75733KTTRG3 LDO; 0.5A/pin |
 | 40 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 41 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 42 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 43 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 44 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin; combined 6 pins = 3.0A |
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
-| 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS7A8333P EN |
+| 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW) |
 | 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; LED arbitration (CM5 GPIO 20) |
 | 48 | GND | — | Logic/power zone boundary separator |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
@@ -119,7 +119,7 @@
 | 80 | GND | — | Interleaved return; last pin |
 
 **5V_MAIN pin count:** Pins 21–22 (2) + Pins 49, 51, 53…79 (16 odd pins) = **18 pins × 0.5A = 9.0A total capacity** ✓
-**3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS7A8333P 3A max output)
+**3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS75733KTTRG3 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
 **Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25), Pin 30 = POE_STAT (GPIO 24), Pin 38 = USB_STAT (GPIO 21) — all PM → CTRL, active-low/high per signal definition.
 **GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
@@ -164,7 +164,7 @@ _______________________________________    _____________    ____________________
                                            (GPIO IN)        (From Power Module Batt)
 
 [ PIN  46      ] ------------------------> [ 3.3V LOGIC] -> [ ROTOR_EN                   ]
-                                           (GPIO OUT)       (CM5 GPIO 16 → TPS7A8333P EN)
+                                           (GPIO OUT)       (CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW))
 
 [ PIN 47       ] ------------------------> [ 3.3V LOGIC] -> [ SW_LED_CTRL                ]
                                            (GPIO OUT)       (CM5 GPIO 20 — HIGH = CM5 in control of SW1 RGB)

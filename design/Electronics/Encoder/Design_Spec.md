@@ -37,7 +37,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 
 ## 2. Power Requirements
 
-* **Core:** 3.3V (Logic) from the **3V3_ENIG** rail, sourced from the Power Module LDO (TPS7A8333P) and
+* **Core:** 3.3V (Logic) from the **3V3_ENIG** rail, sourced from the Power Module LDO (TPS75733KTTRG3) and
   distributed by the Stator. Power arrives at J2 (Data Link, pin 1 = 3V3_ENIG, pin 26 = 3V3_ENIG) via
   the 26-pin IDC ribbon cable from the Stator J4/J5/J6 port. The AP22652 current-limited output
   mentioned in earlier drafts does not apply — the Controller Board has no direct power path to the Encoder.

@@ -133,7 +133,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 ## 3. Logic Passives  (0603 0.1% Thin-Film unless otherwise noted)
 
 * **4.7kΩ:** 10 units (I2C-1 Telemetry Bus).
-* **10kΩ:** 10 units (Reset, Battery Presence & ROTOR_EN pull-up to 3V3_ENIG).
+* **10kΩ:** 10 units (Reset, Battery Presence pull-ups to 3V3_ENIG & ROTOR_EN pull-down to GND).
 * **22Ω:** 10 units (JTAG end-of-chain damping — Reflector R1 × 1; spares).
 * **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).

@@ -99,7 +99,7 @@ for CE/UKCA EMC compliance.
   → TPS25980 eFuse (7A ILIM, 11.0V UVLO, 16.9V OVLO fixed variant, VQFN 4×4mm)
   → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 4× Tecate TPLH-2R7/22WR12X31 supercaps (22F/5.4V, 2S2P)]
   → 5V_MAIN bus
-  → [CM5 via TPS25751 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS7A8333P 3V3 LDO]
+  → [CM5 via TPS25751 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS75733KTTRG3 3V3 LDO]
   → 3V3_ENIG (all CPLDs + USB-JTAG)
 ```
 
@@ -221,21 +221,21 @@ inter-modulation products would appear at sum and difference frequencies, partia
 
 ### 3.4 3V3_ENIG LDO — Selection Rationale
 
-**Part selected: TI TPS7A8333P** (fixed 3.3V output variant, WSON-12)
+**Part selected: TI TPS75733KTTRG3** (fixed 3.3V output variant, TO-263 (KTT) 5-pin)
 
 | Parameter | Value | Rationale |
 | --- | --- | --- |
-| Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; well above TPS7A8333P 500mV dropout |
-| Output noise | 8.8 µVRMS | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
-| PSRR | 72 dB | Attenuates Buck output ripple (800kHz effective) by >72dB — negligible at CPLD supply |
+| Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; TPS75733 Vdo ≈ 0.18V at 2.2A — well above minimum input requirement |
+| Output noise | Low-noise linear LDO | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
+| PSRR | High PSRR linear LDO | Attenuates Buck output ripple (800kHz effective) — negligible at CPLD supply |
 | Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 × AS5600 (195mA) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Extension buffers (10mA) + Controller-local (50mA) = 2,117mA → **2.20A rounded; 73.3% utilisation** ✓ (per Power_Budgets.md) |
-| Package | WSON-12 (3.5×3.5mm) | Exposed pad enables thermal transfer to PCB copper pour |
-| Input power dissipation | 1.7V × 2.20A = **3.74W** | Managed by Power Module thermal zone (Gelid GP-Ultimate pad, 15W/mK to enclosure) |
+| Package | TO-263 (KTT) 5-pin 10.16×15.24mm | Standard power package; thermal pad to PCB; no large copper pour required |
+| Input power dissipation | Vdo≈0.18V × 2.20A = **~0.40W** (typ.); ≤**0.45W** worst-case | Standard TO-263 thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
 The 37 CPLDs (MAX II EPM240T100C5N) share this rail as their VCCIO (I/O voltage reference). Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
-potential JTAG chain errors. A linear LDO with 72dB PSRR provides isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional
+potential JTAG chain errors. A linear LDO provides high PSRR isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional
 filtering.
 
 ### 3.5 Component Utilisation Policy
@@ -258,7 +258,7 @@ consistent with military component derating standards.
 | Component | Function | Rated | Peak Load | Utilisation |
 | --- | --- | --- | --- | --- |
 | 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 9.05A | **75.4%** ✓ † |
-| TPS7A8333P | 3V3_ENIG LDO | 3A | 2.20A | **73.3%** ✓ |
+| TPS75733KTTRG3 | 3V3_ENIG LDO | 3A | 2.20A | **73.3%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.82A* | **68.9%** ✓ |
 | TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 52.0W (steady) | **72.2%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |

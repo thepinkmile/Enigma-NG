@@ -157,7 +157,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
                                [ 5V_MAIN BUS ]
           +---------------------------+-------------+--------------------+
           |                           |             |                    |
- [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS7A8333P]  [U8 MCP121T-450E]
+ [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS75733KTTRG3]  [U8 MCP121T-450E]
  [C_SC1-4: 22F / 5.4V    ]   PD Emulator         3.3V LDO          Supervisor
  (4x Tecate 22F/2.7V 2S2P) -> CM5 5V/5A          -> 3V3_ENIG        -> PWR_GD
                               (via J1 BtB)         (3A / 3.3V)      (open-drain)
@@ -175,7 +175,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 | [U2A/U2B: 5V BUCK×2 (12A)]|--------|--[ PINS 21-22: 5V ] ------|------->| [ 5V_MAIN  ]      |
 |                           |--------|--[ PINS 49-80: 5V+GND ] --|------->|   (9A cluster)    |
 |                           |        |                           |        |                   |
-| [U7: TPS7A8333P 3.3V LDO] |--------|--[ PINS 39-44: 3V3_ENIG ] |------->| [ 3V3_ENIG ]      |
+| [U7: TPS75733KTTRG3 3.3V LDO] |--------|--[ PINS 39-44: 3V3_ENIG ] |------->| [ 3V3_ENIG ]      |
 |                           |        |                           |        |                   |
 | [J2: RJ45 LEDs] <---------|--------|  [ PINS 25-26: ETH_LEDs ] |<-------| [ ETH_LED_L/A ]   |
 | (LED anodes: 3V3_ENIG)    |        |   (from CM5 GbE PHY)      |        |                   |
@@ -311,14 +311,14 @@ SIDE VIEW (CROSS-SECTION)
 | 36 | I2C1_SCL | Bidir | I2C Telemetry bus clock (CM5 GPIO 3; 4.7kΩ pull-up on PM) |
 | 37 | GND | — | I2C shield return |
 | 38 | USB_STAT | PM → CTRL | USB-C PD negotiated from STUSB4500 (CM5 GPIO 21); active-low |
-| 39 | 3V3_ENIG | PM → CTRL | Logic rail from TPS7A8333P LDO; 0.5A/pin |
+| 39 | 3V3_ENIG | PM → CTRL | Logic rail from TPS75733KTTRG3 LDO; 0.5A/pin |
 | 40 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 41 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 42 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 43 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin |
 | 44 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin; combined 6 pins = 3.0A |
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
-| 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS7A8333P EN |
+| 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW) |
 | 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; disables MIC1555 hardware path (CM5 GPIO 20) |
 | 48 | GND | — | Logic/power zone boundary separator |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
@@ -355,7 +355,7 @@ SIDE VIEW (CROSS-SECTION)
 | 80 | GND | — | Interleaved return; last pin |
 
 **5V_MAIN pin count:** Pins 21–22 (2) + Pins 49, 51, 53…79 (16 odd pins) = **18 pins × 0.5A = 9.0A total capacity** ✓
-**3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS7A8333P 3A max output)
+**3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS75733KTTRG3 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
 **Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25, active-low), Pin 30 = POE_STAT (GPIO 24, active-low — LOW = PoE live), Pin 38 = USB_STAT (GPIO 21, active-low) — all PM → CTRL.
 **GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
@@ -394,7 +394,6 @@ solving for w at I=1A, ΔT=10°C gives w ≈ 0.15 mm). See Global_Routing_Spec.m
   in 4-via thermal clusters. Teardrop fillets mandatory on all 5V_MAIN pads and vias.
   Thermal relief spokes on high-current pads: **20 mil (0.5 mm) wide, 4-spoke orthogonal** per §2.1.
 * **VIN_RAW / VIN_SAFE (7 A):** Teardrops required. No acute-angle bends — arcs ≥ 1.0 mm radius per §1.
-* **3V3_ENIG pour:** The TPS7A8333P (WSON-12, 3.5×3.5 mm) requires ≥ 200 mm² copper pour on L1
-  plus Type VII thermal vias to L2/L3 GND planes for adequate thermal relief (see Design_Spec §5 thermal table).
+* **3V3_ENIG pour:** The TPS75733KTTRG3 (TO-263 KTT, 5-pin 10.16×15.24mm) requires standard thermal pad soldering and local ground vias only — the ≥200mm² copper pour requirement of the previous WSON-12 design is removed (P_diss ≤0.45W worst-case).
 * **INA219 shunt (R23, CSS2H 10 mΩ):** Force and sense traces must be independent **0.20 mm** 4-wire
   Kelvin routes to avoid trace resistance corrupting the 10 mΩ measurement (1 mΩ trace = 10% error).
