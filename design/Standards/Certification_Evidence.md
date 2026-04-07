@@ -93,7 +93,7 @@ for CE/UKCA EMC compliance.
 **Full power chain (input to output):**
 
 ```text
-[PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 51W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
+[PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 60W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
   → LM74700-Q1 OR-ing controller + CSD17483F4T ideal-diode FETs (×3)
   → TCO F1 (72°C thermal fuse)
   → TPS25980 eFuse (7A ILIM, 11.0V UVLO, 16.9V OVLO fixed variant, VQFN 4×4mm)

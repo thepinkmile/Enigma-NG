@@ -10,7 +10,7 @@
 
 The Power Module uses a discrete two-stage PoE architecture:
 
-- **Stage 1 — PD Interface:** TPS2372-4 (IEEE 802.3bt Type 4, 51W class PD)
+- **Stage 1 — PD Interface:** TPS2372-4 (IEEE 802.3bt Type 4, 72W class PD with external hotswap)
 - **Stage 2 — DC-DC Converter:** TPS23730 ACF controller + T2 isolation transformer + synchronous rectifier
 
 The TPS23730 supports two operating modes:

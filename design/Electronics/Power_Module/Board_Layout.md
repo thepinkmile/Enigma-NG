@@ -107,7 +107,7 @@ TOP VIEW (L1) - 6-Layer / 2oz Copper
 |                    |             |            | [U10 TPS23730 ACF DC-DC]       |
 | CONNECTOR SHIELD --|-------------|----------  |  + [T2: POE600F-12LD]          |
 |____________________|             V            |  Coilcraft / 60W / 12V out     |-----> [ 12V_POE  ]
-                             [ GND_CHASSIS ]    |  >=1500Vrms / 200kHz / 51W     |       (to OR-ing)
+                             [ GND_CHASSIS ]    |  >=1500Vrms / 200kHz / 60W     |       (to OR-ing)
                                                 |________________________________|
 
 Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer (12V out, 36-72V in, 200kHz, >=1500Vrms). Order direct: coilcraft.com.
