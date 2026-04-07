@@ -377,7 +377,7 @@ solving for w at I=1A, ΔT=10°C gives w ≈ 0.15 mm). See Global_Routing_Spec.m
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Signal (I2C, GPIO, LED ctrl, status) | < 50 mA | 0.008 mm | 0.20 mm | **0.20 mm** | L1 | General 3.3 V logic |
 | Supercap charge (LTC3350 → C_SC1–4) | 0.5 A | 0.075 mm | 0.50 mm | **0.50 mm** | L1 | Soft-charge limited by LTC3350 RICHARGE |
-| 3V3_ENIG (LDO output → LINK-ALPHA pins 39–44) | 3.0 A | 0.45 mm | 0.50 mm | **0.80 mm** | L1 | Medium-power supply; extra margin for 3 A upper bound |
+| 3V3_ENIG (LDO output → LINK-ALPHA pins 39–44) | 3.0 A | 0.45 mm | 0.80 mm | **0.80 mm** | L1 | Medium-power supply; extra margin for 3 A upper bound |
 | 12V_POE (ACF transformer output → OR-ing U6) | 4.58 A | 0.69 mm | 1.00 mm | **1.00 mm** | L1 | 54.9 W PoE budget ÷ 12 V = 4.58 A peak |
 | Battery input (J3 → OR-ing U6) | 4.82 A | 0.72 mm | 1.00 mm | **1.00 mm** | L1 | TPS25980 ILIM-limited; 14.4 V nominal battery |
 | USB-C VBUS input (J4 → OR-ing U6) | 5.0 A | 0.75 mm | 1.00 mm | **1.00 mm** | L1 | 15 V / 5 A STUSB4500-negotiated PD limit |
