@@ -194,7 +194,6 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 * **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design
   phase). These are distinct from the 5V_MAIN entry bank above.
 * **Hardware LED Fallback:** The hardware LED fallback path (MIC1555 oscillator) is located on the Power Module.
-* **Ferrite Beads:** Ferrite bead filtering is implemented on the Stator board.
 
 ## 8. Connectivity
 
