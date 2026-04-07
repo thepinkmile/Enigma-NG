@@ -339,7 +339,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 | Pin | Signal | Source |
 |-----|--------|--------|
-| 1 | +5V_MAIN | Controller 5V_MAIN rail |
+| 1 | 5V_MAIN | Controller 5V_MAIN rail |
 | 2 | GND | Controller GND |
 | 3 | FAN_TACH | CM5 module connector Pin 16 |
 | 4 | FAN_PWM | CM5 module connector Pin 19 |
@@ -394,7 +394,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
   * **Active Fan Header (J_FAN):** A 4-pin JST SH (1.0mm pitch) fan connector is provided on the Controller
     board, matching the CM5IO J14 standard. Supports 5V PWM-controlled fans.
     Board part: JST SM04B-SRSS-TB(LF)(SN) (JLCPCB C160390, Mouser 538-SM04B-SRSS-TB).
-    Pinout: Pin 1 = +5V, Pin 2 = GND, Pin 3 = TACH (CM5 Pin 16), Pin 4 = PWM (CM5 Pin 19).
+    Pinout: Pin 1 = 5V_MAIN, Pin 2 = GND, Pin 3 = TACH (CM5 Pin 16), Pin 4 = PWM (CM5 Pin 19).
     FAN_TACH and FAN_PWM are dedicated BCM2712 fan controller pins on the CM5 module connector
     — no GPIO allocation required.
 

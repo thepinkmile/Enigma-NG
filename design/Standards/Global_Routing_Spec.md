@@ -87,7 +87,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
   * **All other boards:** Bond point at the power entry connector (BtB or power header), on the GND pin side, before any local decoupling.
 * **Reference:** MIL-STD-461G §3.6; documented rationale in `Standards/Certification_Evidence.md §2.2`.
 
-## 4. Branding & Identity (The "Data Plate")
+## 5. Branding & Identity (The "Data Plate")
 
 To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Data Plate on the **Bottom Silkscreen (B.Silkscreen)** layer.
 
@@ -97,13 +97,13 @@ To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Dat
 * **Metadata:** Must include `AUSGABE [Rev] V1.0` in ALL-CAPS German typewriter font.
 * **Placement:** Positioned in a "Quiet Zone" on the bottom layer, away from critical test points.
 
-## 5. Silkscreen Standards
+## 6. Silkscreen Standards
 
 * **Font:** All text must use the "KiCad Font" with a typewriter-style appearance.
 * **Language:** Bilingual German/English (e.g., `SICHERHEITS-PROBE [Safety Probe]`).
 * **Warning Labels:** High-voltage or high-energy zones must be demarcated with a 0.2mm border box.
 
-## 6. Vias & Teardrops
+## 7. Vias & Teardrops
 
 These rules apply to all boards in the Enigma-NG system.
 

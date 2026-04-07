@@ -28,7 +28,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §5 PCB & Mechanical Specs |
-| DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §3a Rotor Interface Connectors; BOM J1–J3 |
+| DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §4 Rotor Interface Connectors; BOM J1–J3 |
 | DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J7); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
 | DR-REF-04 | End-of-chain damping | R1 = 22 Ω 0402 on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive reflector function only; fixed wiring emulated in hardware | §2 Architecture |
