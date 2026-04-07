@@ -45,7 +45,7 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 | DR-EXT-06 | Buffer bypass capacitor | C6 = 100 nF 0402 within 2 mm of U1 VCC pin (L1) | §4 PCB Specs; BOM C6 (100nF X7R) |
 | DR-EXT-07 | System quantity | Up to ×5 Extension boards per system (Rev A power budget); Rev A prototype uses ×1 | §1 Modular Logic; System_Architecture.md |
 
-## 3. Connectivity
+## 2. Connectivity
 
 * **Extension Port (J7 IN / J8 OUT):** 16-pin 2×8 shrouded box header.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
@@ -102,12 +102,12 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   * `Stator/Design_Spec.md`
   * `Reflector/Design_Spec.md`
 
-## 4. Diagnostics & Branding
+## 3. Diagnostics & Branding
 
 * **Diagnostics:** Integrated 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (Mid-Stack troubleshooting).
 * **Identity:** 2oz Copper / Inverted White Data Plate (V1.0 traceability).
 
-## 5. PCB Fabrication & Stackup
+## 4. PCB Fabrication & Stackup
 
 * **Layers:** 4-Layer (JLC04161H-7628).
 * **Finish:** ENIG (Gold) for connector and diagnostic pad surfaces.
@@ -119,12 +119,12 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016. Stackup defined per DEC-017.
 * **U1 Bypass:** C6 (100nF) must be placed within 2mm of U1 VCC pin on L1.
 
-## 6. Thermal & ESD
+## 5. Thermal & ESD
 
 * **Thermal:** No active cooling required on the Extension board. Passive components only.
 * **ESD:** TVS diode on exposed signal lines; board relies on enclosure shielding.
 
-## 7. Bill of Materials
+## 6. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
