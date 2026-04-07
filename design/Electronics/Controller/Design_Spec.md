@@ -19,7 +19,6 @@
 * **USB-C:** 16-pin "Power Only" to maximize mechanical durability in classroom settings.
 * **Status LED:** Hardware heartbeat (1Hz pulse, generated on Power Module) triggers on power-up before CM5 boot for instant status confirmation.
 
-
 ### Functional & Design Requirements
 
 #### Functional Requirements
@@ -64,7 +63,9 @@
   * Provides: JTAG, Reset, and 3V3_ENIG to Stator.
   * **Cross-ref:** See `Stator/Design_Spec.md` and `Stator/Board_Layout.md` for explicit pin mapping and connector
     compliance. See DEC-015 for 40-pin reduction rationale and poka-yoke safety note.
-* **3V3_ENIG:** The Controller is an active consumer of 3V3_ENIG — CM5 VDD_GPIO_REF and on-board peripherals are powered from this rail via the LINK-ALPHA tap node. Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design phase). The 2oz copper L3 highway continues to link Alpha and Beta for the rotor stack pass-through.
+* **3V3_ENIG:** The Controller is an active consumer of 3V3_ENIG — CM5 VDD_GPIO_REF and on-board peripherals are powered from this rail via the LINK-ALPHA tap node.
+  Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design phase).
+  The 2oz copper L3 highway continues to link Alpha and Beta for the rotor stack pass-through.
 
 ### 2.1. High-Speed Routing (on Link-Alpha)
 
@@ -107,7 +108,8 @@
 
 The Controller provides JTAG pass-through only. All JTAG chain architecture, device ordering, buffering, termination, and timing specifications are defined in the JDB Design_Spec.
 
-* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly from the JDB hat-header (J_JDB) to LINK-BETA (J2) on the Controller board without any active components. No buffer or series resistors reside on the Controller for JTAG signals.
+* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly from the JDB hat-header (J_JDB) to LINK-BETA (J2) on the Controller board without any active
+  components. No buffer or series resistors reside on the Controller for JTAG signals.
 * **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for all JTAG chain architecture, FT232H module schematics, buffering, and assembly details. See DEC-016, DEC-023.
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
@@ -187,8 +189,10 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 * **External Links:** All inputs (Status) feature 10kΩ series resistors to protect CM5 pins from transient spikes.
 * **Voltage:** 5V signals are strictly forbidden on: CM5 GPIO pins, I²C SDA/SCL lines, JTAG (TDI/TDO/TCK/TMS), and all logic-level signals on LINK-ALPHA.
 * **ESD Protection:** [TPD12S016](https://www.ti.com) (HDMI) and [TPD4E05U06](https://www.ti.com) (USB 3.0) on Layer 1.
-* **Bulk Entry Bank Rule (5V_MAIN):** Use **5× 10µF X7R 50V** bulk decoupling capacitors placed at the LINK-ALPHA connector entry point (5V_MAIN entry pins). Place in a **Symmetrical Star/Spoke pattern** (one hub capacitor at entry, four spoke capacitors around it) to minimise input-rail impedance and reduce brown-out risk during current transients.
-* **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design phase). These are distinct from the 5V_MAIN entry bank above.
+* **Bulk Entry Bank Rule (5V_MAIN):** Use **5× 10µF X7R 50V** bulk decoupling capacitors placed at the LINK-ALPHA connector entry point (5V_MAIN entry pins). Place in a **Symmetrical
+  Star/Spoke pattern** (one hub capacitor at entry, four spoke capacitors around it) to minimise input-rail impedance and reduce brown-out risk during current transients.
+* **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design
+  phase). These are distinct from the 5V_MAIN entry bank above.
 * **Hardware LED Fallback:** The hardware LED fallback path (MIC1555 oscillator) is located on the Power Module.
 * **Ferrite Beads:** Ferrite bead filtering is implemented on the Stator board.
 
@@ -315,7 +319,8 @@ See `design/Standards/Global_Routing_Spec.md §6` for via and teardrop rules app
 * **Placement:** 2×10 2.54mm ENIG Gold Looped Probe Pad Banks placed on L1, directly behind their respective BtB connectors.
 * **Orientation:** Facing upwards for easy logic analyser ribbon cable connection.
 * **Silkscreen:** Dark Green mask with White Bilingual Typewriter font. Silkscreen legend must label each pad individually.
-* **Branding:** Top-left 10mm "Enigma-NG" shielded gold emblem (Exposed ENIG Gold tied to GND_CHASSIS). Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom). See `design/Standards/Global_Routing_Spec.md §4` for full branding specification.
+* **Branding:** Top-left 10mm "Enigma-NG" shielded gold emblem (Exposed ENIG Gold tied to GND_CHASSIS). Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom).
+  See `design/Standards/Global_Routing_Spec.md §4` for full branding specification.
 
 #### Diagnostic Bank-Alpha (Power/Entry) — 2×10
 
@@ -344,7 +349,8 @@ Monitors 5V_MAIN, 3V3_ENIG, I²C Telemetry, Status LEDs, and BATT_PRES.
 | 19 | GND_CHASSIS | — | Chassis ground reference |
 | 20 | GND | — | Signal/power ground return |
 
-> **Note:** RGB channel order in Bank-Alpha (pins 9/10/11 = G/R/B) differs from BtB LINK-ALPHA order (pins 31/32/33 = R/G/B). This is intentional for PCB routing convenience. Silkscreen legend must label each pad individually.
+> **Note:** RGB channel order in Bank-Alpha (pins 9/10/11 = G/R/B) differs from BtB LINK-ALPHA order (pins 31/32/33 = R/G/B). This is intentional for PCB routing
+> convenience. Silkscreen legend must label each pad individually.
 
 #### Diagnostic Bank-Beta (Logic/Exit) — 2×10
 
