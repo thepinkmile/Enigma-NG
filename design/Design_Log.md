@@ -103,7 +103,7 @@ drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C pat
 **Constraints:**  
 
 - PoE UVLO: 11V. eFuse UVLO: 11V. No margin at UVLO floor — PoE cable must be within 1V drop budget.
-- eFuse ILIM utilisation at 12V worst case: 4.55A / 7A = **65.0%** ✓ (within 75% derating target).
+- eFuse ILIM utilisation at 12V worst case: 4.82A / 7A = **68.9%** ✓ (within 75% derating target).
 
 ---
 

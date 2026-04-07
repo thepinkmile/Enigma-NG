@@ -42,7 +42,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-PM-01 | Input supply | PoE 802.3bt Type 4 (Class 8), 44–57 V, ≤71 W | §5 Protection & Logic; BOM U9 (TPS2372-4), J2 (RJ45) |
+| DR-PM-01 | Input supply | PoE 802.3bt Type 4 (Class 8), 44–57 V, ≤72 W | §5 Protection & Logic; BOM U9 (TPS2372-4), J2 (RJ45) |
 | DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |
 | DR-PM-03 | 3V3_ENIG rail | 3.3 V ±1%, ≤3.0 A maximum (TPS7A8333P LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460-Q1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |

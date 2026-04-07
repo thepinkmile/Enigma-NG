@@ -79,7 +79,7 @@ automatically selects the best available source without any interruption to the 
 
 | Priority | Source | Typical Voltage | Notes |
 | :---: | --- | --- | --- |
-| 1st | **PoE+ (Power over Ethernet)** | ~12V | 802.3bt Type 4 — highest available power (up to 71W); recommended for fixed installations |
+| 1st | **PoE+ (Power over Ethernet)** | ~12V | 802.3bt Type 4 — highest available power (up to 72W); recommended for fixed installations |
 | 2nd | **USB-C (PD adapter)** | 15V | Requires a 75W USB-C PD adapter (15V/5A); adequate for normal operation |
 | 3rd | **Battery** | 11–16.8V | Lithium-based smart battery pack; tertiary source used when no mains is available |
 
@@ -200,7 +200,7 @@ warning messages.
 
 ### 3.8 PoE+ (Power over Ethernet) Input
 
-The Enigma-NG accepts **IEEE 802.3bt Type 4 (4-pair PoE++)** power delivery over the Ethernet connection. This is the highest-power PoE standard currently available, supporting up to 71W delivered to
+The Enigma-NG accepts **IEEE 802.3bt Type 4 (4-pair PoE++)** power delivery over the Ethernet connection. This is the highest-power PoE standard currently available, supporting up to 72W delivered to
 the device — sufficient to run the Enigma-NG at full load without any additional power source.
 
 Standard PoE (802.3af, 12.95W) and PoE+ (802.3at, 25.5W) are **not sufficient** to power the Enigma-NG at full load. If a lower-power PoE source is connected, the system will fall back to the USB-C

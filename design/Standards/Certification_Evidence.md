@@ -105,7 +105,7 @@ for CE/UKCA EMC compliance.
 
 **Input priority rationale:**
 
-- PoE is primary as it is the highest-capacity source (71.3W PD vs 75W USB-C adapter), and in fixed installations is the most reliable and managed power source.
+- PoE is primary as it is the highest-capacity source (72W vs 75W USB-C adapter), and in fixed installations is the most reliable and managed power source.
 - USB-C is secondary as it depends on the availability of an appropriate adapter.
 - Battery is tertiary as its capacity is finite.
 
@@ -378,10 +378,10 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 
 **Load vs. PoE standard comparison:**
 
-| Condition | System Load | Type 3 (51W) | Type 4 (71.3W) |
+| Condition | System Load | Type 3 (51W) | Type 4 (72W) |
 | --- | --- | --- | --- |
-| Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.6% ✓ |
-| Initial supercap charge (+2.87W Buck input for 0.5A @ 5V) | 45.4W | 89.0% ❌ | 63.6% ✓ |
+| Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.0% ✓ |
+| Initial supercap charge (+2.87W Buck input for 0.5A @ 5V) | 45.4W | 89.0% ❌ | 63.1% ✓ |
 
 > Initial supercap charge (0.5A at 5V, ~2 minutes from cold start) raises total 5V_MAIN load to 9.55A (9.05A system + 0.5A LTC3350 charge). Buck input at 87% efficiency = 9.55A × 5V / 0.87 = 54.9W PoE input. Worst-case PoE utilisation during this window: 54.9W / 72W =
 > 76.2% — marginally above the 75% design rule during ~2 min cold-start charge (see §3.5 OA-02; accepted exception). System must be powered for ≥2 minutes before full hold-up protection (≥14.5 seconds) is available. Normal minimum operational session is 30+ minutes; this
