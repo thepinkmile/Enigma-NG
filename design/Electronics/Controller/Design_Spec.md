@@ -236,6 +236,11 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 #### J_JDB_PWR — Power/USB Header (1×5, 2.54mm)
 
+* **Part:** Würth 61300511021 (Male Pin Header, 1×5, 2.54mm pitch, vertical THT).
+* **Mating Part (JDB J1):** 1×5 2.54mm female IDC socket (JLCPCB C50950). See `JTAG_Daughterboard/Design_Spec.md §3`.
+* **Full Pin Table:** See `Controller/Board_Layout.md` JDB Hat Connectors section for the authoritative pinout.
+* **Pin Summary:**
+
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
 | 1 | 5V_USB | CTRL → JDB | 5V USB power (from TPS2065C rail) |
@@ -245,6 +250,11 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 5 | GND | — | Power/signal return |
 
 #### J_JDB_JTAG — JTAG Output Header (1×10, 2.54mm)
+
+* **Part:** Würth 61301011021 (Male Pin Header, 1×10, 2.54mm pitch, vertical THT).
+* **Mating Part (JDB J2):** 1×10 2.54mm female IDC socket (JLCPCB C2337). See `JTAG_Daughterboard/Design_Spec.md §3`.
+* **Full Pin Table:** See `Controller/Board_Layout.md` JDB Hat Connectors section for the authoritative pinout.
+* **Pin Summary:**
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
@@ -267,6 +277,28 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Stack Height:** 5.0mm.
 * **Assembly:** SMT reflow; no THR clips required.
 * **Decision:** See DEC-015 for 80→40 pin reduction rationale and poka-yoke safety note.
+* **Full Pin Table:** See `Controller/Board_Layout.md` LINK-BETA section for the authoritative 40-pin table.
+* **Pin Summary:**
+
+| Pins | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- |
+| 1 | GND | — | JTAG leading shield |
+| 2 | TCK | CTRL → Stator | JTAG clock |
+| 3 | GND | — | TCK/TMS inter-pin shield |
+| 4 | TMS | CTRL → Stator | JTAG mode select |
+| 5 | GND | — | TMS/TDI inter-pin shield |
+| 6 | TDI | CTRL → Stator | JTAG data in |
+| 7 | GND | — | TDI/RST inter-pin shield |
+| 8 | SYS_RESET_N | CTRL → Stator | Active-low system reset; clears all CPLDs in stack (CM5 GPIO 26) |
+| 9–11 | GND | — | JTAG trailing shield + isolation moat |
+| 12–17 | ENC_IN[0:5] | CTRL → Stator | Encoder input 6-bit bus (CM5 GPIOs 4–9) |
+| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
+| 19–24 | ENC_OUT[0:5] | Stator → CTRL | Encoder output 6-bit bus (CM5 GPIOs 10–15) |
+| 25 | GND | — | ENC_OUT / TTD_RETURN shield |
+| 26 | TTD_RETURN | Stator → CTRL | JTAG TDO short-path return (bypasses rotor stack) |
+| 27 | GND | — | TTD_RETURN shield |
+| 28–35 | 3V3_ENIG | PM → Stator | Power pass-through (8 pins = 4.0A; 2oz copper highway) |
+| 36–40 | GND | — | Power return |
 
 ## 9. PCB Fabrication & Stackup
 
