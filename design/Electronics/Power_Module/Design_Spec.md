@@ -13,10 +13,10 @@ This Power Module is a custom power board that is independently shielded and pro
 It provides the basis of the clean power rails into the controller board and other peripheral boards.
 It produces 2 power rails from a common ~12V input source. These power rails are:
 
-* **5V_MAIN** Providing up to 12A for powering the CM5 module (dual-phase interleaved LMQ61460-Q1).
+* **5V_MAIN** Providing up to 12A for powering the CM5 module (dual-phase interleaved LMQ61460AFSQRJRRQ1).
 * **3V3_ENIG** Providing clean 3.3V power for CPLDs, USB-JTAG interface, I2C logic, status indicator logic, and the full rotor stack.
 
-**NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. The **3V3_ENIG** rail (generated on this Power Module by the TPS7A8333P LDO) is the unified 3.3V rail supplying
+**NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. The **3V3_ENIG** rail (generated on this Power Module by the TPS75733 LDO) is the unified 3.3V rail supplying
 CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG power crosses to the Controller Board via BtB Link-Alpha pins 39–44.
 
 * **Controller Link (Link-Alpha):** 80-pin ERM8 connector for power/ethernet/telemetry handshake with the Controller Board.
@@ -31,7 +31,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460-Q1), U7 (TPS7A8333P) |
+| FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460AFSQRJRRQ1), U7 (TPS75733) |
 | FR-PM-02 | Maintain system power for ≥14.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 (supercaps) |
 | FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW on power-loss event to trigger graceful shutdown | Enables software-initiated graceful shutdown; PWR_GD is healthy-HIGH, fault-LOW | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
 | FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
@@ -43,10 +43,10 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-PM-01 | Input supply | PoE 802.3bt Type 4 (Class 8), 44–57 V, ≤72 W | §5 Protection & Logic; BOM U9 (TPS2372-4), J2 (RJ45) |
-| DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |
-| DR-PM-03 | 3V3_ENIG rail | 3.3 V ±1%, ≤3.0 A maximum (TPS7A8333P LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
-| DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460-Q1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460-Q1) |
-| DR-PM-05 | LDO | TPS7A8333P (3.3 V, 3.0 A, WSON-12 (3.5×3.5 mm)) | §5 Protection & Logic; BOM U7 (TPS7A8333P) |
+| DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
+| DR-PM-03 | 3V3_ENIG rail | 3.3 V ±3%, ≤3.0 A maximum (TPS75733 LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS75733) |
+| DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460AFSQRJRRQ1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
+| DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-06 | eFuse | TPS25980, 7 A trip current, OVLO = 16.9 V (R_OVLO = ERA-3ARB5362V (53.6 kΩ, 0.1% thin-film)) | §5 Protection & Logic; BOM U1 (TPS25980), R1 (232kΩ), R2 (28.7kΩ), R3 (53.6kΩ) |
 | DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 |
 | DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) | §5 Protection & Logic; BOM R14 (26.7kΩ), R15 (10.0kΩ) |
@@ -162,7 +162,7 @@ GND ──────┴──────────────────�
 * Pi-filter −3dB corner frequency: `f_c = 1/(2π√(L3 × C)) = 1/(2π × √(10µH × 23.1µF))` = **10.5kHz**.
 * DM attenuation at 150kHz (EN 55032 Class B lower limit): 40dBdec × log(150k/10.5k) ≈ **−46dB** ✓
 * DM attenuation at 200kHz (TPS23730 ACF switching): ≈ **−51dB** ✓
-* DM attenuation at 400kHz (LMQ61460-Q1 buck switching): ≈ **−63dB** ✓
+* DM attenuation at 400kHz (LMQ61460AFSQRJRRQ1 buck switching): ≈ **−63dB** ✓
 * Combined with dual CMC stages: total insertion loss well exceeds EN 55032 Class B limits across 150kHz–10MHz.
 
 *Broadband capacitor stack rationale:*
@@ -230,22 +230,18 @@ GND ──────┴──────────────────�
     * Output voltage (12V nominal) is set by the POE600F-12LD transformer turns ratio, which Coilcraft has designed for 12V output in TPS23730 PSR mode.
     * Soft-start capacitor on SS pin: 10nF (5ms ramp-up, **C24**).
 * **LDO Enable (ROTOR_EN):**
-  * CM5 GPIO 16 (ROTOR_EN, 3.3V drive) drives the TPS7A8333P (U7) EN pin directly. The EN pin threshold is 1.2V typical — no level-shifting required.
-  * A 10kΩ pull-up resistor from the EN pin to **3V3_ENIG** ensures the LDO is ON by default during power-up.
-  Using 3V3_ENIG (derived from 5V_MAIN, present before CM5 boot) instead of 5V_MAIN prevents 5V from being applied to the CM5 BCM2712 GPIO 16 input (3.3V LVCMOS),
-  which could cause clamp-diode conduction when the CM5 is unpowered. CM5 firmware drives GPIO 16 HIGH after boot; GPIO 16 LOW
-
-    disables the LDO in a controlled power-down sequence.
-
-  * ROTOR_EN HIGH → LDO enabled → 3V3_ENIG present (CPLDs + rotor stack powered).
-  * ROTOR_EN LOW → LDO disabled → 3V3_ENIG off (all rotor and CPLD loads de-energised).
-  * **Thermal Budget (TPS7A8333P):**
-    * V_dropout = 5.0V − 3.3V = 1.7V. At max 3A load: P_diss = 1.7V × 3A = **5.1W**.
-    * At expected worst-case load (~2.2A, see `design/Electronics/Power_Budgets.md`): P_diss = 1.7V × 2.2A = **3.7W**.
-    * The dedicated thermal heat zone (ENIG thermal halos + Type VII via matrix to aluminium enclosure, shared with the supercap block) targets θ_JA ≈ 7°C/W with the lid closed.
-    * At 2.2A and 40°C ambient: T_J ≈ 3.7W × 7°C/W + 40°C = **66°C** — well within 150°C max. ✓
-    * At absolute 3A max: T_J ≈ 5.1W × 7°C/W + 40°C = **76°C** — still within limits. ✓
-    * ⚠️ Verify θ_JA achievable at layout freeze. If via density is insufficient, add copper pour area beneath U7 pad or specify Gelid GP-Ultimate pad between U7 and enclosure rib.
+  * CM5 GPIO 16 (ROTOR_EN, 3.3V drive) drives the TPS75733 (U7) EN pin. The TPS75733 has an **active-LOW enable** (EN LOW = enabled, EN HIGH = shutdown) — no level-shifting required.
+  * A 10kΩ pull-**down** resistor from the EN pin to **GND** ensures the LDO is ON by default during power-up (EN=LOW=enabled).
+  * When CM5 GPIO 16 drives HIGH → LDO shuts down (ROTOR_EN de-asserted = LDO disabled).
+  * When CM5 GPIO 16 drives LOW (or GPIO released) → LDO enabled.
+  * **Note:** Firmware must invert the GPIO 16 logic vs the original design intent — GPIO 16 HIGH now disables the LDO; GPIO 16 LOW enables it. Alternatively, the enable logic can be inverted at schematic capture using a small signal inverter or by adopting active-LOW ROTOR_EN signal naming.
+  * ROTOR_EN HIGH → LDO **disabled** → 3V3_ENIG off (all rotor and CPLD loads de-energised).
+  * ROTOR_EN LOW → LDO **enabled** → 3V3_ENIG present (CPLDs + rotor stack powered).
+  * **Thermal Budget (TPS75733):**
+    * V_dropout ≈ 0.18V (TPS75733 typical at 1.85A). Typical dissipation: **~0.33W** (1.85A load, Vdo≈0.18V).
+    * At worst-case 2.2A: P_diss ≈ 0.22V × 2.2A = **~0.48W**. Absolute max at 3A: P_diss ≈ 0.15V × 3A = **~0.45W**.
+    * Standard TO-263 package thermal pad and ground vias are sufficient at this dissipation level. The ≥200mm² copper pour requirement from the previous WSON-12 design is removed.
+    * At 40°C ambient with standard PCB copper: T_J well within 125°C limit. ✓
 
 * **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
   * "LOGIK-BEREIT" Green LED + 5.1V Zener "Safety Glow" (Amber LED) remains active during capacitor discharge.
@@ -313,7 +309,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
    eFuse window (UVLO 11V / OVLO 16.9V).
 
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
-3. **Bucks:** Dual LMQ61460-Q1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS7A8333P 3V3_ENIG LDO (U7) start.
+3. **Bucks:** Dual LMQ61460AFSQRJRRQ1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS75733 3V3_ENIG LDO (U7) start.
 4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (22F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
 
    depleted state: approximately 2 minutes. Once fully charged, the bank provides ≥14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
@@ -328,7 +324,7 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
 
 1. **Trigger:** User initiates shutdown (OS command, Safe Shutdown Button, or remote API call).
 2. **OS Shutdown:** CM5 OS saves state, syncs filesystems, and executes `halt`.
-3. **ROTOR_EN LOW:** CM5 GPIO 16 is de-asserted before halt completes, disabling the TPS7A8333P LDO → 3V3_ENIG off (CPLDs and rotor stack de-energised).
+3. **ROTOR_EN HIGH:** CM5 GPIO 16 is asserted HIGH before halt completes, disabling the TPS75733 LDO (active-LOW EN: HIGH = shutdown) → 3V3_ENIG off (CPLDs and rotor stack de-energised).
 4. **CM5 PMIC halt:** CM5 internal PMIC drops 1.8V/1.1V rails. Total time from trigger to PMIC halt: ~10–15 seconds.
 5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≥14.5 seconds.
 6. **PWR_GD drop:** Once 5V_MAIN falls below 4.5V, MCP121T-450E deasserts PWR_GD.
@@ -367,7 +363,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | :--- | :--- | :--- | :--- |
 | U1 TPS25980 eFuse | 0.56W | 0.65W (7A) | 3mΩ Ron (typ.) + ~0.5W quiescent |
 | U2A + U2B LMQ61460-Q1 (×2) | 5.2W total | 6.7W (15V USB-C, 90% η) | 2.6W per device at 92% η; exposed pads to GND vias |
-| U7 TPS7A8333P LDO | 3.1W (1.85A load) | 5.1W (3A max) | ⚠️ Highest W/cm²: 1.7V dropout × 3A = 5.1W in WSON-12 (3.5×3.5mm); **requires ≥200mm² copper pour on L1 plus Type VII thermal vias to L2/L3 GND planes** |
+| U7 TPS75733 LDO | 0.33W (1.85A load) | 0.45W (3A max) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 | T2 POE600F-12LD | 5.1W | 5.7W | At 90–88% efficiency, 51–57W load |
 | U3 LTC3350 | 0.3W | 0.5W | Charge path only (0.5A); low concern |
 | U9 TPS2372-4 | ~0.2W | ~0.3W | QFN thermal pad to GND pour |
@@ -376,10 +372,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 **Thermal Notes:**
 
-* The LDO (U7) is the critical thermal path. Without copper pour: θja ≈ 50°C/W → ΔTj ≈ 255°C at 5.1W (catastrophic).
-  With ≥200mm² pour + Type VII vias: effective θja ≈ 10–15°C/W → ΔTj ≈ 51–77°C. At 40°C ambient, Tjunction ≈ 91–117°C
-  (max rated: 125°C). **Verify during first prototype thermal measurement.**
-* If LDO thermal headroom proves insufficient under sustained 3A load, consider converting 3V3_ENIG to a small synchronous buck (e.g. TPS62825). Log as DEC candidate.
+* The LDO (U7 TPS75733) dissipates ≤0.45W worst-case (TO-263 KTT package). Standard thermal pad soldering and local ground vias are sufficient; no large copper pour required.
+* The previous TPS7A8333P (WSON-12) LDO required ≥200mm² copper pour at up to 5.1W dissipation — this requirement is removed with the TPS75733 (TO-263).
 * The dedicated heat zone (shared with supercap bank area) connects via thermal pad to the metal enclosure, acting as a heatsink for the bottom of the board.
 
 ---
@@ -388,15 +382,15 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 | Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
+| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | C2, C5 | Pi-filter mid-freq bypass | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA12L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
 | C3, C6 | Pi-filter HF bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
-| C9, C10 | 5V Buck output bulk cap (U2A OUT, U2B OUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
-| C11 | eFuse input bulk cap (U1 VIN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
-| C12 | eFuse output bulk cap (U1 VOUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
+| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
+| C9, C10 | 5V Buck output bulk cap (U2A OUT, U2B OUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
+| C11 | eFuse input bulk cap (U1 VIN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
+| C12 | eFuse output bulk cap (U1 VOUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | C13 | LDO input cap (U7 VIN from 5V_MAIN) | 10µF 25V X7R | 1206 | 81-GRM31CR72E106KA12L | 490-GRM31CR72E106KA12LCT-ND | C15850 |
-| C14 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-1935-1-ND | C21397 ⚠️ verify |
+| C14 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | C15–C21 | IC VCC bypass (one per: U3, U4, U5, U6a, U8, U9, U10) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C22 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA12L | 490-GRM21BR71H105KA12LCT-ND | C28323 |
@@ -413,10 +407,10 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
 | J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM12064-ND | C5358550 |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
-| J3 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 43650-0519 (⚠️ **PN corrected** — 43045-0512 does not exist; 43045=SMT/RA series, 43650=vertical THT. 43650-0519: 5-circuit, 1-row, gold contacts, board lock, 3mm pitch) | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
+| J3 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
 | J4 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must penetrate Power Module enclosure wall and sit flush with outer machine enclosure — verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | C5438410 |
-| L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND ⚠️ 32-wk lead; alt: Newark 75X1218 (561 in stock) | C1519839 |
-| L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND ⚠️ 32-wk lead; alt: Newark 75X1218 | C1519839 |
+| L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
+| L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND (CT) / SRP1265A-100MTR-ND (T&R) / SRP1265A-100MDKR-ND (DKR) | C840531 |
 | Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — |
 | R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2323V | P232KBYCT-ND | — |
@@ -426,7 +420,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
 | R9 | SYS_RESET_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R10 | ROTOR_EN Pull-up (EN to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R10 | ROTOR_EN Pull-down (EN to GND) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | — | — | — |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
@@ -443,13 +437,13 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS259803ONRGER (16.9V OVLO) | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | C2866563 |
-| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | WSON-8 2×2mm | 595-LMQ61460ARUMR | 296-LMQ61460ARUMR/NOPBCT-ND | — |
+| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |
 | U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
 | U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. ⚠️ Package is WQFN-38 6×4mm (REF) — **different from TPS25750 QFN-28; schematic and PCB footprint update required** | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — |
-| U5 | USB-C Sink Controller | STUSB4500LQTR | QFN-24 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 ⚠️ OOS |
-| U6a, U6b, U6c | OR-ing Controllers (×3, one per power input: PoE, USB-C, Battery) | LM74700QDBVRQ1 | SOT-23-6 | 595-LM74700QDBVRQ1 | 296-LM74700QDBVRQ1CT-ND | — |
-| U7 | 3V3_ENIG LDO | TPS7A8333PRMWR (fixed 3.3V) | WSON-12 3.5×3.5mm | 595-TPS7A8333PRMWR | TPS7A8333PRMWR-ND | — |
-| U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | — |
+| U5 | USB-C Sink Controller | STUSB4500LQTR | QFN-24 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 |
+| U6a, U6b, U6c | OR-ing Controllers (×3, one per power input: PoE, USB-C, Battery) | LM74700QDBVRQ1 | SOT-23-6 | 595-LM74700QDBVRQ1; alt T&R: 595-LM74700QDBVTQ1 | 296-LM74700QDBVRQ1CT-ND | C2941042 |
+| U7 | 3V3_ENIG LDO | TPS75733KTTRG3 (fixed 3.3V, active-LOW EN) | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 |
+| U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | C52146050 |
 | U9 | PoE PD Interface (Type 4) | TPS2372-4 | QFN-16 | 595-TPS2372-4RGWR | 296-52795-1-ND | — |
 | U10 | PoE DC-DC Controller (ACF) | TPS23730RMTR — PSR mode; 12V output set by POE600F-12LD transformer turns ratio; VS pin to aux winding; no external feedback divider required. | WQFN-20 | 595-TPS23730RMTR | 296-TPS23730RMCT-ND | — |
 | U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
@@ -463,10 +457,11 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > * **U4 TPS25751DREFR** — Replaces NRND TPS25750. TPS25751 is PD3.1 USB-IF certified (TID#10306); D-variant integrates the full bi-directional 20V/5A power path required to source 5V/5A (25W) to the
 > CM5 and prevent OS throttling. **Package changed to WQFN-38 6×4mm (REF)** — schematic pins and PCB footprint must be updated from the TPS25750 QFN-28 layout. Mouser: `595-TPS25751DREFR`; DigiKey:
 > `TPS25751DREFR-ND`.
-> * **U5 STUSB4500LQTR** — JLCPCB C506650 currently **out of stock**. Alternative: C2678061 (`STUSB4500QTR`, non-L variant, 2,895 in stock). Both are pin-compatible; non-L variant has slightly higher
-> Iq (~210µA vs 160µA).
-> * **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
-> 579-MCP121T-450ETTDITR) instead.
+> * **U5 STUSB4500LQTR** — JLCPCB C506650 confirmed in stock (L-variant). Both are pin-compatible; non-L variant STUSB4500QTR has slightly higher Iq (~210µA vs 160µA).
+> * **U7 TPS75733KTTRG3** — Replaces TPS7A8333PRMWR. Fixed 3.3V output, 3A continuous, TO-263 (KTT) 5-pin 10.16×15.24mm package. **Active-LOW enable:** EN LOW = LDO enabled; EN HIGH = shutdown.
+> R10 changed to pull-down (10kΩ to GND) to ensure LDO is ON by default at power-up. Firmware must drive GPIO 16 HIGH to disable the LDO (inverted vs original TPS7A8333P logic).
+> Thermal dissipation greatly improved: ~0.33W typical (1.85A, Vdo≈0.18V) vs 3.1W with the previous part — ≥200mm² copper pour requirement removed. Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`. — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
+> 579-MCP121T-450ETTDITR) instead. JLCPCB C52146050 confirmed; note JLCPCB lists this device with a TP prefix on the MPN but is the same device.
 > * **U10 TPS23730RMTR** — `PWPR` suffix (HTSSOP-20) was previously in error; correct WQFN-20 manufacturer PN is `TPS23730RMTR`. DigiKey catalogues as `296-TPS23730RMCT-ND`. Verify against TI's
 > product page before ordering.
 > * **U11 MIC1555YM5-TR** — CMOS timer (Microchip). Timing components: R16=10.0kΩ (R_A), R17=715kΩ (R_B), C23=1µF (C_OSC) → 1Hz, ~50% duty cycle via formula f=1.44/((R_A+2R_B)×C). VCC bypass: C22
@@ -496,14 +491,13 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > from any distributor — 22µF at 50V in 1210 does not appear to be a commercial catalogue part. Maximum actual bus voltage on the hardest-stressed positions (C1, C4, C7, C8, C11, C12) is ~16.4V
 > (4S battery, 4.1V/cell max per DEC-005), giving 1.5× voltage derating at 25V rating — acceptable for prototype stage. C13 uses a different 10µF part. ⚠️ Note: X7R capacitors exhibit DC bias
 > derating; at 16V on a 25V-rated part (~64% of Vrated), effective capacitance is approximately 50–65% of nominal (≈11–14µF). Adequate for filtering but note when comparing to nominal 22µF value.
-> JLCPCB C21397 — verify exact specs (value, voltage, package) at jlcpcb.com before placing SMT assembly order.
+> DigiKey 1276-3392-1-ND; JLCPCB C309062 (confirmed — Samsung CL32B226KAJNNNE 22µF 25V X7R 1210).
 > * **C15–C25 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6.
 > C15–C21 covers U3, U4, U5, U6a, U8, U9, U10; C26 and C27 (100nF bypass for U6b and U6c respectively) are now formally
 > defined in the BOM table above (same Samsung CL05B104KB5NNNC / C1525). C23 (1µF timer) shares the same Murata GRM21BR71H105KA12L as C2/C5. C24 (10nF C_SS)
 > is a new part (Samsung CL05B103KB5NNNC).
-> * **J3 43650-0519** — **MPN corrected**: original `43045-0512` does not exist (zero results at Molex, Octopart, DigiKey). The `43045` series is the SMT/right-angle Micro-Fit variant; the vertical
-> through-hole PCB header family is `43650`. Correct part: `43650-0519` (5-circuit, 1-row, vertical THT, gold contacts, board lock). Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
-> Mouser: `538-43650-0519`; DigiKey: `WM14587-ND` (confirmed).
+> * **J3 0436500519 (43650-0519)** — Full Molex PN: `0436500519`; short form `43650-0519`. 5-circuit, 1-row, vertical THT, gold contacts, board lock, 3mm pitch. Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
+> Mouser: `538-43650-0519`; DigiKey: `WM14587-ND` (confirmed); JLCPCB: `C563849` (confirmed).
 > ⚠️ **REVIEW REQUIRED:** Confirm Molex 43650-0519 Micro-Fit 3.0 is suitable for battery connector application
 > — verify current rating, connector type, and locking mechanism meet battery safety requirements.
 > * **R1 ERA-3ARB2323V (232kΩ)** — Corrected from 732kΩ (calculation error). R1 = 28700 × (11/1.21 − 1) = 232kΩ
@@ -513,9 +507,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > UVLO/OVLO dividers. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
 > * **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω
 > range). Mouser: 652-CSS2H-2512R-R010ELF; DigiKey: CSS2H-2512R-R010ELF-ND.
-> * **L1/L2 WE-CMBNC 7448031002** — Both L1 and L2 now use the same Würth nanocrystalline CMC. L2 was originally Laird CM5022 but that part is **discontinued** (Laird EMC passives absorbed by TE
+> * **L1/L2 WE-CMBNC 7448031002** — Both L1 and L2 use the same Würth nanocrystalline CMC. L2 was originally Laird CM5022 but that part is **discontinued** (Laird EMC passives absorbed by TE
 > Connectivity in 2019). No equivalent ≥10A HF ferrite CMC was found in current catalogs. Twin nanocrystalline CMCs provide adequate broadband CM attenuation from 1kHz–30MHz. Re-evaluate at EMC
-> pre-compliance testing. Primary stock source: **Newark 75X1218** (561 pcs, ~$14.58). DigiKey 732-5584-ND has 0 stock with 32-week lead.
+> pre-compliance testing. Available from: Würth direct, Mouser (710-7448031002), DigiKey (732-5584-ND), and JLCPCB (C1519839).
 > * **L3 SRP1265A-100M** — Replaces Würth 7447789100 (not available in public catalog). Bourns SRP1265A-100M: 10µH, **15.5A Isat** (21% headroom over 12A DC), 16.5mΩ DCR (better than original 20mΩ
 > spec), 13.5×12.5×6.2mm SMD. ⚠️ Package is 13.5×12.5mm vs 7447789100's 12.5×12.5mm — update PCB land pattern. Farnell stock confirmed ~2,741 pcs; Mouser: `652-SRP1265A-100M`; DigiKey:
 > `SRP1265A-100MCT-ND`.

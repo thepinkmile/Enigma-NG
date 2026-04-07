@@ -29,9 +29,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 | SN74LVC2G125DCUR — Dual 3-State Buffer (SOT-23-6) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| TPS7A8333PRMWR — 3.3 V LDO Regulator (WSON-12) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| TPS75733KTTRG3 — 3.3 V LDO Regulator (TO-263 KTT 5-pin) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS259803ONRGER — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| LMQ61460-Q1 — 5 V Synchronous Buck Converter (WSON-8) | 2 | — | — | — | — | — | — | — | — | — | 2 |
+| LMQ61460AFSQRJRRQ1 — 5 V Synchronous Buck Converter (VQFN-HR RJR 14-pin 4×3.5mm) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | LTC3350EUHF#PBF — Supercapacitor Manager (QFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS25751DREFR — USB PD 3.1 DRP Controller (WQFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | STUSB4500LQTR — USB-C Sink Controller (QFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -143,8 +143,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 | Ref | Component | Part | Value | Package | Mouser Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC 7448031002 | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
-| L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 (**replaces discontinued Laird CM5022**) | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002; alt: Newark 75X1218 |
+| L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC 7448031002 | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002 |
+| L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 (**replaces discontinued Laird CM5022**) | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002 |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M (replaces Würth 7447789100 — not in public catalog) | 10µH, 15.5A Isat, DCR 16.5mΩ | 13.5×12.5×6.2mm SMT ⚠️ footprint change | 652-SRP1265A-100M; alt: Farnell ~2741 in stock |
 | C1, C4 | Pi-filter bulk cap (2× each) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
 | C2, C5 | Pi-filter mid-freq bypass (2× each) | Murata GRM21BR71H105KA12L | 1µF 50V X7R | 0805 | 81-GRM21BR71H105KA2L |
@@ -161,7 +161,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 * −46dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
 * −51dB at 200kHz (TPS23730 ACF switching frequency) ✓
-* −63dB at 400kHz (LMQ61460-Q1 buck switching frequency) ✓
+* −63dB at 400kHz (LMQ61460AFSQRJRRQ1 buck switching frequency) ✓
 
 ## 4. High-Speed Interconnects
 
@@ -248,18 +248,18 @@ the Rev A single-Extension configuration unless otherwise noted.
 | Designator | Part | Package | Mouser # | DigiKey # | JLCPCB # | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | U3 | LTC3350EUHF#PBF | QFN-38 5×7 | 584-LTC3350EUHF#PBF ✓ | 1469-1010-1-ND (tube) / **1469-1010-2-ND** (T&R) | — (not in library) | ~4.5k in stock Mouser (tube). T&R variant has ~7.5k DigiKey stock. JLCPCB custom-supply only. |
-| U5 | STUSB4500LQTR | QFN-24 4×4 | 511-STUSB4500LQTR ~ | 497-STUSB4500LQTRCT-ND ~ ⚠️ verify | C841785 (non-L variant STUSB4500QTR — STUSB4500LQTR may not be in JLCPCB catalog) | Primary PN: STUSB4500LQTR (lower Iq ~160µA). If OOS, use STUSB4500QTR as alternative (non-L variant, ~210µA Iq, pin-compatible). |
-| U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 ~ | **296-LM74700QDBVRQ1CT-ND** ✓ | — (extended) | ⚠️ **BOM PART NUMBER INCORRECT** — LM74700-Q1DCKR does not exist. Correct automotive part is LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. |
-| U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450ELB ~ | **MCP121T-450E/LBCT-ND** ✓ | — (extended) | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. |
+| U5 | STUSB4500LQTR | QFN-24 4×4 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 | Primary PN: STUSB4500LQTR (lower Iq ~160µA). JLCPCB C506650 confirmed L-variant in stock. If OOS, use STUSB4500QTR as alternative (non-L variant, ~210µA Iq, pin-compatible). |
+| U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 | **296-LM74700QDBVRQ1CT-ND** ✓ | C2941042 | LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. Alt T&R Mouser PN: 595-LM74700QDBVTQ1 (pin-compatible). |
+| U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450E/LB | **MCP121T-450E/LBCT-ND** ✓ | C52146050 | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. JLCPCB lists with TP prefix on MPN but is the same device. |
 | U1 | TPS259803ONRGER | VQFN-24 (RGE) | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | C2866563 | 16.9V OVLO variant. PNs confirmed. Replaces placeholder TPS25980RPWR. |
-| U2A/U2B | LMQ61460ARUMR | WSON-8 2×2 | **595-LMQ61460ARUMR** (provided) | 296-LMQ61460ARUMR-ND ~ | — | ⚠️ Not found on findchips; similar family variant LMQ61460AASRJRR available (296-LMQ61460AASRJRRCT-ND, different WSON variant). Verify RUMR suffix with TI/Mouser before ordering. |
+| U2A/U2B | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 | AEC-Q100 automotive-qualified (Q1), VQFN-HR RJR 14-pin 4×3.5mm. ✓ |
 | U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). ⚠️ Package changed from QFN-28 to WQFN-38 — schematic symbol and PCB footprint update required. |
-| U7 | TPS7A8333PRMWR | WSON-12 | 595-TPS7A8333PRMWR ~ | 296-TPS7A8333PRMWR-ND ~ ⚠️ verify | — | Fixed 3.3V, WSON-12. Harmonized with Design_Spec primary PN. Mouser/DigiKey approximate — verify before ordering. |
+| U7 | TPS75733KTTRG3 | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 | Fixed 3.3V, TO-263 KTT 5-pin. Active-LOW EN (EN LOW = enabled). ✓ |
 | U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | — (extended) | DigiKey temporarily out of stock (~6-week lead time). $3.09/1. VQFN-20 per TI. |
 | U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | — | ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | — (extended) | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
 | J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
-| J3 | Molex 43650-0519 | THT Micro-Fit 3.0 | 538-43650-0519 ~ | WM7843-ND ⚠️ verify | — (THT) | ⚠️ **MPN corrected** — `43045-0512` does not exist. Correct series is `43650` (vertical THT). 43650-0519: 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. DigiKey WM7843-ND inferred; **verify exact WM number**. JLCPCB does not stock THT connectors. |
+| J3 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
 | J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — (hand-place) | 24-pin USB Type-C receptacle, 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. Not in JLCPCB standard catalog; hand-place or pre-fit. |
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=26.7kΩ (ERA-3ARB2672V, Mouser 667-ERA-3ARB2672V, DigiKey P26.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.40V. |
@@ -284,7 +284,7 @@ Reference information for placing orders with key component suppliers.
 | S02 | **Farnell** | Global distributor (secondary UK) | [uk.farnell.com](https://uk.farnell.com) | Same-day dispatch for most stock lines. Good for Samtec, Würth, Bourns, Coilcraft. |
 | S03 | **DigiKey** | Global distributor (USA-based, fast to UK) | [digikey.co.uk](https://www.digikey.co.uk) | Good for ADI (LTC3350), TI (low-MOQ), STMicroelectronics (STUSB4500). |
 | S04 | **Coilcraft** | Transformer / inductor manufacturer | [coilcraft.com](https://www.coilcraft.com) | Order T2 (POE600F-12LD) direct from Coilcraft at coilcraft.com/en-us/. Minimum order 1 unit. Sample requests available. UK-friendly shipping. |
-| S05 | **Texas Instruments** | IC manufacturer (TI store) | [ti.com/store](https://www.ti.com/store) | For TI parts (TPS2372-4, TPS23730, TPS25980, LMQ61460-Q1, LM74700-Q1, TPS25751DREFR, TPS7A8333P). Samples available via ti.com. |
+| S05 | **Texas Instruments** | IC manufacturer (TI store) | [ti.com/store](https://www.ti.com/store) | For TI parts (TPS2372-4, TPS23730, TPS25980, LMQ61460AFSQRJRRQ1, LM74700-Q1, TPS25751DREFR, TPS75733). Samples available via ti.com. |
 | S06 | **Analog Devices (ADI)** | IC manufacturer | [analog.com](https://www.analog.com) | For LTC3350 supercap manager. Samples available. |
 | S07 | **STMicroelectronics** | IC manufacturer | [st.com](https://www.st.com) | For STUSB4500 USB-C sink controller. Samples and eval kits available. |
 | S08 | **Samtec** | Connector manufacturer | [samtec.com](https://www.samtec.com) | For ERF8/ERM8 BtB connectors (80-pin Link-Alpha, 40-pin Link-Beta). Order direct or via Farnell/Mouser. Min order typically 3 units. |
@@ -292,7 +292,7 @@ Reference information for placing orders with key component suppliers.
 | S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43650-0519 Micro-Fit 3.0, 5-pin vertical THT). Order via Mouser or DigiKey. |
 | S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
 | S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04161H-7628 (4-layer, 2oz). |
-| S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. L1/L2 WE-CMBNC 7448031002 available as Newark #75X1218 (~561 pcs, ~$14.58 each). Same-group as Farnell/element14. |
+| S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. Note: WE-CMBNC 7448031002 is not stocked by Newark/Avnet — use Mouser (710-7448031002), DigiKey (732-5584-ND), or JLCPCB (C1519839). Same-group as Farnell/element14. |
 
 ---
 
@@ -303,12 +303,12 @@ Product page links for all major components for design review and procurement ve
 | Ref | Part / Description | Manufacturer | Product Page |
 | :--- | :--- | :--- | :--- |
 | U1 | TPS25980 — eFuse / Ideal Diode (16.9V OVLO) | Texas Instruments | [ti.com/product/TPS25980](https://www.ti.com/product/TPS25980) |
-| U2A, U2B | LMQ61460-Q1 — 6A Synchronous Buck Converter | Texas Instruments | [ti.com/product/LMQ61460-Q1](https://www.ti.com/product/LMQ61460-Q1) |
+| U2A, U2B | LMQ61460AFSQRJRRQ1 — 6A Synchronous Buck Converter (Q1 automotive) | Texas Instruments | [ti.com/product/LMQ61460-Q1](https://www.ti.com/product/LMQ61460-Q1) |
 | U3 | LTC3350 — Supercap Manager / Charger / Backup | Analog Devices | [analog.com/en/products/ltc3350.html](https://www.analog.com/en/products/ltc3350.html) |
 | U4 | TPS25751 — USB PD 3.1 DRP Controller | Texas Instruments | [ti.com/product/TPS25751](https://www.ti.com/product/TPS25751) |
 | U5 | STUSB4500 — USB-C Sink PD Negotiation Controller | STMicroelectronics | [st.com/en/interfaces-and-transceivers/stusb4500.html](https://www.st.com/en/interfaces-and-transceivers/stusb4500.html) |
 | U6 | LM74700-Q1 — Ideal Diode OR-ing Controller | Texas Instruments | [ti.com/product/LM74700-Q1](https://www.ti.com/product/LM74700-Q1) |
-| U7 | TPS7A8333P — 3.3V 3A LDO Regulator (3V3_ENIG) | Texas Instruments | [ti.com/product/TPS7A8333](https://www.ti.com/product/TPS7A8333) |
+| U7 | TPS75733 — 3.3V 3A LDO Regulator (3V3_ENIG) | Texas Instruments | [ti.com/product/TPS75733](https://www.ti.com/product/TPS75733) |
 | U8 | MCP121T-450E — 4.50V Voltage Supervisor | Microchip Technology | [microchip.com/en-us/product/MCP121T](https://www.microchip.com/en-us/product/MCP121T) |
 | U9 | TPS2372-4 — IEEE 802.3bt PoE PD Controller | Texas Instruments | [ti.com/product/TPS2372-4](https://www.ti.com/product/TPS2372-4) |
 | U10 | TPS23730 — ACF PoE+ DC/DC Controller | Texas Instruments | [ti.com/product/TPS23730](https://www.ti.com/product/TPS23730) |
