@@ -103,7 +103,8 @@ There are also sensors used to detect the current position of the outer ring usi
   * **TDI (R3):** 10kΩ pull-up to 3V3_ENIG — holds TDI at logic-1 (BYPASS) when not actively driven.
   * **TCK (R4):** 10kΩ pull-down to GND — prevents spurious clocking when TCK is floating.
   * **SYS\_RESET\_N (R5):** 10kΩ pull-up to 3V3_ENIG — active-low; pull-up holds CPLD out of reset by default.
-  These are present on every rotor board. With 30 rotors, 30 sets of pull resistors exist in the full stack; this is intentional and consistent with making each rotor independently safe in any stack position.
+  These are present on every rotor board. With 30 rotors, 30 sets of pull resistors exist in the full stack;
+  this is intentional and consistent with making each rotor independently safe in any stack position.
 * **Shielding:** 4-layer PCB with solid GND plane (L2) to isolate digital switching from the high-accuracy magnetic encoder.
 
 ### 3.4 Connector Pinouts (Rotor Interface — Authority Document)

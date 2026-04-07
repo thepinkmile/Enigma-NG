@@ -137,7 +137,8 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 ## 8. Plugboard Jack-Sensing
 
 * **Logic:** The CPLD monitors 64 insertion-detect lines (BT65–BT128, Switch contacts) from the Stecker jack sockets.
-* **Signal:** Each jack Switch contact is normally closed (connected to Tip) when no plug is inserted; the contact opens on plug insertion, pulling the CPLD input low via an internal or external pull-up.
+* **Signal:** Each jack Switch contact is normally closed (connected to Tip) when no plug is inserted;
+  the contact opens on plug insertion, pulling the CPLD input low via an internal or external pull-up.
 * **Latency:** Sub-microsecond detection of Stecker cable insertion, updating the internal encryption matrix instantly.
 * **Harness:** 64× 2-wire assemblies (Tip + Switch), each terminated with 6.35mm female crimp spade terminals, connecting the panel-mount jacks to BT1–BT128 on the PCB.
 
