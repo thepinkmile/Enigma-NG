@@ -391,7 +391,7 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 using:
 
 - **TPS2372-4** (TI, QFN-16): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
-- **TPS23730** (TI, WQFN-20): Active Clamp Forward (ACF) DC-DC controller, 200kHz, 12V output (R_VFB feedback resistors configured for 12V), PSR mode
+- **TPS23730** (TI, WQFN-20): Active Clamp Flyback (ACF) DC-DC controller, 200kHz, 12V output (R_VFB feedback resistors configured for 12V), PSR mode
 - **T2**: **Coilcraft POE600F-12LD** — off-the-shelf 60W ACF PoE isolation transformer; 12V output, 36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. Catalogue stock part ordered direct from
 
   Coilcraft (coilcraft.com). No custom winding required.

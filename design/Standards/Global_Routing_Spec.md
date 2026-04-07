@@ -14,9 +14,9 @@
 * **Mitres:** Sharp 45/90-degree corners are strictly prohibited to ensure signal integrity and reduce EMI.
 * **Internal Layers:** 10 mil minimum width for signal traces on multi-layer boards.
   * **CI Exception:** Controlled-impedance traces targeting 50 Ω (per DEC-016) shall be routed at the
-    width calculated for the target stackup — typically **0.127 mm (5 mil)** on JLC04161H-7628 inner
-    signal layers. This overrides the 10 mil inner-layer minimum for CI-designated JTAG and differential
-    signal nets only.
+    width calculated for the target stackup — typically **0.127 mm (5 mil)** on outer layers over a
+    contiguous GND plane (microstrip). This overrides the 10 mil minimum for CI-designated JTAG and
+    differential signal nets only.
 * **Clearance:** 10 mil minimum spacing to reduce crosstalk and noise.
 * **Grid Snap:** 0.5mm strict snap for all primary component placement and trace nodes.
 
