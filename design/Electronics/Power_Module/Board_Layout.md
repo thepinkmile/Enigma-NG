@@ -359,3 +359,42 @@ SIDE VIEW (CROSS-SECTION)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
 **Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25, active-low), Pin 30 = POE_STAT (GPIO 24, active-low — LOW = PoE live), Pin 38 = USB_STAT (GPIO 21, active-low) — all PM → CTRL.
 **GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
+
+---
+
+## §9 Routing — Trace Width Specifications
+
+**Board specs:** 6-layer / 2oz finished copper (JLC06161H-2116).
+All widths below are for external layers (L1/L6). Inner power planes use uninterrupted copper pours.
+
+**IPC-2221A basis (2oz copper, external, 10°C rise, 25°C ambient):**
+For 2oz external: ~0.15 mm per amp (derived from IPC-2221A: I = 0.048 × ΔT^0.44 × (w×2.76)^0.725;
+solving for w at I=1A, ΔT=10°C gives w ≈ 0.15 mm). See Global_Routing_Spec.md §1.1 for the full table.
+
+### Trace Width Table
+
+| Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Signal (I2C, GPIO, LED ctrl, status) | < 50 mA | 0.008 mm | 0.20 mm | **0.20 mm** | L1 | General 3.3 V logic |
+| Supercap charge (LTC3350 → C_SC1–4) | 0.5 A | 0.075 mm | 0.50 mm | **0.50 mm** | L1 | Soft-charge limited by LTC3350 RICHARGE |
+| 3V3_ENIG (LDO output → LINK-ALPHA pins 39–44) | 3.0 A | 0.45 mm | 0.50 mm | **0.80 mm** | L1 | Medium-power supply; extra margin for 3 A upper bound |
+| 12V_POE (ACF transformer output → OR-ing U6) | 4.58 A | 0.69 mm | 1.00 mm | **1.00 mm** | L1 | 54.9 W PoE budget ÷ 12 V = 4.58 A peak |
+| Battery input (J3 → OR-ing U6) | 4.82 A | 0.72 mm | 1.00 mm | **1.00 mm** | L1 | TPS25980 ILIM-limited; 14.4 V nominal battery |
+| USB-C VBUS input (J4 → OR-ing U6) | 5.0 A | 0.75 mm | 1.00 mm | **1.00 mm** | L1 | 15 V / 5 A STUSB4500-negotiated PD limit |
+| VIN_RAW (OR-ing output → TCO F1 → eFuse U1) | 7.0 A | 1.05 mm | 1.00 mm | **1.50 mm** | L1 | TPS25980 ILIM = 7 A; high-current path |
+| VIN_SAFE (eFuse output → Buck U2A/U2B) | 7.0 A | 1.05 mm | 1.00 mm | **1.50 mm** | L1 | Post-eFuse buck input; same ILIM ceiling |
+| 5V_MAIN bus (Buck output → BtB/LDO/supercap) | 9.05 A | 1.36 mm | 2.00 mm | **2.00 mm + pour** | L1 + inner | Very high current; L1 traces **2.00 mm minimum**; inner power pour mandatory |
+| GND return pours | — | — | pour | **copper pour** | L2 + L6 | Solid uninterrupted 2oz GND planes |
+| 5V_MAIN inner power pour | 9.05 A | — | pour | **copper pour** | L3 or L4 | Dedicated inner 2oz layer for primary bus |
+
+### High-Current Design Rules (PM-specific)
+
+* **5V_MAIN (9.05 A):** Classified Very High Current (> 5.5 A threshold per Global_Routing_Spec §1.1).
+  All vias from L1 surface traces to the inner 5V_MAIN plane must use **POFV (IPC-4761 Type VII)**
+  in 4-via thermal clusters. Teardrop fillets mandatory on all 5V_MAIN pads and vias.
+  Thermal relief spokes on high-current pads: **20 mil (0.5 mm) wide, 4-spoke orthogonal** per §2.1.
+* **VIN_RAW / VIN_SAFE (7 A):** Teardrops required. No acute-angle bends — arcs ≥ 1.0 mm radius per §1.
+* **3V3_ENIG pour:** The TPS7A8333P (WSON-12, 3.5×3.5 mm) requires ≥ 200 mm² copper pour on L1
+  plus Type VII thermal vias to L2/L3 GND planes for adequate thermal relief (see Design_Spec §5 thermal table).
+* **INA219 shunt (R23, CSS2H 10 mΩ):** Force and sense traces must be independent **0.20 mm** 4-wire
+  Kelvin routes to avoid trace resistance corrupting the 10 mΩ measurement (1 mΩ trace = 10% error).

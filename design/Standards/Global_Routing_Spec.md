@@ -13,8 +13,30 @@
 * **Standard Radius:** 0.5mm for signal/logic; 1.0mm for power rails.
 * **Mitres:** Sharp 45/90-degree corners are strictly prohibited to ensure signal integrity and reduce EMI.
 * **Internal Layers:** 10 mil minimum width for signal traces on multi-layer boards.
+  * **CI Exception:** Controlled-impedance traces targeting 50 Ω (per DEC-016) shall be routed at the
+    width calculated for the target stackup — typically **0.127 mm (5 mil)** on JLC04161H-7628 inner
+    signal layers. This overrides the 10 mil inner-layer minimum for CI-designated JTAG and differential
+    signal nets only.
 * **Clearance:** 10 mil minimum spacing to reduce crosstalk and noise.
 * **Grid Snap:** 0.5mm strict snap for all primary component placement and trace nodes.
+
+### 1.1 Trace Width Standards
+
+**Basis:** IPC-2221A, 2oz finished copper (system-wide per §2), 10°C rise, 25°C ambient.
+For 2oz external traces: ~0.15 mm per amp (calculated from IPC-2221A with A = w × 2.76 mil, k = 0.048).
+Internal signal traces: use 2.5× the external minimum width for equivalent thermal performance.
+
+| Category | Current Range | Min Width — External (2oz) | Min Width — Internal (2oz) | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| Signal / CI | < 0.5 A | 0.20 mm | 0.127 mm (CI only — see exception above) | Logic, I2C, GPIO; JTAG/diff CI at 0.127 mm per DEC-016 |
+| Low-power supply | 0.5 A – 1.0 A | 0.50 mm | 0.75 mm | 3V3 feeds to low-draw loads |
+| Medium supply | 1.0 A – 3.0 A | 0.50 mm – 1.00 mm | 1.00 mm – 2.00 mm | 3V3_ENIG distribution, 12 V feeds |
+| High-current | 3.0 A – 5.5 A | 1.00 mm – 1.50 mm | copper pour | 5 V/12 V power inputs, OR-ing rails |
+| Very high current | > 5.5 A | 2.00 mm + copper pour | copper pour | 5V_MAIN bus; teardrops + 20 mil spokes mandatory per §2.1 |
+
+> * All power rails > 3 A: dedicated inner-layer copper pour mandatory in addition to surface traces.
+> * All GND returns: copper pour on dedicated inner layer(s); no GND path via single narrow trace.
+> * Widths above are minimums — wider is always preferred where board space allows.
 
 ## 2. Manufacturing & Mask
 
