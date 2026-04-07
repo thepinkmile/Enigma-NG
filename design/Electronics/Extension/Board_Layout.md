@@ -75,3 +75,37 @@ Mark clearly on silkscreen: `ERM8/ERF8 / 0.8mm / NICHT 2.54mm`.
 
 2×8 ENIG Gold probe pad bank for mid-stack signal validation. 2.54mm pitch. Not a separate connector;
 probed directly with logic analyser clips.
+
+---
+
+## §9 Routing — Trace Width Specifications
+
+**Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).
+L1 = signal (JTAG/routing); L2 = GND plane; L3 = 3V3_ENIG power pour; L4 = secondary routing / data plate.
+
+**IPC-2221A basis (2oz copper, external, 10°C rise, 25°C ambient):**
+For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) carries the bus current without width constraints.
+See Global_Routing_Spec.md §1.1 for the full current-category table.
+
+**Extension board power pass-through analysis:**
+The Extension board passes 3V3_ENIG from its J7 input to the next rotor group (up to 5 rotors × 57 mA = 285 mA local group draw plus remaining upstream groups). Worst-case: first Extension board (Rotor group 2) passes power for Rotors 6–30 = 25 rotors × 57 mA = 1.43 A through its J5 output. All Extension boards share an identical PCB layout; traces must be sized for the worst case — the first Extension board in the stack.
+
+### Trace Width Table
+
+| Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Signal (ENC_IN/OUT, SYS_RESET_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; pass-through from J7 to J8 and to rotor group connectors |
+| JTAG signals: TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
+| 3V3_ENIG entry / pass-through trunk (J7 → J5 output bus) | 1.43 A (worst case) | 0.21 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); worst-case Extension 1 pass-through |
+| 3V3_ENIG local draw (J7 → U1 VCC) | ≤ 10 mA | 0.002 mm | 0.80 mm | **0.80 mm** | L1 | Buffer IC supply; 3V3_ENIG canonical 0.80 mm minimum |
+| 3V3_ENIG distribution (inner power pour) | 1.43 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution |
+| GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
+
+### Notes
+
+* **JTAG CI traces:** 0.127 mm (5 mil) on L1 over the L2 GND plane achieves 50 Ω controlled
+  impedance on the JLC04161H-7628 stackup (h = 0.087 mm, t = 0.035 mm, Eᵣ = 4.4). Per DEC-016.
+  See `design/Electronics/Investigations/JTAG_Integrity.md §3.1`.
+* **3V3_ENIG pass-through:** The 0.80 mm is the canonical system-wide minimum for all 3V3_ENIG
+  surface traces (Global_Routing_Spec §1.1). IPC calculation for worst-case 1.43 A at 2oz external:
+  1.43 × 0.15 mm = 0.21 mm → **0.80 mm** canonical width provides 6.8× margin above IPC minimum.

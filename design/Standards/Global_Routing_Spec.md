@@ -31,6 +31,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 | Signal / CI | < 0.5 A | 0.20 mm | 0.254 mm (10 mil); CI exception (DEC-016) applies to outer layers only | Logic, I2C, GPIO; JTAG/diff CI at 0.127 mm on outer layers per DEC-016 |
 | Low-power supply | 0.5 A – 1.0 A | 0.50 mm | 0.75 mm | 3V3 feeds to low-draw loads |
 | Medium supply | 1.0 A – 3.0 A | 0.50 mm – 1.00 mm | 1.00 mm – 2.00 mm | 3V3_ENIG distribution, 12 V feeds |
+| **3V3_ENIG (canonical)** | **≤ 3.0 A** | **0.80 mm (system-wide fixed)** | **copper pour (L3)** | **Fixed at 0.80 mm on ALL boards regardless of local load; inner L3 pour carries bus current. Any 3V3_ENIG surface trace below 0.80 mm is non-conformant.** |
 | High-current | 3.0 A – 5.5 A | 1.00 mm – 1.50 mm | copper pour | 5 V/12 V power inputs, OR-ing rails |
 | Very high current | > 5.5 A | 2.00 mm + copper pour | copper pour | 5V_MAIN bus; teardrops + 20 mil spokes mandatory per §2.1 |
 

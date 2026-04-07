@@ -75,3 +75,32 @@ ROW | COL1 | COL2 | COL3 | COL4 | COL5 | COL6 | COL7 | COL8
 1   | ENC_IN[0] | ENC_IN[1] | ENC_IN[2] | ENC_IN[3] | ENC_IN[4] | ENC_IN[5] | GND | TTD_RETURN
 2   | ENC_OUT[0]| ENC_OUT[1]| ENC_OUT[2]| ENC_OUT[3]| ENC_OUT[4]| ENC_OUT[5]| 3V3_ENIG | GND
 ```
+
+---
+
+## §9 Routing — Trace Width Specifications
+
+**Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).
+L1 = signal (JTAG/routing); L2 = GND plane; L3 = 3V3_ENIG power pour; L4 = secondary routing / data plate.
+
+**IPC-2221A basis (2oz copper, external, 10°C rise, 25°C ambient):**
+For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) carries the bus current without width constraints.
+See Global_Routing_Spec.md §1.1 for the full current-category table.
+
+### Trace Width Table
+
+| Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| Signal (ENC_IN/OUT, SYS_RESET_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V passive loopback logic signals |
+| JTAG signals: TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
+| 3V3_ENIG power (J4 pin 1 → J2 connector + bulk caps) | ≤ 200 mA | 0.030 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); passive board — minimal local draw |
+| 3V3_ENIG distribution (inner power pour) | ≤ 200 mA | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane |
+| GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
+
+### Notes
+
+* **JTAG CI traces:** 0.127 mm (5 mil) on L1 over the L2 GND plane achieves 50 Ω controlled
+  impedance on the JLC04161H-7628 stackup (h = 0.087 mm, t = 0.035 mm, Eᵣ = 4.4). Per DEC-016.
+  See `design/Electronics/Investigations/JTAG_Integrity.md §3.1`.
+* **3V3_ENIG entry:** Power received at J4 pin 1 and distributed to J2 (rotor 30 power pass-through supply).
+  0.80 mm is the system-wide canonical minimum for all 3V3_ENIG surface traces.
