@@ -442,7 +442,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
-| U1 | eFuse | TPS259803ONRGER (16.9V OVLO) ⚠️ verify PN before ordering | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | — |
+| U1 | eFuse | TPS259803ONRGER (16.9V OVLO) | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | C2866563 |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460-Q1 | WSON-8 2×2mm | 595-LMQ61460ARUMR | 296-LMQ61460ARUMR/NOPBCT-ND | — |
 | U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
 | U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. ⚠️ Package is WQFN-38 6×4mm (REF) — **different from TPS25750 QFN-28; schematic and PCB footprint update required** | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — |
@@ -457,8 +457,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 > **BOM Notes:**
 >
-> * **U1 TPS259803ONRGER** — `TPS25980RPWR` was the original placeholder; research confirms `TPS259803ONRGER` as the 16.9V OVLO VQFN-24 variant. Verify against TI's current product page at
-> ti.com/product/TPS25980 before ordering.
+> * **U1 TPS259803ONRGER** — `TPS25980RPWR` was the original placeholder; confirmed `TPS259803ONRGER` as the 16.9V OVLO VQFN-24 variant. PNs verified: Mouser 595-TPS259803ONRGER, DigiKey 296-TPS259803ONRGERCT-ND, JLCPCB C2866563.
 > * **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also
 > available Farnell 4029939.
 > * **U4 TPS25751DREFR** — Replaces NRND TPS25750. TPS25751 is PD3.1 USB-IF certified (TID#10306); D-variant integrates the full bi-directional 20V/5A power path required to source 5V/5A (25W) to the

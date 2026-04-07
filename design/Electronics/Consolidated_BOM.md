@@ -251,7 +251,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | U5 | STUSB4500LQTR | QFN-24 4×4 | 511-STUSB4500LQTR ~ | 497-STUSB4500LQTRCT-ND ~ ⚠️ verify | C841785 (non-L variant STUSB4500QTR — STUSB4500LQTR may not be in JLCPCB catalog) | Primary PN: STUSB4500LQTR (lower Iq ~160µA). If OOS, use STUSB4500QTR as alternative (non-L variant, ~210µA Iq, pin-compatible). |
 | U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 ~ | **296-LM74700QDBVRQ1CT-ND** ✓ | — (extended) | ⚠️ **BOM PART NUMBER INCORRECT** — LM74700-Q1DCKR does not exist. Correct automotive part is LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. |
 | U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450ELB ~ | **MCP121T-450E/LBCT-ND** ✓ | — (extended) | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. |
-| U1 | TPS259803ONRGER | VQFN-24 (RGE) | 595-TPS259803ONRGER ~ | 296-TPS259803ONRGERCT-ND ~ ⚠️ verify | — | 16.9V OVLO variant. Mouser/DigiKey PNs approximate — verify before ordering. Replaces placeholder TPS25980RPWR. |
+| U1 | TPS259803ONRGER | VQFN-24 (RGE) | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | C2866563 | 16.9V OVLO variant. PNs confirmed. Replaces placeholder TPS25980RPWR. |
 | U2A/U2B | LMQ61460ARUMR | WSON-8 2×2 | **595-LMQ61460ARUMR** (provided) | 296-LMQ61460ARUMR-ND ~ | — | ⚠️ Not found on findchips; similar family variant LMQ61460AASRJRR available (296-LMQ61460AASRJRRCT-ND, different WSON variant). Verify RUMR suffix with TI/Mouser before ordering. |
 | U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). ⚠️ Package changed from QFN-28 to WQFN-38 — schematic symbol and PCB footprint update required. |
 | U7 | TPS7A8333PRMWR | WSON-12 | 595-TPS7A8333PRMWR ~ | 296-TPS7A8333PRMWR-ND ~ ⚠️ verify | — | Fixed 3.3V, WSON-12. Harmonized with Design_Spec primary PN. Mouser/DigiKey approximate — verify before ordering. |
@@ -271,7 +271,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
 2. **U10** — ✅ Resolved: TPS23730 correct package is **RMTR (WQFN-20)** — MPN updated to `TPS23730RMTR` in BOM and Design_Spec.
-3. **U1** — Updated to `TPS259803ONRGER` (16.9V OVLO VQFN-24 variant). Mouser/DigiKey approximate; verify before ordering.
+3. **U1** — Updated to `TPS259803ONRGER` (16.9V OVLO VQFN-24 variant). Mouser/DigiKey/JLCPCB PNs confirmed.
 4. **U4** — Replaced with TPS25751DREFR (WQFN-38 6×4mm). See DEC-012. ⚠️ Schematic and PCB footprint update required (package change from QFN-28).
 
 ## 10. Suppliers
