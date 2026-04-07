@@ -1,4 +1,4 @@
-# Rotor Detailed Design
+# Rotor Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -205,7 +205,7 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 
 > ENC pass-through from J3 input side. Signal positions are identical — pin mapping is symmetric so the same CPLD logic applies regardless of stack position.
 
-### 3.5 PCB Fabrication (JLCPCB Specs)
+## 4. PCB Fabrication & Stackup
 
 * **Layers:** 4-Layer (JLC04161H-7628).
 * **Finish:** ENIG (Gold) for the edge-rate connector pads.
@@ -213,7 +213,7 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 
 ---
 
-## 4. Bill of Materials
+## 5. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

@@ -64,7 +64,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 * **Component Placement:** All active and passive components (CPLDs, ICs, SMT Passives) MUST be placed on the Top Layer (L1) for the V1.0 prototype.
 * **Bottom Layer (L_MAX):** Reserved strictly for Diagnostic Banks, Data Plates, and global GND_CHASSIS pours.
 
-### 3. Mechanical Grounding
+## 3. Mechanical Grounding
 
 * **Mounting Holes:** 3.2mm PTH for M3 screws.
 * **Pattern:** Star-Burst (Radial) copper relief (8 spokes, 20-mil width) for mechanical flex.
@@ -73,7 +73,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 * **EMI Landing Zones:** 10mm unmasked ENIG gold landing strips required on board edges for compression-fit cable shielding (Stator, Extension & Reflector).
 * **Structural Ground:** Combine PCB mounting points with EMI zones using M3 PTH bonded to GND_CHASSIS.
 
-### 4. Single-Point GND_CHASSIS Bond (Global Rule)
+## 4. Single-Point GND_CHASSIS Bond (Global Rule)
 
 **Every board must connect its signal/power reference ground (GND) to GND_CHASSIS at exactly one point.**
 

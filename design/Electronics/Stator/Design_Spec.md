@@ -1,4 +1,4 @@
-# Enigma-NG Stator Board (Backplane)
+# Stator Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -133,7 +133,23 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 
 ---
 
-## 7. Bill of Materials
+## 7. PCB Fabrication & Stackup
+
+* **Manufacturer:** JLCPCB
+* **Layer count:** 4-layer
+* **Stackup:** JLC04161H-7628
+* **Board thickness:** 1.6mm
+* **Copper weight:** 1oz outer / 0.5oz inner
+* **Surface finish:** ENIG
+* **Min trace/space:** 0.1mm / 0.1mm
+* **Min drill:** 0.2mm
+
+## 8. Thermal & ESD
+
+* **Thermal:** No active cooling required. Low-power passive components only. Relies on chassis airflow.
+* **ESD:** TVS diode protection on external-facing signal lines. All connectors include GND guard pins per Samtec ERF8/ERM8 pinout.
+
+## 9. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

@@ -1,4 +1,4 @@
-# Power Module: Design Spec
+# Power Module (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -7,7 +7,7 @@
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-05
 
-## System Overview
+## 1. Overview
 
 This Power Module is a custom power board that is independently shielded and protected to ensure all power sources are filtered, controlled and monitored.
 It provides the basis of the clean power rails into the controller board and other peripheral boards.
@@ -54,7 +54,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
 | DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
 
-## Design
+## 2. Design
 
 > **NOTE:** All global rules defined in the Global_Routing_Spec.md should be applied to this design.
 
@@ -99,8 +99,15 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 ### 3. Telemetry & Power Management
 
 * **I2C Telemetry:** 4.7kΩ (1%) pull-up resistors (**R7, R8**) on SDA/SCL lines, tied to **3V3_ENIG**.
-* **5V_MAIN Current Monitor:** TI INA219AIDR (U12) zero-drift power monitor at I²C address 0x40. Placed in the 5V_MAIN supply path
-  with a 10mΩ Kelvin-sense shunt resistor (R23, CSS2H-2512R-R010ELF) to provide real-time current and power telemetry to the CM5 via I²C. Satisfies FR-PM-05.
+* **5V_MAIN Current Monitor:**
+  * **Purpose:** Provides real-time current/voltage telemetry for the 5V_MAIN rail to the CM5.
+  * **Sensor:** TI INA219AIDR (U12) zero-drift power monitor at I²C address **0x40**.
+  * **Placement:** Inserted in the 5V_MAIN supply path on L1, downstream of the eFuse (TPS25980).
+  * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) — PM R23 instance.
+    (Stator R1 is the second system CSS2H; total build qty: 2 — see `Power_Budgets.md`.)
+  * **Interface:** I2C-1 Telemetry Bus, directly accessible via LINK-ALPHA to the Controller.
+  * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for supply noise suppression.
+  * Satisfies FR-PM-05.
 * **Reset Logic:** 10kΩ (1%) pull-up (**R9**) on SYS_RESET_N to prevent floating states.
 * **Battery Detection:** Dedicated BATT_PRES_N signal routed to CM5 GPIO 23.
 
@@ -276,7 +283,7 @@ GND ──────┴──────────────────�
 
 ---
 
-## Power Sequencing & Hardware Reset
+## 3. Power Sequencing & Hardware Reset
 
 ### 1. The "Safe-Start" Logic
 
@@ -356,7 +363,7 @@ TPS25980 latches OFF under the following fault conditions:
 
 ---
 
-## Thermal Budget
+## 4. Thermal Budget
 
 Estimated power dissipation at system peak load (PoE input, all rails at full utilisation):
 
@@ -379,7 +386,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 ---
 
-## Bill of Materials
+## 5. Bill of Materials
 
 | Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

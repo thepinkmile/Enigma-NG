@@ -12,7 +12,7 @@ The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided 
 boards to ensure maximum signal integrity, industrial-grade power protection, and mechanical
 robustness.
 
-## Power Rail Glossary (Canonical naming)
+## 2. Power Rail Glossary (Canonical naming)
 
 * **3V3_ENIG**: Provided by Power Module TPS75733KTTRG3 LDO (3.3V fixed); powers all CPLDs, JTAG interface, I2C logic, rotor stack, and Controller digital I/O.
   Replaces the former 3V3_SYSTEM rail (see DEC-001).
@@ -21,12 +21,12 @@ robustness.
 * **GND_CHASSIS**: Safety earth / EMI reference plane.
 * **PWR_GD**: Power-good handshake line from Power Module to Controller.
 
-## Telemetry Sensor Responsibility
+## 3. Telemetry Sensor Responsibility
 
 * Power Module INA219 (I2C address 0x40): monitors 5V_MAIN current and power (10mΩ Kelvin-sense shunt R23).
 * Stator INA219 (I2C address 0x45): monitors rotor stack power usage via CSS2H-2512R-R010ELF 10mΩ shunt (R1) on the 3V3_ENIG bus.
 
-## I2C Bus Map
+## 4. I2C Bus Map
 
 * I2C1 (SCL/SDA): routed through Controller → Power Module → Stator → Rotor chain.
   * 0x09: LTC3350 Supercap Charger on Power Module (supercap health monitoring and charge management).
@@ -35,7 +35,7 @@ robustness.
   * 0x40: INA219 on Power Module (5V_MAIN current/power telemetry).
   * 0x45: INA219 on Stator (rotor stack draw telemetry on the 3V3_ENIG bus).
 
-## 2. System Architecture & Status (Alphabetical)
+## 5. System Architecture & Status (Alphabetical)
 
 | Board Name | Role | Stackup | Status |
 | :--- | :--- | :--- | :--- |
@@ -48,7 +48,7 @@ robustness.
 | **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100C5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
 | **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 2oz | **Design Locked** |
 
-## 3. Controller Board
+## 6. Controller Board
 
 The logic heart of the machine, hosting the Raspberry Pi CM5.
 
@@ -57,7 +57,7 @@ The logic heart of the machine, hosting the Raspberry Pi CM5.
 * **Diagnostics:** Two 2×10 Gold-plated diagnostic banks (Bank-Alpha: power/status monitoring; Bank-Beta: encryption/JTAG monitoring) for real-time bus monitoring.
 * **UI:** 40-pin flush-edge Samtec link to the Stator.
 
-## 4. Encoder Module (Dual-Use)
+## 7. Encoder Module (Dual-Use)
 
 Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
 
@@ -65,14 +65,14 @@ Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
 * **Keyboard Mode:** 64 DPDT mechanical push-button switches (6-pin, momentary) mounted in the keyboard panel; connected to the PCB via 6.35mm spade-terminal harness.
 * **Plugboard Mode:** 64 × 6.35mm (¼″) mono switched panel-mount jack sockets ("Stecker") connected via the same spade-terminal harness architecture.
 
-## 5. JTAG Daughterboard (Hidden)
+## 8. JTAG Daughterboard (Hidden)
 
 The internal "USB Blaster" that makes the Enigma-NG self-contained.
 
 * **Bridge:** FT232H High-Speed USB 2.0.
 * **Function:** Allows the CM5 to re-program all CPLD logic devices via the GUI without any external cables or visible ports.
 
-## 6. Power Module (The "Power Can")
+## 9. Power Module (The "Power Can")
 
 The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** enclosure.
 
@@ -81,14 +81,14 @@ The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** e
 * **Safety:** 72°C SMD Thermal Cutoff (TCO) and TPS25980 eFuse.
 * **Interface:** Shielded PoE+, USB-C PD, and Smart Battery inputs.
 
-## 7. Reflector Board (The "Turnaround")
+## 10. Reflector Board (The "Turnaround")
 
 Located at the opposite end of the Stator from the Controller, this board manages the signal's return journey.
 
 * **Reflector Mode:** Pairs the output of the last rotor and sends it back into the stack return path.
 * **Extended Mode:** Routes the signal out to an external Plugboard encoder before returning it through the stack.
 
-## 8. Rotor Module
+## 11. Rotor Module
 
 Modular units containing the encryption logic.
 
@@ -96,7 +96,7 @@ Modular units containing the encryption logic.
 * **Telemetry:** AS5600 Magnetic Encoders to report physical wheel position to the CM5.
 * **Mechanical:** Features a 3D-printed/CNC index gear for the manual advancement pawls.
 
-## 9. Stator Board
+## 12. Stator Board
 
 The mechanical and electrical backbone.
 

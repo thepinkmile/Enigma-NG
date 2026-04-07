@@ -110,7 +110,7 @@ with no chassis surface to bond to. Mounting holes connect to GND (circuit retur
 * **Mounting:** Small **4-layer** PCB (DEC-017) mounted as a hat on the Controller Board via conductive
   standoffs. Mounting holes tie to GND per DEC-022.
 
-### PCB Stackup — JLC04161H-7628 (4-Layer)
+## 5. PCB Fabrication & Stackup
 
 **Stackup:** JLC04161H-7628 (JLCPCB standard 4-layer, same as all other non-CTL/PM boards in the system)
 
@@ -125,7 +125,7 @@ with no chassis surface to bond to. Mounting holes connect to GND (circuit retur
 shielding. L2 signals are sandwiched between two reference planes for good signal integrity. Single-side
 assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 
-## 5. Electrical Requirements
+## 6. Electrical Requirements
 
 * **Power Architecture:**
   * FT232H VCC = **5V_USB** (5V) via hat-header J1 Pin 1 — from the Controller Board's TPS2065C-protected
@@ -165,9 +165,14 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 > Board-to-Board connector (no cable) — 33 Ω applies throughout (not the 75 Ω cable-driving rule).
 > The Controller board routes JTAG lines as pass-through without active components. See DEC-023.
 
+## 7. Thermal & ESD
+
+* **Thermal:** Low-power debug board; no thermal management required.
+* **ESD:** ESD protection via U5 JTAG buffer (SN74LVC1T45DCKR). Standard PCB handling precautions apply.
+
 ---
 
-## 6. Bill of Materials
+## 8. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

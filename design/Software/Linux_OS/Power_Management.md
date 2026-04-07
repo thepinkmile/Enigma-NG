@@ -264,9 +264,49 @@ def read_rotor_current_mA():
     return raw * CURRENT_LSB * 1000  # convert to mA
 ```
 
-> **Cross-ref:** See `Controller/Design_Spec.md §4` for shunt resistor spec and `design/Electronics/Power_Budgets.md` for expected current range (2.20A worst-case typical).
+> **Cross-ref:** See `Stator/Design_Spec.md §5. Power Telemetry` for shunt resistor spec
+> and `design/Electronics/Power_Budgets.md` for expected current range (2.20A worst-case typical).
 
 The **INA219 Power Module Monitor** (for 5V_MAIN) is at I2C address **0x40** on the Power Module board (separate device, different rail).
+
+## INA219 5V_MAIN Power Module Monitor
+
+Monitors the 5V_MAIN power rail on the Power Module board. See `Power_Module/Design_Spec.md §3 Telemetry` for hardware details.
+
+### Hardware Parameters
+
+| Parameter | Value | Notes |
+|---|---|---|
+| I²C address | 0x40 | A0/A1 = GND on U12 |
+| Shunt resistance | 0.010 Ω (10mΩ) | CSS2H-2512R-R010ELF R23, Power Module |
+| PGA range | ±160mV | Covers 0–16A; 9A worst-case → 90mV drop |
+| ADC resolution | 12-bit | |
+| Current LSB | 8mA | = 160mV / 2048 / 0.010Ω |
+| Calibration register | 0x0200 (512) | CAL = 0.04096 / (0.008 × 0.010) |
+
+### Firmware Note
+
+The calibration register must be written on every power-up before current readings are valid.
+
+```python
+import smbus2
+
+BUS = smbus2.SMBus(1)
+INA219_PM_ADDR = 0x40
+
+# Calibration register (0x05): set before reading current
+BUS.write_word_data(INA219_PM_ADDR, 0x05, 0x0002)  # CAL = 512 (big-endian swap)
+
+def read_5v_main_current_mA():
+    """Read 5V_MAIN rail current in milliamps (INA219 U12, Power Module)."""
+    raw = BUS.read_word_data(INA219_PM_ADDR, 0x04)
+    raw = ((raw & 0xFF) << 8) | ((raw >> 8) & 0xFF)  # swap bytes
+    if raw > 32767:
+        raw -= 65536
+    return raw * 8  # Current LSB = 8mA
+```
+
+> **Cross-ref:** See `Stator/Design_Spec.md §5. Power Telemetry` for the Rotor-stack INA219 (0x45) hardware spec.
 
 ## RTC Battery Configuration
 

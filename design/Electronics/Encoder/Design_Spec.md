@@ -146,7 +146,7 @@ Unlike static expanders, this module uses dual Altera MAX II CPLDs to handle rea
 * **ESD:** TPD4E001 arrays near the JTAG and Micro-Fit headers.
 * **Thermal:** Vias under the Intel MAX II EPM240T100C5N CPLD "PowerPad" (if applicable) for heat dissipation.
 
-## 10. PCB Specs (JLCPCB)
+## 10. PCB Fabrication & Stackup
 
 * **Layers:** 4-Layer (JLC04161H-7628).
 * **Finish:** ENIG (Gold) for TQFP-100 pads.

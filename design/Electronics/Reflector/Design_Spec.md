@@ -74,7 +74,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
   * `Stator/Design_Spec.md`
   * `Extension/Design_Spec.md`
 
-## 3a. Rotor Interface Connectors
+## 4. Rotor Interface Connectors
 
 The Reflector connects to the **output side** of Rotor 30 using the same ERM8 male header family used
 on each Rotor's output side (J4/J5/J6). One set of three connectors per the Rotor interface definition:
@@ -101,7 +101,7 @@ Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-p
 A single 0 Ω bond resistor (or direct via) connects the signal GND plane to the chassis copper pour at this point.
 No additional bonds are made on this board to avoid ground loops.
 
-## 4. Diagnostic & Monitoring
+## 5. Diagnostic & Monitoring
 
 To ensure the signal has successfully navigated the 30-rotor stack, a dedicated monitoring bank is included.
 
@@ -109,7 +109,7 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 * **Standard:** Matches the **Controller Board** 2.54mm (0.1") pitch standard for unified system debugging.
 * **Labelling:** `REFLEKTOR-DIAGNOSE [Reflector Diag]` in ALL-CAPS German typewriter font.
 
-## 5. PCB & Mechanical Specs
+## 6. PCB Fabrication & Stackup
 
 * **Stackup:** 4-Layer (JLC04161H-7628) / 2oz Finished Copper.
 * **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
@@ -117,12 +117,12 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 * **Fillets:** 2.0mm Rounded PCB corners for consistent "Museum-Grade" enclosure fit.
 * **Routing:** Global **0.5mm Fixed-Radius Circular Arcs** for all loopback traces.
 
-## 6. Branding & Traceability
+## 7. Branding & Traceability
 
 * **Data Plate:** Inverted white silkscreen "Data Plate" on Bottom (L4) containing the Enigma silhouette, "ENIGMA-NG" text, and JLC Serial Number block.
 * **Label:** `REFLEKTOR-EINHEIT [Reflector Unit]` in ALL-CAPS German typewriter font.
 
-## 7. Bill of Materials
+## 8. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |

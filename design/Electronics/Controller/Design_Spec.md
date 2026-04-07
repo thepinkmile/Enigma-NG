@@ -11,6 +11,8 @@
 
 ## 1. Overview
 
+The Controller Board is a custom carrier board for the Raspberry Pi Compute Module 5 (CM5), providing the central processing and supervisory function for the Enigma-NG system. It interfaces with the Power Module and Stator board via the 80-pin Link-Alpha and 40-pin Link-Beta board-to-board connectors respectively, and hosts the JTAG Daughterboard hat connectors for debug access.
+
 * **Module:** Raspberry Pi Compute Module 5 (CM5).
 * **Role:** Master traffic controller for Power (Alpha) and Encryption Logic (Beta).
 * **Stackup:** 6-Layer / 2oz Finished Copper (JLC06161H-2116) for 5Gbps differential pair integrity.
@@ -67,10 +69,23 @@
   Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design phase).
   The 2oz copper L3 highway continues to link Alpha and Beta for the rotor stack pass-through.
 
-### 2.1. High-Speed Routing (on Link-Alpha)
+### 2.1. Connectivity & Bus (on Link-Alpha)
 
-* **Ethernet:** 100Ω Stripline pairs on L3, shielded by L2/L5 ground planes.
-* **Power Vias:** 4-via "Power Clusters" (0.3mm) per Samtec power pin for thermal stability.
+* **High-Speed Interconnect (BtB Samtec):**
+  * **Connector:** Samtec ERF8-040 (Female Socket, 80-pin, 0.8mm pitch). See DEC-007.
+  * **Mating Style:** Board-to-Board vertical stack; SMT reflow. Mates with ERM8-040 (Male) on Power Module.
+  * **Pin Summary:**
+    * **Pins 1–20:** GbE MDI diff pairs (4 pairs + GND shields), 100Ω stripline on L3.
+    * **Pins 21–24:** 5V_MAIN power entry (supplemental) + GND return.
+    * **Pins 25–26:** ETH_LED_LINK / ETH_LED_ACT (active-low).
+    * **Pins 27–28:** GND isolation moat.
+    * **Pins 29–38:** Status/control signals (SYS_FAULT, POE_STAT, SW_LED_R/G/B, PWR_GD, I2C1, USB_STAT).
+    * **Pins 39–44:** 3V3_ENIG power (6 pins × 0.5A = 3.0A capacity).
+    * **Pins 45–48:** Mixed control (BATT_PRES_N, ROTOR_EN, SW_LED_CTRL, GND).
+    * **Pins 49–80:** 5V_MAIN high-current entry (32 pins × 0.5A = 16A; actual ≤9A).
+  * **Power Vias:** 4-via "Power Clusters" (0.3mm drill) per Samtec power pin for thermal stability.
+  * **Full pin table:** See `Controller/Board_Layout.md` LINK-ALPHA section.
+* **Ethernet:** 100Ω Stripline pairs on L3, shielded by L2/L5 ground planes (GbE MDI).
 
 ### 2.2. Connectivity & Bus (on Link-Beta)
 
@@ -92,7 +107,17 @@
   * **ENC_OUT [0:5]:** GPIO 6-11 (Binary output from Reflector/Stator).
   * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100C5N CPLDs.
 
-### 2.3. Physical Connector Placement
+### 2.3. CM5 Module Keep-Out Zone
+
+The area directly beneath the mounted CM5 module (55mm × 40mm footprint) shall be designated
+a **component keep-out zone** on all layers:
+
+* No active or passive components, tall features, or exposed via pads may be placed in this area.
+* Copper fills, signal routing, and power planes are permitted beneath the module.
+* Enforced in KiCad via a keepout region on the `User.Courtyard` layer covering the full CM5 footprint.
+* Minimum clearance beneath the CM5: **2.5mm** (set by Amphenol 10164227-1004A1RLF 4.0mm stacking height minus 1.5mm CM5 PCB thickness).
+
+### 2.4. Physical Connector Placement
 
 1. **Top Edge:** Order from Left to Right
     * **Stator Link:** 40-pin Samtec ERF8-020 (Flush with edge, LINK-BETA) to Stator Board.
@@ -114,11 +139,16 @@ The Controller provides JTAG pass-through only. All JTAG chain architecture, dev
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
 
-Rotor current monitoring is implemented on the Stator board (see Stator Design_Spec §5).
+Current monitoring for both rails is managed via the I2C-1 bus (CM5 GPIO 2/3) and is
+implemented on the respective boards — not on the Controller:
 
-Driver configuration (INA219 shunt resistance, DT binding) is specified in the Linux OS design spec.
+* **INA219 U12 (0x40) — 5V_MAIN monitor:** Power Module. See `Power_Module/Design_Spec.md §3 Telemetry`.
+* **INA219 U2 (0x45) — Rotor-stack monitor:** Stator board. See `Stator/Design_Spec.md §5. Power Telemetry`.
 
-### I²C Bus Topology
+For DT bindings and driver configuration for both INA219 devices, see
+`Software/Linux_OS/Power_Management.md §INA219 Rotor Stack Current Monitor`.
+
+### 4.1. I²C Bus Topology
 
 All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through to the Power Module (LINK-ALPHA) and Stator (LINK-BETA).
 
@@ -198,7 +228,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 
 ## 8. Connectivity
 
-### Link-Alpha Connector (Samtec ERF8-040)
+### 8.1. Link-Alpha Connector (Samtec ERF8-040)
 
 * **Part:** ERF8-040-05.0-S-DV-K-TR (Female Socket, 80-pin, 0.8mm pitch, 5.0mm stack height).
 * **Mating Part (Power Module):** ERM8-040-05.0-S-DV-K-TR (Male Header).
@@ -230,7 +260,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | 48 | GND | — | Zone boundary separator |
 | 49–80 | 5V_MAIN / GND (interleaved) | PM → CTRL | 9A delivery cluster |
 
-### JDB Hat Connectors
+### 8.2. JDB Hat Connectors
 
 The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
@@ -269,7 +299,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 9 | VREF (3V3_ENIG) | CTRL → JDB | Voltage reference for JTAG logic |
 | 10 | GND | — | Ground |
 
-### Link-Beta Connector (Samtec ERF8-020)
+### 8.3. Link-Beta Connector (Samtec ERF8-020)
 
 * **Part:** ERF8-020-05.0-S-DV-K-TR (Female Socket, 40-pin, 0.8mm pitch, 5.0mm stack height).
 * **Mating Part (Stator):** ERM8-020-05.0-S-DV-K-TR (Male Header).
@@ -300,9 +330,26 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 28–35 | 3V3_ENIG | PM → Stator | Power pass-through (8 pins = 4.0A; 2oz copper highway) |
 | 36–40 | GND | — | Power return |
 
+### 8.4. Fan Connector (J_FAN)
+
+* **Part:** JST SM04B-SRSS-TB(LF)(SN) — 4-pin JST SH 1.0mm pitch right-angle header
+* **Mating Part:** JST SHR-04V-S (female crimp housing)
+* **JLCPCB:** C160390 | **Mouser:** 538-SM04B-SRSS-TB
+* **Pinout:**
+
+| Pin | Signal | Source |
+|-----|--------|--------|
+| 1 | +5V_MAIN | Controller 5V_MAIN rail |
+| 2 | GND | Controller GND |
+| 3 | FAN_TACH | CM5 module connector Pin 16 |
+| 4 | FAN_PWM | CM5 module connector Pin 19 |
+
+* FAN_TACH and FAN_PWM connect directly from the CM5 module DF40 connector (dedicated BCM2712 fan controller interface). No GPIO allocation required.
+* Mating fan cable: JST SHR-04V-S housing with 4× JST SSH-003T-P0.2 crimp terminals.
+
 ## 9. PCB Fabrication & Stackup
 
-### PCB Fabrication (JLCPCB Specs)
+### 9.1. PCB Fabrication (JLCPCB Specs)
 
 * **Layers:** **6-Layer** (JLC06161H-2116 stackup).
   For production runs requiring verified controlled impedance (differential pairs: USB/HDMI/GbE),
@@ -312,7 +359,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Solder Mask:** **Dark Green** (Vintage Industrial Lacquer aesthetic).
 * **Silkscreen:** White, Typewriter-style font, Bilingual (ALL-CAPS GERMAN / Sentence-case English).
 
-### Advanced Layer Stackup (6-Layer / 2oz) [JLCPCB JLC06161H-2116]
+### 9.2. Advanced Layer Stackup (6-Layer / 2oz) [JLCPCB JLC06161H-2116]
 
 * **L1 (Top):** SMT Components, I2C + PWR Control GPIOs & Shielded Ground Pour.
 * **L2 (Internal):** Primary GND Plane (Logic Reference).
@@ -323,7 +370,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **L5 (Internal):** Secondary GND Plane (Shielding).
 * **L6 (Bottom):** Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.
 
-### Trace Widths & Impedance
+### 9.3. Trace Widths & Impedance
 
 | Net Class | Target Impedance | Width / Spacing | Layer |
 | :--- | :--- | :--- | :--- |
@@ -337,12 +384,21 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 ## 10. Thermal, Branding & Diagnostics
 
-### Thermal
+### 10.1. Thermal
 
 * **LINK-ALPHA Power Entry:** The LINK-ALPHA connector carries 5V_MAIN at up to 9A. Add a **"Caution: High Current"** silkscreen label adjacent to the connector.
-* **CM5 Module:** The CM5 has its own integrated thermal management. No additional heatsink is specified at the Controller board level.
+* **CM5 Module Thermal Management:**
+  * **Heatsink:** Mount the [Raspberry Pi CM5 Cooler](https://www.raspberrypi.com/products/cm5-cooler/)
+    (SC1144, passive aluminium heatsink, ~41×56×12.7mm, conductive silicone pad) directly onto the CM5 module.
+    Fasten with the four corner mounting screws for secure thermal contact.
+  * **Active Fan Header (J_FAN):** A 4-pin JST SH (1.0mm pitch) fan connector is provided on the Controller
+    board, matching the CM5IO J14 standard. Supports 5V PWM-controlled fans.
+    Board part: JST SM04B-SRSS-TB(LF)(SN) (JLCPCB C160390, Mouser 538-SM04B-SRSS-TB).
+    Pinout: Pin 1 = +5V, Pin 2 = GND, Pin 3 = TACH (CM5 Pin 16), Pin 4 = PWM (CM5 Pin 19).
+    FAN_TACH and FAN_PWM are dedicated BCM2712 fan controller pins on the CM5 module connector
+    — no GPIO allocation required.
 
-### Diagnostics & Aesthetics
+### 10.2. Diagnostics & Aesthetics
 
 * **Placement:** 2×10 2.54mm ENIG Gold Looped Probe Pad Banks placed on L1, directly behind their respective BtB connectors.
 * **Orientation:** Facing upwards for easy logic analyser ribbon cable connection.
@@ -419,6 +475,10 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 | J2 | Link-Beta 40-pin Socket | ERF8-020-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8020050SDVKTR | SAM8619CT-ND (CT) / SAM8619TR-ND (T&R) / SAM8619DKR-ND (DKR) | C6034565 |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
 | J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A125057-ND | C123459 |
+| J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 538-SM04B-SRSS-TB | N/A | C160390 |
+| J_CM5_A | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
+| J_CM5_B | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
+| MH1–MH4 | M2.5 × 4.0mm brass standoff | — | — | — | — | — |
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |

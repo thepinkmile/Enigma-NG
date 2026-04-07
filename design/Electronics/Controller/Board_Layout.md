@@ -1,4 +1,4 @@
-# Board Layout Visualisations
+# Controller Board Layout Visualisations
 
 **Status:** Draft
 **Project:** Enigma-NG
