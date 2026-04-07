@@ -65,10 +65,10 @@ jobs:
               prefix = "  " * indent
               lines  = []
               try:
-                  # Dirs first (sort key 0), then files (sort key 1); both alphabetical.
+                  # Files first (sort key 0), then dirs (sort key 1); both alphabetical.
                   entries = sorted(
                       os.scandir(dirpath),
-                      key=lambda e: (not e.is_dir(), e.name.lower())
+                      key=lambda e: (e.is_dir(), e.name.lower())
                   )
               except PermissionError:
                   return lines
