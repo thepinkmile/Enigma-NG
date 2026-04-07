@@ -198,7 +198,8 @@ GND ──────┴──────────────────�
   * R-Ladder: 232kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
   * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
     **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
-    then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
+    then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or
+    Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
   * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
 * **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 22F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where:
@@ -210,7 +211,8 @@ GND ──────┴──────────────────�
     → charge current error ≤±3mA at 500mA target. This is negligible for supercap charging.
   * ⚠️ Verify RSENSE value against LTC3350 datasheet once layout is frozen; **R12 (RSENSE) must be a 4-terminal Kelvin-sense resistor**
     with independent sense traces to avoid trace resistance adding to the measured value (even 1mΩ trace adds 10% error on a 10mΩ sense resistor).
-  * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below the programmed threshold (resistor divider R14/R15 from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15).
+  * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below the programmed threshold
+    (resistor divider R14/R15 from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15).
     * **Applied values (PM-06 fix):** R14=26.7kΩ (ERA-3ARB2672V) / R15=10.0kΩ → threshold = **4.40V** — 100mV below PWR_GD assertion (4.50V),
       ensuring the CM5 receives the PWR_GD warning before backup hold-up engages.
     * ⚠️ **Design note:** The original as-drawn value of R14=30.1kΩ set a threshold of 4.81V — above the PWR_GD assertion voltage (4.50V),
