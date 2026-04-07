@@ -143,7 +143,7 @@ The eFuse (**TPS25980**, 16.9V OVLO variant, VQFN 4×4mm) is programmed via a re
 
 #### 3.3.1 Part Selection
 
-Two **TI LMQ61460-Q1** (3–36V input, 6A rated, VQFN-15-HR, automotive-grade AEC-Q100) switching regulators are used in parallel, phase-interleaved.
+Two **TI LMQ61460-Q1** (3–36V input, 6A rated, VQFN-HR (RJR) 14-pin 4×3.5mm, automotive-grade AEC-Q100) switching regulators are used in parallel, phase-interleaved.
 
 **Why two instead of one larger regulator?**
 
