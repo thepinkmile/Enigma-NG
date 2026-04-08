@@ -382,7 +382,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | **Ethernet/HDMI** | 100Ω Differential | 4.5 mil / 8.5 mil | L3 (Stripline) |
 | **JTAG signals** | 50Ω Single-ended | 5.0 mil (0.127 mm) | L6 |
 | **5V_MAIN power rail** | N/A (Low Drop) | 78.7 mil (2.00 mm) min + inner pour — 9.05A worst-case; Very High Current (> 5.5A) per Global_Routing_Spec §1.1 | L1 surface + L4 inner pour |
-| **Logic/I2C** | N/A | 6.0 mil | L4 / L6 |
+| **Logic/I2C** | N/A | 6.0 mil | L1 |
 | **USB 2.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) — same geometry as USB 3.0 |
 | **3V3_ENIG power** | N/A (Power) | 0.80 mm (31.5 mil) — 3.0A LDO max output; consistent with PM §9 and Global_Routing_Spec §1.1 Medium supply (1.0–3.0A); 2oz copper system-wide | L1/L6 or L4 Power Plane |
 
@@ -488,7 +488,7 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) — 8GB RAM / 4GB eMMC minimum; CM5 Lite NOT permitted | N/A | CM5 (SO-DIMM) | various (e.g. CM5008032) | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065C | SOT-23-5 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
-| U3 | HDMI power switch | AP2331W | SOT-23 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
+| U3 | HDMI power switch | AP2331W | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
 | U4 | USB/HDMI ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
 
 ### BOM Notes

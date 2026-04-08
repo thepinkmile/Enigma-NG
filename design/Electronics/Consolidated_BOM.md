@@ -42,7 +42,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | TPS23730RMTR — PoE ACF DC-DC Controller (WQFN-20) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| AP2331W — HDMI Current Limiter (SOT-23) | — | 1 | — | — | — | — | — | — | — | — | 1 |
+| AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | TPD4E05U06 — 4-Channel ESD Protection Array | 3 | 1 | — | — | — | — | — | — | — | — | 4 |
 | TPD1E10B06 — Single-Channel ESD (SOD-923) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | 1 |
