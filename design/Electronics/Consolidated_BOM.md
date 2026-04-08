@@ -209,7 +209,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 ### 5.1. Controller User I/O Protection
 
 * **TPS2065CDBVR:** USB Power Distribution Switch (SOT-23-5) (1.6A Limit).
-* **AP2331W-7:** HDMI Current Limiter (SOT-25) (50mA Limit).
+* **AP2331W-7:** HDMI Current Limiter (SOT-23-5) (50mA Limit).
 * **TPD4E05U06DQNR:** 4-Channel ESD Protection (U-DFN1010-10).
 
 ### Controller Board — RTC Battery Circuit

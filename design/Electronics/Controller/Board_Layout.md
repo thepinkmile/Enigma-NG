@@ -396,7 +396,7 @@ _______________________________________    _____________    ____________________
 ## §9 Routing — Trace Width Specifications
 
 **Board specs:** 6-layer / 2oz finished copper (JLC06161H-2116).
-L1 = SMT/GPIO; L2 = GND; L3 = High-Speed Striplines (USB/HDMI/GBE); L4 = Power Plane (5V_MAIN/3V3_ENIG); L5 = Secondary GND; L6 = Diagnostic/Data Plate.
+L1 = SMT/GPIO; L2 = GND; L3 = High-Speed Striplines (USB/HDMI/GBE); L4 = Power Plane (5V_MAIN/3V3_ENIG); L5 = Secondary GND; L6 = Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.
 
 **IPC-2221A basis (2oz copper, external, 10°C rise, 25°C ambient):**
 For 2oz external: ~0.15 mm/A. Inner power pours (L3) handle high currents without width constraints.

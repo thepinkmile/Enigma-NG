@@ -960,7 +960,7 @@ This section records all INC (inconsistency) items tracked during the design pro
 | INC-19 | Power Module PoE | Ag5300/Ag53000 is 802.3at only (25.5W PD). No 802.3bt Type 4 PCB module found. Architecture change required: Type 3 (51W) insufficient; Type 4 (72W) required | Ag5300/Ag53000 (802.3at SIL module) | Discrete two-stage: TPS2372-4 (PD) + TPS23730 + POE600F-12LD (ACF transformer). See DEC-002 | ✅ Resolved — DEC-002 |
 | INC-20 | Power Module Supercap | Supercap charge path had no current limiting — would cause excessive inrush and violate 75% utilisation rule under PoE | Supercap directly on 5V_MAIN bus | LTC3350 soft-charge via RICHARGE resistor; 0.5A limit under PoE. See DEC-004 | ✅ Resolved — DEC-004 |
 | INC-21 | Power Module J2 | Component selection locked: RJ45 MagJack | — | Würth 7499111121A (SMT, shielded, 2-LED, 10/100/1000) | ✅ Locked |
-| INC-22 | Power Module ESD | Component selection locked: Ethernet ESD arrays | — | 2× TI TPD4E1U06DBVR (0.8pF, ±15kV, −40°C to +125°C) per port | ✅ Locked |
+| INC-22 | Power Module ESD | Component selection locked: Ethernet ESD arrays | — | 2× TI TPD4E05U06DQAR (0.8pF, ±15kV, −40°C to +125°C, U-DFN-10) per port | ✅ Locked |
 | INC-23 | Power Module Bob Smith | Component selection locked: Bob Smith termination network | — | 4× 75Ω 0402 ±1% resistors + 1× 10nF Y1-class capacitor to GND_CHASSIS | ✅ Locked |
 
 ---

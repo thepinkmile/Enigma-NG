@@ -70,7 +70,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 * **Thermal:** Cross-Hatched Exposed ENIG "Thermal Halos" (2mm offset) at mesh intersections.
   * **Vias:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
 * **Supercap Block:** 2×2 arrangement (4 cells, 14mm centre-to-centre pitch, 2.0mm air gap between cells). Block footprint ≈ 28mm × 28mm.
-  The 2.0mm gap is a 'No-Fly Zone' for all PCB traces on L1–L4 (enclosure rib clearway).
+  The 2.0mm gap is a 'No-Fly Zone' for all PCB traces on L1–L6 (enclosure rib clearway).
 * **Routing Keep-out:** 32mm × 32mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
 
 ### 2. Power & UPS Hub
@@ -266,7 +266,7 @@ GND ──────┴──────────────────�
 * **Assembly:** Single-side (Top) population for JLCPCB SMT service.
 * **Serialization:** JLC Serial Number service block on the bottom layer.
 * **Identification:** Laser-etched **Blitzpfeil** and Proxy QR code (`enigma-ng.link/docs`).
-* **Branding:** Inverted white silkscreen "Data Plate" on L4 (Bottom) containing the Enigma silhouette, "ENIGMA-NG" text, near the JLC Serial Number block.
+* **Branding:** Inverted white silkscreen "Data Plate" on L6 (Bottom) containing the Enigma silhouette, "ENIGMA-NG" text, near the JLC Serial Number block.
 
 ### 7. Signal Integrity & Safety
 
