@@ -339,7 +339,7 @@ GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
 | RJ45 Ethernet (MDI0/MDI1) | TPD4E05U06 (D4) | U-DFN-10 | One device per two differential pairs |
 | RJ45 Ethernet (MDI2/MDI3) | TPD4E05U06 (D5) | U-DFN-10 | One device per two differential pairs |
 | USB-C Power Input | TPD4E05U06 (D3) | U-DFN-10 | Covers CC1, CC2, VBUS, and SBU lines |
-| Battery SMBus (SDA/SCL) | TPD2E2U06 (D2) | SON-6 | SMBus differential pair protection |
+| Battery SMBus (SDA/SCL) | TPD2E2U06 (D2) | SOT-553 (DRL) | SMBus differential pair protection |
 | Battery Presence (BATT_PRES_N) | TPD1E10B06 (D1) | SOD-923 | Single-line presence detect |
 
 **Internal connections (Board-to-Board links):** Internal BtB connectors (Link-Alpha, Link-Beta) are not individually ESD-protected in the standard configuration, as they are considered internal
