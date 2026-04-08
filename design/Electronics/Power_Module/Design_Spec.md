@@ -194,7 +194,7 @@ GND ──────┴──────────────────�
 
   TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 
-* **eFuse:** TPS25980 (16.9V OVLO fixed variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
+* **eFuse:** TPS259807ONRGER (16.9V OVLO adjustable variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * R-Ladder: 232kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
   * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
     **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
@@ -446,7 +446,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
-| U1 | eFuse | TPS259803ONRGER (16.9V OVLO) | VQFN-24 4×4mm | 595-TPS259803ONRGER | 296-TPS259803ONRGERCT-ND | C2866563 |
+| U1 | eFuse | TPS259807ONRGER (16.9V adj. OVLO, R3=53.6 kΩ) | VQFN-24 4×4mm | 595-TPS259807ONRGER | 296-TPS259807ONRGERCT-ND | C2868416 |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |
 | U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
 | U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. ⚠️ Package is WQFN-38 6×4mm (REF) — **different from TPS25750 QFN-28; schematic and PCB footprint update required** | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — |
@@ -461,8 +461,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 > **BOM Notes:**
 >
-> * **U1 TPS259803ONRGER** — `TPS25980RPWR` was the original placeholder; confirmed `TPS259803ONRGER` as the 16.9V OVLO VQFN-24 variant.
->   PNs verified: Mouser 595-TPS259803ONRGER, DigiKey 296-TPS259803ONRGERCT-ND, JLCPCB C2866563.
+> * **U1 TPS259807ONRGER** — `TPS25980RPWR` was the original placeholder; confirmed `TPS259807ONRGER` as the 16.9V adjustable OVLO VQFN-24 variant (OVLO set via R3 = 53.6 kΩ).
+>   PNs verified: Mouser 595-TPS259807ONRGER, DigiKey 296-TPS259807ONRGERCT-ND, JLCPCB C2868416.
 > * **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also
 > available Farnell 4029939.
 > * **U4 TPS25751DREFR** — Replaces NRND TPS25750. TPS25751 is PD3.1 USB-IF certified (TID#10306); D-variant integrates the full bi-directional 20V/5A power path required to source 5V/5A (25W) to the

@@ -139,7 +139,7 @@ Mechanical Plugboard specification.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C16 | Decoupling (8 per CPLD, 2x CPLDs) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C17-C21 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| C17-C21 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | BT1-128 | PCB spade blade terminals (2 per jack, 128 total) | 6.35mm (¼″) straight vertical PCB-mount male blade tab — Row 1 (BT1-64): ENC Tip signal; Row 2 (BT65-128): Switch insertion-detect | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |

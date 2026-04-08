@@ -141,7 +141,7 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | J1 | Rotor 30 output interface — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J4 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Rotor 30 output interface — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J5 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |

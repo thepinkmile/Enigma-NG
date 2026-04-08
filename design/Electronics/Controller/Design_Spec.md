@@ -470,7 +470,7 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
+| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034 | THT horizontal | 534-3034 | 36-3034-ND | C70377 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | Nexperia BAT54 | SOT-23 | 771-BAT54215 | 1727-1064-1-ND | C8598 |
