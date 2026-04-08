@@ -47,7 +47,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-03 | 3V3_ENIG rail | 3.3 V ±3%, ≤3.0 A maximum (TPS75733 LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460AFSQRJRRQ1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
-| DR-PM-06 | eFuse | TPS25980, 7 A trip current, OVLO = 16.9 V (R_OVLO = ERA-3ARB5362V (53.6 kΩ, 0.1% thin-film)) | §5 Protection & Logic; BOM U1 (TPS25980), R1 (232kΩ), R2 (28.7kΩ), R3 (53.6kΩ) |
+| DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERA-3ARB2100V, 210 Ω, 0.1% thin-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
 | DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 |
 | DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) | §5 Protection & Logic; BOM R14 (26.7kΩ), R15 (10.0kΩ) |
 | DR-PM-09 | Holdup duration | ≥14.5 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–4 (22F/2.7V), U3 (LTC3350) |
@@ -194,8 +194,8 @@ GND ──────┴──────────────────�
 
   TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 
-* **eFuse:** TPS259807ONRGER (16.9V OVLO adjustable variant, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
-  * R-Ladder: 232kΩ R_UVLO_HI, 28.7kΩ R_UVLO_LO, 53.6kΩ R_OVLO — all 0.1% Thin-Film 0603.
+* **eFuse:** TPS259804ONRGER (16.9V OVLO silicon-fixed, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
+  * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 0.1% Thin-Film 0603. ILIM: 210Ω R_ILIM (R3) — 0.1% Thin-Film 0603. Note: OVLO is silicon-fixed on TPS259804ONRGER — no external OVLO resistor required or present.
   * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
     **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
     then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or
@@ -425,7 +425,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — |
 | R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2323V | P232KBYCT-ND | — |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2872V | P28.7KBYCT-ND | — |
-| R3 | eFuse OVLO set resistor | 53.6kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB5362V | P53.6KBYCT-ND | — |
+| R3 | eFuse ILIM set resistor | 210Ω 0.1% Thin-Film | 0603 | 667-ERA-3ARB2100V | TBD | TBD |
 | R4, R5 | ETH Activity LEDs | 330Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
 | R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
@@ -446,7 +446,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
-| U1 | eFuse | TPS259807ONRGER (16.9V adj. OVLO, R3=53.6 kΩ) | VQFN-24 4×4mm | 595-TPS259807ONRGER | 296-TPS259807ONRGERCT-ND | C2868416 |
+| U1 | eFuse | TPS259804ONRGER (16.9V silicon-fixed OVLO) | VQFN-24 4×4mm | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |
 | U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
 | U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. ⚠️ Package is WQFN-38 6×4mm (REF) — **different from TPS25750 QFN-28; schematic and PCB footprint update required** | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — |
@@ -461,8 +461,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 > **BOM Notes:**
 >
-> * **U1 TPS259807ONRGER** — `TPS25980RPWR` was the original placeholder; confirmed `TPS259807ONRGER` as the 16.9V adjustable OVLO VQFN-24 variant (OVLO set via R3 = 53.6 kΩ).
->   PNs verified: Mouser 595-TPS259807ONRGER, DigiKey 296-TPS259807ONRGERCT-ND, JLCPCB C2868416.
+> * **U1 TPS259804ONRGER** — `TPS25980RPWR` was the original placeholder; confirmed `TPS259804ONRGER` as the 16.9V silicon-fixed OVLO VQFN-24 variant. OVLO is set in silicon — no external resistor. R3 repurposed as R_ILIM (210 Ω).
+>   PNs verified: Mouser 595-TPS259804ONRGER, DigiKey 296-TPS259804ONRGERCT-ND, JLCPCB C2878936.
 > * **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also
 > available Farnell 4029939.
 > * **U4 TPS25751DREFR** — Replaces NRND TPS25750. TPS25751 is PD3.1 USB-IF certified (TID#10306); D-variant integrates the full bi-directional 20V/5A power path required to source 5V/5A (25W) to the

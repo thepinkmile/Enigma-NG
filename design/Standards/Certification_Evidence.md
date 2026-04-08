@@ -96,7 +96,7 @@ for CE/UKCA EMC compliance.
 [PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 60W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.8V]
   → LM74700-Q1 OR-ing controller + CSD17483F4T ideal-diode FETs (×3)
   → TCO F1 (72°C thermal fuse)
-  → TPS259807ONRGER eFuse (7A ILIM, 11.0V UVLO, 16.9V OVLO adjustable via R3, VQFN 4×4mm)
+  → TPS259804ONRGER eFuse (7A ILIM via R3=210Ω, 11.0V UVLO, 16.9V OVLO silicon-fixed, VQFN 4×4mm)
   → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 4× Tecate TPLH-2R7/22WR12X31 supercaps (22F/5.4V, 2S2P)]
   → 5V_MAIN bus
   → [CM5 via TPS25751 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS75733KTTRG3 3V3 LDO]
@@ -114,12 +114,12 @@ junction temperatures across the power chain and supports IEC 60068-2 thermal te
 
 ### 3.2 eFuse Settings — UVLO and OVLO Rationale
 
-The eFuse (**TPS259807ONRGER**, 16.9V adjustable OVLO, VQFN 4×4mm) is programmed via a resistor (UVLO) and external component selection (ILIM) to the following thresholds:
+The eFuse (**TPS259804ONRGER**, 16.9V silicon-fixed OVLO, VQFN 4×4mm) is programmed via resistors (UVLO and ILIM) to the following thresholds:
 
 | Parameter | Value | Rationale |
 | --- | --- | --- |
 | UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~12V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
-| OVLO | **16.9V (adjustable via R3 = 53.6 kΩ)** | Highest available option on TPS25980. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin above OVLO. See §3.2 Note on Battery Voltage. |
+| OVLO | **16.9V (silicon-fixed — TPS259804ONRGER)** | Highest available option on TPS25980. No external resistor required or present. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin below OVLO rising threshold. See §3.2 Note on Battery Voltage. |
 | ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 9.05A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
 | Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~2 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to limit peak PoE utilisation to 76.2% during cold-start charge (54.9W / 72W); marginally above the 75% rule but accepted exception (see §3.5). |
 
@@ -129,12 +129,12 @@ The eFuse (**TPS259807ONRGER**, 16.9V adjustable OVLO, VQFN 4×4mm) is programme
 | --- | --- | --- |
 | R_UVLO_HI | 232 kΩ | UVLO upper resistor |
 | R_UVLO_LO | 28.7 kΩ | UVLO lower resistor |
-| R_OVLO | 53.6 kΩ | OVLO set resistor |
+| R_ILIM | 210 Ω (ERA-3ARB2100V — PN TBD) | ILIM set resistor (R3) — programs 7.0A trip current |
 
-> **Note on Battery Voltage — OVLO Margin:** The TPS259807ONRGER adjustable OVLO is set to 16.9V via external R3 = 53.6 kΩ (0.1% thin-film). This is 0.1V above the theoretical max battery voltage of 16.8V (4S Li-ion at 4.2V/cell). To maintain an engineering margin of
-> ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)**. This specification must be enforced in the battery procurement specification and verified
-> during incoming inspection. OVLO threshold accuracy with 0.1% R3 is dominated by the internal OVLO comparator reference tolerance — must be confirmed against the TPS259807ONRGER datasheet
-> (full threshold tolerance band required before production release — see §8, OA-01).
+> **Note on Battery Voltage — OVLO Margin:** The TPS259804ONRGER has a silicon-fixed OVLO rising threshold of 16.9V typ (16.32V min / 17.31V max from datasheet). To maintain an engineering margin of
+> ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)** — giving 0.5V margin to the 16.9V typ threshold. This specification must be enforced in
+> the battery procurement specification and verified during incoming inspection. Note: the worst-case minimum OVLO rising threshold is 16.32V — only 0.32V above BMS 16.4V maximum charge voltage.
+> This margin is acceptable at typical operating temperature but must be re-evaluated if the BMS charge voltage specification is ever relaxed (see §8, OA-01).
 >
 > **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative
 > TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting EN 55032 Class B conducted
@@ -470,7 +470,7 @@ Any replacement CPLD must be verified for:
 
 | ID | Description | Owner | Priority |
 | --- | --- | --- | --- |
-| OA-01 | **[PARTIALLY RESOLVED]** eFuse variant confirmed as **TPS259807ONRGER** (adjustable OVLO, VQFN-24). UVLO resistor calculation confirmed: R1=232kΩ, R2=28.7kΩ, formula R_HI = R_LO × (V_UVLO/1.21 − 1) → 232kΩ ✓. OVLO: R3=53.6kΩ sets 16.9V threshold on TPS259807ONRGER adjustable OVLO — formula and internal reference voltage tolerance must be verified against TPS259807ONRGER datasheet (full tolerance band required before production). ILIM: R_ILIM resistor for 7A current limit appears **absent from BOM** — a resistor must be added and its value calculated per TPS259807ONRGER datasheet ILIM programming equation before schematic capture. | Hardware Designer | High |
+| OA-01 | **[PARTIALLY RESOLVED]** eFuse variant confirmed as **TPS259804ONRGER** (16.9V silicon-fixed OVLO, VQFN-24). UVLO confirmed: V_UVLO_R = 1.20V typ (datasheet); R1=232kΩ, R2=28.7kΩ → 10.90V typ (range 10.72–11.17V across full temp/tolerance). OVLO: silicon-fixed 16.9V typ (16.32V min / 17.31V max rising) — no external R; worst-case min 16.32V gives only 0.32V margin above BMS 16.4V max — monitor if BMS spec changes. ILIM: R3 repurposed as R_ILIM = 210 Ω (formula: R_ILIM = 1460/(I_LIM − 0.11) → 210 Ω gives 7.062A typ). **Remaining open: ERA-3ARB2100V (210 Ω) supplier PNs (DigiKey/JLCPCB) not yet confirmed — required before BOM finalisation.** | Hardware Designer | High |
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~2 min charge from cold: 54.9W / 72W = 76.2% — marginally above the 75% design rule; accepted exception (see §3.5). Steady-state: 52.0W / 72W = 72.2% ✓. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
