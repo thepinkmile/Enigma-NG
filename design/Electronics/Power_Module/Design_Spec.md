@@ -251,7 +251,7 @@ GND ──────┴──────────────────�
   * **Thermal Budget (TPS75733):**
     * V_dropout ≈ 0.18V (TPS75733 typical at 1.85A). Typical dissipation: **~0.33W** (1.85A load, Vdo≈0.18V).
     * At worst-case 2.2A load: P_diss ≈ 0.22V × 2.2A ≈ **~0.45W** worst-case.
-    * Standard TO-263 package thermal pad and ground vias are sufficient at this dissipation level. The ≥200mm² copper pour requirement from the previous WSON-12 design is removed.
+    * Standard TO-263 package thermal pad and ground vias are sufficient at this dissipation level. The ≥200mm² copper pour requirement from the previous high-dissipation LDO design is removed.
     * At 40°C ambient with standard PCB copper: T_J well within 125°C limit. ✓
 
 * **Monitoring:** MCP121T-450E supervisor asserts PWR_GD to the CM5 once the regulated 5V rail is stable.
@@ -384,7 +384,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 **Thermal Notes:**
 
 * The LDO (U7 TPS75733) dissipates ≤0.45W worst-case (TO-263 KTT package). Standard thermal pad soldering and local ground vias are sufficient; no large copper pour required.
-* The previous TPS7A8333P (WSON-12) LDO required ≥200mm² copper pour at up to 5.1W dissipation — this requirement is removed with the TPS75733 (TO-263).
+* The previous LDO required ≥200mm² copper pour at up to 5.1W dissipation — this requirement is removed with the TPS75733KTTRG3 (TO-263 KTT 5-pin).
 * The dedicated heat zone (shared with supercap bank area) connects via thermal pad to the metal enclosure, acting as a heatsink for the bottom of the board.
 
 ---
@@ -479,8 +479,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > CM5 and prevent OS throttling. **Package changed to WQFN-38 6×4mm (REF)** — schematic pins and PCB footprint must be updated from the TPS25750 QFN-28 layout. Mouser: `595-TPS25751DREFR`; DigiKey:
 > `TPS25751DREFR-ND`.
 > * **U5 STUSB4500LQTR** — JLCPCB C506650 confirmed in stock (L-variant). Both are pin-compatible; non-L variant STUSB4500QTR has slightly higher Iq (~210µA vs 160µA).
-> * **U7 TPS75733KTTRG3** — Replaces TPS7A8333PRMWR. Fixed 3.3V output, 3A continuous, TO-263 (KTT) 5-pin 10.16×15.24mm package. **Active-LOW enable:** EN LOW = LDO enabled; EN HIGH = shutdown.
-> R10 changed to pull-down (10kΩ to GND) to ensure LDO is ON by default at power-up. Firmware must drive GPIO 16 HIGH to disable the LDO (inverted vs original TPS7A8333P logic).
+> * **U7 TPS75733KTTRG3** — Replaces the previous high-dissipation LDO. Fixed 3.3V output, 3A continuous, TO-263 (KTT) 5-pin 10.16×15.24mm package. **Active-LOW enable:** EN LOW = LDO enabled; EN HIGH = shutdown.
+> R10 changed to pull-down (10kΩ to GND) to ensure LDO is ON by default at power-up. Firmware must drive GPIO 16 HIGH to disable the LDO (inverted vs the previous LDO's active-high enable logic).
 > Thermal dissipation greatly improved: ~0.33W typical (1.85A, Vdo≈0.18V) vs 3.1W with the previous part — ≥200mm² copper pour requirement removed.
 > Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`.
 > * **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
