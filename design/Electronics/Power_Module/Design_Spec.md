@@ -32,7 +32,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460AFSQRJRRQ1), U7 (TPS75733) |
-| FR-PM-02 | Maintain system power for ≥14.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 (supercaps) |
+| FR-PM-02 | Maintain system power for ≥21.8 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–6 (supercaps) |
 | FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW on power-loss event to trigger graceful shutdown | Enables software-initiated graceful shutdown; PWR_GD is healthy-HIGH, fault-LOW | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
 | FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
 | FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups), U12 (INA219 at 0x40), R23 (10mΩ shunt) |
@@ -48,9 +48,9 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460AFSQRJRRQ1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERJ-3EKF2100V, 210 Ω, 1% thick-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
-| DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 |
+| DR-PM-07 | Supercapacitor bank | 6× 22 F / 2.7 V in 2S3P configuration = 33 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–6 |
 | DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) | §5 Protection & Logic; BOM R14 (26.7kΩ), R15 (10.0kΩ) |
-| DR-PM-09 | Holdup duration | ≥14.5 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–4 (22F/2.7V), U3 (LTC3350) |
+| DR-PM-09 | Holdup duration | ≥21.8 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–6 (22F/2.7V), U3 (LTC3350) |
 | DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
 | DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
 
@@ -69,8 +69,8 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 * **Enclosure:** 42mm Aluminium "Power Can" with internal compression ribs.
 * **Thermal:** Cross-Hatched Exposed ENIG "Thermal Halos" (2mm offset) at mesh intersections.
   * **Vias:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
-* **Supercap Block:** 2×2 arrangement (4 cells, 14mm centre-to-centre pitch, 2.0mm air gap between cells). Block footprint ≈ 28mm × 28mm.
-  The 2.0mm gap is a 'No-Fly Zone' for all PCB traces on L1–L6 (enclosure rib clearway).
+* **Supercap Block:** 2×3 arrangement (6 cells, 14mm centre-to-centre pitch, 2.0mm air gap between cells). Block footprint ≈ 28mm × 42mm.
+  The 2.0mm gaps are 'No-Fly Zones' for all PCB traces on L1–L6 (enclosure rib clearways — 2 clearways per row, 1 gap between each pair of the 3 columns).
   * **Rib Clearway ENIG Bond:** Solder mask is opened in the 2.0mm rib clearway gap on L1 (top copper),
     connected to GND_CHASSIS. Minimum strip width 1.0mm × full rib contact depth. The aluminium enclosure
     rib makes direct electrical contact via a conductive elastomer gasket strip (≤2mm wide, self-adhesive;
@@ -78,13 +78,13 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
     (Kapton) tape before installation to prevent shorts with the metal ribs. Combined with the GND_CHASSIS
     copper pour in the shadow zone (§1 keepout rule), this creates a near-complete Faraday cage around the
     supercap block. See DEC-020.
-* **Routing Keep-out:** 32mm × 32mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
+* **Routing Keep-out:** 32mm × 46mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
 
 ### 2. Power & UPS Hub
 
-* **Storage:** LTC3350-managed supercap bank — 4× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S2P configuration on 5V_MAIN bus. Total: 22F at 5.4V. Hold-up
+* **Storage:** LTC3350-managed supercap bank — 6× Tecate TPLH-2R7/22WR12X31 (22F/2.7V, −40°C to +85°C, 12mm dia × 31mm, THT radial) in 2S3P configuration on 5V_MAIN bus. Total: 33F at 5.4V. Hold-up
 
-  energy: 72.4J (≥14.5 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
+  energy: 108.9J (≥21.8 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
@@ -209,7 +209,7 @@ GND ──────┴──────────────────�
     then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or
     Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
   * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
-* **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 4-cell bank (2S2P, 22F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
+* **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 6-cell bank (2S3P, 33F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where:
     * `VICHARGE = 1.485V` (LTC3350 internal reference).
     * `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path).
@@ -226,7 +226,7 @@ GND ──────┴──────────────────�
     * ⚠️ **Design note:** The original as-drawn value of R14=30.1kΩ set a threshold of 4.81V — above the PWR_GD assertion voltage (4.50V),
       causing a dead-zone where backup could engage without the CM5 receiving a warning. This was resolved in PM-06.
       See BOM R14 entry and the R14/R15 BOM note for details.
-    * Hold-up duration from fully-charged bank: ≥14.5 seconds at 5W CM5 graceful-shutdown load.
+    * Hold-up duration from fully-charged bank: ≥21.8 seconds at 5W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
   * **PD Interface:** TPS2372-4 (U9, VQFN-20) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
@@ -328,9 +328,9 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
 3. **Bucks:** Dual LMQ61460AFSQRJRRQ1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS75733 3V3_ENIG LDO (U7) start.
-4. **Supercap charging:** LTC3350 begins managed soft-charge of the 4-cell supercap bank (22F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
+4. **Supercap charging:** LTC3350 begins managed soft-charge of the 6-cell supercap bank (33F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
 
-   depleted state: approximately 2 minutes. Once fully charged, the bank provides ≥14.5 seconds of hold-up at the 5W CM5 graceful shutdown load.
+   depleted state: approximately 3 minutes. Once fully charged, the bank provides ≥21.8 seconds of hold-up at the 5W CM5 graceful shutdown load.
 
 5. **Supervisor:** Once 5V_MAIN hits 4.5V, MCP121T-450E asserts GLOBAL_EN HIGH after a 200ms delay.
 6. **Release:** CM5 PMIC begins internal 1.8V/1.1V sequencing.
@@ -344,7 +344,7 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
 2. **OS Shutdown:** CM5 OS saves state, syncs filesystems, and executes `halt`.
 3. **ROTOR_EN HIGH:** CM5 GPIO 16 is asserted HIGH before halt completes, disabling the TPS75733 LDO (active-LOW EN: HIGH = shutdown) → 3V3_ENIG off (CPLDs and rotor stack de-energised).
 4. **CM5 PMIC halt:** CM5 internal PMIC drops 1.8V/1.1V rails. Total time from trigger to PMIC halt: ~10–15 seconds.
-5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≥14.5 seconds.
+5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≥21.8 seconds.
 6. **PWR_GD drop:** Once 5V_MAIN falls below 4.5V, MCP121T-450E deasserts PWR_GD.
 7. **Rail collapse:** After CM5 load is gone, 5V_MAIN falls to 0V. LTC3350 stops discharge.
 8. **Power source removed:** User removes PoE cable, USB-C adapter, or battery. eFuse input drops to 0V.
@@ -413,7 +413,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C22 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C24 | TPS23730 soft-start cap (C_SS, SS pin) | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1005-1-ND | C57112 |
-| C_SC1–4 | Supercaps (4× cells, 2S2P) | Tecate TPLH-2R7/22WR12X31 / 22F 2.7V −40°C to +85°C | THT Radial 12×31mm | N/A — DigiKey only | 2085-TPLH-2R7/22WR12X31-ND | N/A — consign via DigiKey |
+| C_SC1–6 | Supercaps (6× cells, 2S3P) | Tecate TPLH-2R7/22WR12X31 / 22F 2.7V −40°C to +85°C | THT Radial 12×31mm | N/A — DigiKey only | 2085-TPLH-2R7/22WR12X31-ND | N/A — consign via DigiKey |
 | D1 | BATT_PRES ESD | TPD1E10B06 | SOD-923 | 595-TPD1E10B06QDCKR | 296-TPD1E10B06QDCKRQ1CT-ND | C284765 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
 | D3 | USB-C ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DRYR | 296-TPD4E05U06DRYRCT-ND | C123462 |

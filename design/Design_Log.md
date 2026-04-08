@@ -119,7 +119,7 @@ This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the
 **Rationale:**  
 
 - Full 2A supercap charging on PoE would push utilisation to ~98%, leaving <2W margin for transient loads.
-- 0.5A charge current charges the 4× 22F supercap bank in approximately 2 minutes from depleted.
+- 0.5A charge current charges the 6× 22F supercap bank in approximately 3 minutes from depleted.
 - Normal system usage is expected to exceed 30–45 minutes per session (startup + configuration + use), making a 2-minute charge time acceptable.
 - This limitation should be documented in the User Manual with guidance that maximum system load is not recommended during the initial PoE power-up window.
 
@@ -845,6 +845,33 @@ for ribbon cable connections. See DEC-016 for the full 75 Ω / 33 Ω rationale.
   33 Ω 0402 count increased in JDB; 33 Ω 0603 row removed from CTL.
 - `Electronics/Investigations/JTAG_Integrity.md`: §7.4 and §8 updated to reflect JDB location.
 - `Design_Log.md DEC-016`: Update note added.
+
+---
+
+## DEC-024 — Supercapacitor Bank Expanded to 2×3 (2S3P, 6 Cells)
+
+- **Status:** Accepted — 2026-04-08
+- **Affects:** Power Module — Supercapacitor Bank, Board Layout, BOM
+- **References:** DR-PM-07, DR-PM-09
+
+**Decision:**
+The supercapacitor bank is expanded from a 2×2 (2S2P, 4 cells) to a **2×3 (2S3P, 6 cells)** arrangement.
+
+| Parameter | Previous | Updated |
+| :--- | :--- | :--- |
+| Configuration | 2S2P | 2S3P |
+| Cell count | 4 | 6 |
+| Effective capacitance | 22F at 5.4V | 33F at 5.4V |
+| Hold-up duration @ 5W | ≥14.5 s | ≥21.8 s |
+| Block footprint | 28mm × 28mm | 28mm × 42mm |
+| Shadow keepout | 32mm × 32mm | 32mm × 46mm |
+| Charge time (depleted) | ~2 min | ~3 min |
+
+**Rationale:**
+- 50% increase in hold-up energy (72.6J → 108.9J) provides greater margin for graceful CM5 shutdown under heavier load conditions.
+- Board is custom-designed; PCB area is not a constraint at this design stage.
+- LTC3350 fully supports 2S3P (2 cells in series, 3 in parallel); no topology change required.
+- Supply voltage (5.4V max) and all downstream design parameters unchanged.
 
 ---
 

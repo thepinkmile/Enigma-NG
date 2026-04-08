@@ -60,7 +60,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 10 nF 100 V X7R 0402 Bob Smith termination cap | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 100 pF X7R 25 V 0402 SYNC SW-ringing LP filter (C0402C101K3RACAUTO) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 22 F / 2.7 V Supercapacitor (Tecate TPLH-2R7/22WR12X31) | 4 | — | — | — | — | — | — | — | — | — | 4 |
+| 22 F / 2.7 V Supercapacitor (Tecate TPLH-2R7/22WR12X31) | 6 | — | — | — | — | — | — | — | — | — | 6 |
 | | | | | | | | | | | | |
 | 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 5 | 2 | 5 | — | — | — | — | — | — | — | 12 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 132 | 396 | 4 | 120 | — | — | 2 | 520 |
@@ -123,7 +123,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 ## 1. Critical Spares (MOQ Recommendations)
 
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
-* **Tecate TPLH-2R7/22WR12X31 (22F/2.7V) Supercap:** Order 10 (MOQ) - (2x Spares + 2x Testing). Source via DigiKey consignment through JLCPCB global sourcing.
+* **Tecate TPLH-2R7/22WR12X31 (22F/2.7V) Supercap:** Order 10 (MOQ) — 6 required per build + 4 spare/test. Source via DigiKey consignment through JLCPCB global sourcing.
 * **Samtec ERM8-040 (Gold, 80-pin):** Order 3 (MOQ) — Power Module J1, (1× Spare). Order separately from ERM8-020.
 * **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J8, (1× Spare). Poka-yoke pair with ERF8-020.
 * **Samtec ERF8-040 (Gold, 80-pin):** Order 3 (MOQ) — Controller J1, (1× Spare).
@@ -332,7 +332,7 @@ Product page links for all major components for design review and procurement ve
 | Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [ti.com/product/CSD17483F4](https://www.ti.com/product/CSD17483F4) |
 | U11 | MIC1555 — CMOS Timer, SOT-23-5 | Microchip Technology | [microchip.com/en-us/product/MIC1555](https://www.microchip.com/en-us/product/MIC1555) |
 | U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | Texas Instruments | [ti.com/product/SN74LVC1G14](https://www.ti.com/product/SN74LVC1G14) |
-| C_SC1–4 | TPLH-2R7/22WR12X31 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com (search TPLH-2R7-22WR)](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |
+| C_SC1–6 | TPLH-2R7/22WR12X31 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com (search TPLH-2R7-22WR)](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |
 | F1 | AC72ABD — 72°C SMD Thermal Cutoff (TCO) | Bourns | [bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72](https://www.bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72) |
 | D1 | TPD1E10B06 — Single-Channel 10V TVS ESD (BATT_PRES) | Texas Instruments | [ti.com/product/TPD1E10B06](https://www.ti.com/product/TPD1E10B06) |
 | D2 | TPD2E2U06 — Dual-Channel 5.5V SMBus ESD (Battery SMBus) | Texas Instruments | [ti.com/product/TPD2E2U06](https://www.ti.com/product/TPD2E2U06) |

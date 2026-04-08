@@ -42,7 +42,7 @@ At its core, the Enigma-NG is powered by a Raspberry Pi Compute Module 5 (CM5) r
 
 ### Supercapacitor Discharge Warning
 
-The Power Module contains a bank of supercapacitors that store enough energy to power the system for ≥14.5 seconds after the input power is removed. This is by design — it provides a
+The Power Module contains a bank of supercapacitors that store enough energy to power the system for ≥21.8 seconds after the input power is removed. This is by design — it provides a
 graceful shutdown window so the operating system can save its state cleanly.
 
 **Do not open the enclosure if the amber "Safety Glow" LED is illuminated.** This LED indicates that the supercapacitors are still charged above a safe threshold (> 5.1V) and the internal circuitry
@@ -162,7 +162,7 @@ When power is applied, the following sequence occurs automatically:
 2. **Buck regulators start:** The dual 5V switching regulators (U2A/U2B) and the 3.3V LDO (U7) begin operating, establishing the 5V_MAIN and 3V3_ENIG power rails.
 3. **Supercap charging:** The LTC3350 supercap manager begins a controlled 0.5A soft-charge of the supercapacitor bank from the 5V_MAIN rail. This reduced charge rate keeps the system within power
 
-   budget on all input sources. From a fully depleted state, the bank takes approximately **2 minutes** to reach full charge. Full hold-up protection (≥14.5 seconds) is available once
+   budget on all input sources. From a fully depleted state, the bank takes approximately **3 minutes** to reach full charge. Full hold-up protection (≥21.8 seconds) is available once
 charging is complete.
 
 4. **Rail supervision:** A voltage supervisor monitors the 5V_MAIN rail. Once it stabilises above 4.5V, a 200ms delay timer starts.
@@ -174,13 +174,13 @@ Total startup time from power application to operational readiness is typically 
 
 ### 3.6 Battery and Supercapacitor Hold-Up
 
-**Supercapacitors:** The Power Module contains four supercapacitor cells (22F each, arranged in a 2-series × 2-parallel configuration giving 22F at 5.4V, managed by the LTC3350 supercap controller)
-providing **≥14.5 seconds of hold-up** at a 5W shutdown load. This is sufficient for the operating system to perform a clean, ordered shutdown, preventing filesystem and memory corruption.
+**Supercapacitors:** The Power Module contains six supercapacitor cells (22F each, arranged in a 2-series × 3-parallel configuration giving 33F at 5.4V, managed by the LTC3350 supercap controller)
+providing **≥21.8 seconds of hold-up** at a 5W shutdown load. This is sufficient for the operating system to perform a clean, ordered shutdown, preventing filesystem and memory corruption.
 
-> **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 2 minutes from a cold start. The system is designed for operational sessions of 30 minutes or
+> **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 3 minutes from a cold start. The system is designed for operational sessions of 30 minutes or
 > longer — the supercapacitors will be fully charged well before they could ever be needed in normal use.
 
-The LTC3350 controller continuously monitors the supercapacitor bank, balances charge across all four cells, and automatically switches to supercap-powered operation within microseconds of detecting
+The LTC3350 controller continuously monitors the supercapacitor bank, balances charge across all six cells, and automatically switches to supercap-powered operation within microseconds of detecting
 a loss of the main 5V rail. No user action is required — the switchover is completely transparent to the operating system.
 
 The amber "Safety Glow" LED remains lit until the supercapacitor voltage drops below 5.1V. Even after the green LED goes out, treat the enclosure as live until the amber LED also extinguishes.
