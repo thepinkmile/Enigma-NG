@@ -59,9 +59,9 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 
 | Ref | Side | Signal Group | Type | JLCPCB PN |
 | --- | ---- | ------------ | ---- | --------- |
-| J1 | Input (plugs into previous group last rotor J4) | JTAG | ERM8-005-05.0-S-DV-K-TR (10-pin, **male**) | C374877 |
-| J2 | Input (plugs into previous group last rotor J5) | Power | ERM8-005-05.0-S-DV-K-TR (10-pin, **male**) | C374877 |
-| J3 | Input (plugs into previous group last rotor J6) | ENC Data | ERM8-010-05.0-S-DV-K-TR (20-pin, **male**) | *Open item — verify JLCPCB part number* |
+| J1 | Input (plugs into previous group last rotor J4) | JTAG | ERM8-005-05.0-S-DV-K-TR (10-pin, **male**) | C3649741 |
+| J2 | Input (plugs into previous group last rotor J5) | Power | ERM8-005-05.0-S-DV-K-TR (10-pin, **male**) | C3649741 |
+| J3 | Input (plugs into previous group last rotor J6) | ENC Data | ERM8-010-05.0-S-DV-K-TR (20-pin, **male**) | C374877 |
 | J4 | Output (receives next group first rotor J1) | JTAG | ERF8-005-05.0-S-DV-K-TR (10-pin, female) | C7273978 |
 | J5 | Output (receives next group first rotor J2) | Power | ERF8-005-05.0-S-DV-K-TR (10-pin, female) | C7273978 |
 | J6 | Output (receives next group first rotor J3) | ENC Data | ERF8-010-05.0-S-DV-K-TR (20-pin, female) | C3646170 |
