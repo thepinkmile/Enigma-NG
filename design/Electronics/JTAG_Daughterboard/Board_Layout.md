@@ -85,7 +85,7 @@ PIN | SIGNAL          | DESCRIPTION
 
 ## Grounding Notes
 
-GND_CHASSIS is not implemented on the JDB — see DEC-022. Mounting holes connect to GND (circuit return).
+GND_CHASSIS is not implemented on the JDB — see DEC-023. Mounting holes connect to GND (circuit return).
 
 ---
 

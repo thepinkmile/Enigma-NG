@@ -139,7 +139,7 @@ The Controller provides JTAG pass-through only. All JTAG chain architecture, dev
 
 * **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly from the JDB hat-header (J_JDB) to LINK-BETA (J2) on the Controller board without any active
   components. No buffer or series resistors reside on the Controller for JTAG signals.
-* **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for all JTAG chain architecture, FT232H module schematics, buffering, and assembly details. See DEC-016, DEC-023.
+* **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for all JTAG chain architecture, FT232H module schematics, buffering, and assembly details. See DEC-016, DEC-024.
 
 ## 4. Telemetry & Logic (INA219 + SMBus)
 
@@ -489,7 +489,7 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 | U1 | Raspberry Pi Compute Module 5 (CM5) — 8GB RAM / 4GB eMMC minimum; CM5 Lite NOT permitted | N/A | CM5 (SO-DIMM) | various (e.g. CM5008032) | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065C | SOT-23-5 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
-| U4 | USB/HDMI ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
+| U4 | USB/HDMI ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DRYR | 296-TPD4E05U06DRYRCT-ND | C123462 |
 
 ### BOM Notes
 

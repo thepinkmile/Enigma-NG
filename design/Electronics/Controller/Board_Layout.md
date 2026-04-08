@@ -407,7 +407,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Signal (CM5 GPIO, I2C-1, SPI, USB control, HDMI data, SW_LED_R/G/B) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | All 3.3 V logic signals to/from CM5 DF40 and peripheral ICs |
-| JTAG pass-through (TCK, TMS, TDI, TDO) via Link-Beta J2 to Stator | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L6 | 50 Ω controlled impedance over L5 GND plane; CI exception per DEC-016/DEC-023. See `JTAG_Integrity.md`. |
+| JTAG pass-through (TCK, TMS, TDI, TDO) via Link-Beta J2 to Stator | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L6 | 50 Ω controlled impedance over L5 GND plane; CI exception per DEC-016/DEC-024. See `JTAG_Integrity.md`. |
 | 5V_MAIN entry (Link-Alpha J1 → CM5 DF40 power pins) | 9.0 A | 1.35 mm | 2.00 mm | **2.00 mm + pour** | L1 + L3 inner | Very high current (> 5.5 A threshold); L1 traces **2.00 mm minimum**; L3 inner power pour mandatory |
 | 3V3_ENIG distribution (Link-Alpha input → CM5 + pass-through Link-Beta) | 3.0 A | 0.45 mm | 0.80 mm | **0.80 mm** | L1 | Canonical 3V3_ENIG width per Global_Routing_Spec §1.1; entry from PM LDO (3.0 A limit); passed to Stator via 8× Link-Beta pins |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Solid GND reference plane; must be uninterrupted under all CI (JTAG) traces on L6 |
@@ -416,7 +416,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 * **JTAG CI traces (pass-through):** 0.127 mm (5 mil) on L6 over the L5 GND plane achieves 50 Ω controlled
   impedance on the JLC06161H-2116 stackup — see Design_Spec §9.3. The Controller
-  passes JTAG signals from the JDB (J3/J4) through to the Stator chain via Link-Beta (J2) — see DEC-023.
+  passes JTAG signals from the JDB (J3/J4) through to the Stator chain via Link-Beta (J2) — see DEC-024.
   These traces are the **5-mil CI exception** documented in Global_Routing_Spec.md §1.
 * **5V_MAIN (9.0 A):** Classified Very High Current (> 5.5 A threshold per Global_Routing_Spec §1.1).
   L1 collector traces from Link-Alpha J1 power cluster (pins 21–22, 49–79 odd) converge to the CM5 DF40
