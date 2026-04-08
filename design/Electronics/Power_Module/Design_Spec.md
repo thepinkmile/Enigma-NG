@@ -392,13 +392,13 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 | Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1, C4 | Pi-filter bulk cap (input + output) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
+| C1, C4 | Pi-filter bulk cap (input + output) — **2× in parallel per position** | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | C2, C5 | Pi-filter mid-freq bypass | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C3, C6 | Pi-filter HF bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
+| C7, C8 | 5V Buck input bulk cap (U2A IN, U2B IN) — **2× in parallel per position** | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | C9, C10 | 5V Buck output bulk cap (U2A OUT, U2B OUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C11 | eFuse input bulk cap (U1 VIN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C12 | eFuse output bulk cap (U1 VOUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
+| C11 | eFuse input bulk cap (U1 VIN) — **2× in parallel** | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
+| C12 | eFuse output bulk cap (U1 VOUT) — **2× in parallel** | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | C13 | LDO input cap (U7 VIN from 5V_MAIN) | 10µF 25V X7R | 1206 | 80-C1206C106K3R | 399-C1206C106K3RACTUCT-ND | C2168111 |
 | C14 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | C15–C21 | IC VCC bypass (one per: U3, U4, U5, U6a, U8, U9, U10) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
@@ -502,8 +502,11 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 >   Use 0.1% tolerance on both R14 and R15 for threshold accuracy.
 > * **C7–C14 bulk/bypass caps** — All 22µF caps use Samsung CL32B226KAJNNNE (22µF **25V** X7R 1210) as C1/C4. The original 22µF 50V 1210 spec (Murata GRM32ER71H226KE15L) was not available
 > from any distributor — 22µF at 50V in 1210 does not appear to be a commercial catalogue part. Maximum actual bus voltage on the hardest-stressed positions (C1, C4, C7, C8, C11, C12) is ~16.4V
-> (4S battery, 4.1V/cell max per DEC-005), giving 1.5× voltage derating at 25V rating — acceptable for prototype stage. C13 uses a different 10µF part. ⚠️ Note: X7R capacitors exhibit DC bias
-> derating; at 16V on a 25V-rated part (~64% of Vrated), effective capacitance is approximately 50–65% of nominal (≈11–14µF). Adequate for filtering but note when comparing to nominal 22µF value.
+> (4S battery, 4.1V/cell max per DEC-005), giving 1.5× voltage derating at 25V rating. ⚠️ Note: X7R capacitors exhibit DC bias
+> derating; at 16V on a 25V-rated part (~64% of Vrated), single-cap effective capacitance is approximately 50–65% of nominal (≈11–14µF).
+> **To recover this derating, C1, C4, C7, C8, C11, and C12 are each populated as 2× CL32B226KAJNNNE in parallel; effective capacitance at 16V becomes ≈22–28µF, meeting the nominal 22µF design target.**
+> C9, C10 (5V bus — ~20% Vrated, negligible derating) and C14 (3V3_ENIG bus) remain at 1× per position. BOM total for CL32B226KAJNNNE: 6 positions × 2 + 3 single = **15 units** per PM.
+> C13 uses a different 10µF part.
 > DigiKey 1276-3392-1-ND; JLCPCB C309062 (confirmed — Samsung CL32B226KAJNNNE 22µF 25V X7R 1210).
 > * **C15–C25 IC bypass and timing caps** — C15–C22 (100nF bypass) share the same Samsung CL05B104KB5NNNC as C3/C6.
 > C15–C21 covers U3, U4, U5, U6a, U8, U9, U10; C26 and C27 (100nF bypass for U6b and U6c respectively) are now formally

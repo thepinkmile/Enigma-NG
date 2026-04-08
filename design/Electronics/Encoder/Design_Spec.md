@@ -156,3 +156,5 @@ Mechanical Plugboard specification.
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | C25808 |
 | R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| R9–R136 | CPLD input pull-up resistors — 128× total (64× plugboard insertion-detect BT65–BT128, 64× keyboard key-press BT193–BT256). Pull-up to 3V3_ENIG; external 10kΩ dominates internal 50kΩ–100kΩ. | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| C22–C149 | CPLD input RC noise filter caps — 128× total, paired 1:1 with R9–R136 (one cap to GND per input line). RC τ = 1 ms; sufficient for noise immunity on harness; negligible for slow mechanical insertion events. | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
