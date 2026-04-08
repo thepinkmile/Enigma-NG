@@ -77,7 +77,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 232 kΩ 0.1% 0603 thin-film eFuse UVLO (ERA-3ARB2323V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 28.7 kΩ 0.1% 0603 thin-film eFuse UVLO (ERA-3ARB2872V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 210 Ω 0.1% 0603 thin-film eFuse ILIM (ERA-3ARB2100V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 210 Ω 1% 0603 thick-film eFuse ILIM (ERJ-3EKF2100V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 26.7 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB2672V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB1002V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 2 | — | 2 |
@@ -273,7 +273,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
 2. **U10** — ✅ Resolved: TPS23730 correct package is **RMTR (WQFN-20)** — MPN updated to `TPS23730RMTR` in BOM and Design_Spec.
-3. **U1** — Updated to `TPS259804ONRGER` (16.9V silicon-fixed OVLO VQFN-24 variant). Mouser/DigiKey/JLCPCB PNs confirmed. R3 repurposed as R_ILIM = 210 Ω (ERA-3ARB2100V).
+3. **U1** — Updated to `TPS259804ONRGER` (16.9V silicon-fixed OVLO VQFN-24 variant). Mouser/DigiKey/JLCPCB PNs confirmed. R3 repurposed as R_ILIM = 210 Ω (ERJ-3EKF2100V).
 4. **U4** — Replaced with TPS25751DREFR (WQFN-38 6×4mm). See DEC-012. ⚠️ Schematic and PCB footprint update required (package change from QFN-28).
 
 ## 10. Suppliers

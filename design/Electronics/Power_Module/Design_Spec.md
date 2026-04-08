@@ -47,7 +47,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-03 | 3V3_ENIG rail | 3.3 V ±3%, ≤3.0 A maximum (TPS75733 LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460AFSQRJRRQ1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
-| DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERA-3ARB2100V, 210 Ω, 0.1% thin-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
+| DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERJ-3EKF2100V, 210 Ω, 1% thick-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
 | DR-PM-07 | Supercapacitor bank | 4× 22 F / 2.7 V in 2S2P configuration = 22 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–4 |
 | DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) | §5 Protection & Logic; BOM R14 (26.7kΩ), R15 (10.0kΩ) |
 | DR-PM-09 | Holdup duration | ≥14.5 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–4 (22F/2.7V), U3 (LTC3350) |
@@ -425,7 +425,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — |
 | R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2323V | P232KBYCT-ND | — |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2872V | P28.7KBYCT-ND | — |
-| R3 | eFuse ILIM set resistor | 210Ω 0.1% Thin-Film | 0603 | 667-ERA-3ARB2100V | TBD | TBD |
+| R3 | eFuse ILIM set resistor | 210Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF2100V | P210HCT-ND | C403064 |
 | R4, R5 | ETH Activity LEDs | 330Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
 | R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
