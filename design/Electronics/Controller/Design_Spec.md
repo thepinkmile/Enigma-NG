@@ -21,7 +21,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 * **Stackup:** 6-Layer / 2oz Finished Copper (JLC06161H-2116) for 5Gbps differential pair integrity.
 * **Shielding:** High-speed signals (Ethernet, USB 3.0, HDMI) routed as Striplines on L3, shielded by L2/L5 GND planes
   and L4 (Internal) for High-Current Power Plane (5V_MAIN / 3V3_ENIG).
-* **USB-C:** 16-pin "Power Only" to maximize mechanical durability in classroom settings.
+* **USB-C:** Power delivery handled by the Power Module via Link-Alpha (J1). The Controller has no direct USB-C connector.
 * **Status LED:** Hardware heartbeat (1Hz pulse, generated on Power Module) triggers on power-up before CM5 boot for instant status confirmation.
 
 ### Functional & Design Requirements
@@ -107,8 +107,8 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 * **Programming:** Internal USB 2.0 link to the JTAG Daughterboard.
 * **Encryption Sniffer Bus**
   * **Logic:** 12-bit binary encoded bus (6-in / 6-out) for 64-character alphabet monitoring.
-  * **ENC_IN [0:5]:** GPIO 0-5 (Binary input from Keyboard CPLD).
-  * **ENC_OUT [0:5]:** GPIO 6-11 (Binary output from Reflector/Stator).
+  * **ENC_IN [0:5]:** GPIO 4–9 (Binary input from Keyboard CPLD).
+  * **ENC_OUT [0:5]:** GPIO 10–15 (Binary output from Reflector/Stator).
   * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100I5N CPLDs.
 
 ### 2.3. CM5 Module Keep-Out Zone
@@ -204,7 +204,8 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45. |
-| **4–15** | **DATA_BUS** | Output | 3.3V | **12-bit Parallel Bus** (D0-D11) to Stator/Rotors. |
+| **4–9** | **ENC_IN[0:5]** | Output | 3.3V | **6-bit Encoder Input Bus** (D0–D5) CM5 → Stator/Rotors. |
+| **10–15** | **ENC_OUT[0:5]** | Input | 3.3V | **6-bit Encoder Output Bus** (D6–D11) Stator/Rotors → CM5. |
 | **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ENIG LDO for sequenced rotor stack power-up. |
 | **17** | **SW_LED_R** | PWM | 3.3V | RGB switch (SW1) — Red channel. Fault / graceful shutdown indicator. |
 | **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |

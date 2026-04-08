@@ -35,7 +35,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | :--- | :--- | :--- | :--- |
 | DR-STA-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §7 PCB Fabrication & Stackup |
 | DR-STA-02 | Layer mapping | L1 = Signal (JTAG/routing), L2 = GND, L3 = 3V3_ENIG, L4 = ENC Data | §1 Overview |
-| DR-STA-03 | Rotor interface (per slot) | J1 = ERF8-005 (JTAG), J2 = ERF8-005 (Power), J3 = ERF8-010 (ENC); 30 slot sets | §4 Interconnects; BOM J1–J3 (ERF8-005/ERF8-010) |
+| DR-STA-03 | Rotor interface (per slot) | J1 = ERF8-005 (JTAG), J2 = ERF8-005 (Power), J3 = ERF8-010 (ENC); 1 slot set | §4 Interconnects; BOM J1–J3 (ERF8-005/ERF8-010) |
 | DR-STA-04 | Encoder interface | J4/J5/J6 = 26-pin Molex IDC (HID encoder ports, one per encoder board) | §4 Interconnects; BOM J4–J6 (Molex 26-pin) |
 | DR-STA-05 | TTD_RETURN input | J7 = 16-pin Molex; TTD_RETURN on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 (16-pin Molex) |
 | DR-STA-06 | Link-Beta connector | J8 = ERM8-020-05.0-S-DV-K-TR (40-pin male, 0.8 mm pitch) to Controller J2 | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
@@ -45,7 +45,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ## 2. Core Features
 
-* **Modular Slots:** 30x Samtec ERF8 female socket sets (3 connectors per slot: ERF8-005 JTAG, ERF8-005 Power, ERF8-010 ENC\_DATA) mating with the ERM8 male headers on each Rotor.
+* **Modular Slots:** 1× Samtec ERF8 female socket set (3 connectors: ERF8-005 JTAG, ERF8-005 Power, ERF8-010 ENC\_DATA) mating with the ERM8 male headers on the Rotor.
 * **Power Tree:** A 2oz copper pour for the `3V3_ENIG` rail to handle the **2.20A worst-case** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
   The 5A figure previously quoted was a conservative design margin; the LDO hard limit is 3.0A.
 

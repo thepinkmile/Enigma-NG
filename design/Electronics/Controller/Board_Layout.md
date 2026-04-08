@@ -154,8 +154,11 @@ _______________________________________    _____________    ____________________
 [ PIN 34       ] ------------------------> [ 3.3V LOGIC] -> [ PWR_GD                     ]
                                            (GPIO IN)        (From Power Module MCP121T)
 
-[ PINS 35 - 38 ] ------------------------> [ I2C BUS   ] -> [ TELEMETRY (SDA/SCL)        ]
+[ PINS 35 - 37 ] ------------------------> [ I2C BUS   ] -> [ TELEMETRY (SDA/SCL)        ]
                                            (SHIELDED)       (To PD Emulator/eFuse)
+
+[ PIN  38      ] ------------------------> [ 3.3V LOGIC] -> [ USB_STAT                   ]
+                                           (GPIO IN)        (USB-C PD status from STUSB4500 via PM)
 
 [ PINS 39 - 44 ] ------------------------> [ 2oz POWER ] -> [ 3V3_ENIG (INPUT)           ]
                                            (CLEAN IN)       (From Power Module LDO)
@@ -422,4 +425,3 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
   distributes locally to CM5 logic supply and CM5-adjacent decoupling. It also passes 3V3_ENIG downstream
   to the Stator via Link-Beta (8 pins × 0.5 A = 4.0 A capacity — adequate for 2.20 A 30-rotor worst case).
   All 3V3_ENIG traces: 0.80 mm consistent with PM §9 and Global_Routing_Spec §1.1.
-
