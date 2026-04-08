@@ -12,7 +12,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 ## 1. Overview
 
 * **Stackup:** 4-Layer / 2oz Finished Copper.
-* **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: ENIG Data.
+* **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: ENC Data.
 * **Role:** Master Switchboard for the 30-rotor stack and peripheral encoder boards.
 
 ### Functional & Design Requirements
@@ -33,8 +33,8 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-STA-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §2 Core Features |
-| DR-STA-02 | Layer mapping | L1 = Signal (JTAG/routing), L2 = GND, L3 = 3V3_ENIG, L4 = ENC Data | §2 Core Features |
+| DR-STA-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §7 PCB Fabrication & Stackup |
+| DR-STA-02 | Layer mapping | L1 = Signal (JTAG/routing), L2 = GND, L3 = 3V3_ENIG, L4 = ENC Data | §1 Overview |
 | DR-STA-03 | Rotor interface (per slot) | J1 = ERF8-005 (JTAG), J2 = ERF8-005 (Power), J3 = ERF8-010 (ENC); 30 slot sets | §4 Interconnects; BOM J1–J3 (ERF8-005/ERF8-010) |
 | DR-STA-04 | Encoder interface | J4/J5/J6 = 26-pin Molex IDC (HID encoder ports, one per encoder board) | §4 Interconnects; BOM J4–J6 (Molex 26-pin) |
 | DR-STA-05 | TTD_RETURN input | J7 = 16-pin Molex; TTD_RETURN on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 (16-pin Molex) |
