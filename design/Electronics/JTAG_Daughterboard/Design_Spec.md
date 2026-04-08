@@ -37,7 +37,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | DR-JDB-09 | Hat-style connectors | J1 = 1×5 2.54mm female IDC (INPUT); J2 = 1×10 2.54mm female IDC (JTAG OUTPUT) | §3 Interface & Wiring; BOM J1, J2 |
 | DR-JDB-10 | GND_CHASSIS not implemented | JDB is internal daughterboard; mounting holes tied to GND per DEC-022 | §3 Interface & Wiring |
 | DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4 per-IC decoupling + C5 4.7µF entry filter | §6 Electrical Requirements; BOM C1–C5 |
-| DR-JDB-12 | JTAG buffer | U5 = SN74LVC2G125DCUR (SOT-23-6) dual-channel buffer for TCK and TMS; placed between FT232H and J2 header | §6 Electrical Requirements; BOM U5; DEC-023 |
+| DR-JDB-12 | JTAG buffer | U5 = SN74LVC2G125DCUR (VSSOP-8) dual-channel buffer for TCK and TMS; placed between FT232H and J2 header | §6 Electrical Requirements; BOM U5; DEC-023 |
 | DR-JDB-13 | TCK series damping after buffer | R6 = 33 Ω 0402 after U5 TCK output, before J2 pin 1 (TCK) | §6 Electrical Requirements; BOM R6; DEC-023 |
 | DR-JDB-14 | TMS series damping after buffer | R7 = 33 Ω 0402 after U5 TMS output, before J2 pin 7 (TMS) | §6 Electrical Requirements; BOM R7; DEC-023 |
 | DR-JDB-15 | TDI series damping before J2 | R8 = 33 Ω 0402 before J2 pin 3 (TDI) | §6 Electrical Requirements; BOM R8; DEC-023 |
@@ -148,7 +148,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
     Source impedance ≈ 53Ω, matched to the 50Ω controlled-impedance traces on the receiving board. Per DEC-016 intra-board/BtB termination rule.
     See `design/Electronics/Investigations/JTAG_Integrity.md`.
   * **R3 (33Ω):** Series damping on TMS output — same function as R1 (TCK) and R2 (TDI). All three JTAG drive outputs have series termination at the FT232H.
-  * **U5 (SN74LVC2G125DCUR, SOT-23-6):** Dual-channel 3-state buffer placed between the FT232H and
+  * **U5 (SN74LVC2G125DCUR, VSSOP-8):** Dual-channel 3-state buffer placed between the FT232H and
     J2 header (JTAG OUTPUT), buffering TCK and TMS for the 37-device JTAG chain load. TDI is not
     buffered — FT232H TDI drives only the first device in the chain directly.
   * **R6 (33Ω):** Series damping on U5 TCK output, placed within 2mm of the U5 output pin, before
@@ -190,6 +190,6 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | R7 | TMS series damping after U5 buffer output, before J2 pin 7 (TMS) — DEC-023 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R8 | TDI series damping before J2 pin 3 (TDI) — DEC-023 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | U1 | FT232H | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1014-ND | C123467 |
-| U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-023 | Dual 3-state buffer | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C2688 |
+| U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-023 | Dual 3-state buffer | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |
 | C10, C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 80-C0402C330J5GAUTO | 399-12979-1-ND | C2169327 |
 | Y1 | Crystal — FT232H reference clock (per DEC-021) | 12MHz 20pF ±20ppm | SMD3225-4P | 815-ABM8-12.000MHZ-B2-T | 535-9977-1-ND | C9002 |

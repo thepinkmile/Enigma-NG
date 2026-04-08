@@ -42,4 +42,3 @@ a standard QWERTY layout extended with numbers, symbols, and modifier keys.
 
 > **Cross-reference:** For Encoder PCB spade terminal pinout and CPLD I/O allocation, see
 > `design/Electronics/Encoder/Design_Spec.md §4 Interconnects` and `§3 Dual-Role Architecture`.
-

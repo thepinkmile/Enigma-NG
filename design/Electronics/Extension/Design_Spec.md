@@ -81,8 +81,8 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   * TCK buffer output → J4 pin **2** (TCK) and broadcast to all 5 rotors in the output group.
   * TMS buffer output → J4 pin **4** (TMS) and broadcast.
   * Buffer enable (OE#): tied to GND permanently (always enabled).
-  * Part: SN74LVC2G125DCUR (TI, SOT-23-6) — Mouser 595-SN74LVC2G125DCUR,
-    DigiKey 296-SN74LVC2G125DCURCT-ND, JLCPCB C15281.
+  * Part: SN74LVC2G125DCUR (TI, VSSOP-8) — Mouser 595-SN74LVC2G125DCUR,
+    DigiKey 296-SN74LVC2G125DCURCT-ND, JLCPCB C21404.
   * At 5 rotors per group, signal integrity analysis confirms this buffer interval is sufficient:
     5 rotors × EPM240 input capacitance (≈6pF) = 30pF total load; τ = 95Ω × 30pF = 2.85ns,
     well within the 50ns half-period at 10MHz TCK.
@@ -159,4 +159,4 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
 | R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | R2 | GND_CHASSIS single-point bond | 0Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
-| U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | SOT-23-6 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C15281 |
+| U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |

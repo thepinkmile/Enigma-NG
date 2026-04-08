@@ -46,4 +46,3 @@ encryption matrix in real time.
 
 > **Cross-reference:** For Encoder PCB spade terminal pinout, CPLD I/O allocation, and jack BOM
 > details, see `design/Electronics/Encoder/Design_Spec.md §4 Interconnects` and `§3 Dual-Role Architecture`.
-
