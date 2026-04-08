@@ -107,7 +107,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 * **Programming:** Internal USB 2.0 link to the JTAG Daughterboard.
 * **Encryption Sniffer Bus**
   * **Logic:** 12-bit binary encoded bus (6-in / 6-out) for 64-character alphabet monitoring.
-  * **ENC_IN [0:5]:** GPIO 4–9 (Binary input from Keyboard CPLD).
+  * **ENC_IN [0:5]:** GPIO 4–9 (Binary output from CM5 → Stator/Rotors: 6-bit plaintext character code).
   * **ENC_OUT [0:5]:** GPIO 10–15 (Binary output from Reflector/Stator).
   * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100I5N CPLDs.
 
