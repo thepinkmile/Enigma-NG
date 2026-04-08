@@ -26,23 +26,23 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-JDB-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 Aesthetics & Mounting |
+| DR-JDB-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §5 PCB Fabrication & Stackup |
 | DR-JDB-02 | USB-to-JTAG bridge | FTDI FT232H (U1) in MPSSE mode | §2 Core Logic; BOM U1 (FT232H QFN-56) |
-| DR-JDB-03 | TCK series damping at FT232H | R1 = 33 Ω 0402 at FT232H TCK output, before U5 buffer | §5 Electrical Requirements; BOM R1 |
-| DR-JDB-04 | TDI series damping at FT232H | R2 = 33 Ω 0402 at FT232H TDI output | §5 Electrical Requirements; BOM R2 |
-| DR-JDB-05 | TMS series damping at FT232H | R3 = 33 Ω 0402 at FT232H TMS output, before U5 buffer | §5 Electrical Requirements; BOM R3 |
-| DR-JDB-12 | JTAG buffer | U5 = SN74LVC2G125DCUR (SOT-23-6) dual-channel buffer for TCK and TMS; placed between FT232H and J2 header | §5 Electrical Requirements; BOM U5; DEC-023 |
-| DR-JDB-13 | TCK series damping after buffer | R6 = 33 Ω 0402 after U5 TCK output, before J2 pin 1 (TCK) | §5 Electrical Requirements; BOM R6; DEC-023 |
-| DR-JDB-14 | TMS series damping after buffer | R7 = 33 Ω 0402 after U5 TMS output, before J2 pin 7 (TMS) | §5 Electrical Requirements; BOM R7; DEC-023 |
-| DR-JDB-15 | TDI series damping before J2 | R8 = 33 Ω 0402 before J2 pin 3 (TDI) | §5 Electrical Requirements; BOM R8; DEC-023 |
-| DR-JDB-16 | TMS pull-up near J2 | R4 = 10 kΩ 0402 pull-up from TMS to 3V3_ENIG near J2 header; idle-state TAP control | §5 Electrical Requirements; BOM R4 |
-| DR-JDB-17 | TCK pull-down near J2 | R5 = 10 kΩ 0402 pull-down from TCK to GND near J2 header; idle-state TAP control | §5 Electrical Requirements; BOM R5 |
+| DR-JDB-03 | TCK series damping at FT232H | R1 = 33 Ω 0402 at FT232H TCK output, before U5 buffer | §6 Electrical Requirements; BOM R1 |
+| DR-JDB-04 | TDI series damping at FT232H | R2 = 33 Ω 0402 at FT232H TDI output | §6 Electrical Requirements; BOM R2 |
+| DR-JDB-05 | TMS series damping at FT232H | R3 = 33 Ω 0402 at FT232H TMS output, before U5 buffer | §6 Electrical Requirements; BOM R3 |
 | DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) | §2 Core Logic; BOM U1 (FT232H) |
 | DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port; D+/D− route via hat-header J1 | §3 Interface & Wiring; BOM J1 (5-pin INPUT header), Y1 (12MHz crystal) |
-| DR-JDB-08 | Power source | 5V_USB and 3V3_ENIG from Controller Board via hat-header J1; FT232H self-powered USB mode | §5 Electrical Requirements |
+| DR-JDB-08 | Power source | 5V_USB and 3V3_ENIG from Controller Board via hat-header J1; FT232H self-powered USB mode | §6 Electrical Requirements |
 | DR-JDB-09 | Hat-style connectors | J1 = 1×5 2.54mm female IDC (INPUT); J2 = 1×10 2.54mm female IDC (JTAG OUTPUT) | §3 Interface & Wiring; BOM J1, J2 |
 | DR-JDB-10 | GND_CHASSIS not implemented | JDB is internal daughterboard; mounting holes tied to GND per DEC-022 | §3 Interface & Wiring |
-| DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4 per-IC decoupling + C5 4.7µF entry filter | §5 Electrical Requirements; BOM C1–C5 |
+| DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4 per-IC decoupling + C5 4.7µF entry filter | §6 Electrical Requirements; BOM C1–C5 |
+| DR-JDB-12 | JTAG buffer | U5 = SN74LVC2G125DCUR (SOT-23-6) dual-channel buffer for TCK and TMS; placed between FT232H and J2 header | §6 Electrical Requirements; BOM U5; DEC-023 |
+| DR-JDB-13 | TCK series damping after buffer | R6 = 33 Ω 0402 after U5 TCK output, before J2 pin 1 (TCK) | §6 Electrical Requirements; BOM R6; DEC-023 |
+| DR-JDB-14 | TMS series damping after buffer | R7 = 33 Ω 0402 after U5 TMS output, before J2 pin 7 (TMS) | §6 Electrical Requirements; BOM R7; DEC-023 |
+| DR-JDB-15 | TDI series damping before J2 | R8 = 33 Ω 0402 before J2 pin 3 (TDI) | §6 Electrical Requirements; BOM R8; DEC-023 |
+| DR-JDB-16 | TMS pull-up near J2 | R4 = 10 kΩ 0402 pull-up from TMS to 3V3_ENIG near J2 header; idle-state TAP control | §6 Electrical Requirements; BOM R4 |
+| DR-JDB-17 | TCK pull-down near J2 | R5 = 10 kΩ 0402 pull-down from TCK to GND near J2 header; idle-state TAP control | §6 Electrical Requirements; BOM R5 |
 
 ## 2. Core Logic
 
