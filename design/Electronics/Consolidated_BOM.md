@@ -71,7 +71,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C25806) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | 20 mΩ 1% 1206 current-sense shunt (ERJ-6ENF20R0V / C123465) | — | — | — | — | — | — | — | — | — | — | — |
-| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
+| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 2 | — | 1 | — | — | — | — | — | — | — | 3 |
 | 121 kΩ 1% 0603 PoE MPS current set (ERJ-3EKF1213V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 301 Ω 1% 0603 charge current set (ERJ-3EKF3010V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | 1 |

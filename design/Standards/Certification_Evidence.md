@@ -394,7 +394,7 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 **PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design
 using:
 
-- **TPS2372-4** (TI, QFN-16): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
+- **TPS2372-4** (TI, VQFN-20): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
 - **TPS23730** (TI, WQFN-20): Active Clamp Flyback (ACF) DC-DC controller, 200kHz, 12V output (R_VFB feedback resistors configured for 12V), PSR mode
 - **T2**: **Coilcraft POE600F-12LD** — off-the-shelf 60W ACF PoE isolation transformer; 12V output, 36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. Catalogue stock part ordered direct from
 

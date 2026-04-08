@@ -104,7 +104,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
   * **Sensor:** TI INA219AIDR (U12) zero-drift power monitor at I²C address **0x40**.
   * **Placement:** Inserted in the 5V_MAIN supply path on L1, downstream of the eFuse (TPS25980).
   * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) — PM R23 instance.
-    (Stator R1 is the second system CSS2H; total build qty: 2 — see `Power_Budgets.md`.)
+    (Stator R1 is the third system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
   * **Interface:** I2C-1 Telemetry Bus, directly accessible via LINK-ALPHA to the Controller.
   * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for supply noise suppression.
   * Satisfies FR-PM-05.
@@ -159,7 +159,7 @@ GND ──────┴──────────────────�
 
   land pattern.
 
-* **C1, C4** — 22µF, 50V, X7R, 1210 (Murata GRM32ER71H226KE15L or equiv).
+* **C1, C4** — 22µF, 25V, X7R, 1210 (Samsung CL32B226KAJNNNE or equiv).
 * **C2, C5** — 1µF, 50V, X7R, 0805 (Kemet C0805C105K5RACTU or equiv).
 * **C3, C6** — 100nF, 50V, X7R, 0402 (Samsung CL05B104KB5NNNC or equiv).
 
@@ -280,7 +280,7 @@ GND ──────┴──────────────────�
   * TPD1E10B06 (D1) on the BATT_PRES_N Presence Detect line.
 * **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching around the board perimeter.
 * **Single-Point GND Bond:** Signal/power reference GND connects to GND_CHASSIS at one point only — located between the OR-ing diode network output
-  and the eFuse input (the clean/dirty power boundary). See `Standards/Global_Routing_Spec.md §4` and `Standards/Certification_Evidence.md §2.2` for full rationale.
+  and the eFuse input (the clean/dirty power boundary). See `Standards/Global_Routing_Spec.md §5` and `Standards/Certification_Evidence.md §2.2` for full rationale.
 * **Galvanic Isolation:** 1500V isolation via T2 ACF transformer (Coilcraft POE600F-12LD, ≥1500Vrms rated) between the PoE PD input and the 12V secondary bus.
 
 ---

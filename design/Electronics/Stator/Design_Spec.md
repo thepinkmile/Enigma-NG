@@ -138,7 +138,7 @@ snapped off.
 * **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45) — dedicated rotor-stack usage telemetry.
 * **Placement:** Inserted on L1 (Top Layer) connected to the 3V3_ENIG rail immediately before the rotor stack.
   * Minimum 15mm isolation from Intel MAX II EPM240T100I5N CPLD logic core.
-* **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) rotor-stack shunt resistor. Stator R1 instance. (PM R23 is the second system CSS2H; total build qty: 2 — see `Power_Budgets.md`.)
+* **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) rotor-stack shunt resistor. Stator R1 instance. (PM R12 + PM R23 are the first and second system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
 * **Interface:** I2C-1 Telemetry Bus (via Link-Beta, Shared with Power Module).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
 
