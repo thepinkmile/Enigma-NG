@@ -104,6 +104,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 12 MHz Crystal SMD (Abracon ABM8-12.000MHz-B2-T / C9002) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | 72°C SMD Thermal Cutoff (Bourns AC72ABD) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | CR2032 Coin Cell Holder (Keystone 3034) | — | 1 | — | — | — | — | — | — | — | — | 1 |
+| Würth 9774040151R M2.5 × 4.0mm SMT Brass Standoff (CM5 mount) | — | 4 | — | — | — | — | — | — | — | — | 4 |
 | PoE ACF Isolation Transformer (Coilcraft POE600F-12LD) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | EMI Common-Mode Choke (Würth WE-CMBNC 7448031002) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | DM Filter Inductor 10 µH 15.5 A (Bourns SRP1265A-100M) | 1 | — | — | — | — | — | — | — | — | — | 1 |
