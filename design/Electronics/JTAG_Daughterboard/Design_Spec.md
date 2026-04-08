@@ -184,8 +184,8 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | R1 | Series termination on FT232H TCK output (before U5 buffer input) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R3 | Series termination on FT232H TMS output (before U5 buffer input) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
-| R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §5 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
-| R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §5 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
+| R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
+| R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
 | R6 | TCK series damping after U5 buffer output, before J2 pin 1 (TCK) — DEC-023 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R7 | TMS series damping after U5 buffer output, before J2 pin 7 (TMS) — DEC-023 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R8 | TDI series damping before J2 pin 3 (TDI) — DEC-023 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |

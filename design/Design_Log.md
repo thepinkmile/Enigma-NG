@@ -994,13 +994,13 @@ changes have inadvertently altered connector placement, orientation, or mating r
 
 ### Reflector Board
 
-| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
-| ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
-| J1 | Rotor 30 output — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | Plugs into Rotor 30 J4 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
-| J2 | Rotor 30 output — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | Plugs into Rotor 30 J5 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
-| J3 | Rotor 30 output — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | Plugs into Rotor 30 J6 (ERF8-010 female). Definition owner: Rotor/Design_Spec.md §3.4 |
-| J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | Mating connector for **Stator J7** (or Extension J7/J8). Carries TTD_RETURN on pin 15. |
-| J5 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
+| Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | JLCPCB Part # | Notes |
+| ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- | ------- |
+| J1 | Rotor 30 output — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Plugs into Rotor 30 J4 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J2 | Rotor 30 output — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C374877 | Plugs into Rotor 30 J5 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J3 | Rotor 30 output — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | *Open item — verify JLCPCB part number* | Plugs into Rotor 30 J6 (ERF8-010 female). Definition owner: Rotor/Design_Spec.md §3.4 |
+| J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey | Mating connector for **Stator J7** (or Extension J7/J8). Carries TTD_RETURN on pin 15. |
+| J5 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | N/A | 2.54mm pitch. Not a separate connector; probed directly |
 
 ### Extension Board
 
