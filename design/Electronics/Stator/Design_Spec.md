@@ -23,10 +23,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | :--- | :--- | :--- | :--- |
 | FR-STA-01 | Serve as the fixed mechanical and electrical backplane for the 30-rotor stack | Provides all power, JTAG, and data connectivity to rotors | §2 Core Features; BOM J1–J3 (ERF8 rotor sockets) |
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 | §2 Core Features; §3 Encryption & JTAG Hub; BOM L1–L4 (ferrite beads) |
-| FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100C5N) |
+| FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
 | FR-STA-04 | Receive TTD_RETURN from the Reflector and forward to the Controller Board | Via J7 (16-pin Molex) → Link-Beta pin 26 | §3 Encryption & JTAG Hub; BOM J7, R2 (10kΩ pull-up) |
 | FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables | J4/J5/J6 encoder ports (one board per port) | §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
-| FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM240 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100C5N) |
+| FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM240 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 
 #### Design Requirements
@@ -39,7 +39,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-04 | Encoder interface | J4/J5/J6 = 26-pin Molex IDC (HID encoder ports, one per encoder board) | §4 Interconnects; BOM J4–J6 (Molex 26-pin) |
 | DR-STA-05 | TTD_RETURN input | J7 = 16-pin Molex; TTD_RETURN on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 (16-pin Molex) |
 | DR-STA-06 | Link-Beta connector | J8 = ERM8-020-05.0-S-DV-K-TR (40-pin male, 0.8 mm pitch) to Controller J2 | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
-| DR-STA-07 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100C5N) |
+| DR-STA-07 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
 | DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.20 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.20 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
 
@@ -60,7 +60,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 
 ## 3. Encryption & JTAG Hub
 
-* **CPLD:** Intel MAX II EPM240T100C5N CPLD (Logic Router).
+* **CPLD:** Intel MAX II EPM240T100I5N CPLD (Logic Router).
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
 * **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
 * **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Electronics/Power_Budgets.md`);
@@ -120,7 +120,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Purpose:** Provides real-time current/voltage data for the 30-rotor stack to the CM5 GUI.
 * **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45) — dedicated rotor-stack usage telemetry.
 * **Placement:** Inserted on L1 (Top Layer) connected to the 3V3_ENIG rail immediately before the rotor stack.
-  * Minimum 15mm isolation from Intel MAX II EPM240T100C5N CPLD logic core.
+  * Minimum 15mm isolation from Intel MAX II EPM240T100I5N CPLD logic core.
 * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) rotor-stack shunt resistor. Stator R1 instance. (PM R23 is the second system CSS2H; total build qty: 2 — see `Power_Budgets.md`.)
 * **Interface:** I2C-1 Telemetry Bus (via Link-Beta, Shared with Power Module).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
@@ -175,5 +175,5 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 | R13 | TDI chain: Stator CPLD TDO → J4 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | R14 | TDI chain: J4 TDO return → J5 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | R15 | TDI chain: J5 TDO return → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| U1 | Stator Management CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
+| U1 | Stator Management CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-INA219AIDRCT-ND | C123466 |

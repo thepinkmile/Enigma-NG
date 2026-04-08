@@ -23,7 +23,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 | MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| EPM240T100C5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | 1 | 30 | — | — | — | 37 |
+| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | 1 | 30 | — | — | — | 37 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
 | AS5600 — Magnetic Position Encoder (DFN-8) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
 | SN74LVC2G125DCUR — Dual 3-State Buffer (SOT-23-6) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
@@ -170,7 +170,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin):** Stator J8 (Link-Beta).
 * **Samtec ERF8-040-05.0-S-DV-K-TR (Female, 80-pin):** Controller J1 (Link-Alpha).
 * **Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin):** Controller J2 (Link-Beta).
-* **Intel EPM240T100C5N:** 37 units (Standardized logic node).
+* **Intel EPM240T100I5N:** 37 units (Standardized logic node).
 
 ## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
 

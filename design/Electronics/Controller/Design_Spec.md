@@ -108,7 +108,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Logic:** 12-bit binary encoded bus (6-in / 6-out) for 64-character alphabet monitoring.
   * **ENC_IN [0:5]:** GPIO 0-5 (Binary input from Keyboard CPLD).
   * **ENC_OUT [0:5]:** GPIO 6-11 (Binary output from Reflector/Stator).
-  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100C5N CPLDs.
+  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100I5N CPLDs.
 
 ### 2.3. CM5 Module Keep-Out Zone
 
@@ -214,7 +214,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |
 | **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware LED fallback path on Power Module. Groups LED signals with GPIOs 17–19. |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
-| **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100C5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
+| **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100I5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
 | **27** | **PWR_GD** | Input | 3.3V | Active High: power-good signal from MCP121T-450E (4.50V threshold). HIGH = 5V_MAIN stable; deasserts on power loss, triggering graceful shutdown daemon. Arrives via Link-Alpha pin 34. |
 
 ## 7. Protection & EMI

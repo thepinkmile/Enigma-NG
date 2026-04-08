@@ -20,7 +20,7 @@ There are also sensors used to detect the current position of the outer ring usi
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | Supports Rotors I–VIII, Beta, Gamma wiring tables | §2.2 Logic & Transposition; BOM U1 (EPM240T100C5N) |
+| FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | Supports Rotors I–VIII, Beta, Gamma wiring tables | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
 | FR-ROT-02 | Detect rotor angular position using a contactless magnetic encoder | 6-bit resolution; detects between-character positions | §2.1 Position Sensing; BOM U2 (AS5600) |
 | FR-ROT-03 | Pass JTAG chain signals to the next rotor in the stack (or to the Reflector at position 30) | Serial daisy-chain; each rotor is one JTAG device | §3.3 Signal Integrity; BOM J1 (ERM8-005 JTAG in), J4 (ERF8-005 JTAG out) |
 | FR-ROT-04 | Receive 3V3_ENIG power from the upstream board and forward to the downstream board | Passive power pass-through via J2/J5 | §3.1 Power Management; BOM J2 (ERM8-005 power in), J5 (ERF8-005 power out) |
@@ -32,7 +32,7 @@ There are also sensors used to detect the current position of the outer ring usi
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §3.5 PCB Fabrication |
-| DR-ROT-02 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100); emulates 64×64 cross-wiring | §2.2 Logic & Transposition; BOM U1 (EPM240T100C5N) |
+| DR-ROT-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100); emulates 64×64 cross-wiring | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
 | DR-ROT-03 | Position sensor | AMS AS5600 magnetic encoder (6-bit resolution, contactless) | §2.1 Position Sensing; BOM U2 (AS5600) |
 | DR-ROT-04 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
@@ -50,7 +50,7 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 2.2 Logic & Transposition
 
-* **Logic:** The **Intel MAX II EPM240T100C5N CPLD** emulates the 64x64 cross-wiring.
+* **Logic:** The **Intel MAX II EPM240T100I5N CPLD** emulates the 64x64 cross-wiring.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
 * **Role:**Performs the instantaneous dual 6-bit parallel transposition (substitution cipher) for the forward and backward signal paths.
 * **Memory:** Stores the 26-position wiring table for any historical rotor (I-VIII, Beta, Gamma) selectable via the CM5.
@@ -232,5 +232,5 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| U1 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
+| U1 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
 | U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |

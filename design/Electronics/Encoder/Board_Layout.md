@@ -16,7 +16,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |   [ SPADE TERMINAL BANK ] <--- External I/O Interface (Mechanical board)   |
 |   (2x8 or 2x10 block for encoder rows, crossover wires)                    |
 |                                                                            |
-|   [ CPLD ARRAY ] <--- Intel MAX II EPM240T100C5N                           |
+|   [ CPLD ARRAY ] <--- Intel MAX II EPM240T100I5N                           |
 |   (Dual Logic Units for I/O Management)                                    |
 |                                                                            |
 |   [ DATA LINK HEADER ] <--- 26-pin Header (2×13, 2.54mm Pitch)             |
@@ -107,7 +107,7 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) handles board load wi
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Encoder board current budget:**
-2× EPM240T100C5N CPLDs @ 50 mA each = 100 mA; 2× status LEDs @ 4 mA each = 8 mA; misc = ~100 mA;
+2× EPM240T100I5N CPLDs @ 50 mA each = 100 mA; 2× status LEDs @ 4 mA each = 8 mA; misc = ~100 mA;
 Total worst-case: **208 mA** from the 3V3_ENIG rail supplied via J2 (Data Link) ribbon cable.
 
 ### Trace Width Table

@@ -1,4 +1,4 @@
-﻿# Enigma-NG Certification Evidence Record (V1.0 — DRAFT)
+# Enigma-NG Certification Evidence Record (V1.0 — DRAFT)
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -234,7 +234,7 @@ inter-modulation products would appear at sum and difference frequencies, partia
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
-The 37 CPLDs (MAX II EPM240T100C5N) share this rail as their VCCIO (I/O voltage reference). Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
+The 37 CPLDs (MAX II EPM240T100I5N) share this rail as their VCCIO (I/O voltage reference). Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
 potential JTAG chain errors. A linear LDO provides high PSRR isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional
 filtering.
 
@@ -415,12 +415,12 @@ using:
 This section records components that have active end-of-life (EOL) or product change notices (PCN) at the time of design. For each such component, the design team's acceptance rationale and any
 mitigation plan are documented.
 
-### 7.1 MAX II EPM240T100C5N (CPLD — Multiple Boards)
+### 7.1 MAX II EPM240T100I5N (CPLD — Multiple Boards)
 
 | Attribute | Detail |
 | --- | --- |
 | **Manufacturer** | Intel (formerly Altera) |
-| **Part Number** | EPM240T100C5N |
+| **Part Number** | EPM240T100I5N |
 | **Family** | MAX II |
 | **Function** | CPLD — Rotor logic emulation (VCCIO from 3V3_ENIG rail) |
 | **Quantity** | 37 devices (1 Stator + 6 Encoder + 30 Rotor CPLDs) |
@@ -429,7 +429,7 @@ mitigation plan are documented.
 
 **Acceptance Rationale (Prototype Stage):**
 
-The MAX II EPM240T100C5N is accepted for use in the prototype design for the following reasons:
+The MAX II EPM240T100I5N is accepted for use in the prototype design for the following reasons:
 
 1. **Cost effectiveness:** These devices are significantly lower in cost than their recommended successors (MAX 10, Cyclone 10 LP), making them well-suited for prototype-stage development where
 
@@ -440,7 +440,7 @@ The MAX II EPM240T100C5N is accepted for use in the prototype design for the fol
 
    particularly given the availability of remaining stock from reputable distributors.
 
-4. **Pin and feature compatibility:** The MAX II EPM240T100C5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising
+4. **Pin and feature compatibility:** The MAX II EPM240T100I5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising
 
    development risk.
 

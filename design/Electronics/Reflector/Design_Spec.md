@@ -41,7 +41,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 ### System Role: The "Turnaround"
 
 * **Logic Type:** Passive (Loopback).
-* **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100C5N CPLD** located on the Stator Board.
+* **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100I5N CPLD** located on the Stator Board.
 * **CPLD support:** PCB passive routing (no discrete component).
 * **Signal Path:** Rotor 30 J4–J6 (ERF8 female) → Reflector J1–J3 (ERM8 male) → passive loopback traces → ENC cipher data reflected back; TTD_RETURN exits via J4 (16-pin Molex, pin 15) → Stator J7.
 

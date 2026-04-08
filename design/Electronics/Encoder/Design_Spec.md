@@ -1,4 +1,4 @@
-﻿# Encoder Module (V1.0) Design Specification
+# Encoder Module (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -27,9 +27,9 @@ number of Keys, Lights or Plug Jacks connected to the spade terminals).
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-ENC-01 | Sense and encode 64-key keyboard and plugboard jack states with sufficient resolution for per-character detection | Must detect individual keypresses and plugboard patch states without ghosting or chatter | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100C5N) |
+| FR-ENC-01 | Sense and encode 64-key keyboard and plugboard jack states with sufficient resolution for per-character detection | Must detect individual keypresses and plugboard patch states without ghosting or chatter | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100I5N) |
 | FR-ENC-02 | Transmit encoded character (or 'base-64 binary' in the case of binary file encoding) data to the Stator Board via IDC ribbon cable | 26-pin IDC interface | §4 Interconnects; BOM J2 (26-pin shrouded header) |
-| FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain | §5 JTAG Chain Integrity; BOM U1, U2 (EPM240T100C5N) |
+| FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain | §5 JTAG Chain Integrity; BOM U1, U2 (EPM240T100I5N) |
 | FR-ENC-05 | Operate from 3V3_ENIG power supplied via the Stator ribbon cable | No local voltage regulation (LDO/switcher) required; local bulk and decoupling capacitor network per Global_Routing_Spec. | §2 Power Requirements; BOM J2 (pin 1/pin 26 = 3V3_ENIG) |
 
 #### Design Requirements
@@ -37,7 +37,7 @@ number of Keys, Lights or Plug Jacks connected to the spade terminals).
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §9 PCB Specs |
-| DR-ENC-02 | CPLD | Intel MAX II EPM240T100C5N (TQFP-100) | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100C5N) |
+| DR-ENC-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100I5N) |
 | DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with Stator J4, J5, or J6) | §4 Interconnects; BOM J2 (26-pin 2×13 shrouded) |
 | DR-ENC-05 | Supply voltage | 3.3V via the 3V3_ENIG power rail | §2 Power Requirements; BOM J2 (Data Link) |
 
@@ -53,7 +53,7 @@ The encoder is essentially made up of an Encoder (which takes 64 inputs and enco
 So a single pass (or cable) for a plugboard plug, would used both encode and decode (decode data in, then transmit through the relevant plug, then back through the encode side).
 However, the keyboard only requires the Encode side and the Lightboard only requires the Decode side, so these will likely be created as a singl component with a shared single board.
 
-* **Logic:** 2x Intel MAX II EPM240T100C5N CPLDs.
+* **Logic:** 2x Intel MAX II EPM240T100I5N CPLDs.
 * **I/O Capacity:** Each CPLD provides 80 User I/O pins in a 100-pin TQFP package.
 * **Roles:**
   * **HID Mode:**
@@ -108,7 +108,7 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
 
 * **Layout:** Standard QWERTY + Numbers + Symbols + Shift.
 * **Debouncing:** Hardware RC de-bounce circuit per input line (10kΩ pull-up + 100nF X7R cap to GND).
-  ⚠️ TBD: EPM240T100C5N Schmitt trigger input and weak pull-up capability to be verified by hardware test
+  ⚠️ TBD: EPM240T100I5N Schmitt trigger input and weak pull-up capability to be verified by hardware test
   on development board.
 * **Implementation:** The Shift keys (Left/Right) act as logic-level triggers for the CPLD state machine.
 * **LED Drive:** CPLDs directly drive the **Shift Status LEDs** and the 64-character lamp matrix (via MOSFET arrays).
@@ -128,7 +128,7 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
 ## 8. Thermal & ESD
 
 * **ESD:** TPD4E001 arrays near the JTAG and Micro-Fit headers.
-* **Thermal:** Vias under the Intel MAX II EPM240T100C5N CPLD "PowerPad" (if applicable) for heat dissipation.
+* **Thermal:** Vias under the Intel MAX II EPM240T100I5N CPLD "PowerPad" (if applicable) for heat dissipation.
 
 ## 9. PCB Fabrication & Stackup
 
@@ -153,7 +153,7 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
 | SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (*Open item — lamp/redundancy function TBD*). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
 | BT129-192 | PCB spade blade terminals — KEY_COM (Row 3) | Keystone 1285-ST — 6.35mm straight vertical PCB-mount male blade tab. COM1 of each keyboard switch pole-1. | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
 | BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285-ST — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
-| U1, U2 | Intel MAX II CPLD | EPM240T100C5N | TQFP-100 | 989-EPM240T100C5N | 544-EPM240T100C5N-ND | C123470 |
+| U1, U2 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
 | R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LBCT-ND | C105872 |
 | R3 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |

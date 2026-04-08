@@ -42,12 +42,12 @@ The `design/Standards/Global_Routing_Spec.md` applies to all boards in the Enigm
 | Board Name | Role | Stackup | Status |
 | :--- | :--- | :--- | :--- |
 | **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 2oz | **Design Locked** |
-| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100C5N CPLD. | 4-Layer / 2oz | **In Review** |
+| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100I5N CPLD. | 4-Layer / 2oz | **In Review** |
 | **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TTD_RETURN. Up to ×5 in full build; Rev A uses ×1. | 4-Layer / 2oz | **Design Locked** |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 6-Layer / 2oz | **Design Locked** |
 | **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
-| **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100C5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
+| **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100I5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
 | **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 2oz | **Design Locked** |
 
 ## 6. Controller Board
@@ -63,7 +63,7 @@ The logic heart of the machine, hosting the Raspberry Pi CM5.
 
 Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
 
-* **Logic:** Dual Intel MAX II EPM240T100C5N CPLDs managing 64-node I/O.
+* **Logic:** Dual Intel MAX II EPM240T100I5N CPLDs managing 64-node I/O.
 * **Keyboard Mode:** 64 DPDT mechanical push-button switches (6-pin, momentary) mounted in the keyboard panel; connected to the PCB via 6.35mm spade-terminal harness.
 * **Plugboard Mode:** 64 × 6.35mm (¼″) mono switched panel-mount jack sockets ("Stecker") connected via the same spade-terminal harness architecture.
 
@@ -94,7 +94,7 @@ Located at the opposite end of the Stator from the Controller, this board manage
 
 Modular units containing the encryption logic.
 
-* **Logic:** An Intel MAX II EPM240T100C5N CPLD per rotor.
+* **Logic:** An Intel MAX II EPM240T100I5N CPLD per rotor.
 * **Telemetry:** AS5600 Magnetic Encoders to report physical wheel position to the CM5.
 * **Mechanical:** Features a 3D-printed/CNC index gear for the manual advancement pawls.
 
@@ -104,7 +104,7 @@ The mechanical and electrical backbone.
 
 * **Distribution:** A backplane providing ~2.2A worst-case 3V3_ENIG distribution and signal routing for the rotor stack.
 * **Connectivity:** Bridges the Controller, Encoder, and Rotor stack into a single parallel bus.
-* **Programmability:** An Intel MAX II EPM240T100C5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
+* **Programmability:** An Intel MAX II EPM240T100I5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
   * Before the rotor stack.
   * After the rotor stack.
   * Before and After the rotor stack.

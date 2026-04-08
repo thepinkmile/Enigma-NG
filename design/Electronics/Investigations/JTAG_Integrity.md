@@ -1,4 +1,4 @@
-﻿# JTAG Signal Integrity — Analysis and Design Decision
+# JTAG Signal Integrity — Analysis and Design Decision
 
 **Status:** Adopted — see DEC-016 in `design/Design_Log.md`
 **Project:** Enigma-NG
@@ -233,7 +233,7 @@ signals** (J4–J6 pin table in `Stator/Board_Layout.md`). This places the cable
 
 ### CPLD Output Driver Impedance
 
-The Intel MAX II EPM240T100C5N has a typical I/O output impedance (Zo_driver) of approximately
+The Intel MAX II EPM240T100I5N has a typical I/O output impedance (Zo_driver) of approximately
 **15–20 Ω** in its 3.3V LVTTL drive mode. For calculations below, **Zo_driver = 20 Ω** is used.
 
 ---

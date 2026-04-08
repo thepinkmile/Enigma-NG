@@ -15,7 +15,7 @@
 TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
  _____________________________________________________________________________
 |                                                                             |
-|   [ CPLD ] <--- Intel MAX II EPM240T100C5N                                  |
+|   [ CPLD ] <--- Intel MAX II EPM240T100I5N                                  |
 |   (Wiring emulation + position decode)                                      |
 |                                                                             |
 |   [ AS5600 ] <--- Magnetic encoder IC                                       |

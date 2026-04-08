@@ -20,7 +20,7 @@
 
 ## 3V3_ENIG Load Analysis
 
-### Per-Device Current (Intel MAX II EPM240T100C5N @ 3.3V)
+### Per-Device Current (Intel MAX II EPM240T100I5N @ 3.3V)
 
 | Operating condition | ICC (core) | Source |
 | :--- | :--- | :--- |

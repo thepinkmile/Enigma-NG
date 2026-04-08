@@ -136,7 +136,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 | 26 | 3V3_ENIG | Stator→Encoder | Power supply |
 
 **Power capacity:** 2 × 3V3_ENIG pins × 1A/pin = 2.0A — adequate for Encoder board load
-(~208mA: 2× EPM240T100C5N CPLDs + 2× status LEDs; >9× margin).
+(~208mA: 2× EPM240T100I5N CPLDs + 2× status LEDs; >9× margin).
 
 ---
 
