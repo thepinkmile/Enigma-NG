@@ -21,7 +21,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs | §3 JTAG & Logic Hub; BOM J1–J3 (ERM8) |
 | FR-REF-02 | Emulate the historical Enigma reflector (fixed symmetric substitution cipher) | Passive wiring — no CPLD required | §2 Architecture; BOM J1–J3 (passive loopback traces) |
 | FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J7 → Link-Beta pin 26 → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
-| FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω 0402) |
+| FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω 0603) |
 
 #### Design Requirements
 
@@ -30,7 +30,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 | DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §6 PCB Fabrication & Stackup |
 | DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §4 Rotor Interface Connectors; BOM J1–J3 |
 | DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J7); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
-| DR-REF-04 | End-of-chain damping | R1 = 22 Ω 0402 on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
+| DR-REF-04 | End-of-chain damping | R1 = 22 Ω 0603 on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive reflector function only; fixed wiring emulated in hardware | §2 Architecture |
 
 ## 2. Architecture
