@@ -470,7 +470,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 > **BOM Notes:**
 >
-> * **U1 TPS259804ONRGER** — `TPS25980RPWR` was the original placeholder; confirmed `TPS259804ONRGER` as the 16.9V silicon-fixed OVLO VQFN-24 variant.
+> * **U1 TPS259804ONRGER** — A previous placeholder MPN was superseded; confirmed `TPS259804ONRGER` as the 16.9V silicon-fixed OVLO VQFN-24 variant.
 >   OVLO is set in silicon — no external resistor. R3 repurposed as R_ILIM (210 Ω).
 >   PNs verified: Mouser 595-TPS259804ONRGER, DigiKey 296-TPS259804ONRGERCT-ND, JLCPCB C2878936.
 > * **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also

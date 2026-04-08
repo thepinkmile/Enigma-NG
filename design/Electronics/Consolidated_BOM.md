@@ -160,6 +160,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 | C14 | LDO output cap (U7 VOUT) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
 | C15–C22 | IC VCC bypass (U3–U6, U8–U11) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
 | C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
+| C28 | SYNC SW-ringing low-pass filter (C_F1) | Kemet C0402C101K3RACAUTO | 100pF X7R 25V | 0402 | 80-C0402C101K3RAUTO |
+| C29 | SYNC 180° phase delay capacitor (C_DLY) | Samsung CL10B223KB8WPNC | 22nF X7R 25V | 0603 | 187-CL10B223KB8WPNC |
+| C30, C31 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
 | C23 | MIC1555 timing cap (C_OSC) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
 | C24 | TPS23730 soft-start cap (C_SS) | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
 
@@ -328,6 +331,7 @@ Product page links for all major components for design review and procurement ve
 | J4 | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [gct.co/part/USB4135-GF-A](https://gct.co/part/USB4135-GF-A) |
 | Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [ti.com/product/CSD17483F4](https://www.ti.com/product/CSD17483F4) |
 | U11 | MIC1555 — CMOS Timer, SOT-23-5 | Microchip Technology | [microchip.com/en-us/product/MIC1555](https://www.microchip.com/en-us/product/MIC1555) |
+| U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | Texas Instruments | [ti.com/product/SN74LVC1G14](https://www.ti.com/product/SN74LVC1G14) |
 | C_SC1–4 | TPLH-2R7/22WR12X31 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com (search TPLH-2R7-22WR)](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |
 | F1 | AC72ABD — 72°C SMD Thermal Cutoff (TCO) | Bourns | [bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72](https://www.bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72) |
 | D1 | TPD1E10B06 — Single-Channel 10V TVS ESD (BATT_PRES) | Texas Instruments | [ti.com/product/TPD1E10B06](https://www.ti.com/product/TPD1E10B06) |
