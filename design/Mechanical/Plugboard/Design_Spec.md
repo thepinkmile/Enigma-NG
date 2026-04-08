@@ -30,8 +30,11 @@ encryption matrix in real time.
 
 * **Logic:** The CPLD monitors 64 insertion-detect lines (spade bank BT65–BT128, Switch contacts)
   sourced from the 6.35 mm mono switched jack sockets.
-* **Signal:** Lines are **active-low**. The CPLD internal weak pull-up holds each input HIGH when no
-  plug is inserted. On plug insertion the switch contact closes to GND, pulling the CPLD input LOW.
+* **Signal:** Lines are **active-low**. The CPLD internal weak pull-up (50 kΩ–100 kΩ) holds each
+  input HIGH when no plug is inserted. On plug insertion the switch contact closes to GND, pulling the
+  CPLD input LOW. Inputs are configured as **3.3 V Schmitt trigger inputs** (confirmed); no external
+  pull-up or debounce filter is required — cable insertion is a slow mechanical event well within the
+  Schmitt hysteresis window.
   The CPLD detects the falling edge and marks the corresponding channel as patched.
 * **Latency:** Sub-microsecond detection of Stecker cable insertion; the internal encryption matrix
   is updated within one CPLD clock cycle.

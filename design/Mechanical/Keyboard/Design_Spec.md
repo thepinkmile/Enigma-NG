@@ -31,9 +31,10 @@ a standard QWERTY layout extended with numbers, symbols, and modifier keys.
   holds each input HIGH when the key is not pressed. Key press closes the switch contact to GND,
   pulling the CPLD input LOW; the CPLD detects the falling edge.
 * **Debouncing:** Hardware RC de-bounce circuit per input line: 10 kΩ pull-up resistor to 3V3_ENIG +
-  100 nF X7R capacitor to GND on each key input line.
-  > ⚠️ **Open item:** EPM240T100I5N Schmitt trigger input capability and internal weak pull-up strength
-  > to be verified by hardware test on development board before finalising external pull-up value.
+  100 nF X7R capacitor to GND on each key input line (RC time constant τ = 1 ms).
+  The EPM240T100I5N inputs are configurable as **3.3 V Schmitt trigger inputs** (confirmed); internal
+  weak pull-up is 50 kΩ–100 kΩ. The external 10 kΩ pull-up dominates and sets a well-defined idle-high
+  state. The 10 kΩ value is confirmed appropriate — no change required.
 * **Shift Logic:** The Left Shift and Right Shift keys act as logic-level triggers for the CPLD state
   machine, toggling between the lower and upper character planes of the 64-way key map.
 * **LED Drive:** The Encoder CPLDs directly drive the **Shift Status LEDs** and the 64-character lamp
