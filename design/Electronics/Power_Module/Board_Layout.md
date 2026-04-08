@@ -208,7 +208,7 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
        LADDER RESISTORS:        |    |                      |        | PIN  30:    POE_STAT         |
        R1: 232k (UVLO_HI) ------|--->|                      |        | PINS 31-33: SW_LED_R/G/B    |
        R2: 28.7k (UVLO_LO) -----|--->|                      |        | PIN  34:    PWR_GD           |
-       R3: 53.6k (OVLO) --------|--->|                      |        | PINS 35-37: I2C Telemetry    |
+       R3: 210Ω (R_ILIM) -------|--->|                      |        | PINS 35-37: I2C Telemetry    |
                                 |    |                      |        | PIN  38:    USB_STAT         |
                                 |    |                      |        | PINS 39-44: 3V3_ENIG         |
                                 |    |                      |        | PIN  45:    BATT_PRES_N      |

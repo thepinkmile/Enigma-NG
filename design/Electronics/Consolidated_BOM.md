@@ -131,7 +131,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **10uF Bulk:** Samsung CL31B106KBHNNNE (1206).
 * **10k Pull-ups:** Panasonic ERJ-3EKF1002V (0603).
 
-## 3. Logic Passives  (0603 0.1% Thin-Film unless otherwise noted)
+## 3. Logic Passives  (0603 1% Thick-Film unless otherwise noted)
 
 * **4.7kΩ:** 10 units (I2C-1 Telemetry Bus).
 * **10kΩ:** 10 units (Reset, Battery Presence pull-ups to 3V3_ENIG & ROTOR_EN pull-down to GND).
@@ -234,7 +234,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | U9 | PoE PD Interface (Type 4) | TPS2372-4RGWR | TI VQFN-20; 802.3bt Type 4, external hotswap, up to 90W | Mouser | 595-TPS2372-4RGWR | ~£3.50 | ~£2.00 |
 | U10 | PoE ACF DC-DC Controller | TPS23730RMTR | TI WQFN-20; ACF topology; PSR mode; 12V output set by POE600F-12LD turns ratio; VS pin to aux winding | Mouser | 595-TPS23730RMTR | ~£3.50 | ~£2.00 |
 | T2 | PoE ACF Isolation Transformer | **Coilcraft POE600F-12LD** | 60W; 12V out; 36–72V in; 200kHz; ACF topology; ≥1500Vrms; SMT; RoHS | Coilcraft Direct | POE600F-12LD | **£3.54** | **~£1.86** |
-| R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 0.1% Thin-Film | 121kΩ E96; IMPS = VIMPS/RMPS = 1.205V/121kΩ = 9.96mA (Type 4 MPS auto-stretch) | Mouser | 667-ERJ-3EKF1213V | ~£0.10 | ~£0.03 |
+| R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% Thick-Film | 121kΩ E96; IMPS = VIMPS/RMPS = 1.205V/121kΩ = 9.96mA (Type 4 MPS auto-stretch) | Mouser | 667-ERJ-3EKF1213V | ~£0.10 | ~£0.03 |
 
 **Notes:**
 
@@ -262,10 +262,10 @@ the Rev A single-Extension configuration unless otherwise noted.
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | — (extended) | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
 | J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
 | J3 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
-| J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — (hand-place) | 24-pin USB Type-C receptacle, 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. Not in JLCPCB standard catalog; hand-place or pre-fit. |
+| J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — (hand-place) | 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. Not in JLCPCB standard catalog; hand-place or pre-fit. |
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=26.7kΩ (ERA-3ARB2672V, Mouser 667-ERA-3ARB2672V, DigiKey P26.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.40V. |
-| U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERA series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
+| U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERJ-3EKF series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 10nF 100V X7R 0402 | 0402 | 80-C0402C103J1RAUTO | 399-C0402C103J1RACAUTOCT-ND | C19862706 |
 

@@ -135,7 +135,7 @@ This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the
 **Affects:** Power Module eFuse (U1)
 
 **Decision:**  
-The input eFuse uses a **TPS25980** (7A ILIM, adjustable OVLO) rather than the originally considered TPS259474L (5.5A ILIM).
+The input eFuse uses a **TPS25980** (7A ILIM, silicon-fixed 16.9V OVLO) rather than the originally considered TPS259474L (5.5A ILIM).
 
 **Rationale:**  
 
@@ -1055,7 +1055,6 @@ changes have inadvertently altered connector placement, orientation, or mating r
 > **Note for manual review:** Items marked `???` or `⚠️ verify` require confirmation before the BOM is finalised for procurement. In particular: Encoder J1 plug/jack type has not been selected;
 > Controller J1 (ERF8) DigiKey PN SAM8621CT-ND (confirmed); Power Module J3 (43650-0519) DigiKey WM14587-ND (confirmed).
 
-
 ---
 
 ## Open Work Items
@@ -1071,8 +1070,8 @@ Each board must be specified independently, as the relevant test signals and acc
 
 Define Provisional Acceptance Specifications (PAS) for each board, covering:
 
-* **Basic board testing** — power-on checks, continuity, short detection.
-* **Functional testing via coupons** — using coupon connections to real external devices to verify board functionality
+- **Basic board testing** — power-on checks, continuity, short detection.
+- **Functional testing via coupons** — using coupon connections to real external devices to verify board functionality
   end-to-end (e.g. JTAG chain continuity, signal integrity, CPLD programming verification).
 
 Each board must be specified independently.
@@ -1081,8 +1080,8 @@ Each board must be specified independently.
 
 For each CPLD in the system, create:
 
-* A configuration plan describing the intended logical function, I/O assignments, and state machine behaviour.
-* Pseudo-code or annotated VHDL stubs ready for handoff to software development.
-* Notes on how the VHDL can be exercised during PAS testing (OWI-002) to verify functional correctness.
+- A configuration plan describing the intended logical function, I/O assignments, and state machine behaviour.
+- Pseudo-code or annotated VHDL stubs ready for handoff to software development.
+- Notes on how the VHDL can be exercised during PAS testing (OWI-002) to verify functional correctness.
 
 Boards with CPLDs requiring this work: Encoder (×2), Stator (×1), Rotor (×1 per rotor, ×30 total), Reflector (×1).
