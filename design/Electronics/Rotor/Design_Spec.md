@@ -207,6 +207,24 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 
 > ENC pass-through from J3 input side. Signal positions are identical — pin mapping is symmetric so the same CPLD logic applies regardless of stack position.
 
+### 3.5 Prototype Bench-Testing Provision (Break-Off Coupons)
+
+Each board panel includes **6 break-off PCB coupons** (one per ERx8 connector), attached by mousebite
+perforations. Each coupon fans out the 0.8mm pitch Samtec pads to a standard **2.54mm pitch shrouded
+IDC box header**, permitting standard ribbon cable assemblies to be used for bench testing before full
+stack assembly. For final production the coupons are snapped off at the mousebite perforations.
+
+| Coupon | Connector | IDC Header | Signal |
+| :--- | :--- | :--- | :--- |
+| 1 | J1 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | JTAG in |
+| 2 | J2 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | Power in |
+| 3 | J3 — ERM8-010 (20-pin male) | 2×10 IDC box header, 2.54mm | ENC Data in |
+| 4 | J4 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | JTAG out |
+| 5 | J5 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | Power out |
+| 6 | J6 — ERF8-010 (20-pin female) | 2×10 IDC box header, 2.54mm | ENC Data out |
+
+IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layout phase.
+
 ## 4. PCB Fabrication & Stackup
 
 * **Layers:** 4-Layer (JLC04161H-7628).

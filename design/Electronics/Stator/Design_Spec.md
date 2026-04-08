@@ -115,6 +115,23 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
     the serial chain (Stator → Rotor 1 → … → Rotor 30 → Reflector J1–J3).
 * **Diagnostics:** 2x10 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
 
+### 4.1 Prototype Bench-Testing Provision (Break-Off Coupons)
+
+The board panel includes **4 break-off PCB coupons** attached by mousebite perforations. Each coupon
+fans out the 0.8mm pitch Samtec pads to a standard **2.54mm pitch shrouded IDC box header**, permitting
+standard ribbon cable assemblies to be used for bench testing. For final production the coupons are
+snapped off.
+
+| Coupon | Connector | IDC Header | Signal |
+| :--- | :--- | :--- | :--- |
+| 1 | J8 — ERM8-020 (40-pin male) | 2×20 IDC box header, 2.54mm | Link-Beta (Controller) |
+| 2 | J1 Slot 1 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | Rotor 1 JTAG/Power out |
+| 3 | J2 Slot 1 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | Rotor 1 Power out |
+| 4 | J3 Slot 1 — ERF8-010 (20-pin female) | 2×10 IDC box header, 2.54mm | Rotor 1 ENC Data out |
+
+> Coupons 2–4 cover Rotor Slot 1 only (J1–J3 first instance); sufficient for single-rotor bench
+> integration testing. IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layout phase.
+
 ## 5. Power Telemetry (The "Encryption Load")
 
 * **Purpose:** Provides real-time current/voltage data for the 30-rotor stack to the CM5 GUI.

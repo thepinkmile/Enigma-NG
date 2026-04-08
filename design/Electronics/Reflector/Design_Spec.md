@@ -101,6 +101,21 @@ Per `design/Standards/Global_Routing_Spec.md §5`, each PCB must have a single-p
 A single 0 Ω bond resistor (or direct via) connects the signal GND plane to the chassis copper pour at this point.
 No additional bonds are made on this board to avoid ground loops.
 
+### 4.1 Prototype Bench-Testing Provision (Break-Off Coupons)
+
+Each board panel includes **3 break-off PCB coupons** (one per ERx8 connector), attached by mousebite
+perforations. Each coupon fans out the 0.8mm pitch Samtec pads to a standard **2.54mm pitch shrouded
+IDC box header**, permitting standard ribbon cable assemblies to be used for bench testing before full
+stack assembly. For final production the coupons are snapped off at the mousebite perforations.
+
+| Coupon | Connector | IDC Header | Signal |
+| :--- | :--- | :--- | :--- |
+| 1 | J1 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | JTAG |
+| 2 | J2 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | Power |
+| 3 | J3 — ERM8-010 (20-pin male) | 2×10 IDC box header, 2.54mm | ENC Data |
+
+IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layout phase.
+
 ## 5. Diagnostic & Monitoring
 
 To ensure the signal has successfully navigated the 30-rotor stack, a dedicated monitoring bank is included.

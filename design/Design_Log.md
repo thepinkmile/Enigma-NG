@@ -870,9 +870,36 @@ If accepted, the following updates would be made:
 
 ## QUE-002 — Prototype Bench-Testing Cable Strategy for Rotor Stack Connectors
 
-- **Status:** Open — deferred; revisit before prototype build
+- **Status:** CLOSED — 2026-04-08
 - **Raised:** 2026-04-05
-- **Area:** All Boards — Rotor Interface Connectors (ERF8/ERM8 0.8mm pitch) & Extension/Reflector Links (2.54mm IDC)
+- **Area:** All Boards — Rotor Interface Connectors (ERF8/ERM8 0.8mm pitch) & Extension/Reflector Links
+
+### Resolution
+
+**Break-off PCB coupons** are to be included on the Rotor, Stator, Extension, and Reflector boards.
+Each coupon is a small PCB tab attached to the main board by mousebite perforations. One coupon per
+ERx8 connector. Each coupon fans out the 0.8mm pitch Samtec ERx8 pads to a standard **2.54mm pitch
+shrouded IDC box header**, allowing standard ribbon cable assemblies to be used for initial bench
+testing without full stack assembly.
+
+**Coupon types required:**
+
+| ERx8 Connector | Pins | IDC Header |
+| :--- | :---: | :--- |
+| ERM8-005 / ERF8-005 | 10 (2×5) | 2×5 IDC box header, 2.54mm pitch |
+| ERM8-010 / ERF8-010 | 20 (2×10) | 2×10 IDC box header, 2.54mm pitch |
+| ERM8-020 / ERF8-020 | 40 (2×20) | 2×20 IDC box header, 2.54mm pitch |
+
+**Per-board coupon provision:**
+
+- **Rotor:** 6 coupons — J1 (ERM8-005), J2 (ERM8-005), J3 (ERM8-010), J4 (ERF8-005), J5 (ERF8-005), J6 (ERF8-010)
+- **Stator:** 4 coupons — J8 (ERM8-020) + J1/J2/J3 for Slot 1 test (ERF8-005 ×2, ERF8-010 ×1)
+- **Extension:** 6 coupons — J1 (ERM8-005), J2 (ERM8-005), J3 (ERM8-010), J4 (ERF8-005), J5 (ERF8-005), J6 (ERF8-010)
+- **Reflector:** 3 coupons — J1 (ERM8-005), J2 (ERM8-005), J3 (ERM8-010)
+
+For final assembly the coupons are snapped off at the mousebite perforations and the ERx8 connectors mate
+directly board-to-board. Coupon IDC connector selection (shrouded box header part numbers) and exact
+PCB fanout geometry to be defined at schematic/layout phase.
 
 ### Background
 
