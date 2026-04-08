@@ -9,17 +9,46 @@
 
 ## 1. Overview
 
-A multi-purpose Human Interface Device (HID). Comprised of 2 Altera MAX II CPLDs and dual banks of 64 spade
-connectors ensuring this board can be used as a single plugboard pass, or a dual function keyboard and lightboard.
-When utilised for a plugboard, 2 of these boards will be required, enabling the plugboard to be connected in 2 possible
-locations (e.g. the original Enigma machine had this connected both between the Keyboard and first rotor for input and
-between the first rotor and lightboard (a.k.a. lampboard) for the output).
-When used for the dual function of keyboard and lightboard, one half of the board acts as the keyboard input encoder and
-provides the 6-bit digital input to the system and the other half acts as the lightboard decoder and consumes the final
-6-bit digital output to highlight the relevant character light.
-Regardless of the physical plugboard, keyboard or lightboard features, this board will be the same for all devices
-(e.g. a 26 character set plugboard is the same as a 64 character set plugboard, with the only difference being the
-number of Keys, Lights or Plug Jacks connected to the spade terminals).
+A multi-purpose Human Interface Device (HID) and plugboard interface board. Each board consists of
+**two completely independent halves** on the same PCB — a **Decode Half** (CPLD A: receives a 6-bit
+character code and asserts one of 64 output lines) and an **Encode Half** (CPLD B: reads one of 64
+input lines and produces a 6-bit character code). The two halves share no PCB copper other than the
+single J2 IDC header, which carries power, both 6-bit data buses, and the JTAG chain.
+
+### Plugboard Use (2 boards required)
+
+When used as a plugboard, two Encoder boards are required — one per pass through the substitution
+network. Each board provides one full pass: CPLD A decodes the incoming 6-bit character to one of 64
+lines; those lines connect via wiring harness to 64 panel-mount jack sockets; a crossover cable between
+any two jacks routes the signal to a different character's Sleeve terminal; CPLD B encodes the resulting
+line back to a 6-bit output.
+
+With no cable in a jack, the socket's normally-closed (N/C) switch contact shorts the Switch terminal
+to the Sleeve terminal, passing the signal through unsubstituted (identity mapping). Up to 32 crossover
+cables may be installed simultaneously (64 jacks ÷ 2 per cable).
+
+The Stator CPLD routes the 6-bit data bus between the rotor stack and the encoder ports (J4/J5/J6),
+enabling plugboard passes to be placed at any configurable point in the encryption signal chain:
+
+| Historical Reference | Pass 1 position | Pass 2 position |
+| :--- | :--- | :--- |
+| Original Enigma (pre-war) | After Keyboard / before Rotor 1 | After last Rotor / before Lightboard |
+| Later Enigma models | At Reflector | — (single pass only) |
+| Enigma-NG (configurable) | Any position via Stator CPLD | Any position via Stator CPLD |
+
+See `design/Electronics/Stator/Design_Spec.md §3` for the Stator CPLD routing details and J4/J5/J6
+port assignments.
+
+### HID Use (1 board, both halves independent)
+
+When used as the HID interface (Keyboard + Lightboard), both halves operate independently:
+- **Decode Half (CPLD A):** Receives 6-bit ENC_IN from Stator → asserts one of 64 lamp-drive output
+  lines (Lightboard). Connected to lamp assemblies via BT1–64 spade terminals.
+- **Encode Half (CPLD B):** Reads one of 64 key-press input lines (Keyboard) → encodes to 6-bit
+  ENC_OUT to Stator. Connected to keyboard switches via BT65–128 spade terminals.
+
+Regardless of use case (plugboard or HID), the physical PCB is identical — the functional role of
+each half is determined entirely by the mechanical assembly and Stator CPLD configuration.
 
 ### Functional & Design Requirements
 
@@ -50,18 +79,50 @@ number of Keys, Lights or Plug Jacks connected to the spade terminals).
 
 ## 3. Dual-Role Architecture
 
-This board can be used to provide functionality for both the HID component or the plugboard (a single pass of it at least).
-The encoder is essentially made up of an Encoder (which takes 64 inputs and encodes it to a 6-bit output), and a Decoder (which takes a 6-bit input and decodes it to 1 of 64 outputs).
-So a single pass (or cable) for a plugboard plug, would used both encode and decode (decode data in, then transmit through the relevant plug, then back through the encode side).
-However, the keyboard only requires the Encode side and the Lightboard only requires the Decode side, so these will likely be created as a singl component with a shared single board.
+The board's two halves are electrically independent on the PCB. Each half contains one Intel MAX II
+EPM240T100I5N CPLD and one bank of 64 spade terminals. The J2 IDC header is the only physical
+connection between them (power, data buses, JTAG).
 
-* **Logic:** 2x Intel MAX II EPM240T100I5N CPLDs.
-* **I/O Capacity:** Each CPLD provides 80 User I/O pins in a 100-pin TQFP package.
-* **Roles:**
-  * **HID Mode:**
-    * **Keyboard:** Maps 64 mechanical plungers to the parallel data bus.
-    * **Lightboard:** Maps parallel return data bus to the Lightboard (Lampboard) and CM5 for GUI feedback.
-  * **Plugboard Mode:** Maps 64 "Stecker" jacks for reciprocal encryption.
+### Half Definitions
+
+| Half | CPLD | Spade bank | 6-bit bus | Function |
+| :--- | :--- | :--- | :--- | :--- |
+| **Decode Half** | U1 (CPLD A) | BT1–64 | ENC_IN[0:5] ← Stator | Decodes 6-bit input → asserts 1 of 64 output lines |
+| **Encode Half** | U2 (CPLD B) | BT65–128 | ENC_OUT[0:5] → Stator | Reads 1 of 64 input lines → encodes to 6-bit output |
+
+### Signal Flow — Plugboard Mode
+
+```text
+ENC_IN[0:5] (from Stator J2 pin 2–7)
+       ↓
+  CPLD A (U1) — Decode: 6-bit → 1-of-64 lines asserted HIGH
+       ↓ ↓ ↓ ↓ ↓ ↓ ... × 64 lines (BT1–64 → jack Tip+Switch via harness)
+  [ 64 panel-mount jack sockets ]
+  — No cable: N/C Switch→Sleeve shorts line straight through (identity) —
+  — Cable A↔B: crossover cable routes line A to Sleeve B and vice versa —
+       ↓ ↓ ↓ ↓ ↓ ↓ ... × 64 lines (jack Sleeve via harness → BT65–128)
+  CPLD B (U2) — Encode: 1-of-64 lines → 6-bit output
+       ↓
+  ENC_OUT[0:5] (to Stator J2 pin 19–24)
+```
+
+### Signal Flow — HID Mode
+
+```text
+Decode Half (Lightboard):          Encode Half (Keyboard):
+ENC_IN[0:5] ← Stator               64 key-press lines ← Keyboard switches
+       ↓                                    ↓
+  CPLD A (U1)                        CPLD B (U2)
+       ↓                                    ↓
+64 lamp-drive lines → BT1–64       BT65–128 ← key signals
+       ↓                                    ↓
+  Lightboard lamps                   ENC_OUT[0:5] → Stator
+```
+
+### I/O Capacity
+
+Each CPLD provides 80 user I/O pins (TQFP-100). 64 pins are used for the spade terminal bank,
+leaving headroom for JTAG, status LEDs, power, and any future expansion.
 
 ## 4. Interconnects
 
@@ -72,12 +133,38 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
   330Ω current-limiting resistor per LED; ~4mA drive current at 3.3V.
 * **Plugboard Jack Sockets:** See `design/Mechanical/Plugboard/Design_Spec.md`.
 * **Keyboard Switches:** See `design/Mechanical/Keyboard/Design_Spec.md`.
-* **PCB Spade Terminal Banks (2× banks of 64):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs.
-  * **Bank 1 (BT1–BT64):** Maps to CPLD 1.
-  * **Bank 2 (BT65–BT128):** Maps to CPLD 2.
-  * On the PCB, the two banks are horizontally aligned and vertically stacked so that corresponding pins are correlated,
-    enabling correct plugboard wiring (where pin pairing matters). When used as a HID keyboard or lightboard,
-    pin correlation is not functionally significant.
+* **PCB Spade Terminal Banks (2× banks of 64, 128 total):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs.
+  * **Bank 1 (BT1–BT64) — Decode Half outputs:** CPLD A (U1) decoder output lines. In plugboard mode:
+    wired via harness to the Tip and Switch terminals of the 64 jack sockets. In HID lightboard mode:
+    wired to lamp-drive lines. CPLD A drives these lines; no pull-up resistors required on this bank.
+  * **Bank 2 (BT65–BT128) — Encode Half inputs:** CPLD B (U2) encoder input lines. In plugboard mode:
+    wired via harness to the Sleeve terminals of the 64 jack sockets. In HID keyboard mode: wired to
+    keyboard switch output lines (active-low, 10kΩ pull-up + RC filter per line).
+  * The two banks are vertically stacked so that character N on Bank 1 (BT_N) aligns with character N
+    on Bank 2 (BT_{N+64}), enabling correct plugboard harness assembly.
+* **Jack Socket Wiring (Plugboard Mode):**
+  Each of the 64 panel-mount jack sockets has three terminals. The wiring harness connects them as follows:
+
+  | Jack terminal | Wired to | Notes |
+  | :--- | :--- | :--- |
+  | Tip | BT1–64 (Decode Half / CPLD A output) | Both Tip and Switch carry the same CPLD A signal |
+  | Switch (N/C) | BT1–64 (same node as Tip) | N/C contact: shorts Switch→Sleeve when no plug present |
+  | Sleeve | BT65–128 (Encode Half / CPLD B input) | CPLD B reads this line |
+
+  **Identity mapping (no cable):** The jack's N/C contact shorts Switch to Sleeve, passing CPLD A's
+  signal directly to CPLD B for the same character — no substitution occurs.
+
+  **Substitution (crossover cable A↔B):** The cable is wired Tip-at-end-A → Sleeve-at-end-B. This
+  routes CPLD A's character-A signal to CPLD B's character-B input (A→B), and simultaneously routes
+  CPLD A's character-B signal to CPLD B's character-A input (B→A). Substitution is therefore
+  **reciprocal and passive** — no CPLD logic is required for the routing itself.
+
+  **Maximum 32 cables** may be installed simultaneously (64 jacks ÷ 2 jacks per cable).
+
+  > **Note:** Physical harness assembly, jack panel layout, and cable construction are mechanical design
+  > items. See `design/Mechanical/Plugboard/Design_Spec.md` for full harness specification.
+  > Insertion detection (Switch contact opens when plug inserted) monitoring path is an **open item**
+  > — to be defined in Mechanical/Plugboard/Design_Spec.md.
 * **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54mm pitch.
   Not a separate connector — bare gold pads probed directly with logic analyser clips or ICT fixtures.
   Mirrors the Data Link signals: Row 1 = 3V3_ENIG, GND, ENC_IN[0:5]; Row 2 = 3V3_ENIG, GND, ENC_OUT[0:5].
@@ -131,6 +218,9 @@ Mechanical Plugboard specification.
 * **Finish:** ENIG (Gold) for TQFP-100 pads.
 * **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
 * **Chip Placement:** CPLD #1 (Left-side 32 keys) and CPLD #2 (Right-side 32 keys) placed on the rear of the board to allow keys/lamps/sockets on the front.
+* **Half Labelling (Silkscreen):** The two board halves shall be clearly labelled in silkscreen:
+  **"DECODE"** (U1 side, BT1–64) and **"ENCODE"** (U2 side, BT65–128). This prevents assembly
+  errors, particularly since the board is physically symmetrical.
 
 ---
 
@@ -140,14 +230,12 @@ Mechanical Plugboard specification.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C16 | Decoupling (8 per CPLD, 2x CPLDs) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C17-C21 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
-| BT1-128 | PCB spade blade terminals (2 per jack, 128 total) | 6.35mm (¼″) straight vertical PCB-mount male blade tab — Row 1 (BT1-64): ENC Tip signal; Row 2 (BT65-128): Switch insertion-detect | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
-| J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip → ENC signal; Switch contact → insertion-detect; Sleeve → GND. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
+| BT1–128 | PCB spade blade terminals — 2 rows × 64 (128 total) | Keystone 1285-ST — 6.35mm (¼″) straight vertical PCB-mount male blade tab. Row 1 (BT1–64): Decode Half — CPLD A decoder outputs; wired to jack Tip+Switch terminals (plugboard) or lamp-drive lines (HID). Row 2 (BT65–128): Encode Half — CPLD B encoder inputs; wired to jack Sleeve terminals (plugboard) or keyboard switch lines (HID). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
+| J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip+Switch → CPLD A Decode Half output (BT1–64 harness); Sleeve → CPLD B Encode Half input (BT65–128 harness); N/C contact (Switch→Sleeve) provides identity passthrough when no plug inserted. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |
 | J2 | Data Link Connector | 26-pin 2×13 shrouded box header, 2.54mm | 2.54mm | 538-22-23-2261 | WM2913-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
 | J3 | Diagnostic probe pad bank (bare ENIG gold pads — logic analyser / ICT access) | 2×8 bare PCB pads | 2.54mm | N/A | N/A | N/A |
 | SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (*Open item — lamp/redundancy function TBD*). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
-| BT129-192 | PCB spade blade terminals — KEY_COM (Row 3) | Keystone 1285-ST — 6.35mm straight vertical PCB-mount male blade tab. COM1 of each keyboard switch pole-1. | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
-| BT193-256 | PCB spade blade terminals — KEY_NO (Row 4) | Keystone 1285-ST — same part. NO1 of each keyboard switch pole-1; CPLD key-press input (active-low). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
 | U1, U2 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
 | R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LBCT-ND | C105872 |
 | R3 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
@@ -156,5 +244,5 @@ Mechanical Plugboard specification.
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | C25808 |
 | R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R9–R136 | CPLD input pull-up resistors — 128× total (64× plugboard insertion-detect BT65–BT128, 64× keyboard key-press BT193–BT256). Pull-up to 3V3_ENIG; external 10kΩ dominates internal 50kΩ–100kΩ. | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| C22–C149 | CPLD input RC noise filter caps — 128× total, paired 1:1 with R9–R136 (one cap to GND per input line). RC τ = 1 ms; sufficient for noise immunity on harness; negligible for slow mechanical insertion events. | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| R9–R72 | CPLD B Encode Half input pull-up resistors — 64× total (one per BT65–BT128 input line). Pull-up to 3V3_ENIG; active-low logic; external 10kΩ dominates CPLD internal 50kΩ–100kΩ weak pull. Decode Half outputs (BT1–64) are CPLD A driven — no pull-ups required on that bank. | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| C22–C85 | CPLD B Encode Half input RC noise filter caps — 64× total, paired 1:1 with R9–R72 (one cap to GND per Encode Half input line). RC τ = 1 ms; sufficient for noise immunity on harness; negligible for slow mechanical events. Decode Half outputs (BT1–64) are CPLD A driven — no RC filters required on that bank. | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |

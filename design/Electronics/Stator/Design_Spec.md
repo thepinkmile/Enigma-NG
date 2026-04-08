@@ -25,7 +25,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 | §2 Core Features; §3 Encryption & JTAG Hub; BOM L1–L4 (ferrite beads) |
 | FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
 | FR-STA-04 | Receive TTD_RETURN from the Reflector and forward to the Controller Board | Via J7 (16-pin Molex) → Link-Beta pin 26 | §3 Encryption & JTAG Hub; BOM J7, R2 (10kΩ pull-up) |
-| FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables | J4/J5/J6 encoder ports (one board per port) | §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
+| FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables; route 6-bit data bus to plugboard passes at configurable signal chain positions | J4 = HID; J5 = Plugboard Pass A (configurable); J6 = Plugboard Pass B (configurable) | §3 Plugboard Routing; §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM240 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 
@@ -97,7 +97,29 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **Power:** Receives 3V3_ENIG via the Controller pass-through for all backplane CPLDs.
   * **Cross-ref:** See `Controller/Design_Spec.md` Link-Beta mapping for explicit pin-number allocation; this Stator document mirrors that mapping for compatibility and implementation validation.
 * **Encoder Interconnects:** 26-pin (2×13) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
-* **Reflector/Extension Interconnect:** 16-pin (2x8) Vertical Shrouded Header (Power, ENC_DATA, TTD_RETURN).
+* **Plugboard Routing — Configurable Signal Chain Positions:**
+  The Stator CPLD routes the 6-bit character data bus between the rotor stack, reflector, and the
+  three encoder ports (J4/J5/J6). This enables plugboard passes (each provided by one Encoder board)
+  to be inserted at any configurable point in the encryption signal chain — replicating any historical
+  Enigma variant or enabling novel configurations unique to Enigma-NG.
+
+  | Port | Default role | Plugboard signal chain position |
+  | :--- | :--- | :--- |
+  | **J4** | HID — Keyboard & Lightboard | Fixed: HID interface (not used for plugboard passes) |
+  | **J5** | Plugboard Pass A | Configurable: any point in encryption chain |
+  | **J6** | Plugboard Pass B | Configurable: any point in encryption chain |
+
+  **Historical reference configurations:**
+
+  | Configuration | J5 position | J6 position |
+  | :--- | :--- | :--- |
+  | Original Enigma (pre-war) | After Keyboard / before Rotor 1 | After last Rotor / before Lightboard |
+  | Later Enigma models | At Reflector | — (not used; single pass) |
+  | Enigma-NG custom | Any configured point | Any configured point |
+
+  The Stator CPLD implements the routing matrix in VHDL. See `design/Electronics/Stator/Board_Layout.md`
+  and `design/Electronics/Encoder/Design_Spec.md §1` for further detail.
+* **Reflector/Extension Interconnect:**16-pin (2x8) Vertical Shrouded Header (Power, ENC_DATA, TTD_RETURN).
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).
   * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
