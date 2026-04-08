@@ -19,7 +19,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-JDB-01 | Provide a USB-to-JTAG programming interface for all 37 CPLDs in the system | 1 Stator + 6 Encoder + 30 Rotor CPLDs | §2 Core Logic; BOM U1 (FT232H) |
-| FR-JDB-02 | Generate series-damped drive signals suitable for the controlled-impedance JTAG chain | U5 buffers TCK/TMS; 33 Ω resistors at all JTAG outputs (R6/R7 after U5, R8 on TDI) | §5 Electrical Requirements; BOM U5, R6, R7, R8 |
+| FR-JDB-02 | Generate series-damped drive signals suitable for the controlled-impedance JTAG chain | U5 buffers TCK/TMS; 33 Ω resistors at all JTAG outputs (R6/R7 after U5, R8 on TDI) | §6 Electrical Requirements; BOM U5, R6, R7, R8 |
 | FR-JDB-03 | Interface with the CM5 via USB 2.0 for JTAG programming software control | Presented as FTDI JTAG device to OpenOCD via libftdi; no custom driver required | §3 Interface & Wiring; BOM J1 (INPUT 5-pin header), U1 (FT232H) |
 
 #### Design Requirements
