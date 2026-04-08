@@ -224,7 +224,7 @@ _______________________________________    _____________    ____________________
 | 4 | TMS | CTRL→Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
-| 7 | GND | — | TDI/RST inter-pin shield |
+| 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
 | 8 | SYS_RESET_N | CTRL→Stator | Active-low system reset; clears all CPLDs in stack |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |

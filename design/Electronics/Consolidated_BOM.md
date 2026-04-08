@@ -301,7 +301,7 @@ Reference information for placing orders with key component suppliers.
 | S09 | **Würth Elektronik** | Passive / connector manufacturer | [we-online.com](https://www.we-online.com) | For RJ45 MagJack (7499111121A), EMI chokes (WE-CMBNC). Order via Farnell, Mouser, or direct. |
 | S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43650-0519 Micro-Fit 3.0, 5-pin vertical THT). Order via Mouser or DigiKey. |
 | S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
-| S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04161H-7628 (4-layer, 2oz). |
+| S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04161H-7628 (4-layer, 2oz) for JDB, Stator, Encoder, Rotor, Reflector, Extension; JLC06161H-2116 (6-layer, 2oz) for Power Module and Controller. |
 | S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. Note: WE-CMBNC 7448031002 is not stocked by Newark/Avnet — use Mouser (710-7448031002), DigiKey (732-5584-ND), or JLCPCB (C1519839). Same-group as Farnell/element14. |
 
 ---

@@ -381,7 +381,7 @@ The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-0
 | 4 | TMS | CTRL→Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
-| 7 | GND | — | TDI/RST inter-pin shield |
+| 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
 | 8 | SYS_RESET_N | CTRL→Stator | SYS_RESET_N (active-low) |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
@@ -998,7 +998,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J4-J6 | Encoder Port headers (×3: HID J4, Plugboard A J5, Plugboard B J6) — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J4–J6 |
 | J7 | Extension/Reflector Link — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | THT, shrouded. Power, ENC_DATA, TTD_RETURN (pin 15). Pinout definition owner — see Stator/Board_Layout.md J7 |
 | J8 | Link-Beta BtB — 40-pin plug to Controller Board | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM8611CT-ND | Male plug (ERM8). Mating female on Controller (ERF8-020). 40-pin per DEC-015 |
-| — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|RST\|GND |
+| — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|SYS_RESET_N\|GND |
 
 ### Rotor Board (×30)
 

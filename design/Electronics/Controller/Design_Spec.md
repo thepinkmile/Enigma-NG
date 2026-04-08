@@ -322,7 +322,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 4 | TMS | CTRL → Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL → Stator | JTAG data in |
-| 7 | GND | — | TDI/RST inter-pin shield |
+| 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
 | 8 | SYS_RESET_N | CTRL → Stator | Active-low system reset; clears all CPLDs in stack (CM5 GPIO 26) |
 | 9–11 | GND | — | JTAG trailing shield + isolation moat |
 | 12–17 | ENC_IN[0:5] | CTRL → Stator | Encoder input 6-bit bus (CM5 GPIOs 4–9) |
