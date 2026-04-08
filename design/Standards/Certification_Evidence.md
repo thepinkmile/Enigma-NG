@@ -178,7 +178,7 @@ At 400 kHz with the DRSS ±5.5% modulation:
 
 #### 3.3.3 Phase Interleaving Architecture — 180° SYNC Implementation
 
-**Master IC (U2A):** Frequency set by R_FSET = 86.6 kΩ (0.1%, 0603) from FSET pin to AGND. DRSS enabled (factory default). Internal oscillator runs at 400 kHz ± 5.5%.
+**Master IC (U2A):** Frequency set by R_FSET = 86.6 kΩ (1%, 0603, ERJ-3EKF8662V, R24) from FSET pin to AGND. DRSS enabled (factory default). Internal oscillator runs at 400 kHz ± 5.5%.
 
 **Slave IC (U2B):** FSET/SYNC pin driven by an external phase-shifted replica of U2A's switching signal, constructed as follows:
 
@@ -189,12 +189,12 @@ U2A SW node
     │
    [C_F1: 100pF X7R 0402]         (low-pass: τ = 1µs, attenuates SW ringing)
     │
-   [U_INV1: SN74LVC1G14 SOT-23-5]  (Schmitt trigger — restores clean digital signal)
+   [U_INV1: SN74LVC1G14DBVRQ1 SOT-23-5 (U13)]  (Schmitt trigger — restores clean digital signal)
     │
-   [R_DLY: 100kΩ 0.1% 0402]       ┐
-   [C_DLY: 18nF X7R 0603]         ┘  RC delay: τ ≈ 1.8µs → ½ period at 400kHz ≈ 1.25µs
+   [R_DLY: 82.0kΩ 1% 0402 (R26, ERJ-2RKF8202X)]  ┐
+   [C_DLY: 22nF X7R 0603 (C29, CL10B223KB8WPNC)]  ┘  RC delay: τ = 1.804µs → ½ period at 400kHz ≈ 1.25µs
     │
-   [U_INV2: SN74LVC1G14 SOT-23-5]  (Schmitt trigger — re-squares delayed signal)
+   [U_INV2: SN74LVC1G14DBVRQ1 SOT-23-5 (U14)]  (Schmitt trigger — re-squares delayed signal)
     │
   U2B FSET/SYNC
     │
