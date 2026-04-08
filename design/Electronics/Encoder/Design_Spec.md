@@ -37,7 +37,7 @@ number of Keys, Lights or Plug Jacks connected to the spade terminals).
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §9 PCB Specs |
+| DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §9 PCB Fabrication & Stackup |
 | DR-ENC-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100I5N) |
 | DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with Stator J4, J5, or J6) | §4 Interconnects; BOM J2 (26-pin 2×13 shrouded) |
 | ~~DR-ENC-04~~ | ~~Moved to Mechanical/Plugboard/Design_Spec.md~~ | ~~—~~ | ~~—~~ |

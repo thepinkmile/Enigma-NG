@@ -170,6 +170,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin):** Stator J8 (Link-Beta).
 * **Samtec ERF8-040-05.0-S-DV-K-TR (Female, 80-pin):** Controller J1 (Link-Alpha).
 * **Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin):** Controller J2 (Link-Beta).
+* **Samtec ERM8-010-05.0-S-DV-K-TR (Male, 20-pin):** Rotor J3, Reflector J3, Extension J3. JLCPCB: *Open item — verify JLCPCB part number*
 * **Intel EPM240T100I5N:** 37 units (Standardized logic node).
 
 ## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
