@@ -32,7 +32,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 | :--- | :--- | :--- | :--- |
 | FR-CTL-01 | Host the Raspberry Pi Compute Module 5 as the system master processor | CM5 runs the Linux OS and all application logic | BOM U1 (CM5) |
 | FR-CTL-02 | Receive power from the Power Module and distribute to the CM5 and peripherals | Via Link-Alpha (J1) | §2 Dual-Link Interface; BOM J1 (ERF8-040) |
-| FR-CTL-03 | Provide external I/O interfaces for system management | GbE, HDMI, USB 3.0 | §2 Connectivity; BOM J3 (USB 3.0), J4 (HDMI) |
+| FR-CTL-03 | Provide external I/O interfaces for system management | GbE, HDMI, USB 3.0 | §8 Connectivity; BOM J3 (USB 3.0), J4 (HDMI) |
 | FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and Link-Beta | §3 JTAG Programming Subsystem; BOM J2 (Link-Beta) |
 | FR-CTL-05 | Monitor system power and load telemetry via I²C and report discrete power status signals to CM5 via GPIO | Telemetry: INA219 ×2 (PM U12 @ 0x40 for 5V_MAIN; Stator U2 @ 0x45 for rotor stack) and LTC3350 @ 0x09; Discrete: PoE presence, battery presence, USB fault, PWR_GD | §4 Telemetry & Logic; §6 CM5 GPIO Mapping Matrix |
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
