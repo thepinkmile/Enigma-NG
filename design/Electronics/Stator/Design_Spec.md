@@ -51,7 +51,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ### GND_CHASSIS Single-Point Bond
 
-Per `design/Standards/Global_Routing_Spec.md §4`, each PCB in the Enigma-NG system must have a documented single-point GND_CHASSIS bond at its power entry connector.
+Per `design/Standards/Global_Routing_Spec.md §5`, each PCB in the Enigma-NG system must have a documented single-point GND_CHASSIS bond at its power entry connector.
 
 **Stator GND_CHASSIS bond point:** The GND_CHASSIS connection is made at the LINK-BETA connector
 (J8, ERM8-020, power input from Controller Board).
@@ -61,7 +61,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 ## 3. Encryption & JTAG Hub
 
 * **CPLD:** Intel MAX II EPM240T100I5N CPLD (Logic Router).
-* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
 * **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Electronics/Power_Budgets.md`);
   with 4 parallel feeds this is ~**375mA per bead** nominal sharing,
@@ -139,7 +139,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Layer count:** 4-layer
 * **Stackup:** JLC04161H-7628
 * **Board thickness:** 1.6mm
-* **Copper weight:** 1oz outer / 0.5oz inner
+* **Copper weight:** 2oz outer / 0.5oz inner
 * **Surface finish:** ENIG
 * **Min trace/space:** 0.1mm / 0.1mm
 * **Min drill:** 0.2mm

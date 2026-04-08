@@ -44,7 +44,7 @@ number of Keys, Lights or Plug Jacks connected to the spade terminals).
 ## 2. Power Requirements
 
 * **Core:** The Encoder Board receives its 3V3_ENIG power rail from the IDC cable connection from the Stator (pin 1 & 26). This could be connected to any of J4–J6 of the Stator Board.
-* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 
 ## 3. Dual-Role Architecture
 
@@ -102,28 +102,21 @@ However, the keyboard only requires the Encode side and the Lightboard only requ
 
 ## 6. Key Mapping (64-Way QWERTY for Keyboard)
 
-> ⚠️ **Manual Review Required:** This section contains content that may need to be relocated to
-> `design/Mechanical/Keyboard/Design_Spec.md`. Content should be reviewed and reworked into a generic
-> HID interface description. Do not apply automated changes to this section.
+Key mapping implementation detail — including QWERTY layout, hardware RC de-bounce circuit,
+Shift key state-machine logic, and LED drive — has been migrated to the Mechanical Keyboard
+specification.
 
-* **Layout:** Standard QWERTY + Numbers + Symbols + Shift.
-* **Debouncing:** Hardware RC de-bounce circuit per input line (10kΩ pull-up + 100nF X7R cap to GND).
-  ⚠️ TBD: EPM240T100I5N Schmitt trigger input and weak pull-up capability to be verified by hardware test
-  on development board.
-* **Implementation:** The Shift keys (Left/Right) act as logic-level triggers for the CPLD state machine.
-* **LED Drive:** CPLDs directly drive the **Shift Status LEDs** and the 64-character lamp matrix (via MOSFET arrays).
+> See `design/Mechanical/Keyboard/Design_Spec.md §3 Key Mapping` for the full key mapping
+> specification.
 
 ## 7. Plugboard Jack-Sensing
 
-> ⚠️ **Manual Review Required:** This section contains content that may need to be relocated to
-> `design/Mechanical/Plugboard/Design_Spec.md`. Content should be reviewed and reworked into a generic
-> HID interface description. Do not apply automated changes to this section.
+Plugboard jack-sensing implementation detail — including CPLD insertion-detect logic, switch contact
+signal behaviour, sub-microsecond detection latency, and harness assembly — has been migrated to the
+Mechanical Plugboard specification.
 
-* **Logic:** The CPLD monitors 64 insertion-detect lines (BT65–BT128, Switch contacts) from the Stecker jack sockets.
-* **Signal:** Each jack Switch contact is normally closed (connected to Tip) when no plug is inserted;
-  the contact opens on plug insertion, pulling the CPLD input low via an internal or external pull-up.
-* **Latency:** Sub-microsecond detection of Stecker cable insertion, updating the internal encryption matrix instantly.
-* **Harness:** 64× 2-wire assemblies (Tip + Switch), each terminated with 6.35mm female crimp spade terminals, connecting the panel-mount jacks to BT1–BT128 on the PCB.
+> See `design/Mechanical/Plugboard/Design_Spec.md §4 Plugboard Jack-Sensing` for the full
+> jack-sensing specification.
 
 ## 8. Thermal & ESD
 

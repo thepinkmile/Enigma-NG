@@ -21,4 +21,21 @@ A mechanical keyboard assembly with one switch per character. Each switch is wir
   * Keys connect only to the keyboard side of the Encoder board; there is no direct switch connection to the Lightboard.
   * Part: DPDT 2-pole 6-pin push button switch — purchased (gadgetkingdom, eBay, 2 per pack).
 
-> This design spec will be developed further during the Mechanical Design phase.
+## 3. Key Mapping (64-Way QWERTY)
+
+The Encoder CPLD maps 64 mechanical key inputs to the parallel 6-bit data bus. Key assignments follow
+a standard QWERTY layout extended with numbers, symbols, and modifier keys.
+
+* **Layout:** Standard QWERTY + Numbers + Symbols + Shift (64 keys total).
+* **Debouncing:** Hardware RC de-bounce circuit per input line: 10 kΩ pull-up resistor to 3V3_ENIG +
+  100 nF X7R capacitor to GND on each key input line.
+  > ⚠️ **Open item:** EPM240T100I5N Schmitt trigger input capability and internal weak pull-up strength
+  > to be verified by hardware test on development board before finalising external pull-up value.
+* **Shift Logic:** The Left Shift and Right Shift keys act as logic-level triggers for the CPLD state
+  machine, toggling between the lower and upper character planes of the 64-way key map.
+* **LED Drive:** The Encoder CPLDs directly drive the **Shift Status LEDs** and the 64-character lamp
+  matrix output via MOSFET arrays.
+
+> **Cross-reference:** For Encoder PCB spade terminal pinout and CPLD I/O allocation, see
+> `design/Electronics/Encoder/Design_Spec.md §4 Interconnects` and `§3 Dual-Role Architecture`.
+

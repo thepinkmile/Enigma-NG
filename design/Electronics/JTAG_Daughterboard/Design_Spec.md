@@ -169,7 +169,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 ## 7. Thermal & ESD
 
 * **Thermal:** Low-power debug board; no thermal management required.
-* **ESD:** ESD protection via U5 JTAG buffer (SN74LVC1T45DCKR). Standard PCB handling precautions apply.
+* **ESD:** ESD protection via U5 JTAG buffer (SN74LVC2G125DCUR). Standard PCB handling precautions apply.
 
 ---
 

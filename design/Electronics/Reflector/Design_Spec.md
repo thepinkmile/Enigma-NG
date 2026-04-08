@@ -55,7 +55,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 
 > **Compatibility note:** J4 pin allocation matches Stator J7 (16-pin 2×8). The Stator J7 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
 
-* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Termination:**R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
   signal from Rotor 30). It provides impedance damping at the final rotor output before the signal
   re-enters the Extension Port for return to the Stator.
@@ -95,7 +95,7 @@ The ERM8 header pitch (0.8mm) is physically incompatible with 2.54mm connectors 
 > contact concept and is superseded by the ERM8 connector approach defined here. The 40 active contacts
 > (10 + 10 + 20) on J1–J3 provide the Reflector rotor interface; the friction pad concept is retired.
 
-Per `design/Standards/Global_Routing_Spec.md §4`, each PCB must have a single-point GND_CHASSIS bond at its power entry connector.
+Per `design/Standards/Global_Routing_Spec.md §5`, each PCB must have a single-point GND_CHASSIS bond at its power entry connector.
 
 **Reflector GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J4 (Stator/Extension link connector, pin 16 GND).
 A single 0 Ω bond resistor (or direct via) connects the signal GND plane to the chassis copper pour at this point.

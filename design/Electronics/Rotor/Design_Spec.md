@@ -51,7 +51,7 @@ There are also sensors used to detect the current position of the outer ring usi
 ### 2.2 Logic & Transposition
 
 * **Logic:** The **Intel MAX II EPM240T100I5N CPLD** emulates the 64x64 cross-wiring.
-* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Role:**Performs the instantaneous dual 6-bit parallel transposition (substitution cipher) for the forward and backward signal paths.
 * **Memory:** Stores the 26-position wiring table for any historical rotor (I-VIII, Beta, Gamma) selectable via the CM5.
 * **Latency:** Sub-10ns transposition time, ensuring the entire 30-rotor "trip" happens well within one CPU clock cycle.
@@ -72,7 +72,7 @@ There are also sensors used to detect the current position of the outer ring usi
 * **Input:** 3.3V/**50mA per rotor** (sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta).
   See `design/Electronics/Power_Budgets.md` for full budget — 30 rotors draw 1.50A typical; the 150mA/rotor figure previously used was a conservative overestimate.
 * **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
-* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 
 ### 3.2 Communication Bus
 

@@ -87,11 +87,11 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
     5 rotors × EPM240 input capacitance (≈6pF) = 30pF total load; τ = 95Ω × 30pF = 2.85ns,
     well within the 50ns half-period at 10MHz TCK.
 
-* **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §4`, a single
+* **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §5`, a single
   0Ω bond resistor (R2) or direct via connects signal GND to chassis copper pour at J7 pin 16 (GND).
   No additional bonds on this board to prevent ground loops.
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
-* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md`.
+* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **JTAG:** Pass-through for the serial chain;TTD_RETURN carried via Extension Port pin 15.
   * This board carries JTAG signals as a passive pass-through only. No active termination is
     required here; series termination is placed at the driving ends of each cable segment on

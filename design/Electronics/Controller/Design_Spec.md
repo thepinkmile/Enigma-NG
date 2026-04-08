@@ -46,6 +46,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 | DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor). Minimum spec: 8 GB RAM, 4 GB eMMC. CM5 Lite (no onboard wireless, no onboard flash) is NOT permitted. BOM reference: various (e.g. CM5008032). | BOM U1 |
 | DR-CTL-03 | Link-Alpha connector | J1 = ERF8-040-05.0-S-DV-K-TR (80-pin female, 0.8 mm pitch) | BOM J1 (ERF8-040-05.0-S-DV-K-TR) |
 | DR-CTL-04 | Link-Beta connector | J2 = ERF8-020-05.0-S-DV-K-TR (40-pin female, 0.8 mm pitch) | BOM J2 (ERF8-020-05.0-S-DV-K-TR) |
+| ~~DR-CTL-05~~ | ~~Reserved / deleted~~ | ~~—~~ | ~~—~~ |
 | DR-CTL-06 | USB current limit | 1.6 A via TPS2065C; fault output to GPIO 22 (USB_FAULT) | BOM U2 (TPS2065C); §6 GPIO Mapping (GPIO 22) |
 | DR-CTL-07 | RTC battery holder | BT1 = Keystone 3034 (THT horizontal CR2032 holder) | §5 RTC Backup Battery; BOM BT1 (Keystone 3034) |
 | DR-CTL-08 | RTC protection | D1 = Nexperia BAT54 Schottky diode (blocks PMIC VBAT charge path) | §5 RTC Backup Battery; BOM D1 (BAT54) |
@@ -222,7 +223,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 * **External Links:** All inputs (Status) feature 10kΩ series resistors to protect CM5 pins from transient spikes.
 * **Voltage:** 5V signals are strictly forbidden on: CM5 GPIO pins, I²C SDA/SCL lines, JTAG (TDI/TDO/TCK/TMS), and all logic-level signals on LINK-ALPHA.
 * **ESD Protection:** [TPD12S016](https://www.ti.com) (HDMI) and [TPD4E05U06](https://www.ti.com) (USB 3.0) on Layer 1.
-* **5V_MAIN Bulk Entry:** 5× 10µF X7R 50V at LINK-ALPHA 5V_MAIN entry pins per Global_Routing_Spec Bulk Entry Bank Rule.
+* **5V_MAIN Bulk Entry:** 5× 10µF X7R 50V at LINK-ALPHA 5V_MAIN entry pins per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule.
 * **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design
   phase). These are distinct from the 5V_MAIN entry bank above.
 * **Hardware LED Fallback:** The hardware LED fallback path (MIC1555 oscillator) is located on the Power Module.
@@ -406,7 +407,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Orientation:** Facing upwards for easy logic analyser ribbon cable connection.
 * **Silkscreen:** Dark Green mask with White Bilingual Typewriter font. Silkscreen legend must label each pad individually.
 * **Branding:** Top-left 10mm "Enigma-NG" shielded gold emblem (Exposed ENIG Gold tied to GND_CHASSIS). Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom).
-  See `design/Standards/Global_Routing_Spec.md §4` for full branding specification.
+  See `design/Standards/Global_Routing_Spec.md §6` for full branding specification.
 
 #### Diagnostic Bank-Alpha (Power/Entry) — 2×10
 
