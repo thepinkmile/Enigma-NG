@@ -75,8 +75,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 121 kΩ 1% 0603 PoE MPS current set (ERJ-3EKF1213V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 301 Ω 1% 0603 charge current set (ERJ-3EKF3010V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 232 kΩ 0.1% 0603 thin-film eFuse UVLO (ERA-3ARB2323V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 28.7 kΩ 0.1% 0603 thin-film eFuse UVLO (ERA-3ARB2872V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 232 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2323V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 28.7 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2872V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 210 Ω 1% 0603 thick-film eFuse ILIM (ERJ-3EKF2100V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 26.7 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB2672V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB1002V) | 1 | — | — | — | — | — | — | — | — | — | 1 |

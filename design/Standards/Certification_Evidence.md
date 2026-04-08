@@ -123,12 +123,12 @@ The eFuse (**TPS259804ONRGER**, 16.9V silicon-fixed OVLO, VQFN 4×4mm) is progra
 | ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 9.05A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
 | Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~2 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to limit peak PoE utilisation to 76.2% during cold-start charge (54.9W / 72W); marginally above the 75% rule but accepted exception (see §3.5). |
 
-**Resistor ladder values (all 0.1% thin-film, 0603):**
+**Resistor ladder values (all 1% thick-film, 0603):**
 
 | Designator | Value | Purpose |
 | --- | --- | --- |
-| R_UVLO_HI | 232 kΩ | UVLO upper resistor |
-| R_UVLO_LO | 28.7 kΩ | UVLO lower resistor |
+| R_UVLO_HI | 232 kΩ (ERJ-3EKF2323V — Mouser 667-ERJ-3EKF2323V / DigiKey P232KHCT-ND / JLCPCB C403086) | UVLO upper resistor |
+| R_UVLO_LO | 28.7 kΩ (ERJ-3EKF2872V — Mouser 667-ERJ-3EKF2872V / DigiKey P28.7KHCT-ND / JLCPCB C403135) | UVLO lower resistor |
 | R_ILIM | 210 Ω (ERJ-3EKF2100V — Mouser 667-ERJ-3EKF2100V / DigiKey P210HCT-ND / JLCPCB C403064) | ILIM set resistor (R3) — programs 7.0A trip current |
 
 > **Note on Battery Voltage — OVLO Margin:** The TPS259804ONRGER has a silicon-fixed OVLO rising threshold of 16.9V typ (16.32V min / 17.31V max from datasheet). To maintain an engineering margin of

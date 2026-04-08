@@ -195,7 +195,7 @@ GND ──────┴──────────────────�
   TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
 
 * **eFuse:** TPS259804ONRGER (16.9V OVLO silicon-fixed, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
-  * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 0.1% Thin-Film 0603. ILIM: 210Ω R_ILIM (R3) — 0.1% Thin-Film 0603. Note: OVLO is silicon-fixed on TPS259804ONRGER — no external OVLO resistor required or present.
+  * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 1% Thick-Film 0603. ILIM: 210Ω R_ILIM (R3) — 1% Thick-Film 0603. Note: OVLO is silicon-fixed on TPS259804ONRGER — no external OVLO resistor required or present.
   * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
     **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
     then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or
@@ -423,8 +423,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND (CT) / SRP1265A-100MTR-ND (T&R) / SRP1265A-100MDKR-ND (DKR) | C840531 |
 | Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — |
-| R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2323V | P232KBYCT-ND | — |
-| R2 | eFuse UVLO lower resistor | 28.7kΩ 0.1% Thin-Film | 0603 | 667-ERA-3ARB2872V | P28.7KBYCT-ND | — |
+| R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 1% Thick-Film (ERJ-3EKF2323V) | 0603 | 667-ERJ-3EKF2323V | P232KHCT-ND | C403086 |
+| R2 | eFuse UVLO lower resistor | 28.7kΩ 1% Thick-Film (ERJ-3EKF2872V) | 0603 | 667-ERJ-3EKF2872V | P28.7KHCT-ND | C403135 |
 | R3 | eFuse ILIM set resistor | 210Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF2100V | P210HCT-ND | C403064 |
 | R4, R5 | ETH Activity LEDs | 330Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
 | R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
@@ -517,11 +517,11 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > Mouser: `538-43650-0519`; DigiKey: `WM14587-ND` (confirmed); JLCPCB: `C563849` (confirmed).
 > ⚠️ **REVIEW REQUIRED:** Confirm Molex 43650-0519 Micro-Fit 3.0 is suitable for battery connector application
 > — verify current rating, connector type, and locking mechanism meet battery safety requirements.
-> * **R1 ERA-3ARB2323V (232kΩ)** — Corrected from 732kΩ (calculation error). R1 = 28700 × (11/1.21 − 1) = 232kΩ
-> for 11V UVLO threshold with R2 = 28.7kΩ. E96 standard value 232kΩ. Confirm stock at Mouser
-> (667-ERA-3ARB2323V, Panasonic ERA-3ARB2323V) or DigiKey (P232KBYCT-ND) before BOM freeze.
-> * **R4–R13 ERJ-3EKF series** — These are Panasonic **1% thick-film** resistors (corrected from "0.1% Thin-Film" in earlier drafts). The ERA-3ARB series (R1–R3) remains 0.1% thin-film for precision
-> UVLO/OVLO dividers. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
+> * **R1 ERJ-3EKF2323V (232kΩ)** — Corrected from 732kΩ (calculation error). R1 = 28700 × (11/1.21 − 1) = 232kΩ
+> for 11V UVLO threshold with R2 = 28.7kΩ. E96 standard value 232kΩ. Panasonic ERJ-3EKF series 1% thick-film.
+> Mouser 667-ERJ-3EKF2323V / DigiKey P232KHCT-ND / JLCPCB C403086.
+> * **R1–R3, R4–R13 ERJ-3EKF series** — All eFuse programming resistors (R1–R3) and general resistors (R4–R13) are Panasonic **1% thick-film** (ERJ-3EKF). The IC UVLO reference tolerance (±1.7%) dominates
+> the UVLO accuracy budget; 1% vs 0.1% resistors are indistinguishable in practice. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
 > * **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω
 > range). Mouser: 652-CSS2H-2512R-R010ELF; DigiKey: CSS2H-2512R-R010ELF-ND.
 > * **L1/L2 WE-CMBNC 7448031002** — Both L1 and L2 use the same Würth nanocrystalline CMC. L2 was originally Laird CM5022 but that part is **discontinued** (Laird EMC passives absorbed by TE
