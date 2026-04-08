@@ -382,7 +382,7 @@ The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-0
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
 | 7 | GND | — | TDI/RST inter-pin shield |
-| 8 | RST | CTRL→Stator | SYS_RESET_N (active-low) |
+| 8 | SYS_RESET_N | CTRL→Stator | SYS_RESET_N (active-low) |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |
