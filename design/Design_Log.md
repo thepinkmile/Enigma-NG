@@ -687,14 +687,43 @@ industry practice for catalogue magnetics.
 
 ---
 
-## DEC-020 — GND_CHASSIS Rib Clearway ENIG Bond (Pending)
+## DEC-020 — GND_CHASSIS Rib Clearway ENIG Bond
 
-- **Status:** Placeholder — pending investigation (see QUE-001)
-- **Date:** TBD
-- **Decision:** TBD — whether to expose ENIG on rib clearway zones for distributed chassis GND bonding
-- **Context:** QUE-001 raises the question of whether aluminium enclosure rib contact zones should have
-  solder mask openings (exposed ENIG) to create a direct electrical bond between GND_CHASSIS and the
-  aluminium enclosure. This placeholder reserves the DEC-020 number to prevent QUE-001 becoming stale.
+- **Status:** Accepted — 2026-04-08
+- **Affects:** Power Module — Supercap Block Assembly & Board Layout
+- **References:** QUE-001, Certification_Evidence.md §2.2
+
+**Decision:**
+The 2.0mm rib clearway gaps between supercap cells shall have:
+
+1. **Exposed ENIG strip (L1):** Solder mask opened in the rib clearway gap on the top copper layer (L1),
+   connected to the GND_CHASSIS net. Minimum strip width 1.0mm, running the full depth of the rib contact zone.
+   The aluminium enclosure rib makes direct electrical contact with the PCB GND_CHASSIS copper, providing a
+   distributed HF chassis ground bond at the supercap block location.
+
+2. **Polyimide (Kapton) tape on supercap bodies:** Each supercap cell shall be wrapped with a minimum of
+   one layer of 2-mil (50µm) polyimide tape prior to installation, to electrically insulate the cell body
+   from the aluminium compression ribs and prevent short circuits.
+
+3. **Conductive elastomer gasket strip:** A self-adhesive conductive elastomer or conductive foam gasket strip
+   (≤2mm wide, full rib contact depth) shall be applied to the rib face or PCB contact zone to accommodate
+   manufacturing tolerances and ensure positive, reliable electrical contact under compression.
+   Part to be selected at mechanical design phase when rib geometry is confirmed.
+
+**EMC rationale:**
+The combined structure — aluminium Can lid, compression ribs, conductive gasket, PCB ENIG strip, and
+GND_CHASSIS copper pour — forms a near-complete Faraday cage around the supercap block, improving
+shielding of the high-capacitance energy storage element from the rest of the board.
+
+**Compatibility with single-point GND_CHASSIS bond rule (Cert_Evidence §2.2):**
+The single-point rule governs signal GND → GND_CHASSIS crossings. Rib contact bonds are
+enclosure-to-GND_CHASSIS connections — both within the chassis domain — and do not create additional
+signal-to-chassis bonds. The rule is maintained.
+
+**Other boards:**
+Deferred pending mechanical design documentation. Controller Board Mechanical_Design.md §3 notes the
+prototype uses a 3D-printed chassis (no conductive rib contact); this decision will be revisited when
+metal chassis dimensions are finalised. Stator/Encoder/Rotor mechanical designs are not yet written.
 
 ---
 
@@ -827,7 +856,7 @@ Questions raised during design review that are deferred pending further investig
 
 ## QUE-001 — Exposed ENIG on Rib Clearway for GND_CHASSIS EMI Bonding
 
-- **Status:** Open — deferred pending decision
+- **Status:** Closed — resolved by DEC-020 (2026-04-08)
 - **Raised:** 2026-04-04
 - **Area:** Power Module / All Boards — PCB Finish & EMC
 
@@ -865,6 +894,13 @@ If accepted, the following updates would be made:
 | GND_CHASSIS topology | Single-point bond already defined (Cert_Evidence §2.2); rib contact adds distributed HF bond — compatible if star-point rule maintained for DC |
 | Mechanical tolerance | Rib must be tight-fitting or spring-loaded to ensure reliable electrical contact |
 | Other boards | Only applies where enclosure ribs contact the PCB — needs mechanical review per board |
+
+### Resolution
+
+Accepted. See DEC-020. Decision: expose ENIG on rib clearway zones, add minimum 2-mil polyimide (Kapton)
+tape on supercap bodies, and add conductive elastomer gasket strip at the rib-to-PCB contact interface.
+Other boards deferred pending mechanical design documentation (rib presence unconfirmed for Stator/Encoder/Rotor;
+Controller noted as using 3D-printed prototype chassis with future metal chassis EMI gaskets per Mechanical_Design.md §3).
 
 ---
 
@@ -960,7 +996,7 @@ This section records all INC (inconsistency) items tracked during the design pro
 | INC-19 | Power Module PoE | Ag5300/Ag53000 is 802.3at only (25.5W PD). No 802.3bt Type 4 PCB module found. Architecture change required: Type 3 (51W) insufficient; Type 4 (72W) required | Ag5300/Ag53000 (802.3at SIL module) | Discrete two-stage: TPS2372-4 (PD) + TPS23730 + POE600F-12LD (ACF transformer). See DEC-002 | ✅ Resolved — DEC-002 |
 | INC-20 | Power Module Supercap | Supercap charge path had no current limiting — would cause excessive inrush and violate 75% utilisation rule under PoE | Supercap directly on 5V_MAIN bus | LTC3350 soft-charge via RICHARGE resistor; 0.5A limit under PoE. See DEC-004 | ✅ Resolved — DEC-004 |
 | INC-21 | Power Module J2 | Component selection locked: RJ45 MagJack | — | Würth 7499111121A (SMT, shielded, 2-LED, 10/100/1000) | ✅ Locked |
-| INC-22 | Power Module ESD | Component selection locked: Ethernet ESD arrays | — | 2× TI TPD4E05U06DQAR (0.8pF, ±15kV, −40°C to +125°C, U-DFN-10) per port | ✅ Locked |
+| INC-22 | Power Module ESD | Component selection locked: Ethernet ESD arrays | — | 2× TI TPD4E05U06DRYR (0.8pF, ±15kV, −40°C to +125°C, U-DFN-10) per port | ✅ Locked |
 | INC-23 | Power Module Bob Smith | Component selection locked: Bob Smith termination network | — | 4× 75Ω 0402 ±1% resistors + 1× 10nF Y1-class capacitor to GND_CHASSIS | ✅ Locked |
 
 ---

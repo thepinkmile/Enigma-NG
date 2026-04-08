@@ -372,7 +372,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
   * 100Ω Diff: 4.5 mil width / 8.5 mil gap (HDMI, Ethernet).
 * **L4 (Internal):** High-Current Power Plane (5V_MAIN / 3V3_ENIG).
 * **L5 (Internal):** Secondary GND Plane (Shielding).
-* **L6 (Bottom):** Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.
+* **L6 (Bottom):** JTAG/Data Plate (Signal/Copper Pour).
 
 ### 9.3. Trace Widths & Impedance
 

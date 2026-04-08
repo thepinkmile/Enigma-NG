@@ -71,6 +71,13 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
   * **Vias:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
 * **Supercap Block:** 2×2 arrangement (4 cells, 14mm centre-to-centre pitch, 2.0mm air gap between cells). Block footprint ≈ 28mm × 28mm.
   The 2.0mm gap is a 'No-Fly Zone' for all PCB traces on L1–L6 (enclosure rib clearway).
+  * **Rib Clearway ENIG Bond:** Solder mask is opened in the 2.0mm rib clearway gap on L1 (top copper),
+    connected to GND_CHASSIS. Minimum strip width 1.0mm × full rib contact depth. The aluminium enclosure
+    rib makes direct electrical contact via a conductive elastomer gasket strip (≤2mm wide, self-adhesive;
+    part selected at mechanical design phase). Supercap bodies are wrapped in minimum 2-mil (50µm) polyimide
+    (Kapton) tape before installation to prevent shorts with the metal ribs. Combined with the GND_CHASSIS
+    copper pour in the shadow zone (§1 keepout rule), this creates a near-complete Faraday cage around the
+    supercap block. See DEC-020.
 * **Routing Keep-out:** 32mm × 32mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
 
 ### 2. Power & UPS Hub
@@ -409,9 +416,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C_SC1–4 | Supercaps (4× cells, 2S2P) | Tecate TPLH-2R7/22WR12X31 / 22F 2.7V −40°C to +85°C | THT Radial 12×31mm | N/A — DigiKey only | 2085-TPLH-2R7/22WR12X31-ND | N/A — consign via DigiKey |
 | D1 | BATT_PRES ESD | TPD1E10B06 | SOD-923 | 595-TPD1E10B06QDCKR | 296-TPD1E10B06QDCKRQ1CT-ND | C284765 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
-| D3 | USB-C ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
-| D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
-| D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
+| D3 | USB-C ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DRYR | 296-TPD4E05U06DRYRCT-ND | C123462 |
+| D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DRYR | 296-TPD4E05U06DRYRCT-ND | C123462 |
+| D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DRYR | 296-TPD4E05U06DRYRCT-ND | C123462 |
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 10nF 100V X7R 0402 | 0402 | 80-C0402C103J1RAUTO | 399-C0402C103J1RACAUTOCT-ND | C19862706 |
 | C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |

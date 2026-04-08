@@ -396,7 +396,7 @@ _______________________________________    _____________    ____________________
 ## §9 Routing — Trace Width Specifications
 
 **Board specs:** 6-layer / 2oz finished copper (JLC06161H-2116).
-L1 = SMT/GPIO; L2 = GND; L3 = High-Speed Striplines (USB/HDMI/GBE); L4 = Power Plane (5V_MAIN/3V3_ENIG); L5 = Secondary GND; L6 = Diagnostic Bank, Enigma 12-bit Data Bus, JTAG & Global Data Plate.
+L1 = SMT/GPIO; L2 = GND; L3 = High-Speed Striplines (USB/HDMI/GBE); L4 = Power Plane (5V_MAIN/3V3_ENIG); L5 = Secondary GND; L6 = JTAG/Data Plate (Signal/Copper Pour).
 
 **IPC-2221A basis (2oz copper, external, 10°C rise, 25°C ambient):**
 For 2oz external: ~0.15 mm/A. Inner power pours (L3) handle high currents without width constraints.
@@ -410,7 +410,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 | JTAG pass-through (TCK, TMS, TDI, TDO) via Link-Beta J2 to Stator | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L6 | 50 Ω controlled impedance over L5 GND plane; CI exception per DEC-016/DEC-023. See `JTAG_Integrity.md`. |
 | 5V_MAIN entry (Link-Alpha J1 → CM5 DF40 power pins) | 9.0 A | 1.35 mm | 2.00 mm | **2.00 mm + pour** | L1 + L3 inner | Very high current (> 5.5 A threshold); L1 traces **2.00 mm minimum**; L3 inner power pour mandatory |
 | 3V3_ENIG distribution (Link-Alpha input → CM5 + pass-through Link-Beta) | 3.0 A | 0.45 mm | 0.80 mm | **0.80 mm** | L1 | Canonical 3V3_ENIG width per Global_Routing_Spec §1.1; entry from PM LDO (3.0 A limit); passed to Stator via 8× Link-Beta pins |
-| GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Solid GND reference plane; must be uninterrupted under all CI (JTAG) traces on L1 |
+| GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Solid GND reference plane; must be uninterrupted under all CI (JTAG) traces on L6 |
 
 ### Notes
 
