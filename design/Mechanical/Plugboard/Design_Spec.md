@@ -30,9 +30,9 @@ encryption matrix in real time.
 
 * **Logic:** The CPLD monitors 64 insertion-detect lines (spade bank BT65–BT128, Switch contacts)
   sourced from the 6.35 mm mono switched jack sockets.
-* **Signal:** Each jack Switch contact is normally closed (Tip-connected) when no plug is inserted.
-  On plug insertion the contact opens, releasing the CPLD input to pull HIGH via the pull-up network. The CPLD
-  detects the rising edge and marks the corresponding channel as patched.
+* **Signal:** Lines are **active-low**. The CPLD internal weak pull-up holds each input HIGH when no
+  plug is inserted. On plug insertion the switch contact closes to GND, pulling the CPLD input LOW.
+  The CPLD detects the falling edge and marks the corresponding channel as patched.
 * **Latency:** Sub-microsecond detection of Stecker cable insertion; the internal encryption matrix
   is updated within one CPLD clock cycle.
 * **Harness:** 64× 2-wire assemblies (Tip wire + Switch wire), each terminated with 6.35 mm female

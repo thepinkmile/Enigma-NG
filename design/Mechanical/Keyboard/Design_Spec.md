@@ -27,6 +27,9 @@ The Encoder CPLD maps 64 mechanical key inputs to the parallel 6-bit data bus. K
 a standard QWERTY layout extended with numbers, symbols, and modifier keys.
 
 * **Layout:** Standard QWERTY + Numbers + Symbols + Shift (64 keys total).
+* **Signal polarity:** Lines are **active-low**. The 10 kΩ pull-up holds each input HIGH when the key
+  is not pressed. Key press closes the switch contact to GND, pulling the CPLD input LOW; the CPLD
+  detects the falling edge.
 * **Debouncing:** Hardware RC de-bounce circuit per input line: 10 kΩ pull-up resistor to 3V3_ENIG +
   100 nF X7R capacitor to GND on each key input line.
   > ⚠️ **Open item:** EPM240T100I5N Schmitt trigger input capability and internal weak pull-up strength
