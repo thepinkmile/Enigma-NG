@@ -202,7 +202,7 @@ U2A SW node
                                     at ~400kHz via R_FSET resistor until SYNC locks)
 ```
 
-Both SN74LVC1G14 instances are powered from 3V3_ENIG (available post-LDO startup). 100nF X7R decoupling capacitors are placed within 0.5mm of each VCC pin.
+Both SN74LVC1G14DBVRQ1 instances are powered from 3V3_ENIG (available post-LDO startup). 100nF X7R decoupling capacitors are placed within 0.5mm of each VCC pin.
 
 **Phase accuracy:** At 400 kHz nominal, the RC delay produces a 180° offset. With DRSS modulation at ±5.5% (frequency range 378–422 kHz), the fixed RC delay introduces ±8° phase variation. The
 residual asymmetric ripple at this offset error is less than 5% of the single-phase ripple amplitude — acceptable for all certification purposes.
