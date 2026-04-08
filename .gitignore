@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# GitHub Copilot session state (canonical project state, not for version control)
+.copilot/
+
 # User-specific files
 *.rsuser
 *.suo
