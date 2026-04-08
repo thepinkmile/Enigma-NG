@@ -177,7 +177,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C4 | Decoupling | 0.1µF | 0402 | 81-GRM155R71A104KE1D | 311-1424-1-ND | C49678 |
+| C1-C4 | Decoupling | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R | 0402 | — | — | C19666 |
 | J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | 1×5 female IDC | 2.54mm | — | — | C50950 |
 | J2 | JTAG OUTPUT header (10-pin interleaved GND) | 1×10 female IDC | 2.54mm | — | — | C2337 |

@@ -37,7 +37,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | STUSB4500LQTR — USB-C Sink Controller (QFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | LM74700QDBVRQ1 — Ideal-Diode OR-ing Controller (SOT-23-6) | 3 | — | — | — | — | — | — | — | — | — | 3 |
 | MCP121T-450E/LB — 4.5 V Voltage Supervisor (SC70-3) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPS2372-4 — PoE PD Interface Type 4 (QFN-16) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| TPS2372-4 — PoE PD Interface Type 4 (VQFN-20) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS23730RMTR — PoE ACF DC-DC Controller (WQFN-20) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS2065C — USB Power Distribution Switch (SOIC-8) | — | 1 | — | — | — | — | — | — | — | — | 1 |
@@ -138,7 +138,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **22Ω:** 10 units (JTAG end-of-chain damping — Reflector R1 × 1; spares).
 * **121kΩ:** 5 units (TPS2372-4 RMPS — MPS current set, R13).
 * **301Ω:** 5 units (LTC3350 RICHARGE — charge current set, R11).
-* **10mΩ / 5A (2512 Kelvin):** 2 build + 3 spares (PM R23 INA219 U12 + Stator R1 INA219 U2; Bourns CSS2H-2512R-**R010**ELF).
+* **10mΩ / 5A (2512 Kelvin):** 3 build + 3 spares (PM R12 LTC3350 RSENSE + PM R23 INA219 U12 + Stator R1 INA219 U2; Bourns CSS2H-2512R-**R010**ELF).
 
 ## 3a. EMI Filter Passives
 
@@ -225,13 +225,13 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 * **INA219AIDR:** 2 units — PM U12 @ I²C 0x40 (5V\_MAIN current monitoring); Stator U2 @ I²C 0x45 (rotor telemetry).
 * **20mΩ 1206 Shunt (ERJ-6ENF20R0V):** 0 units — retired from Stator; replaced by CSS2H-2512R-R010ELF.
-* **10mΩ 2512 Kelvin Shunt (CSS2H-2512R-R010ELF):** 2 build + 3 spares — PM R23 (INA219 U12, 0x40) + Stator R1 (INA219 U2, 0x45).
+* **10mΩ 2512 Kelvin Shunt (CSS2H-2512R-R010ELF):** 3 build + 3 spares — PM R12 (LTC3350 RSENSE) + PM R23 (INA219 U12, 0x40) + Stator R1 (INA219 U2, 0x45).
 
 ## 8. Power Module — PoE Subsystem
 
 | Ref | Component | Part Number | Value / Notes | Supplier | Supplier Part # | Unit Price (1-off) | Unit Price (volume) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| U9 | PoE PD Interface (Type 4) | TPS2372-4RGWR | TI QFN-16; 802.3bt Type 4, external hotswap, up to 90W | Mouser | 595-TPS2372-4RGWR | ~£3.50 | ~£2.00 |
+| U9 | PoE PD Interface (Type 4) | TPS2372-4RGWR | TI VQFN-20; 802.3bt Type 4, external hotswap, up to 90W | Mouser | 595-TPS2372-4RGWR | ~£3.50 | ~£2.00 |
 | U10 | PoE ACF DC-DC Controller | TPS23730RMTR | TI WQFN-20; ACF topology; PSR mode; 12V output set by POE600F-12LD turns ratio; VS pin to aux winding | Mouser | 595-TPS23730RMTR | ~£3.50 | ~£2.00 |
 | T2 | PoE ACF Isolation Transformer | **Coilcraft POE600F-12LD** | 60W; 12V out; 36–72V in; 200kHz; ACF topology; ≥1500Vrms; SMT; RoHS | Coilcraft Direct | POE600F-12LD | **£3.54** | **~£1.86** |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 0.1% Thin-Film | 121kΩ E96; IMPS = VIMPS/RMPS = 1.205V/121kΩ = 9.96mA (Type 4 MPS auto-stretch) | Mouser | 667-ERJ-3EKF1213V | ~£0.10 | ~£0.03 |
@@ -266,7 +266,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=26.7kΩ (ERA-3ARB2672V, Mouser 667-ERA-3ARB2672V, DigiKey P26.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.40V. |
 | U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERA series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
-| R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0V | P75.0BYCT-ND | C105872 |
+| R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC at board level) | 10nF 100V X7R 0402 | 0402 | 81-GRM155R72A103KA35D | 490-GRM155R72A103KA35DCT-ND | C57112 |
 
 ### 9.0. Part Number Issues Requiring Action

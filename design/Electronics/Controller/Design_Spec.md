@@ -86,7 +86,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
     * **Pins 29–38:** Status/control signals (SYS_FAULT, POE_STAT, SW_LED_R/G/B, PWR_GD, I2C1, USB_STAT).
     * **Pins 39–44:** 3V3_ENIG power (6 pins × 0.5A = 3.0A capacity).
     * **Pins 45–48:** Mixed control (BATT_PRES_N, ROTOR_EN, SW_LED_CTRL, GND).
-    * **Pins 49–80:** 5V_MAIN high-current entry (32 pins × 0.5A = 16A; actual ≤9A).
+    * **Pins 49–80:** 5V_MAIN high-current entry (32 pins interleaved: 16× 5V_MAIN + 16× GND; 16 × 0.5A = 8A from this cluster; combined with pins 21–22 = 9A total).
   * **Power Vias:** 4-via "Power Clusters" (0.3mm drill) per Samtec power pin for thermal stability.
   * **Full pin table:** See `Controller/Board_Layout.md` LINK-ALPHA section.
 * **Ethernet:** 100Ω Stripline pairs on L3, shielded by L2/L5 ground planes (GbE MDI).
@@ -471,7 +471,7 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | CL31B106KBHNNNE |
-| C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1005-1-ND | CL05B104KB5NNNC |
+| C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034 | THT horizontal | 534-3034 | 36-3034-ND | C70377 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | Nexperia BAT54 | SOT-23 | 771-BAT54215 | 1727-1064-1-ND | C8598 |
 | J1 | Link-Alpha 80-pin Socket | ERF8-040-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621CT-ND | C3640808 |

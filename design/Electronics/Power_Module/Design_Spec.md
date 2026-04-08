@@ -221,7 +221,7 @@ GND ──────┴──────────────────�
     * Hold-up duration from fully-charged bank: ≥14.5 seconds at 5W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
-  * **PD Interface:** TPS2372-4 (U9, QFN-16) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
+  * **PD Interface:** TPS2372-4 (U9, VQFN-20) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
 
     resistor is required.
 
@@ -376,7 +376,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | U7 TPS75733 LDO | 0.33W (1.85A load) | 0.45W (2.2A load, Vdo≈0.22V) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 | T2 POE600F-12LD | 5.1W | 5.7W | At 90–88% efficiency, 51–57W load |
 | U3 LTC3350 | 0.3W | 0.5W | Charge path only (0.5A); low concern |
-| U9 TPS2372-4 | ~0.2W | ~0.3W | QFN thermal pad to GND pour |
+| U9 TPS2372-4 | ~0.2W | ~0.3W | VQFN-20 thermal pad to GND pour |
 | U10 TPS23730 | ~0.3W | ~0.5W | WQFN thermal pad to GND pour |
 | **Total** | **~14.8W** | **~19.5W** | Dissipated into 42mm Al 'Power Can' enclosure via bottom thermal pad |
 
@@ -411,7 +411,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | D3 | USB-C ESD | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DBVR | 296-TPD4E05U06DBVRCT-ND | C123462 |
 | D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
 | D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06 | U-DFN-10 | 595-TPD4E05U06DQAR | 296-TPD4E05U06DQARCT-ND | C123462 |
-| R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0V | P75.0BYCT-ND | C105872 |
+| R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC at board level) | 10nF 100V X7R 0402 | 0402 | 81-GRM155R72A103KA35D | 490-GRM155R72A103KA35DCT-ND | C57112 |
 | C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
@@ -432,7 +432,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R9 | SYS_RESET_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R10 | ROTOR_EN Pull-down (EN to GND) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
-| R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | — | — | — |
+| R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
 | R14 | LTC3350 BACKUP divider upper (R_TOP) — **UPDATED per PM-06 fix** | 26.7kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.40V → R_TOP/R_BOT=(4.40/1.2)−1=2.667 → R_BOT=10kΩ → R_TOP=26.67kΩ → E96=26.7kΩ → actual trigger: 4.40V, 100mV below PWR_GD at 4.50V] | 0603 | 667-ERA-3ARB2672V | P26.7KBYCT-ND | — |
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB1002V | P10.0KBYCT-ND | — |
@@ -441,7 +441,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — *Open item — select during mechanical design phase* (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | *Open item — select during mechanical design phase* | *Open item — select during mechanical design phase* | — |
 | SW2 | CM5 Hard Reset | Tactile SMT pushbutton, momentary SPST, in parallel with MCP121T-450E (U8) RESET output on GLOBAL_EN line. Pulls GLOBAL_EN to GND on press. No pull-up needed (R9 on GLOBAL_EN line serves this purpose). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | — | — | — |
+| R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
@@ -454,7 +454,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | U6a, U6b, U6c | OR-ing Controllers (×3, one per power input: PoE, USB-C, Battery) | LM74700QDBVRQ1 | SOT-23-6 | 595-LM74700QDBVRQ1; alt T&R: 595-LM74700QDBVTQ1 | 296-LM74700QDBVRQ1CT-ND | C2941042 |
 | U7 | 3V3_ENIG LDO | TPS75733KTTRG3 (fixed 3.3V, active-LOW EN) | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 |
 | U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | C52146050 |
-| U9 | PoE PD Interface (Type 4) | TPS2372-4 | QFN-16 | 595-TPS2372-4RGWR | 296-52795-1-ND | — |
+| U9 | PoE PD Interface (Type 4) | TPS2372-4 | VQFN-20 | 595-TPS2372-4RGWR | 296-52795-1-ND | — |
 | U10 | PoE DC-DC Controller (ACF) | TPS23730RMTR — PSR mode; 12V output set by POE600F-12LD transformer turns ratio; VS pin to aux winding; no external feedback divider required. | WQFN-20 | 595-TPS23730RMTR | 296-TPS23730RMCT-ND | — |
 | U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
 | U12 | 5V_MAIN Current Monitor | INA219AIDR — Zero-Drift Current/Power Monitor (I²C 0x40) | SOIC-8 | 595-INA219AIDR | 296-INA219AIDRCT-ND | C7430 |
