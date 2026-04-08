@@ -468,7 +468,7 @@ See `design/Electronics/Investigations/JTAG_Integrity.md`.
 > from Controller to JDB during detailed design. LINK-BETA is confirmed as a direct Board-to-Board
 > connector (no cable), so 33 Ω series damping applies throughout (not 75 Ω cable-driving rule).
 > Controller JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are pass-through — routed directly from
-> JDB hat-header to LINK-BETA without active components. See DEC-023.
+> JDB hat-header to LINK-BETA without active components. See DEC-024.
 
 **Trace width rule added to all 4-layer and 6-layer boards:** 0.127 mm (5 mil) for all JTAG signal
 traces on outer layers over a GND plane.
@@ -694,10 +694,10 @@ industry practice for catalogue magnetics.
 - **References:** QUE-001, Certification_Evidence.md §2.2
 
 **Decision:**
-The 2.0mm rib clearway gaps between supercap cells shall have:
+The 3.0mm rib clearway gaps between supercap cells shall have:
 
 1. **Exposed ENIG strip (L1):** Solder mask opened in the rib clearway gap on the top copper layer (L1),
-   connected to the GND_CHASSIS net. Minimum strip width 1.0mm, running the full depth of the rib contact zone.
+   connected to the GND_CHASSIS net. Minimum strip width 1.5mm, running the full depth of the rib contact zone.
    The aluminium enclosure rib makes direct electrical contact with the PCB GND_CHASSIS copper, providing a
    distributed HF chassis ground bond at the supercap block location.
 
@@ -706,7 +706,7 @@ The 2.0mm rib clearway gaps between supercap cells shall have:
    from the aluminium compression ribs and prevent short circuits.
 
 3. **Conductive elastomer gasket strip:** A self-adhesive conductive elastomer or conductive foam gasket strip
-   (≤2mm wide, full rib contact depth) shall be applied to the rib face or PCB contact zone to accommodate
+   (≤3mm wide, full rib contact depth) shall be applied to the rib face or PCB contact zone to accommodate
    manufacturing tolerances and ensure positive, reliable electrical contact under compression.
    Part to be selected at mechanical design phase when rib geometry is confirmed.
 
@@ -727,7 +727,46 @@ metal chassis dimensions are finalised. Stator/Encoder/Rotor mechanical designs 
 
 ---
 
-## DEC-021 — JDB FT232H Clock Source: Dedicated 12MHz SMD Crystal Selected
+## DEC-021 — Supercapacitor Bank Upgrade: 2×2 2S2P → 2×3 2S3P
+
+- **Status:** Accepted — 2026-04-08
+- **Affects:** Power Module — Supercap Bank, Board Layout, Hold-up Specification
+- **References:** DR-PM-07, DR-PM-09, DEC-020
+
+**Decision:**
+The supercapacitor bank is upgraded from a 2×2 (4-cell, 2S2P) to a **2×3 (6-cell, 2S3P)** arrangement,
+with the inter-cell air gap increased from 2.0mm to **3.0mm**.
+
+| Parameter | Previous | New |
+| :--- | :--- | :--- |
+| Cell count | 4 (C_SC1–4) | 6 (C_SC1–6) |
+| Arrangement | 2×2 | 2×3 |
+| Configuration | 2S2P | 2S3P |
+| Inter-cell gap | 2.0mm | 3.0mm |
+| Cell pitch | 14mm | 15mm |
+| Block footprint | 28mm × 28mm | 30mm × 45mm |
+| Shadow zone | 32mm × 32mm | 34mm × 49mm |
+| Effective capacitance | 22F at 5.4V | 33F at 5.4V |
+| Hold-up energy | 72.4J | 108.6J |
+| Hold-up duration @ 5W | ≥14.5s | ≥21.7s |
+| Charge time (depleted) | ~2 min | ~3 min |
+
+**Rationale:**
+
+- **50% more hold-up:** 33F vs 22F provides ≥21.7 seconds at 5W — a more comfortable shutdown window
+  and headroom for higher CM5 load profiles at prototype bring-up.
+- **LTC3350 compatibility:** No IC change required. LTC3350 is configured for 2 cells in series;
+  each series position now has 3×22F in parallel (66F per position). CELLS register unchanged.
+  RICHARGE (0.5A charge current limit) unchanged; charge time increases ~3 minutes from depleted.
+- **Wider gap (3mm):** The increased inter-cell gap from 2.0mm to 3.0mm provides adequate clearance
+  for the 2-mil Kapton tape wrap (DEC-020), the conductive elastomer gasket strip, and the aluminium
+  enclosure compression ribs, while maintaining margin for manufacturing tolerances.
+- **Board space:** The Power Module board dimensions are not yet fixed; the design is being built
+  around this component block. The increased footprint (30mm × 45mm vs 28mm × 28mm) is accepted.
+
+---
+
+## DEC-022 — JDB FT232H Clock Source: Dedicated 12MHz SMD Crystal Selected
 
 - **Status:** Decided
 - **Date:** 2026-04-06
@@ -768,7 +807,7 @@ During JDB detailed design review, two issues were identified:
 
 ---
 
-## DEC-022 — JDB GND_CHASSIS Omitted; Mounting Holes Tied to GND
+## DEC-023 — JDB GND_CHASSIS Omitted; Mounting Holes Tied to GND
 
 - **Status:** Decided
 - **Date:** 2026-04-06
@@ -809,7 +848,7 @@ via, or `GND_CHASSIS` net is present on the JDB.
 
 ---
 
-## DEC-023 — JDB is Complete JTAG Master; Controller JTAG Lines Are Pass-Through
+## DEC-024 — JDB is Complete JTAG Master; Controller JTAG Lines Are Pass-Through
 
 - **Status:** Decided
 - **Date:** 2026-04-06
@@ -845,33 +884,6 @@ for ribbon cable connections. See DEC-016 for the full 75 Ω / 33 Ω rationale.
   33 Ω 0402 count increased in JDB; 33 Ω 0603 row removed from CTL.
 - `Electronics/Investigations/JTAG_Integrity.md`: §7.4 and §8 updated to reflect JDB location.
 - `Design_Log.md DEC-016`: Update note added.
-
----
-
-## DEC-024 — Supercapacitor Bank Expanded to 2×3 (2S3P, 6 Cells)
-
-- **Status:** Accepted — 2026-04-08
-- **Affects:** Power Module — Supercapacitor Bank, Board Layout, BOM
-- **References:** DR-PM-07, DR-PM-09
-
-**Decision:**
-The supercapacitor bank is expanded from a 2×2 (2S2P, 4 cells) to a **2×3 (2S3P, 6 cells)** arrangement.
-
-| Parameter | Previous | Updated |
-| :--- | :--- | :--- |
-| Configuration | 2S2P | 2S3P |
-| Cell count | 4 | 6 |
-| Effective capacitance | 22F at 5.4V | 33F at 5.4V |
-| Hold-up duration @ 5W | ≥14.5 s | ≥21.8 s |
-| Block footprint | 28mm × 28mm | 28mm × 42mm |
-| Shadow keepout | 32mm × 32mm | 32mm × 46mm |
-| Charge time (depleted) | ~2 min | ~3 min |
-
-**Rationale:**
-- 50% increase in hold-up energy (72.6J → 108.9J) provides greater margin for graceful CM5 shutdown under heavier load conditions.
-- Board is custom-designed; PCB area is not a constraint at this design stage.
-- LTC3350 fully supports 2S3P (2 cells in series, 3 in parallel); no topology change required.
-- Supply voltage (5.4V max) and all downstream design parameters unchanged.
 
 ---
 
