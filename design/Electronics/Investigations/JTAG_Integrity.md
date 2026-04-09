@@ -453,7 +453,7 @@ distance on the trace.
 | 75 Ω 1% 0603 (Stator R7–R15) | ~£0.002 | 9 | <£0.02 |
 | 75 Ω 1% 0402 (Encoder R8, ×3 boards) | ~£0.001 | 3 | <£0.01 |
 | 33 Ω 1% 0402 (Encoder R7, ×3 boards) | ~£0.001 | 3 | <£0.01 |
-| 33 Ω 1% 0603 (Controller R4–R6) | ~£0.002 | 3 | <£0.01 |
+| 33 Ω 1% 0402 (JDB R6–R8) | ~£0.002 | 3 | <£0.01 |
 | Controlled impedance JLCPCB certification (optional) | ~£40/order | Per board type | ~£120 total if verified |
 | **Controlled impedance design only (self-calc, no cert)** | **£0** | — | **£0** |
 

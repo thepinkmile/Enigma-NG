@@ -505,7 +505,7 @@ See `design/Electronics/Investigations/JTAG_Integrity.md`.
 
 | Board | Refs | Value | Purpose |
 | :--- | :--- | :--- | :--- |
-| Controller | R4, R5, R6 | 33 Ω 0603 | ~~TCK / TMS / TDI series R after 74LVC1G125 buffer, before LINK-BETA~~ **Moved to JDB — see DEC-024** |
+| Controller | R4, R5, R6 | 33 Ω 0603 | ~~TCK / TMS / TDI series R after 74LVC2G125 buffer, before LINK-BETA~~ **Moved to JDB — see DEC-024** |
 | Stator | R7–R9 | 75 Ω 0603 | TCK → J4 / J5 / J6 encoder port outputs |
 | Stator | R10–R12 | 75 Ω 0603 | TMS → J4 / J5 / J6 encoder port outputs |
 | Stator | R13–R15 | 75 Ω 0603 | TDI chain drive: Stator CPLD TDO→J4, J4 return→J5, J5 return→J6 |
