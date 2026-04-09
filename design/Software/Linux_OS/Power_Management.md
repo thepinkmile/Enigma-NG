@@ -240,7 +240,7 @@ The Stator board carries an INA219 (U2, I2C address **0x45**) monitoring the 3V3
 ### Firmware Note
 
 > ⚠️ The INA219 calibration register must be written on every power-up before any current readings are taken.
-> Use **CAL = 0x0400** (1024). If this is skipped, the `Current_Register` will read zero regardless of actual current.
+> Write smbus2 value **0x0004** (byte-swapped from logical 0x0400 = 1024; smbus2 transmits LSB first so INA219 receives 0x0400 = 1024 as intended). If this is skipped, the `Current_Register` will read zero regardless of actual current.
 
 ```python
 INA219_ADDR    = 0x45        # Rotor stack monitor on Stator board

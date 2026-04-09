@@ -335,8 +335,8 @@ Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-fil
 **Affects:** Controller J1 (Link-Alpha), Controller J2 (Link-Beta), Consolidated BOM connector inventory
 
 **Decision:**  
-Both BtB connectors on the Controller Board (J1 Link-Alpha and J2 Link-Beta) use the **ERF8-040-05.0-S-DV-K-TR female socket**.
-The mating male plugs (ERM8-040-05.0-S-DV-K-TR) are fitted to the Power Module (J1) and the Stator Board (J1) respectively.
+Both BtB connectors on the Controller Board use the ERF8 female socket: J1 (Link-Alpha) uses **ERF8-040-05.0-S-DV-K-TR** and J2 (Link-Beta) uses **ERF8-020-05.0-S-DV-K-TR**.
+The mating male plugs are fitted to the Power Module (J1, ERM8-040) and the Stator Board (J8, ERM8-020-05.0-S-DV-K-TR) respectively.
 
 **Rationale:**  
 During mechanical assembly, the Controller Board slides into the enclosure and must simultaneously engage with two boards along its back edge
@@ -367,7 +367,7 @@ significantly complicating assembly.
 
 **Date:** 2026-04-04
 **Status:** ✅ RESOLVED
-**Affects:** Controller Board (J2), Stator Board (J1), Consolidated BOM
+**Affects:** Controller Board (J2), Stator Board (J8), Consolidated BOM
 
 **Decision:**
 The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-040) to **40-pin
