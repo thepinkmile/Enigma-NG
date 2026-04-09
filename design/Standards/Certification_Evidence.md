@@ -95,6 +95,8 @@ for CE/UKCA EMC compliance.
 ```text
 [PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 60W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.4V]
   → LM74700-Q1 OR-ing controller + CSD17483F4T ideal-diode FETs (×3)
+  → [L1 CMC → L2 CMC] (common-mode attenuation, 1 kHz–30 MHz)
+  → [L3 + C Pi-filter] (differential-mode HF bypass)
   → TCO F1 (72°C thermal fuse)
   → TPS259804ONRGER eFuse (7A ILIM via R3=210Ω, 11.0V UVLO, 16.9V OVLO silicon-fixed, VQFN 4×4mm)
   → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 6× Tecate TPLH-2R7/22WR12X31 supercaps (33F/5.4V, 2S3P)]

@@ -135,7 +135,7 @@ Before any switching occurs, the raw input power passes through a two-stage filt
 
   division was absorbed by TE Connectivity in 2019.
 
-- Pi-filter sections (inductors + capacitors) on each power path provide additional attenuation.
+- A Pi-filter (L3 + capacitors) on the combined post-OR-ing VIN_RAW bus provides additional differential-mode attenuation.
 
 Together, these three techniques — phase interleaving, spread spectrum, and input filtering — are designed to comfortably meet EN 55032 Class B conducted and radiated emission limits under CE/UKCA
 certification.
@@ -177,8 +177,12 @@ Total startup time from power application to operational readiness is typically 
 **Supercapacitors:** The Power Module contains six supercapacitor cells (22F each, arranged in a 2-series × 3-parallel configuration giving 33F at 5.4V, managed by the LTC3350 supercap controller)
 providing **≥21.7 seconds of hold-up** at a 5W shutdown load. This is sufficient for the operating system to perform a clean, ordered shutdown, preventing filesystem and memory corruption.
 
-> **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 3 minutes from a cold start. The system is designed for operational sessions of 30 minutes or
-> longer — the supercapacitors will be fully charged well before they could ever be needed in normal use.
+> **Note:** Full hold-up protection requires the supercapacitors to be charged, which takes approximately 3 minutes from a cold start. The system is designed for operational sessions of
+> **15–30 minutes or longer** — the supercapacitors will be fully charged well before they could ever be needed in normal use.
+>
+> The graceful shutdown mechanism is a best-effort protection measure. In normal use, unplanned power removal after a full operational session is expected to be harmless — the hold-up window provides
+> a comfortable safety margin that far exceeds the time required for a clean OS shutdown. Loss of power before the supercapacitors are fully charged (within the first ~3 minutes of a session) is an
+> accepted risk for prototype use.
 
 The LTC3350 controller continuously monitors the supercapacitor bank, balances charge across all six cells, and automatically switches to supercap-powered operation within microseconds of detecting
 a loss of the main 5V rail. No user action is required — the switchover is completely transparent to the operating system.
