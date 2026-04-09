@@ -184,7 +184,7 @@ GND ──────┴──────────────────�
 * C1/C4 (22µF): bulk DM filtering at f_c and 2nd–3rd harmonics.
 * C2/C5 (1µF): mid-frequency bypass; bridges impedance gap between 22µF ceramic SRF (~3MHz) and 100nF.
 * C3/C6 (100nF): HF bypass; low impedance at >10MHz where bulk caps become inductive.
-* All caps: 50V rating provides >3× voltage margin over 17V max input; X7R stable over −55°C to +125°C.
+* All caps: 50V rating provides >3× voltage margin over 16.9V max input; X7R stable over −55°C to +125°C.
 
 **Shielding:** Vintage Silver Aluminium enclosure screwed to `GND_CHASSIS` ears — provides a Faraday shield for the entire Power Module, supplementing conducted filtering with radiated attenuation.
 
@@ -322,7 +322,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ### 2. Startup Timeline
 
-1. **Input:** 11–17V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.4V). All three sources are within the TPS25980
+1. **Input:** 11–16.9V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.4V). All three sources are within the TPS25980
 
    eFuse window (UVLO 11V / OVLO 16.9V).
 

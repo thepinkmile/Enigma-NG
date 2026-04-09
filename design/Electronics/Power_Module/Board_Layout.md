@@ -152,7 +152,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
                            (7A / 11V UVLO / 16.9V OVLO)
                                        |
                      [U2A/U2B LMQ61460-Q1 Dual Buck x2]
-                      (7-17V pre-reg input -> 5V / 12A)
+                      (11–16.9V pre-reg input -> 5V / 12A)
                                        |
                                [ 5V_MAIN BUS ]
           +---------------------------+-------------+--------------------+
@@ -165,7 +165,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 
 * Thermal Matrix vias sit beneath the supercap and eFuse thermal island for heat-spreading only; they are not part of the electrical power path.
 * **Rib Clearway ENIG Bond Zone:** Solder mask opening on L1 in the 3.0mm rib clearway gap between
-  cells. GND_CHASSIS copper strip, min 1.0mm wide × full rib depth. Conductive gasket strip to be
+  cells. GND_CHASSIS copper strip, min 1.5mm wide × full rib depth. Conductive gasket strip to be
   placed at rib face prior to lid closure (see DEC-020). Supercap cells to be wrapped in 2-mil
   polyimide tape before insertion.
 
