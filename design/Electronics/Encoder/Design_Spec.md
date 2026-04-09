@@ -94,7 +94,7 @@ connection between them (power, data buses, JTAG).
 ### Signal Flow — Plugboard Mode
 
 ```text
-ENC_IN[0:5] (from Stator J2 pin 2–7)
+ENC_IN[0:5] (from Stator J4/J5/J6, via J2 pin 2–7)
        ↓
   CPLD A (U1) — Decode: 6-bit → 1-of-64 lines asserted HIGH
        ↓ ↓ ↓ ↓ ↓ ↓ ... × 64 lines (BT1–64 → jack Tip+Switch via harness)
@@ -104,7 +104,7 @@ ENC_IN[0:5] (from Stator J2 pin 2–7)
        ↓ ↓ ↓ ↓ ↓ ↓ ... × 64 lines (jack Sleeve via harness → BT65–128)
   CPLD B (U2) — Encode: 1-of-64 lines → 6-bit output
        ↓
-  ENC_OUT[0:5] (to Stator J2 pin 19–24)
+  ENC_OUT[0:5] (to Stator J4/J5/J6, via J2 pin 19–24)
 ```
 
 ### Signal Flow — HID Mode
