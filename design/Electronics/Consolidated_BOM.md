@@ -187,14 +187,14 @@ the Rev A single-Extension configuration unless otherwise noted.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip: ENC signal path; Switch (N/C): BT1–64 (same node as Tip; N/C contact shorts Switch→Sleeve when no plug present); Sleeve: BT65–128 (Encode Half / CPLD B input). **Already purchased.** | 64 | SaiBuy.Ltd (eBay) | eBay item 334364197440 — £1.66/unit (sold in packs of 3 for £4.99). [ebay.co.uk — SaiBuy.Ltd](https://www.ebay.co.uk/str/saibuyltd) |
 | SW1-64 | Keyboard switches | DPDT 6-pin momentary push button — Pole 1 electrically active: COM1+NO1 → key-press to CPLD. Pole 2 pins soldered for mechanical key anchoring only (no electrical connection). NC1 not connected. Keys connect to keyboard Encoder board only; no direct switch connection to Lightboard. **Already purchased.** | 64 | gadgetkingdom (eBay) | Sold in packs of 2. Listing title: "Mechanical Push Button Switch DPDT 2 Pole 6 Pin 1 Position 2pcs". |
-| BT1-64 | PCB blade terminals — ENC signal (Row 1) | Keystone 1285 — 6.35mm (0.250″) straight vertical PCB-mount male blade tab, through-hole. Accepts 6.35mm female crimp spade from jack Tip harness. | 64 | Mouser / DigiKey | Mouser: 534-1285 · DigiKey: 36-1285-ND |
-| BT65-128 | PCB blade terminals — Encode Half inputs / CPLD B encoder inputs (Row 2) | Keystone 1285 — same part. Wired to jack Sleeve (plugboard mode) or keyboard switch outputs (HID mode). | 64 | Mouser / DigiKey | Mouser: 534-1285 · DigiKey: 36-1285-ND |
+| BT1-64 | PCB blade terminals — ENC signal (Row 1) | Keystone 1285-ST — 6.35mm (0.250″) straight vertical PCB-mount male blade tab, through-hole. Accepts 6.35mm female crimp spade from jack Tip harness. | 64 | Mouser / DigiKey / JLCPCB | Mouser: 534-1285-ST · DigiKey: 36-1285-ST-ND · JLCPCB: C5370868 |
+| BT65-128 | PCB blade terminals — Encode Half inputs / CPLD B encoder inputs (Row 2) | Keystone 1285-ST — same part. Wired to jack Sleeve (plugboard mode) or keyboard switch outputs (HID mode). | 64 | Mouser / DigiKey / JLCPCB | Mouser: 534-1285-ST · DigiKey: 36-1285-ST-ND · JLCPCB: C5370868 |
 
 **Notes:**
 
 * **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip → BT1–64; Sleeve → BT65–128 Encode Half). Switch (N/C) is on the same node as Tip (BT1–64); it shorts Switch→Sleeve when no plug is inserted. Rows 1–2 (BT1–128).
 * **Keyboard switches (SW1-64):** mount in the keyboard panel. In HID mode each switch output wires to BT65–128 (Row 2, Encode Half). Pole 2 pins are mechanically soldered for physical anchoring — no electrical connection. Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard.
-* **Total PCB blade terminals: 128** — two rows of 64, all Keystone 1285.
+* **Total PCB blade terminals: 128** — two rows of 64, all Keystone 1285-ST.
 * Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
 
 ## 5. Controller Specifics
