@@ -119,11 +119,11 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 [ USB-C BULKHEAD (J4) ]         [ ESD & FILTERING ]               [ INPUT SELECTOR ]            [   BtB Connector  ]
  _____________________           ____________________                                            __________________
 |                     |         |                    |                                          |                  |
-| VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |             _____________________        | [ SAMTEC ERM8 ]  |
-|                     |         |         |          |            |                     |       |                  |
-| GND (4 PINS)  ------|-------->| [ WE-CMBNC L2  ] --|----------->| [U6 LM74700QDBVRQ1] |       |                  |
-|                     |         |                    |            | (OR-ing Input)      |       |                  |
-|                     |         |                    |            |_____________________|       |                  |
+| VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |----------->| [U6 LM74700QDBVRQ1] |       | [ SAMTEC ERM8 ]  |
+|                     |         |                    |                                          |                  |
+| GND (4 PINS)  ------|-------->|                    |            |_____________________|       |                  |
+|                     |         |                    |                                          |                  |
+|                     |         |                    |                                          |                  |
 | CC1 / CC2     ------|--[PD]-->| [U5 STUSB4500LQTR] |-I2C------------------------------------->| PIN 35 (I2C SDA) |
 | (Handshake)         |         | (Negotiates 15V)   |                                          | PIN 36 (I2C SCL) |
 |_____________________|         |____________________|                                          |__________________|
@@ -135,7 +135,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
        INPUT A: PoE+             INPUT B: USB-C            INPUT C: Battery
      [ J2 RJ45 MagJack ]        [ J4 USB-C 15V ]          [ J3 Locking Conn ]
             |                          |                          |
-  [D4/D5 ESD + L1 CMC  ]    [D3 ESD + L2 CMC    ]           [D1/D2 ESD]
+  [D4/D5 ESD           ]    [D3 ESD                  ]       [D1/D2 ESD]
   [U9 TPS2372-4 PD ctrl]    [U5 STUSB4500 PD ctrl]                |
   [U10 TPS23730 ACF+T2 ]      (negotiates 15V/5A USB-C PD)        |
     (48V->12V ACF converter)                                      |
@@ -144,7 +144,11 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
                                        |
                           [U6 LM74700QDBVRQ1 + Q1/Q2/Q3]
                             (ideal-diode priority OR-ing)
-                                       |
+                                        |
+                               [ VIN_RAW post-OR-ing ]
+                       [L1 CMC -> L2 CMC] (common-mode, 1kHz-30MHz)
+                       [L3 + C1-C6 Pi-filter] (HF bypass, >10MHz)
+                                        |
                                 [F1 TCO 72°C]
                               (in-series thermal cutoff)
                                        |

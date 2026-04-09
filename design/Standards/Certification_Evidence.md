@@ -302,7 +302,7 @@ The Power Module implements a two-stage common-mode and differential filter at t
 | Stage | Component | Type | Function |
 | --- | --- | --- | --- |
 | Primary | Würth Elektronik WE-CMBNC Nanocrystalline CMC | Common-mode choke | Broadband (1kHz–1GHz) common-mode noise attenuation |
-| Secondary | Würth WE-CMBNC 7448031002 | High-frequency nanocrystalline CMC (replaces discontinued Laird CM5022) | Broadband differential/common-mode noise attenuation 1kHz–30MHz |
+| Secondary | Würth WE-CMBNC 7448031002 | High-frequency nanocrystalline CMC (replaces discontinued Laird CM5022) | Supplementary common-mode attenuation above ~10 MHz; L1+L2 pair together covers 1kHz–30MHz CM |
 | Pi-filter | Moulded inductors + 50V X7R ceramic capacitors | LC Pi filter | Differential noise attenuation across Buck switching band |
 | Y-capacitors | X7R ceramics, 50V, to GND_CHASSIS | Capacitive shunt to chassis | Common-mode current path to chassis; reduces conducted DM→CM conversion |
 
