@@ -209,7 +209,6 @@ Mechanical Plugboard specification.
 
 ## 8. Thermal & ESD
 
-* **ESD:** TPD4E001 arrays near the JTAG and Micro-Fit headers.
 * **Thermal:** Vias under the Intel MAX II EPM240T100I5N CPLD "PowerPad" (if applicable) for heat dissipation.
 
 ## 9. PCB Fabrication & Stackup

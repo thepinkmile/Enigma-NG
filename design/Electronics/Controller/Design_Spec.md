@@ -70,7 +70,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Cross-ref:** See `Stator/Design_Spec.md` and `Stator/Board_Layout.md` for explicit pin mapping and connector
     compliance. See DEC-015 for 40-pin reduction rationale and poka-yoke safety note.
 * **3V3_ENIG:** The Controller is an active consumer of 3V3_ENIG — CM5 VDD_GPIO_REF and on-board peripherals are powered from this rail via the LINK-ALPHA tap node.
-  Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design phase).
+  Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-TBD — new decision required; specific values deferred to detailed design phase).
   The 2oz copper L3 highway continues to link Alpha and Beta for the rotor stack pass-through.
 
 ### 2.1. Connectivity & Bus (on Link-Alpha)
@@ -225,7 +225,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 * **Voltage:** 5V signals are strictly forbidden on: CM5 GPIO pins, I²C SDA/SCL lines, JTAG (TDI/TDO/TCK/TMS), and all logic-level signals on LINK-ALPHA.
 * **ESD Protection:** [TPD4E05U06](https://www.ti.com) (U4 — USB/HDMI ESD arrays) on Layer 1.
 * **5V_MAIN Bulk Entry:** 5× 10µF X7R 50V at LINK-ALPHA 5V_MAIN entry pins per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule.
-* **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-024 candidate; specific values deferred to detailed design
+* **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the 3V3_ENIG tap node on the Controller (DEC-TBD — new decision required; specific values deferred to detailed design
   phase). These are distinct from the 5V_MAIN entry bank above.
 * **Hardware LED Fallback:** The hardware LED fallback path (MIC1555 oscillator) is located on the Power Module.
   See `Power_Module/Design_Spec.md §Design §5. Protection & Logic` for the full SW1 RGB LED handoff circuit detail.

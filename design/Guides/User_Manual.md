@@ -82,7 +82,7 @@ automatically selects the best available source without any interruption to the 
 | :---: | --- | --- | --- |
 | 1st | **PoE+ (Power over Ethernet)** | ~12V | 802.3bt Type 4 — highest available power (up to 72W); recommended for fixed installations |
 | 2nd | **USB-C (PD adapter)** | 15V | Requires a 75W USB-C PD adapter (15V/5A); adequate for normal operation |
-| 3rd | **Battery** | 11–16.8V | Lithium-based smart battery pack; tertiary source used when no mains is available |
+| 3rd | **Battery** | 11–16.4V | Lithium-based smart battery pack; tertiary source used when no mains is available |
 
 If a higher-priority source becomes available while a lower-priority one is in use, the system switches seamlessly. If the primary source fails, the system automatically falls back to the next
 available source, with the supercapacitor bank bridging any momentary gap during the transition.
