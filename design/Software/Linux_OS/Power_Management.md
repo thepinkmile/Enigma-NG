@@ -253,13 +253,15 @@ R_SHUNT        = 0.010       # 10mΩ CSS2H-2512R-R010ELF — hardcoded; do not c
 CURRENT_LSB    = 0.004       # 4mA per LSB
 
 # INA219 config: 32V bus range, PGA /2 (±80mV shunt), 12-bit, continuous
-CONFIG_VALUE   = 0x219F
+# Register value 0x299F byte-swapped for smbus2 little-endian transmission
+CONFIG_VALUE   = 0x9F29
 
 bus.write_word_data(INA219_ADDR, REG_CONFIG, CONFIG_VALUE)
-bus.write_word_data(INA219_ADDR, REG_CAL, 0x0400)  # CAL = 1024
+bus.write_word_data(INA219_ADDR, REG_CAL, 0x0004)  # CAL = 1024 (big-endian swap)
 
 def read_rotor_current_mA():
     raw = bus.read_word_data(INA219_ADDR, REG_CURRENT)
+    raw = ((raw & 0xFF) << 8) | ((raw >> 8) & 0xFF)  # swap bytes (smbus2 LE → INA219 BE)
     if raw > 32767: raw -= 65536   # signed 16-bit
     return raw * CURRENT_LSB * 1000  # convert to mA
 ```
