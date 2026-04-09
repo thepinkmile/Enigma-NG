@@ -139,7 +139,7 @@ There are also sensors used to detect the current position of the outer ring usi
 | 7 | 3V3\_ENIG | 8 | GND |
 | 9 | 3V3\_ENIG | 10 | GND |
 
-> 5 pins × 2.2 A/pin = **11.0 A capacity** — far exceeds the 50 mA/rotor requirement.
+> 5 pins × 0.5 A/pin = **2.5 A capacity** — far exceeds the 50 mA/rotor requirement.
 > 5 power + 5 GND ensures fully balanced current return paths.
 
 #### J3 — Encoder Data Interface (ERM8-010, 20-pin 2×10, 0.8mm pitch)
