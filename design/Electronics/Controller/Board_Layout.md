@@ -137,7 +137,7 @@ _______________________________________    _____________    ____________________
 [ PINS 23 - 24 ] ------------------------> [ 2oz POWER ] -> [ GND (SUPPLEMENTAL RETURN)  ]
                                            (BULK DC)        (Adds 2 pins to return path)
 
-[ PINS 25 - 26 ] ------------------------> [ 2oz POWER ] -> [ ETH_LED_LINK / ETH_LED_ACT ]
+[ PINS 25 - 26 ] ------------------------> [ 3.3V LOGIC] -> [ ETH_LED_LINK / ETH_LED_ACT ]
                                            (GPIO OUT)       (Active Low indicators)
 
 [ PINS 27 - 28 ] ------------------------> [ ISOLATION ] -> [ MASTER GND BANK            ]
