@@ -50,7 +50,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | BAT54 — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | 3 |
 | | | | | | | | | | | | |
-| 0.1 µF X7R 0402 decoupling cap | 14 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 508 |
+| 0.1 µF X7R 0402 decoupling cap | 14 | 1 | 8 | 80 | 240 | 8 | 240 | — | — | 4 | 507 |
 | 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | 185 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 15 | — | — | — | — | — | — | — | — | — | 15 |
 | 4.7 µF X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | 1 |
