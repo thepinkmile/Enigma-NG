@@ -561,8 +561,9 @@ prototype; trace widths self-calculated and within ±10% of target. See `design/
 ### Decision
 
 All PCBs in the Enigma-NG system shall use a minimum of **4-layer stackup** (JLCPCB
-JLC04161H-7628). The Controller Board is the sole exception and retains its 6-layer
-JLC06161H-2116 stackup for high-speed 5 Gbps differential pair requirements.
+JLC04161H-7628). The Controller Board and the Power Module Board are the only exceptions
+and retain their 6-layer JLC06161H-2116 stackup: the Controller for high-speed 5 Gbps
+differential pair requirements, and the Power Module for high-current power delivery.
 
 ### Standard 4-layer layer mapping for all non-Controller boards
 
@@ -594,6 +595,7 @@ JLC06161H-2116 stackup for high-speed 5 Gbps differential pair requirements.
 | Encoder | 4-Layer JLC04161H-7628 | ✅ Unchanged |
 | Rotor | 4-Layer JLC04161H-7628 | ✅ Unchanged |
 | Controller | 6-Layer JLC06161H-2116 | ✅ Exception — high-speed stackup retained |
+| Power Module | 6-Layer JLC06161H-2116 | ✅ Exception — high-current power delivery stackup retained |
 
 ### Impact
 
@@ -1268,4 +1270,4 @@ For each CPLD in the system, create:
 - Pseudo-code or annotated VHDL stubs ready for handoff to software development.
 - Notes on how the VHDL can be exercised during PAS testing (OWI-002) to verify functional correctness.
 
-Boards with CPLDs requiring this work: Encoder (×2), Stator (×1), Rotor (×1 per rotor, ×30 total), Reflector (×1).
+Boards with CPLDs requiring this work: Encoder (×2), Stator (×1), Rotor (×1 per rotor, ×30 total).

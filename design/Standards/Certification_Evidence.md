@@ -231,7 +231,7 @@ inter-modulation products would appear at sum and difference frequencies, partia
 | Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; TPS75733 Vdo ≈ 0.22V worst-case at 2.2A — well above minimum input requirement |
 | Output noise | Low-noise linear LDO | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | High PSRR linear LDO | Attenuates Buck output ripple (800kHz effective) — negligible at CPLD supply |
-| Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 × AS5600 (195mA) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Extension buffers (10mA) + Controller-local (50mA) = 2,117mA → **2.20A rounded; 73.3% utilisation** ✓ (per Power_Budgets.md) |
+| Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 × AS5600 (195mA) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Controller-local (50mA) = 2,107mA → **2.11A rounded; 70.4% utilisation** ✓ (per Power_Budgets.md) |
 | Package | TO-263 (KTT) 5-pin 10.16×15.24mm | Standard power package; thermal pad to PCB; no large copper pour required |
 | Input power dissipation | Vdo≈0.18V × 2.20A = **~0.40W** (typ.); ≤**0.45W** worst-case | Standard TO-263 thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 
