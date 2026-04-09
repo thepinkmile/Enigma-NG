@@ -386,18 +386,18 @@ solving for w at I=1A, ΔT=10°C gives w ≈ 0.15 mm). See Global_Routing_Spec.m
 | Signal (I2C, GPIO, LED ctrl, status) | < 50 mA | 0.008 mm | 0.20 mm | **0.20 mm** | L1 | General 3.3 V logic |
 | Supercap charge (LTC3350 → C_SC1–6) | 0.5 A | 0.075 mm | 0.50 mm | **0.50 mm** | L1 | Soft-charge limited by LTC3350 RICHARGE |
 | 3V3_ENIG (LDO output → LINK-ALPHA pins 39–44) | 3.0 A | 0.45 mm | 0.80 mm | **0.80 mm** | L1 | Medium-power supply; extra margin for 3 A upper bound |
-| 12V_POE (ACF transformer output → OR-ing U6) | 4.58 A | 0.69 mm | 1.00 mm | **1.00 mm** | L1 | 54.9 W PoE budget ÷ 12 V = 4.58 A peak |
-| Battery input (J3 → OR-ing U6) | 4.82 A | 0.72 mm | 1.00 mm | **1.00 mm** | L1 | TPS25980 ILIM-limited; 14.4 V nominal battery |
+| 12V_POE (ACF transformer output → OR-ing U6) | 4.43 A | 0.67 mm | 1.00 mm | **1.00 mm** | L1 | 53.2 W PoE budget ÷ 12 V = 4.43 A peak |
+| Battery input (J3 → OR-ing U6) | 3.89 A | 0.59 mm | 1.00 mm | **1.00 mm** | L1 | Peak draw (8.76 A system + 1 A LTC3350 supercap) × 5 V ÷ (0.87 × 14.4 V) = 3.89 A |
 | USB-C VBUS input (J4 → OR-ing U6) | 5.0 A | 0.75 mm | 1.00 mm | **1.00 mm** | L1 | 15 V / 5 A STUSB4500-negotiated PD limit |
 | VIN_RAW (OR-ing output → TCO F1 → eFuse U1) | 7.0 A | 1.05 mm | 1.00 mm | **1.50 mm** | L1 | TPS25980 ILIM = 7 A; high-current path |
 | VIN_SAFE (eFuse output → Buck U2A/U2B) | 7.0 A | 1.05 mm | 1.00 mm | **1.50 mm** | L1 | Post-eFuse buck input; same ILIM ceiling |
-| 5V_MAIN bus (Buck output → BtB/LDO/supercap) | 9.05 A | 1.36 mm | 2.00 mm | **2.00 mm + pour** | L1 + inner | Very high current; L1 traces **2.00 mm minimum**; inner power pour mandatory |
+| 5V_MAIN bus (Buck output → BtB/LDO/supercap) | 8.76 A | 1.32 mm | 2.00 mm | **2.00 mm + pour** | L1 + inner | Very high current; L1 traces **2.00 mm minimum**; inner power pour mandatory |
 | GND return pours | — | — | pour | **copper pour** | L2 + L6 | Solid uninterrupted 2oz GND planes |
-| 5V_MAIN inner power pour | 9.05 A | — | pour | **copper pour** | L3 or L4 | Dedicated inner 2oz layer for primary bus |
+| 5V_MAIN inner power pour | 8.76 A | — | pour | **copper pour** | L3 or L4 | Dedicated inner 2oz layer for primary bus |
 
 ### High-Current Design Rules (PM-specific)
 
-* **5V_MAIN (9.05 A):** Classified Very High Current (> 5.5 A threshold per Global_Routing_Spec §1.1).
+* **5V_MAIN (8.76 A):** Classified Very High Current (> 5.5 A threshold per Global_Routing_Spec §1.1).
   All vias from L1 surface traces to the inner 5V_MAIN plane must use **POFV (IPC-4761 Type VII)**
   in 4-via thermal clusters. Teardrop fillets mandatory on all 5V_MAIN pads and vias.
   Thermal relief spokes on high-current pads: **20 mil (0.5 mm) wide, 4-spoke orthogonal** per §2.1.

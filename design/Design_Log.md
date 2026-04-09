@@ -112,7 +112,7 @@ drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C pat
 ### Constraints
 
 - PoE UVLO: 11V. eFuse UVLO: 11V. No margin at UVLO floor — PoE cable must be within 1V drop budget.
-- eFuse ILIM utilisation at 12V worst case: 4.82A / 7A = **68.9%** ✓ (within 75% derating target).
+- eFuse ILIM utilisation at 12V worst case: 4.67A / 7A = **66.7%** ✓ (within 75% derating target).
 
 ---
 
@@ -126,7 +126,7 @@ drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C pat
 ### Decision
 
 When running on PoE (802.3bt Type 4, 72W budget), the supercap charge current is reduced to **0.5A** (vs. up to 2A on USB-C/Battery).
-This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the 75% design rule; accepted exception (see Certification_Evidence §3.5).
+This limits peak PoE utilisation to 73.9% (53.2W / 72W) — within the 75% design rule ✓ (see Certification_Evidence §3.5).
 
 ### Rationale
 
@@ -137,7 +137,7 @@ This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the
 
 ### Constraints
 
-- Steady-state PoE load (after caps charged): 52.0W / 72W = **72.2%** utilisation ✓
+- Steady-state PoE load (after caps charged): 50.3W / 72W = **69.9%** utilisation ✓
 
 ---
 

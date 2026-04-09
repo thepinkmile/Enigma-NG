@@ -122,8 +122,8 @@ The eFuse (**TPS259804ONRGER**, 16.9V silicon-fixed OVLO, VQFN 4×4mm) is progra
 | --- | --- | --- |
 | UVLO (Under-Voltage Lock-Out) | **11.0V** | Input sources: PoE ~12V nominal; USB-C 15V; Battery 11V minimum at end-of-discharge. 11V UVLO permits full battery utilisation while rejecting abnormally low inputs. |
 | OVLO | **16.9V (silicon-fixed — TPS259804ONRGER)** | Highest available option on TPS25980. No external resistor required or present. Battery BMS must specify max 4.1V/cell (16.4V for 4S) to maintain 0.5V margin below OVLO rising threshold. See §3.2 Note on Battery Voltage. |
-| ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 9.05A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
-| Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~3 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to limit peak PoE utilisation to 76.2% during cold-start charge (54.9W / 72W); marginally above the 75% rule but accepted exception (see §3.5). |
+| ILIM (current limit) | **7.0A (programmed via R_ILIM)** | Maximum downstream load is 8.76A peak (see §3.5). ILIM programmed using a single external resistor per TPS25980 datasheet formula. |
+| Soft-start (supercap charge) | **0.5A** | Controls inrush current during supercapacitor initial charge (~3 min from cold), preventing nuisance eFuse trips at power-on. Charge current reduced from 1A nominal to limit peak PoE utilisation to 73.9% during cold-start charge (53.2W / 72W); within the 75% rule (see §3.5). |
 
 **Resistor ladder values (all 1% thick-film, 0603):**
 
@@ -153,7 +153,7 @@ Two **TI LMQ61460-Q1** (3–36V input, 6A rated, VQFN-HR (RJR) 14-pin 4×3.5mm, 
 A single 12A-class Buck regulator would satisfy the current requirement but would concentrate switching noise into one location, increase thermal density, and reduce component utilisation headroom.
 The dual 6A approach provides:
 
-- 75.4% utilisation of each IC (marginally above the 75% rule; accepted) ✓
+- 73.0% utilisation of each IC (within the 75% rule) ✓
 - Thermal load distributed across two thermal pads
 - Redundant current delivery — loss of one IC degrades output to 6A (sufficient for CM5 safe shutdown)
 - An upgrade path without PCB redesign: LMQ61480 (8A) or LMQ61495 (10A) are pin-compatible replacements
