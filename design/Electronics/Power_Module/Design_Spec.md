@@ -72,7 +72,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 * **Supercap Block:** 2×3 arrangement (6 cells, 15mm centre-to-centre pitch, 3.0mm air gap between cells). Block footprint ≈ 30mm × 45mm.
   The 3.0mm gap is a 'No-Fly Zone' for all PCB traces on L1–L6 (enclosure rib clearway).
   * **Rib Clearway ENIG Bond:** Solder mask is opened in the 3.0mm rib clearway gap on L1 (top copper),
-    connected to GND_CHASSIS. Minimum strip width 1.0mm × full rib contact depth. The aluminium enclosure
+    connected to GND_CHASSIS. Minimum strip width 1.5mm × full rib contact depth. The aluminium enclosure
     rib makes direct electrical contact via a conductive elastomer gasket strip (≤3mm wide, self-adhesive;
     part selected at mechanical design phase). Supercap bodies are wrapped in minimum 2-mil (50µm) polyimide
     (Kapton) tape before installation to prevent shorts with the metal ribs. Combined with the GND_CHASSIS
@@ -322,7 +322,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ### 2. Startup Timeline
 
-1. **Input:** 11–17V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.8V). All three sources are within the TPS25980
+1. **Input:** 11–17V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.4V). All three sources are within the TPS25980
 
    eFuse window (UVLO 11V / OVLO 16.9V).
 

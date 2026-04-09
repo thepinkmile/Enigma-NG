@@ -135,7 +135,7 @@ HandlePowerKey=poweroff
 | Mains fails / PoE drops | t = 0 | Input source lost |
 | PWR_GD deasserts | ~10ms | MCP121T fires; 5V_MAIN < 4.5V; PWR_GD goes LOW |
 | 5V_MAIN < 4.40V — LTC3350 BACKUP asserted (supercaps take over) | ~shortly after PWR_GD | Hold-up engaged; ≥21.7s window begins |
-| Daemon detects LTC3350 BACKUP asserted and initiates `systemctl poweroff` | ~50ms from power loss | OS begins graceful shutdown |
+| Daemon detects LTC3350 BACKUP asserted and initiates `systemctl poweroff` | ≤510ms from power loss (≤500ms poll latency after BACKUP asserts at POLL_HZ=2) | OS begins graceful shutdown |
 | OS syncs filesystems, halts | ~10–15s | ROTOR_EN de-asserted; CM5 PMIC halted |
 | Supercaps depleted / system off | ≥21.7s from power loss | 5V_MAIN → 0V |
 

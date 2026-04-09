@@ -88,7 +88,7 @@ If a higher-priority source becomes available while a lower-priority one is in u
 available source, with the supercapacitor bank bridging any momentary gap during the transition.
 
 A thermal fuse (72°C) and electronic protection circuit (eFuse) guard the input against excessive current and out-of-range voltages. The system will not start if the input voltage is below **11V** or
-above **17V**, protecting all downstream components.
+above **16.9V**, protecting all downstream components.
 
 ### 3.2 Output Power Rails
 
@@ -158,7 +158,7 @@ patterns.
 
 When power is applied, the following sequence occurs automatically:
 
-1. **Input validation:** The eFuse checks that input voltage is within 11–17V and current is within limits. The thermal cutoff (TCO) provides over-temperature protection at 72°C.
+1. **Input validation:** The eFuse checks that input voltage is within 11–16.9V and current is within limits. The thermal cutoff (TCO) provides over-temperature protection at 72°C.
 2. **Buck regulators start:** The dual 5V switching regulators (U2A/U2B) and the 3.3V LDO (U7) begin operating, establishing the 5V_MAIN and 3V3_ENIG power rails.
 3. **Supercap charging:** The LTC3350 supercap manager begins a controlled 0.5A soft-charge of the supercapacitor bank from the 5V_MAIN rail. This reduced charge rate keeps the system within power
 
