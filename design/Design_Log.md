@@ -1,4 +1,4 @@
-# Enigma-NG Design Decision Log
+﻿# Enigma-NG Design Decision Log
 
 **Status:** Active
 **Project:** Enigma-NG
@@ -16,14 +16,17 @@ Entries are numbered sequentially as **DEC-NNN**. Where a decision supersedes a 
 
 ## DEC-001 — 3V3_ENIG Used Throughout; 3V3_SYSTEM Removed from BtB Interconnect
 
-**Date:** 2025  
-**Affects:** Power Module, Controller Board, Link-Alpha connector
+- **Status:** Decided
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Power Module, Controller Board, Link-Alpha connector
 
-**Decision:**  
+### Decision
+
 The `3V3_SYSTEM` rail (sourced from the CM5 on the Controller Board) is **not** routed to the Power Module over the Link-Alpha BtB connector. All 3.3V logic within the Power Module (RJ45 LED anodes,
 I2C pull-ups, BATT_PRES_N pull-up, reset pull-up) is powered by `3V3_ENIG`, generated locally by the Power Module LDO (U7).
 
-**Rationale:**  
+### Rationale
 
 - `3V3_SYSTEM` is a CM5-derived rail intended only for external peripheral interfaces (Ethernet, HDMI, USB 3.0 ports). Using it to power internal power-module logic would create a cross-domain
 
@@ -32,12 +35,12 @@ I2C pull-ups, BATT_PRES_N pull-up, reset pull-up) is powered by `3V3_ENIG`, gene
 - Generating `3V3_ENIG` locally on the Power Module gives a clean, independently-controlled 3.3V supply that is always present when the Power Module is powered, regardless of CM5 boot state.
 - Removing `3V3_SYSTEM` from the Link-Alpha connector freed pins 21–24, which were reallocated to extend the 5V_MAIN delivery cluster and GND return path.
 
-**Alternatives Considered:**  
+### Alternatives Considered
 
 - Route `3V3_SYSTEM` from CM5 over Link-Alpha and use it for RJ45 logic. Rejected: cross-domain dependency, sequencing risk, wasted connector pins.
 - Use a second small LDO on the Controller Board to produce a local 3.3V for CM5-adjacent logic. Rejected: unnecessary complexity given `3V3_ENIG` already exists.
 
-**Impact on Link-Alpha Pin Map:**  
+### Impact
 
 - Pins 21–22: Reassigned from 3V3_SYSTEM → **5V_MAIN** (supplemental power pins)
 - Pins 23–24: Reassigned from 3V3_SYSTEM → **GND** (supplemental return path)
@@ -48,21 +51,24 @@ I2C pull-ups, BATT_PRES_N pull-up, reset pull-up) is powered by `3V3_ENIG`, gene
 
 ## DEC-002 — PoE Option A2 Selected: Coilcraft POE600F-12LD
 
-**Date:** 2025  
-**Affects:** Power Module PoE subsystem, T2 transformer, TPS23730 feedback network
+- **Status:** Decided
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Power Module PoE subsystem, T2 transformer, TPS23730 feedback network
 
-**Decision:**  
+### Decision
+
 The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF transformer (12V output, 60W, 200kHz, ≥1500Vrms isolation, SMT package). The remainder of the PoE chain uses TPS2372-4
 (802.3bt Type 4 PD interface) and TPS23730 (ACF controller), with TPS23730 feedback resistors adjusted for the 12V output.
 
-**Rationale:**  
+### Rationale
 
 - Replaces a custom-wound transformer design (Option A: 15V, 8–16 week lead time, ~£35–46 BOM) with a catalogue part available from Coilcraft Direct.
 - Off-the-shelf: **£3.54 qty-1, ~£1.86 volume**, in stock. Lead time: days not weeks.
 - Same ACF topology as the custom design — only feedback resistors change. No PCB layout changes to high-current paths.
 - 12V output falls within the TPS25980 eFuse UVLO/OVLO window (11V – 16.9V) with no additional buck stage needed.
 
-**Alternatives Considered:**  
+### Alternatives Considered
 
 - **Option A (Custom T2, 15V):** Higher voltage headroom. Rejected: custom winding, long lead time, cost.
 - **Option C (Silvertel Ag59812-LPB integrated module):** Higher integration, 95% efficiency, ~£19–27. Rejected: higher cost, fixed form factor, less flexibility for thermal management, vendor
@@ -71,7 +77,7 @@ The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF trans
 
 - **Kinetic Technologies KPM5912:** 85W, 93% efficiency. Rejected: not stocked by any UK/EU distributor.
 
-**Key Parameters:**  
+### Key Parameters
 
 | Parameter | Value |
 | --- | --- |
@@ -87,20 +93,23 @@ The PoE transformer T2 uses a **Coilcraft POE600F-12LD** off-the-shelf ACF trans
 
 ## DEC-003 — PoE Output 12V; OR-ing Priority Logic Required
 
-**Date:** 2025  
-**Affects:** Power Module PoE output, OR-ing diode (LM74700-Q1), eFuse input
+- **Status:** Decided
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Power Module PoE output, OR-ing diode (LM74700-Q1), eFuse input
 
-**Decision:**  
+### Decision
+
 PoE outputs 12V (not 15V) into the OR-ing stage. Because 12V < 15V USB-C input, passive OR-ing would always prefer USB-C and ignore PoE. Active enable logic is implemented: the TPS2372-4 `/PG` signal
 drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C path.
 
-**Rationale:**  
+### Rationale
 
 - PoE is the primary field power source when no USB-C adapter is connected. It must not be silently overridden by USB-C passthrough.
 - TPS2372-4 `/PG` (power good, active low) is a clean indicator of a live 802.3bt PoE session.
 - LM74700-Q1 already provides the USB-C ideal diode function; gating its enable is a minimal-change approach.
 
-**Constraints:**  
+### Constraints
 
 - PoE UVLO: 11V. eFuse UVLO: 11V. No margin at UVLO floor — PoE cable must be within 1V drop budget.
 - eFuse ILIM utilisation at 12V worst case: 4.82A / 7A = **68.9%** ✓ (within 75% derating target).
@@ -109,21 +118,24 @@ drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C pat
 
 ## DEC-004 — Supercap Charge Current 0.5A Under PoE
 
-**Date:** 2025  
-**Affects:** LTC3350 supercap charger, PoE power budget
+- **Status:** Decided
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** LTC3350 supercap charger, PoE power budget
 
-**Decision:**  
+### Decision
+
 When running on PoE (802.3bt Type 4, 72W budget), the supercap charge current is reduced to **0.5A** (vs. up to 2A on USB-C/Battery).
 This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the 75% design rule; accepted exception (see Certification_Evidence §3.5).
 
-**Rationale:**  
+### Rationale
 
 - Full 2A supercap charging on PoE would push utilisation to ~98%, leaving <2W margin for transient loads.
 - 0.5A charge current charges the 6× 22F supercap bank in approximately 3 minutes from depleted.
 - Normal system usage is expected to exceed 30–45 minutes per session (startup + configuration + use), making a 2-minute charge time acceptable.
 - This limitation should be documented in the User Manual with guidance that maximum system load is not recommended during the initial PoE power-up window.
 
-**Constraints:**  
+### Constraints
 
 - Steady-state PoE load (after caps charged): 52.0W / 72W = **72.2%** utilisation ✓
 
@@ -131,18 +143,21 @@ This limits peak PoE utilisation to 76.2% (54.9W / 72W) — marginally above the
 
 ## DEC-005 — TPS25980 eFuse Replaces TPS259474L
 
-**Date:** 2025  
-**Affects:** Power Module eFuse (U1)
+- **Status:** Decided
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Power Module eFuse (U1)
 
-**Decision:**  
+### Decision
+
 The input eFuse uses a **TPS25980** (7A ILIM, silicon-fixed 16.9V OVLO) rather than the originally considered TPS259474L (5.5A ILIM).
 
-**Rationale:**  
+### Rationale
 
 - TPS259474L 5.5A limit is insufficient for worst-case USB-C 15V path at 75W: 75W / 15V = 5.0A + 10% derating = 5.5A — already at the device limit with no headroom.
 - TPS25980 (TPS259804ONRGER) provides 7A ILIM (programmed via R3 = 210 Ω) and silicon-fixed 16.9V OVLO, which neatly caps the battery charge voltage window.
 
-**OVLO Constraint:**  
+### OVLO Constraint
 
 - eFuse OVLO is **16.9V silicon-fixed** (TPS259804ONRGER — no external programming resistor).
 - BMS must be configured for **4.1V/cell maximum charge (16.4V for 4S)** to maintain a ≥0.5V margin.
@@ -152,13 +167,16 @@ The input eFuse uses a **TPS25980** (7A ILIM, silicon-fixed 16.9V OVLO) rather t
 
 ## DEC-006 — STUSB4500 Negotiates 15V/5A (75W)
 
-**Date:** 2025  
-**Affects:** Power Module USB-C PD handshake (STUSB4500), USB-C adapter requirement
+- **Status:** Decided
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Power Module USB-C PD handshake (STUSB4500), USB-C adapter requirement
 
-**Decision:**  
+### Decision
+
 The STUSB4500 standalone PD sink is programmed to negotiate **15V/5A (75W)** from the wall adapter or USB-C PD source. Earlier documentation incorrectly stated 15V/3A.
 
-**Rationale:**  
+### Rationale
 
 - 3A (45W) is insufficient for worst-case system load (CM5 at 25W + rotors + supercap charging).
 - 5A (75W) provides headroom and aligns with the 75% derating target at the eFuse.
@@ -168,13 +186,16 @@ The STUSB4500 standalone PD sink is programmed to negotiate **15V/5A (75W)** fro
 
 ## DEC-007 — Dual Interleaved LMQ61460-Q1 5V Buck (12A)
 
-**Date:** 2025  
-**Affects:** Power Module 5V Buck (U2A/U2B)
+- **Status:** Decided
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Power Module 5V Buck (U2A/U2B)
 
-**Decision:**  
+### Decision
+
 Two **LMQ61460-Q1** buck regulators are used in a **dual interleaved** configuration, providing a combined **12A** output at 5V. Earlier documentation referenced a single LM61460-Q1 (6A).
 
-**Rationale:**  
+### Rationale
 
 - Single 6A device is insufficient for CM5 at 25W (5A) + other 5V loads.
 - Interleaved dual phase reduces input/output ripple and distributes thermal load.
@@ -186,13 +207,16 @@ Two **LMQ61460-Q1** buck regulators are used in a **dual interleaved** configura
 
 > ⚠️ **Superseded by DEC-012** — TPS25750 replaced with TPS25751DREFR. See DEC-012.
 
-**Date:** 2025  
-**Affects:** CM5 USB-C PD emulator (TPS25750)
+- **Status:** Superseded by DEC-012
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** CM5 USB-C PD emulator (TPS25750)
 
-**Decision:**  
+### Decision
+
 The TPS25750 PD emulator advertises a **5V/5A** profile to the CM5 internal USB-C port.
 
-**Rationale:**  
+### Rationale
 
 - The CM5 Linux OS will generate a "low power" warning if PD negotiation does not complete at or above 5V/5A (25W).
 - 5V/5A is the minimum advertisement to suppress this warning and allow unrestricted CPU/GPU boost operation.
@@ -201,17 +225,20 @@ The TPS25750 PD emulator advertises a **5V/5A** profile to the CM5 internal USB-
 
 ## DEC-009 — Diagnostic Bank-Alpha Pin 14 Reassigned to SW_LED_CTRL
 
-**Date:** 2025 (GND); superseded by final design (SW_LED_CTRL)
-**Affects:** Controller Board Diagnostic Bank-Alpha connector
+- **Status:** Decided
+- **Date:** 2025 (GND); superseded by final design (SW_LED_CTRL)
+- **Category:** Electrical
+- **Area:** Controller Board Diagnostic Bank-Alpha connector
 
-**Decision:**  
+### Decision
+
 Diagnostic Bank-Alpha pin 14 was initially reassigned from `3V3_SYSTEM` to **GND**, following the removal of the `3V3_SYSTEM` rail from all BtB interconnects (see DEC-001).
 In the subsequent design pass that added `SW_LED_CTRL` (GPIO 24) to the Link-Alpha signal set,
 pin 14 was reallocated to **SW_LED_CTRL** to expose the LED-arbitration handshake at the diagnostic header.
 
 **Final assignment:** Bank-Alpha Pin 14 = `SW_LED_CTRL` (GPIO 24, CTRL → PM, HIGH = CM5 in control of SW1 RGB LED).
 
-**Rationale:**  
+### Rationale
 
 - `3V3_SYSTEM` is no longer available at the Power Module side of this debug header.
 - `SW_LED_CTRL` is a useful diagnostic probe point — it shows whether the CM5 has taken control of the RGB LED from the hardware oscillator fallback path.
@@ -221,20 +248,22 @@ pin 14 was reallocated to **SW_LED_CTRL** to expose the LED-arbitration handshak
 
 ## DEC-010 — INC-14 DEFERRED: Diagnostic Bank ESD Protection (Post-Prototype)
 
-**Date:** 2025  
-**Status:** ⚠️ DEFERRED — Accepted risk for prototype stage  
-**Affects:** Controller Board Diagnostic Bank-Alpha / Bank-Beta connectors
+- **Status:** Deferred — Accepted risk for prototype stage
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Controller Board Diagnostic Bank-Alpha / Bank-Beta connectors
 
-**Decision:**  
+### Decision
+
 ESD protection on the diagnostic bank connectors is **deferred** to post-prototype evaluation. No TVS diodes or series resistors are added to diagnostic header signals at this stage.
 
-**Rationale:**  
+### Rationale
 
 - Diagnostic headers are internal, accessed only by engineers with ESD precautions during development.
 - Adding ESD protection to every diagnostic pin adds cost, board space, and complexity before there is validated evidence that it is needed.
 - Risk accepted for prototype: controlled lab environment, trained operators, no field exposure.
 
-**Post-Prototype Action Required:**  
+### Post-Prototype Action Required
 
 - During first prototype test phase, evaluate signal integrity and ESD sensitivity on diagnostic lines.
 - If any diagnostic lines are exposed to field conditions (e.g., external test connectors), add series 33Ω + TVS per line.
@@ -244,16 +273,18 @@ ESD protection on the diagnostic bank connectors is **deferred** to post-prototy
 
 ## DEC-011 — All Power Rails on Power Module; 3V3_ENIG Serves Rotor Stack
 
-**Date:** 2025  
-**Status:** ✅ RESOLVED  
-**Affects:** Power Module islands, Controller Board routing, rotor stack power source
+- **Status:** ✅ RESOLVED
+- **Date:** 2025
+- **Category:** Electrical
+- **Area:** Power Module islands, Controller Board routing, rotor stack power source
 
-**Decision:**  
+### Decision
+
 All power rails are generated on the **Power Module**. The Controller Board's role is purely to **route** power rails onward to downstream boards — it does not generate any rails itself. The rotor
 stack is powered by the existing **3V3_ENIG** rail (TPS75733KTTRG3 LDO, 3A). There is no separate Rotor Buck; the erroneous "3.3V/5A Rotor Buck" specification was a confusion with the 5V/5A CM5 rail and
 has been removed.
 
-**Rationale:**  
+### Rationale
 
 - Centralising all power generation on the Power Module simplifies thermal management (all heat dissipation in one shielded enclosure with dedicated thermal zone).
 - Reduces the risk of ground loops and cross-domain sequencing issues.
@@ -261,18 +292,19 @@ has been removed.
 - 3V3_ENIG (3A) covers all 3.3V consumers: CPLDs, USB-JTAG, I2C logic, status indicators, and the rotor stack.
 - ROTOR_EN (CM5 GPIO 16) enables/disables the 3V3_ENIG LDO for sequenced rotor power-up — a control signal only.
 
-**Architectural Rule (permanent):**  
+### Architectural Rule (permanent)
+
 > All power rails are generated on the Power Module. The Controller Board routes rails to downstream boards only. No buck converters, LDOs, or other power-generating components belong on the
 > Controller Board.
 
-**Files Updated:**  
+### Impact
 
 - `README.md`: Removed erroneous "Dedicated 3.3V/5A Buck" from Controller Board section; 3V3_ENIG correctly listed as Power Module output serving CPLDs, logic, and rotor stack.
 - `Power_Module/Design_Spec.md`: 3V3_ENIG scope updated to include rotor stack; 3-island Power Plane retained.
 - `Controller/Design_Spec.md`: ROTOR_EN clarified as LDO enable signal to Power Module.
 - `Rotor/Design_Spec.md`: Power source updated from "Controller Board Island C" to "Power Module 3V3_ENIG rail".
 
-**Previously Conflicting References (now corrected):**  
+### Previously Conflicting References (now corrected)
 
 - `README.md` placed the Rotor Buck under the Controller Board section.
 - `Rotor/Design_Spec.md` said "sourced from the Controller Board's Island C".
@@ -281,14 +313,16 @@ has been removed.
 
 ## DEC-012 — U4 TPS25750 Replaced with TPS25751DREFR (NRND Resolution)
 
-**Date:** 2026-04-03  
-**Status:** ✅ RESOLVED  
-**Affects:** Power Module U4, schematic, PCB footprint
+- **Status:** ✅ RESOLVED
+- **Date:** 2026-04-03
+- **Category:** Electrical
+- **Area:** Power Module U4, schematic, PCB footprint
 
-**Decision:**  
+### Decision
+
 Replace **TPS25750** (NRND — Not Recommended for New Designs) with **TPS25751DREFR** (PD3.1 certified DRP controller, WQFN-38 6×4mm).
 
-**Rationale:**  
+### Rationale
 
 - PD emulation for U4 is required: the Raspberry Pi CM5 must negotiate a 5V/5A (25W) contract from the USB-C PD source to prevent the OS from issuing under-voltage warnings and throttling the system.
 - The TPS25751D variant includes the integrated 20V/5A bi-directional power path and a 5V/3A source switch in one package — appropriate for DRP operation that can advertise and deliver the 5V/5A
@@ -298,7 +332,7 @@ Replace **TPS25750** (NRND — Not Recommended for New Designs) with **TPS25751D
 - TPS25751 is USB-IF PD3.1 certified (TID#10306); TPS25750 was PD2.0 only and is NRND.
 - STUSB4500 (U5) handles the USB-C sink path; TPS25751 (U4) handles the source/emulation path. These are separate and complementary roles.
 
-**Impact:**  
+### Impact
 
 - ⚠️ **Package change**: TPS25750 was QFN-28; TPS25751DREFR is WQFN-38 6×4mm. Schematic symbol and PCB footprint must both be updated.
 - Mouser: `595-TPS25751DREFR`; DigiKey: `TPS25751DREFR-ND`.
@@ -307,20 +341,22 @@ Replace **TPS25750** (NRND — Not Recommended for New Designs) with **TPS25751D
 
 ## DEC-013 — L3 EMI Inductor Changed to Bourns SRP1265A-100M
 
-**Date:** 2026-04-03  
-**Status:** ✅ RESOLVED  
-**Affects:** Power Module L3, PCB footprint
+- **Status:** ✅ RESOLVED
+- **Date:** 2026-04-03
+- **Category:** Electrical
+- **Area:** Power Module L3, PCB footprint
 
-**Decision:**  
+### Decision
+
 Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-filter inductor).
 
-**Rationale:**  
+### Rationale
 
 - Würth 7447789100 is not available in any public distributor catalog (not found at DigiKey, Mouser, Farnell, or on the Würth public website). Sourcing without a Würth rep contact is not feasible.
 - Bourns SRP1265A-100M is a direct functional equivalent: 10µH, **15.5A Isat** (exceeds 14.5A target with 21% headroom), DCR=16.5mΩ max (better than the original 20mΩ spec), shielded molded SMD.
 - Widely stocked: Farnell ~2,741 pcs; Mouser (`652-SRP1265A-100M`); DigiKey (`SRP1265A-100MCT-ND`).
 
-**Impact:**  
+### Impact
 
 - ⚠️ **Package footprint change**: SRP1265A-100M is 13.5×12.5×6.2mm vs 7447789100's 12.5×12.5×6.0mm. PCB land pattern for L3 must use the Bourns 13.5×12.5mm footprint. Clearance to adjacent
 
@@ -330,15 +366,18 @@ Replace **Würth 7447789100** with **Bourns SRP1265A-100M** as L3 (EMI DM Pi-fil
 
 ## DEC-014 — Controller Board Uses ERF8 (Female) on Both BtB Connectors for Blind-Mate Assembly
 
-**Date:** 2026-04-04  
-**Status:** ✅ RESOLVED  
-**Affects:** Controller J1 (Link-Alpha), Controller J2 (Link-Beta), Consolidated BOM connector inventory
+- **Status:** ✅ RESOLVED
+- **Date:** 2026-04-04
+- **Category:** Electrical
+- **Area:** Controller J1 (Link-Alpha), Controller J2 (Link-Beta), Consolidated BOM connector inventory
 
-**Decision:**  
+### Decision
+
 Both BtB connectors on the Controller Board use the ERF8 female socket: J1 (Link-Alpha) uses **ERF8-040-05.0-S-DV-K-TR** and J2 (Link-Beta) uses **ERF8-020-05.0-S-DV-K-TR**.
 The mating male plugs are fitted to the Power Module (J1, ERM8-040) and the Stator Board (J8, ERM8-020-05.0-S-DV-K-TR) respectively.
 
-**Rationale:**  
+### Rationale
+
 During mechanical assembly, the Controller Board slides into the enclosure and must simultaneously engage with two boards along its back edge
 — the Power Module (J1) to one side and the Stator (J2) to the other.
 Using female sockets on the Controller allows guided blind-mate engagement in a single insertion motion,
@@ -346,7 +385,7 @@ with the mating male pins on the peripheral boards providing positive alignment.
 Placing male headers on the Controller would require both peripheral boards to be precisely pre-positioned before the Controller could be inserted,
 significantly complicating assembly.
 
-**Connector Assignment Summary:**
+### Connector Assignment Summary
 
 | Board | Connector | Gender | Part |
 | :--- | :--- | :--- | :--- |
@@ -355,7 +394,7 @@ significantly complicating assembly.
 | Power Module | J1 (Link-Alpha plug) | Male | ERM8-040-05.0-S-DV-K-TR |
 | Stator Board | J8 (Link-Beta plug) | Male | ERM8-020-05.0-S-DV-K-TR |
 
-**Impact:**  
+### Impact
 
 - Controller BOM J2 updated from ERM8 (male) to ERF8 (female); JLCPCB C-number to be verified.
 - Controller §2 narrative updated to reflect ERF8 on Link-Beta.
@@ -365,11 +404,13 @@ significantly complicating assembly.
 
 ## DEC-015 — LINK-BETA Connector Reduced from 80-pin to 40-pin (ERF8-020 / ERM8-020)
 
-**Date:** 2026-04-04
-**Status:** ✅ RESOLVED
-**Affects:** Controller Board (J2), Stator Board (J8), Consolidated BOM
+- **Status:** ✅ RESOLVED
+- **Date:** 2026-04-04
+- **Category:** Electrical
+- **Area:** Controller Board (J2), Stator Board (J8), Consolidated BOM
 
-**Decision:**
+### Decision
+
 The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-040) to **40-pin
 (ERF8-020-05.0-S-DV-K-TR / ERM8-020-05.0-S-DV-K-TR)**. The full 40-pin allocation is as follows:
 
@@ -405,7 +446,8 @@ The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-0
 | 28–35 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha; 8 pins × 0.5A = 4.0A |
 | 36–40 | GND | — | Power return (5 pins) |
 
-**Rationale:**
+### Rationale
+
 Logic boards downstream of the Stator (Encoder, Reflector, Extension) are 3V3-only — they require
 no 5V_MAIN rail. Removing 5V_MAIN from LINK-BETA and rationalising the signal set results in exactly
 40 signals. The JTAG block has 5 internal GND shield pins (self-shielded at low-moderate MHz), so only
@@ -413,32 +455,38 @@ a 2-pin GND moat is needed between JTAG and the data zone. 8 × 3V3_ENIG pins de
 for the worst-case 30-rotor stack (2.20 A per Power_Budgets.md). 5 GND return pins plus the 10 other GND pins throughout the
 connector provide adequate return paths.
 
-**Poka-Yoke Safety Note:**
+### Poka-Yoke Safety Note
+
 The 80-pin LINK-ALPHA (ERF8-040) and 40-pin LINK-BETA (ERF8-020) on the Controller Board are
 **physically incompatible** — the mating connectors cannot be inserted into the wrong socket. This
 provides a mechanical safeguard against mismating during prototype bring-up.
 
-**Alternatives Considered:**
+### Alternatives Considered
+
 Keeping 80-pin connector with unused pins. Rejected: unnecessary connector cost and PCB area; larger
 connector on the Stator increases stack height with no benefit.
 
-**Impact:**
+### Impact
 
 - Controller J2: ERF8-040 → ERF8-020-05.0-S-DV-K-TR (female, 40-pin)
 - Stator J8: ERM8-040 → ERM8-020-05.0-S-DV-K-TR (male, 40-pin)
 - DEC-014 connector table updated (see cross-ref below).
 
-**Cross-ref:** DEC-014 (gender assignment rationale remains valid; part numbers updated).
+### Cross-ref
+
+DEC-014 (gender assignment rationale remains valid; part numbers updated).
 
 ---
 
 ## DEC-016 — JTAG Controlled Impedance and Series Termination
 
-**Date:** 2026-04-05
-**Status:** ✅ ADOPTED
-**Affects:** Controller Board, Stator Board, Encoder Board, Reflector Board (noted), Extension Board (noted)
+- **Status:** ✅ ADOPTED
+- **Date:** 2026-04-05
+- **Category:** Electrical
+- **Area:** Controller Board, Stator Board, Encoder Board, Reflector Board (noted), Extension Board (noted)
 
-**Decision:**
+### Decision
+
 All JTAG signal traces on 4-layer and 6-layer PCBs are specified at **50 Ω controlled impedance**
 (0.127 mm / 5 mil trace width on outer layers over a contiguous GND plane). Series termination
 resistors are added at every cable-driving JTAG output using **75 Ω** (to match the ~100 Ω
@@ -449,10 +497,11 @@ Full signal-swing analysis confirms the destination CPLD receives full logic swi
 cases. The open-circuit reflection at the high-impedance CPLD input doubles the incoming wave back
 to full voltage; the series resistor controls the return reflection, not the final voltage.
 
-**Full analysis, all options considered, and trace width calculations:**
+### Full analysis, all options considered, and trace width calculations
+
 See `design/Electronics/Investigations/JTAG_Integrity.md`.
 
-**Summary of additions per board:**
+### Summary of additions per board
 
 | Board | Refs | Value | Purpose |
 | :--- | :--- | :--- | :--- |
@@ -481,20 +530,22 @@ boards provides sufficient protection. Existing Reflector R1 (22 Ω) retained as
 > DEC-017, which upgrades both boards to 4-Layer JLC04161H-7628. Both boards now have a solid L2 GND
 > plane and route JTAG on L1 at 0.127 mm (50 Ω), consistent with all other 4-layer boards.
 
-**Rationale:**
+### Rationale
+
 Achieving 100 Ω PCB traces (to perfectly match the IDC ribbon cable impedance) is physically
 impossible on JLCPCB standard 4-layer/6-layer stackups — the required trace width is negative
 (see calculation in `design/Electronics/Investigations/JTAG_Integrity.md §4`). The 50 Ω + 75 Ω hybrid approach provides the best
 achievable impedance match to the cable while remaining within manufacturing design rules.
 
-**Alternatives Considered:**
+### Alternatives Considered
 
 - **No termination (Option A):** Rejected — multiple re-reflections at 10 MHz risk false TCK edges.
 - **50 Ω PCB + 33 Ω series R (Option B):** Acceptable but leaves 33% reflection at PCB-to-cable
   transition unabsorbed.
 - **100 Ω PCB + 82 Ω series R (Option C, ideal):** Rejected — not achievable on standard stackup.
 
-**Cost Impact:**
+### Cost Impact
+
 Additional BOM cost per full system < £0.05. No JLCPCB impedance certification required for
 prototype; trace widths self-calculated and within ±10% of target. See `design/Electronics/Investigations/JTAG_Integrity.md §9`.
 
@@ -502,16 +553,18 @@ prototype; trace widths self-calculated and within ±10% of target. See `design/
 
 ## DEC-017 — Minimum 4-Layer Stackup for All Non-Controller Boards
 
-**Date:** 2026-04-05
-**Status:** ✅ ADOPTED
-**Affects:** Reflector Board, Extension Board (all other boards already compliant)
+- **Status:** ✅ ADOPTED
+- **Date:** 2026-04-05
+- **Category:** Electrical
+- **Area:** Reflector Board, Extension Board (all other boards already compliant)
 
-**Decision:**
+### Decision
+
 All PCBs in the Enigma-NG system shall use a minimum of **4-layer stackup** (JLCPCB
 JLC04161H-7628). The Controller Board is the sole exception and retains its 6-layer
 JLC06161H-2116 stackup for high-speed 5 Gbps differential pair requirements.
 
-**Standard 4-layer layer mapping for all non-Controller boards:**
+### Standard 4-layer layer mapping for all non-Controller boards
 
 | Layer | Function |
 | :--- | :--- |
@@ -526,14 +579,14 @@ JLC06161H-2116 stackup for high-speed 5 Gbps differential pair requirements.
 > with the Controller Board hat-headers, consistent with single-side JLCPCB assembly.
 > See `JTAG_Daughterboard/Design_Spec.md §4`.
 
-**Boards affected (updated):**
+### Boards affected (updated)
 
 | Board | Previous | New |
 | :--- | :--- | :--- |
 | Reflector | 2-Layer 1.6mm FR4 / 1oz | 4-Layer JLC04161H-7628 / 2oz |
 | Extension | Layer count unspecified | 4-Layer JLC04161H-7628 / 2oz |
 
-**Boards already compliant (no change):**
+### Boards already compliant (no change)
 
 | Board | Stackup | Notes |
 | :--- | :--- | :--- |
@@ -542,13 +595,14 @@ JLC06161H-2116 stackup for high-speed 5 Gbps differential pair requirements.
 | Rotor | 4-Layer JLC04161H-7628 | ✅ Unchanged |
 | Controller | 6-Layer JLC06161H-2116 | ✅ Exception — high-speed stackup retained |
 
-**Impact on DEC-016 / `design/Electronics/Investigations/JTAG_Integrity.md`:**
+### Impact
+
 The "2-layer uncontrolled impedance" notes for Reflector and Extension in DEC-016 are superseded.
 Both boards now have a solid L2 GND plane and can route JTAG on L1 at 0.127 mm (50 Ω controlled
 impedance), consistent with all other 4-layer boards. `design/Electronics/Investigations/JTAG_Integrity.md §3.1`, `§3.3` (now
 historical), and `§8` trace table have been updated accordingly.
 
-**Rationale:**
+### Rationale
 
 1. **Uniform stackup:** Consistent JLC04161H-7628 across all non-Controller boards eliminates
    stackup-dependent trace impedance variation, reducing signal behaviour differences between boards.
@@ -561,7 +615,7 @@ historical), and `§8` trace table have been updated accordingly.
 5. **Cost:** Marginal price difference between 2-layer and 4-layer at JLCPCB prototype quantities;
    outweighed by signal integrity and EMC benefits.
 
-**Alternatives Considered:**
+### Alternatives Considered
 
 - **Retain 2-layer Reflector/Extension:** Rejected — inconsistent stackup creates impedance
   discontinuities in the JTAG chain and leaves an uncontrolled segment at the reflector end.
@@ -574,6 +628,7 @@ historical), and `§8` trace table have been updated accordingly.
 
 - **Status:** Adopted
 - **Date:** 2026-04-05
+- **Category:** Electrical
 - **Area:** All Boards — Documentation Architecture
 
 ### Decision
@@ -616,7 +671,7 @@ definition is authoritative.
   Rotor's mechanical interface, not the other way round.
 - **JTAG Daughterboard → itself:** Self-contained module with no cross-board mating conflicts.
 
-**Alternatives Considered:**
+### Alternatives Considered
 
 - **Central `Interfaces.md` document:** Rejected — separates pin definitions from the board they belong
   to, making it harder to keep in sync during incremental design changes. Per-board ownership with
@@ -630,6 +685,7 @@ definition is authoritative.
 
 - **Status:** ✅ Adopted
 - **Date:** 2026-04-05
+- **Category:** Electrical
 - **Area:** Power Module — T2 transformer, TPS23730 operating mode, input EMI filter
 
 ### Decision
@@ -690,10 +746,13 @@ industry practice for catalogue magnetics.
 ## DEC-020 — GND_CHASSIS Rib Clearway ENIG Bond
 
 - **Status:** Accepted — 2026-04-08
-- **Affects:** Power Module — Supercap Block Assembly & Board Layout
+- **Date:** 2026-04-08
+- **Category:** Electrical
+- **Area:** Power Module — Supercap Block Assembly & Board Layout
 - **References:** QUE-001, Certification_Evidence.md §2.2
 
-**Decision:**
+### Decision
+
 The 3.0mm rib clearway gaps between supercap cells shall have:
 
 1. **Exposed ENIG strip (L1):** Solder mask opened in the rib clearway gap on the top copper layer (L1),
@@ -710,17 +769,20 @@ The 3.0mm rib clearway gaps between supercap cells shall have:
    manufacturing tolerances and ensure positive, reliable electrical contact under compression.
    Part to be selected at mechanical design phase when rib geometry is confirmed.
 
-**EMC rationale:**
+### Rationale
+
 The combined structure — aluminium Can lid, compression ribs, conductive gasket, PCB ENIG strip, and
 GND_CHASSIS copper pour — forms a near-complete Faraday cage around the supercap block, improving
 shielding of the high-capacitance energy storage element from the rest of the board.
 
-**Compatibility with single-point GND_CHASSIS bond rule (Cert_Evidence §2.2):**
+### Compatibility with single-point GND_CHASSIS bond rule
+
 The single-point rule governs signal GND → GND_CHASSIS crossings. Rib contact bonds are
 enclosure-to-GND_CHASSIS connections — both within the chassis domain — and do not create additional
 signal-to-chassis bonds. The rule is maintained.
 
-**Other boards:**
+### Other boards
+
 Deferred pending mechanical design documentation. Controller Board Mechanical_Design.md §3 notes the
 prototype uses a 3D-printed chassis (no conductive rib contact); this decision will be revisited when
 metal chassis dimensions are finalised. Stator/Encoder/Rotor mechanical designs are not yet written.
@@ -730,10 +792,13 @@ metal chassis dimensions are finalised. Stator/Encoder/Rotor mechanical designs 
 ## DEC-021 — Supercapacitor Bank Upgrade: 2×2 2S2P → 2×3 2S3P
 
 - **Status:** Accepted — 2026-04-08
-- **Affects:** Power Module — Supercap Bank, Board Layout, Hold-up Specification
+- **Date:** 2026-04-08
+- **Category:** Electrical
+- **Area:** Power Module — Supercap Bank, Board Layout, Hold-up Specification
 - **References:** DR-PM-07, DR-PM-09, DEC-020
 
-**Decision:**
+### Decision
+
 The supercapacitor bank is upgraded from a 2×2 (4-cell, 2S2P) to a **2×3 (6-cell, 2S3P)** arrangement,
 with the inter-cell air gap increased from 2.0mm to **3.0mm**.
 
@@ -751,7 +816,7 @@ with the inter-cell air gap increased from 2.0mm to **3.0mm**.
 | Hold-up duration @ 5W | ≥14.5s | ≥21.7s |
 | Charge time (depleted) | ~2 min | ~3 min |
 
-**Rationale:**
+### Rationale
 
 - **50% more hold-up:** 33F vs 22F provides ≥21.7 seconds at 5W — a more comfortable shutdown window
   and headroom for higher CM5 load profiles at prototype bring-up.
@@ -770,7 +835,12 @@ with the inter-cell air gap increased from 2.0mm to **3.0mm**.
 
 - **Status:** Decided
 - **Date:** 2026-04-06
-- **Decision:** Dedicated 12MHz SMD passive crystal (Y1) on the JDB PCB. CM5 GPCLK0 option rejected.
+- **Category:** Electrical
+- **Area:** JTAG Daughterboard — Clock Source (FT232H)
+
+### Decision
+
+Dedicated 12MHz SMD passive crystal (Y1) on the JDB PCB. CM5 GPCLK0 option rejected.
 
 ### Context
 
@@ -811,6 +881,7 @@ During JDB detailed design review, two issues were identified:
 
 - **Status:** Decided
 - **Date:** 2026-04-06
+- **Category:** Electrical
 - **Area:** JTAG Daughterboard — Grounding & EMC
 
 ### Decision
@@ -852,6 +923,7 @@ via, or `GND_CHASSIS` net is present on the JDB.
 
 - **Status:** Decided
 - **Date:** 2026-04-06
+- **Category:** Electrical
 - **Area:** JTAG Architecture — Controller and JTAG Daughterboard
 
 ### Decision
@@ -887,6 +959,42 @@ for ribbon cable connections. See DEC-016 for the full 75 Ω / 33 Ω rationale.
 
 ---
 
+## DEC-025 — CM5 Shutdown Mechanism: Interrupt-Driven via Custom Linux Driver (Deferred)
+
+- **Status:** Deferred — Software PoC Stage
+- **Date:** 2026-04-09
+- **Category:** Software
+- **Area:** Software / Linux OS — CM5 Power Management Shutdown Path
+
+### Decision
+
+The final implementation of the CM5 graceful shutdown mechanism — triggered by the LTC3350 BACKUP
+signal — is deferred to the **Software PoC stage**, pending hardware availability for integration
+testing. The real implementation will use a **custom Linux kernel driver** that registers the BACKUP
+signal as a hardware interrupt, rather than a userspace polling daemon.
+
+The PWR_GD GPIO (GPIO 27, MCP121T-450E) remains the hard-backstop interrupt and requires no driver
+development — it is handled by the standard gpio-shutdown device tree overlay.
+
+### Rationale
+
+- The custom driver approach eliminates polling latency entirely (interrupt response is effectively
+  immediate vs. up to 500 ms for a 2 Hz poll cycle).
+- Driver development requires the physical hardware to be available for testing and validation.
+  Writing and verifying kernel interrupt handlers against simulated hardware is impractical.
+- The system is designed for operational sessions of 15–30 minutes or longer. The hold-up window
+  (>=21.7 s) is a generous safety margin; an unplanned shutdown from a fully-charged state is expected
+  to be harmless. Deferring the driver to the PoC stage does not create a risk for hardware bring-up.
+- Placeholder pseudocode in design/Software/Linux_OS/Power_Management.md documents the intended
+  behaviour for reference; it is not a specification.
+
+### Impact
+
+- design/Software/Linux_OS/Power_Management.md Phase 1: Polling daemon pseudocode replaced with
+  deferred-decision note referencing DEC-025. The PWR_GD gpio-shutdown backstop (Phase 2) is
+  unchanged and remains the active hardware protection path until the driver is written.
+
+---
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.

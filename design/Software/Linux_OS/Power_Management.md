@@ -10,13 +10,13 @@
 
 The CM5 (Raspberry Pi Compute Module 5) must respond to two hardware power events:
 
-1. **LTC3350 BACKUP trigger (I²C polling)** — primary early-warning mechanism; the BACKUP bit is set when 5V_MAIN falls below 4.40V
-   (R14=26.7kΩ; see Power_Module/Design_Spec.md DR-PM-08), triggering a graceful shutdown with the full ≥21.7-second supercap hold-up window available.
-2. **PWR_GD (GPIO 27 interrupt)** — secondary hard-backstop from MCP121T-450E voltage supervisor; deasserts (goes LOW) when 5V_MAIN < 4.5V.
-   Triggers an emergency sync-and-halt if the I²C daemon fails to catch the BACKUP event.
+1. **PWR_GD (GPIO 27)** — first hardware event; MCP121T-450E voltage supervisor deasserts (goes LOW) when 5V_MAIN < 4.5V (~10 ms after mains loss).
+   Acts as primary interrupt trigger in the interim implementation (gpio-shutdown device tree overlay).
+2. **LTC3350 BACKUP signal** — fires when 5V_MAIN drops to 4.40V (R14=26.7kΩ; see Power_Module/Design_Spec.md DR-PM-08), engaging supercap hold-up.
+   This is the preferred interrupt source for the final custom Linux driver implementation (see DEC-025). Provides the full >=21.7-second hold-up window for graceful shutdown.
 
-The recommended approach is **Option C**: poll the LTC3350 via I²C for the BACKUP alert as the primary early-warning mechanism,
-with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full ≥21.7-second hold-up window to perform a graceful shutdown.
+> **Implementation note:** The final interrupt-driven shutdown driver is deferred to the Software PoC stage (see **DEC-025**). Until then, the
+> PWR_GD gpio-shutdown overlay (Phase 2 below) is the active hardware protection path. The Phase 1 pseudocode is retained for reference only.
 
 ## Hardware Signals
 
@@ -27,62 +27,33 @@ with the PWR_GD GPIO as a hard backstop interrupt. This gives the CM5 the full �
 
 ## Option C: Recommended Implementation
 
-### Phase 1 — LTC3350 I²C Polling Daemon (Primary)
+### Phase 1 — LTC3350 BACKUP Interrupt Driver (Deferred — DEC-025)
 
-A systemd service (`enigma-power-monitor.service`) polls the LTC3350 BACKUP register every 500ms. When the BACKUP condition is detected, it initiates a graceful systemctl poweroff immediately.
+> **Deferred to Software PoC Stage.** The final implementation uses a custom Linux kernel driver
+> that registers the LTC3350 BACKUP signal as a hardware interrupt. This approach eliminates polling
+> latency and is the preferred production mechanism. Development is deferred until the physical
+> hardware is available for integration testing. See **DEC-025** in design/Design_Log.md.
 
-The LTC3350 I²C address is 0x09. The BACKUP status is in register 0x01 (STATUS register), bit 3 (BACKUP bit).
+**Intended behaviour (reference only):**
 
-Pseudocode for the monitoring daemon:
+The driver will:
+1. Register an interrupt handler on the LTC3350 ALERT/BACKUP pin.
+2. On interrupt, read LTC3350 STATUS register (I2C 0x09, register 0x01) to confirm BACKUP bit (bit 3) is set.
+3. Invoke kernel_power_off() or equivalent clean shutdown path.
+4. Log the event to the kernel ring buffer for post-mortem analysis.
 
-```python
-#!/usr/bin/env python3
-"""enigma-power-monitor: LTC3350 backup-mode watchdog."""
-import smbus2, time, subprocess, logging, systemd.daemon
+No polling loop, no userspace daemon, and no POLL_HZ parameter are required. The interrupt response
+latency is determined by the kernel IRQ subsystem (typically < 1 ms), giving the full >=21.7-second
+supercap hold-up window for OS shutdown.
 
-BUS      = 1         # I2C bus number on CM5
-ADDR     = 0x09      # LTC3350 I2C address
-REG_STATUS = 0x01    # LTC3350 STATUS register
-BACKUP_BIT = (1 << 3)
-POLL_HZ  = 2         # polls per second
+**I2C parameters (for driver development reference):**
 
-logging.basicConfig(level=logging.INFO,
-    format='%(asctime)s enigma-power-monitor %(levelname)s: %(message)s')
-
-bus = smbus2.SMBus(BUS)
-systemd.daemon.notify('READY=1')
-logging.info("Power monitor started — polling LTC3350 at %dHz", POLL_HZ)
-
-while True:
-    try:
-        status = bus.read_word_data(ADDR, REG_STATUS)
-        if status & BACKUP_BIT:
-            logging.critical("LTC3350 BACKUP asserted — initiating graceful shutdown")
-            subprocess.run(['systemctl', 'poweroff'], check=True)
-            break
-    except OSError as e:
-        logging.warning("I2C read error: %s", e)
-    time.sleep(1.0 / POLL_HZ)
-```
-
-**systemd unit file** (`/etc/systemd/system/enigma-power-monitor.service`):
-
-```ini
-[Unit]
-Description=Enigma-NG Power Monitor (LTC3350 backup watchdog)
-After=multi-user.target
-DefaultDependencies=no
-Before=shutdown.target
-
-[Service]
-Type=notify
-ExecStart=/usr/local/bin/enigma-power-monitor.py
-Restart=on-failure
-RestartSec=2
-
-[Install]
-WantedBy=multi-user.target
-```
+| Parameter | Value |
+| --- | --- |
+| I2C address | 0x09 |
+| STATUS register | 0x01 |
+| BACKUP bit | bit 3 (value 0x08) |
+| ALERT pin | Active-low open-drain; connect to GPIO with pull-up |
 
 ### Phase 2 — PWR_GD GPIO Hard Backstop (Backup)
 
@@ -135,7 +106,7 @@ HandlePowerKey=poweroff
 | Mains fails / PoE drops | t = 0 | Input source lost |
 | PWR_GD deasserts | ~10ms | MCP121T fires; 5V_MAIN < 4.5V; PWR_GD goes LOW |
 | 5V_MAIN < 4.40V — LTC3350 BACKUP asserted (supercaps take over) | ~shortly after PWR_GD | Hold-up engaged; ≥21.7s window begins |
-| Daemon detects LTC3350 BACKUP asserted and initiates `systemctl poweroff` | ≤510ms from power loss (≤500ms poll latency after BACKUP asserts at POLL_HZ=2) | OS begins graceful shutdown |
+| PWR_GD interrupt triggers gpio-shutdown (interim) / BACKUP interrupt triggers custom driver (deferred — DEC-025) | PWR_GD: ~10 ms from power loss; BACKUP: ~shortly after | OS begins graceful shutdown |
 | OS syncs filesystems, halts | ~10–15s | ROTOR_EN de-asserted; CM5 PMIC halted |
 | Supercaps depleted / system off | ≥21.7s from power loss | 5V_MAIN → 0V |
 
