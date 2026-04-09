@@ -61,9 +61,9 @@ All external-facing connectors (Ethernet, USB-C, USB 3.0, HDMI, and battery) are
 
 ### RTC Backup Battery
 
-The Controller board contains an RTC backup battery (ML2032/CR2032 coin cell) to maintain the system clock during power-off periods.
+The Controller board contains an RTC backup battery (CR2032 coin cell) to maintain the system clock during power-off periods.
 
-> ⚠️ **Battery Safety Warning:** The RTC backup battery (ML2032/CR2032 coin cell) is a lithium cell.
+> ⚠️ **Battery Safety Warning:** The RTC backup battery (CR2032 coin cell) is a lithium cell.
 > Do not short-circuit, incinerate, disassemble, or expose to temperatures above 60°C. Replace only with the same or equivalent approved type. Dispose of in accordance with local regulations.
 
 ---
