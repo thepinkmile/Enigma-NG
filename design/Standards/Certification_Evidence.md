@@ -253,31 +253,27 @@ consistent with military component derating standards.
 | Raspberry Pi CM5 (full rated) | 5.00A | Linux OS undervoltage threshold: 5V/5A (25W); full allocation maintained |
 | USB 3.0 (TPS2065C rated limit) | 1.60A | Single USB 3.0 port; TPS2065C current-limited |
 | HDMI (AP2331W rated limit) | 0.05A | Hot-plug current spike handled by AP2331W |
-| 3V3_ENIG LDO input (37 CPLDs) | 2.20A | 37 CPLDs × 50mA + AS5600 encoders + other consumers = 2,117mA → 2.20A (per Power_Budgets.md); 3A LDO peak |
-| **Total peak** | **9.05A** | **75.4% of 12A rated Buck output** ✓ |
+| 3V3_ENIG LDO input (37 CPLDs) | 2.11A | 37 CPLDs × 50mA + AS5600 encoders + other consumers = 2,107mA → 2.11A (per Power_Budgets.md); 3A LDO peak |
+| **Total peak** | **8.76A** | **73.0% of 12A rated Buck output** ✓ |
 
 **Component utilisation summary:**
 
 | Component | Function | Rated | Peak Load | Utilisation |
 | --- | --- | --- | --- | --- |
-| 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 9.05A | **75.4%** ✓ † |
-| TPS75733KTTRG3 | 3V3_ENIG LDO | 3A | 2.20A | **73.3%** ✓ |
-| TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.82A* | **68.9%** ✓ |
-| TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 52.0W (steady) | **72.2%** ✓ |
+| 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.76A | **73.0%** ✓ |
+| TPS75733KTTRG3 | 3V3_ENIG LDO | 3A | 2.11A | **70.4%** ✓ |
+| TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.67A* | **66.7%** ✓ |
+| TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 50.3W (steady) | **69.9%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
 
-> † LMQ61460-Q1 operates at 75.4% — marginally above the ≤75% policy.
-> This exceedance is accepted and documented (see §3.3.1: dual-phase interleaving provides redundancy, thermal distribution, and an upgrade path).
-> All other components comply with the ≤75% rule without exception.
+> *eFuse load (worst case — PoE 12V bus): Supercap bank is on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.76A + LTC3350 supercap charge 1A (5V side) = 9.76A at 5V = 48.8W. Buck
+> input (÷0.87) = 56.1W. At 12V PoE bus: 56.1W / 12V = **4.67A eFuse current**. eFuse utilisation (ILIM=7A): 4.67A / 7A = **66.7%** ✓. Steady state (no supercap charge): 8.76A × 5V / (0.87 × 12V) =
+> 4.20A / 7A = **60.0%** ✓. At USB-C 15V: 56.1W / 15V = 3.74A / 7A = **53.4%** ✓. All cases within the 75% derating rule.
 >
-> *eFuse load (worst case — PoE 12V bus): Supercap bank is now on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 9.05A + LTC3350 supercap charge 1A (5V side) = 10.05A at 5V = 50.25W. Buck
-> input (÷0.87) = 57.8W. At 12V PoE bus: 57.8W / 12V = **4.82A eFuse current**. eFuse utilisation (ILIM=7A): 4.82A / 7A = **68.9%** ✓. Steady state (no supercap charge): 9.05A × 5V / (0.87 × 12V) =
-> 4.34A / 7A = **62.0%** ✓. At USB-C 15V: 57.8W / 15V = 3.85A / 7A = **55.0%** ✓. All cases within the 75% derating rule.
->
-> **PoE peak: Supercapacitor bank (now on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~3 minutes from cold start), total 5V_MAIN load = 9.05A (system) + 0.5A
-> (LTC3350 supercap charge) = 9.55A. Buck input at 87% efficiency = 9.55A × 5V / 0.87 = 54.9W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 54.9W / 72W =
-> **76.2%** (marginally above the 75% design rule during ~3 min cold-start charge; see OA-02).
-> Steady-state utilisation (fully charged): 9.05A × 5V / 0.87 = 52.0W / 72W = **72.2%** ✓. OA-02 resolved — see Open Actions.
+> **PoE peak: Supercapacitor bank (on 5V_MAIN bus, managed by LTC3350) charges at 0.5A from 5V_MAIN. During initial charge (~3 minutes from cold start), total 5V_MAIN load = 8.76A (system) + 0.5A
+> (LTC3350 supercap charge) = 9.26A. Buck input at 87% efficiency = 9.26A × 5V / 0.87 = 53.2W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 53.2W / 72W =
+> **73.9%** ✓ (within 75% design rule).
+> Steady-state utilisation (fully charged): 8.76A × 5V / 0.87 = 50.3W / 72W = **69.9%** ✓. OA-02 resolved — see Open Actions.
 
 ### 3.6 Thermal Management Design Intent
 
@@ -388,9 +384,9 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 | Steady-state (CM5 + USB + HDMI + LDO) | 42.5W | 83.3% ❌ | 59.0% ✓ |
 | Initial supercap charge (+2.87W Buck input for 0.5A @ 5V) | 45.4W | 89.0% ❌ | 63.1% ✓ |
 
-> Initial supercap charge (0.5A at 5V, ~3 minutes from cold start) raises total 5V_MAIN load to 9.55A (9.05A system + 0.5A LTC3350 charge).
-> Buck input at 87% efficiency = 9.55A × 5V / 0.87 = 54.9W PoE input.
-> Worst-case PoE utilisation during this window: 54.9W / 72W = 76.2% — marginally above the 75% design rule during ~3 min cold-start charge (see §3.5 OA-02; accepted exception).
+> Initial supercap charge (0.5A at 5V, ~3 minutes from cold start) raises total 5V_MAIN load to 9.26A (8.76A system + 0.5A LTC3350 charge).
+> Buck input at 87% efficiency = 9.26A × 5V / 0.87 = 53.2W PoE input.
+> Worst-case PoE utilisation during this window: 53.2W / 72W = 73.9% ✓ — within the 75% design rule.
 > System must be powered for ≥3 minutes before full hold-up protection (≥21.7 seconds) is available.
 > Normal minimum operational session is 30+ minutes; this constraint is not operationally significant.
 
@@ -473,7 +469,7 @@ Any replacement CPLD must be verified for:
 | ID | Description | Owner | Priority |
 | --- | --- | --- | --- |
 | OA-01 | **[CLOSED]** eFuse variant confirmed as **TPS259804ONRGER** (16.9V silicon-fixed OVLO, VQFN-24). UVLO confirmed: V_UVLO_R = 1.20V typ; R1=232kΩ, R2=28.7kΩ → 10.90V typ (range 10.72–11.17V). OVLO: silicon-fixed 16.9V typ (16.32V min / 17.31V max rising) — no external R; worst-case min 16.32V gives 0.32V margin above BMS 16.4V max — documented in §3.2 battery note. ILIM: R3 = 210 Ω ERJ-3EKF2100V (Mouser 667-ERJ-3EKF2100V / DigiKey P210HCT-ND / JLCPCB C403064), programs 7.062A typ via R = 1460/(I−0.11). All PNs confirmed. | Hardware Designer | **CLOSED** |
-| OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~3 min charge from cold: 54.9W / 72W = 76.2% — marginally above the 75% design rule; accepted exception (see §3.5). Steady-state: 52.0W / 72W = 72.2% ✓. |
+| OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~3 min charge from cold: 53.2W / 72W = 73.9% ✓ — within 75% design rule. Steady-state: 50.3W / 72W = 69.9% ✓. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
 | OA-05 | Thermal simulation of BtB connector zone to verify 0.5A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
