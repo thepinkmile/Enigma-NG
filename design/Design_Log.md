@@ -995,6 +995,7 @@ development — it is handled by the standard gpio-shutdown device tree overlay.
   unchanged and remains the active hardware protection path until the driver is written.
 
 ---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.

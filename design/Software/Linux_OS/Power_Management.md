@@ -37,6 +37,7 @@ The CM5 (Raspberry Pi Compute Module 5) must respond to two hardware power event
 **Intended behaviour (reference only):**
 
 The driver will:
+
 1. Register an interrupt handler on the LTC3350 ALERT/BACKUP pin.
 2. On interrupt, read LTC3350 STATUS register (I2C 0x09, register 0x01) to confirm BACKUP bit (bit 3) is set.
 3. Invoke kernel_power_off() or equivalent clean shutdown path.

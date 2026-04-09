@@ -42,6 +42,7 @@ port assignments.
 ### HID Use (1 board, both halves independent)
 
 When used as the HID interface (Keyboard + Lightboard), both halves operate independently:
+
 - **Decode Half (CPLD A):** Receives 6-bit ENC_IN from Stator → asserts one of 64 lamp-drive output
   lines (Lightboard). Connected to lamp assemblies via BT1–64 spade terminals.
 - **Encode Half (CPLD B):** Reads one of 64 key-press input lines (Keyboard) → encodes to 6-bit
@@ -74,8 +75,8 @@ each half is determined entirely by the mechanical assembly and Stator CPLD conf
 
 ## 2. Power Requirements
 
-* **Core:** The Encoder Board receives its 3V3_ENIG power rail from the IDC cable connection from the Stator (pin 1 & 26). This could be connected to any of J4–J6 of the Stator Board.
-* Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
+- **Core:** The Encoder Board receives its 3V3_ENIG power rail from the IDC cable connection from the Stator (pin 1 & 26). This could be connected to any of J4–J6 of the Stator Board.
+- Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 
 ## 3. Dual-Role Architecture
 
@@ -126,23 +127,23 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
 
 ## 4. Interconnects
 
-* **Data Link (J2):** 26-pin (2×13) 2.54mm shrouded box header with polarisation key.
+- **Data Link (J2):** 26-pin (2×13) 2.54mm shrouded box header with polarisation key.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J4–J6`.
   > See `design/Electronics/Stator/Board_Layout.md` — J4–J6 for the full pin table.
-* **Status LEDs (×2):** One active-low debug LED per CPLD. CPLD output LOW = LED ON.
+- **Status LEDs (×2):** One active-low debug LED per CPLD. CPLD output LOW = LED ON.
   330Ω current-limiting resistor per LED; ~4mA drive current at 3.3V.
-* **Plugboard Jack Sockets:** See `design/Mechanical/Plugboard/Design_Spec.md`.
-* **Keyboard Switches:** See `design/Mechanical/Keyboard/Design_Spec.md`.
-* **PCB Spade Terminal Banks (2× banks of 64, 128 total):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs.
-  * **Bank 1 (BT1–BT64) — Decode Half outputs:** CPLD A (U1) decoder output lines. In plugboard mode:
+- **Plugboard Jack Sockets:** See `design/Mechanical/Plugboard/Design_Spec.md`.
+- **Keyboard Switches:** See `design/Mechanical/Keyboard/Design_Spec.md`.
+- **PCB Spade Terminal Banks (2× banks of 64, 128 total):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs.
+  - **Bank 1 (BT1–BT64) — Decode Half outputs:** CPLD A (U1) decoder output lines. In plugboard mode:
     wired via harness to the Tip and Switch terminals of the 64 jack sockets. In HID lightboard mode:
     wired to lamp-drive lines. CPLD A drives these lines; no pull-up resistors required on this bank.
-  * **Bank 2 (BT65–BT128) — Encode Half inputs:** CPLD B (U2) encoder input lines. In plugboard mode:
+  - **Bank 2 (BT65–BT128) — Encode Half inputs:** CPLD B (U2) encoder input lines. In plugboard mode:
     wired via harness to the Sleeve terminals of the 64 jack sockets. In HID keyboard mode: wired to
     keyboard switch output lines (active-low, 10kΩ pull-up + RC filter per line).
-  * The two banks are vertically stacked so that character N on Bank 1 (BT_N) aligns with character N
+  - The two banks are vertically stacked so that character N on Bank 1 (BT_N) aligns with character N
     on Bank 2 (BT_{N+64}), enabling correct plugboard harness assembly.
-* **Jack Socket Wiring (Plugboard Mode):**
+- **Jack Socket Wiring (Plugboard Mode):**
   Each of the 64 panel-mount jack sockets has three terminals. The wiring harness connects them as follows:
 
   | Jack terminal | Wired to | Notes |
@@ -165,7 +166,7 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
   > items. See `design/Mechanical/Plugboard/Design_Spec.md` for full harness specification.
   > Insertion detection (Switch contact opens when plug inserted) monitoring path is an **open item**
   > — to be defined in Mechanical/Plugboard/Design_Spec.md.
-* **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54mm pitch.
+- **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54mm pitch.
   Not a separate connector — bare gold pads probed directly with logic analyser clips or ICT fixtures.
   Mirrors the Data Link signals: Row 1 = 3V3_ENIG, GND, ENC_IN[0:5]; Row 2 = 3V3_ENIG, GND, ENC_OUT[0:5].
   See `Encoder/Board_Layout.md` Diagnostic Bank section for full pad map.
@@ -173,21 +174,21 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
 
 ## 5. JTAG Chain Integrity
 
-* **Entry/Exit:** JTAG chain enters and exits via the IDC ribbon cable connection (J2) to the Stator Board.
-* **Local Chain:** The Encoder Board contains 2 devices in its JTAG chain: CPLD 1 (U1) and CPLD 2 (U2). CPLD 1 TDO feeds CPLD 2 TDI.
-* **Trace Width:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over the L2 GND plane, targeting **50 Ω controlled impedance** per DEC-016. See `design/Electronics/Investigations/JTAG_Integrity.md`.
-* **Pull Resistors (×4, placed near CPLDs):**
-  * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up.
-  * **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS) when not driven.
-  * **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK is floating.
-  * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low; pull-up ensures CPLDs remain out of reset by default.
-  * TCK, TMS, and SYS_RESET_N are broadcast nets shared between both CPLDs.
-* **Termination:**
-  * **Inter-CPLD (R7, 33Ω):** Series resistor placed within 2 mm of CPLD 1 TDO, on the trace to CPLD 2 TDI.
+- **Entry/Exit:** JTAG chain enters and exits via the IDC ribbon cable connection (J2) to the Stator Board.
+- **Local Chain:** The Encoder Board contains 2 devices in its JTAG chain: CPLD 1 (U1) and CPLD 2 (U2). CPLD 1 TDO feeds CPLD 2 TDI.
+- **Trace Width:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over the L2 GND plane, targeting **50 Ω controlled impedance** per DEC-016. See `design/Electronics/Investigations/JTAG_Integrity.md`.
+- **Pull Resistors (×4, placed near CPLDs):**
+  - **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up.
+  - **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS) when not driven.
+  - **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK is floating.
+  - **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low; pull-up ensures CPLDs remain out of reset by default.
+  - TCK, TMS, and SYS_RESET_N are broadcast nets shared between both CPLDs.
+- **Termination:**
+  - **Inter-CPLD (R7, 33Ω):** Series resistor placed within 2 mm of CPLD 1 TDO, on the trace to CPLD 2 TDI.
     Source impedance ≈ 53 Ω, matched to the 50 Ω intra-board PCB trace.
     See `design/Electronics/Investigations/JTAG_Integrity.md` Option D.
-  * **Cable Output (R8, 75Ω):** Series resistor placed within 2 mm of CPLD 2 TDO, before J2 pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
-* **Programming:** Supports "In-System Sources and Probes" debugging via the CM5 GUI.
+  - **Cable Output (R8, 75Ω):** Series resistor placed within 2 mm of CPLD 2 TDO, before J2 pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
+- **Programming:** Supports "In-System Sources and Probes" debugging via the CM5 GUI.
 
 ## 6. Key Mapping (64-Way QWERTY for Keyboard)
 
@@ -209,15 +210,15 @@ Mechanical Plugboard specification.
 
 ## 8. Thermal & ESD
 
-* **Thermal:** Vias under the Intel MAX II EPM240T100I5N CPLD "PowerPad" (if applicable) for heat dissipation.
+- **Thermal:** Vias under the Intel MAX II EPM240T100I5N CPLD "PowerPad" (if applicable) for heat dissipation.
 
 ## 9. PCB Fabrication & Stackup
 
-* **Layers:** 4-Layer (JLC04161H-7628).
-* **Finish:** ENIG (Gold) for TQFP-100 pads.
-* **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
-* **Chip Placement:** CPLD #1 (Left-side 32 keys) and CPLD #2 (Right-side 32 keys) placed on the rear of the board to allow keys/lamps/sockets on the front.
-* **Half Labelling (Silkscreen):** The two board halves shall be clearly labelled in silkscreen:
+- **Layers:** 4-Layer (JLC04161H-7628).
+- **Finish:** ENIG (Gold) for TQFP-100 pads.
+- **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
+- **Chip Placement:** CPLD #1 (Left-side 32 keys) and CPLD #2 (Right-side 32 keys) placed on the rear of the board to allow keys/lamps/sockets on the front.
+- **Half Labelling (Silkscreen):** The two board halves shall be clearly labelled in silkscreen:
   **"DECODE"** (U1 side, BT1–64) and **"ENCODE"** (U2 side, BT65–128). This prevents assembly
   errors, particularly since the board is physically symmetrical.
 

@@ -194,7 +194,7 @@ U2A SW node
    [U_INV1: SN74LVC1G14DBVRQ1 SOT-23-5 (U13)]  (Schmitt trigger — restores clean digital signal)
     │
    [R_DLY: 82.0kΩ 1% 0402 (R26, ERJ-2RKF8202X)]  ┐
-   [C_DLY: 22nF X7R 0603 (C29, CL10B223KB8WPNC)]  ┘  RC delay: τ = 1.804µs → ½ period at 400kHz ≈ 1.25µs
+   [C_DLY: 22nF X7R 0603 (C29, CL10B223KB8WPNC)]  ┘  RC delay: τ = 1.804ms → well beyond ½ period at 400kHz (1.25µs); delay circuit relies on Schmitt-trigger threshold crossing, not τ ≈ T/2
     │
    [U_INV2: SN74LVC1G14DBVRQ1 SOT-23-5 (U14)]  (Schmitt trigger — re-squares delayed signal)
     │

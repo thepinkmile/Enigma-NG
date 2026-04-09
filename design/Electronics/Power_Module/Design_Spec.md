@@ -423,7 +423,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 10nF 100V X7R 0402 | 0402 | 80-C0402C103J1RAUTO | 399-C0402C103J1RACAUTOCT-ND | C19862706 |
 | C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C28 | SYNC delay chain SW-ringing low-pass filter (C_F1) | 100pF X7R 25V (C0402C101K3RACAUTO) | 0402 | 80-C0402C101K3RAUTO | 399-C0402C101K3RACAUTOCT-ND | C5272912 |
-| C29 | SYNC 180° phase delay capacitor (C_DLY) [τ = 82.0kΩ × 22nF = 1.804µs → 180° at 400kHz] | 22nF X7R 25V (CL10B223KB8WPNC) | 0603 | 187-CL10B223KB8WPNC | 1276-6534-1-ND | C346197 |
+| C29 | SYNC 180° phase delay capacitor (C_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 22nF X7R 25V (CL10B223KB8WPNC) | 0603 | 187-CL10B223KB8WPNC | 1276-6534-1-ND | C346197 |
 | C30, C31 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
 | J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM8613CT-ND | C5358550 |
@@ -455,7 +455,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R24 | LMQ61460A FSET frequency-set resistor (U2A, R_FSET) | 86.6kΩ 1% Thick-Film (ERJ-3EKF8662V) | 0603 | 667-ERJ-3EKF8662V | P86.6KHCT-ND | C403381 |
 | R25 | SYNC delay chain SW-ringing isolation resistor (R_SW) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R26 | SYNC 180° phase delay resistor (R_DLY) [τ = 82.0kΩ × 22nF = 1.804µs → 180° at 400kHz] | 82.0kΩ 1% Thick-Film (ERJ-2RKF8202X) | 0402 | 667-ERJ-2RKF8202X | P82.0KLCT-ND | C400641 |
+| R26 | SYNC 180° phase delay resistor (R_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 82.0kΩ 1% Thick-Film (ERJ-2RKF8202X) | 0402 | 667-ERJ-2RKF8202X | P82.0KLCT-ND | C400641 |
 | R27 | U2B SYNC pull-down to AGND (R_PD) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
@@ -533,7 +533,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 >   Mouser: `595-SN74LVC1G14DBVRQ1`; DigiKey: `296-SN74LVC1G14DBVRQ1CT-ND`; JLCPCB: `C49303123`.
 > * **R24–R27, C28–C29 SYNC sub-circuit** — Complete SYNC interleaving chain from U2A SW node to U2B FSET/SYNC pin.
 >   R_FSET (R24, 86.6kΩ ERJ-3EKF8662V) sets U2A switching frequency. R_SW (R25, 10kΩ) + C_F1 (C28, 100pF) form a 1µs LP filter attenuating SW node ringing before the first Schmitt stage (U13).
->   R_DLY (R26, 82.0kΩ ERJ-2RKF8202X) + C_DLY (C29, 22nF CL10B223KB8WPNC) implement the RC phase delay: τ = 1.804µs → 180° at 400kHz. R_PD (R27, 10kΩ) ensures U2B SYNC pin is pulled low
+>   R_DLY (R26, 82.0kΩ ERJ-2RKF8202X) + C_DLY (C29, 22nF CL10B223KB8WPNC) implement the RC phase delay: τ = 1.804ms → 180° at 400kHz. R_PD (R27, 10kΩ) ensures U2B SYNC pin is pulled low
 >   during U2A startup. Full architecture documented in Certification_Evidence.md §3.3.3.
 > * **J3 0436500519 (43650-0519)** — Full Molex PN: `0436500519`; short form `43650-0519`. 5-circuit, 1-row, vertical THT, gold contacts, board lock, 3mm pitch.
 >   Confirmed stock: Farnell ~1,143 pcs (£1.18 each); Heilind 756 pcs.
