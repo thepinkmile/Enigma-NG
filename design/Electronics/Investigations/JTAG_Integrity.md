@@ -424,7 +424,7 @@ distance on the trace.
 
 > **Controller JTAG pass-through:** The Controller board carries no active JTAG components. All
 > buffering (U5 SN74LVC2G125DCUR) and series damping (R6–R8, 33 Ω 0402) are located on the JDB.
-> LINK-BETA is a direct BtB connector (no cable), so 33 Ω applies (not 75 Ω). See DEC-023.
+> LINK-BETA is a direct BtB connector (no cable), so 33 Ω applies (not 75 Ω). See DEC-024.
 >
 > **Reflector and Extension:** Upgraded to 4-layer JLC04161H-7628 per DEC-017. Both boards now
 > have a solid L2 GND plane. JTAG traces route on L1 at 0.127 mm (50 Ω controlled impedance),
@@ -438,7 +438,7 @@ distance on the trace.
 | Board | Stackup | JTAG Layer | Target Zo | Trace width | Status |
 | --- | --- | --- | --- | --- | --- |
 | JDB | JLC04161H-7628 (4L) | L2 over L1 GND | 50 Ω | **0.127 mm (5 mil)** | JDB is the complete JTAG master. U5 buffer and R6–R8 series damping on JDB. Controller is pass-through. |
-| Controller | JLC06161H-2116 (6L) | L6 over L5 GND | 50 Ω | **0.127 mm (5 mil)** | Pass-through only — no active JTAG components on Controller (see DEC-023) |
+| Controller | JLC06161H-2116 (6L) | L6 over L5 GND | 50 Ω | **0.127 mm (5 mil)** | Pass-through only — no active JTAG components on Controller (see DEC-024) |
 | Stator | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §3 |
 | Encoder | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §6 |
 | Reflector | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017 |
