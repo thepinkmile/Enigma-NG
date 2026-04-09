@@ -76,7 +76,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 ### 2.1. Connectivity & Bus (on Link-Alpha)
 
 * **High-Speed Interconnect (BtB Samtec):**
-  * **Connector:** Samtec ERF8-040 (Female Socket, 80-pin, 0.8mm pitch). See DEC-007.
+  * **Connector:** Samtec ERF8-040 (Female Socket, 80-pin, 0.8mm pitch). See DEC-014.
   * **Mating Style:** Board-to-Board vertical stack; SMT reflow. Mates with ERM8-040 (Male) on Power Module.
   * **Pin Summary:**
     * **Pins 1–20:** GbE MDI diff pairs (4 pairs + GND shields), 100Ω stripline on L3.

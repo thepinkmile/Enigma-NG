@@ -33,7 +33,7 @@ TOP VIEW (L1) - 6-Layer / 2oz Copper
 |   | [C_SC1] [C_SC2] [C_SC3] |           |                          |           |
 |   | [C_SC4] [C_SC5] [C_SC6] |           |  [ Amber "Safety Glow" ] |           |
 |   | (33F/5.4V Supercap)    |           |  [ J3 Molex 43650-0519 ] |           |
-|   | (33F×6 cells, 2S3P)    |           |__________________________|           |
+|   | (22F×6 cells, 2S3P)    |           |__________________________|           |
 |   |______________________|                                                  |
 |                |                                                            |
 |         [ THERMAL HUB ] <--- Type VII Hex-Matrix Vias to Bottom Slug        |

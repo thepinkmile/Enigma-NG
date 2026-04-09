@@ -288,7 +288,7 @@ Monitors the 5V_MAIN power rail on the Power Module board. See `Power_Module/Des
 
 ### Firmware Note
 
-The calibration register must be written on every power-up before current readings are valid.
+The CONFIG and calibration registers must be written on every power-up before current readings are valid.
 
 ```python
 import smbus2
@@ -296,6 +296,8 @@ import smbus2
 BUS = smbus2.SMBus(1)
 INA219_PM_ADDR = 0x40
 
+# CONFIG register (0x00): 32V bus, PGA/4 (±160mV), 12-bit, continuous (big-endian swap)
+BUS.write_word_data(INA219_PM_ADDR, 0x00, 0x9F31)  # logical 0x319F byte-swapped for smbus2
 # Calibration register (0x05): set before reading current
 BUS.write_word_data(INA219_PM_ADDR, 0x05, 0x0002)  # CAL = 512 (big-endian swap)
 
