@@ -26,7 +26,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | 1 | 30 | — | — | — | 37 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
 | AS5600 — Magnetic Position Encoder (DFN-8) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | 1 |
@@ -50,7 +50,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | BAT54 — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | 3 |
 | | | | | | | | | | | | |
-| 0.1 µF X7R 0402 decoupling cap | 14 | 1 | 8 | 80 | 240 | 8 | 240 | — | — | 4 | 507 |
+| 0.1 µF X7R 0402 decoupling cap | 14 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 508 |
 | 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | 185 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 15 | — | — | — | — | — | — | — | — | — | 15 |
 | 4.7 µF X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | 1 |

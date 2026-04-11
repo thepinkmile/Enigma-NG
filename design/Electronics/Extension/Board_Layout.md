@@ -22,6 +22,8 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 |   [ ROTOR INTERFACE CONNECTORS ]                                            |
 |   (J1-J3: input side ERM8 male; J4-J6: output side ERF8 female)            |
 |                                                                             |
+|   [ JTAG BUFFER (U1) ] <--- SN74LVC2G125DCUR, TCK+TMS re-drive for output   |
+|                                                                             |
 |   [ DIAGNOSTIC BANK ] <--- 2x8 ENIG Gold Probe Pads                        |
 |                                                                             |
 |   [ J8: EXTENSION PORT OUT ] <--- 16-pin 2×8 shrouded, to next stage       |
@@ -97,6 +99,7 @@ All Extension boards share an identical PCB layout; traces must be sized for the
 | Signal (ENC_IN/OUT, SYS_RESET_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; pass-through from J7 to J8 and to rotor group connectors |
 | JTAG signals: TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
 | 3V3_ENIG entry / pass-through trunk (J7 → J5 output bus) | 1.43 A (worst case) | 0.21 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); worst-case Extension 1 pass-through |
+| 3V3_ENIG local draw (J7 → U1 VCC) | ≤ 10 mA | 0.002 mm | 0.80 mm | **0.80 mm** | L1 | Buffer IC supply; 3V3_ENIG canonical 0.80 mm minimum |
 | 3V3_ENIG distribution (inner power pour) | 1.43 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
 
