@@ -1148,6 +1148,7 @@ This section records all INC (inconsistency) items tracked during the design pro
 | INC-21 | Power Module J2 | Component selection locked: RJ45 MagJack | — | Würth 7499111121A (SMT, shielded, 2-LED, 10/100/1000) | ✅ Locked |
 | INC-22 | Power Module ESD | Component selection locked: Ethernet ESD arrays | — | 2× TI TPD4E05U06DRYR (0.8pF, ±15kV, −40°C to +125°C, U-DFN-10) per port | ✅ Locked |
 | INC-23 | Power Module Bob Smith | Component selection locked: Bob Smith termination network | — | 4× 75Ω 0402 ±1% resistors + 1× 10nF Y1-class capacitor to GND_CHASSIS | ✅ Locked |
+| INC-24 | All Boards | Encoder detailed design review phase complete. Two consecutive clean passes (R56 + R57) achieved across all 24 design documents. Key corrections during cycle: GPIO 20/24 swap propagated to all files (R50/R55); LDO load 2.20A→2.11A propagated to all files (R50–R53); Power_Budgets.md CSS2H build qty corrected to 3; JTAG topology (BtB vs ribbon) documented in JTAG_Integrity.md, Extension Design_Spec, Reflector Design_Spec. Extension U1 buffer (SN74LVC2G125DCUR) confirmed correct and intentional. | — | — | ✅ Phase complete |
 
 ---
 
