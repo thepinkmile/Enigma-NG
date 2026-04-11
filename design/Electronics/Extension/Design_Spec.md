@@ -93,9 +93,13 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **JTAG TTD_RETURN / TDI:** TTD_RETURN (TDO chain return) is carried passively via Extension Port
-  pin 15. TDI also passes unbuffered through the JTAG chain. Series damping resistors are placed at
-  the driving outputs on the Stator (R7–R15) and Encoder boards (R7, R8) for each BtB-connected
-  segment. See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
+  pin 15. TDI passes unbuffered board-to-board via BtB throughout the rotor stack — no series
+  resistors are placed at each BtB hop. The JTAG chain terminates at the Reflector (R1 22 Ω
+  end-of-chain damping). TTD_RETURN then returns from the Reflector to the Stator via the
+  dedicated Reflector J4 → Stator J7 ribbon cable. The 75 Ω series resistors on the Stator
+  (R7–R15) and Encoder boards (R7, R8) are for the **encoder ribbon cable ports** (J4–J6) only —
+  they are NOT placed on the BtB rotor stack interface. See
+  `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
   TCK and TMS are actively re-buffered by U1 (see JTAG Signal Buffering above).
 * **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:

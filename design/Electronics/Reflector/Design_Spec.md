@@ -58,8 +58,20 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Termination:**R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
   signal from Rotor 30). It provides impedance damping at the final rotor output before the signal
-  re-enters the Extension Port for return to the Stator.
+  re-enters the Stator via the J4 return ribbon cable.
 
+> ⚠️ **JTAG chain END — important for future reviewers:** The JTAG daisy-chain terminates at this
+> board. TCK, TMS, and TDI arrive via BtB connectors (J1–J3, ERM8 plugging into Rotor 30 J4–J6)
+> and are consumed by the Reflector's logic. They do NOT continue past this board.
+>
+> The J4 ribbon cable (Reflector J4 → Stator J7) carries:
+>
+> * **Pin 15 — TTD_RETURN:** JTAG TDO return only — completes the chain back to the FT232H. This is
+>   the ONLY JTAG signal on J4.
+> * **Pins 3–14 — ENC_IN[0:5] / ENC_OUT[0:5]:** Stator CPLD interface for configuring plugboard
+>   pass-through positions in the encoding chain. **These are NOT JTAG signals.**
+> * **Pin 2 — SYS_RESET_N**, **Pin 1 — 3V3_ENIG**, **Pin 16 — GND.**
+>
 > **Note:** TMS and TDI pull-up resistors (R2/R3) previously listed in this section have been removed.
 > TMS and TDI are NOT routed on J4 (pin 15 = TTD_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
 > Pull-up termination for TMS and TDI is already provided by the Stator (R3/R4) and Encoder boards (R3/R4) where those signals originate.
