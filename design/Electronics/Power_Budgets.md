@@ -55,17 +55,17 @@ being an unachievable worst-case peak).
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
 | Controller-local (RJ45 LEDs, logic) | — | — | 50 | Controller overhead subtracted at LINK-ALPHA |
 | **Typical total** | | | **2,117 mA** | |
-| **Rounded budget** | | | **≤ 2.20 A** | |
+| **Rounded budget** | | | **≤ 2.11 A** | |
 
 ### Headroom vs LDO Limit
 
 | Limit | Value | Margin |
 | :--- | :--- | :--- |
 | LDO hard limit | 3.00 A | — |
-| Typical worst-case load | 2.20 A | **+0.80 A (27%)** |
+| Typical worst-case load | 2.11 A | **+0.89 A (30%)** |
 | LINK-BETA connector capacity | 4.00 A | Not the constraint |
 
-> ✅ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides 27% headroom above the worst-case typical load.
+> ✅ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides 30% headroom above the worst-case typical load.
 > No LDO upgrade is required for the current 30-rotor design.
 
 ---
@@ -76,21 +76,21 @@ being an unachievable worst-case peak).
 
 | Document | Old figure | Resolved value | Action |
 | :--- | :--- | :--- | :--- |
-| Stator §2 "5A peak" | 5.0 A | **2.20 A** worst-case typical | ✅ Complete — Stator §2 updated to 2.20A worst-case; 5A figure retired |
+| Stator §2 "5A peak" | 5.0 A | **2.11 A** worst-case typical | ✅ Complete — Stator §2 updated to 2.11A worst-case; 5A figure retired |
 | LINK-BETA capacity | 4.0 A | 4.0 A (connector limit — not the constraint) | No change — correct, just not the bottleneck |
 | Rotor ×30 claim "4.5A" | 4.5 A | **1.50 A** (30 × 50 mA) | ✅ Complete — Rotor DR-ROT-06 and §3.1 updated to ≤50 mA per rotor; 150 mA figure retired |
 | Shunt resistor | Stator: 20 mΩ, Controller: 10 mΩ | **10 mΩ CSS2H** (Stator R1 = CSS2H-2512R-R010ELF; Controller has no shunt) | ✅ Complete — Stator R1 updated to CSS2H-2512R-R010ELF (10mΩ, 2512 Kelvin) |
 
 **INA219 shunt selection rationale (10 mΩ CSS2H-2512R-R010ELF):**
 
-* V_drop at 2.20A: 2.20 × 0.010 = **22 mV** — within INA219 ±80 mV PGA range.
+* V_drop at 2.11A: 2.11 × 0.010 = **21 mV** — within INA219 ±80 mV PGA range.
 * V_drop at 3.00A max: 3.00 × 0.010 = **30 mV** — within ±80 mV range.
 * Resolution: with 12-bit ADC at ±80 mV range, LSB = 2×80mV/4096 ≈ **39 µV/LSB** → I_LSB = 39µV/0.010Ω ≈ **4 mA** current resolution.
-* Power dissipation at 2.20A: 2.20² × 0.010 = **48 mW** — 2512 Kelvin package (rated ≥0.5W) is adequate with >10× margin.
+* Power dissipation at 2.11A: 2.11² × 0.010 = **45 mW** — 2512 Kelvin package (rated ≥0.5W) is adequate with >10× margin.
 * Power dissipation at 3.00A max: 3.00² × 0.010 = **90 mW** — 2512 Kelvin package ≥0.5W still OK.
 * CAL register: 0x0400 (1024) — unchanged. CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.004 × 0.010) = 1024 ✓
-* Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). Used on **PM R23** (INA219 U12, 0x40, 5V_MAIN monitoring) and **Stator R1** (INA219 U2, 0x45, rotor-stack monitoring).
-  Total build qty: 2.
+* Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). Used on **PM R12** (LTC3350 RSENSE), **PM R23** (INA219 U12, 0x40, 5V_MAIN monitoring) and **Stator R1** (INA219 U2, 0x45, rotor-stack monitoring).
+  Total build qty: 3.
 
 ---
 
