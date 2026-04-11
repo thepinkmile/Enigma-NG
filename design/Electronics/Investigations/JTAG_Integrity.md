@@ -442,7 +442,7 @@ distance on the trace.
 | Stator | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §3 |
 | Encoder | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Added to §6 |
 | Reflector | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017 |
-| Extension | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017 |
+| Extension | JLC04161H-7628 (4L) | L1 over L2 GND | 50 Ω | **0.127 mm (5 mil)** | Updated per DEC-017. U1 (SN74LVC2G125DCUR) re-buffers TCK/TMS at rotor group boundary. |
 
 ---
 
