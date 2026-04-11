@@ -83,20 +83,20 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   * Buffer enable (OE#): tied to GND permanently (always enabled).
   * Part: SN74LVC2G125DCUR (TI, VSSOP-8) — Mouser 595-SN74LVC2G125DCUR,
     DigiKey 296-SN74LVC2G125DCURCT-ND, JLCPCB C21404.
-  * At 5 rotors per group, signal integrity analysis confirms this buffer interval is sufficient:
-    5 rotors × EPM240 input capacitance (≈6pF) = 30pF total load; τ = 95Ω × 30pF = 2.85ns,
-    well within the 50ns half-period at 10MHz TCK.
+  * At 5 rotors per group connected via BtB (ERM8/ERF8), signal integrity analysis confirms this
+    buffer interval is sufficient: 5 rotors × EPM240 input capacitance (≈6pF) + connector capacitance
+    ≈ 30–40pF total load; well within the 50ns half-period at 10MHz TCK.
 
 * **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §5`, a single
   0Ω bond resistor (R2) or direct via connects signal GND to chassis copper pour at J7 pin 16 (GND).
   No additional bonds on this board to prevent ground loops.
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
-* **JTAG:** Pass-through for the serial chain;TTD_RETURN carried via Extension Port pin 15.
-  * This board carries JTAG signals as a passive pass-through only. No active termination is
-    required here; series termination is placed at the driving ends of each cable segment on
-    the Stator (R7–R15) and Encoder boards (R7, R8). See `design/Electronics/Investigations/JTAG_Integrity.md`
-    and DEC-016.
+* **JTAG TTD_RETURN / TDI:** TTD_RETURN (TDO chain return) is carried passively via Extension Port
+  pin 15. TDI also passes unbuffered through the JTAG chain. Series damping resistors are placed at
+  the driving outputs on the Stator (R7–R15) and Encoder boards (R7, R8) for each BtB-connected
+  segment. See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
+  TCK and TMS are actively re-buffered by U1 (see JTAG Signal Buffering above).
 * **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
