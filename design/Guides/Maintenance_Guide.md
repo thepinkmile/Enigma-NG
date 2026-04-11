@@ -49,7 +49,7 @@ Monitors power rails, I²C telemetry bus, LED control signals, and power status.
 | 11 | SW_LED_B | CTRL → PM | RGB LED blue channel (GPIO 19) |
 | 12 | PWR_GD | PM → CTRL | Power-good signal (GPIO 27) |
 | 13 | BATT_PRES_N | PM → CTRL | Battery presence active-low (GPIO 23) |
-| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 24) |
+| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 20) |
 | 15 | SPARE | — | Reserved for future use |
 | 16 | SPARE | — | Reserved for future use |
 | 17 | SPARE | — | Reserved for future use |
