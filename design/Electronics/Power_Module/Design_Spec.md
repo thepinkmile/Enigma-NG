@@ -257,7 +257,7 @@ GND ──────┴──────────────────�
   * ROTOR_EN LOW → LDO **enabled** → 3V3_ENIG present (CPLDs + rotor stack powered).
   * **Thermal Budget (TPS75733):**
     * V_dropout ≈ 0.18V (TPS75733 typical at 1.85A). Typical dissipation: **~0.33W** (1.85A load, Vdo≈0.18V).
-    * At worst-case 2.2A load: P_diss ≈ 0.22V × 2.2A ≈ **~0.45W** worst-case.
+    * At worst-case 2.11A load: P_diss ≈ 0.22V × 2.11A ≈ **~0.46W** worst-case.
     * Standard TO-263 package thermal pad and ground vias are sufficient at this dissipation level. The ≥200mm² copper pour requirement from the previous high-dissipation LDO design is removed.
     * At 40°C ambient with standard PCB copper: T_J well within 125°C limit. ✓
 
@@ -308,7 +308,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
   * **RGB LED circuit:** SW1 integrates an RGB LED status indicator. The LED is driven by a hardware
     handoff circuit: before CM5 boot, the MIC1555 oscillator (U11) drives the Red and Green channels
     via Q4 (BSS138 NMOSFET gate) to produce a 1Hz orange flash (R+G simultaneously). Once CM5
-    firmware asserts SW_LED_CTRL (BtB pin 47, CM5 GPIO 24) HIGH, Q4 is disabled and CM5 drives
+    firmware asserts SW_LED_CTRL (BtB pin 47, CM5 GPIO 20) HIGH, Q4 is disabled and CM5 drives
     SW_LED_R/G/B (BtB pins 31/32/33, CM5 GPIOs 17/18/19) directly.
   * **LED colour scheme:** Orange flash = booting; Solid green = USB-C active; Solid blue = PoE active;
     Solid orange = Battery active; Red = fault or graceful shutdown in progress.
@@ -381,7 +381,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | :--- | :--- | :--- | :--- |
 | U1 TPS25980 eFuse | 0.56W | 0.65W (7A) | 3mΩ Ron (typ.) + ~0.5W quiescent |
 | U2A + U2B LMQ61460-Q1 (×2) | 5.2W total | 6.7W (15V USB-C, 90% η) | 2.6W per device at 92% η; exposed pads to GND vias |
-| U7 TPS75733 LDO | 0.33W (1.85A load) | 0.45W (2.2A load, Vdo≈0.22V) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
+| U7 TPS75733 LDO | 0.33W (1.85A load) | 0.46W (2.11A load, Vdo≈0.22V) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 | T2 POE600F-12LD | 5.1W | 5.7W | At 90–88% efficiency, 51–57W load |
 | U3 LTC3350 | 0.3W | 0.5W | Charge path only (0.5A); low concern |
 | U9 TPS2372-4 | ~0.2W | ~0.3W | VQFN-20 thermal pad to GND pour |
@@ -390,7 +390,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 
 **Thermal Notes:**
 
-* The LDO (U7 TPS75733) dissipates ≤0.45W worst-case (TO-263 KTT package). Standard thermal pad soldering and local ground vias are sufficient; no large copper pour required.
+* The LDO (U7 TPS75733) dissipates ≤0.46W worst-case (TO-263 KTT package). Standard thermal pad soldering and local ground vias are sufficient; no large copper pour required.
 * The previous LDO required ≥200mm² copper pour at up to 5.1W dissipation — this requirement is removed with the TPS75733KTTRG3 (TO-263 KTT 5-pin).
 * The dedicated heat zone (shared with supercap bank area) connects via thermal pad to the metal enclosure, acting as a heatsink for the bottom of the board.
 

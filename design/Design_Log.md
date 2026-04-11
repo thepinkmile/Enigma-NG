@@ -45,7 +45,7 @@ I2C pull-ups, BATT_PRES_N pull-up, reset pull-up) is powered by `3V3_ENIG`, gene
 - Pins 21–22: Reassigned from 3V3_SYSTEM → **5V_MAIN** (supplemental power pins)
 - Pins 23–24: Reassigned from 3V3_SYSTEM → **GND** (supplemental return path)
 - Combined 5V_MAIN capacity: 18 pins × 0.5A = **9A** (was 16 pins = 8A)
-- Diagnostic Bank-Alpha Pin 14: Reassigned from 3V3_SYSTEM → **SW_LED_CTRL (GPIO 24)** (subsequently updated; see DEC-009)
+- Diagnostic Bank-Alpha Pin 14: Reassigned from 3V3_SYSTEM → **SW_LED_CTRL (GPIO 20)** (subsequently updated; see DEC-009)
 
 ---
 
@@ -233,10 +233,10 @@ The TPS25750 PD emulator advertises a **5V/5A** profile to the CM5 internal USB-
 ### Decision
 
 Diagnostic Bank-Alpha pin 14 was initially reassigned from `3V3_SYSTEM` to **GND**, following the removal of the `3V3_SYSTEM` rail from all BtB interconnects (see DEC-001).
-In the subsequent design pass that added `SW_LED_CTRL` (GPIO 24) to the Link-Alpha signal set,
+In the subsequent design pass that added `SW_LED_CTRL` (GPIO 20) to the Link-Alpha signal set,
 pin 14 was reallocated to **SW_LED_CTRL** to expose the LED-arbitration handshake at the diagnostic header.
 
-**Final assignment:** Bank-Alpha Pin 14 = `SW_LED_CTRL` (GPIO 24, CTRL → PM, HIGH = CM5 in control of SW1 RGB LED).
+**Final assignment:** Bank-Alpha Pin 14 = `SW_LED_CTRL` (GPIO 20, CTRL → PM, HIGH = CM5 in control of SW1 RGB LED).
 
 ### Rationale
 
@@ -452,7 +452,7 @@ Logic boards downstream of the Stator (Encoder, Reflector, Extension) are 3V3-on
 no 5V_MAIN rail. Removing 5V_MAIN from LINK-BETA and rationalising the signal set results in exactly
 40 signals. The JTAG block has 5 internal GND shield pins (self-shielded at low-moderate MHz), so only
 a 2-pin GND moat is needed between JTAG and the data zone. 8 × 3V3_ENIG pins deliver 4.0A — adequate
-for the worst-case 30-rotor stack (2.20 A per Power_Budgets.md). 5 GND return pins plus the 10 other GND pins throughout the
+for the worst-case 30-rotor stack (2.11 A per Power_Budgets.md). 5 GND return pins plus the 10 other GND pins throughout the
 connector provide adequate return paths.
 
 ### Poka-Yoke Safety Note

@@ -40,13 +40,13 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-05 | TTD_RETURN input | J7 = 16-pin Molex; TTD_RETURN on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 (16-pin Molex) |
 | DR-STA-06 | Link-Beta connector | J8 = ERM8-020-05.0-S-DV-K-TR (40-pin male, 0.8 mm pitch) to Controller J2 | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 | DR-STA-07 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
-| DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.20 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
-| DR-STA-09 | Maximum 3V3_ENIG load | 2.20 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
+| DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.11 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
+| DR-STA-09 | Maximum 3V3_ENIG load | 2.11 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
 
 ## 2. Core Features
 
 * **Modular Slots:** 1× Samtec ERF8 female socket set (3 connectors: ERF8-005 JTAG, ERF8-005 Power, ERF8-010 ENC\_DATA) mating with the ERM8 male headers on the Rotor.
-* **Power Tree:** A 2oz copper pour for the `3V3_ENIG` rail to handle the **2.20A worst-case** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
+* **Power Tree:** A 2oz copper pour for the `3V3_ENIG` rail to handle the **2.11A worst-case** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
   The 5A figure previously quoted was a conservative design margin; the LDO hard limit is 3.0A.
 
 ### GND_CHASSIS Single-Point Bond
@@ -65,7 +65,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 * **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
 * **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Electronics/Power_Budgets.md`);
   with 4 parallel feeds this is ~**375mA per bead** nominal sharing,
-  well within the **3.5A** bead rating. Total 3V3_ENIG worst case including all CPLDs and encoders: 2.20A (27% headroom vs 3.0A LDO).
+  well within the **3.5A** bead rating. Total 3V3_ENIG worst case including all CPLDs and encoders: 2.11A (30% headroom vs 3.0A LDO).
 * **JTAG Return:** Includes 10kΩ pull-up on TTD_RETURN at the Link-Beta exit (R2).
 * **JTAG Pull Resistors (×4, placed near Stator CPLD U1):**
   * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up and when controller is idle.

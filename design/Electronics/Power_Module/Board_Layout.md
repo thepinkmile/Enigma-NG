@@ -191,11 +191,11 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 | [U8: MCP121T Supervisor] -|--------|--[ PIN 34: PWR_GD ] ------|------->| [ PWR_GD ]        |
 |                           |        |                           |        |  (Handshake)      |
 | [U1: TPS25980 FAULT pin] -|--------|--[ PIN 29: SYS_FAULT ] ---|------->| [ CM5 GPIO 25 ]   |
-| [U9: TPS2372-4 /PG ]     -|--------|--[ PIN 30: POE_STAT ]  ---|------->| [ CM5 GPIO 20 ]   |
+| [U9: TPS2372-4 /PG ]     -|--------|--[ PIN 30: POE_STAT ]  ---|------->| [ CM5 GPIO 24 ]   |
 | [U5: STUSB4500 PG ]      -|--------|--[ PIN 38: USB_STAT ]  ---|------->| [ CM5 GPIO 21 ]   |
 |                           |        |                           |        |                   |
 | [U7 EN pin] <-------------|--------|--[ PIN 46: ROTOR_EN ] <---|--------| [ CM5 GPIO 16 ]   |
-| SW_LED circuit <----------|--------|--[ PIN 47: SW_LED_CTRL]<--|--------| [ CM5 GPIO 24 ]   |
+| SW_LED circuit <----------|--------|--[ PIN 47: SW_LED_CTRL]<--|--------| [ CM5 GPIO 20 ]   |
 |                           |        |                           |        |                   |
 |___________________________|        |___________________________|        |___________________|
 ```
@@ -310,7 +310,7 @@ SIDE VIEW (CROSS-SECTION)
 | 27 | GND | — | Isolation moat |
 | 28 | GND | — | Isolation moat |
 | 29 | SYS_FAULT | PM → CTRL | eFuse fault from TPS25980 FAULT pin (CM5 GPIO 25); active-low |
-| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 20); active-low (LOW = PoE live, per DEC-003) |
+| 30 | POE_STAT | PM → CTRL | PoE live status from TPS2372-4 /PG (CM5 GPIO 24); active-low (LOW = PoE live, per DEC-003) |
 | 31 | SW_LED_R | CTRL → PM | SW1 RGB switch red channel (CM5 GPIO 17) |
 | 32 | SW_LED_G | CTRL → PM | SW1 RGB switch green channel (CM5 GPIO 18) |
 | 33 | SW_LED_B | CTRL → PM | SW1 RGB switch blue channel (CM5 GPIO 19) |
@@ -327,7 +327,7 @@ SIDE VIEW (CROSS-SECTION)
 | 44 | 3V3_ENIG | PM → CTRL | Logic rail; 0.5A/pin; combined 6 pins = 3.0A |
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW) |
-| 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; disables MIC1555 hardware path (CM5 GPIO 24) |
+| 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; disables MIC1555 hardware path (CM5 GPIO 20) |
 | 48 | GND | — | Logic/power zone boundary separator |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
 | 50 | GND | — | Interleaved return |
@@ -365,7 +365,7 @@ SIDE VIEW (CROSS-SECTION)
 **5V_MAIN pin count:** Pins 21–22 (2) + Pins 49, 51, 53…79 (16 odd pins) = **18 pins × 0.5A = 9.0A total capacity** ✓
 **3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS75733KTTRG3 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
-**Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25, active-low), Pin 30 = POE_STAT (GPIO 20, active-low — LOW = PoE live), Pin 38 = USB_STAT (GPIO 21, active-low) — all PM → CTRL.
+**Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25, active-low), Pin 30 = POE_STAT (GPIO 24, active-low — LOW = PoE live), Pin 38 = USB_STAT (GPIO 21, active-low) — all PM → CTRL.
 **GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
 
 ---

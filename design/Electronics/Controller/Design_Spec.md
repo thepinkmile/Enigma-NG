@@ -210,11 +210,11 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **17** | **SW_LED_R** | PWM | 3.3V | RGB switch (SW1) — Red channel. Fault / graceful shutdown indicator. |
 | **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |
 | **19** | **SW_LED_B** | PWM | 3.3V | RGB switch (SW1) — Blue channel. PoE active power source. |
-| **20** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
+| **20** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware LED fallback path on Power Module. Groups LED signals with GPIOs 17–19. |
 | **21** | **USB_STAT** | Input | 3.3V | Active Low: 15V/5A PD Negotiated (STUSB4500). |
 | **22** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |
-| **24** | **SW_LED_CTRL** | Output | 3.3V | Drive HIGH when CM5 firmware is ready to control SW1 RGB LED; disables hardware LED fallback path on Power Module. Groups LED signals with GPIOs 17–19. |
+| **24** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
 | **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100I5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
 | **27** | **PWR_GD** | Input | 3.3V | Active High: power-good signal from MCP121T-450E (4.50V threshold). HIGH = 5V_MAIN stable; deasserts on power loss, triggering graceful shutdown daemon. Arrives via Link-Alpha pin 34. |
@@ -248,7 +248,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | 26 | ETH_LED_ACT | CTRL → PM | Active-low Ethernet activity LED |
 | 27–28 | GND | — | Isolation moat |
 | 29 | SYS_FAULT | PM → CTRL | eFuse fault (active-low, CM5 GPIO 25) |
-| 30 | POE_STAT | PM → CTRL | PoE live status (active-low, CM5 GPIO 20) |
+| 30 | POE_STAT | PM → CTRL | PoE live status (active-low, CM5 GPIO 24) |
 | 31 | SW_LED_R | CTRL → PM | RGB LED red channel (CM5 GPIO 17) |
 | 32 | SW_LED_G | CTRL → PM | RGB LED green channel (CM5 GPIO 18) |
 | 33 | SW_LED_B | CTRL → PM | RGB LED blue channel (CM5 GPIO 19) |
@@ -260,7 +260,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | 39–44 | 3V3_ENIG | PM → CTRL | Logic rail, 6 pins = 3.0A |
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence (active-low, CM5 GPIO 23) |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable (CM5 GPIO 16) |
-| 47 | SW_LED_CTRL | CTRL → PM | LED arbitration (CM5 GPIO 24) |
+| 47 | SW_LED_CTRL | CTRL → PM | LED arbitration (CM5 GPIO 20) |
 | 48 | GND | — | Zone boundary separator |
 | 49–80 | 5V_MAIN / GND (interleaved) | PM → CTRL | 9A delivery cluster |
 
@@ -429,7 +429,7 @@ Monitors 5V_MAIN, 3V3_ENIG, I²C Telemetry, Status LEDs, and BATT_PRES.
 | 11 | SW_LED_B | CTRL → PM | RGB LED blue channel (GPIO 19) |
 | 12 | PWR_GD | PM → CTRL | Power-good signal (GPIO 27) |
 | 13 | BATT_PRES_N | PM → CTRL | Battery presence active-low (GPIO 23) |
-| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 24) |
+| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 20) |
 | 15 | SPARE | — | Reserved for future use |
 | 16 | SPARE | — | Reserved for future use |
 | 17 | SPARE | — | Reserved for future use |
