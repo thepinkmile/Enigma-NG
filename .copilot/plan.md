@@ -8,12 +8,12 @@
 
 ## Overview
 
-All board detailed designs are functionally complete. The Rotor design was substantially updated
-in session bb01fc15 (checkpoints 011–018): DIP switch architecture, variant split
-(Rotor_26_Char / Rotor_64_Char), capacitive position encoder (FDC2114RGER ×2 per rotor), STGC
-track patterns, CPLD lookup table + mod-N adder, Virtual JTAG position readback (DEC-026/027,
-FR-ROT-09). The **Rotor detailed design review cycle** is next but is blocked pending a
-JLCPCB single-side component assembly constraint resolution.
+All board detailed designs are functionally complete and review cycles passed. The Rotor design
+was substantially updated in session bb01fc15 (checkpoints 014–019): split two-board architecture
+(Board A input / Board B output, Ø92mm each, keyed IDC J_INT), dual-track capacitive encoder,
+STGC/RBGC patterns corrected, U4 FDC2114RGER added for N=26 5th sensor, full Mechanical/Rotor
+spec with tolerance table. Review cycle R1–R5 complete (R4+R5 clean). User to manually review
+all design files before declaring the design complete.
 
 Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive content.
 
@@ -30,7 +30,7 @@ Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive 
 | JDB | ✅ Complete |
 | Controller | ✅ Complete (checkpoint 012) |
 | Encoder | ✅ Complete (R56+R57 clean — checkpoint 009) |
-| Rotor | 🔶 Design docs updated (checkpoint 017/018); **blocked on JLCPCB single-side resolution** |
+| Rotor | ✅ Complete (R4+R5 clean — checkpoint 019) |
 
 ---
 
@@ -38,21 +38,16 @@ Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive 
 
 | ID | Title | Status |
 |----|-------|--------|
-| `rotor-single-side` | Resolve JLCPCB single-side placement constraint | pending |
-| `rotor-detailed-design` | Rotor detailed design review (2 clean passes) | pending (blocked) |
 | `kicad-setup-docs` | KiCad setup documentation | pending |
+| `user-manual-review` | User manual review of all design files before final sign-off | pending |
 
 ---
 
 ## Immediate Next Steps
 
-1. **Discuss JLCPCB single-side constraint** — user has a resolution plan. Agree approach,
-   update `Rotor/Board_Layout.md` and `Rotor/Design_Spec.md` accordingly.
-2. **Relocate STGC_Generator.py** — move from `design/Electronics/Reflector/` to
-   `design/Electronics/Rotor/`; update to use relaxed unique-only constraint algorithm
-   (current script produces no valid results for N=26 or N=64).
-3. **Launch Rotor review cycle** — deep-dive pass, fix, repeat until 2 consecutive clean passes.
-4. **GUI App cross-reference** — add position display note (DEC-027 / FR-ROT-09) when spec started.
+1. **User manual review** — manually review all design files and provide observations before declaring design complete.
+2. **KiCad setup documentation** (`kicad-setup-docs` todo).
+3. **Remaining OWIs** as agreed (see list below).
 
 ---
 
@@ -124,28 +119,43 @@ Core files + Rotor variant files:
 - Consolidated BOM: 0.1µF X7R 0402 PM=15, Total=509
 - Consolidated BOM: MIC1555YM5-TR PM=2, BSS138 PM=2
 - Consolidated BOM: EPM240T100I5N = 6 (Encoder only); EPM570T100I5N = 31 (Stator + 30 Rotors)
-- Consolidated BOM: FDC2114RGER = 60 (2× per rotor × 30 rotors)
+- Consolidated BOM: FDC2114RGER = 30 (U2, all rotors) + 30 (U3, N=64 rotors) + TBD (U4, N=26 rotors)
 - LTC3350 BACKUP threshold: 4.644V (R14=28.7kΩ ERA-3ARB2872V)
 - SW2 wired to PWR_BUT (graceful power key), NOT GLOBAL_EN
 - Link-Alpha pin 48: PWR_BUT (was GND)
 - PWR_GD (GPIO 27) = rail-health telemetry only; does NOT trigger shutdown
 - Primary shutdown: LTC3350 /INTB → U15 MIC1555 → Q5 BSS138 → PWR_BUT (3.01 s LOW)
-- DEC-025 (last before this session): CM5 shutdown mechanism (Software category)
-- DEC-026: Capacitive encoder replaces AS5600 (FDC2114RGER, STGC track patterns)
+- DEC-025 (last before session bb01fc15): CM5 shutdown mechanism (Software category)
+- DEC-026: Capacitive encoder replaces AS5600 (FDC2114RGER, STGC track patterns) — superseded by DEC-028
 - DEC-027: Virtual JTAG USER0 UDR for rotor position readback (FR-ROT-09)
+- DEC-028: Split two-board rotor architecture (Board A + Board B, keyed IDC J_INT)
 
 ### Rotor-Specific Correct Values (NEVER flag as errors)
 
-- FDC2114RGER ×2 per rotor: U2 (0x2A, ch0–3=S0–S3), U3 (0x2B, ch0–1=S4–S5)
-- PCB Ø100mm; sensor pads at r≈47mm
-- N=26 track (K=5): `00000100011001010011101111` — 6 invalid codes (jam detection)
-- N=64 track (K=6): `0000001111110111100111010111000110110100110010110000101010001001` — de Bruijn, all valid
-- SW1 (6-bit, input side): ring setting, mod-N adder entirely in CPLD VHDL
-- SW2 (6-bit, input side): [4:0]=map index, [5]=direction (42 effective configs forward path)
-- SW3 (6-bit, output side): [4:0]=map index, [5]=direction (42 effective configs return path)
-- 21 UFM maps stored in EPM570 UFM; direction bit doubles usable configs
-- J1–J3 ERM8 male (input side); J4–J6 ERF8 female (output side)
+- **Two-board split:** Board A (input, Ø92mm) + Board B (output, Ø92mm); 15mm total; 11.8mm inner gap
+- Board A: EPM570T100I5N U1, FDC2114RGER U2 (0x2A), FDC2114RGER U4 (0x2B, N=26 only), SW1, SW2, J1–J3 ERM8 male
+- Board B: FDC2114RGER U3 (0x2B, N=64 only; DNP N=26), SW3, J4–J6 ERF8 female
+- J_INT: Würth 61201221721, 2×12 24-pin keyed IDC; pin 11=TDO A→B; pins 15–16=SW3[4:5]; pins 17–18=SDA/SCL; pins 19–22=SW3[0:3] B→A
+- FDC2114RGER U2 addr 0x2A (N=64: ch0–2=bits[5:3]; N=26: ch0–3=STGC bits[3:0])
+- FDC2114RGER U4 addr 0x2B ch0=STGC bit[4] — N=26 Board A only
+- FDC2114RGER U3 addr 0x2B ch0–2=bits[2:0] — N=64 Board B only (U3 and U4 mutually exclusive)
+- Sensor pads at r=44mm on PCB flat face; capacitive gap 0.5mm ±0.15mm (bearing-controlled)
+- N=26 track (K=5): `00000100011001010011101111` — all 26 5-bit windows unique
+- N=64 dual-track RBGC (corrected R1 — Track B Bit 0 and Bit 1 were wrong):
+  - A5: `0000000000000000000000000000000011111111111111111111111111111111`
+  - A4: `0000000000000000111111111111111111111111111111110000000000000000`
+  - A3: `0000000011111111111111110000000000000000111111111111111100000000`
+  - B2: `0000111111110000000011111111000000001111111100000000111111110000`
+  - B1: `0011110000111100001111000011110000111100001111000011110000111100`
+  - B0: `0110011001100110011001100110011001100110011001100110011001100110`
+- CPLD XOR decode: B5=G5, B4=B5⊕G4, B3=B4⊕G3, B2=B3⊕G2, B1=B2⊕G1, B0=B1⊕G0
+- SW1 (6-bit, Board A): ring setting, mod-N adder entirely in CPLD VHDL
+- SW2 (6-bit, Board A): [4:0]=map index, [5]=direction
+- SW3 (6-bit, Board B): [4:0]=map index, [5]=direction
+- 21 UFM maps stored in EPM570 UFM; UFM size = 21 × 384 bits = 8,064 bits
+- J1–J3 ERM8 male (input side Board A); J4–J6 ERF8 female (output side Board B)
 - FR-ROT-09: ALTERA_VIRTUAL_JTAG megafunction, USER0 UDR, 6-bit effective position
+- TDO in J_INT travels A→B (CPLD on Board A → J4 connector on Board B)
 
 ### Stale Values (must NEVER reappear)
 
@@ -167,6 +177,14 @@ Core files + Rotor variant files:
 - EPM240T100I5N on Rotor or Stator (correct: EPM570T100I5N)
 - AS5600 anywhere on Rotor (replaced by FDC2114RGER)
 - "Single magnet" or "diametrically magnetised" for Rotor position sensor
+- "Ø100mm" for Rotor PCB (correct: Ø92mm; shroud outer is Ø100mm)
+- "de Bruijn" as an active N=64 encoder pattern (replaced by RBGC; de Bruijn only in DEC-028 rationale/history)
+- Old N=64 Track B patterns: Bit 1 as period-16 `0011111100001111` repeating, Bit 0 as simple alternating `01`
+- "FDC2114 reads all 5 STGC sensors from U2" (impossible — 4 channels max; U4 added for 5th)
+- "U4 NOT POPULATED" for N=26 builds (U4 IS populated for N=26)
+- "U3 populated for N=26" (U3 DNP for N=26)
+- DIR/CLK on J_INT pins 15–16 (correct: SW3[4:5] B→A)
+- Single-board rotor (correct: two-board split)
 
 ### Key Design Decisions
 
@@ -186,5 +204,7 @@ Core files + Rotor variant files:
 - OWI-002: PAS definitions per board
 - OWI-003: VHDL pseudo-code and CPLD config plans
 - OWI-018: ENIG rib clearway bonding pad
-- STGC_Generator.py: relocate to `Rotor/`, update algorithm (relaxed unique-only)
+- OWI-019: STGC_Generator.py — relocate to `Rotor/`, update to relaxed unique-only algorithm
+- OWI-020: GUI App Design_Spec — add cross-reference to DEC-027/FR-ROT-09 for position display
+- OWI-021: Mechanical stub files — complete Encoder, Stator, Reflector, Extension, JDB, Power_Module mechanical specs
 - Deferred: SW1 vintage switch research; CM5 PWR_BUT timing thresholds (verify at schematic capture)
