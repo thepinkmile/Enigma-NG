@@ -56,6 +56,7 @@ Board A faces the input (upstream) side of the rotor stack.
 | :--- | :--- | :--- |
 | U1 | EPM570T100I5N CPLD | Centre of board |
 | U2 | FDC2114RGER | Track A capacitive encoder IC (I²C addr 0x2A); r~40mm |
+| U4 | FDC2114RGER | STGC bit[4] sensor IC (I²C addr 0x2B); Board A, N=26 builds only — NOT POPULATED for N=64 |
 | S0–S2 | Sensor electrodes (Track A) | Bare Cu pads at r=44mm, N=64 bits[5:3]; or S0–S4 for N=26 |
 | SW1 | 6-pos DIP — ring setting | Input side only |
 | SW2 | 6-pos DIP — forward map select | Input side |

@@ -117,7 +117,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
     the Keyboard onto the Enigma input bus).
   * **ENC_OUT [0:5]:** GPIO 10–15 (CM5 Input — snoop of 6-bit encrypted character code presented
     to the Lightboard by the Rotor/Reflector stack).
-  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100I5N CPLDs.
+  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II CPLDs (EPM240T100I5N Encoder ×6 and EPM570T100I5N Rotor ×30 + Stator ×1).
   * **Software cross-reference:**
     * GUI application real-time display logic: `design/Software/GUI_App/Design_Spec.md`
     * Linux OS power management, I²C telemetry, and system daemon: `design/Software/Linux_OS/Power_Management.md`
@@ -227,7 +227,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06). |
 | **24** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
-| **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II EPM240T100I5N CPLDs via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
+| **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II CPLDs (EPM240T100I5N Encoder ×6 and EPM570T100I5N Rotor ×30 + Stator ×1) via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
 | **27** | **PWR_GD** | Input | 3.3V | Active High: power-good signal from MCP121T-450E (4.50V threshold). HIGH = 5V_MAIN stable; deasserts on power loss, triggering graceful shutdown daemon. Arrives via Link-Alpha pin 34. |
 
 ## 7. Protection & EMI
