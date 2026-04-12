@@ -33,7 +33,9 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | :--- | :--- | :--- | :--- |
 | FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460AFSQRJRRQ1), U7 (TPS75733) |
 | FR-PM-02 | Maintain system power for ≥21.7 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–6 (supercaps) |
-| FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW on power-loss event to trigger graceful shutdown | Enables software-initiated graceful shutdown; PWR_GD is healthy-HIGH, fault-LOW | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
+| FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW when 5V_MAIN drops below threshold | Rail-health telemetry to CM5 GPIO 27; does not initiate shutdown directly | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
+| FR-PM-07 | Automatically pulse CM5 PWR_BUT LOW for 3 seconds when LTC3350 enters backup mode (primary power lost), initiating a hardware-guaranteed graceful OS shutdown without firmware polling | Ensures graceful shutdown within the 21.7 s hold-up window regardless of OS state | §3 Power Sequencing; §5 Protection & Logic; BOM U15 (MIC1555 monostable), Q5, R28, R29, C32, C33 |
+| FR-PM-08 | Provide manual CM5 power button (SW2) wired to PWR_BUT, enabling graceful power-on after OS shutdown while system power remains available | Allows CM5 restart without a full power cycle; replaces incorrect GLOBAL_EN hard-reset approach | §3 Power Sequencing; BOM SW2, R29 |
 | FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
 | FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups), U12 (INA219 at 0x40), R23 (10mΩ shunt) |
 | FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software | §5 Protection & Logic; BOM U1 (TPS25980 eFuse), R1–R3 |
@@ -268,6 +270,15 @@ GND ──────┴──────────────────�
   firmware. Active from power-on until CM5 firmware takes control of the status LED GPIO. Also serves as a visible supercap state-of-charge indicator during hold-up mode. Timing network: R16
 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle.
 
+* **PWR_BUT One-Shot (U15):** Second MIC1555 (SOT-23-5) configured as a monostable (one-shot) timer.
+  Triggered by a falling edge on LTC3350 `/INTB` (R29 10kΩ pull-up to 3V3_ENIG keeps the line HIGH
+  when idle). On trigger, U15 output goes HIGH for t = 1.1 × R28 × C32 = 1.1 × 274kΩ × 10µF ≈ **3.01
+  seconds**, driving Q5 (BSS138 N-FET) which pulls the `PWR_BUT` line LOW. The CM5 internal 10kΩ
+  pull-up holds `PWR_BUT` HIGH at all other times. The 3-second pulse is centred in the 1–5 second PMIC
+  power-key window — long enough to guarantee a graceful shutdown event, short enough to never trigger
+  the PMIC hard power-off (>5–8 seconds). `PWR_BUT` is routed to the Controller Board via Link-Alpha
+  pin 48 and connects to the CM5 PMIC power-button input.
+
 ### 6. Traceability & Manufacturing
 
 * **Assembly:** Single-side (Top) population for JLCPCB SMT service.
@@ -316,9 +327,13 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
     path from the CM5 GPIO outputs to prevent back-driving.
 * **Supervisor IC:** [MCP121T-450E](https://www.microchip.com) (4.50V Threshold).
 * **Trigger:** The supervisor monitors the **5V_MAIN** rail. It holds the `GLOBAL_EN` (PMIC_EN) pin LOW until the rail is stable.
-* **Manual Reset (SW2):** A high-quality tactile button wired in parallel to the supervisor output.
-  * **Action:** Pressing the button pulls `GLOBAL_EN` to GND, forcing a hard PMIC reset of the CM5
-    without cycling the 12V-15V Rotor Rail. Use after a clean OS shutdown to re-start the CM5.
+* **Manual Power Button (SW2):** Momentary tactile button wired directly from `PWR_BUT` to GND.
+  * **Action:** A brief press (released within ~2 seconds) sends a power-button event to the CM5 PMIC.
+    When the CM5 OS is halted but power is present, this wakes the CM5. When the OS is running, it
+    triggers a graceful shutdown via Linux `systemd-logind` (equivalent to `sudo shutdown -h now`).
+  * **Pull-up:** CM5 module integrates a 10kΩ pull-up on `PWR_BUT` — no external pull-up required.
+  * **Note:** SW2 no longer drives `GLOBAL_EN`. The MCP121T-450E supervisor drives `GLOBAL_EN` (PMIC_EN)
+    exclusively; no manual override of that net is provided.
 
 ### 2. Startup Timeline
 
@@ -340,7 +355,13 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 The following sequence ensures the CM5 filesystem is clean and all loads are de-energised safely:
 
-1. **Trigger:** User initiates shutdown (OS command, Safe Shutdown Button, or remote API call).
+1. **Trigger:** One of two events initiates shutdown:
+   * **Automatic (primary power loss):** LTC3350 enters backup mode → `/INTB` (open-drain) asserts LOW →
+     MIC1555 U15 (monostable) fires → `PWR_BUT` held LOW for 3 seconds → CM5 PMIC sends power-key event
+     to Linux → `systemd-logind` initiates graceful shutdown. This is entirely hardware-driven; no
+     firmware polling required.
+   * **Manual:** User presses SW2 (tactile `PWR_BUT` button), issues OS shutdown command, or triggers
+     via the Safe Shutdown Button (CM5 GPIO interrupt).
 2. **OS Shutdown:** CM5 OS saves state, syncs filesystems, and executes `halt`.
 3. **ROTOR_EN HIGH:** CM5 GPIO 16 is asserted HIGH before halt completes, disabling the TPS75733 LDO (active-LOW EN: HIGH = shutdown) → 3V3_ENIG off (CPLDs and rotor stack de-energised).
 4. **CM5 PMIC halt:** CM5 internal PMIC drops 1.8V/1.1V rails. Total time from trigger to PMIC halt: ~10–15 seconds.
@@ -350,8 +371,9 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
 8. **Power source removed:** User removes PoE cable, USB-C adapter, or battery. eFuse input drops to 0V.
 9. **System fully off:** All rails at 0V; no residual charge path.
 
-> **Note:** The "Safe Shutdown" button wired to CM5 GPIO (interrupt input) should trigger a software-debounced (100ms) shutdown command in the system daemon. The MCP121T manual reset pin provides a
-> **hard PMIC reset only** (not a graceful shutdown); it must not be used for normal shutdown.
+> **Note:** `PWR_BUT` (SW2 and the MIC1555 one-shot) initiates a graceful OS shutdown via the CM5 PMIC
+> power-key event. The MCP121T-450E `GLOBAL_EN` pin is supervisor-only — no manual override is connected
+> to it. `PWR_GD` (GPIO 27) remains a rail-health telemetry signal and is not the shutdown trigger.
 
 ### 4. eFuse Latch-Off Recovery
 
@@ -425,6 +447,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C28 | SYNC delay chain SW-ringing low-pass filter (C_F1) | 100pF X7R 25V (C0402C101K3RACAUTO) | 0402 | 80-C0402C101K3RAUTO | 399-C0402C101K3RACAUTOCT-ND | C5272912 |
 | C29 | SYNC 180° phase delay capacitor (C_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 22nF X7R 25V (CL10B223KB8WPNC) | 0603 | 187-CL10B223KB8WPNC | 1276-6534-1-ND | C346197 |
 | C30, C31 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C32 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R | 0603 | 187-CL10B106KA8NNNC | 1276-1204-1-ND | C19702 |
+| C33 | VCC bypass for U15 (MIC1555 monostable) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
 | J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM8613CT-ND | C5358550 |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | — (THT) |
@@ -449,8 +473,10 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB1002V | P10.0KBYCT-ND | — |
 | R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
+| R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KBYCT-ND | — |
+| R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — *Open item — select during mechanical design phase* (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | *Open item — select during mechanical design phase* | *Open item — select during mechanical design phase* | — |
-| SW2 | CM5 Hard Reset | Tactile SMT pushbutton, momentary SPST, in parallel with MCP121T-450E (U8) RESET output on GLOBAL_EN line. Pulls GLOBAL_EN to GND on press. No pull-up needed (R9 on GLOBAL_EN line serves this purpose). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
+| SW2 | CM5 Power Button | Tactile SMT pushbutton, momentary SPST, wired from `PWR_BUT` to GND. Brief press (<2s) sends a power-key event to CM5 PMIC — wakes CM5 from halted state when OS is shut down, or initiates graceful shutdown when OS is running. No pull-up required (CM5 integrates 10kΩ on PWR_BUT). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R24 | LMQ61460A FSET frequency-set resistor (U2A, R_FSET) | 86.6kΩ 1% Thick-Film (ERJ-3EKF8662V) | 0603 | 667-ERJ-3EKF8662V | P86.6KHCT-ND | C403381 |
@@ -460,6 +486,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
+| Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS259804ONRGER (16.9V silicon-fixed OVLO) | VQFN-24 4×4mm | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |
@@ -474,6 +501,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
 | U12 | 5V_MAIN Current Monitor | INA219AIDR — Zero-Drift Current/Power Monitor (I²C 0x40) | SOIC-8 | 595-INA219AIDR | 296-23978-1-ND | C138706 |
 | U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | SN74LVC1G14DBVRQ1 (AEC-Q100 single-gate Schmitt inverter) | SOT-23-5 | 595-SN74LVC1G14DBVRQ1 | 296-SN74LVC1G14DBVRQ1CT-ND | C49303123 |
+| U15 | PWR_BUT shutdown one-shot timer | MIC1555YM5-TR — CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C32 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C33 (100nF). | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
 
 > **BOM Notes:**
 >
@@ -486,7 +514,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > CM5 and prevent OS throttling. **Package changed to WQFN-38 6×4mm (REF)** — schematic pins and PCB footprint must be updated from the TPS25750 QFN-28 layout. Mouser: `595-TPS25751DREFR`; DigiKey:
 > `TPS25751DREFR-ND`.
 > * **U5 STUSB4500LQTR** — JLCPCB C506650 confirmed in stock (L-variant). Both are pin-compatible; non-L variant STUSB4500QTR has slightly higher Iq (~210µA vs 160µA).
-> * **U7 TPS75733KTTRG3** — Replaces the previous high-dissipation LDO. Fixed 3.3V output, 3A continuous, TO-263 (KTT) 5-pin 10.16×15.24mm package. **Active-LOW enable:** EN LOW = LDO enabled; EN HIGH = shutdown.
+> * **U7 TPS75733KTTRG3** — Replaces the previous high-dissipation LDO. Fixed 3.3V output, 3A continuous, TO-263 (KTT) 5-pin 10.16×15.24mm package.
+>   **Active-LOW enable:** EN LOW = LDO enabled; EN HIGH = shutdown.
 > R10 changed to pull-down (10kΩ to GND) to ensure LDO is ON by default at power-up. Firmware must drive GPIO 16 HIGH to disable the LDO (inverted vs the previous LDO's active-high enable logic).
 > Thermal dissipation greatly improved: ~0.33W typical (1.85A, Vdo≈0.18V) vs 3.1W with the previous part — ≥200mm² copper pour requirement removed.
 > Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`.

@@ -30,7 +30,7 @@
 * **Pin 45:** BATT_PRES_N (Battery Presence Detection — Active Low, CM5 GPIO 23)
 * **Pin 46:** ROTOR_EN (LDO enable signal — CM5 GPIO 16 → TPS75733KTTRG3 EN pin on Power Module)
 * **Pin 47:** SW_LED_CTRL (CM5 GPIO 20 → LED arbitration; CTRL → PM)
-* **Pin 48:** GND (logic/power zone boundary separator)
+* **Pin 48:** PWR_BUT — CM5 PMIC power-button input (active LOW; 3 s auto-pulse from PM MIC1555 one-shot on backup-mode entry, or manual SW2 press; CM5 module integrates 10kΩ pull-up)
 * **Pins 49-80:** 5V_MAIN / GND (9A Delivery Cluster — interleaved; combined with pins 21-22; 4-via Thermal Clusters)
 
 #### Full 80-Pin Map
@@ -84,7 +84,7 @@
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW) |
 | 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; LED arbitration (CM5 GPIO 20) |
-| 48 | GND | — | Logic/power zone boundary separator |
+| 48 | PWR_BUT | PM → CTRL | CM5 PMIC power-button input (active LOW); 3 s auto-pulse from MIC1555 one-shot on backup, or manual SW2 press; CM5 10kΩ pull-up on module |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
 | 50 | GND | — | Interleaved return |
 | 51 | 5V_MAIN | PM → CTRL | Interleaved power |
@@ -172,7 +172,8 @@ _______________________________________    _____________    ____________________
 [ PIN 47       ] ------------------------> [ 3.3V LOGIC] -> [ SW_LED_CTRL                ]
                                            (GPIO OUT)       (CM5 GPIO 20 — HIGH = CM5 in control of SW1 RGB)
 
-[ PIN 48       ] ------------------------> [ GND       ] -> [ GND (ZONE BOUNDARY)        ]
+[ PIN 48       ] ------------------------> [ 3.3V LOGIC] -> [ PWR_BUT                    ]
+                                           (PMIC PWR_BUT)   (CM5 power-button input, active LOW)
 
 [ PINS 49 - 80 ] ------------------------> [ 2oz POWER ] -> [ 5V_MAIN (9A DELIVERY)      ]
  (16× 5V + 16× GND interleaved)           (BULK DC)        (To CM5 VCC_IN; incl. pins 21-22)

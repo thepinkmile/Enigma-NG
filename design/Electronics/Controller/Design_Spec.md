@@ -261,7 +261,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence (active-low, CM5 GPIO 23) |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable (CM5 GPIO 16) |
 | 47 | SW_LED_CTRL | CTRL → PM | LED arbitration (CM5 GPIO 20) |
-| 48 | GND | — | Zone boundary separator |
+| 48 | PWR_BUT | PM → CTRL | CM5 PMIC power-button input (active LOW). Driven by MIC1555 one-shot (3 s pulse on backup) or SW2 (manual press). CM5 module integrates 10kΩ pull-up. |
 | 49–80 | 5V_MAIN / GND (interleaved) | PM → CTRL | 9A delivery cluster |
 
 ### 8.2. JDB Hat Connectors
