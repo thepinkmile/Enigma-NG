@@ -8,44 +8,70 @@
 
 ## Overview
 
-The CM5 (Raspberry Pi Compute Module 5) must respond to two hardware power events:
+The CM5 (Raspberry Pi Compute Module 5) graceful shutdown is now **hardware-initiated** via the CM5
+PMIC power-button input (`PWR_BUT`). No firmware polling is required for the primary shutdown path.
 
-1. **PWR_GD (GPIO 27)** — first hardware event; MCP121T-450E voltage supervisor deasserts (goes LOW) when 5V_MAIN < 4.5V (~10 ms after mains loss).
-   Acts as primary interrupt trigger in the interim implementation (gpio-shutdown device tree overlay).
-2. **LTC3350 BACKUP signal** — fires when 5V_MAIN drops to 4.40V (R14=26.7kΩ; see Power_Module/Design_Spec.md DR-PM-08), engaging supercap hold-up.
-   This is the preferred interrupt source for the final custom Linux driver implementation (see DEC-025). Provides the full >=21.7-second hold-up window for graceful shutdown.
+**Primary shutdown path (hardware-automatic):**
 
-> **Implementation note:** The final interrupt-driven shutdown driver is deferred to the Software PoC stage (see **DEC-025**). Until then, the
-> PWR_GD gpio-shutdown overlay (Phase 2 below) is the active hardware protection path. The Phase 1 pseudocode is retained for reference only.
+1. Primary power fails → 5V_MAIN falls to **4.64V** → LTC3350 `/INTB` asserts LOW.
+2. MIC1555 U15 (monostable one-shot) triggers → `PWR_BUT` held LOW for **3.01 seconds**.
+3. CM5 PMIC sends power-key event → Linux `systemd-logind` `HandlePowerKey=poweroff` → graceful
+   OS shutdown, identical to `sudo shutdown -h now`.
+4. LTC3350 simultaneously restores 5V_MAIN to 5V; PMIC_EN stays HIGH throughout shutdown.
+5. Hold-up window: **≥21.7 seconds** from backup activation — OS typically shuts down in 10–15 s.
+
+**Secondary telemetry signals (software-visible, not shutdown triggers):**
+
+- **PWR_GD (GPIO 27):** Active-HIGH rail-health signal from MCP121T-450E (4.50V threshold). Stays HIGH
+  throughout the hold-up window (LTC3350 keeps 5V_MAIN above 4.50V). Deasserts only if supercaps are
+  depleted — by which time OS should already be halted. Can be used for status monitoring only.
+- **LTC3350 I²C BACKUP bit** (0x09, STATUS reg bit 3): Readable via I²C for supercap state-of-charge
+  monitoring, LED state control, and post-mortem logging (see DEC-025).
+
+> **Implementation note:** The custom LTC3350 interrupt driver (DEC-025) remains useful for telemetry
+> and LED state control but is **no longer required** for shutdown safety. The hardware `PWR_BUT`
+> one-shot circuit provides a guaranteed shutdown trigger independent of OS state.
 
 ## Hardware Signals
 
-| Signal | GPIO | Pull-up | Source | Trigger |
+| Signal | Connection | Pull-up | Source | Role |
 | --- | --- | --- | --- | --- |
-| PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | Active HIGH: 5V_MAIN ≥ 4.5V (HIGH = power good, LOW = fault event) |
-| LTC3350 ALERT | I²C (0x09 address) | R7/R8 4.7kΩ on SDA/SCL | LTC3350 U3 | BACKUP bit set when 5V_MAIN < 4.40V (R14=26.7kΩ; see Power_Module/Design_Spec.md PM-06 fix) |
+| PWR_BUT | CM5 PMIC pin (via Link-Alpha pin 48) | CM5 module internal 10kΩ | MIC1555 U15 one-shot / SW2 tactile | **Primary shutdown trigger** — 3 s LOW pulse from U15 on backup-mode entry; or manual press of SW2 |
+| PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | **Rail-health telemetry only** — HIGH while 5V_MAIN ≥ 4.50V; stays HIGH throughout hold-up; deasserts only on supercap depletion |
+| LTC3350 /INTB | GPIO (TBD — assign at schematic capture) | R29 10kΩ to 3V3_ENIG (Power Module) | LTC3350 U3 | **Backup-mode indicator** — active-LOW when LTC3350 in backup mode (5V_MAIN < 4.64V, R14=28.7kΩ; see DR-PM-08); also triggers MIC1555 U15 one-shot directly in hardware |
 
 ## Option C: Recommended Implementation
 
-### Phase 1 — LTC3350 BACKUP Interrupt Driver (Deferred — DEC-025)
+### Phase 1 — HandlePowerKey (Active — no custom driver required)
 
-> **Deferred to Software PoC Stage.** The final implementation uses a custom Linux kernel driver
-> that registers the LTC3350 BACKUP signal as a hardware interrupt. This approach eliminates polling
-> latency and is the preferred production mechanism. Development is deferred until the physical
-> hardware is available for integration testing. See **DEC-025** in design/Design_Log.md.
+The primary shutdown path requires only a single `systemd-logind` configuration line. When the CM5
+PMIC receives the 3-second `PWR_BUT` pulse, it generates a power-key event that `systemd-logind`
+handles natively:
+
+```ini
+# /etc/systemd/logind.conf
+[Login]
+HandlePowerKey=poweroff
+```
+
+This is sufficient for production use. No polling, no daemon, no I²C read required for the shutdown
+path itself.
+
+### Phase 2 — LTC3350 I²C Telemetry Driver (Deferred — DEC-025)
+
+> **Deferred to Software PoC Stage.** The custom Linux driver is useful for telemetry, LED state
+> control (supercap SOC → 2 Hz orange flash), and post-mortem logging, but is **not required** for
+> shutdown safety. Development is deferred until hardware is available. See **DEC-025**.
 
 **Intended behaviour (reference only):**
 
 The driver will:
 
-1. Register an interrupt handler on the LTC3350 ALERT/BACKUP pin.
-2. On interrupt, read LTC3350 STATUS register (I2C 0x09, register 0x01) to confirm BACKUP bit (bit 3) is set.
-3. Invoke kernel_power_off() or equivalent clean shutdown path.
+1. Register an interrupt handler on the LTC3350 `/INTB` pin.
+2. On interrupt, read LTC3350 STATUS register (I2C 0x09, register 0x01) to confirm BACKUP bit (bit 3).
+3. Set SW1 LED to 2 Hz orange flash (backup-mode visual indicator).
 4. Log the event to the kernel ring buffer for post-mortem analysis.
-
-No polling loop, no userspace daemon, and no POLL_HZ parameter are required. The interrupt response
-latency is determined by the kernel IRQ subsystem (typically < 1 ms), giving the full >=21.7-second
-supercap hold-up window for OS shutdown.
+5. Optionally read VCAP register for remaining supercap SOC estimate.
 
 **I2C parameters (for driver development reference):**
 
@@ -54,50 +80,16 @@ supercap hold-up window for OS shutdown.
 | I2C address | 0x09 |
 | STATUS register | 0x01 |
 | BACKUP bit | bit 3 (value 0x08) |
-| ALERT pin | Active-low open-drain; connect to GPIO with pull-up |
+| /INTB pin | Active-low open-drain; R29 10kΩ pull-up on Power Module |
 
-### Phase 2 — PWR_GD GPIO Hard Backstop (Backup)
+### Phase 3 — PWR_GD GPIO Backstop (Optional)
 
-If the I²C daemon fails to catch the BACKUP event (e.g., I²C bus error, daemon crash), the PWR_GD GPIO provides a last-resort interrupt that triggers an emergency sync-and-halt.
-
-#### Device Tree Configuration
-
-Add to `/boot/firmware/config.txt`:
+`PWR_GD` (GPIO 27) deasserts only when supercaps are depleted and 5V_MAIN falls below 4.50V —
+well after the OS should already be halted. It can be configured as a last-resort emergency halt:
 
 ```ini
-# PWR_GD emergency shutdown backstop — GPIO 27 is active-high (good=high); gpio-shutdown triggers on falling edge (fault=low)
+# PWR_GD last-resort backstop — triggers only on supercap depletion (OS should already be halted)
 dtoverlay=gpio-shutdown,gpio_pin=27,active_low=1,gpio_pull=up
-```
-
-GPIO 27 is the assigned PWR_GD input (see Controller Board Design_Spec §6).
-The `gpio_pull=up` parameter enables the CM5 internal weak pull-up as a secondary pull-up alongside the external R3 (10kΩ).
-
-The `gpio-shutdown` overlay triggers `systemctl poweroff` on a falling edge of the specified GPIO.
-With the external R3 and MCP121T open-drain output, the signal is normally HIGH (5V_MAIN stable) and goes LOW only when 5V_MAIN drops below 4.5V.
-
-#### Alternative: Manual device tree node
-
-For more control (e.g., custom pre-shutdown actions), use a gpio-keys node instead:
-
-```dts
-/ {
-    enigma_pwr_fail: enigma-pwr-fail {
-        compatible = "gpio-keys";
-        pwr-good {
-            label = "PWR_GD";
-            gpios = <&gpio 27 GPIO_ACTIVE_LOW>; /* GPIO 27 is active-high (good=high); gpio-shutdown triggers on falling edge (fault=low) */
-            linux,code = <KEY_POWER>;
-            debounce-interval = <50>; /* ms */
-        };
-    };
-};
-```
-
-Handle `KEY_POWER` in `/etc/systemd/logind.conf`:
-
-```ini
-[Login]
-HandlePowerKey=poweroff
 ```
 
 ## Shutdown Timing Budget
@@ -105,11 +97,12 @@ HandlePowerKey=poweroff
 | Event | Time from power loss | Action |
 | --- | --- | --- |
 | Mains fails / PoE drops | t = 0 | Input source lost |
-| PWR_GD deasserts | ~10ms | MCP121T fires; 5V_MAIN < 4.5V; PWR_GD goes LOW |
-| 5V_MAIN < 4.40V — LTC3350 BACKUP asserted (supercaps take over) | ~shortly after PWR_GD | Hold-up engaged; ≥21.7s window begins |
-| PWR_GD interrupt triggers gpio-shutdown (interim) / BACKUP interrupt triggers custom driver (deferred — DEC-025) | PWR_GD: ~10 ms from power loss; BACKUP: ~shortly after | OS begins graceful shutdown |
-| OS syncs filesystems, halts | ~10–15s | ROTOR_EN de-asserted; CM5 PMIC halted |
-| Supercaps depleted / system off | ≥21.7s from power loss | 5V_MAIN → 0V |
+| 5V_MAIN falls to 4.64V — LTC3350 BACKUP asserted | ~10 ms | `/INTB` goes LOW; MIC1555 U15 one-shot triggers; LTC3350 begins restoring 5V_MAIN |
+| `PWR_BUT` held LOW (3.01 s pulse begins) | ~10 ms | CM5 PMIC receives power-key event; `systemd-logind` HandlePowerKey=poweroff initiated |
+| LTC3350 hold-up fully engaged | ~20 ms | 5V_MAIN restored to 5V; PMIC_EN stays HIGH; ≥21.7 s window active |
+| `PWR_BUT` pulse ends | ~3.02 s | MIC1555 output returns HIGH; Q5 off; PWR_BUT returns HIGH via CM5 pull-up |
+| OS syncs filesystems, halts | ~10–15 s | ROTOR_EN de-asserted; CM5 PMIC halted |
+| Supercaps depleted / system off | ≥21.7 s from power loss | 5V_MAIN → 0V; MCP121T deasserts PWR_GD |
 
 ## Dependencies
 
@@ -212,7 +205,8 @@ The Stator board carries an INA219 (U2, I2C address **0x45**) monitoring the 3V3
 ### Firmware Note
 
 > ⚠️ The INA219 calibration register must be written on every power-up before any current readings are taken.
-> Write smbus2 value **0x0004** (byte-swapped from logical 0x0400 = 1024; smbus2 transmits LSB first so INA219 receives 0x0400 = 1024 as intended). If this is skipped, the `Current_Register` will read zero regardless of actual current.
+> Write smbus2 value **0x0004** (byte-swapped from logical 0x0400 = 1024; smbus2 transmits LSB first so INA219 receives
+> 0x0400 = 1024 as intended). If this is skipped, the `Current_Register` will read zero regardless of actual current.
 
 ```python
 INA219_ADDR    = 0x45        # Rotor stack monitor on Stator board

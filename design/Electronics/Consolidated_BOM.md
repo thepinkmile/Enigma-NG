@@ -40,20 +40,21 @@ the Rev A single-Extension configuration unless otherwise noted.
 | MCP121T-450E/LB — 4.5 V Voltage Supervisor (SC70-3) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS2372-4 — PoE PD Interface Type 4 (VQFN-20) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS23730RMTR — PoE ACF DC-DC Controller (WQFN-20) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | TPD4E05U06 — 4-Channel ESD Protection Array | 3 | 1 | — | — | — | — | — | — | — | — | 4 |
 | TPD1E10B06 — Single-Channel ESD (SOD-923) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | 3 |
-| BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | BAT54 — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | 3 |
 | | | | | | | | | | | | |
-| 0.1 µF X7R 0402 decoupling cap | 14 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 508 |
+| 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 509 |
 | 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | 185 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 15 | — | — | — | — | — | — | — | — | — | 15 |
 | 4.7 µF X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| 10 µF 16 V X7R 0603 monostable timing cap (CL10B106KA8NNNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 3 | — | — | — | — | — | — | — | — | — | 3 |
 | 10 µF 25 V X7R 1206 LDO input cap (C1206C106K3RACTU) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10 nF X7R 50 V 0402 soft-start cap (CL05B103KB5NNNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -62,7 +63,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 22 F / 2.7 V Supercapacitor (Tecate TPLH-2R7/22WR12X31) | 6 | — | — | — | — | — | — | — | — | — | 6 |
 | | | | | | | | | | | | |
-| 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 5 | 2 | 5 | — | — | — | — | — | — | — | 12 |
+| 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 6 | 2 | 5 | — | — | — | — | — | — | — | 13 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | 328 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | 9 |
 | 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | 37 |
@@ -77,13 +78,14 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 2 | — | 1 | — | — | — | — | — | — | — | 3 |
 | 121 kΩ 1% 0603 PoE MPS current set (ERJ-3EKF1213V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 301 Ω 1% 0603 charge current set (ERJ-3EKF3010V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 274 kΩ 1% 0603 MIC1555 U15 monostable R28 (ERJ-3EKF2743V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 232 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2323V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 28.7 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2872V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 210 Ω 1% 0603 thick-film eFuse ILIM (ERJ-3EKF2100V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 86.6 kΩ 1% 0603 thick-film SYNC FSET resistor (ERJ-3EKF8662V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 82.0 kΩ 1% 0402 thick-film SYNC phase-delay R\_DLY (ERJ-2RKF8202X) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 26.7 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB2672V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 28.7 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB2872V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB1002V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 2 | — | 2 |
 | Ferrite bead 120 Ω @100 MHz 4.0 A 1206 (Laird HI1206P121R-10) | — | — | 4 | — | — | — | — | — | — | — | 4 |
@@ -192,8 +194,12 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 **Notes:**
 
-* **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip → BT1–64; Sleeve → BT65–128 Encode Half). Switch (N/C) is on the same node as Tip (BT1–64); it shorts Switch→Sleeve when no plug is inserted. Rows 1–2 (BT1–128).
-* **Keyboard switches (SW1-64):** mount in the keyboard panel. In HID mode each switch output wires to BT65–128 (Row 2, Encode Half). Pole 2 pins are mechanically soldered for physical anchoring — no electrical connection. Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard.
+* **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip → BT1–64;
+  Sleeve → BT65–128 Encode Half). Switch (N/C) is on the same node as Tip (BT1–64); it shorts Switch→Sleeve when no
+  plug is inserted. Rows 1–2 (BT1–128).
+* **Keyboard switches (SW1-64):** mount in the keyboard panel. In HID mode each switch output wires to BT65–128
+  (Row 2, Encode Half). Pole 2 pins are mechanically soldered for physical anchoring — no electrical connection.
+  Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard.
 * **Total PCB blade terminals: 128** — two rows of 64, all Keystone 1285-ST.
 * Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
 
@@ -269,8 +275,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 | J3 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
 | J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — (hand-place) | 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. Not in JLCPCB standard catalog; hand-place or pre-fit. |
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
-| R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=26.7kΩ (ERA-3ARB2672V, Mouser 667-ERA-3ARB2672V, DigiKey P26.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.40V. |
+| R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=28.7kΩ (ERA-3ARB2872V, Mouser 667-ERA-3ARB2872V, DigiKey P28.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.64V (above MCP121T 4.50V — LTC3350 activates first, keeping PMIC_EN stable). |
 | U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERJ-3EKF series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
+| U15 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). Monostable one-shot for hardware PWR_BUT shutdown. t=1.1×R28×C32=3.01s. R28=274kΩ (ERJ-3EKF2743V), C32=10µF 16V X7R (CL10B106KA8NNNC), C33=100nF bypass cap. |
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 10nF 100V X7R 0402 | 0402 | 80-C0402C103J1RAUTO | 399-C0402C103J1RACAUTOCT-ND | C19862706 |
 
