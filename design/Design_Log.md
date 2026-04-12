@@ -998,6 +998,125 @@ development — it is handled by the standard gpio-shutdown device tree overlay.
 
 ---
 
+## DEC-026 — Rotor Position Encoder: AS5600 Replaced with Single-Track Capacitive Encoder
+
+- **Status:** Accepted
+- **Date:** 2026-04-12
+- **Category:** Hardware
+- **Area:** Rotor Board — Position Sensing (§2.1)
+
+### Decision
+
+The AMS AS5600 magnetic encoder (originally specified in DR-ROT-03) is replaced with a
+**single-track absolute capacitive encoder** implemented entirely on the rotor PCB. The rotating
+shroud carries a single conductive-ink track; K capacitive sensor pads on the PCB read the track
+as a K-bit code. A combinational lookup table in the CPLD VHDL maps the raw sensor code to a
+binary rotor position (0 to N−1). The SW1 modulo-N adder (ring setting) operates on the decoded
+binary value. No external adder hardware is required — the decode and add are pure CPLD logic.
+
+Two **Texas Instruments FDC2114RGER** (4-channel, I²C, 16-VQFN, 3.3V) per rotor replace U2:
+
+- U2 (address 0x2A): sensor pads S0–S3.
+- U3 (address 0x2B): sensor pads S4–S5 (64-char) or S4 only (26-char).
+- CPLD implements I²C master to read pad states.
+
+#### Track patterns (verified — all N codes unique)
+
+- **26-char (K=5, N=26):** `00000100011001010011101111`
+  Sensors at 0°, 13.846°, 27.692°, 41.538°, 55.385° from reference; arc/segment ≈ 12.1mm at r=47mm.
+  Invalid codes (between-character / jam): 11, 13, 21, 22, 26, 31.
+- **64-char (K=6, N=64):** `0000001111110111100111010111000110110100110010110000101010001001`
+  Sensors at 0°, 5.625°, 11.25°, 16.875°, 22.5°, 28.125° from reference; arc/segment ≈ 4.9mm at r=47mm.
+  All 64 six-bit codes are valid (de Bruijn sequence; no invalid-code jam detection for this variant).
+
+PCB outer diameter set at **100mm** (50mm radius) to satisfy the minimum arc-per-segment
+constraint for legible character engraving on the shroud outer face.
+
+### Rationale
+
+- **AS5600 incompatible with single-track Gray code intent:** AS5600 is a single-magnet absolute
+  angle sensor — it requires a single magnet on the rotating part and returns a 12-bit angle value.
+  It does not implement Gray code sensing and was architecturally inconsistent with the original
+  design intent stated in §1 ("single-track grey encoder").
+- **No magnet pocket on shroud:** The AS5600 requires a diametrically magnetised magnet (~6mm dia)
+  embedded in or attached to the rotating shroud, adding manufacturing complexity. The capacitive
+  approach requires only a conductive ink surface pattern — no embedded components.
+- **All sensing electronics on PCB:** Capacitive pads and FDC2114 ICs are standard PCB components.
+  The shroud is a passive mechanical part.
+- **Reliable at slow rotation rates:** The rotors step at human-typing speed (≤10 char/s). The
+  FDC2114 conversion time (~1ms/channel at default rate) is well within the inter-step interval.
+- **STGC lookup table consistent across variants:** Both 26-char and 64-char rotors use the
+  identical CPLD decode mechanism; only table contents and modulus differ. No firmware
+  architecture difference between variants.
+
+### Impact
+
+- `design/Electronics/Rotor/Design_Spec.md`: FR-ROT-02, FR-ROT-08, DR-ROT-03, DR-ROT-09, §1,
+  §2.1 (full rewrite), §3.2 I²C note, BOM U2 → FDC2114RGER, U3 added.
+- `design/Electronics/Rotor/Rotor_26_Char_Design.md`: §5 ring setting updated; §6 added
+  (geometry, track pattern, STGC→position lookup table).
+- `design/Electronics/Rotor/Rotor_64_Char_Design.md`: §5 ring setting updated; §7 added
+  (geometry, track pattern, STGC→position lookup table).
+- `design/Electronics/Rotor/Board_Layout.md`: ASCII diagram updated; PCB Ø100mm noted.
+- `design/Electronics/Consolidated_BOM.md`: AS5600 row replaced with 2× FDC2114RGER per rotor
+  (60 units total across 30 rotors).
+- `design/Electronics/Reflector/STGC_Generator.py`: Original script location noted — should be
+  relocated to `design/Electronics/Rotor/` in a future tidy-up commit.
+
+---
+
+## DEC-027 — Rotor Position Readback via JTAG Virtual JTAG (USER0 UDR)
+
+- **Status:** Accepted
+- **Date:** 2026-04-12
+- **Category:** Hardware / Firmware
+- **Area:** Rotor Board CPLD — JTAG Interface; GUI App position display
+
+### Decision
+
+The CPLD on each rotor must expose the **effective rotor position** (STGC-decoded position +
+SW1 ring offset, mod N) via **Intel Virtual JTAG** (Altera `VIRTUAL_JTAG` megafunction,
+USER0 instruction) over the existing JTAG serial chain. This allows the CM5/JDB to read back
+all 30 rotor positions in a single JTAG scan pass without consuming any additional PCB pins or
+signal routing.
+
+The effective position register is 6 bits wide (covers both variants; 26-char variant uses
+bits [4:0], bit [5] = 0). The CPLD VHDL must instantiate the `VIRTUAL_JTAG` megafunction and
+connect the effective position register to the user data register (UDR). Cipher substitution
+operates continuously and independently of JTAG state.
+
+### Rationale
+
+- **Standard IEEE 1149.1 BSCAN cannot access internal registers:** Boundary scan (EXTEST/SAMPLE)
+  captures I/O pin states only. The effective position is an internal CPLD register result and
+  would require dedicated output pins to be visible via standard BSCAN.
+- **Virtual JTAG avoids pin consumption:** The existing JTAG chain (TCK, TMS, TDI, TDO/TTD)
+  is already routed through all 30 rotors. No additional pins, traces, or connectors are needed.
+- **FT232H on JDB supports arbitrary JTAG instructions:** The JDB FT232H (in MPSSE mode) can
+  issue the USER0 JTAG instruction to any device in the chain and clock out the UDR contents.
+  The CM5 software can therefore poll all 30 positions by iterating through the chain.
+- **GUI App feedback requires position data:** The GUI App Design_Spec requires real-time display
+  of rotor positions. Virtual JTAG is the only defined data path from rotor CPLDs to the CM5 for
+  this purpose — no I²C, SPI, or dedicated signal lines exist between the rotors and the CM5.
+- **Non-intrusive to cipher operation:** The `VIRTUAL_JTAG` megafunction is fully synchronous
+  with the JTAG clock domain and does not gate or interrupt the cipher substitution logic running
+  on the CPLD system clock.
+
+### Impact
+
+- `design/Electronics/Rotor/Design_Spec.md`: FR-ROT-09 to be added (CPLD exposes effective
+  position via JTAG USER0 UDR; 6-bit register; readable without interrupting cipher function).
+  Note to be added in §2.2 or §3.3 cross-referencing Virtual JTAG and GUI App.
+- `design/Software/GUI_App/Design_Spec.md`: Cross-reference to DEC-027 and JTAG readback path
+  to be added when GUI App position-display feature is specified.
+- CPLD VHDL (future): Must instantiate `VIRTUAL_JTAG` megafunction and connect effective
+  position register. Scan sequence: JDB issues USER0; shifts 6-bit UDR from each of 30 rotors
+  serially (180 bits total per full scan).
+- `design/Electronics/JTAG_Daughterboard/Design_Spec.md`: FT232H MPSSE mode already specified;
+  no hardware change required. Software driver must add USER0 scan sequence.
+
+---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.
