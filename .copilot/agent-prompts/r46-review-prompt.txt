@@ -1,0 +1,75 @@
+You are performing a deep-dive design review (R46) of the Enigma-NG electronics design documentation
+at C:\_DATA_\Repositories\github\Enigma-NG
+
+READ EVERY FILE listed below in full before reporting any findings:
+
+  design/Design_Log.md
+  design/Standards/Global_Routing_Spec.md
+  design/Standards/Certification_Evidence.md
+  design/Electronics/Consolidated_BOM.md
+  design/Electronics/Power_Module/Design_Spec.md
+  design/Electronics/Power_Module/Board_Layout.md
+  design/Electronics/Controller/Design_Spec.md
+  design/Electronics/Controller/Board_Layout.md
+  design/Electronics/Stator/Design_Spec.md
+  design/Electronics/Encoder/Design_Spec.md
+  design/Electronics/Rotor/Design_Spec.md
+  design/Electronics/Reflector/Design_Spec.md
+  design/Electronics/JTAG_Daughterboard/Design_Spec.md
+  design/Electronics/JTAG_Daughterboard/Board_Layout.md
+  design/Software/Linux_OS/Power_Management.md
+  design/Guides/User_Manual.md
+  design/Electronics/Investigations/JTAG_Integrity.md
+
+Also check for and read any other Board_Layout.md files under design/Electronics/ subdirectories.
+
+WHAT TO CHECK
+-------------
+1. Internal consistency: component values, part numbers, net names, pin counts, connector genders,
+   DEC cross-references, section cross-references all agree within each file.
+2. Cross-file consistency: descriptions, part numbers, connector assignments, net names match
+   across files referencing the same components or interfaces.
+3. Stale values: anything superseded by Design_Log.md decisions still present anywhere.
+4. Global_Routing_Spec.md compliance: trace widths, layer assignments, JTAG impedance rules.
+5. DEC format: all DEC-001 through DEC-025 must use canonical dash-list metadata block
+   (- **Status/Date/Category/Area**) and ### section headings. Flag any old flat-bold style.
+
+KNOWN CORRECT — DO NOT FLAG ANY OF THESE
+-----------------------------------------
+- TPS259804ONRGER eFuse: silicon-fixed 16.9V OVLO, R3=210 Ohm ERJ-3EKF2100V (1% thick-film) for R_ILIM
+- INA219 smbus2 byte-swap: rotor CONFIG=0x9F29/CAL=0x0004; PM CONFIG=0x9F31/CAL=0x0002
+- Supercap: 22F per cell, 6 cells, 2S3P = 33F total at 5.4V
+- Samtec ERM8/ERF8: 0.5A/pin system-wide derating
+- CTL J1=ERF8-040 (female), CTL J2=ERF8-020 (female), PM J1=ERM8-040 (male), Stator J8=ERM8-020 (male)
+- JTAG chain: JDB J2 TDI -> U1(CPLD A) -> R7(33 Ohm) -> U2(CPLD B) -> R8(75 Ohm) -> J2 TDO
+- JTAG traces: 0.127mm / 5mil / 50 Ohm on all 4-layer and 6-layer boards
+- Iron Curtain: L1 CMC -> L2 CMC -> L3+C Pi-filter, all post-OR-ing on shared VIN_RAW (not per-input)
+- Encoder: U1=Decode half (CPLD A), U2=Encode half (CPLD B), J2=inter-half connection only
+- Jack: Tip+Switch to CPLD1 (BT1-64), Sleeve to CPLD2 (BT65-128), max 32 cables
+- DEC-010 Deferred status is correct
+- DEC-001 to DEC-024 Category=Electrical, DEC-025 Category=Software
+- Power_Management.md Phase 1: deferred note with no polling daemon code
+- PWR_GD fires first at 4.5V; LTC3350 BACKUP fires second at 4.40V
+- CTL Board_Layout LINK-ALPHA ASCII pins 25-26: [3.3V LOGIC]
+- CSS2H shunt count: PM R12, PM R23, Stator R1 = 3 total
+- Consolidated_BOM SN74LVC2G125DCUR: JDB=1, EXT=dash, Total=1
+- JTAG_Integrity section 9: 33 Ohm 0402 JDB R6-R8
+- JTAG_Integrity section 7.4 and trace table: references DEC-024 (not DEC-023) for Controller pass-through
+- Design_Log DEC-016 strikethrough text: 74LVC2G125 (not 74LVC1G125)
+- Net names: no leading + prefix allowed anywhere
+
+REPORTING FORMAT
+----------------
+Report as numbered table: # | File | Section | Issue | Current (wrong) | Correct
+
+- Design_Log OWI-003: CPLD boards = Encoder x2, Stator x1, Rotor x30 only (Reflector has no CPLD)
+- Design_Log DEC-017: Controller AND Power Module are the 6-layer exceptions; PM row in 'already compliant' table
+- Cert_Evidence §3.4 load budget: no Extension buffers; sum = 2107mA / 2.11A / 70.4%
+- Encoder Design_Spec §3 signal flow code block: ENC_IN from 'Stator J4/J5/J6, via J2 pin 2-7'; ENC_OUT to 'Stator J4/J5/J6, via J2 pin 19-24' (not 'Stator J2')
+- Extension board: NO U1 buffer; passive JTAG pass-through only; no C6 bypass cap; FR-EXT-02 deleted; DR-EXT-04 and DR-EXT-06 deleted
+- RC tau unit: 82.0kOhm x 22nF = 1.804ms (not µs) in Cert_Evidence §3.3.3, PM BOM C29/R26 annotations, and PM §6 notes
+- Encoder/Design_Spec.md uses dash-style lists (- ) after markdownlint fix
+
+If zero genuine issues: state "R46 RESULT: CLEAN -- no findings."
+
+Be rigorous but precise. Only report genuine errors. Never flag KNOWN CORRECT items.
