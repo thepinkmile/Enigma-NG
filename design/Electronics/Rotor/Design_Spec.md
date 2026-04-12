@@ -14,31 +14,43 @@ where the internal scrambled wiring is emulated by a dedicated logic chip on eac
 The outer rotating mechanism works like the outer ring of a bearing around the central static ring (this is the rotor PCB and enclosure).
 There are also sensors used to detect the current position of the outer ring using a single-track grey encoder.
 
+Two rotor variants are defined for the Enigma-NG system: the **26-character variant** (5-bit,
+compatible with original Enigma rotors I–VIII, Beta, Gamma) and the **64-character variant**
+(6-bit, supporting the extended Enigma-NG character set). Both variants use identical PCB
+footprints, connector pinouts, and DIP switch mechanisms for full interoperability within a
+mixed stack. Variant-specific details are in
+`design/Electronics/Rotor/Rotor_26_Char_Design.md` and
+`design/Electronics/Rotor/Rotor_64_Char_Design.md`.
+
 ### Functional & Design Requirements
 
 #### Functional Requirements
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | Supports Rotors I–VIII, Beta, Gamma wiring tables | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
+| FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | 21 forward maps in CPLD UFM; direction bit doubles to 42 configs; see variant design files | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
 | FR-ROT-02 | Detect rotor angular position using a contactless magnetic encoder | 6-bit resolution; detects between-character positions | §2.1 Position Sensing; BOM U2 (AS5600) |
 | FR-ROT-03 | Pass JTAG chain signals to the next rotor in the stack (or to the Reflector at position 30) | Serial daisy-chain; each rotor is one JTAG device | §3.3 Signal Integrity; BOM J1 (ERM8-005 JTAG in), J4 (ERF8-005 JTAG out) |
 | FR-ROT-04 | Receive 3V3_ENIG power from the upstream board and forward to the downstream board | Passive power pass-through via J2/J5 | §3.1 Power Management; BOM J2 (ERM8-005 power in), J5 (ERF8-005 power out) |
-| FR-ROT-05 | Pass the encoder data bus through the rotor stack transparently | Via J3/J6 (ERM8-010 / ERF8-010) | §3.2 Communication Bus; BOM J3 (ERM8-010), J6 (ERF8-010) |
+| FR-ROT-05 | Apply cipher substitution at each rotor hop via CPLD; forward and return paths processed independently using SW2/SW3 selected maps | J3 ENC_IN → CPLD (SW2 map+dir) → J6 ENC_OUT; J6 ENC_IN → CPLD (SW3 map+dir) → J3 ENC_OUT; see §3.2 | §3.2 Communication Bus; BOM J3 (ERM8-010), J6 (ERF8-010) |
 | FR-ROT-06 | Be individually removable for maintenance or reconfiguration without tools | Samtec ERM8/ERF8 high-cycle connectors | §2.3 Mechanical Details; BOM J1–J6 (Samtec ERM8/ERF8) |
+| FR-ROT-07 | Store 21 forward cipher maps in CPLD UFM; SW2 (input side) and SW3 (output side) each independently select map index [4:0] and direction bit [5] (0=forward, 1=reverse), giving 42 effective configurations per side without reprogramming | Same mechanism and switch count for both variants | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N), SW2, SW3 |
+| FR-ROT-08 | Implement ring setting via SW1 (6 switches, input side only); CPLD sums SW1[5:0] with AS5600 position reading (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor_Mechanical_Spec.md |
 
 #### Design Requirements
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 PCB Fabrication & Stackup |
-| DR-ROT-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100); emulates 64×64 cross-wiring | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
+| DR-ROT-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100); 21 UFM forward maps; SW2/SW3 direction bit gives 42 effective configs; character width in variant design files | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
 | DR-ROT-03 | Position sensor | AMS AS5600 magnetic encoder (6-bit resolution, contactless) | §2.1 Position Sensing; BOM U2 (AS5600) |
 | DR-ROT-04 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
 | DR-ROT-06 | Power consumption | ≤50 mA per rotor from 3V3_ENIG | §3.1 Power Management |
 | DR-ROT-07 | Stack quantity | 30 rotor boards in the complete system | §1 Overview |
-| DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; retained by central threaded rod through all 30 rotors | §2.3 Mechanical Details |
+| DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; 8mm solid metal support rod (non-threaded) through all 30 rotors for alignment and connector stress relief; stack is horizontal | §2.3 Mechanical Details |
+| DR-ROT-09 | Ring setting DIP switches (SW1) | 6-position DIP switch on input side only; SW1[5:0] summed mod N with AS5600 output to yield effective rotor position | §2.3 Mechanical Details; BOM SW1 |
+| DR-ROT-10 | Map selection DIP switches (SW2 / SW3) | 6-position DIP on each face: bits [4:0] = map index (0–20 valid), bit [5] = direction (0=forward, 1=reverse); identical mechanism on both variants | §2.2 Logic & Transposition; BOM SW2, SW3 |
 
 ## 2. Core Design
 
@@ -50,20 +62,81 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 2.2 Logic & Transposition
 
-* **Logic:** The **Intel MAX II EPM240T100I5N CPLD** emulates the 64x64 cross-wiring.
+* **Logic:** The **Intel MAX II EPM240T100I5N CPLD** performs real-time cipher substitution for
+  both the forward and return signal paths simultaneously.
+* **Role:** Applies the active cipher map to incoming ENC\_IN data and outputs the substituted
+  value as ENC\_OUT. The forward-pass and return-pass maps are selected independently by SW2 and
+  SW3 respectively:
+  * **Forward path:** J3 ENC\_IN[0:N-1] → CPLD applies SW2-selected map → J6 ENC\_OUT[0:N-1]
+  * **Return path:** J6 ENC\_IN[0:N-1] → CPLD applies SW3-selected map → J3 ENC\_OUT[0:N-1]
+  * N = 5 for 26-character variant; N = 6 for 64-character variant.
+* **Memory:** The CPLD UFM stores **21 forward-direction cipher maps** using a common 64-entry
+  × 6-bit format (384 bits per map; 21 maps × 384 = 8,064 bits, within the 8,192-bit UFM).
+  Both rotor variants use this identical map count and selection mechanism; the actual map data
+  is variant-specific.
+* **Map selection (SW2 / SW3):** Each 6-position DIP switch encodes:
+  * Bits [4:0] — map index, selecting one of the 21 stored forward maps (indices 0–20 valid;
+    21–31 reserved).
+  * Bit [5] — direction: `0` = apply map forward (map[input] = output);
+    `1` = apply map in reverse (find input such that map[input] = output, i.e. inverse lookup).
+  * This direction bit effectively doubles the usable configurations to **42 per side** without
+    requiring additional UFM storage.
+  * SW2 and SW3 are independent — in normal Enigma operation they are set to a matched
+    forward/inverse pair (same index, opposite directions), but the hardware does not enforce this.
+* **Latency:** Sub-10ns transposition time; the entire 30-rotor round-trip occurs well within one
+  CPU clock cycle.
+* **Configuration:** SW2 and SW3 are read at power-up only. A power cycle is required after
+  changing either switch. The CPLD is programmed once via JTAG; map selection at runtime uses
+  SW2/SW3 exclusively. See `design/Electronics/Rotor/Rotor_26_Char_Design.md` and
+  `design/Electronics/Rotor/Rotor_64_Char_Design.md` for map data definitions and character-set
+  details.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
-* **Role:**Performs the instantaneous dual 6-bit parallel transposition (substitution cipher) for the forward and backward signal paths.
-* **Memory:** Stores the 26-position wiring table for any historical rotor (I-VIII, Beta, Gamma) selectable via the CM5.
-* **Latency:** Sub-10ns transposition time, ensuring the entire 30-rotor "trip" happens well within one CPU clock cycle.
-* **Configuration:** CM5 loads the "Rotor Type" (e.g., Rotor I, II, III) into the CPLD's SRAM at boot via the JTAG Chain.
 
 ### 2.3 Mechanical Details
 
 * **Mounting:** Each rotor PCB has two **M2.5 alignment holes**.
-* **Retention:** Once slotted into the Stator, a **threaded rod** (mimicking the original Enigma spindle) passes through the center of all 30 rotors to lock them into a single, rigid block.
-* **Hot-Swappable:** The Samtec ERM8 Edge-Rate connectors are rated for high mating cycles, allowing individual rotors to be pulled for "repair" or reconfiguration without tools.
-* **Connector Configuration:** Each rotor carries **3 separate ERM8 connectors** (JTAG, Power, ENC\_DATA) mating into matching ERF8 female sockets on the Stator.
-  Physical separation of connector types provides keying — it is mechanically impossible to mismate a power connector into a JTAG socket.
+* **Stack Orientation:** The rotor stack is oriented **horizontally** (matching original Enigma
+  machine aesthetics). In this orientation, rotor weight does not bear on the ERM8/ERF8 connector
+  engagement faces.
+* **Support Rod:** An **8mm solid metal support rod (non-threaded)** passes through the centre of
+  all 30 rotors. The rod provides mechanical alignment and relieves stress on the ERM8/ERF8
+  connectors during assembly and handling. It is not a retention mechanism; individual rotors
+  remain removable by sliding them off the rod.
+* **Hot-Swappable:** The Samtec ERM8 Edge-Rate connectors are rated for high mating cycles,
+  allowing individual rotors to be pulled for reconfiguration without tools.
+* **Connector Configuration:** Each rotor carries **3 separate ERM8 connectors** (JTAG, Power,
+  ENC\_DATA) mating into matching ERF8 female sockets on the next rotor (or Stator for Rotor 1,
+  Reflector for Rotor 30). Physical separation of connector types provides keying — it is
+  mechanically impossible to mismate a power connector into a JTAG socket.
+
+#### Ring Setting DIP Switches (SW1 — Input Side Only)
+
+Each rotor carries a **6-position DIP switch (SW1)** on the input face that sets the ring
+setting (Ringstellung), emulating the ring and notch position of an original Enigma rotor.
+
+* **Location:** Input side only. SW1 is not present on or accessible from the output face.
+* **Function:** The CPLD continuously sums SW1[5:0] with the AS5600 position encoder reading,
+  modulo N (N = 26 for 26-char variant; N = 64 for 64-char variant), to produce the **effective
+  position**. When this matches the notch trigger value for the active map, the CPLD signals
+  the next rotor in the stack to advance one position (turnover).
+* **Cross-reference:** See `design/Mechanical/Rotor_Mechanical_Spec.md` (to be created) for the
+  ring gear, notch wheel, and mechanical turnover engagement mechanism.
+
+#### Map Selection DIP Switches (SW2 / SW3)
+
+A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher map selection:
+
+* **SW2 (input face):** Selects the map and direction for the **forward-pass** (J3 → J6).
+* **SW3 (output face):** Selects the map and direction for the **return-pass** (J6 → J3).
+  Completely independent of SW2.
+* **Bit encoding (both SW2 and SW3):**
+  * Bits [4:0] — map index: selects one of the 21 UFM forward maps (indices 0–20 valid).
+  * Bit [5] — direction: `0` = forward; `1` = reverse (CPLD computes inverse lookup on the fly).
+* **Effective configurations:** 21 maps × 2 directions = **42 per side**.
+* **Normal operation:** SW2 and SW3 are set to the same map index with opposite directions
+  (one forward, one reverse), emulating the linked forward/return wiring of an original Enigma
+  rotor. The hardware does not enforce this — non-matching maps are valid.
+* Both rotor variants use the **identical** SW2/SW3 footprint and encoding.
 
 ## 3. Electrical Requirements
 
@@ -76,13 +149,23 @@ There are also sensors used to detect the current position of the outer ring usi
 
 ### 3.2 Communication Bus
 
-* **The ENC Data Path:** The 12-bit parallel cipher bus (ENC_IN[0:5] / ENC_OUT[0:5]) passes through every
-  rotor as a daisy-chain: Stator → Rotor 1 → … → Rotor 30 → Reflector (cipher data only; this path is
-  entirely separate from JTAG TTD_RETURN).
-* **JTAG TTD_RETURN Path:** After the Reflector processes the cipher reversal, TTD_RETURN travels
+* **The ENC Data Path:** The cipher bus passes through every rotor in the stack (Stator → Rotor 1
+  → … → Rotor 30 → Reflector forward; reverse for the return path). At **each rotor the CPLD
+  applies the active cipher substitution** — data is NOT passed through transparently:
+  * **Forward path:** J3 ENC\_IN[0:N-1] → CPLD applies SW2-selected map (direction per SW2[5])
+    → J6 ENC\_OUT[0:N-1]
+  * **Return path:** J6 ENC\_IN[0:N-1] → CPLD applies SW3-selected map (direction per SW3[5])
+    → J3 ENC\_OUT[0:N-1]
+  * N = 5 for 26-character variant; N = 6 for 64-character variant.
+  * All connectors carry 6 bits (ENC[0:5]) regardless of variant to maintain a common pinout
+    across mixed stacks. The 26-character variant leaves ENC[5] as NC.
+  * This path is entirely separate from the JTAG TTD\_RETURN signal.
+* **JTAG TTD\_RETURN Path:** After the Reflector processes the cipher reversal, TTD\_RETURN travels
   separately: Reflector J4 → Stator J7 → Link-Beta pin 26 → FT232H on JDB (JTAG chain closure only).
-* **Control:** Shared I2C bus for position telemetry.
-* **JTAG:** Pass-through JTAG lines allow the **USB Blaster** on the Controller Board to program the entire 30-rotor stack in one "daisy-chain" operation.
+* **Control:** Shared I2C bus for position telemetry (AS5600 on each rotor).
+* **JTAG:** Pass-through lines allow the **USB Blaster** on the Controller Board to program the
+  entire 30-rotor stack in one daisy-chain operation. Under normal operation JTAG is idle; cipher
+  maps are selected via SW2/SW3 without reprogramming.
 
 ### 3.3 Signal Integrity
 
@@ -158,7 +241,9 @@ There are also sensors used to detect the current position of the outer ring usi
 | 19 | GND | 20 | GND |
 
 > 12 signal pins + 8 GND fill pins. All spare pins assigned as GND for improved EMI shielding
-> and signal return paths around the encoder data bus.
+> and signal return paths around the encoder data bus. Both ENC_IN and ENC_OUT on J3 are active simultaneously:
+> ENC_IN receives forward-pass data from upstream; ENC_OUT carries the CPLD SW3-map return-pass result back upstream.
+> The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
 
 #### J4 — JTAG Interface Output (ERF8-005, 10-pin 2×5, 0.8mm pitch, FEMALE socket)
 
@@ -205,7 +290,8 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 | 17 | GND | 18 | GND |
 | 19 | GND | 20 | GND |
 
-> ENC pass-through from J3 input side. Signal positions are identical — pin mapping is symmetric so the same CPLD logic applies regardless of stack position.
+> ENC_OUT carries the CPLD SW2-map forward-pass substitution result downstream; ENC_IN receives return-pass data from downstream for SW3-map processing.
+> Both directions are applied by the CPLD — this is NOT a pass-through. The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
 
 ### 3.5 Prototype Bench-Testing Provision (Break-Off Coupons)
 
@@ -252,3 +338,6 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U1 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
 | U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |
+| SW1 | Ring setting DIP switch (input side only; SW1[5:0] summed with AS5600 output for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
+| SW2 | Forward-pass map selection (input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
+| SW3 | Return-pass map selection (output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
