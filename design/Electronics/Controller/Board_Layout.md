@@ -122,7 +122,7 @@
 **3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS75733KTTRG3 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
 **Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25), Pin 30 = POE_STAT (GPIO 24), Pin 38 = USB_STAT (GPIO 21) — all PM → CTRL, active-low/high per signal definition.
-**GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
+**GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
 
 ```text
        LINK-ALPHA (80-PIN SAMTEC)           SIGNAL TYPE          FUNCTION
@@ -266,12 +266,12 @@ _______________________________________    _____________    ____________________
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | ENC_IN[0] | CTRL → Stator | Encoder input bit 0 |
-| 2 | ENC_IN[1] | CTRL → Stator | Encoder input bit 1 |
-| 3 | ENC_IN[2] | CTRL → Stator | Encoder input bit 2 |
-| 4 | ENC_IN[3] | CTRL → Stator | Encoder input bit 3 |
-| 5 | ENC_IN[4] | CTRL → Stator | Encoder input bit 4 |
-| 6 | ENC_IN[5] | CTRL → Stator | Encoder input bit 5 |
+| 1 | ENC_IN[0] | Stator → CTRL | Encoder input bit 0 |
+| 2 | ENC_IN[1] | Stator → CTRL | Encoder input bit 1 |
+| 3 | ENC_IN[2] | Stator → CTRL | Encoder input bit 2 |
+| 4 | ENC_IN[3] | Stator → CTRL | Encoder input bit 3 |
+| 5 | ENC_IN[4] | Stator → CTRL | Encoder input bit 4 |
+| 6 | ENC_IN[5] | Stator → CTRL | Encoder input bit 5 |
 | 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
 | 8 | GND | — | Ground reference |
 | 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |

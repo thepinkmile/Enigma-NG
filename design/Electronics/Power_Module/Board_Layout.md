@@ -366,7 +366,7 @@ SIDE VIEW (CROSS-SECTION)
 **3V3_ENIG pin count:** Pins 39–44 (6 pins) = **6 × 0.5A = 3.0A total capacity** ✓ (matches TPS75733KTTRG3 3A max output)
 **ROTOR_EN:** Single logic signal at pin 46; 3.3V, driven by CM5 GPIO 16.
 **Monitoring signals:** Pin 29 = SYS_FAULT (GPIO 25, active-low), Pin 30 = POE_STAT (GPIO 24, active-low — LOW = PoE live), Pin 38 = USB_STAT (GPIO 21, active-low) — all PM → CTRL.
-**GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 48 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
+**GND count:** Pins 1,4,7,10,13–20 (GbE block) + 23,24 + 27,28 + 37 + 50,52,54…80 (power cluster evens) = adequate return path for all rails. ✓
 
 ---
 

@@ -85,7 +85,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
     * **Pins 27–28:** GND isolation moat.
     * **Pins 29–38:** Status/control signals (SYS_FAULT, POE_STAT, SW_LED_R/G/B, PWR_GD, I2C1, USB_STAT).
     * **Pins 39–44:** 3V3_ENIG power (6 pins × 0.5A = 3.0A capacity).
-    * **Pins 45–48:** Mixed control (BATT_PRES_N, ROTOR_EN, SW_LED_CTRL, GND).
+    * **Pins 45–48:** Mixed control (BATT_PRES_N, ROTOR_EN, SW_LED_CTRL, PWR_BUT).
     * **Pins 49–80:** 5V_MAIN high-current entry (32 pins interleaved: 16× 5V_MAIN + 16× GND; 16 × 0.5A = 8A from this cluster; combined with pins 21–22 = 9A total).
   * **Power Vias:** 4-via "Power Clusters" (0.3mm drill) per Samtec power pin for thermal stability.
   * **Full pin table:** See `Controller/Board_Layout.md` LINK-ALPHA section.
