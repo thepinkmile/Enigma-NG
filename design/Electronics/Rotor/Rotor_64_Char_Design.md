@@ -6,6 +6,8 @@
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-XX
 **Parent Document:** `design/Electronics/Rotor/Design_Spec.md`
+**Mechanical Spec:** `design/Mechanical/Rotor/Design_Spec.md §5.1` — encoder slot machining
+tolerances and shroud geometry
 
 ---
 

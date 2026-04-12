@@ -45,6 +45,9 @@ mixed stack. Variant-specific details are in
 `design/Electronics/Rotor/Rotor_26_Char_Design.md` and
 `design/Electronics/Rotor/Rotor_64_Char_Design.md`.
 
+For mechanical dimensions, tolerances, shroud specification, and encoder slot geometry, see
+`design/Mechanical/Rotor/Design_Spec.md`.
+
 ### Functional & Design Requirements
 
 #### Functional Requirements

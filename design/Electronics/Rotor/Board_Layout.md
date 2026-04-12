@@ -7,6 +7,9 @@
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-14
 
+For mechanical tolerances and shroud assembly details, see
+`design/Mechanical/Rotor/Design_Spec.md`.
+
 ---
 
 ## Split Board Architecture Overview
