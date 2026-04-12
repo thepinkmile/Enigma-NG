@@ -28,6 +28,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables; route 6-bit data bus to plugboard passes at configurable signal chain positions | J4 = HID; J5 = Plugboard Pass A (configurable); J6 = Plugboard Pass B (configurable) | §3 Plugboard Routing; §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM240 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
+| FR-STA-08 | Select the active plugboard routing configuration via hardware DIP switch without JTAG reprogramming | 4-position DIP switch (SW1) providing 16 pre-defined configurations; CPLD reads SW1[3:0] at power-up and selects routing case from VHDL fabric | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
 
 #### Design Requirements
 
@@ -42,6 +43,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-07 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
 | DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.11 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.11 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
+| DR-STA-10 | Routing configuration selection | SW1 = 4-position DIP switch, 2.54mm THT (binary index 0–15); 4× 10kΩ pull-down resistors R16–R19 on SW1 inputs | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
 
 ## 2. Core Features
 
@@ -61,6 +63,53 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 ## 3. Encryption & JTAG Hub
 
 * **CPLD:** Intel MAX II EPM240T100I5N CPLD (Logic Router).
+
+### CPLD Signal Routing Matrix
+
+The Stator CPLD (U1) is the bidirectional ENC_DATA routing hub for the full encryption cycle.
+It has three bidirectional ENC_DATA connector interfaces — J4 (HID), J3 (Rotor 1), and J7
+(Reflector/Extension) — plus two configurable plugboard pass interfaces (J5 Plugboard A, J6
+Plugboard B).
+
+The encryption signal passes through the CPLD at three defined interception points:
+
+| Step | CPLD receives from | Optional plugboard insertion | CPLD drives to |
+| :--- | :--- | :--- | :--- |
+| **1 — Forward entry** | J4 ENC_OUT[0:5] — Keyboard keystroke | Pre-Rotor 1 position — J5 or J6 | J3 ENC_IN[0:5] → Rotor 1 (starts forward pass through rotor stack) |
+| **2 — Reflector return** | J7 ENC_OUT[0:5] — reflected signal returned from Reflector chain | At Reflector boundary — J5 or J6 | J7 ENC_IN[0:5] → Reflector chain → Rotor 30 (starts return pass back through rotor stack) |
+| **3 — Final exit** | J3 ENC_OUT[0:5] — Rotor 1 return-pass output | Post-Rotor 1 return position — J5 or J6 | J4 ENC_IN[0:5] → Lightboard |
+
+At each step the CPLD either passes the signal transparently (no plugboard) or routes it through
+Plugboard Pass A (J5) or B (J6) before forwarding. The active insertion positions are determined by
+the VHDL routing case statement selected at power-up from the SW1 DIP switch index.
+
+#### DIP Switch Configuration (SW1)
+
+SW1 provides a 4-bit binary index (0–15) selecting the active routing case from 16 configurations
+synthesised into the CPLD fabric. No JTAG reprogramming is required to change configuration —
+only a single JTAG flash at initial programming. SW1[1:0] (switches 1 & 2) encode J5 position;
+SW1[3:2] (switches 3 & 4) encode J6 position. Pull-down resistors R16–R19 hold each input at
+logic-0 when the corresponding switch is open.
+
+| SW1 Index (SW4:SW3:SW2:SW1) | J5 (Plugboard A) insertion point | J6 (Plugboard B) insertion point | Historical reference |
+| :--- | :--- | :--- | :--- |
+| 0 (0000) | None | None | No plugboard — straight through |
+| 1 (0001) | Pre-Rotor 1 | None | Single pre-Rotor 1 pass |
+| 2 (0010) | At Reflector | None | Later Enigma models (single reflector pass) |
+| 3 (0011) | Post-Rotor 1 return | None | Single post-Rotor 1 pass |
+| 4 (0100) | None | Pre-Rotor 1 | — |
+| 5 (0101) | Pre-Rotor 1 | Pre-Rotor 1 | Cascaded pre-Rotor 1 |
+| 6 (0110) | At Reflector | Pre-Rotor 1 | — |
+| 7 (0111) | Post-Rotor 1 return | Pre-Rotor 1 | — |
+| 8 (1000) | None | At Reflector | — |
+| 9 (1001) | Pre-Rotor 1 | At Reflector | — |
+| 10 (1010) | At Reflector | At Reflector | Cascaded at Reflector |
+| 11 (1011) | Post-Rotor 1 return | At Reflector | — |
+| 12 (1100) | None | Post-Rotor 1 return | — |
+| 13 (1101) | Pre-Rotor 1 | Post-Rotor 1 return | Original Enigma (pre-war) |
+| 14 (1110) | At Reflector | Post-Rotor 1 return | — |
+| 15 (1111) | Post-Rotor 1 return | Post-Rotor 1 return | Cascaded post-Rotor 1 |
+
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
 * **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Electronics/Power_Budgets.md`);
@@ -98,39 +147,40 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
   * **Cross-ref:** See `Controller/Design_Spec.md` Link-Beta mapping for explicit pin-number allocation; this Stator document mirrors that mapping for compatibility and implementation validation.
 * **Encoder Interconnects:** 26-pin (2×13) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
 * **Plugboard Routing — Configurable Signal Chain Positions:**
-  The Stator CPLD routes the 6-bit character data bus between the rotor stack, reflector, and the
-  three encoder ports (J4/J5/J6). This enables plugboard passes (each provided by one Encoder board)
-  to be inserted at any configurable point in the encryption signal chain — replicating any historical
-  Enigma variant or enabling novel configurations unique to Enigma-NG.
+  The Stator CPLD implements a configurable routing matrix (see §3 CPLD Signal Routing Matrix) with
+  three plugboard insertion positions in the full encryption cycle. The active configuration is
+  selected at power-up by SW1 (4-position DIP switch, 16 pre-defined configurations — no JTAG
+  reprogramming required for configuration changes). Each of the three Encoder ports plays a fixed
+  or configurable role:
 
   | Port | Default role | Plugboard signal chain position |
   | :--- | :--- | :--- |
   | **J4** | HID — Keyboard & Lightboard | Fixed: HID interface (not used for plugboard passes) |
-  | **J5** | Plugboard Pass A | Configurable: any point in encryption chain |
-  | **J6** | Plugboard Pass B | Configurable: any point in encryption chain |
+  | **J5** | Plugboard Pass A | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW1[1:0]) |
+  | **J6** | Plugboard Pass B | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW1[3:2]) |
 
-  **Historical reference configurations:**
-
-  | Configuration | J5 position | J6 position |
-  | :--- | :--- | :--- |
-  | Original Enigma (pre-war) | After Keyboard / before Rotor 1 | After last Rotor / before Lightboard |
-  | Later Enigma models | At Reflector | — (not used; single pass) |
-  | Enigma-NG custom | Any configured point | Any configured point |
-
-  The Stator CPLD implements the routing matrix in VHDL. See `design/Electronics/Stator/Board_Layout.md`
-  and `design/Electronics/Encoder/Design_Spec.md §1` for further detail.
+  The Stator CPLD implements all 16 configurations as synthesised VHDL case logic. See
+  `design/Electronics/Stator/Board_Layout.md` and `design/Electronics/Encoder/Design_Spec.md §1`
+  for further detail.
 * **Reflector/Extension Interconnect:**16-pin (2x8) Vertical Shrouded Header (Power, ENC_DATA, TTD_RETURN).
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).
   * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
     * `Extension/Design_Spec.md`
     * `Reflector/Design_Spec.md`
+  * **ENC_DATA (bidirectional — simultaneous):** J7 carries ENC_DATA on two separate pin groups
+    simultaneously. ENC_OUT[0:5] (pins 9–14): returns the reflected signal from the Reflector chain
+    to the Stator CPLD (Step 2 receive in the routing matrix). ENC_IN[0:5] (pins 3–8): carries the
+    return-pass signal driven by the Stator CPLD back to the Reflector chain after optional plugboard
+    insertion (Step 2 drive — starts the return pass through the rotor stack).
 * **Rotor Interconnect:** The Stator provides 1 rotor slot (Rotor 1 input side) using 3 ERF8 female sockets.
   * **JTAG:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — TCK, TMS, TTD (TDI function on input side),
     SYS\_RESET\_N with interleaved GND. **J1 pin 6 = TTD** (outgoing TDI to Rotor 1).
     Pin 10 = spare/GND (TDO does NOT return via this connector — it returns via J7 pin 15).
   * **Power:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — 5× 3V3\_ENIG, 5× GND. Same part as JTAG socket.
-  * **ENC DATA:** ERF8-010-05.0-S-DV-K-TR (20-pin 2×10, 0.8mm pitch) — ENC\_IN\[0:5\], ENC\_OUT\[0:5\], 8× GND fill.
+  * **ENC DATA (bidirectional):** ERF8-010-05.0-S-DV-K-TR (20-pin 2×10, 0.8mm pitch) —
+    ENC_IN\[0:5\] (CPLD drives to Rotor 1, forward pass — Step 1 drive);
+    ENC_OUT\[0:5\] (CPLD receives from Rotor 1, return pass — Step 3 receive); 8× GND fill.
   * **Cross-ref:** Authoritative pinout is defined in `Rotor/Design_Spec.md §3.4` (DEC-018 ownership).
   * **Note:** Rotor-to-rotor connections beyond Rotor 1 are direct (each Rotor J4/J5/J6 output mates with
     the next Rotor J1/J2/J3 input); Extension boards provide inter-group bridging at group boundaries in
@@ -214,5 +264,10 @@ snapped off.
 | R13 | TDI chain: Stator CPLD TDO → J4 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | R14 | TDI chain: J4 TDO return → J5 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
 | R15 | TDI chain: J5 TDO return → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
+| R16 | SW1[0] (switch 1) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R17 | SW1[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R18 | SW1[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R19 | SW1[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| SW1 | Routing configuration selector | CTS 219-4LPST — 4-position DIP switch, 2.54mm THT | Through-hole | 774-219-4LPST | CT2064-ND | C128947 |
 | U1 | Stator Management CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-23978-1-ND | C138706 |

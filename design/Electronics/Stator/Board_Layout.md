@@ -19,24 +19,28 @@ and to provide a short TDO return path for the JTAG chain.
 | :--- | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | PM → Reflector | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
 | 2 | SYS_RESET_N | CTRL→Ext | Active-low CPLD reset broadcast (from Controller GPIO 26 via LINK-BETA) |
-| 3 | ENC_IN[0] | Stator → Reflector | Encoder input bit 0 |
-| 4 | ENC_IN[1] | Stator → Reflector | Encoder input bit 1 |
-| 5 | ENC_IN[2] | Stator → Reflector | Encoder input bit 2 |
-| 6 | ENC_IN[3] | Stator → Reflector | Encoder input bit 3 |
-| 7 | ENC_IN[4] | Stator → Reflector | Encoder input bit 4 |
-| 8 | ENC_IN[5] | Stator → Reflector | Encoder input bit 5 |
-| 9 | ENC_OUT[0] | Reflector → Stator | Encoder output bit 0 |
-| 10 | ENC_OUT[1] | Reflector → Stator | Encoder output bit 1 |
-| 11 | ENC_OUT[2] | Reflector → Stator | Encoder output bit 2 |
-| 12 | ENC_OUT[3] | Reflector → Stator | Encoder output bit 3 |
-| 13 | ENC_OUT[4] | Reflector → Stator | Encoder output bit 4 |
-| 14 | ENC_OUT[5] | Reflector → Stator | Encoder output bit 5 |
+| 3 | ENC_IN[0] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
+| 4 | ENC_IN[1] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
+| 5 | ENC_IN[2] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
+| 6 | ENC_IN[3] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
+| 7 | ENC_IN[4] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
+| 8 | ENC_IN[5] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
+| 9 | ENC_OUT[0] | Reflector → Stator | Reflected signal: returns from Reflector chain to Stator CPLD (Step 2 receive in routing matrix) |
+| 10 | ENC_OUT[1] | Reflector → Stator | Reflected signal: returns from Reflector chain to Stator CPLD (Step 2 receive in routing matrix) |
+| 11 | ENC_OUT[2] | Reflector → Stator | Reflected signal: returns from Reflector chain to Stator CPLD (Step 2 receive in routing matrix) |
+| 12 | ENC_OUT[3] | Reflector → Stator | Reflected signal: returns from Reflector chain to Stator CPLD (Step 2 receive in routing matrix) |
+| 13 | ENC_OUT[4] | Reflector → Stator | Reflected signal: returns from Reflector chain to Stator CPLD (Step 2 receive in routing matrix) |
+| 14 | ENC_OUT[5] | Reflector → Stator | Reflected signal: returns from Reflector chain to Stator CPLD (Step 2 receive in routing matrix) |
 | 15 | TTD_RETURN | Reflector → Stator | JTAG TDO return path (short route, bypasses rotor stack) |
 | 16 | GND | — | Signal return / shield |
 
 **Connector:** 2×8 2.54mm shrouded box header with polarisation key (e.g. Wurth 61201621621 or equiv).
 **Mating connector on Extension: J7 / Reflector: J4 — same 16-pin 2×8 shrouded box header.**
 **Power current capacity:** 1 pin × 1A = 1A maximum to Extension/Reflector. Estimated draw ≤200mA — adequate with >4× margin.
+
+> **ENC_DATA bidirectionality:** ENC_IN[0:5] (pins 3–8) and ENC_OUT[0:5] (pins 9–14) carry
+> simultaneous bidirectional ENC_DATA on the same connector. See `Stator/Design_Spec.md §3 CPLD
+> Signal Routing Matrix` for the full step-by-step signal flow.
 
 ## J1–J3: ROTOR INTERFACE CONNECTORS
 
@@ -137,6 +141,17 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 
 **Power capacity:** 2 × 3V3_ENIG pins × 1A/pin = 2.0A — adequate for Encoder board load
 (~208mA: 2× EPM240T100I5N CPLDs + 2× status LEDs; >9× margin).
+
+---
+
+## SW1 — Routing Configuration DIP Switch
+
+**Component:** CTS 219-4LPST, 4-position DIP switch, 2.54mm through-hole.
+**Placement:** Near Stator CPLD U1 (within 10 mm). Accessible from board edge without rotor stack removal.
+**Silkscreen:** Label `KONFIGURATION` / `CONFIG SELECT` with index numbers 0–15 marked adjacent to the switch body.
+**Pull-downs:** R16–R19 (10kΩ 0603) placed within 3 mm of each switch pin — one per switch position.
+
+See `Stator/Design_Spec.md §3 DIP Switch Configuration (SW1)` for the full 16-configuration table.
 
 ---
 

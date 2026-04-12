@@ -63,7 +63,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 22 F / 2.7 V Supercapacitor (Tecate TPLH-2R7/22WR12X31) | 6 | — | — | — | — | — | — | — | — | — | 6 |
 | | | | | | | | | | | | |
-| 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 6 | 2 | 5 | — | — | — | — | — | — | — | 13 |
+| 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 6 | 2 | 9 | — | — | — | — | — | — | — | 17 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | 328 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | 9 |
 | 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | 37 |
@@ -121,6 +121,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | 192 |
 | DPDT 6-pin Momentary Keyboard Switch | — | — | — | 64 | 192 | — | — | — | — | — | 192 |
 | 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 128 | 384 | — | — | — | — | — | 384 |
+| CTS 219-4LPST — 4-pos DIP switch, 2.54mm THT | — | — | 1 | — | — | — | — | — | — | — | 1 |
 
 ## 1. Critical Spares (MOQ Recommendations)
 
@@ -202,6 +203,16 @@ the Rev A single-Extension configuration unless otherwise noted.
   Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard.
 * **Total PCB blade terminals: 128** — two rows of 64, all Keystone 1285-ST.
 * Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
+
+## 4b. Stator Board — DIP Switch Configuration Components
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| R16–R19 | SW1 pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| SW1 | Routing config DIP switch | CTS 219-4LPST 4-pos 2.54mm THT | THT | 774-219-4LPST | CT2064-ND | C128947 |
+
+See `Stator/Design_Spec.md §3 DIP Switch Configuration (SW1)` for the full 16-configuration routing
+table and placement requirements.
 
 ## 5. Controller Specifics
 

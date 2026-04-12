@@ -41,7 +41,10 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 ### System Role: The "Turnaround"
 
 * **Logic Type:** Passive (Loopback).
-* **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100I5N CPLD** located on the Stator Board.
+* **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM240T100I5N CPLD**
+  located on the Stator Board. The active routing configuration is selected via SW1 4-position DIP
+  switch on the Stator (16 pre-defined configurations, no JTAG reprogramming required for
+  configuration changes — see `Stator/Design_Spec.md §3`).
 * **CPLD support:** PCB passive routing (no discrete component).
 * **Signal Path:** Rotor 30 J4–J6 (ERF8 female) → Reflector J1–J3 (ERM8 male) → passive loopback traces → ENC cipher data reflected back; TTD_RETURN exits via J4 (16-pin Molex, pin 15) → Stator J7.
 
@@ -68,8 +71,11 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 >
 > * **Pin 15 — TTD_RETURN:** JTAG TDO return only — completes the chain back to the FT232H. This is
 >   the ONLY JTAG signal on J4.
-> * **Pins 3–14 — ENC_IN[0:5] / ENC_OUT[0:5]:** Stator CPLD interface for configuring plugboard
->   pass-through positions in the encoding chain. **These are NOT JTAG signals.**
+> * **Pins 3–14 — ENC_IN[0:5] / ENC_OUT[0:5]:** Bidirectional Stator CPLD interface (simultaneous).
+>   ENC_IN[0:5] (pins 3–8): return-pass signal driven by Stator CPLD to Reflector chain after optional
+>   plugboard insertion (Step 2 drive). ENC_OUT[0:5] (pins 9–14): reflected signal returned from
+>   Reflector chain to Stator CPLD (Step 2 receive). **These are NOT JTAG signals.**
+>   See `Stator/Design_Spec.md §3 CPLD Signal Routing Matrix` for full signal flow details.
 > * **Pin 2 — SYS_RESET_N**, **Pin 1 — 3V3_ENIG**, **Pin 16 — GND.**
 >
 > **Note:** TMS and TDI pull-up resistors (R2/R3) previously listed in this section have been removed.
