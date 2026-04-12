@@ -23,3 +23,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 17 | Capacitive encoder design, Virtual JTAG readback | 017-capacitive-encoder-virtual-jtag.md |
 | 18 | Rotor encoder finalised; JLCPCB single-side open | 018-rotor-single-side-jlcpcb-open.md |
 | 19 | Rotor review cycle complete, mechanical specs added | 019-rotor-review-cycle-complete.md |
+| 20 | Full system review complete (R8+R9 clean, 9 rounds, 90 fixes) | 020-full-system-review-complete-r8.md |

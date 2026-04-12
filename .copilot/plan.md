@@ -8,12 +8,13 @@
 
 ## Overview
 
-All board detailed designs are functionally complete and review cycles passed. The Rotor design
+All board detailed designs are functionally complete. Full system review cycle (35 files, 9
+rounds, 90 cumulative fixes) completed with R8+R9 both clean — checkpoint 020. The Rotor design
 was substantially updated in session bb01fc15 (checkpoints 014–019): split two-board architecture
-(Board A input / Board B output, Ø92mm each, keyed IDC J_INT), dual-track capacitive encoder,
-STGC/RBGC patterns corrected, U4 FDC2114RGER added for N=26 5th sensor, full Mechanical/Rotor
-spec with tolerance table. Review cycle R1–R5 complete (R4+R5 clean). User to manually review
-all design files before declaring the design complete.
+(Board A input / Board B output, Ø92mm each, keyed IDC J_INT 2×11 22-pin), dual-track capacitive
+encoder, STGC/RBGC patterns corrected, U4 FDC2114RGER added for N=26 5th sensor, full
+Mechanical/Rotor spec with tolerance table. User to manually review all design files before
+declaring the design complete.
 
 Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive content.
 
@@ -34,6 +35,12 @@ Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive 
 
 ---
 
+## Full System Review Status
+
+**COMPLETE — checkpoint 020** (R8+R9 clean, 9 rounds total, 90 cumulative fixes across 18 files)
+
+---
+
 ## Todos
 
 | ID | Title | Status |
@@ -48,8 +55,6 @@ Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive 
 1. **User manual review** — manually review all design files and provide observations before declaring design complete.
 2. **KiCad setup documentation** (`kicad-setup-docs` todo).
 3. **Remaining OWIs** as agreed (see list below).
-
----
 
 ## Checkpoint Procedure
 
@@ -135,7 +140,7 @@ Core files + Rotor variant files:
 - **Two-board split:** Board A (input, Ø92mm) + Board B (output, Ø92mm); 15mm total; 11.8mm inner gap
 - Board A: EPM570T100I5N U1, FDC2114RGER U2 (0x2A), FDC2114RGER U4 (0x2B, N=26 only), SW1, SW2, J1–J3 ERM8 male
 - Board B: FDC2114RGER U3 (0x2B, N=64 only; DNP N=26), SW3, J4–J6 ERF8 female
-- J_INT: Würth 61201221721, 2×12 24-pin keyed IDC; pin 11=TDO A→B; pins 15–16=SW3[4:5]; pins 17–18=SDA/SCL; pins 19–22=SW3[0:3] B→A
+- J_INT: Würth 61201221721, 2×11 22-pin keyed IDC; pin 11=TDO A→B; pins 15–16=SW3[4:5]; pins 17–18=SDA/SCL; pins 19–22=SW3[0:3] B→A
 - FDC2114RGER U2 addr 0x2A (N=64: ch0–2=bits[5:3]; N=26: ch0–3=STGC bits[3:0])
 - FDC2114RGER U4 addr 0x2B ch0=STGC bit[4] — N=26 Board A only
 - FDC2114RGER U3 addr 0x2B ch0–2=bits[2:0] — N=64 Board B only (U3 and U4 mutually exclusive)
