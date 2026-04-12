@@ -29,7 +29,7 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 | :--- | :--- | :--- | :--- |
 | FR-EXT-01 | Act as a JTAG signal repeater between rotor sub-groups in extended stacks | Restores TCK/TMS drive strength mid-chain; up to ×5 units in system | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR) |
 | FR-EXT-02 | Buffer TCK and TMS signals to compensate for capacitive loading of upstream rotors | Dual-channel buffer preserves timing margins | §2 Connectivity; BOM U1 (SN74LVC2G125DCUR), C6 (100nF bypass) |
-| FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Passive pass-through on J2/J5 and J3/J6 | §2 Connectivity; BOM J2, J5 (ERM8/ERF8-005), J3, J6 (ERM8/ERF8-010) |
+| FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Power: J7 → J5 (J2 power pins NC); ENC data: J3/J6 pass-through | §2 Connectivity; BOM J5 (ERF8-005), J3, J6 (ERM8/ERF8-010) |
 | FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) | §2 Connectivity; BOM J1–J3 (ERM8-005/010) |
 | FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) | §2 Connectivity; BOM J4–J6 (ERF8-005/010) |
 
