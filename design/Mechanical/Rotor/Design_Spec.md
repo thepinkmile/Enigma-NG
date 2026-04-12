@@ -127,7 +127,7 @@ components).
 
 ## 6. Internal IDC Connector Assembly
 
-* **Connector type:** 2.54mm pitch keyed IDC box header, 2×12 (24-pin) — Würth Elektronik
+* **Connector type:** 2.54mm pitch keyed IDC box header, 2×11 (22-pin) — Würth Elektronik
   61201221721 or equivalent
 * **Keying:** Both headers must be keyed to prevent incorrect orientation assembly. Verify key
   tab alignment before assembly.

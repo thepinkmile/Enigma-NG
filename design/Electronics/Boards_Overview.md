@@ -102,7 +102,7 @@ Modular units containing the encryption logic.
 
 The mechanical and electrical backbone.
 
-* **Distribution:** A backplane providing ~2.2A worst-case 3V3_ENIG distribution and signal routing for the rotor stack.
+* **Distribution:** A backplane providing ~2.11A worst-case 3V3_ENIG distribution and signal routing for the rotor stack.
 * **Connectivity:** Bridges the Controller, Encoder, and Rotor stack into a single parallel bus.
 * **Programmability:** An Intel MAX II EPM570T100I5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
   * Before the rotor stack.

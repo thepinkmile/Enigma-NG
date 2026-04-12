@@ -1128,7 +1128,7 @@ operates continuously and independently of JTAG state.
 ### Decision
 
 The rotor is split into two circular PCBs (Board A input side, Board B output side), each
-Ø92mm, connected by a keyed 2.54mm pitch IDC box header (2×12, 24 pins). This resolves the
+Ø92mm, connected by a keyed 2.54mm pitch IDC box header (2×11, 22 pins). This resolves the
 JLCPCB single-side SMT assembly constraint and simultaneously defines the rotor physical
 thickness (~15mm with an 11.8mm board gap). Board A carries the CPLD (U1 EPM570T100I5N),
 FDC2114 U2 (Track A encoder, bits[5:3] for N=64 or all 5 sensors for N=26), SW1 (ring
@@ -1182,7 +1182,7 @@ populated.
   dual-track reflected Gray code; XOR-chain decode; geometry updated to r=44mm / Ø92mm.
 - `design/Electronics/Rotor/Rotor_26_Char_Design.md`: single-track all-on-Board-A confirmed;
   geometry updated to r=44mm / Ø92mm; U3 not-populated note added.
-- `design/Electronics/Consolidated_BOM.md`: IDC box header connector (2×12, 24-pin) added,
+- `design/Electronics/Consolidated_BOM.md`: IDC box header connector (2×11, 22-pin) added,
   2 per rotor assembly (60 total for 30 rotors).
 
 ---
