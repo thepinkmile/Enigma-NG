@@ -63,11 +63,17 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   | Ref | Side | Signal Group | Type | MPN |
   | --- | ---- | ------------ | ---- | --- |
   | J1 | Input (plugs into previous group's last rotor J4) | JTAG | ERM8-005 (10-pin, 0.8mm pitch, **male**) | ERM8-005-05.0-S-DV-K-TR |
-  | J2 | Input (plugs into previous group's last rotor J5) | Power (3V3_ENIG × 5, GND × 5) | ERM8-005 (10-pin, 0.8mm pitch, **male**) | ERM8-005-05.0-S-DV-K-TR |
+  | J2 | Input (plugs into previous group's last rotor J5) | Power (3V3_ENIG × 5, GND × 5) — **power pins NC on this board** | ERM8-005 (10-pin, 0.8mm pitch, **male**) | ERM8-005-05.0-S-DV-K-TR |
   | J3 | Input (plugs into previous group's last rotor J6) | ENC Data (ENC_IN/ENC_OUT + GND) | ERM8-010 (20-pin, 0.8mm pitch, **male**) | ERM8-010-05.0-S-DV-K-TR |
   | J4 | Output (receives next group's first rotor J1) | JTAG | ERF8-005 (10-pin, 0.8mm pitch, female) | ERF8-005-05.0-S-DV-K-TR |
   | J5 | Output (receives next group's first rotor J2) | Power (3V3_ENIG × 5, GND × 5) | ERF8-005 (10-pin, 0.8mm pitch, female) | ERF8-005-05.0-S-DV-K-TR |
   | J6 | Output (receives next group's first rotor J3) | ENC Data (ENC_IN/ENC_OUT + GND) | ERF8-010 (20-pin, 0.8mm pitch, female) | ERF8-010-05.0-S-DV-K-TR |
+
+  > **J2 power pins (3V3_ENIG and GND) are not connected to the board power plane.** J2 is present
+  > for mechanical engagement with the upstream rotor group only. The Extension board's sole power
+  > entry is J7 (Extension Port IN, pin 1 = 3V3_ENIG, pin 16 = GND). This prevents a parallel power
+  > path / ground loop between the rotor daisy-chain and the Extension Port ribbon. C1–C5 decouple
+  > at the J7 power entry. Power is passed to the downstream rotor group via J5 (driven from J7).
 
   **Note:** The ERM8/ERF8 0.8mm pitch is physically incompatible with 2.54mm connectors — label distinctly on silkscreen.
   Connector part numbers: ERM8-005 = Mouser 200-ERM8005050SDVKTR / DigiKey 612-ERM8-005-05.0-S-DV-K-TRCT-ND / JLCPCB C3649741;

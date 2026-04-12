@@ -103,8 +103,13 @@ on each Rotor's output side (J4/J5/J6). One set of three connectors per the Roto
 | Ref | Type | Signal Group | Part Series | MPN |
 | --- | ---- | ------------ | ----------- | --- |
 | J1 | ERM8-005 (10-pin, **male**) | JTAG (TCK, TMS, TTD, SYS_RESET_N + GND) | Samtec ERM8 | ERM8-005-05.0-S-DV-K-TR |
-| J2 | ERM8-005 (10-pin, **male**) | Power (3V3_ENIG × 5, GND × 5) | Samtec ERM8 | ERM8-005-05.0-S-DV-K-TR |
+| J2 | ERM8-005 (10-pin, **male**) | Power (3V3_ENIG × 5, GND × 5) — **power pins NC on this board** | Samtec ERM8 | ERM8-005-05.0-S-DV-K-TR |
 | J3 | ERM8-010 (20-pin, **male**) | ENC data (ENC_IN[0:5], ENC_OUT[0:5] + GND interleave) | Samtec ERM8 | ERM8-010-05.0-S-DV-K-TR |
+
+> **J2 power pins (3V3_ENIG and GND) are not connected to the board power plane.** J2 is present for
+> mechanical engagement with Rotor 30 J5 only. The Reflector's sole power entry is J4 (ribbon cable,
+> pin 1 = 3V3_ENIG, pin 16 = GND). This prevents a parallel power path / ground loop through the
+> rotor daisy-chain and the direct ribbon cable return. C1–C5 decouple at the J4 power entry.
 
 **Orientation:** Facing the rotor output side (Rotor 30 top face), perpendicular to the rotor stack axis.
 The ERM8 header pitch (0.8mm) is physically incompatible with 2.54mm connectors — label accordingly on silkscreen.
