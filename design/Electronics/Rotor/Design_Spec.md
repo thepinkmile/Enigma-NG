@@ -99,7 +99,7 @@ flanges — no conductive ink, no magnets, and no mechanical contacts.
 * **Shroud slots:** Gray code patterns are milled as slots/pockets into the inner faces of the
   aluminium shroud flanges. Solid aluminium over an electrode = high capacitance (logic 1 from
   FDC2114); milled slot over an electrode = low capacitance (logic 0).
-* **Gap:** ~0.5–1 mm between PCB electrode and shroud flange inner face (controlled by bearing
+* **Gap:** 0.5mm ±0.15mm (0.35mm min – 0.65mm max) between PCB electrode and shroud flange inner face (controlled by bearing
   precision).
 * **Shroud isolation:** The shroud must remain electrically **floating** (not connected to
   circuit ground). Rolling-pin cylindrical bearings with ceramic or nylon rolling elements

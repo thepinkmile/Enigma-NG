@@ -231,13 +231,14 @@ inter-modulation products would appear at sum and difference frequencies, partia
 | Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; TPS75733 Vdo ≈ 0.22V worst-case at 2.11A — well above minimum input requirement |
 | Output noise | Low-noise linear LDO | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | High PSRR linear LDO | Attenuates Buck output ripple (800kHz effective) — negligible at CPLD supply |
-| Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 × AS5600 (195mA) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Controller-local (50mA) = 2,107mA → **2.11A rounded; 70.4% utilisation** ✓ (per Power_Budgets.md) |
+| Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 rotors × FDC2114RGER (U2+U3/U4, ~6mA typ per IC × up to 2 ICs = ~12mA per rotor) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Controller-local (50mA) = 2,107mA → **2.11A rounded; 70.4% utilisation** ✓ (per Power_Budgets.md) |
 | Package | TO-263 (KTT) 5-pin 10.16×15.24mm | Standard power package; thermal pad to PCB; no large copper pour required |
 | Input power dissipation | Vdo≈0.18V × 2.11A = **~0.38W** (typ.); ≤**0.46W** worst-case | Standard TO-263 thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
-The 37 CPLDs (MAX II EPM240T100I5N) share this rail as their VCCIO (I/O voltage reference). Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
+The 37 CPLDs (6× EPM240T100I5N [Encoder] + 31× EPM570T100I5N [Rotor ×30 + Stator]) share this rail as their VCCIO (I/O voltage reference).
+Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
 potential JTAG chain errors. A linear LDO provides high PSRR isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional
 filtering.
 
@@ -253,7 +254,7 @@ consistent with military component derating standards.
 | Raspberry Pi CM5 (full rated) | 5.00A | Linux OS undervoltage threshold: 5V/5A (25W); full allocation maintained |
 | USB 3.0 (TPS2065C rated limit) | 1.60A | Single USB 3.0 port; TPS2065C current-limited |
 | HDMI (AP2331W rated limit) | 0.05A | Hot-plug current spike handled by AP2331W |
-| 3V3_ENIG LDO input (37 CPLDs) | 2.11A | 37 CPLDs × 50mA + AS5600 encoders + other consumers = 2,107mA → 2.11A (per Power_Budgets.md); 3A LDO peak |
+| 3V3_ENIG LDO input (37 CPLDs) | 2.11A | 37 CPLDs × 50mA + FDC2114RGER capacitive sensor ICs + other consumers = 2,107mA → 2.11A (per Power_Budgets.md); 3A LDO peak |
 | **Total peak** | **8.76A** | **73.0% of 12A rated Buck output** ✓ |
 
 **Component utilisation summary:**

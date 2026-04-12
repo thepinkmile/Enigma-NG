@@ -12,7 +12,7 @@
 
 ## 2. Connectivity
 
-* **Mating:** Flush-edge 40-pin Samtec FTSH-RA header.
+* **Mating:** Flush-edge 40-pin Samtec ERF8-020-05.0-S-DV-K-TR female socket (40-pin 2×20, 0.8mm pitch).
 * **Retention:** Slotted Through-Hole Reflow (THR) clips for high shear strength.
 * **I/O Stack:** Vertical "No-Cross" stack on the Right Edge (HDMI, USB, RJ45).
 

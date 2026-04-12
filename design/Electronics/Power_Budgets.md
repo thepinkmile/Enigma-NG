@@ -20,7 +20,7 @@
 
 ## 3V3_ENIG Load Analysis
 
-### Per-Device Current (Intel MAX II EPM240T100I5N @ 3.3V)
+### Per-Device Current (Intel MAX II EPM240T100I5N [Encoder ×6] / EPM570T100I5N [Rotor ×30 + Stator] @ 3.3V)
 
 | Operating condition | ICC (core) | Source |
 | :--- | :--- | :--- |
@@ -31,7 +31,7 @@
 **Design value used:** 50 mA per CPLD (conservative typical — accounts for VHDL cipher switching without
 being an unachievable worst-case peak).
 
-### Per-Device Current (ams AS5600 Magnetic Encoder @ 3.3V)
+### Per-Device Current (TI FDC2114RGER Capacitive Sensor IC @ 3.3V)
 
 | Condition | ICC |
 | :--- | :--- |
@@ -43,13 +43,13 @@ being an unachievable worst-case peak).
 
 | Consumer | Count | Per-unit (mA) | Total (mA) | Notes |
 | :--- | :---: | :---: | :---: | :--- |
-| Stator CPLD (U1, EPM240) | 1 | 50 | 50 | JTAG forwarding + ENC signal routing |
+| Stator CPLD (U1, EPM570T100I5N) | 1 | 50 | 50 | JTAG forwarding + ENC signal routing |
 | HID Encoder CPLDs (EPM240 ×2) | 2 | 50 | 100 | Keyboard decode + lightboard CPLD |
 | Plugboard Encoder A CPLDs (EPM240 ×2) | 2 | 50 | 100 | Stecker map CPLD |
 | Plugboard Encoder B CPLDs (EPM240 ×2) | 2 | 50 | 100 | Stecker map CPLD |
 | FT232H VCCIO (JTAG Daughterboard) | 1 | 10 | 10 | VCCIO domain only; VCC (100 mA) is 5V_USB-sourced — see 5V_MAIN table |
-| Rotor CPLDs (EPM240 ×30) | 30 | 50 | 1500 | All rotors cipher-active simultaneously |
-| Rotor AS5600 magnetic encoders (×30) | 30 | 6.5 | 195 | Continuous position polling |
+| Rotor CPLDs (EPM570T100I5N ×30) | 30 | 50 | 1500 | All rotors cipher-active simultaneously |
+| Rotor FDC2114RGER capacitive sensor ICs (U2+U3 or U2+U4 per rotor, ×30 rotors) | 30 | 6.5 | 195 | Continuous position polling |
 | INA219 current monitor (Stator) | 1 | 1 | 1 | Negligible |
 | INA219 current monitor (Power Module) | 1 | 1 | 1 | Negligible |
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |

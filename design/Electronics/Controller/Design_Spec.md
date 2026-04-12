@@ -228,7 +228,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **24** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
 | **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II CPLDs (EPM240T100I5N Encoder ×6 and EPM570T100I5N Rotor ×30 + Stator ×1) via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
-| **27** | **PWR_GD** | Input | 3.3V | Active High: power-good signal from MCP121T-450E (4.50V threshold). HIGH = 5V_MAIN stable; deasserts on power loss, triggering graceful shutdown daemon. Arrives via Link-Alpha pin 34. |
+| **27** | **PWR_GD** | Input | 3.3V | Rail-health telemetry only — HIGH while 5V_MAIN ≥ 4.50V; does NOT trigger shutdown. Arrives via Link-Alpha pin 34. |
 
 ## 7. Protection & EMI
 
@@ -395,7 +395,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | **5V_MAIN power rail** | N/A (Low Drop) | 78.7 mil (2.00 mm) min + inner pour — 8.76A worst-case; Very High Current (> 5.5A) per Global_Routing_Spec §1.1 | L1 surface + L4 inner pour |
 | **Logic/I2C** | N/A | 6.0 mil | L1 |
 | **USB 2.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) — same geometry as USB 3.0 |
-| **3V3_ENIG power** | N/A (Power) | 0.80 mm (31.5 mil) — 3.0A LDO max output; consistent with PM §9 and Global_Routing_Spec §1.1 Medium supply (1.0–3.0A); 2oz copper system-wide | L1/L6 or L4 Power Plane |
+| **3V3_ENIG power** | N/A (Power) | 0.80 mm (31.5 mil) — 3.0A LDO max output; consistent with PM §9 and Global_Routing_Spec §1.1 Medium supply (1.0–3.0A); 2oz copper system-wide | L1 surface + L4 inner pour |
 
 ## 10. Thermal, Branding & Diagnostics
 

@@ -975,8 +975,7 @@ signal — is deferred to the **Software PoC stage**, pending hardware availabil
 testing. The real implementation will use a **custom Linux kernel driver** that registers the BACKUP
 signal as a hardware interrupt, rather than a userspace polling daemon.
 
-The PWR_GD GPIO (GPIO 27, MCP121T-450E) remains the hard-backstop interrupt and requires no driver
-development — it is handled by the standard gpio-shutdown device tree overlay.
+The PWR_GD GPIO (GPIO 27, MCP121T-450E output) is rail-health telemetry only and does NOT trigger shutdown. It is a CM5 input that reads HIGH while 5V_MAIN ≥ 4.50V.
 
 ### Rationale
 
@@ -993,8 +992,9 @@ development — it is handled by the standard gpio-shutdown device tree overlay.
 ### Impact
 
 - design/Software/Linux_OS/Power_Management.md Phase 1: Polling daemon pseudocode replaced with
-  deferred-decision note referencing DEC-025. The PWR_GD gpio-shutdown backstop (Phase 2) is
-  unchanged and remains the active hardware protection path until the driver is written.
+  deferred-decision note referencing DEC-025. The active hardware protection path is the
+  LTC3350 /INTB → MIC1555 U15 → Q5 BSS138 → PWR_BUT one-shot circuit (3.01 s LOW pulse),
+  which requires no software driver.
 
 ---
 

@@ -21,7 +21,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs | §3 JTAG & Logic Hub; BOM J1–J3 (ERM8) |
 | FR-REF-02 | Emulate the historical Enigma reflector (fixed symmetric substitution cipher) | Passive wiring — no CPLD required | §2 Architecture; BOM J1–J3 (passive loopback traces) |
 | FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J7 → Link-Beta pin 26 → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
-| FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω 0603) |
+| FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 
 #### Design Requirements
 
@@ -30,7 +30,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 | DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §6 PCB Fabrication & Stackup |
 | DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §4 Rotor Interface Connectors; BOM J1–J3 |
 | DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J7); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
-| DR-REF-04 | End-of-chain damping | R1 = 22 Ω 0603 on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
+| DR-REF-04 | End-of-chain damping | R1 = 22 Ω on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive reflector function only; fixed wiring emulated in hardware | §2 Architecture |
 
 ## 2. Architecture
@@ -170,4 +170,4 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 | J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
 | J4 | Interconnect header | 16-pin 2x8 shrouded | 2.54mm | 538-22-23-2161 | WM2907-ND | N/A — Molex THT shrouded header, not stocked at JLCPCB; order from Mouser/DigiKey |
 | J5 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
-| R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | C25805 |
+| R1 | JTAG termination | 22Ω | (TBD) | 667-ERJ-3EKF2200V | P22.0BYCT-ND | — |

@@ -140,7 +140,7 @@ Board B faces the output (downstream) side of the rotor stack.
 | Board gap (Board A inner to Board B inner) | ~11.8mm |
 | Total rotor thickness | ~15mm |
 | Sensor electrode radius | r=44mm |
-| Shroud–electrode gap | ~0.5–1mm |
+| Shroud–electrode gap | 0.5mm ±0.15mm |
 
 ---
 
