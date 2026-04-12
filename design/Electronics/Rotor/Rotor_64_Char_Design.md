@@ -82,9 +82,9 @@ Up to 21 distinct forward maps can be stored, each usable in both forward and re
 See `Design_Spec.md §2.3` for the SW1 hardware description.
 For the 64-character variant:
 
-* The CPLD reads 6 sensor pads (S0–S5) as a 6-bit STGC code and maps it via a combinational
-  lookup table to a binary position 0–63. All 64 possible 6-bit codes are valid (no invalid
-  codes); no between-character jam detection is possible for this variant through code checking.
+* The CPLD reads 6 Gray code bits (G[5:3] from FDC2114 U2 on Board A, G[2:0] from FDC2114 U3
+  on Board B) and decodes them to binary position 0–63 via the XOR chain (see §7). All 64
+  6-bit Gray codes are valid; no between-character jam detection is required for this variant.
 * SW1[5:0] is summed **modulo 64** with the decoded binary position to yield the effective position.
 * Notch trigger positions are defined per map in the VHDL tables (see OWI-003).
 
@@ -98,52 +98,83 @@ SW2 and SW3 are then used to select map index and direction independently at run
 
 ---
 
-## 7. Single-Track Encoder — 64-Character Variant
+## 7. Dual-Track Capacitive Encoder — 64-Character Variant
+
+### Architecture
+
+The 64-character rotor uses a **dual-track 3+3 bit standard reflected Gray code** implemented
+across the two PCBs of the split rotor assembly. Track A (bits[5:3]) is sensed by Board A;
+Track B (bits[2:0]) is sensed by Board B. Together they form a complete 6-bit Gray code for
+N=64 positions with **zero multi-bit transitions**, including the wrap-around from position 63
+back to position 0.
+
+* **Track A** (bits[5:3]): 3 sensor electrodes on Board A at r≈44mm; Gray code slots milled
+  into the inner face of the shroud **dish** flange (Board A side).
+* **Track B** (bits[2:0]): 3 sensor electrodes on Board B at r≈44mm; Gray code slots milled
+  into the inner face of the shroud **cover** flange (Board B side).
+* **Sensing:** Bare copper electrode pads on the PCB flat face (no electronic components on
+  the shroud). Aluminium (solid) = high capacitance; milled slot = low capacitance. Sensed by
+  FDC2114RGER (U2 on Board A, U3 on Board B).
+* **Shroud:** Must remain electrically **floating** (bearing isolation — ceramic or nylon
+  rolling elements). Not connected to circuit ground.
 
 ### Geometry
 
 | Parameter | Value |
 | :--- | :--- |
 | Segments (N) | 64 |
-| Sensor count (K) | 6 |
+| Sensor count (K) | 6 (3 on Board A + 3 on Board B) |
 | Degrees per segment | 5.625° |
-| Arc length per segment at r = 47 mm | ≈ 4.9 mm |
-| Sensor angular positions (from S0) | 0°, 5.625°, 11.25°, 16.875°, 22.5°, 28.125° |
-| PCB outer diameter | 100 mm |
-| Sensor pad radius | ≈ 47 mm from board centre |
+| Arc length per segment at r = 44 mm | ≈ 4.32 mm |
+| Sensor electrode radius | ≈ 44 mm from board centre |
+| PCB outer diameter | 92 mm |
+| Shroud outer face arc per character at r = 50 mm | ≈ 4.91 mm |
 
-### Track Bit Pattern
+### Track Bit Patterns
 
-The shroud inner face carries a 64-segment conductive-ink track. Starting from the reference
-segment (position 0), the segment pattern is (1 = conductive, 0 = gap):
+The following patterns define which segments of each track have a milled slot (1 = slot, 0 = solid).
+These are the bits of the 6-bit standard reflected (binary) Gray code for positions 0–63.
+
+**Track A — Board A side (shroud dish inner face):**
 
 ```text
-0000001111110111100111010111000110110100110010110000101010001001
+Bit 5: 0000000000000000000000000000000011111111111111111111111111111111
+Bit 4: 0000000000000000111111111111111111111111111111110000000000000000
+Bit 3: 0000000011111111111111110000000000000000111111111111111100000000
 ```
 
-Position 0 is the reference (all 6 sensors read 0). The pattern is applied clockwise as viewed
-from the input face of the rotor.
+**Track B — Board B side (shroud cover inner face):**
 
-### STGC → Position Lookup Table
+```text
+Bit 2: 0000111111110000000011111111000000001111111100000000111111110000
+Bit 1: 0011111100001111001111110000111100111111000011110011111100001111
+Bit 0: 0101010101010101010101010101010101010101010101010101010101010101
+```
 
-The CPLD VHDL implements a 64-entry lookup ROM (6-bit address → 6-bit position). All 64 codes
-are valid for this variant.
+Each row has 64 positions (left = position 0, right = position 63). A '1' indicates a milled
+slot at that segment for that bit track (low capacitance → logic 0 from FDC2114); a '0'
+indicates solid aluminium (high capacitance → logic 1). The CPLD inverts the FDC2114 output
+sense accordingly.
 
-| Code | Pos | Code | Pos | Code | Pos | Code | Pos |
-| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| 0 | 0 | 16 | 48 | 32 | 1 | 48 | 2 |
-| 1 | 63 | 17 | 56 | 33 | 47 | 49 | 27 |
-| 2 | 62 | 18 | 59 | 34 | 55 | 50 | 36 |
-| 3 | 46 | 19 | 40 | 35 | 26 | 51 | 15 |
-| 4 | 61 | 20 | 50 | 36 | 58 | 52 | 42 |
-| 5 | 54 | 21 | 52 | 37 | 35 | 53 | 21 |
-| 6 | 45 | 22 | 33 | 38 | 39 | 54 | 30 |
-| 7 | 25 | 23 | 19 | 39 | 14 | 55 | 9 |
-| 8 | 57 | 24 | 28 | 40 | 49 | 56 | 3 |
-| 9 | 60 | 25 | 37 | 41 | 41 | 57 | 16 |
-| 10 | 53 | 26 | 43 | 42 | 51 | 58 | 22 |
-| 11 | 34 | 27 | 31 | 43 | 20 | 59 | 10 |
-| 12 | 38 | 28 | 17 | 44 | 29 | 60 | 4 |
-| 13 | 44 | 29 | 23 | 45 | 32 | 61 | 11 |
-| 14 | 24 | 30 | 12 | 46 | 18 | 62 | 5 |
-| 15 | 13 | 31 | 7 | 47 | 8 | 63 | 6 |
+**Verification:** This is the standard reflected binary Gray code. Every adjacent pair of
+positions (including 63→0 wrap) differs in exactly **1 bit** — no multi-bit transitions occur
+at any rotor position. All 64 codes are unique. No invalid-code jam detection is required.
+
+### CPLD Decode — XOR Chain (Gray to Binary)
+
+The CPLD decodes the 6 raw Gray code bits G[5:0] (from FDC2114 U2 bits[5:3] and U3 bits[2:0])
+to 6-bit binary position B[5:0] using the standard XOR chain:
+
+```text
+B5 = G5
+B4 = B5 XOR G4
+B3 = B4 XOR G3
+B2 = B3 XOR G2
+B1 = B2 XOR G1
+B0 = B1 XOR G0
+```
+
+Where G[5:0] = raw Gray code bits from FDC2114 sensors, B[5:0] = 6-bit binary position 0–63.
+
+No lookup table is required. The XOR chain is fully combinational and synthesises to 5 XOR
+gates in the CPLD. SW1[5:0] is summed modulo 64 with B[5:0] to yield the effective position.

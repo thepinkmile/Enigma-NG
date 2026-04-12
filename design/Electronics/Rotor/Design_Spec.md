@@ -11,14 +11,35 @@
 
 The Enigma-NG uses a 30-rotor stack. Unlike the original mechanical rotors, these are **Smart Digital Rotors**
 where the internal scrambled wiring is emulated by a dedicated logic chip on each module.
-The outer rotating mechanism works like the outer ring of a bearing around the central static ring (this is the rotor PCB and enclosure).
-The current position of the outer ring is detected using a **single-track absolute capacitive encoder**: a conductive ink pattern on the shroud inner face forms a single circular track, and K
-capacitive sensor pads on the PCB (at the outer edge, r ≈ 47 mm from board centre) read the track as a K-bit code. A combinational lookup table in the CPLD VHDL maps the raw sensor code to a
-binary rotor position. Variant-specific track patterns and lookup tables are defined in the respective variant design files.
 
-Two rotor variants are defined for the Enigma-NG system: the **26-character variant** (5-bit,
-compatible with original Enigma rotors I–VIII, Beta, Gamma) and the **64-character variant**
-(6-bit, supporting the extended Enigma-NG character set). Both variants use identical PCB
+Each rotor assembly consists of **two circular PCBs** (Board A and Board B), each **Ø92mm**,
+inside an aluminium shroud (Ø100mm outer face, 4mm radial wall). The two boards are separated
+by an ~11.8mm gap and connected by a keyed 2.54mm IDC box header (J_INT, 2×12, 24-pin) on
+their inner (facing) surfaces. Total rotor thickness is ~15mm, matching original Enigma rotor
+proportions. The IDC connector is manually assembled post-JLCPCB SMT pick-and-place.
+
+**Board A (input side):** Carries the CPLD (U1), FDC2114 U2 (Track A encoder), SW1 (ring
+setting), SW2 (forward map select), and J1–J3 (ERM8 male, input connectors).
+
+**Board B (output side):** Carries FDC2114 U3 (Track B encoder, N=64 only), SW3 (return map
+select), and J4–J6 (ERF8 female, output connectors).
+
+The aluminium shroud is retained by **rolling-pin style cylindrical bearings** around the
+circumference with **ceramic or nylon rolling elements** (electrically isolating). The shroud
+must remain **electrically floating** — not connected to circuit ground. Gray code position
+slots are milled into the inner faces of the shroud flanges (dish side for Track A, Board A;
+cover side for Track B, Board B). Bare copper electrode pads on the PCB flat face at r≈44mm
+sense the pattern capacitively. Characters are engraved on the outer cylindrical face of the
+shroud at r=50mm.
+
+The current position of the outer ring is detected using a **dual-track absolute capacitive
+encoder** (N=64) or **single-track STGC encoder** (N=26). For N=64, 3+3 sensor electrodes on
+Board A and Board B read a 6-bit standard reflected Gray code with zero multi-bit transitions.
+For N=26, all 5 STGC electrodes are on Board A only (U3 on Board B is not populated).
+
+Two rotor variants are defined: the **26-character variant** (5-bit STGC, compatible with
+original Enigma rotors I–VIII, Beta, Gamma) and the **64-character variant** (6-bit dual-track
+Gray code, supporting the extended Enigma-NG character set). Both variants use identical PCB
 footprints, connector pinouts, and DIP switch mechanisms for full interoperability within a
 mixed stack. Variant-specific details are in
 `design/Electronics/Rotor/Rotor_26_Char_Design.md` and
@@ -31,14 +52,15 @@ mixed stack. Variant-specific details are in
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | 21 forward maps in CPLD UFM; direction bit doubles to 42 configs; see variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
-| FR-ROT-02 | Detect rotor angular position using a single-track absolute capacitive encoder | K sensor pads; detects between-character positions as invalid STGC codes; K=5 (26-char) or K=6 (64-char) | §2.1 Position Sensing; BOM U2/U3 (FDC2114RGER) |
+| FR-ROT-02 | Detect rotor angular position using a capacitive encoder; N=64: dual-track 3+3 bit reflected Gray code (Board A and Board B); N=26: single-track 5-bit STGC (Board A only) | N=64: zero multi-bit transitions, XOR-chain decode; N=26: STGC lookup table, invalid codes flagged as fault | §2.1 Position Sensing; BOM U2 (Board A), U3 (Board B, N=64 only) |
 | FR-ROT-03 | Pass JTAG chain signals to the next rotor in the stack (or to the Reflector at position 30) | Serial daisy-chain; each rotor is one JTAG device | §3.3 Signal Integrity; BOM J1 (ERM8-005 JTAG in), J4 (ERF8-005 JTAG out) |
 | FR-ROT-04 | Receive 3V3_ENIG power from the upstream board and forward to the downstream board | Passive power pass-through via J2/J5 | §3.1 Power Management; BOM J2 (ERM8-005 power in), J5 (ERF8-005 power out) |
 | FR-ROT-05 | Apply cipher substitution at each rotor hop via CPLD; forward and return paths processed independently using SW2/SW3 selected maps | J3 ENC_IN → CPLD (SW2 map+dir) → J6 ENC_OUT; J6 ENC_IN → CPLD (SW3 map+dir) → J3 ENC_OUT; see §3.2 | §3.2 Communication Bus; BOM J3 (ERM8-010), J6 (ERF8-010) |
 | FR-ROT-06 | Be individually removable for maintenance or reconfiguration without tools | Samtec ERM8/ERF8 high-cycle connectors | §2.3 Mechanical Details; BOM J1–J6 (Samtec ERM8/ERF8) |
 | FR-ROT-07 | Store 21 forward cipher maps in CPLD UFM; SW2 (input side) and SW3 (output side) each independently select map index [4:0] and direction bit [5] (0=forward, 1=reverse), giving 42 effective configurations per side without reprogramming | Same mechanism and switch count for both variants | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N), SW2, SW3 |
-| FR-ROT-08 | Implement ring setting via SW1 (6 switches, input side only); CPLD sums SW1[5:0] with STGC-decoded position (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor_Mechanical_Spec.md |
-| FR-ROT-09 | Expose effective rotor position (STGC-decoded position + SW1 ring offset, mod N) via Intel Virtual JTAG (ALTERA_VIRTUAL_JTAG megafunction, USER0 instruction) as a 6-bit UDR; readable by JDB FT232H without interrupting cipher operation | 26-char variant: bits [4:0] valid, bit [5]=0; 64-char: all 6 bits; cipher logic operates independently on CPLD system clock | §2.2 Logic & Transposition; §3.3 Signal Integrity; cross-ref: DEC-027, JDB Design_Spec |
+| FR-ROT-08 | Implement ring setting via SW1 (6 switches, Board A input side only); CPLD sums SW1[5:0] with decoded position (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor_Mechanical_Spec.md |
+| FR-ROT-09 | Expose effective rotor position (decoded position + SW1 ring offset, mod N) via Intel Virtual JTAG (ALTERA_VIRTUAL_JTAG megafunction, USER0 instruction) as a 6-bit UDR; readable by JDB FT232H without interrupting cipher operation | 26-char variant: bits [4:0] valid, bit [5]=0; 64-char: all 6 bits; cipher logic operates independently on CPLD system clock | §2.2 Logic & Transposition; §3.3 Signal Integrity; cross-ref: DEC-027, JDB Design_Spec |
+| FR-ROT-10 | The rotor boards shall be assembled by JLCPCB SMT (one side each, outward-facing); the internal IDC connector (J_INT) shall be manually assembled post-SMT | Keyed IDC box header prevents incorrect orientation | §3.4 Connector Pinouts; BOM J_INT |
 
 #### Design Requirements
 
@@ -46,9 +68,10 @@ mixed stack. Variant-specific details are in
 | :--- | :--- | :--- | :--- |
 | DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 PCB Fabrication & Stackup |
 | DR-ROT-02 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; 21 UFM forward maps; SW2/SW3 direction bit gives 42 effective configs; character width in variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
-| DR-ROT-03 | Position sensor | Single-track capacitive absolute encoder: 2× TI FDC2114RGER (4-channel I2C capacitive-to-digital); K sensor pads on PCB outer edge at r≈47mm; PCB Ø=100mm; track pattern and lookup table in variant design files | §2.1 Position Sensing; BOM U2/U3 (FDC2114RGER) |
-| DR-ROT-04 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
-| DR-ROT-05 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
+| DR-ROT-03 | Position sensor | Split dual-track capacitive encoder: FDC2114RGER U2 on Board A (Track A, r≈44mm, bits[5:3] N=64 or all 5 bits N=26); FDC2114RGER U3 on Board B (Track B, r≈44mm, bits[2:0] N=64 only — not populated for N=26); PCB Ø=92mm; track patterns in variant design files | §2.1 Position Sensing; BOM U2 (Board A), U3 (Board B) |
+| DR-ROT-04 | Input connectors (Board A) | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
+| DR-ROT-05 | Output connectors (Board B) | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
+| DR-ROT-11 | Internal connector (J_INT) | Keyed 2.54mm IDC box header, 2×12 (24-pin), on inner face of both boards; keyed to prevent incorrect orientation; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM J_INT |
 | DR-ROT-06 | Power consumption | ≤50 mA per rotor from 3V3_ENIG | §3.1 Power Management |
 | DR-ROT-07 | Stack quantity | 30 rotor boards in the complete system | §1 Overview |
 | DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; 8mm solid metal support rod (non-threaded) through all 30 rotors for alignment and connector stress relief; stack is horizontal | §2.3 Mechanical Details |
@@ -57,50 +80,69 @@ mixed stack. Variant-specific details are in
 
 ## 2. Core Design
 
-### 2.1 Position Sensing (Single-Track Capacitive Encoder)
+### 2.1 Position Sensing (Dual-Track Capacitive Encoder)
 
-The rotor outer ring position is detected contactlessly using a **single-track absolute capacitive
-encoder**. All active components reside on the rotor PCB; the rotating shroud requires only a
-passive conductive-ink or selective-metallisation surface pattern — no magnets, no optical sources,
-and no mechanical contacts.
+The rotor outer ring position is detected contactlessly using a **dual-track absolute capacitive
+encoder** (N=64) or **single-track STGC encoder** (N=26). All active components reside on the
+rotor PCBs; the rotating aluminium shroud requires only milled slot patterns on its inner
+flanges — no conductive ink, no magnets, and no mechanical contacts.
 
 #### Physical Arrangement
 
-* **PCB diameter:** 100 mm (50 mm radius).
-* **Sensor pads:** K pads on the PCB outer edge at r ≈ 47 mm from board centre, facing the
-  shroud inner face across a ≤1 mm air gap.
-* **Sensor spacing:** Pads are equally spaced at one segment pitch apart (360°/N, where N is the
-  character count for the installed variant).
-* **Shroud track:** A single circular conductive track on the shroud inner face. Conductive
-  segments ("1") and gaps ("0") are arranged according to the variant-specific bit pattern defined
-  in the respective variant design file.
+* **PCB diameter:** 92 mm (45 mm radius).
+* **Sensor electrodes:** Bare copper electrode pads on the PCB flat face (inner face of each
+  board, facing the shroud flanges). No SMT components are placed on the electrode pads.
+* **Electrode radius:** r ≈ 44 mm from board centre on both Board A and Board B.
+* **Shroud slots:** Gray code patterns are milled as slots/pockets into the inner faces of the
+  aluminium shroud flanges. Solid aluminium over an electrode = high capacitance (logic 1 from
+  FDC2114); milled slot over an electrode = low capacitance (logic 0).
+* **Gap:** ~0.5–1 mm between PCB electrode and shroud flange inner face (controlled by bearing
+  precision).
+* **Shroud isolation:** The shroud must remain electrically **floating** (not connected to
+  circuit ground). Rolling-pin cylindrical bearings with ceramic or nylon rolling elements
+  provide the required electrical isolation.
 
 #### Sensing ICs
 
 Two **Texas Instruments FDC2114RGER** (4-channel capacitive-to-digital converter, I²C, 3.3 V,
 16-VQFN) per rotor:
 
-* **U2** — channels 0–3 (sensor pads S0–S3); I²C address 0x2A.
-* **U3** — channels 0–1 (sensor pads S4–S5 for 64-char variant; S4 only for 26-char variant);
-  I²C address 0x2B. Unused channels have their IN pins tied to GND via 100 kΩ.
+* **U2 (Board A)** — senses Track A (bits[5:3] for N=64; bits[4:0] for N=26); I²C address 0x2A.
+  Track A slots milled into the inner face of the shroud **dish** flange (Board A side).
+* **U3 (Board B)** — senses Track B (bits[2:0] for N=64 only); I²C address 0x2B.
+  Track B slots milled into the inner face of the shroud **cover** flange (Board B side).
+  **U3 is not populated for N=26 rotors.** Unused channels have their IN pins tied to GND
+  via 100 kΩ.
 
-The CPLD implements a simple I²C master and polls U2 and U3 at power-up and after each detected
-position change. Each channel reports HIGH (conductive segment present) or LOW (gap).
+The CPLD implements a simple I²C master and polls U2 (and U3 for N=64) at power-up and after
+each detected position change. Each channel reports HIGH (solid aluminium) or LOW (milled slot).
 
 #### CPLD Position Decode
 
-The K sensor readings form a K-bit STGC code. A **combinational lookup table** in the CPLD VHDL
-maps each valid code to its corresponding binary position (0 to N−1). This same mechanism applies
-to both rotor variants; only the table contents differ. Invalid STGC codes (those not present in
-the lookup table) indicate a between-character position and are flagged as a mechanical fault
-condition.
+**N=64 (dual-track, 6-bit reflected Gray code):**
+The 6 sensor readings (G[5:3] from U2 Track A, G[2:0] from U3 Track B) form a 6-bit standard
+reflected Gray code. The CPLD decodes via XOR chain:
+
+```text
+B5 = G5 ; B4 = B5 XOR G4 ; B3 = B4 XOR G3
+B2 = B3 XOR G2 ; B1 = B2 XOR G1 ; B0 = B1 XOR G0
+```
+
+No lookup table required. All 64 codes are valid. Zero multi-bit transitions at any position
+including the 63→0 wrap. Full decode detail in `Rotor_64_Char_Design.md §7`.
+
+**N=26 (single-track, 5-bit STGC):**
+The 5 sensor readings (all from U2 on Board A) form a 5-bit STGC code. A **combinational
+lookup table** in the CPLD VHDL maps each valid code to its corresponding binary position
+(0 to 25). Invalid codes flag a between-character fault. Standard Gray code is not achievable
+for N=26 (not a power of 2); the lookup table is retained. Full decode detail in
+`Rotor_26_Char_Design.md §7`.
 
 The decoded binary position feeds directly into the SW1 modulo-N adder (§2.3).
 
-Variant-specific track bit patterns, sensor angular positions, and full STGC → position lookup
-tables are defined in:
+Variant-specific track bit patterns and full decode tables are defined in:
 
-* `design/Electronics/Rotor/Rotor_26_Char_Design.md` §6
+* `design/Electronics/Rotor/Rotor_26_Char_Design.md` §7
 * `design/Electronics/Rotor/Rotor_64_Char_Design.md` §7
 
 ### 2.2 Logic & Transposition
@@ -163,10 +205,10 @@ Each rotor carries a **6-position DIP switch (SW1)** on the input face that sets
 setting (Ringstellung), emulating the ring and notch position of an original Enigma rotor.
 
 * **Location:** Input side only. SW1 is not present on or accessible from the output face.
-* **Function:** The CPLD continuously sums SW1[5:0] with the AS5600 position encoder reading,
-  modulo N (N = 26 for 26-char variant; N = 64 for 64-char variant), to produce the **effective
-  position**. When this matches the notch trigger value for the active map, the CPLD signals
-  the next rotor in the stack to advance one position (turnover).
+* **Function:** The CPLD continuously sums SW1[5:0] with the decoded capacitive encoder position
+  reading, modulo N (N = 26 for 26-char variant; N = 64 for 64-char variant), to produce the
+  **effective position**. When this matches the notch trigger value for the active map, the CPLD
+  signals the next rotor in the stack to advance one position (turnover).
 * **Cross-reference:** See `design/Mechanical/Rotor_Mechanical_Spec.md` (to be created) for the
   ring gear, notch wheel, and mechanical turnover engagement mechanism.
 
@@ -341,6 +383,44 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 > ENC_OUT carries the CPLD SW2-map forward-pass substitution result downstream; ENC_IN receives return-pass data from downstream for SW3-map processing.
 > Both directions are applied by the CPLD — this is NOT a pass-through. The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
 
+#### J_INT — Board A ↔ Board B Internal Interconnect (2.54mm keyed IDC box header, 2×12, 24-pin)
+
+Fitted on the **inner (facing) surface** of both Board A and Board B. Both boards carry a mating
+keyed IDC box header. The connector is **keyed to prevent incorrect orientation assembly**.
+
+> **Assembly note:** J_INT is manually soldered/assembled AFTER JLCPCB SMT pick-and-place. It is
+> NOT part of the JLCPCB SMT order. Order separately (e.g. Würth 61201221721 or equivalent 2×12
+> 2.54mm keyed IDC box header). Two connectors per rotor assembly (30 rotors × 2 = 60 total).
+
+Signal allocation (24 pins, 2×12):
+
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | 3V3_ENIG | A→B | Power |
+| 2 | 3V3_ENIG | A→B | Power |
+| 3 | 3V3_ENIG | A→B | Power |
+| 4 | 3V3_ENIG | A→B | Power |
+| 5 | GND | — | Ground |
+| 6 | GND | — | Ground |
+| 7 | GND | — | Ground |
+| 8 | GND | — | Ground |
+| 9 | TCK | A→B | JTAG clock (pass-through to U3 if used) |
+| 10 | TMS | A→B | JTAG mode select |
+| 11 | TDO | B→A | JTAG data out from Board B |
+| 12 | ENC_B[2] | B→A | Track B bit 2 (N=64 only) |
+| 13 | ENC_B[1] | B→A | Track B bit 1 (N=64 only) |
+| 14 | ENC_B[0] | B→A | Track B bit 0 (N=64 only) |
+| 15 | DIR | A↔B | Encoder direction signal |
+| 16 | CLK | A↔B | Encoder clock |
+| 17 | SDA | A→B | I²C data (for U3 FDC2114 on Board B) |
+| 18 | SCL | A→B | I²C clock (for U3 FDC2114 on Board B) |
+| 19 | SW3[0] | B→A | DIP SW3 bit 0 state |
+| 20 | SW3[1] | B→A | DIP SW3 bit 1 state |
+| 21 | SW3[2] | B→A | DIP SW3 bit 2 state |
+| 22 | SW3[3] | B→A | DIP SW3 bit 3 state |
+| 23 | GND | — | Ground |
+| 24 | GND | — | Ground |
+
 ### 3.5 Prototype Bench-Testing Provision (Break-Off Coupons)
 
 Each board panel includes **6 break-off PCB coupons** (one per ERx8 connector), attached by mousebite
@@ -369,6 +449,8 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 
 ## 5. Bill of Materials
 
+### Board A BOM (Input Side — JLCPCB SMT outward face)
+
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
@@ -376,17 +458,24 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
-| J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
+| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×12 (24-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
 | R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | TBD | TBD |
-| U2 | Capacitive sensor IC, channels 0–3 (pads S0–S3) | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
-| U3 | Capacitive sensor IC, channels 0–1 (pads S4–S5; 64-char) or S4 only (26-char) | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
-| SW1 | Ring setting DIP switch (input side only; SW1[5:0] summed with STGC-decoded position for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
-| SW2 | Forward-pass map selection (input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
-| SW3 | Return-pass map selection (output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
+| U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; bits[4:0] N=26); I²C addr 0x2A | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
+| SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
+| SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
+
+### Board B BOM (Output Side — JLCPCB SMT outward face)
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
+| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×12 (24-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
+| U3 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
+| SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |

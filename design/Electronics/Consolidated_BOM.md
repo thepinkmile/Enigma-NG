@@ -100,6 +100,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ERF8-005 10-pin Samtec Female Socket 0.8 mm (Rotor interface) | — | — | 2 | — | — | 2 | 60 | — | 2 | — | 64 |
 | ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | 32 |
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
+| Würth 61201221721 — 24-pin (2×12) keyed IDC box header, 2.54mm pitch — Rotor J_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
 | 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
 | 16-pin 2×8 Molex Shrouded Header 2.54 mm (22-23-2161) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
 | 1×5 2.54mm female IDC header — JDB J1 INPUT (5V_USB, 3V3_ENIG, D+, D−, GND) | — | — | — | — | — | — | — | — | — | 1 | 1 |

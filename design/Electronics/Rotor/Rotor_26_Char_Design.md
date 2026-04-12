@@ -92,9 +92,10 @@ wiring only; the inverse is obtained via the direction bit).
 See `Design_Spec.md §2.3` for the SW1 hardware description.
 For the 26-character variant:
 
-* The CPLD reads 5 sensor pads (S0–S4) as a 5-bit STGC code and maps it via a combinational
-  lookup table to a binary position 0–25. Codes not present in the lookup table (11, 13, 21, 22,
-  26, 31) indicate a between-character position and are flagged as a mechanical fault condition.
+* The CPLD reads 5 sensor pads (S0–S4, all on Board A) as a 5-bit STGC code and maps it via a
+  combinational lookup table to a binary position 0–25. Codes not present in the lookup table
+  (11, 13, 21, 22, 26, 31) indicate a between-character position and are flagged as a mechanical
+  fault condition. FDC2114 U3 on Board B is **not populated** for the N=26 rotor.
 * SW1[5:0] is summed **modulo 26** with the decoded binary position to yield the effective position.
 * Notch trigger positions are defined per map in the VHDL tables (see OWI-003).
 
@@ -109,24 +110,40 @@ runtime.
 
 ---
 
-## 7. Single-Track Encoder — 26-Character Variant
+## 7. Single-Track Capacitive Encoder — 26-Character Variant
+
+### Architecture
+
+The 26-character rotor uses a **single-track 5-bit STGC** encoder. All 5 sensor electrodes
+are on **Board A only**. Board B has no encoder electrodes for the N=26 rotor, and FDC2114
+**U3 on Board B is not populated** for this variant.
+
+* **Track** (5 bits, STGC): 5 sensor electrodes on Board A at r≈44mm; pattern milled into the
+  inner face of the shroud **dish** flange (Board A side).
+* **Board B shroud flange:** No encoder slots milled for N=26.
+* **Sensing:** Bare copper electrode pads on the Board A flat face (no electronic components
+  on the shroud). Aluminium (solid) = high capacitance; milled slot = low capacitance. Sensed
+  by FDC2114RGER U2 on Board A only.
+* **Shroud:** Must remain electrically **floating** (bearing isolation — ceramic or nylon
+  rolling elements). Not connected to circuit ground.
 
 ### Geometry
 
 | Parameter | Value |
 | :--- | :--- |
 | Segments (N) | 26 |
-| Sensor count (K) | 5 |
+| Sensor count (K) | 5 (all on Board A) |
 | Degrees per segment | 13.846° |
-| Arc length per segment at r = 47 mm | ≈ 12.1 mm |
+| Arc length per segment at r = 44 mm | ≈ 10.63 mm |
 | Sensor angular positions (from S0) | 0°, 13.846°, 27.692°, 41.538°, 55.385° |
-| PCB outer diameter | 100 mm |
-| Sensor pad radius | ≈ 47 mm from board centre |
+| PCB outer diameter | 92 mm |
+| Sensor electrode radius | ≈ 44 mm from board centre |
+| Shroud outer face arc per character at r = 50 mm | ≈ 12.08 mm |
 
 ### Track Bit Pattern
 
-The shroud inner face carries a 26-segment conductive-ink track. Starting from the reference
-segment (position 0), the segment pattern is (1 = conductive, 0 = gap):
+The shroud **dish** inner face (Board A side) carries a 26-segment milled slot track. Starting
+from the reference segment (position 0), the segment pattern is (1 = milled slot, 0 = solid aluminium):
 
 ```text
 00000100011001010011101111
@@ -137,8 +154,13 @@ from the input face of the rotor.
 
 ### STGC → Position Lookup Table
 
-The CPLD VHDL implements a 32-entry lookup ROM (5-bit address → 5-bit position). Codes not listed
-below are invalid and trigger a mechanical fault flag.
+The CPLD VHDL implements a 32-entry lookup ROM (5-bit address → 5-bit position). Standard
+Gray code is not achievable for N=26 (not a power of 2); therefore a lookup table decode is
+retained. Codes not listed below are invalid and trigger a mechanical fault flag.
+
+> **Note:** For the N=26 variant, U3 (FDC2114 on Board B) is not populated. All 5 sensor
+> inputs come from U2 (Board A). The IDC connector carries the 5 STGC bits Board A → CPLD
+> directly.
 
 | STGC Code | Binary | Position | | STGC Code | Binary | Position |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |

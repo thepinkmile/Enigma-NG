@@ -5,32 +5,138 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-14
 
 ---
 
-## Component Areas
+## Split Board Architecture Overview
+
+Each rotor assembly consists of two circular PCBs (Board A and Board B), each Ø92mm, separated
+by an 11.8mm gap and connected by an internal keyed IDC box header (J_INT, 2×12, 24-pin, 2.54mm
+pitch). The two boards are mechanically retained inside the aluminium shroud (Ø100mm outer face,
+4mm radial wall, Ø92mm inner). Total rotor thickness is ~15mm.
+
+---
+
+## Board A — Input Side (Ø92mm)
+
+Board A faces the input (upstream) side of the rotor stack.
 
 ```text
-4-Layer / 2oz Copper / ENIG / Circular Ø100mm
- _____________________________________________________________________________
-|                                                                             |
-|   [ CPLD ] <--- Intel MAX II EPM570T100I5N                                  |
-|   (Wiring emulation + position decode)                                      |
-|                                                                             |
-|   [ FDC2114 U2/U3 ] <--- Capacitive sensor ICs (×2)                        |
-|   (Single-track absolute encoder; K pads at r≈47mm outer edge)             |
-|                                                                             |
-|   [ BULK DECOUPLING ] <--- 5x 10uF X7R star/spoke                          |
-|   [ 8x 0.1uF LOCAL ] <--- Per CPLD VCC pin                                 |
-|                                                                             |
-|   [ EDGE-RATE CONTACTS ] <--- J1–J3: ERM8 male headers (input side — JTAG, Power, ENC Data)    |
-|   (Input side — mates with Stator J1–J3 ERF8 female sockets or the previous Rotor's J4–J6 ERF8 female output sockets) |
-|                                                                             |
-|   [ EDGE-RATE CONTACTS ] <--- J4–J6: ERF8 female sockets (output side — JTAG, Power, ENC Data) |
-|   (Output side — mates with next rotor input or Reflector last contacts)   |
-|_____________________________________________________________________________|
+4-Layer / 2oz Copper / ENIG / Circular Ø92mm — BOARD A (INPUT SIDE)
+
+                        TOP (outer face, faces upstream)
+         ___________________________________________________
+        /                                                   \
+       /    [SW1] ring setting DIP                           \
+      |     [SW2] forward map select DIP                      |
+      |                                                        |
+      |              [ U1: CPLD EPM570T100I5N ]               |
+      |                    (centre)                           |
+      |                                                        |
+      |   [S0][S1][S2]  <-- Track A sensor electrodes        |
+      |   (bare Cu pads at r=44mm, Board A face)             |
+      |         [ U2: FDC2114 ] (at r~40mm)                  |
+      |                                                        |
+      | [J1 ERM8]  [J2 ERM8]  [J3 ERM8]                      |
+       \   (JTAG)   (Power)  (ENC Data)   equally spaced     /
+        \___________________________________________________/
+
+                    BOTTOM (inner face, faces Board B)
+                        [ J_INT: keyed IDC 2×12 ]
+                         (manually assembled post-SMT)
 ```
+
+### Board A Component Summary
+
+| Ref | Component | Notes |
+| :--- | :--- | :--- |
+| U1 | EPM570T100I5N CPLD | Centre of board |
+| U2 | FDC2114RGER | Track A capacitive encoder IC (I²C addr 0x2A); r~40mm |
+| S0–S2 | Sensor electrodes (Track A) | Bare Cu pads at r=44mm, N=64 bits[5:3]; or S0–S4 for N=26 |
+| SW1 | 6-pos DIP — ring setting | Input side only |
+| SW2 | 6-pos DIP — forward map select | Input side |
+| J1 | ERM8-005 male | JTAG input (10-pin 2×5, 0.8mm pitch) |
+| J2 | ERM8-005 male | Power input (10-pin 2×5, 0.8mm pitch) |
+| J3 | ERM8-010 male | ENC data input (20-pin 2×10, 0.8mm pitch) |
+| J_INT | Keyed IDC box header 2×12 | Inner face; manually assembled post-JLCPCB SMT |
+
+---
+
+## Board B — Output Side (Ø92mm)
+
+Board B faces the output (downstream) side of the rotor stack.
+
+```text
+4-Layer / 2oz Copper / ENIG / Circular Ø92mm — BOARD B (OUTPUT SIDE)
+
+                    TOP (inner face, faces Board A)
+                        [ J_INT: keyed IDC 2×12 ]
+                         (manually assembled post-SMT)
+
+         ___________________________________________________
+        /                                                   \
+       /    [SW3] return map select DIP                      \
+      |                                                        |
+      |                                                        |
+      |                                                        |
+      |   [S3][S4][S5]  <-- Track B sensor electrodes        |
+      |   (bare Cu pads at r=44mm, Board B face)             |
+      |         [ U3: FDC2114 ] (at r~40mm)                  |
+      |         (NOT POPULATED for N=26 rotor)               |
+      |                                                        |
+      | [J4 ERF8]  [J5 ERF8]  [J6 ERF8]                      |
+       \   (JTAG)   (Power)  (ENC Data)   equally spaced     /
+        \___________________________________________________/
+
+                        BOTTOM (outer face, faces downstream)
+```
+
+### Board B Component Summary
+
+| Ref | Component | Notes |
+| :--- | :--- | :--- |
+| U3 | FDC2114RGER | Track B capacitive encoder IC (I²C addr 0x2B); r~40mm; **not populated for N=26** |
+| S3–S5 | Sensor electrodes (Track B) | Bare Cu pads at r=44mm, N=64 bits[2:0]; not present for N=26 |
+| SW3 | 6-pos DIP — return map select | Output side |
+| J4 | ERF8-005 female | JTAG output (10-pin 2×5, 0.8mm pitch) |
+| J5 | ERF8-005 female | Power output (10-pin 2×5, 0.8mm pitch) |
+| J6 | ERF8-010 female | ENC data output (20-pin 2×10, 0.8mm pitch) |
+| J_INT | Keyed IDC box header 2×12 | Inner face; manually assembled post-JLCPCB SMT |
+
+---
+
+## Stacking / Cross-Section
+
+```text
+  INPUT SIDE                                          OUTPUT SIDE
+  (Board A outer)                                   (Board B outer)
+      |                                                    |
+      v                                                    v
+  [J1 J2 J3]   [Board A 1.6mm]  [gap 11.8mm]  [Board B 1.6mm]   [J4 J5 J6]
+  ERM8 male  |<--Ø92mm PCB-->|<-J_INT IDC->|<--Ø92mm PCB-->|  ERF8 female
+             |               |   2×12 24p  |               |
+             |<---------------  ~15mm total  -------------->|
+
+  Aluminium shroud (Ø100mm outer, Ø92mm inner, 4mm radial wall)
+  Shroud dish flange (Board A side): Track A Gray code slots milled on inner face
+  Shroud cover flange (Board B side): Track B Gray code slots milled on inner face (N=64 only)
+  Rolling-pin cylindrical bearings (ceramic or nylon) around circumference — electrically isolating
+  Shroud outer cylindrical face: characters engraved at r=50mm
+```
+
+**Dimensions summary:**
+
+| Item | Value |
+| :--- | :--- |
+| Shroud outer diameter | Ø100mm |
+| Shroud radial wall thickness | 4mm |
+| PCB diameter (both boards) | Ø92mm |
+| PCB thickness (each) | 1.6mm |
+| Board gap (Board A inner to Board B inner) | ~11.8mm |
+| Total rotor thickness | ~15mm |
+| Sensor electrode radius | r=44mm |
+| Shroud–electrode gap | ~0.5–1mm |
 
 ---
 
@@ -79,7 +185,7 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) handles bus current w
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Rotor power analysis (pass-through sizing):**
-Each rotor draws 50 mA (EPM570) + 6.5 mA (AS5600) = **56.5 mA ≈ 57 mA** locally.
+Each rotor draws 50 mA (EPM570) + 6.5 mA (FDC2114 U2/U3) = **56.5 mA ≈ 57 mA** locally.
 The J2 power input connector daisy-chains 3V3_ENIG through J5 to the next rotor. All 30 rotor PCBs
 are **identical**, so traces must be sized for the worst case — **Rotor 1**, which receives
 30 × 57 mA = **1.71 A** through its J2 connector and passes 29 × 57 mA = 1.65 A to Rotor 2 via J5.
@@ -96,7 +202,7 @@ IPC calculation for worst-case 1.71 A at 2oz external: 1.71 × 0.15 mm = 0.26 mm
 
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Signal (ENC_IN/OUT, AS5600 I2C SDA/SCL) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic; CPLD data I/O; I2C to AS5600 magnetic encoder |
+| Signal (ENC_IN/OUT, FDC2114 I2C SDA/SCL) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic; CPLD data I/O; I2C to FDC2114 capacitive encoder |
 | JTAG signals: TCK, TMS, TTD in/out, SYS_RESET_N (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. |
 | 3V3_ENIG local draw (J2 → CPLD + AS5600 supply) | 57 mA | 0.009 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); local IC supply only |
 | 3V3_ENIG pass-through rail (J2 input → J5 output bus) | 1.71 A (Rotor 1) | 0.26 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 3V3_ENIG trunk width (Global_Routing_Spec §1.1); Rotor 1 worst case; feeds L3 pour via thermal vias between J2 and J5 |
