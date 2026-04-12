@@ -463,13 +463,13 @@ Any replacement CPLD must be verified for:
 
 ---
 
-### 7.2 Intel MAX V EPM570T100I5N (Rotor + Stator CPLDs)
+### 7.2 Intel MAX II EPM570T100I5N (Rotor + Stator CPLDs)
 
 | Attribute | Detail |
 | --- | --- |
 | **Manufacturer** | Intel (formerly Altera) |
 | **Part Number** | EPM570T100I5N |
-| **Family** | MAX V |
+| **Family** | MAX II |
 | **Quantity** | 31 devices (Rotor ×30 + Stator ×1) |
 | **Supply** | 3.3 V (3V3_ENIG rail) |
 | **Function** | Rotor wiring-map lookup + mod-N adder + STGC/RBGC encoder decode (Rotor ×30); Stator plugboard routing matrix (Stator ×1) |

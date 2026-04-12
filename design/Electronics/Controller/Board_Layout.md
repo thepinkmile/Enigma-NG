@@ -230,12 +230,12 @@ _______________________________________    _____________    ____________________
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |
-| 12 | ENC_IN[0] | CTRL→Stator | Encoder input bit 0 |
-| 13 | ENC_IN[1] | CTRL→Stator | Encoder input bit 1 |
-| 14 | ENC_IN[2] | CTRL→Stator | Encoder input bit 2 |
-| 15 | ENC_IN[3] | CTRL→Stator | Encoder input bit 3 |
-| 16 | ENC_IN[4] | CTRL→Stator | Encoder input bit 4 |
-| 17 | ENC_IN[5] | CTRL→Stator | Encoder input bit 5 |
+| 12 | ENC_IN[0] | Stator→CTRL | Encoder input bit 0 |
+| 13 | ENC_IN[1] | Stator→CTRL | Encoder input bit 1 |
+| 14 | ENC_IN[2] | Stator→CTRL | Encoder input bit 2 |
+| 15 | ENC_IN[3] | Stator→CTRL | Encoder input bit 3 |
+| 16 | ENC_IN[4] | Stator→CTRL | Encoder input bit 4 |
+| 17 | ENC_IN[5] | Stator→CTRL | Encoder input bit 5 |
 | 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
 | 19 | ENC_OUT[0] | Stator→CTRL | Encoder output bit 0 |
 | 20 | ENC_OUT[1] | Stator→CTRL | Encoder output bit 1 |

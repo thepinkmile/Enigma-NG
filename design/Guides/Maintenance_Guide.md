@@ -63,12 +63,12 @@ Monitors 12-bit encryption sniffer bus, system reset, and JTAG signals.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | ENC_IN[0] | CTRL → Stator | Encoder input bit 0 |
-| 2 | ENC_IN[1] | CTRL → Stator | Encoder input bit 1 |
-| 3 | ENC_IN[2] | CTRL → Stator | Encoder input bit 2 |
-| 4 | ENC_IN[3] | CTRL → Stator | Encoder input bit 3 |
-| 5 | ENC_IN[4] | CTRL → Stator | Encoder input bit 4 |
-| 6 | ENC_IN[5] | CTRL → Stator | Encoder input bit 5 |
+| 1 | ENC_IN[0] | Stator → CTRL | Encoder input bit 0 |
+| 2 | ENC_IN[1] | Stator → CTRL | Encoder input bit 1 |
+| 3 | ENC_IN[2] | Stator → CTRL | Encoder input bit 2 |
+| 4 | ENC_IN[3] | Stator → CTRL | Encoder input bit 3 |
+| 5 | ENC_IN[4] | Stator → CTRL | Encoder input bit 4 |
+| 6 | ENC_IN[5] | Stator → CTRL | Encoder input bit 5 |
 | 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
 | 8 | GND | — | Ground reference |
 | 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |

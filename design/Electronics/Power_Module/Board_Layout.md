@@ -222,7 +222,7 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
                                 |    |                      |        | PIN  45:    BATT_PRES_N      |
                                 |    |                      |        | PIN  46:    ROTOR_EN         |
                                 |    |                      |        | PIN  47:    SW_LED_CTRL      |
-                                |    |                      |        | PIN  48:    GND (separator)  |
+                                |    |                      |        | PIN  48:    PWR_BUT           |
                                 |    |                      |        | PINS 49-80: 5V_MAIN / GND   |
                                 |    |                      |        |_____________________________|
                                 |    |                      |                       ^
@@ -328,7 +328,7 @@ SIDE VIEW (CROSS-SECTION)
 | 45 | BATT_PRES_N | PM → CTRL | Battery presence; active-low; CM5 GPIO 23 |
 | 46 | ROTOR_EN | CTRL → PM | LDO enable for 3V3_ENIG rail; CM5 GPIO 16 → TPS75733KTTRG3 EN (active-LOW) |
 | 47 | SW_LED_CTRL | CTRL → PM | SW1 LED handoff: HIGH = CM5 in control; disables MIC1555 hardware path (CM5 GPIO 20) |
-| 48 | GND | — | Logic/power zone boundary separator |
+| 48 | PWR_BUT | PM → CTRL | CM5 PMIC power-button input (active LOW); 3 s auto-pulse from MIC1555 one-shot on backup, or manual SW2 press; CM5 10 kΩ pull-up on module |
 | 49 | 5V_MAIN | PM → CTRL | Interleaved power; 2oz; 0.5A/pin |
 | 50 | GND | — | Interleaved return |
 | 51 | 5V_MAIN | PM → CTRL | Interleaved power |
