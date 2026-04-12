@@ -15,7 +15,7 @@ For mechanical tolerances and shroud assembly details, see
 ## Split Board Architecture Overview
 
 Each rotor assembly consists of two circular PCBs (Board A and Board B), each Ø92mm, separated
-by an 11.8mm gap and connected by an internal keyed IDC box header (J_INT, 2×12, 24-pin, 2.54mm
+by an 11.8mm gap and connected by an internal keyed IDC box header (J_INT, 2×11, 22-pin, 2.54mm
 pitch). The two boards are mechanically retained inside the aluminium shroud (Ø100mm outer face,
 4mm radial wall, Ø92mm inner). Total rotor thickness is ~15mm.
 
@@ -46,7 +46,7 @@ Board A faces the input (upstream) side of the rotor stack.
         \___________________________________________________/
 
                     BOTTOM (inner face, faces Board B)
-                        [ J_INT: keyed IDC 2×12 ]
+                        [ J_INT: keyed IDC 2×11 ]
                          (manually assembled post-SMT)
 ```
 
@@ -63,7 +63,7 @@ Board A faces the input (upstream) side of the rotor stack.
 | J1 | ERM8-005 male | JTAG input (10-pin 2×5, 0.8mm pitch) |
 | J2 | ERM8-005 male | Power input (10-pin 2×5, 0.8mm pitch) |
 | J3 | ERM8-010 male | ENC data input (20-pin 2×10, 0.8mm pitch) |
-| J_INT | Keyed IDC box header 2×12 | Inner face; manually assembled post-JLCPCB SMT |
+| J_INT | Keyed IDC box header 2×11 | Inner face; manually assembled post-JLCPCB SMT |
 
 ---
 
@@ -75,7 +75,7 @@ Board B faces the output (downstream) side of the rotor stack.
 4-Layer / 2oz Copper / ENIG / Circular Ø92mm — BOARD B (OUTPUT SIDE)
 
                     TOP (inner face, faces Board A)
-                        [ J_INT: keyed IDC 2×12 ]
+                        [ J_INT: keyed IDC 2×11 ]
                          (manually assembled post-SMT)
 
          ___________________________________________________
@@ -106,7 +106,7 @@ Board B faces the output (downstream) side of the rotor stack.
 | J4 | ERF8-005 female | JTAG output (10-pin 2×5, 0.8mm pitch) |
 | J5 | ERF8-005 female | Power output (10-pin 2×5, 0.8mm pitch) |
 | J6 | ERF8-010 female | ENC data output (20-pin 2×10, 0.8mm pitch) |
-| J_INT | Keyed IDC box header 2×12 | Inner face; manually assembled post-JLCPCB SMT |
+| J_INT | Keyed IDC box header 2×11 | Inner face; manually assembled post-JLCPCB SMT |
 
 ---
 
@@ -119,7 +119,7 @@ Board B faces the output (downstream) side of the rotor stack.
       v                                                    v
   [J1 J2 J3]   [Board A 1.6mm]  [gap 11.8mm]  [Board B 1.6mm]   [J4 J5 J6]
   ERM8 male  |<--Ø92mm PCB-->|<-J_INT IDC->|<--Ø92mm PCB-->|  ERF8 female
-             |               |   2×12 24p  |               |
+             |               |   2×11 22p  |               |
              |<---------------  ~15mm total  -------------->|
 
   Aluminium shroud (Ø100mm outer, Ø92mm inner, 4mm radial wall)

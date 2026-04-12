@@ -52,7 +52,7 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 ### 1. Power Module (The Heart)
 
 * **Input:** Triple-input priority selection (PoE+ 802.3bt Type 4 > USB-C 15V PD > Battery 11–16.8V) via LM74700-Q1 + SISS22DN ideal-diode FETs.
-* **PoE:** Fully discrete 802.3bt Type 4 implementation — TPS2372-4 (PD interface) + TPS23730 (ACF DC-DC) + T2 custom isolation transformer. Capacity: 72W. Steady-state utilisation: 70.8%.
+* **PoE:** Fully discrete 802.3bt Type 4 implementation — TPS2372-4 (PD interface) + TPS23730 (ACF DC-DC) + T2 custom isolation transformer. Capacity: 72W. Worst-case utilisation: 73.9%.
 * **Protection:** TPS25980 eFuse — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON. Plus 72°C TCO thermal fuse.
 * **Buck:** Dual-phase interleaved LMQ61460-Q1 (×2, 6A each, 12A combined, 400kHz DRSS, 180° SYNC). Effective ripple: 800kHz.
 * **LDO:** TPS75733KTTRG3 3V3_ENIG (8.8µVRMS noise, 72dB PSRR, 3A, 2.11 A load at 70.4% utilisation).
@@ -61,8 +61,8 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ### 2. Controller Board (The Brain)
 
-* **Module:** Raspberry Pi CM5 (BCM2712) on a custom 4-layer 1.6mm carrier.
-* **Power Input:** 3-way seamless switching (LTC4412 Ideal Diode).
+* **Module:** Raspberry Pi CM5 (BCM2712) on a custom 6-layer 2oz carrier.
+* **Power Input:** 3-way seamless switching (LM74700-Q1 ideal-diode on Power Module).
   * **Smart Battery:** 4-pin Molex connector (12V-14.4V nominal) with SMBus telemetry.
   * **PoE+ (802.3bt Type 4):** Up to 71.3W Power-over-Ethernet via Power Module discrete TPS2372-4 + TPS23730 + T2 ACF design. Single Ethernet cable carries both data and power.
   * **USB-C PD:** 5V/5A negotiated input.
@@ -81,18 +81,18 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ### 4. Universal Rotor (The Engine)
 
-* **Logic:** Intel **MAX II EPM240T100C5N** CPLD.
-* **Dimensions:** 122mm PCB Diameter / **163mm Outer Diameter (OD)**.
+* **Logic:** Intel **MAX II EPM570T100I5N** CPLD.
+* **Dimensions:** Ø92 mm PCB / **Ø100 mm shroud outer**.
 * **Segments:** 64 characters with **8mm arc width** for high readability.
 * **Memory:** 10 pre-loaded bidirectional wiring sets; 4-position DIP switch for "Rotor Identity" selection.
-* **Sensing:** 6-bit Single-Track De Bruijn sequence via 6x **TCRT5000L** reflective sensors.
+* **Sensing:** FDC2114RGER capacitive encoder ICs (dual-track, 3+3 per rotor).
 * **Tri-Connector Bus:**
   * Power (2x2), JTAG (2x4 Shielded), and Enigma (2x6 Bidirectional Relay) in a "Tripod" layout.
 * **Signal Integrity:** **74LVC125A** buffer on every rotor for TCK/TMS regeneration.
 
 ### 5. Universal Interface (Keyboard/Plugboard)
 
-* **Logic:** 2x Intel **MAX II EPM240T100C5N** CPLD (Decoder/Encoder).
+* **Logic:** 2x Intel **MAX II EPM240T100I5N** CPLD (Decoder/Encoder).
 * **Keyboard:** 37-key "Hold-to-Shift" layout with Vintage Amber LED feedback.
 * **Plugboard:** 64x 3.5mm Switching Jacks with 8-channel TVS ESD protection.
 * **Logic Pattern:** Active-Low (Internal CPLD pull-ups for keys, Sink-to-GND for LEDs).

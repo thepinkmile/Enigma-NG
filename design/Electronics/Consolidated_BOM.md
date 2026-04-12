@@ -34,7 +34,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | TPS75733KTTRG3 — 3.3 V LDO Regulator (TO-263 KTT 5-pin) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPS259804ONRGER — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| TPS259807ONRGER — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | LMQ61460AFSQRJRRQ1 — 5 V Synchronous Buck Converter (VQFN-HR RJR 14-pin 4×3.5mm) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | LTC3350EUHF#PBF — Supercapacitor Manager (QFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS25751DREFR — USB PD 3.1 DRP Controller (WQFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -64,7 +64,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 10 nF 100 V X7R 0402 Bob Smith termination cap | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 100 pF X7R 25 V 0402 SYNC SW-ringing LP filter (C0402C101K3RACAUTO) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 22 F / 2.7 V Supercapacitor (Tecate TPLH-2R7/22WR12X31) | 6 | — | — | — | — | — | — | — | — | — | 6 |
+| 22 F / 2.7 V Supercapacitor (Tecate SCMT32C156PRBA0) | 6 | — | — | — | — | — | — | — | — | — | 6 |
 | | | | | | | | | | | | |
 | 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 6 | 2 | 9 | — | — | — | — | — | — | — | 17 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | 328 |
@@ -101,7 +101,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ERF8-005 10-pin Samtec Female Socket 0.8 mm (Rotor interface) | — | — | 2 | — | — | 2 | 60 | — | 2 | — | 64 |
 | ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | 32 |
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
-| Würth 61201221721 — 24-pin (2×12) keyed IDC box header, 2.54mm pitch — Rotor J_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
+| Würth 61201221721 — 22-pin (2×11) keyed IDC box header, 2.54mm pitch — Rotor J_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
 | 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
 | 16-pin 2×8 Molex Shrouded Header 2.54 mm (22-23-2161) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
 | 1×5 2.54mm female IDC header — JDB J1 INPUT (5V_USB, 3V3_ENIG, D+, D−, GND) | — | — | — | — | — | — | — | — | — | 1 | 1 |
@@ -130,7 +130,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 ## 1. Critical Spares (MOQ Recommendations)
 
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
-* **Tecate TPLH-2R7/22WR12X31 (22F/2.7V) Supercap:** Order 10 (MOQ) — 6 required per build + 4 spare/test. Source via DigiKey consignment through JLCPCB global sourcing.
+* **Tecate SCMT32C156PRBA0 (22F/2.7V) Supercap:** Order 10 (MOQ) — 6 required per build + 4 spare/test. Source via DigiKey consignment through JLCPCB global sourcing.
 * **Samtec ERM8-040 (Gold, 80-pin):** Order 3 (MOQ) — Power Module J1, (1× Spare). Order separately from ERM8-020.
 * **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J8, (1× Spare). Poka-yoke pair with ERF8-020.
 * **Samtec ERF8-040 (Gold, 80-pin):** Order 3 (MOQ) — Controller J1, (1× Spare).
@@ -282,7 +282,7 @@ table and placement requirements.
 | U5 | STUSB4500LQTR | QFN-24 4×4 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 | Primary PN: STUSB4500LQTR (lower Iq ~160µA). JLCPCB C506650 confirmed L-variant in stock. If OOS, use STUSB4500QTR as alternative (non-L variant, ~210µA Iq, pin-compatible). |
 | U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 | **296-LM74700QDBVRQ1CT-ND** ✓ | C2941042 | LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. Alt T&R Mouser PN: 595-LM74700QDBVTQ1 (pin-compatible). |
 | U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450E/LB | **MCP121T-450E/LBCT-ND** ✓ | C52146050 | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. JLCPCB lists with TP prefix on MPN but is the same device. |
-| U1 | TPS259804ONRGER | VQFN-24 (RGE) | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 | 16.9V silicon-fixed OVLO variant. OVLO set in silicon — no external R. R3 repurposed as R_ILIM (210 Ω). PNs confirmed. |
+| U1 | TPS259807ONRGER | VQFN-24 (RGE) | 595-TPS259807ONRGER | 296-TPS259807ONRGERCT-ND | C2868416 | 16.9V silicon-fixed OVLO variant. OVLO set in silicon — no external R. R3 repurposed as R_ILIM (210 Ω). PNs confirmed. |
 | U2A/U2B | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 | AEC-Q100 automotive-qualified (Q1), VQFN-HR RJR 14-pin 4×3.5mm. ✓ |
 | U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). ⚠️ Package changed from QFN-28 to WQFN-38 — schematic symbol and PCB footprint update required. |
 | U7 | TPS75733KTTRG3 | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 | Fixed 3.3V, TO-263 KTT 5-pin. Active-LOW EN (EN LOW = enabled). ✓ |
@@ -303,7 +303,7 @@ table and placement requirements.
 
 1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
 2. **U10** — ✅ Resolved: TPS23730 correct package is **RMTR (WQFN-20)** — MPN updated to `TPS23730RMTR` in BOM and Design_Spec.
-3. **U1** — Updated to `TPS259804ONRGER` (16.9V silicon-fixed OVLO VQFN-24 variant). Mouser/DigiKey/JLCPCB PNs confirmed. R3 repurposed as R_ILIM = 210 Ω (ERJ-3EKF2100V).
+3. **U1** — Updated to `TPS259807ONRGER` (16.9V silicon-fixed OVLO VQFN-24 variant). Mouser/DigiKey/JLCPCB PNs confirmed. R3 repurposed as R_ILIM = 210 Ω (ERJ-3EKF2100V).
 4. **U4** — Replaced with TPS25751DREFR (WQFN-38 6×4mm). See DEC-012. ⚠️ Schematic and PCB footprint update required (package change from QFN-28).
 
 ## 10. Suppliers
@@ -322,7 +322,7 @@ Reference information for placing orders with key component suppliers.
 | S08 | **Samtec** | Connector manufacturer | [samtec.com](https://www.samtec.com) | For ERF8/ERM8 BtB connectors (80-pin Link-Alpha, 40-pin Link-Beta). Order direct or via Farnell/Mouser. Min order typically 3 units. |
 | S09 | **Würth Elektronik** | Passive / connector manufacturer | [we-online.com](https://www.we-online.com) | For RJ45 MagJack (7499111121A), EMI chokes (WE-CMBNC). Order via Farnell, Mouser, or direct. |
 | S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43650-0519 Micro-Fit 3.0, 5-pin vertical THT). Order via Mouser or DigiKey. |
-| S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For TPLH-2R7/22WR12X31 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
+| S11 | **Tecate Group** | Supercapacitor manufacturer | [tecategroup.com](https://www.tecategroup.com) | For SCMT32C156PRBA0 22F/2.7V supercaps. May require broker/distributor sourcing — check Mouser or Newark. |
 | S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04161H-7628 (4-layer, 2oz) for JDB, Stator, Encoder, Rotor, Reflector, Extension; JLC06161H-2116 (6-layer, 2oz) for Power Module and Controller. |
 | S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. Note: WE-CMBNC 7448031002 is not stocked by Newark/Avnet — use Mouser (710-7448031002), DigiKey (732-5584-ND), or JLCPCB (C1519839). Same-group as Farnell/element14. |
 
@@ -354,7 +354,7 @@ Product page links for all major components for design review and procurement ve
 | Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [ti.com/product/CSD17483F4](https://www.ti.com/product/CSD17483F4) |
 | U11 | MIC1555 — CMOS Timer, SOT-23-5 | Microchip Technology | [microchip.com/en-us/product/MIC1555](https://www.microchip.com/en-us/product/MIC1555) |
 | U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | Texas Instruments | [ti.com/product/SN74LVC1G14](https://www.ti.com/product/SN74LVC1G14) |
-| C_SC1–6 | TPLH-2R7/22WR12X31 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com (search TPLH-2R7-22WR)](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |
+| C_SC1–6 | SCMT32C156PRBA0 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |
 | F1 | AC72ABD — 72°C SMD Thermal Cutoff (TCO) | Bourns | [bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72](https://www.bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72) |
 | D1 | TPD1E10B06 — Single-Channel 10V TVS ESD (BATT_PRES) | Texas Instruments | [ti.com/product/TPD1E10B06](https://www.ti.com/product/TPD1E10B06) |
 | D2 | TPD2E2U06 — Dual-Channel 5.5V SMBus ESD (Battery SMBus) | Texas Instruments | [ti.com/product/TPD2E2U06](https://www.ti.com/product/TPD2E2U06) |

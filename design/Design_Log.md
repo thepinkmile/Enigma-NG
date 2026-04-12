@@ -155,11 +155,11 @@ The input eFuse uses a **TPS25980** (7A ILIM, silicon-fixed 16.9V OVLO) rather t
 ### Rationale
 
 - TPS259474L 5.5A limit is insufficient for worst-case USB-C 15V path at 75W: 75W / 15V = 5.0A + 10% derating = 5.5A — already at the device limit with no headroom.
-- TPS25980 (TPS259804ONRGER) provides 7A ILIM (programmed via R3 = 210 Ω) and silicon-fixed 16.9V OVLO, which neatly caps the battery charge voltage window.
+- TPS25980 (TPS259807ONRGER) provides 7A ILIM (programmed via R3 = 210 Ω) and silicon-fixed 16.9V OVLO, which neatly caps the battery charge voltage window.
 
 ### OVLO Constraint
 
-- eFuse OVLO is **16.9V silicon-fixed** (TPS259804ONRGER — no external programming resistor).
+- eFuse OVLO is **16.9V silicon-fixed** (TPS259807ONRGER — no external programming resistor).
 - BMS must be configured for **4.1V/cell maximum charge (16.4V for 4S)** to maintain a ≥0.5V margin.
 - BMS configurations using 4.2V/cell (16.8V) are not compatible with this eFuse and must not be used.
 

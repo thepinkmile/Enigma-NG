@@ -14,7 +14,7 @@ where the internal scrambled wiring is emulated by a dedicated logic chip on eac
 
 Each rotor assembly consists of **two circular PCBs** (Board A and Board B), each **Ø92mm**,
 inside an aluminium shroud (Ø100mm outer face, 4mm radial wall). The two boards are separated
-by an ~11.8mm gap and connected by a keyed 2.54mm IDC box header (J_INT, 2×12, 24-pin) on
+by an ~11.8mm gap and connected by a keyed 2.54mm IDC box header (J_INT, 2×11, 22-pin) on
 their inner (facing) surfaces. Total rotor thickness is ~15mm, matching original Enigma rotor
 proportions. The IDC connector is manually assembled post-JLCPCB SMT pick-and-place.
 
@@ -74,7 +74,7 @@ For mechanical dimensions, tolerances, shroud specification, and encoder slot ge
 | DR-ROT-03 | Position sensor | Split dual-track capacitive encoder: FDC2114RGER U2 on Board A (Track A, r≈44mm, bits[5:3] N=64 or STGC bits[3:0] N=26, addr 0x2A); FDC2114RGER U3 on Board B (Track B, r≈44mm, bits[2:0] N=64 only — not populated for N=26, addr 0x2B); FDC2114RGER U4 on Board A (addr 0x2B, CH0 = STGC bit[4] — N=26 builds only; not populated for N=64); PCB Ø=92mm; track patterns in variant design files | §2.1 Position Sensing; BOM U2 (Board A), U3 (Board B), U4 (Board A, N=26 only) |
 | DR-ROT-04 | Input connectors (Board A) | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors (Board B) | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
-| DR-ROT-11 | Internal connector (J_INT) | Keyed 2.54mm IDC box header, 2×12 (24-pin), on inner face of both boards; keyed to prevent incorrect orientation; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM J_INT |
+| DR-ROT-11 | Internal connector (J_INT) | Keyed 2.54mm IDC box header, 2×11 (22-pin), on inner face of both boards; keyed to prevent incorrect orientation; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM J_INT |
 | DR-ROT-06 | Power consumption | ≤50 mA per rotor from 3V3_ENIG | §3.1 Power Management |
 | DR-ROT-07 | Stack quantity | 30 rotor boards in the complete system | §1 Overview |
 | DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; 8mm solid metal support rod (non-threaded) through all 30 rotors for alignment and connector stress relief; stack is horizontal | §2.3 Mechanical Details |
@@ -390,16 +390,16 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 > ENC_OUT carries the CPLD SW2-map forward-pass substitution result downstream; ENC_IN receives return-pass data from downstream for SW3-map processing.
 > Both directions are applied by the CPLD — this is NOT a pass-through. The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
 
-#### J_INT — Board A ↔ Board B Internal Interconnect (2.54mm keyed IDC box header, 2×12, 24-pin)
+#### J_INT — Board A ↔ Board B Internal Interconnect (2.54mm keyed IDC box header, 2×11, 22-pin)
 
 Fitted on the **inner (facing) surface** of both Board A and Board B. Both boards carry a mating
 keyed IDC box header. The connector is **keyed to prevent incorrect orientation assembly**.
 
 > **Assembly note:** J_INT is manually soldered/assembled AFTER JLCPCB SMT pick-and-place. It is
-> NOT part of the JLCPCB SMT order. Order separately (e.g. Würth 61201221721 or equivalent 2×12
+> NOT part of the JLCPCB SMT order. Order separately (e.g. Würth 61201221721 or equivalent 2×11
 > 2.54mm keyed IDC box header). Two connectors per rotor assembly (30 rotors × 2 = 60 total).
 
-Signal allocation (24 pins, 2×12):
+Signal allocation (22 pins, 2×11):
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
@@ -425,8 +425,6 @@ Signal allocation (24 pins, 2×12):
 | 20 | SW3[1] | B→A | DIP SW3 bit 1 state |
 | 21 | SW3[2] | B→A | DIP SW3 bit 2 state |
 | 22 | SW3[3] | B→A | DIP SW3 bit 3 state |
-| 23 | GND | — | Ground |
-| 24 | GND | — | Ground |
 
 > **SW3 bit coverage note:** All 6 SW3 DIP switch bits reach the CPLD on Board A via J_INT:
 > pins 19–22 carry SW3[0:3]; pins 15–16 carry SW3[4:5].
@@ -468,7 +466,7 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
-| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×12 (24-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
+| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×11 (22-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
 | R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
@@ -487,6 +485,6 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
-| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×12 (24-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
+| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×11 (22-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
 | U3 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
 | SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
