@@ -27,18 +27,9 @@ With no cable in a jack, the socket's normally-closed (N/C) switch contact short
 to the Sleeve terminal, passing the signal through unsubstituted (identity mapping). Up to 32 crossover
 cables may be installed simultaneously (64 jacks ÷ 2 per cable).
 
-The Stator CPLD implements a configurable routing matrix with 16 pre-defined configurations selectable
-via SW1 4-position DIP switch (no JTAG reprogramming required for configuration changes). The active
-configuration determines which plugboard insertion positions are active:
-
-| Historical Reference | Pass 1 position | Pass 2 position |
-| :--- | :--- | :--- |
-| Original Enigma (pre-war) | After Keyboard / before Rotor 1 | After last Rotor / before Lightboard |
-| Later Enigma models | At Reflector | — (single pass only) |
-| Enigma-NG (configurable) | Any position via Stator CPLD | Any position via Stator CPLD |
-
-See `design/Electronics/Stator/Design_Spec.md §3 CPLD Signal Routing Matrix` for the full signal
-flow, 16-configuration table, and SW1 DIP switch specification.
+The Stator CPLD may apply a plugboard transformation to signals on J4/J5/J6 before they reach the
+Encoder's Keyboard and Lightboard ports. See `design/Electronics/Stator/Design_Spec.md §3 CPLD
+Signal Routing Matrix` for full details.
 
 ### HID Use (1 board, both halves independent)
 
