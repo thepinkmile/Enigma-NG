@@ -28,13 +28,13 @@ mixed stack. Variant-specific details are in
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | 21 forward maps in CPLD UFM; direction bit doubles to 42 configs; see variant design files | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
+| FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | 21 forward maps in CPLD UFM; direction bit doubles to 42 configs; see variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
 | FR-ROT-02 | Detect rotor angular position using a contactless magnetic encoder | 6-bit resolution; detects between-character positions | §2.1 Position Sensing; BOM U2 (AS5600) |
 | FR-ROT-03 | Pass JTAG chain signals to the next rotor in the stack (or to the Reflector at position 30) | Serial daisy-chain; each rotor is one JTAG device | §3.3 Signal Integrity; BOM J1 (ERM8-005 JTAG in), J4 (ERF8-005 JTAG out) |
 | FR-ROT-04 | Receive 3V3_ENIG power from the upstream board and forward to the downstream board | Passive power pass-through via J2/J5 | §3.1 Power Management; BOM J2 (ERM8-005 power in), J5 (ERF8-005 power out) |
 | FR-ROT-05 | Apply cipher substitution at each rotor hop via CPLD; forward and return paths processed independently using SW2/SW3 selected maps | J3 ENC_IN → CPLD (SW2 map+dir) → J6 ENC_OUT; J6 ENC_IN → CPLD (SW3 map+dir) → J3 ENC_OUT; see §3.2 | §3.2 Communication Bus; BOM J3 (ERM8-010), J6 (ERF8-010) |
 | FR-ROT-06 | Be individually removable for maintenance or reconfiguration without tools | Samtec ERM8/ERF8 high-cycle connectors | §2.3 Mechanical Details; BOM J1–J6 (Samtec ERM8/ERF8) |
-| FR-ROT-07 | Store 21 forward cipher maps in CPLD UFM; SW2 (input side) and SW3 (output side) each independently select map index [4:0] and direction bit [5] (0=forward, 1=reverse), giving 42 effective configurations per side without reprogramming | Same mechanism and switch count for both variants | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N), SW2, SW3 |
+| FR-ROT-07 | Store 21 forward cipher maps in CPLD UFM; SW2 (input side) and SW3 (output side) each independently select map index [4:0] and direction bit [5] (0=forward, 1=reverse), giving 42 effective configurations per side without reprogramming | Same mechanism and switch count for both variants | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N), SW2, SW3 |
 | FR-ROT-08 | Implement ring setting via SW1 (6 switches, input side only); CPLD sums SW1[5:0] with AS5600 position reading (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor_Mechanical_Spec.md |
 
 #### Design Requirements
@@ -42,7 +42,7 @@ mixed stack. Variant-specific details are in
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 PCB Fabrication & Stackup |
-| DR-ROT-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100); 21 UFM forward maps; SW2/SW3 direction bit gives 42 effective configs; character width in variant design files | §2.2 Logic & Transposition; BOM U1 (EPM240T100I5N) |
+| DR-ROT-02 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; 21 UFM forward maps; SW2/SW3 direction bit gives 42 effective configs; character width in variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
 | DR-ROT-03 | Position sensor | AMS AS5600 magnetic encoder (6-bit resolution, contactless) | §2.1 Position Sensing; BOM U2 (AS5600) |
 | DR-ROT-04 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
@@ -62,7 +62,7 @@ mixed stack. Variant-specific details are in
 
 ### 2.2 Logic & Transposition
 
-* **Logic:** The **Intel MAX II EPM240T100I5N CPLD** performs real-time cipher substitution for
+* **Logic:** The **Intel MAX II EPM570T100I5N CPLD** performs real-time cipher substitution for
   both the forward and return signal paths simultaneously.
 * **Role:** Applies the active cipher map to incoming ENC\_IN data and outputs the substituted
   value as ENC\_OUT. The forward-pass and return-pass maps are selected independently by SW2 and
@@ -73,7 +73,9 @@ mixed stack. Variant-specific details are in
 * **Memory:** The CPLD UFM stores **21 forward-direction cipher maps** using a common 64-entry
   × 6-bit format (384 bits per map; 21 maps × 384 = 8,064 bits, within the 8,192-bit UFM).
   Both rotor variants use this identical map count and selection mechanism; the actual map data
-  is variant-specific.
+  is variant-specific. The EPM570T100I5N is required (570 LEs): a 64-character map needs
+  384 flip-flops for the loaded register table plus ~80 LEs for combinational decode, totalling
+  ~464 LEs — exceeding the EPM240's 240 LEs. Same TQFP-100 footprint; drop-in at PCB level.
 * **Map selection (SW2 / SW3):** Each 6-position DIP switch encodes:
   * Bits [4:0] — map index, selecting one of the 21 stored forward maps (indices 0–20 valid;
     21–31 reserved).
@@ -83,8 +85,11 @@ mixed stack. Variant-specific details are in
     requiring additional UFM storage.
   * SW2 and SW3 are independent — in normal Enigma operation they are set to a matched
     forward/inverse pair (same index, opposite directions), but the hardware does not enforce this.
-* **Latency:** Sub-10ns transposition time; the entire 30-rotor round-trip occurs well within one
-  CPU clock cycle.
+* **Latency:** At power-up the CPLD serially reads the selected map(s) from UFM into internal
+  flip-flop registers (~40 µs per 384-bit map at the 10 MHz UFM clock — well under 1 ms total,
+  invisible to the user). At runtime, cipher substitution is applied combinationally from the
+  loaded registers; typical latency is **~20–50 ns per rotor hop**. The full 30-rotor round-trip
+  completes in ~1.2–3 µs — far below any practical timing constraint.
 * **Configuration:** SW2 and SW3 are read at power-up only. A power cycle is required after
   changing either switch. The CPLD is programmed once via JTAG; map selection at runtime uses
   SW2/SW3 exclusively. See `design/Electronics/Rotor/Rotor_26_Char_Design.md` and
@@ -336,7 +341,7 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| U1 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
+| U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | TBD | TBD |
 | U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |
 | SW1 | Ring setting DIP switch (input side only; SW1[5:0] summed with AS5600 output for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
 | SW2 | Forward-pass map selection (input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |

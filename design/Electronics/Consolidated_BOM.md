@@ -23,7 +23,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 
 | MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | 1 | 30 | — | — | — | 37 |
+| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | 1 | 2 | 6 | — | — | — | — | — | 7 |
+| EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; drop-in for EPM240 on Rotor boards) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
 | AS5600 — Magnetic Position Encoder (DFN-8) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
 | SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
@@ -182,7 +183,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **Samtec ERF8-040-05.0-S-DV-K-TR (Female, 80-pin):** Controller J1 (Link-Alpha).
 * **Samtec ERF8-020-05.0-S-DV-K-TR (Female, 40-pin):** Controller J2 (Link-Beta).
 * **Samtec ERM8-010-05.0-S-DV-K-TR (Male, 20-pin):** Rotor J3, Reflector J3, Extension J3. JLCPCB: C374877
-* **Intel EPM240T100I5N:** 37 units (Standardized logic node).
+* **Intel EPM240T100I5N:** 7 units (Stator ×1, Encoder ×2 per board ×3 boards = 6; total 7).
+* **Intel EPM570T100I5N:** 30 units (Rotor ×1 per board ×30 boards). Same TQFP-100 footprint as EPM240; upgraded to support 570 LEs required for startup-loaded 64-character cipher map registers.
 
 ## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
 

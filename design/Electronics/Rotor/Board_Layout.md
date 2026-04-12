@@ -15,7 +15,7 @@
 TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
  _____________________________________________________________________________
 |                                                                             |
-|   [ CPLD ] <--- Intel MAX II EPM240T100I5N                                  |
+|   [ CPLD ] <--- Intel MAX II EPM570T100I5N                                  |
 |   (Wiring emulation + position decode)                                      |
 |                                                                             |
 |   [ AS5600 ] <--- Magnetic encoder IC                                       |
@@ -79,7 +79,7 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) handles bus current w
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Rotor power analysis (pass-through sizing):**
-Each rotor draws 50 mA (EPM240) + 6.5 mA (AS5600) = **56.5 mA ≈ 57 mA** locally.
+Each rotor draws 50 mA (EPM570) + 6.5 mA (AS5600) = **56.5 mA ≈ 57 mA** locally.
 The J2 power input connector daisy-chains 3V3_ENIG through J5 to the next rotor. All 30 rotor PCBs
 are **identical**, so traces must be sized for the worst case — **Rotor 1**, which receives
 30 × 57 mA = **1.71 A** through its J2 connector and passes 29 × 57 mA = 1.65 A to Rotor 2 via J5.

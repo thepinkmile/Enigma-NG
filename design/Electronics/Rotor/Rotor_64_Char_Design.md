@@ -43,7 +43,7 @@ giving 42 effective cipher configurations per side without additional UFM storag
 
 | Parameter | Value |
 | :--- | :--- |
-| EPM240T100I5N UFM capacity | 8,192 bits |
+| EPM570T100I5N UFM capacity | 8,192 bits |
 | Map format (common to both variants) | 64 entries × 6 bits = 384 bits per map |
 | Maps stored | floor(8,192 / 384) = **21 forward maps** |
 | Effective configurations per side (with direction bit) | 21 × 2 = **42** |
