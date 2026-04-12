@@ -125,7 +125,10 @@ are on **Board A only**. Board B has no encoder electrodes for the N=26 rotor, a
 * **Board B shroud flange:** No encoder slots milled for N=26.
 * **Sensing:** Bare copper electrode pads on the Board A flat face (no electronic components
   on the shroud). Aluminium (solid) = high capacitance; milled slot = low capacitance. Sensed
-  by FDC2114RGER U2 on Board A only.
+  by FDC2114RGER U2 and U4 on Board A:
+  * **U2 (Board A, addr 0x2A):** CH0–CH3 = STGC bits[3:0]
+  * **U4 (Board A, addr 0x2B):** CH0 = STGC bit[4]; CH1–CH3 tied to GND via 100 kΩ
+  * U4 is an additional FDC2114RGER populated on Board A for N=26 builds only.
 * **Shroud:** Must remain electrically **floating** (bearing isolation — ceramic or nylon
   rolling elements). Not connected to circuit ground.
 
@@ -160,9 +163,10 @@ The CPLD VHDL implements a 32-entry lookup ROM (5-bit address → 5-bit position
 Gray code is not achievable for N=26 (not a power of 2); therefore a lookup table decode is
 retained. Codes not listed below are invalid and trigger a mechanical fault flag.
 
-> **Note:** For the N=26 variant, U3 (FDC2114 on Board B) is not populated. All 5 sensor
-> inputs come from U2 (Board A). The IDC connector carries the 5 STGC bits Board A → CPLD
-> directly.
+> **Note:** For the N=26 variant, U3 (FDC2114 on Board B) is not populated. U2 (Board A,
+> addr 0x2A) reads STGC bits[3:0] via CH0–CH3. U4 (Board A, addr 0x2B) reads STGC bit[4]
+> via CH0; CH1–CH3 are tied to GND via 100 kΩ. U4 is an additional FDC2114RGER populated
+> on Board A for N=26 builds only.
 
 | STGC Code | Binary | Position | | STGC Code | Binary | Position |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: |

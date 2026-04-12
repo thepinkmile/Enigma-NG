@@ -90,7 +90,7 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   * Part: SN74LVC2G125DCUR (TI, VSSOP-8) — Mouser 595-SN74LVC2G125DCUR,
     DigiKey 296-SN74LVC2G125DCURCT-ND, JLCPCB C21404.
   * At 5 rotors per group connected via BtB (ERM8/ERF8), signal integrity analysis confirms this
-    buffer interval is sufficient: 5 rotors × EPM240 input capacitance (≈6pF) + connector capacitance
+    buffer interval is sufficient: 5 rotors × EPM570T100I5N input capacitance (≈6pF) + connector capacitance
     ≈ 30–40pF total load; well within the 50ns half-period at 10MHz TCK.
 
 * **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §5`, a single

@@ -1000,6 +1000,8 @@ development — it is handled by the standard gpio-shutdown device tree overlay.
 
 ## DEC-026 — Rotor Position Encoder: AS5600 Replaced with Single-Track Capacitive Encoder
 
+> ⚠️ Partially superseded by DEC-028 for dual-track N=64 architecture, Ø92mm PCB diameter, and aluminium shroud milled slots. Retained for historical context.
+
 - **Status:** Accepted
 - **Date:** 2026-04-12
 - **Category:** Hardware
@@ -1009,28 +1011,27 @@ development — it is handled by the standard gpio-shutdown device tree overlay.
 
 The AMS AS5600 magnetic encoder (originally specified in DR-ROT-03) is replaced with a
 **single-track absolute capacitive encoder** implemented entirely on the rotor PCB. The rotating
-shroud carries a single conductive-ink track; K capacitive sensor pads on the PCB read the track
+shroud flanges carry milled aluminium slots (air gap = low capacitance); K capacitive sensor pads on the PCB read the track
 as a K-bit code. A combinational lookup table in the CPLD VHDL maps the raw sensor code to a
 binary rotor position (0 to N−1). The SW1 modulo-N adder (ring setting) operates on the decoded
 binary value. No external adder hardware is required — the decode and add are pure CPLD logic.
 
 Two **Texas Instruments FDC2114RGER** (4-channel, I²C, 16-VQFN, 3.3V) per rotor replace U2:
 
-- U2 (address 0x2A): sensor pads S0–S3.
-- U3 (address 0x2B): sensor pads S4–S5 (64-char) or S4 only (26-char).
+- U2 (address 0x2A): Track A — bits[5:3] (N=64) or STGC bits[3:0] (N=26).
+- U3 (address 0x2B): Track B — bits[2:0] (N=64 only). NOT POPULATED for N=26. See U4 on Board A for N=26 bit[4].
 - CPLD implements I²C master to read pad states.
 
 #### Track patterns (verified — all N codes unique)
 
 - **26-char (K=5, N=26):** `00000100011001010011101111`
-  Sensors at 0°, 13.846°, 27.692°, 41.538°, 55.385° from reference; arc/segment ≈ 12.1mm at r=47mm.
+  Sensors at 0°, 13.846°, 27.692°, 41.538°, 55.385° from reference; arc/segment ≈ 10.63mm at r=44mm.
   Invalid codes (between-character / jam): 11, 13, 21, 22, 26, 31.
-- **64-char (K=6, N=64):** `0000001111110111100111010111000110110100110010110000101010001001`
-  Sensors at 0°, 5.625°, 11.25°, 16.875°, 22.5°, 28.125° from reference; arc/segment ≈ 4.9mm at r=47mm.
-  All 64 six-bit codes are valid (de Bruijn sequence; no invalid-code jam detection for this variant).
+- **64-char (K=6, N=64):** Replaced by dual-track 3+3 reflected binary Gray code — see `Rotor_64_Char_Design.md §7` and DEC-028.
+  Sensors at 0°, 5.625°, 11.25°, 16.875°, 22.5°, 28.125° from reference; arc/segment ≈ 4.32mm at r=44mm.
+  All 64 six-bit codes are valid (standard 6-bit reflected binary Gray code; XOR-chain decode; no invalid-code jam detection required).
 
-PCB outer diameter set at **100mm** (50mm radius) to satisfy the minimum arc-per-segment
-constraint for legible character engraving on the shroud outer face.
+PCB outer diameter Ø92mm (inside Ø100mm aluminium shroud) — per DEC-028
 
 ### Rationale
 
@@ -1057,7 +1058,7 @@ constraint for legible character engraving on the shroud outer face.
   (geometry, track pattern, STGC→position lookup table).
 - `design/Electronics/Rotor/Rotor_64_Char_Design.md`: §5 ring setting updated; §7 added
   (geometry, track pattern, STGC→position lookup table).
-- `design/Electronics/Rotor/Board_Layout.md`: ASCII diagram updated; PCB Ø100mm noted.
+- `design/Electronics/Rotor/Board_Layout.md`: ASCII diagram updated; PCB Ø92mm (per DEC-028).
 - `design/Electronics/Consolidated_BOM.md`: AS5600 row replaced with 2× FDC2114RGER per rotor
   (60 units total across 30 rotors).
 - `design/Electronics/Reflector/STGC_Generator.py`: Original script location noted — should be

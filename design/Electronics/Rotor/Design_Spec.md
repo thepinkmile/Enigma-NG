@@ -61,7 +61,7 @@ For mechanical dimensions, tolerances, shroud specification, and encoder slot ge
 | FR-ROT-05 | Apply cipher substitution at each rotor hop via CPLD; forward and return paths processed independently using SW2/SW3 selected maps | J3 ENC_IN → CPLD (SW2 map+dir) → J6 ENC_OUT; J6 ENC_IN → CPLD (SW3 map+dir) → J3 ENC_OUT; see §3.2 | §3.2 Communication Bus; BOM J3 (ERM8-010), J6 (ERF8-010) |
 | FR-ROT-06 | Be individually removable for maintenance or reconfiguration without tools | Samtec ERM8/ERF8 high-cycle connectors | §2.3 Mechanical Details; BOM J1–J6 (Samtec ERM8/ERF8) |
 | FR-ROT-07 | Store 21 forward cipher maps in CPLD UFM; SW2 (input side) and SW3 (output side) each independently select map index [4:0] and direction bit [5] (0=forward, 1=reverse), giving 42 effective configurations per side without reprogramming | Same mechanism and switch count for both variants | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N), SW2, SW3 |
-| FR-ROT-08 | Implement ring setting via SW1 (6 switches, Board A input side only); CPLD sums SW1[5:0] with decoded position (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor_Mechanical_Spec.md |
+| FR-ROT-08 | Implement ring setting via SW1 (6 switches, Board A input side only); CPLD sums SW1[5:0] with decoded position (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor/Design_Spec.md |
 | FR-ROT-09 | Expose effective rotor position (decoded position + SW1 ring offset, mod N) via Intel Virtual JTAG (ALTERA_VIRTUAL_JTAG megafunction, USER0 instruction) as a 6-bit UDR; readable by JDB FT232H without interrupting cipher operation | 26-char variant: bits [4:0] valid, bit [5]=0; 64-char: all 6 bits; cipher logic operates independently on CPLD system clock | §2.2 Logic & Transposition; §3.3 Signal Integrity; cross-ref: DEC-027, JDB Design_Spec |
 | FR-ROT-10 | The rotor boards shall be assembled by JLCPCB SMT (one side each, outward-facing); the internal IDC connector (J_INT) shall be manually assembled post-SMT | Keyed IDC box header prevents incorrect orientation | §3.4 Connector Pinouts; BOM J_INT |
 
@@ -71,7 +71,7 @@ For mechanical dimensions, tolerances, shroud specification, and encoder slot ge
 | :--- | :--- | :--- | :--- |
 | DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 PCB Fabrication & Stackup |
 | DR-ROT-02 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; 21 UFM forward maps; SW2/SW3 direction bit gives 42 effective configs; character width in variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
-| DR-ROT-03 | Position sensor | Split dual-track capacitive encoder: FDC2114RGER U2 on Board A (Track A, r≈44mm, bits[5:3] N=64 or all 5 bits N=26); FDC2114RGER U3 on Board B (Track B, r≈44mm, bits[2:0] N=64 only — not populated for N=26); PCB Ø=92mm; track patterns in variant design files | §2.1 Position Sensing; BOM U2 (Board A), U3 (Board B) |
+| DR-ROT-03 | Position sensor | Split dual-track capacitive encoder: FDC2114RGER U2 on Board A (Track A, r≈44mm, bits[5:3] N=64 or STGC bits[3:0] N=26, addr 0x2A); FDC2114RGER U3 on Board B (Track B, r≈44mm, bits[2:0] N=64 only — not populated for N=26, addr 0x2B); FDC2114RGER U4 on Board A (addr 0x2B, CH0 = STGC bit[4] — N=26 builds only; not populated for N=64); PCB Ø=92mm; track patterns in variant design files | §2.1 Position Sensing; BOM U2 (Board A), U3 (Board B), U4 (Board A, N=26 only) |
 | DR-ROT-04 | Input connectors (Board A) | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors (Board B) | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
 | DR-ROT-11 | Internal connector (J_INT) | Keyed 2.54mm IDC box header, 2×12 (24-pin), on inner face of both boards; keyed to prevent incorrect orientation; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM J_INT |
@@ -110,12 +110,16 @@ flanges — no conductive ink, no magnets, and no mechanical contacts.
 Two **Texas Instruments FDC2114RGER** (4-channel capacitive-to-digital converter, I²C, 3.3 V,
 16-VQFN) per rotor:
 
-* **U2 (Board A)** — senses Track A (bits[5:3] for N=64; bits[4:0] for N=26); I²C address 0x2A.
+* **U2 (Board A)** — senses Track A (bits[5:3] for N=64; STGC bits[3:0] for N=26); I²C address 0x2A.
   Track A slots milled into the inner face of the shroud **dish** flange (Board A side).
 * **U3 (Board B)** — senses Track B (bits[2:0] for N=64 only); I²C address 0x2B.
   Track B slots milled into the inner face of the shroud **cover** flange (Board B side).
   **U3 is not populated for N=26 rotors.** Unused channels have their IN pins tied to GND
   via 100 kΩ.
+* **U4 (Board A, N=26 only)** — FDC2114RGER, addr 0x2B. CH0 = STGC bit[4]; CH1–CH3 unused
+  (IN pins tied to GND via 100 kΩ). **U4 is not populated for N=64** (where addr 0x2B is used
+  by U3 on Board B instead). N=26 variant: U2 (addr 0x2A) reads STGC bits[3:0], U4 (addr 0x2B,
+  Board A) reads STGC bit[4].
 
 The CPLD implements a simple I²C master and polls U2 (and U3 for N=64) at power-up and after
 each detected position change. Each channel reports HIGH (solid aluminium) or LOW (milled slot).
@@ -155,10 +159,11 @@ Variant-specific track bit patterns and full decode tables are defined in:
 * **Role:** Applies the active cipher map to incoming ENC\_IN data and outputs the substituted
   value as ENC\_OUT. The forward-pass and return-pass maps are selected independently by SW2 and
   SW3 respectively:
-  * **Forward path:** J3 ENC\_IN[0:N-1] → CPLD applies SW2-selected map → J6 ENC\_OUT[0:N-1]
-  * **Return path:** J6 ENC\_IN[0:N-1] → CPLD applies SW3-selected map → J3 ENC\_OUT[0:N-1]
-  * N = 5 for 26-character variant; N = 6 for 64-character variant.
-* **Memory:** The CPLD UFM stores **21 forward-direction cipher maps** using a common 64-entry
+  * **Forward path:** J3 ENC\_IN[0:W-1] → CPLD applies SW2-selected map → J6 ENC\_OUT[0:W-1]
+  * **Return path:** J6 ENC\_IN[0:W-1] → CPLD applies SW3-selected map → J3 ENC\_OUT[0:W-1]
+  * W = 5 for 26-character variant; W = 6 for 64-character variant.
+    Note: N denotes alphabet size (26 or 64) throughout this document; W denotes ENC bus active bit width.
+* **Memory:** The CPLD UFM stores
   × 6-bit format (384 bits per map; 21 maps × 384 = 8,064 bits, within the 8,192-bit UFM).
   Both rotor variants use this identical map count and selection mechanism; the actual map data
   is variant-specific. The EPM570T100I5N is required (570 LEs): a 64-character map needs
@@ -212,7 +217,7 @@ setting (Ringstellung), emulating the ring and notch position of an original Eni
   reading, modulo N (N = 26 for 26-char variant; N = 64 for 64-char variant), to produce the
   **effective position**. When this matches the notch trigger value for the active map, the CPLD
   signals the next rotor in the stack to advance one position (turnover).
-* **Cross-reference:** See `design/Mechanical/Rotor_Mechanical_Spec.md` (to be created) for the
+* **Cross-reference:** See `design/Mechanical/Rotor/Design_Spec.md` for the
   ring gear, notch wheel, and mechanical turnover engagement mechanism.
 
 #### Map Selection DIP Switches (SW2 / SW3)
@@ -245,11 +250,11 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
 * **The ENC Data Path:** The cipher bus passes through every rotor in the stack (Stator → Rotor 1
   → … → Rotor 30 → Reflector forward; reverse for the return path). At **each rotor the CPLD
   applies the active cipher substitution** — data is NOT passed through transparently:
-  * **Forward path:** J3 ENC\_IN[0:N-1] → CPLD applies SW2-selected map (direction per SW2[5])
-    → J6 ENC\_OUT[0:N-1]
-  * **Return path:** J6 ENC\_IN[0:N-1] → CPLD applies SW3-selected map (direction per SW3[5])
-    → J3 ENC\_OUT[0:N-1]
-  * N = 5 for 26-character variant; N = 6 for 64-character variant.
+  * **Forward path:** J3 ENC\_IN[0:W-1] → CPLD applies SW2-selected map (direction per SW2[5])
+    → J6 ENC\_OUT[0:W-1]
+  * **Return path:** J6 ENC\_IN[0:W-1] → CPLD applies SW3-selected map (direction per SW3[5])
+    → J3 ENC\_OUT[0:W-1]
+  * W = 5 for 26-character variant; W = 6 for 64-character variant (N denotes alphabet size; W denotes ENC bus active bit width).
   * All connectors carry 6 bits (ENC[0:5]) regardless of variant to maintain a common pinout
     across mixed stacks. The 26-character variant leaves ENC[5] as NC.
   * This path is entirely separate from the JTAG TTD\_RETURN signal.
@@ -282,7 +287,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
   * **SYS\_RESET\_N (R5):** 10kΩ pull-up to 3V3_ENIG — active-low; pull-up holds CPLD out of reset by default.
   These are present on every rotor board. With 30 rotors, 30 sets of pull resistors exist in the full stack;
   this is intentional and consistent with making each rotor independently safe in any stack position.
-* **Shielding:** 4-layer PCB with solid GND plane (L2) to isolate digital switching from the high-accuracy magnetic encoder.
+* **Shielding:** 4-layer PCB with solid GND plane (L2) to isolate digital switching from the high-accuracy capacitive encoder.
 
 ### 3.4 Connector Pinouts (Rotor Interface — Authority Document)
 
@@ -409,12 +414,12 @@ Signal allocation (24 pins, 2×12):
 | 8 | GND | — | Ground |
 | 9 | TCK | A→B | JTAG clock (pass-through to U3 if used) |
 | 10 | TMS | A→B | JTAG mode select |
-| 11 | TDO | B→A | JTAG data out from Board B |
+| 11 | TDO | A→B | JTAG data out from CPLD (Board A) → J4 pin 6 (Board B) |
 | 12 | ENC_B[2] | B→A | Track B bit 2 (N=64 only) |
 | 13 | ENC_B[1] | B→A | Track B bit 1 (N=64 only) |
 | 14 | ENC_B[0] | B→A | Track B bit 0 (N=64 only) |
-| 15 | DIR | A↔B | Encoder direction signal |
-| 16 | CLK | A↔B | Encoder clock |
+| 15 | SW3[4] | B→A | Map select bit 4 (Board B SW3 → Board A CPLD) |
+| 16 | SW3[5] | B→A | Map direction bit (Board B SW3 → Board A CPLD) |
 | 17 | SDA | A→B | I²C data (for U3 FDC2114 on Board B) |
 | 18 | SCL | A→B | I²C clock (for U3 FDC2114 on Board B) |
 | 19 | SW3[0] | B→A | DIP SW3 bit 0 state |
@@ -423,6 +428,9 @@ Signal allocation (24 pins, 2×12):
 | 22 | SW3[3] | B→A | DIP SW3 bit 3 state |
 | 23 | GND | — | Ground |
 | 24 | GND | — | Ground |
+
+> **SW3 bit coverage note:** All 6 SW3 DIP switch bits reach the CPLD on Board A via J_INT:
+> pins 19–22 carry SW3[0:3]; pins 15–16 carry SW3[4:5].
 
 ### 3.5 Prototype Bench-Testing Provision (Break-Off Coupons)
 
@@ -469,6 +477,7 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | TBD | TBD |
 | U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; bits[4:0] N=26); I²C addr 0x2A | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
+| U4 | FDC2114RGER, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
 | SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
 | SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
 

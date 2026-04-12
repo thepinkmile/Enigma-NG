@@ -47,7 +47,7 @@ The `design/Standards/Global_Routing_Spec.md` applies to all boards in the Enigm
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 6-Layer / 2oz | **Design Locked** |
 | **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
-| **Rotor Module** | Smart encryption units (30x) with MAX II EPM240T100I5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
+| **Rotor Module** | Smart encryption units (30x) with MAX II EPM570T100I5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
 | **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 2oz | **Design Locked** |
 
 ## 6. Controller Board
@@ -94,8 +94,8 @@ Located at the opposite end of the Stator from the Controller, this board manage
 
 Modular units containing the encryption logic.
 
-* **Logic:** An Intel MAX II EPM240T100I5N CPLD per rotor.
-* **Telemetry:** AS5600 Magnetic Encoders to report physical wheel position to the CM5.
+* **Logic:** An Intel MAX II EPM570T100I5N CPLD per rotor.
+* **Telemetry:** FDC2114RGER capacitive encoders (dual-track Gray code for N=64; single-track STGC for N=26) to report rotor position to the CM5 via Virtual JTAG (DEC-027).
 * **Mechanical:** Features a 3D-printed/CNC index gear for the manual advancement pawls.
 
 ## 12. Stator Board
@@ -104,7 +104,7 @@ The mechanical and electrical backbone.
 
 * **Distribution:** A backplane providing ~2.2A worst-case 3V3_ENIG distribution and signal routing for the rotor stack.
 * **Connectivity:** Bridges the Controller, Encoder, and Rotor stack into a single parallel bus.
-* **Programmability:** An Intel MAX II EPM240T100I5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
+* **Programmability:** An Intel MAX II EPM570T100I5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
   * Before the rotor stack.
   * After the rotor stack.
   * Before and After the rotor stack.
