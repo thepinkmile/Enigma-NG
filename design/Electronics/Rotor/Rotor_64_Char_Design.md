@@ -82,16 +82,68 @@ Up to 21 distinct forward maps can be stored, each usable in both forward and re
 See `Design_Spec.md §2.3` for the SW1 hardware description.
 For the 64-character variant:
 
-* The AS5600 6-bit reading maps directly to positions 0–63 (full 6-bit range is valid).
-* SW1[5:0] is summed **modulo 64** with the AS5600 reading to yield the effective position.
+* The CPLD reads 6 sensor pads (S0–S5) as a 6-bit STGC code and maps it via a combinational
+  lookup table to a binary position 0–63. All 64 possible 6-bit codes are valid (no invalid
+  codes); no between-character jam detection is possible for this variant through code checking.
+* SW1[5:0] is summed **modulo 64** with the decoded binary position to yield the effective position.
 * Notch trigger positions are defined per map in the VHDL tables (see OWI-003).
 
 ---
 
 ## 6. Prototype Build Note
 
-Both 26-character and 64-character rotor sets will be built for the prototype. Initial wiring
-maps will be generated using the STGC\_Generator tool
-(`design/Electronics/Rotor/STGC_Generator.py`) and loaded into each 64-character rotor's UFM
-at first JTAG programming. SW2 and SW3 are then used to select map index and direction
-independently at runtime.
+Both 26-character and 64-character rotor sets will be built for the prototype. Wiring maps will
+be defined per OWI-003 and loaded into each 64-character rotor's UFM at first JTAG programming.
+SW2 and SW3 are then used to select map index and direction independently at runtime.
+
+---
+
+## 7. Single-Track Encoder — 64-Character Variant
+
+### Geometry
+
+| Parameter | Value |
+| :--- | :--- |
+| Segments (N) | 64 |
+| Sensor count (K) | 6 |
+| Degrees per segment | 5.625° |
+| Arc length per segment at r = 47 mm | ≈ 4.9 mm |
+| Sensor angular positions (from S0) | 0°, 5.625°, 11.25°, 16.875°, 22.5°, 28.125° |
+| PCB outer diameter | 100 mm |
+| Sensor pad radius | ≈ 47 mm from board centre |
+
+### Track Bit Pattern
+
+The shroud inner face carries a 64-segment conductive-ink track. Starting from the reference
+segment (position 0), the segment pattern is (1 = conductive, 0 = gap):
+
+```text
+0000001111110111100111010111000110110100110010110000101010001001
+```
+
+Position 0 is the reference (all 6 sensors read 0). The pattern is applied clockwise as viewed
+from the input face of the rotor.
+
+### STGC → Position Lookup Table
+
+The CPLD VHDL implements a 64-entry lookup ROM (6-bit address → 6-bit position). All 64 codes
+are valid for this variant.
+
+| Code | Pos | Code | Pos | Code | Pos | Code | Pos |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 0 | 0 | 16 | 48 | 32 | 1 | 48 | 2 |
+| 1 | 63 | 17 | 56 | 33 | 47 | 49 | 27 |
+| 2 | 62 | 18 | 59 | 34 | 55 | 50 | 36 |
+| 3 | 46 | 19 | 40 | 35 | 26 | 51 | 15 |
+| 4 | 61 | 20 | 50 | 36 | 58 | 52 | 42 |
+| 5 | 54 | 21 | 52 | 37 | 35 | 53 | 21 |
+| 6 | 45 | 22 | 33 | 38 | 39 | 54 | 30 |
+| 7 | 25 | 23 | 19 | 39 | 14 | 55 | 9 |
+| 8 | 57 | 24 | 28 | 40 | 49 | 56 | 3 |
+| 9 | 60 | 25 | 37 | 41 | 41 | 57 | 16 |
+| 10 | 53 | 26 | 43 | 42 | 51 | 58 | 22 |
+| 11 | 34 | 27 | 31 | 43 | 20 | 59 | 10 |
+| 12 | 38 | 28 | 17 | 44 | 29 | 60 | 4 |
+| 13 | 44 | 29 | 23 | 45 | 32 | 61 | 11 |
+| 14 | 24 | 30 | 12 | 46 | 18 | 62 | 5 |
+| 15 | 13 | 31 | 7 | 47 | 8 | 63 | 6 |

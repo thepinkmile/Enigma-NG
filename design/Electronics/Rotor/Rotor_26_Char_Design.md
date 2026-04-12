@@ -92,9 +92,10 @@ wiring only; the inverse is obtained via the direction bit).
 See `Design_Spec.md §2.3` for the SW1 hardware description.
 For the 26-character variant:
 
-* The AS5600 6-bit reading maps to positions 0–25 (26 valid positions). Readings of 26–63
-  indicate a between-character position and are flagged as a mechanical fault via I2C telemetry.
-* SW1[5:0] is summed **modulo 26** with the AS5600 reading to yield the effective position.
+* The CPLD reads 5 sensor pads (S0–S4) as a 5-bit STGC code and maps it via a combinational
+  lookup table to a binary position 0–25. Codes not present in the lookup table (11, 13, 21, 22,
+  26, 31) indicate a between-character position and are flagged as a mechanical fault condition.
+* SW1[5:0] is summed **modulo 26** with the decoded binary position to yield the effective position.
 * Notch trigger positions are defined per map in the VHDL tables (see OWI-003).
 
 ---
@@ -105,3 +106,54 @@ Both 26-character and 64-character rotor sets will be built for the prototype. A
 rotor maps (indices 0–9) will be programmed into each 26-character rotor at first JTAG
 programming. SW2 and SW3 are then used to select rotor type and direction independently at
 runtime.
+
+---
+
+## 7. Single-Track Encoder — 26-Character Variant
+
+### Geometry
+
+| Parameter | Value |
+| :--- | :--- |
+| Segments (N) | 26 |
+| Sensor count (K) | 5 |
+| Degrees per segment | 13.846° |
+| Arc length per segment at r = 47 mm | ≈ 12.1 mm |
+| Sensor angular positions (from S0) | 0°, 13.846°, 27.692°, 41.538°, 55.385° |
+| PCB outer diameter | 100 mm |
+| Sensor pad radius | ≈ 47 mm from board centre |
+
+### Track Bit Pattern
+
+The shroud inner face carries a 26-segment conductive-ink track. Starting from the reference
+segment (position 0), the segment pattern is (1 = conductive, 0 = gap):
+
+```text
+00000100011001010011101111
+```
+
+Position 0 is the reference (all 5 sensors read 0). The pattern is applied clockwise as viewed
+from the input face of the rotor.
+
+### STGC → Position Lookup Table
+
+The CPLD VHDL implements a 32-entry lookup ROM (5-bit address → 5-bit position). Codes not listed
+below are invalid and trigger a mechanical fault flag.
+
+| STGC Code | Binary | Position | | STGC Code | Binary | Position |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 0 | 00000 | 0 | | 17 | 10001 | 5 |
+| 16 | 10000 | 1 | | 18 | 10010 | 14 |
+| 8 | 01000 | 2 | | 25 | 11001 | 15 |
+| 4 | 00100 | 3 | | 28 | 11100 | 16 |
+| 2 | 00010 | 4 | | 14 | 01110 | 17 |
+| 24 | 11000 | 6 | | 23 | 10111 | 18 |
+| 12 | 01100 | 7 | | 27 | 11011 | 19 |
+| 6 | 00110 | 8 | | 29 | 11101 | 20 |
+| 19 | 10011 | 9 | | 30 | 11110 | 21 |
+| 9 | 01001 | 10 | | 15 | 01111 | 22 |
+| 20 | 10100 | 11 | | 7 | 00111 | 23 |
+| 10 | 01010 | 12 | | 3 | 00011 | 24 |
+| 5 | 00101 | 13 | | 1 | 00001 | 25 |
+
+**Invalid codes** (mechanical fault / between-character): 11, 13, 21, 22, 26, 31.

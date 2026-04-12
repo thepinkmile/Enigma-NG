@@ -12,7 +12,9 @@
 The Enigma-NG uses a 30-rotor stack. Unlike the original mechanical rotors, these are **Smart Digital Rotors**
 where the internal scrambled wiring is emulated by a dedicated logic chip on each module.
 The outer rotating mechanism works like the outer ring of a bearing around the central static ring (this is the rotor PCB and enclosure).
-There are also sensors used to detect the current position of the outer ring using a single-track grey encoder.
+The current position of the outer ring is detected using a **single-track absolute capacitive encoder**: a conductive ink pattern on the shroud inner face forms a single circular track, and K
+capacitive sensor pads on the PCB (at the outer edge, r ≈ 47 mm from board centre) read the track as a K-bit code. A combinational lookup table in the CPLD VHDL maps the raw sensor code to a
+binary rotor position. Variant-specific track patterns and lookup tables are defined in the respective variant design files.
 
 Two rotor variants are defined for the Enigma-NG system: the **26-character variant** (5-bit,
 compatible with original Enigma rotors I–VIII, Beta, Gamma) and the **64-character variant**
@@ -29,13 +31,13 @@ mixed stack. Variant-specific details are in
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | 21 forward maps in CPLD UFM; direction bit doubles to 42 configs; see variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
-| FR-ROT-02 | Detect rotor angular position using a contactless magnetic encoder | 6-bit resolution; detects between-character positions | §2.1 Position Sensing; BOM U2 (AS5600) |
+| FR-ROT-02 | Detect rotor angular position using a single-track absolute capacitive encoder | K sensor pads; detects between-character positions as invalid STGC codes; K=5 (26-char) or K=6 (64-char) | §2.1 Position Sensing; BOM U2/U3 (FDC2114RGER) |
 | FR-ROT-03 | Pass JTAG chain signals to the next rotor in the stack (or to the Reflector at position 30) | Serial daisy-chain; each rotor is one JTAG device | §3.3 Signal Integrity; BOM J1 (ERM8-005 JTAG in), J4 (ERF8-005 JTAG out) |
 | FR-ROT-04 | Receive 3V3_ENIG power from the upstream board and forward to the downstream board | Passive power pass-through via J2/J5 | §3.1 Power Management; BOM J2 (ERM8-005 power in), J5 (ERF8-005 power out) |
 | FR-ROT-05 | Apply cipher substitution at each rotor hop via CPLD; forward and return paths processed independently using SW2/SW3 selected maps | J3 ENC_IN → CPLD (SW2 map+dir) → J6 ENC_OUT; J6 ENC_IN → CPLD (SW3 map+dir) → J3 ENC_OUT; see §3.2 | §3.2 Communication Bus; BOM J3 (ERM8-010), J6 (ERF8-010) |
 | FR-ROT-06 | Be individually removable for maintenance or reconfiguration without tools | Samtec ERM8/ERF8 high-cycle connectors | §2.3 Mechanical Details; BOM J1–J6 (Samtec ERM8/ERF8) |
 | FR-ROT-07 | Store 21 forward cipher maps in CPLD UFM; SW2 (input side) and SW3 (output side) each independently select map index [4:0] and direction bit [5] (0=forward, 1=reverse), giving 42 effective configurations per side without reprogramming | Same mechanism and switch count for both variants | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N), SW2, SW3 |
-| FR-ROT-08 | Implement ring setting via SW1 (6 switches, input side only); CPLD sums SW1[5:0] with AS5600 position reading (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor_Mechanical_Spec.md |
+| FR-ROT-08 | Implement ring setting via SW1 (6 switches, input side only); CPLD sums SW1[5:0] with STGC-decoded position (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor_Mechanical_Spec.md |
 
 #### Design Requirements
 
@@ -43,22 +45,62 @@ mixed stack. Variant-specific details are in
 | :--- | :--- | :--- | :--- |
 | DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 PCB Fabrication & Stackup |
 | DR-ROT-02 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; 21 UFM forward maps; SW2/SW3 direction bit gives 42 effective configs; character width in variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
-| DR-ROT-03 | Position sensor | AMS AS5600 magnetic encoder (6-bit resolution, contactless) | §2.1 Position Sensing; BOM U2 (AS5600) |
+| DR-ROT-03 | Position sensor | Single-track capacitive absolute encoder: 2× TI FDC2114RGER (4-channel I2C capacitive-to-digital); K sensor pads on PCB outer edge at r≈47mm; PCB Ø=100mm; track pattern and lookup table in variant design files | §2.1 Position Sensing; BOM U2/U3 (FDC2114RGER) |
 | DR-ROT-04 | Input connectors | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
 | DR-ROT-06 | Power consumption | ≤50 mA per rotor from 3V3_ENIG | §3.1 Power Management |
 | DR-ROT-07 | Stack quantity | 30 rotor boards in the complete system | §1 Overview |
 | DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; 8mm solid metal support rod (non-threaded) through all 30 rotors for alignment and connector stress relief; stack is horizontal | §2.3 Mechanical Details |
-| DR-ROT-09 | Ring setting DIP switches (SW1) | 6-position DIP switch on input side only; SW1[5:0] summed mod N with AS5600 output to yield effective rotor position | §2.3 Mechanical Details; BOM SW1 |
+| DR-ROT-09 | Ring setting DIP switches (SW1) | 6-position DIP switch on input side only; SW1[5:0] summed mod N with CPLD STGC-decoded position to yield effective rotor position | §2.3 Mechanical Details; BOM SW1 |
 | DR-ROT-10 | Map selection DIP switches (SW2 / SW3) | 6-position DIP on each face: bits [4:0] = map index (0–20 valid), bit [5] = direction (0=forward, 1=reverse); identical mechanism on both variants | §2.2 Logic & Transposition; BOM SW2, SW3 |
 
 ## 2. Core Design
 
-### 2.1 Position Sensing (The "Zero-Wear" System)
+### 2.1 Position Sensing (Single-Track Capacitive Encoder)
 
-* **Sensor:** [AS5600 Magnetic Encoder](https://www.ams-osram.com).
-* **Decision:** We avoid mechanical wipers/brushes (the main failure point of original Enigmas) in favour of contactless magnetic sensing.
-* **Precision:** 6-bit resolution allows the CM5 to detect if a rotor is "between" characters and flag a mechanical jam.
+The rotor outer ring position is detected contactlessly using a **single-track absolute capacitive
+encoder**. All active components reside on the rotor PCB; the rotating shroud requires only a
+passive conductive-ink or selective-metallisation surface pattern — no magnets, no optical sources,
+and no mechanical contacts.
+
+#### Physical Arrangement
+
+* **PCB diameter:** 100 mm (50 mm radius).
+* **Sensor pads:** K pads on the PCB outer edge at r ≈ 47 mm from board centre, facing the
+  shroud inner face across a ≤1 mm air gap.
+* **Sensor spacing:** Pads are equally spaced at one segment pitch apart (360°/N, where N is the
+  character count for the installed variant).
+* **Shroud track:** A single circular conductive track on the shroud inner face. Conductive
+  segments ("1") and gaps ("0") are arranged according to the variant-specific bit pattern defined
+  in the respective variant design file.
+
+#### Sensing ICs
+
+Two **Texas Instruments FDC2114RGER** (4-channel capacitive-to-digital converter, I²C, 3.3 V,
+16-VQFN) per rotor:
+
+* **U2** — channels 0–3 (sensor pads S0–S3); I²C address 0x2A.
+* **U3** — channels 0–1 (sensor pads S4–S5 for 64-char variant; S4 only for 26-char variant);
+  I²C address 0x2B. Unused channels have their IN pins tied to GND via 100 kΩ.
+
+The CPLD implements a simple I²C master and polls U2 and U3 at power-up and after each detected
+position change. Each channel reports HIGH (conductive segment present) or LOW (gap).
+
+#### CPLD Position Decode
+
+The K sensor readings form a K-bit STGC code. A **combinational lookup table** in the CPLD VHDL
+maps each valid code to its corresponding binary position (0 to N−1). This same mechanism applies
+to both rotor variants; only the table contents differ. Invalid STGC codes (those not present in
+the lookup table) indicate a between-character position and are flagged as a mechanical fault
+condition.
+
+The decoded binary position feeds directly into the SW1 modulo-N adder (§2.3).
+
+Variant-specific track bit patterns, sensor angular positions, and full STGC → position lookup
+tables are defined in:
+
+* `design/Electronics/Rotor/Rotor_26_Char_Design.md` §6
+* `design/Electronics/Rotor/Rotor_64_Char_Design.md` §7
 
 ### 2.2 Logic & Transposition
 
@@ -167,7 +209,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
   * This path is entirely separate from the JTAG TTD\_RETURN signal.
 * **JTAG TTD\_RETURN Path:** After the Reflector processes the cipher reversal, TTD\_RETURN travels
   separately: Reflector J4 → Stator J7 → Link-Beta pin 26 → FT232H on JDB (JTAG chain closure only).
-* **Control:** Shared I2C bus for position telemetry (AS5600 on each rotor).
+* **Control:** Each rotor has a local I²C bus for position sensing (FDC2114 U2/U3). The CPLD acts as I²C master; no I²C signals are exposed on J1–J6.
 * **JTAG:** Pass-through lines allow the **USB Blaster** on the Controller Board to program the
   entire 30-rotor stack in one daisy-chain operation. Under normal operation JTAG is idle; cipher
   maps are selected via SW2/SW3 without reprogramming.
@@ -342,7 +384,8 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | TBD | TBD |
-| U2 | Magnetic encoder | AS5600 | DFN-8 | 985-AS5600-ASOM | 620-1984-1-ND | C123471 |
-| SW1 | Ring setting DIP switch (input side only; SW1[5:0] summed with AS5600 output for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
+| U2 | Capacitive sensor IC, channels 0–3 (pads S0–S3) | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
+| U3 | Capacitive sensor IC, channels 0–1 (pads S4–S5; 64-char) or S4 only (26-char) | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
+| SW1 | Ring setting DIP switch (input side only; SW1[5:0] summed with STGC-decoded position for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
 | SW2 | Forward-pass map selection (input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
 | SW3 | Return-pass map selection (output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |

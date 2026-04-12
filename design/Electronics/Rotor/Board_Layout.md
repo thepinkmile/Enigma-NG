@@ -12,14 +12,14 @@
 ## Component Areas
 
 ```text
-TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
+4-Layer / 2oz Copper / ENIG / Circular Ø100mm
  _____________________________________________________________________________
 |                                                                             |
 |   [ CPLD ] <--- Intel MAX II EPM570T100I5N                                  |
 |   (Wiring emulation + position decode)                                      |
 |                                                                             |
-|   [ AS5600 ] <--- Magnetic encoder IC                                       |
-|   (6-bit Grey code position)                                                |
+|   [ FDC2114 U2/U3 ] <--- Capacitive sensor ICs (×2)                        |
+|   (Single-track absolute encoder; K pads at r≈47mm outer edge)             |
 |                                                                             |
 |   [ BULK DECOUPLING ] <--- 5x 10uF X7R star/spoke                          |
 |   [ 8x 0.1uF LOCAL ] <--- Per CPLD VCC pin                                 |

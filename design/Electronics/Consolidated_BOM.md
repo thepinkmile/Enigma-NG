@@ -26,7 +26,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
 | EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; drop-in for EPM240; used on Stator and Rotor boards) | — | — | 1 | — | — | 1 | 30 | — | — | — | 31 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
-| AS5600 — Magnetic Position Encoder (DFN-8) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
+| FDC2114RGER — 4-ch Capacitive Sensor IC, U2 pads S0–S3 (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
+| FDC2114RGER — 4-ch Capacitive Sensor IC, U3 pads S4–S5/S4 (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
 | SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
