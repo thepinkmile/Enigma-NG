@@ -422,8 +422,8 @@ mitigation plan are documented.
 | **Manufacturer** | Intel (formerly Altera) |
 | **Part Number** | EPM240T100I5N |
 | **Family** | MAX II |
-| **Function** | CPLD — Rotor logic emulation (VCCIO from 3V3_ENIG rail) |
-| **Quantity** | 37 devices (1 Stator + 6 Encoder + 30 Rotor CPLDs) |
+| **Function** | Encoder letter-substitution logic (6 Encoder boards only) |
+| **Quantity** | 6 devices (Encoder ×6 only) |
 | **EOL/PCN Status** | Active lifecycle notice issued by Intel |
 | **Notice Type** | Product Discontinuation / Last-Time-Buy notification |
 
@@ -460,6 +460,22 @@ Any replacement CPLD must be verified for:
 - Operating temperature range: −40°C to +85°C minimum (IEC 60068-2 extended industrial range; selected conservatively to support future military certification assessment)
 
 > **Action item OA-04:** Review replacement CPLD options before prototype-to-production transition. Update this register with selected replacement part.
+
+---
+
+### 7.2 Intel MAX V EPM570T100I5N (Rotor + Stator CPLDs)
+
+| Attribute | Detail |
+| --- | --- |
+| **Manufacturer** | Intel (formerly Altera) |
+| **Part Number** | EPM570T100I5N |
+| **Family** | MAX V |
+| **Quantity** | 31 devices (Rotor ×30 + Stator ×1) |
+| **Supply** | 3.3 V (3V3_ENIG rail) |
+| **Function** | Rotor wiring-map lookup + mod-N adder + STGC/RBGC encoder decode (Rotor ×30); Stator plugboard routing matrix (Stator ×1) |
+| **Package** | TQFP-100 (industrial, −40 °C to +100 °C) |
+| **JTAG** | All 31 devices in-system programmable via shared JTAG chain |
+| **Virtual JTAG** | Rotor CPLDs expose ALTERA_VIRTUAL_JTAG USER0 UDR for position readback (FR-ROT-09, DEC-027) |
 
 ---
 

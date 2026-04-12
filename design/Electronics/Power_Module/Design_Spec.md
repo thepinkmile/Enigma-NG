@@ -51,7 +51,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERJ-3EKF2100V, 210 Ω, 1% thick-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
 | DR-PM-07 | Supercapacitor bank | 6× 22 F / 2.7 V in 2S3P configuration = 33 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–6 |
-| DR-PM-08 | Backup activation threshold | 4.644 V (R14 = 28.7 kΩ, ERA-3ARB2872V) — fires before MCP121T 4.50 V threshold, preventing PMIC_EN glitch during power-loss transient | §5 Protection & Logic; BOM R14 (28.7kΩ), R15 (10.0kΩ) |
+| DR-PM-08 | Backup activation threshold | 4.644 V (R14 = 28.7 kΩ, ERA-3ARB2872V) — fires before MCP121T 4.50 V threshold, preventing PWR_GD glitch during power-loss transient | §5 Protection & Logic; BOM R14 (28.7kΩ), R15 (10.0kΩ) |
 | DR-PM-09 | Holdup duration | ≥21.7 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–6 (22F/2.7V), U3 (LTC3350) |
 | DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
 | DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
@@ -548,7 +548,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > * **R14/R15 BACKUP divider** — **REVISED (PM-06 superseded):** R14 changed from 26.7kΩ to **28.7kΩ** (ERA-3ARB2872V).
 >   Sets LTC3350 BACKUP comparator trigger at **4.644V** (V_thr=1.2V, R_TOP=28.7kΩ, R_BOT=10.0kΩ → actual 4.644V).
 >   This fires **before** MCP121T deasserts at 4.50V — LTC3350 activates first, immediately restoring 5V_MAIN and keeping
->   PMIC_EN stable throughout the hold-up window. The previous 4.40V threshold (PM-06 fix) caused a brief PMIC_EN glitch as
+>   PWR_GD stable throughout the hold-up window. The previous 4.40V threshold (PM-06 fix) caused a brief PWR_GD glitch as
 >   the rail traversed the 4.40V–4.50V gap before LTC3350 could respond. Graceful shutdown is now triggered via the
 >   `/INTB` → MIC1555 U15 → `PWR_BUT` one-shot (FR-PM-07), making PWR_GD deassertion redundant as a shutdown trigger.
 >   Use 0.1% tolerance on both R14 and R15 for threshold accuracy.
