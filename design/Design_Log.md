@@ -1041,7 +1041,7 @@ PCB outer diameter Ø92mm (inside Ø100mm aluminium shroud) — per DEC-028
   design intent stated in §1 ("single-track grey encoder").
 - **No magnet pocket on shroud:** The AS5600 requires a diametrically magnetised magnet (~6mm dia)
   embedded in or attached to the rotating shroud, adding manufacturing complexity. The capacitive
-  approach requires only a conductive ink surface pattern — no embedded components.
+  approach requires only milled aluminium slot patterns on the rotating shroud — no embedded components.
 - **All sensing electronics on PCB:** Capacitive pads and FDC2114 ICs are standard PCB components.
   The shroud is a passive mechanical part.
 - **Reliable at slow rotation rates:** The rotors step at human-typing speed (≤10 char/s). The

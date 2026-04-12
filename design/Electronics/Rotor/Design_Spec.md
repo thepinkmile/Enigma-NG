@@ -121,7 +121,7 @@ Two **Texas Instruments FDC2114RGER** (4-channel capacitive-to-digital converter
   by U3 on Board B instead). N=26 variant: U2 (addr 0x2A) reads STGC bits[3:0], U4 (addr 0x2B,
   Board A) reads STGC bit[4].
 
-The CPLD implements a simple I²C master and polls U2 (and U3 for N=64) at power-up and after
+The CPLD implements a simple I²C master and polls U2 and U4 (N=26) or U2 and U3 (N=64) at power-up and after
 each detected position change. Each channel reports HIGH (solid aluminium) or LOW (milled slot).
 
 #### CPLD Position Decode
@@ -139,7 +139,7 @@ No lookup table required. All 64 codes are valid. Zero multi-bit transitions at 
 including the 63→0 wrap. Full decode detail in `Rotor_64_Char_Design.md §7`.
 
 **N=26 (single-track, 5-bit STGC):**
-The 5 sensor readings (all from U2 on Board A) form a 5-bit STGC code. A **combinational
+The 5 sensor readings (U2 STGC bits[3:0] and U4 STGC bit[4], both on Board A) form a 5-bit STGC code. A **combinational
 lookup table** in the CPLD VHDL maps each valid code to its corresponding binary position
 (0 to 25). Invalid codes flag a between-character fault. Standard Gray code is not achievable
 for N=26 (not a power of 2); the lookup table is retained. Full decode detail in
@@ -163,8 +163,7 @@ Variant-specific track bit patterns and full decode tables are defined in:
   * **Return path:** J6 ENC\_IN[0:W-1] → CPLD applies SW3-selected map → J3 ENC\_OUT[0:W-1]
   * W = 5 for 26-character variant; W = 6 for 64-character variant.
     Note: N denotes alphabet size (26 or 64) throughout this document; W denotes ENC bus active bit width.
-* **Memory:** The CPLD UFM stores
-  × 6-bit format (384 bits per map; 21 maps × 384 = 8,064 bits, within the 8,192-bit UFM).
+* **Memory:** The CPLD UFM stores 21 forward-direction cipher maps in the common 64-entry × 6-bit format (384 bits per map, 21 maps × 384 = 8,064 bits, within the 8,192-bit UFM).
   Both rotor variants use this identical map count and selection mechanism; the actual map data
   is variant-specific. The EPM570T100I5N is required (570 LEs): a 64-character map needs
   384 flip-flops for the loaded register table plus ~80 LEs for combinational decode, totalling
@@ -260,7 +259,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
   * This path is entirely separate from the JTAG TTD\_RETURN signal.
 * **JTAG TTD\_RETURN Path:** After the Reflector processes the cipher reversal, TTD\_RETURN travels
   separately: Reflector J4 → Stator J7 → Link-Beta pin 26 → FT232H on JDB (JTAG chain closure only).
-* **Control:** Each rotor has a local I²C bus for position sensing (FDC2114 U2/U3). The CPLD acts as I²C master; no I²C signals are exposed on J1–J6.
+* **Control:** Each rotor has a local I²C bus for position sensing (FDC2114 U2/U3 for N=64; U2/U4 for N=26). The CPLD acts as I²C master; no I²C signals are exposed on J1–J6.
 * **JTAG:** Pass-through lines allow the **USB Blaster** on the Controller Board to program the
   entire 30-rotor stack in one daisy-chain operation. Under normal operation JTAG is idle; cipher
   maps are selected via SW2/SW3 without reprogramming.
@@ -476,7 +475,7 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | TBD | TBD |
-| U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; bits[4:0] N=26); I²C addr 0x2A | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
+| U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; STGC bits[3:0] N=26); I²C addr 0x2A | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
 | U4 | FDC2114RGER, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGER | 16-VQFN | 595-FDC2114RGER | 296-43218-1-ND | TBD |
 | SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
 | SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
