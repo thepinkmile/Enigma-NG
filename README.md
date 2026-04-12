@@ -30,7 +30,7 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 ## Core Component Overview
 
 * **Controller:** Raspberry Pi Compute Module 5 (CM5) carrier board for monitoring and programming the system.
-* **Power Module:** Triple-input priority (PoE+ > USB-C PD > Battery) with 11V–17V eFuse protection.
+* **Power Module:** Triple-input priority (PoE+ > USB-C PD > Battery) with 11V–16.9V eFuse protection.
 * **Stator:** A CPLD powered component mapper and the initial starting point of the rotor stack.
 * **Extension:** A block that allows extension of the rotor stack in 5-rotor increments.
 * **Reflector:** A logic loopback from the end of the rotor stack. Also, uses the Stator for mapping comonents (if/when required).
@@ -134,9 +134,9 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 ## 📅 Development Roadmap
 
 1. **Controller Board:** KiCAD 9 Schematic & Layout (Power, CM5, High-Speed I/O, JTAG Master).
-2. **Universal Rotor:** Hardware Prototype (MAX II, 163mm Shell, De Bruijn Sensors).
+2. **Universal Rotor:** Hardware Prototype (MAX II, Ø100mm shroud outer, FDC2114RGER capacitive encoders).
 3. **Power Injection & Support (PIS):** Passive "Mid-Span" bridge for mechanical alignment and 3.3V rail boosting.
-4. **Universal Interface:** 64-Jack Plugboard and 37-key "Passive" strip design.
+4. **Universal Interface:** 64-Jack Plugboard and 64-key "Hold-to-Shift" layout.
 5. **Firmware:** Verilog for Rotor libraries and Interface Encoding/Decoding.
 6. **Driver & GUI:** Linux C-Driver and .NET 10 terminal application.
 
