@@ -19,7 +19,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-JDB-01 | Provide a USB-to-JTAG programming interface for all 37 CPLDs in the system | 1 Stator + 6 Encoder + 30 Rotor CPLDs | §2 Core Logic; BOM U1 (FT232H) |
-| FR-JDB-02 | Generate series-damped drive signals suitable for the controlled-impedance JTAG chain | U5 buffers TCK/TMS; 33 Ω resistors at all JTAG outputs (R6/R7 after U5, R8 on TDI) | §6 Electrical Requirements; BOM U5, R6, R7, R8 |
+| FR-JDB-02 | Generate series-damped drive signals suitable for the controlled-impedance JTAG chain | U5 buffers TCK/TMS; 33 Ω source termination at all JTAG outputs (R6/R7 after U5 buffer, R2 at FT232H TDI, R8 before J2 TDI pin) | §6 Electrical Requirements; BOM U5, R2, R6, R7, R8 |
 | FR-JDB-03 | Interface with the CM5 via USB 2.0 for JTAG programming software control | Presented as FTDI JTAG device to OpenOCD via libftdi; no custom driver required | §3 Interface & Wiring; BOM J1 (INPUT 5-pin header), U1 (FT232H) |
 
 #### Design Requirements
@@ -28,9 +28,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | :--- | :--- | :--- | :--- |
 | DR-JDB-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §5 PCB Fabrication & Stackup |
 | DR-JDB-02 | USB-to-JTAG bridge | FTDI FT232H (U1) in MPSSE mode | §2 Core Logic; BOM U1 (FT232H QFN-56) |
-| DR-JDB-03 | TCK series damping at FT232H | R1 = 33 Ω 0402 at FT232H TCK output, before U5 buffer | §6 Electrical Requirements; BOM R1 |
 | DR-JDB-04 | TDI series damping at FT232H | R2 = 33 Ω 0402 at FT232H TDI output | §6 Electrical Requirements; BOM R2 |
-| DR-JDB-05 | TMS series damping at FT232H | R3 = 33 Ω 0402 at FT232H TMS output, before U5 buffer | §6 Electrical Requirements; BOM R3 |
 | DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) | §2 Core Logic; BOM U1 (FT232H) |
 | DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port; D+/D− route via hat-header J1 | §3 Interface & Wiring; BOM J1 (5-pin INPUT header), Y1 (12MHz crystal) |
 | DR-JDB-08 | Power source | 5V_USB and 3V3_ENIG from Controller Board via hat-header J1; FT232H self-powered USB mode | §6 Electrical Requirements |
@@ -144,10 +142,11 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 * **Clocking:** Dedicated 12MHz SMD crystal (Y1) for the FT232H reference clock. The FT232H internal PLL requires 12MHz; CM5 GPCLK
   option was considered and rejected — see DEC-022. Crystal load capacitors C10–C11 (33pF C0G) set the 20pF crystal load capacitance.
 * **JTAG Signal Integrity:**
-  * **R1, R2 (33Ω):** Series termination on FT232H TCK and TDI outputs, placed within 2mm of the FT232H pins before the JTAG buffer (U5) / header (J2).
-    Source impedance ≈ 53Ω, matched to the 50Ω controlled-impedance traces on the receiving board. Per DEC-016 intra-board/BtB termination rule.
-    See `design/Electronics/Investigations/JTAG_Integrity.md`.
-  * **R3 (33Ω):** Series damping on TMS output — same function as R1 (TCK) and R2 (TDI). All three JTAG drive outputs have series termination at the FT232H.
+  * **R2 (33Ω):** Series termination on FT232H TDI output, placed within 2mm of the FT232H TDI pin.
+    TDI drives only the first CPLD in the chain (single load) — source termination at the FT232H pin
+    provides matched drive (FT232H output ≈ 20Ω + R2 33Ω ≈ 53Ω) for the board-to-board path.
+    Per DEC-016 intra-board/BtB termination rule. See `design/Electronics/Investigations/JTAG_Integrity.md`.
+  * **R8 (33Ω):** Series damping on TDI signal (not buffered) before J2 (TDI pin). Combined with R2 at FT232H, provides damping at both ends of the FT232H-to-J2 TDI path.
   * **U5 (SN74LVC2G125DCUR, VSSOP-8):** Dual-channel 3-state buffer placed between the FT232H and
     J2 header (JTAG OUTPUT), buffering TCK and TMS for the 37-device JTAG chain load. TDI is not
     buffered — FT232H TDI drives only the first device in the chain directly.
@@ -155,7 +154,6 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
     J2 JTAG header (TCK pin). Source impedance after U5: U5_out (≈15Ω) + R6 (33Ω) ≈ 48Ω — matched
     to 50Ω BtB trace impedance per DEC-024.
   * **R7 (33Ω):** Series damping on U5 TMS output — same function as R6 (TCK). Placed before J2 (TMS pin).
-  * **R8 (33Ω):** Series damping on TDI signal (not buffered) before J2 (TDI pin). Combined with R2 at FT232H, provides damping at both ends of the FT232H-to-J2 TDI path.
   * **Pull Resistors:** TMS 10kΩ pull-up (R4) and TCK 10kΩ pull-down (R5) near J2 header to hold JTAG TAP in defined state
     when idle (see §5 and JTAG best-practice note in `design/Electronics/Investigations/JTAG_Integrity.md`).
   * **Trace Width Rule:** All JTAG signal traces on L2 (signal layer) shall be routed at **0.127 mm (5 mil)** over the L1 GND reference plane, targeting **50 Ω controlled impedance**. See DEC-016.
@@ -181,9 +179,7 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R | 0402 | — | — | C19666 |
 | J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | 1×5 female IDC | 2.54mm | — | — | C50950 |
 | J2 | JTAG OUTPUT header (10-pin interleaved GND) | 1×10 female IDC | 2.54mm | — | — | C2337 |
-| R1 | Series termination on FT232H TCK output (before U5 buffer input) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
-| R3 | Series termination on FT232H TMS output (before U5 buffer input) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
 | R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
 | R6 | TCK series damping after U5 buffer output, before J2 pin 1 (TCK) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
