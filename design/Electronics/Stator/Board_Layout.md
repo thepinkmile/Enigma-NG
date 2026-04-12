@@ -155,6 +155,19 @@ See `Stator/Design_Spec.md §3 DIP Switch Configuration (SW1)` for the full 16-c
 
 ---
 
+## SW2 — Reflector Map Selector / Internal Reflector Enable
+
+**Component:** CTS 219-6LPST, 6-position DIP switch, 2.54mm through-hole.
+**Placement:** Reflector-facing edge of Stator (near J7), within 10 mm of CPLD U1. Accessible without rotor stack removal.
+**Silkscreen:** Label `REFLEKTOR` / `REFLECTOR SELECT`; mark switches 1–5 as map index and switch 6 as `INT/EXT`.
+**Pull-downs:** R20–R25 (10kΩ 0603) placed within 3 mm of each switch pin — one per switch position.
+
+Switch 6 (`SW2[5]`) default-off (pull-down to 0) = physical Reflector mode (J7 active). Set to 1 to enable the internal stored reflector map (J7 ENC_IN/OUT ignored by CPLD).
+
+See `Stator/Design_Spec.md §3 Reflector Map Configuration (SW2)` for the full map index table and UKW-A/B/C pre-loaded entries.
+
+---
+
 ## §9 Routing — Trace Width Specifications
 
 **Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).

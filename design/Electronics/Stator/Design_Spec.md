@@ -23,12 +23,13 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | :--- | :--- | :--- | :--- |
 | FR-STA-01 | Serve as the fixed mechanical and electrical backplane for the 30-rotor stack | Provides all power, JTAG, and data connectivity to rotors | §2 Core Features; BOM J1–J3 (ERF8 rotor sockets) |
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 | §2 Core Features; §3 Encryption & JTAG Hub; BOM L1–L4 (ferrite beads) |
-| FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
+| FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-04 | Receive TTD_RETURN from the Reflector and forward to the Controller Board | Via J7 (16-pin Molex) → Link-Beta pin 26 | §3 Encryption & JTAG Hub; BOM J7, R2 (10kΩ pull-up) |
 | FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables; route 6-bit data bus to plugboard passes at configurable signal chain positions | J4 = HID; J5 = Plugboard Pass A (configurable); J6 = Plugboard Pass B (configurable) | §3 Plugboard Routing; §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
-| FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM240 | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
+| FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM570 (570 LEs required for startup-loaded reflector map registers + routing matrix) | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 | FR-STA-08 | Select the active plugboard routing configuration via hardware DIP switch without JTAG reprogramming | 4-position DIP switch (SW1) providing 16 pre-defined configurations; CPLD reads SW1[3:0] at power-up and selects routing case from VHDL fabric | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
+| FR-STA-09 | Optionally apply a stored reflector substitution map at the reflection boundary, replacing the physical Reflector board | 6-position DIP switch (SW2); SW2[5]=1 enables internal map; SW2[4:0] selects index 0–20 from 21 involutory maps stored in CPLD UFM; SW2[5]=0 passes data to J7 normally | §3 Reflector Map Configuration; BOM SW2, R20–R25 |
 
 #### Design Requirements
 
@@ -40,10 +41,11 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-04 | Encoder interface | J4/J5/J6 = 26-pin Molex IDC (HID encoder ports, one per encoder board) | §4 Interconnects; BOM J4–J6 (Molex 26-pin) |
 | DR-STA-05 | TTD_RETURN input | J7 = 16-pin Molex; TTD_RETURN on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 (16-pin Molex) |
 | DR-STA-06 | Link-Beta connector | J8 = ERM8-020-05.0-S-DV-K-TR (40-pin male, 0.8 mm pitch) to Controller J2 | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
-| DR-STA-07 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Encryption & JTAG Hub; BOM U1 (EPM240T100I5N) |
+| DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240 (drop-in); 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.11 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.11 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
 | DR-STA-10 | Routing configuration selection | SW1 = 4-position DIP switch, 2.54mm THT (binary index 0–15); 4× 10kΩ pull-down resistors R16–R19 on SW1 inputs | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
+| DR-STA-11 | Reflector map selection | SW2 = 6-position DIP switch, 2.54mm THT; SW2[4:0] = map index 0–20; SW2[5] = internal reflector enable; 6× 10kΩ pull-down resistors R20–R25 on SW2 inputs | §3 Reflector Map Configuration; BOM SW2, R20–R25 |
 
 ## 2. Core Features
 
@@ -62,7 +64,7 @@ to the chassis copper pour at this entry point. No additional chassis bonds are 
 
 ## 3. Encryption & JTAG Hub
 
-* **CPLD:** Intel MAX II EPM240T100I5N CPLD (Logic Router).
+* **CPLD:** Intel MAX II EPM570T100I5N CPLD (Logic Router & Reflector).
 
 ### CPLD Signal Routing Matrix
 
@@ -109,6 +111,41 @@ logic-0 when the corresponding switch is open.
 | 13 (1101) | Pre-Rotor 1 | Post-Rotor 1 return | Original Enigma (pre-war) |
 | 14 (1110) | At Reflector | Post-Rotor 1 return | — |
 | 15 (1111) | Post-Rotor 1 return | Post-Rotor 1 return | Cascaded post-Rotor 1 |
+
+#### Reflector Map Configuration (SW2)
+
+SW2 is a 6-position DIP switch on the reflector-facing side of the Stator, read at power-up.
+It controls whether the Stator CPLD applies an internal reflector substitution map at the
+reflection boundary (replacing the physical Reflector board) or passes data through J7 normally.
+
+| Bit | SW2 position | Function |
+| :--- | :--- | :--- |
+| `[5]` | Switch 6 | **Internal reflector enable**: 1 = apply stored map; 0 = pass through to J7 (physical Reflector) |
+| `[4:0]` | Switches 5–1 | **Map index** (0–20): selects which involutory map to load from UFM at power-up |
+
+Pull-down resistors R20–R25 hold each input at logic-0 when the corresponding switch is open
+(default = SW2[5]=0, physical Reflector mode, all indices default to 0).
+
+When SW2[5]=0, J7 ENC_IN/OUT operate normally and SW2[4:0] is ignored (no UFM load on power-up).
+When SW2[5]=1, the CPLD serially reads the indexed map from UFM into internal flip-flop registers
+at power-up (~40 µs). At the reflection boundary (Step 2 in the routing matrix), the CPLD applies
+the loaded map combinationally instead of forwarding to J7. J7 ENC_IN/OUT remain electrically
+present but are not driven or sampled by the CPLD in this mode.
+
+SW1 (routing matrix) and SW2 (reflector mode) are fully independent; all 16 SW1 configurations
+are valid regardless of the SW2 setting.
+
+**UFM map storage:** 21 involutory (self-inverse) reflector maps; same 64-entry × 6-bit format as
+Rotor UFM maps (384 bits per map; 21 × 384 = 8,064 bits ≤ 8,192-bit UFM). Maps are involutory by
+definition: applying the same map twice returns the original character, preserving Enigma cipher
+symmetry. Pre-loaded indices:
+
+| Index | Map | Notes |
+| :--- | :--- | :--- |
+| 0 | UKW-A equivalent | Historical Enigma Reflector A (26-char; entries 26–63 = identity for 64-char variant) |
+| 1 | UKW-B equivalent | Historical Enigma Reflector B — most common WWII Enigma variant |
+| 2 | UKW-C equivalent | Historical Enigma Reflector C — later wartime variant |
+| 3–20 | Custom | Available for user-defined involutory maps via JTAG programming |
 
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
@@ -209,7 +246,7 @@ snapped off.
 * **Purpose:** Provides real-time current/voltage data for the 30-rotor stack to the CM5 GUI.
 * **Sensor:** TI INA219 Zero-Drift Power Monitor (Address: 0x45) — dedicated rotor-stack usage telemetry.
 * **Placement:** Inserted on L1 (Top Layer) connected to the 3V3_ENIG rail immediately before the rotor stack.
-  * Minimum 15mm isolation from Intel MAX II EPM240T100I5N CPLD logic core.
+  * Minimum 15mm isolation from Intel MAX II EPM570T100I5N CPLD logic core.
 * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) rotor-stack shunt resistor. Stator R1 instance. (PM R12 + PM R23 are the first and second system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
 * **Interface:** I2C-1 Telemetry Bus (via Link-Beta, Shared with Power Module).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
@@ -268,6 +305,13 @@ snapped off.
 | R17 | SW1[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R18 | SW1[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R19 | SW1[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R20 | SW2[0] (switch 1) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R21 | SW2[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R22 | SW2[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R23 | SW2[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R24 | SW2[4] (switch 5) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R25 | SW2[5] (switch 6 — internal reflector enable) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | SW1 | Routing configuration selector | CTS 219-4LPST — 4-position DIP switch, 2.54mm THT | Through-hole | 774-219-4LPST | CT2064-ND | C128947 |
-| U1 | Stator Management CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
+| SW2 | Reflector map selector / internal reflector enable | CTS 219-6LPST — 6-position DIP switch, 2.54mm THT | Through-hole | 774-219-6LPST | TBD | TBD |
+| U1 | Stator Management CPLD (routing matrix + optional internal reflector) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | TBD | TBD |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-23978-1-ND | C138706 |
