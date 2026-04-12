@@ -106,10 +106,21 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Full pin table:** See `Controller/Board_Layout.md` LINK-BETA section.
 * **Programming:** Internal USB 2.0 link to the JTAG Daughterboard.
 * **Encryption Sniffer Bus**
-  * **Logic:** 12-bit binary encoded bus (6-in / 6-out) for 64-character alphabet monitoring.
-  * **ENC_IN [0:5]:** GPIO 4–9 (Binary output from CM5 → Stator/Rotors: 6-bit plaintext character code).
-  * **ENC_OUT [0:5]:** GPIO 10–15 (Binary output from Reflector/Stator).
+  * **Purpose:** Both buses are **read-only inputs to the CM5**. The CM5 passively monitors the live
+    Enigma encoding activity for real-time display in the GUI application. The CM5 does not participate
+    in or control the encoding process — it only observes it.
+  * **Naming convention:** Signal names are relative to the **Enigma machine**, not the CM5.
+    `ENC_IN` = the plaintext character entering the machine (from the Keyboard/Encoder board);
+    `ENC_OUT` = the encrypted character exiting the machine (to the Lightboard). Both are inputs
+    to the CM5 GPIO bank.
+  * **ENC_IN [0:5]:** GPIO 4–9 (CM5 Input — snoop of 6-bit plaintext character code driven by
+    the Keyboard onto the Enigma input bus).
+  * **ENC_OUT [0:5]:** GPIO 10–15 (CM5 Input — snoop of 6-bit encrypted character code presented
+    to the Lightboard by the Rotor/Reflector stack).
   * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II EPM240T100I5N CPLDs.
+  * **Software cross-reference:**
+    * GUI application real-time display logic: `design/Software/GUI_App/Design_Spec.md`
+    * Linux OS power management, I²C telemetry, and system daemon: `design/Software/Linux_OS/Power_Management.md`
 
 ### 2.3. CM5 Module Keep-Out Zone
 
@@ -204,8 +215,8 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45. |
-| **4–9** | **ENC_IN[0:5]** | Output | 3.3V | **6-bit Encoder Input Bus** (D0–D5) CM5 → Stator/Rotors. |
-| **10–15** | **ENC_OUT[0:5]** | Input | 3.3V | **6-bit Encoder Output Bus** (D6–D11) Stator/Rotors → CM5. |
+| **4–9** | **ENC_IN[0:5]** | Input | 3.3V | **6-bit Keyboard Snoop Bus** (D0–D5). CM5 passively monitors the plaintext character code driven onto the Enigma machine input bus by the Keyboard (Encoder board). Read-only — CM5 does not drive this bus. |
+| **10–15** | **ENC_OUT[0:5]** | Input | 3.3V | **6-bit Lightboard Snoop Bus** (D6–D11). CM5 passively monitors the encrypted output character code produced by the Rotor/Reflector stack and presented to the Lightboard. Read-only — CM5 does not drive this bus. |
 | **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ENIG LDO for sequenced rotor stack power-up. |
 | **17** | **SW_LED_R** | PWM | 3.3V | RGB switch (SW1) — Red channel. Fault / graceful shutdown indicator. |
 | **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |
@@ -325,7 +336,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
 | 8 | SYS_RESET_N | CTRL → Stator | Active-low system reset; clears all CPLDs in stack (CM5 GPIO 26) |
 | 9–11 | GND | — | JTAG trailing shield + isolation moat |
-| 12–17 | ENC_IN[0:5] | CTRL → Stator | Encoder input 6-bit bus (CM5 GPIOs 4–9) |
+| 12–17 | ENC_IN[0:5] | Stator → CTRL | Keyboard snoop 6-bit bus — plaintext character input to Enigma machine (CM5 GPIOs 4–9, read-only) |
 | 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
 | 19–24 | ENC_OUT[0:5] | Stator → CTRL | Encoder output 6-bit bus (CM5 GPIOs 10–15) |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |
@@ -446,12 +457,12 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | ENC_IN[0] | CTRL → Stator | Encoder input bit 0 |
-| 2 | ENC_IN[1] | CTRL → Stator | Encoder input bit 1 |
-| 3 | ENC_IN[2] | CTRL → Stator | Encoder input bit 2 |
-| 4 | ENC_IN[3] | CTRL → Stator | Encoder input bit 3 |
-| 5 | ENC_IN[4] | CTRL → Stator | Encoder input bit 4 |
-| 6 | ENC_IN[5] | CTRL → Stator | Encoder input bit 5 |
+| 1 | ENC_IN[0] | Stator → CTRL | Keyboard snoop bit 0 (plaintext input to Enigma machine) |
+| 2 | ENC_IN[1] | Stator → CTRL | Keyboard snoop bit 1 |
+| 3 | ENC_IN[2] | Stator → CTRL | Keyboard snoop bit 2 |
+| 4 | ENC_IN[3] | Stator → CTRL | Keyboard snoop bit 3 |
+| 5 | ENC_IN[4] | Stator → CTRL | Keyboard snoop bit 4 |
+| 6 | ENC_IN[5] | Stator → CTRL | Keyboard snoop bit 5 |
 | 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
 | 8 | GND | — | Ground reference |
 | 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |
