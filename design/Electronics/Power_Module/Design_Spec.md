@@ -51,7 +51,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERJ-3EKF2100V, 210 Ω, 1% thick-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
 | DR-PM-07 | Supercapacitor bank | 6× 22 F / 2.7 V in 2S3P configuration = 33 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–6 |
-| DR-PM-08 | Backup activation threshold | 4.40 V (R14 = 26.7 kΩ, ERA-3ARB2672V) | §5 Protection & Logic; BOM R14 (26.7kΩ), R15 (10.0kΩ) |
+| DR-PM-08 | Backup activation threshold | 4.64 V (R14 = 28.7 kΩ, ERA-3ARB2872V) — fires before MCP121T 4.50 V threshold, preventing PMIC_EN glitch during power-loss transient | §5 Protection & Logic; BOM R14 (28.7kΩ), R15 (10.0kΩ) |
 | DR-PM-09 | Holdup duration | ≥21.7 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–6 (22F/2.7V), U3 (LTC3350) |
 | DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
 | DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
@@ -223,11 +223,14 @@ GND ──────┴──────────────────�
     with independent sense traces to avoid trace resistance adding to the measured value (even 1mΩ trace adds 10% error on a 10mΩ sense resistor).
   * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below the programmed threshold
     (resistor divider R14/R15 from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15).
-    * **Applied values (PM-06 fix):** R14=26.7kΩ (ERA-3ARB2672V) / R15=10.0kΩ → threshold = **4.40V** — 100mV below PWR_GD assertion (4.50V),
-      ensuring the CM5 receives the PWR_GD warning before backup hold-up engages.
-    * ⚠️ **Design note:** The original as-drawn value of R14=30.1kΩ set a threshold of 4.81V — above the PWR_GD assertion voltage (4.50V),
-      causing a dead-zone where backup could engage without the CM5 receiving a warning. This was resolved in PM-06.
-      See BOM R14 entry and the R14/R15 BOM note for details.
+    * **Applied values (PM-06 revised):** R14=28.7kΩ (ERA-3ARB2872V) / R15=10.0kΩ → threshold = **4.64V** — 140mV *above*
+      the MCP121T PWR_GD threshold (4.50V). LTC3350 backup activates **before** MCP121T can deassert `GLOBAL_EN` (PMIC_EN),
+      eliminating a PMIC_EN glitch that would occur while the rail traverses the gap between the two thresholds. LTC3350
+      immediately restores 5V_MAIN to 5V on activation; MCP121T never deasserts during the hold-up window. Graceful shutdown
+      is triggered via the `/INTB` → MIC1555 U15 → `PWR_BUT` one-shot path (FR-PM-07), not by PWR_GD deassertion.
+    * ⚠️ **Design note:** The original PM-06 fix set R14=26.7kΩ (4.40V threshold, 100mV *below* PWR_GD) so that the CM5
+      received a PWR_GD warning before backup engaged. This ordering is superseded: shutdown is now hardware-triggered via
+      `PWR_BUT`, so the threshold must be *above* 4.50V to guarantee PMIC_EN stability throughout hold-up.
     * Hold-up duration from fully-charged bank: ≥21.7 seconds at 5W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
@@ -469,7 +472,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
-| R14 | LTC3350 BACKUP divider upper (R_TOP) — **UPDATED per PM-06 fix** | 26.7kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.40V → R_TOP/R_BOT=(4.40/1.2)−1=2.667 → R_BOT=10kΩ → R_TOP=26.67kΩ → E96=26.7kΩ → actual trigger: 4.40V, 100mV below PWR_GD at 4.50V] | 0603 | 667-ERA-3ARB2672V | P26.7KBYCT-ND | — |
+| R14 | LTC3350 BACKUP divider upper (R_TOP) — **REVISED: threshold raised above PMIC_EN deassert point** | 28.7kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.64V → R_TOP/R_BOT=(4.64/1.2)−1=2.867 → R_BOT=10kΩ → R_TOP=28.7kΩ → E96=28.7kΩ → actual trigger: 4.644V, 140mV above MCP121T 4.50V threshold] | 0603 | 667-ERA-3ARB2872V | P28.7KBYCT-ND | — |
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB1002V | P10.0KBYCT-ND | — |
 | R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
@@ -542,9 +545,12 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 >   Verify protrusion depth vs enclosure wall thickness at prototype stage — may need a panel cutout with bezel, a panel-mount USB-C extension, or a revised connector with longer reach.
 >   Available at DigiKey (2073-USB4135-GF-A-ND) and JLCPCB (C5438410). CC1 and CC2 pins connect
 > to STUSB4500 (U5) for PD 15V negotiation.
-> * **R14/R15 BACKUP divider** — **UPDATED (PM-06 fix):** R14 changed from 30.1kΩ to **26.7kΩ** (ERA-3ARB2672V).
->   Sets LTC3350 BACKUP comparator trigger at **4.40V** (V_thr=1.2V, R_TOP=26.7kΩ, R_BOT=10.0kΩ).
->   This fires **after** PWR_GD asserts at 4.50V — supercap backup engages 100mV below PWR_GD, preventing the dead-zone that the original 4.81V threshold created.
+> * **R14/R15 BACKUP divider** — **REVISED (PM-06 superseded):** R14 changed from 26.7kΩ to **28.7kΩ** (ERA-3ARB2872V).
+>   Sets LTC3350 BACKUP comparator trigger at **4.64V** (V_thr=1.2V, R_TOP=28.7kΩ, R_BOT=10.0kΩ → actual 4.644V).
+>   This fires **before** MCP121T deasserts at 4.50V — LTC3350 activates first, immediately restoring 5V_MAIN and keeping
+>   PMIC_EN stable throughout the hold-up window. The previous 4.40V threshold (PM-06 fix) caused a brief PMIC_EN glitch as
+>   the rail traversed the 4.40V–4.50V gap before LTC3350 could respond. Graceful shutdown is now triggered via the
+>   `/INTB` → MIC1555 U15 → `PWR_BUT` one-shot (FR-PM-07), making PWR_GD deassertion redundant as a shutdown trigger.
 >   Use 0.1% tolerance on both R14 and R15 for threshold accuracy.
 > * **C7–C14 bulk/bypass caps** — All 22µF caps use Samsung CL32B226KAJNNNE (22µF **25V** X7R 1210) as C1/C4. The original 22µF 50V 1210 spec (Murata GRM32ER71H226KE15L) was not available
 > from any distributor — 22µF at 50V in 1210 does not appear to be a commercial catalogue part. Maximum actual bus voltage on the hardest-stressed positions (C1, C4, C7, C8, C11, C12) is ~16.4V
