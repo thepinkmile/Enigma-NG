@@ -52,7 +52,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 
 * **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical).
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
-  > This board uses the mating connector as J4 (Molex 22-23-2161 or equivalent — see BOM). The authoritative
+  > This board uses the mating connector as J4 (Adam Tech BHR-16-VUA — see BOM). The authoritative
   > 16-pin pinout is defined on the Stator; Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
   > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
 

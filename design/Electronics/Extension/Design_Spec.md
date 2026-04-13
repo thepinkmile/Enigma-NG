@@ -49,7 +49,7 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 
 * **Extension Port (J7 IN / J8 OUT):** 16-pin 2×8 shrouded box header.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
-  > This board uses the mating connector on both J7 and J8 (Molex 22-23-2161 or equivalent — see BOM).
+  > This board uses the mating connector on both J7 and J8 (Adam Tech BHR-16-VUA — see BOM).
   > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
   > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
 * **Rotor Interface Connectors (3 per rotor-facing side × 2 sides = 6 connectors total):**

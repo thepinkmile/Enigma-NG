@@ -101,11 +101,12 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ERF8-005 10-pin Samtec Female Socket 0.8 mm (Rotor interface) | — | — | 2 | — | — | 2 | 60 | — | 2 | — | 64 |
 | ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | 32 |
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
-| ⚠️ **Würth 61201221721** — 22-pin (2×11) keyed IDC box header, 2.54mm pitch — Rotor J\_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) — **⚠️ Part does not exist — MPN requires verification; connector spec for J\_INT may need redesign** · All supplier PNs: TBD | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
+| Adam Tech PH1-07-UA — 1×7 2.54mm male pin header, Rotor Board A H\_SW3 (Mouser 737-PH1-07-UA; DigiKey 2057-PH1-07-UA-ND; JLCPCB C3331618) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
+| Adam Tech RS1-07-G — 1×7 2.54mm female socket, Rotor Board B H\_SW3 (Mouser 737-RS1-07-G; DigiKey 2057-RS1-07-G-ND; JLCPCB C3321543) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
 | Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
 | Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
-| Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1 INPUT (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| Adam Tech RS1-05-G — 1×5 2.54mm female socket, Controller J_JDB_PWR (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | — | — | — | — | — | 1 |
+| Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1/Rotor H\_PWR+H\_JTAG(BrdB)+H\_SENS(BrdA) (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | 3 | 90 | — | — | 1 | 91 |
+| Adam Tech RS1-05-G — 1×5 2.54mm female socket, CTL J\_JDB\_PWR/Rotor H\_PWR+H\_JTAG(BrdA)+H\_SENS(BrdB) (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | 3 | 90 | — | — | — | 91 |
 | Adam Tech PH1-10-UA — 1×10 2.54mm male pin header, JDB J2 JTAG OUTPUT (Mouser 737-PH1-10-UA; DigiKey 2057-PH1-10-UA-ND; JLCPCB C3330527) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | Adam Tech RS1-10-G — 1×10 2.54mm female socket, Controller J_JDB_JTAG (Mouser 737-RS1-10-G; DigiKey 2057-RS1-10-G-ND; JLCPCB C3320525) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | 1 |
@@ -387,3 +388,5 @@ Product page links for all major components for design review and procurement ve
 | J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
 | J_JDB_PWR (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
 | J_JDB_JTAG (CTL) | RS1-10-G — 1×10 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
+| H_SW3 Board A (ROT) | PH1-07-UA — 1×7 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
+| H_SW3 Board B (ROT) | RS1-07-G — 1×7 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |

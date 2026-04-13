@@ -125,23 +125,25 @@ components).
 
 ---
 
-## 6. Internal IDC Connector Assembly
+## 6. Internal Header Assembly
 
-* **Connector type:** 2.54mm pitch keyed IDC box header, 2×11 (22-pin) — Würth Elektronik
-  61201221721 or equivalent
-* **Keying:** Both headers must be keyed to prevent incorrect orientation assembly. Verify key
-  tab alignment before assembly.
+* **Connector type:** Four single-row 2.54mm THT pin headers (H_SW3: Adam Tech PH1-07-UA 1×7;
+  H_PWR: Adam Tech RS1-05-G 1×5 or PH1-05-UA 1×5; H_JTAG: same as H_PWR; H_SENS: same as
+  H_PWR inverse gender). Mixed gender provides physical keying.
+* **Keying:** Board A carries H_SW3/H_SENS as male and H_PWR/H_JTAG as female; Board B carries
+  the inverse. The unique 7-pin footprint of H_SW3 makes incorrect board orientation geometrically
+  impossible.
 * **Assembly sequence:**
   1. JLCPCB SMT pick-and-place assembly is performed on the outward-facing side of each board
      (Board A and Board B separately).
-  2. After JLCPCB assembly, the IDC box headers are **manually soldered** to the inner-facing
+  2. After JLCPCB assembly, all four headers are **manually soldered** to the inner-facing
      side of each board.
-  3. The two boards are then mated via the IDC connectors and secured within the shroud dish.
+  3. The two boards are then mated via the four headers and secured within the shroud dish.
   4. The shroud cover is fitted and secured.
 * **Mated height:** ~8.5mm (fits within 11.8mm board gap; 3.3mm clearance)
 
-> **Cross-reference:** `design/Electronics/Rotor/Design_Spec.md §3.4` for full IDC signal
-> pinout.
+> **Cross-reference:** `design/Electronics/Rotor/Design_Spec.md §3.4` for full signal
+> pinout of all four headers.
 
 ---
 
