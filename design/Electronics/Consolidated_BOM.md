@@ -26,9 +26,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 | EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
 | EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; drop-in for EPM240; used on Stator and Rotor boards) | — | — | 1 | — | — | 1 | 30 | — | — | — | 31 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
-| FDC2114RGER — 4-ch Capacitive Sensor IC, U2 Track A (bits[5:3] N=64; bits[3:0] N=26), Board A, addr 0x2A (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| FDC2114RGER — 4-ch Capacitive Sensor IC, U3 Track B (bits[2:0] N=64 only; NOT POPULATED for N=26), Board B, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| FDC2114RGER — 4-ch Capacitive Sensor IC, U4 STGC bit[4] (N=26 only; NOT POPULATED for N=64), Board A, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | TBD | — | — | — | TBD (N=26 builds only) |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U2 Track A (bits[5:3] N=64; bits[3:0] N=26), Board A, addr 0x2A (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U3 Track B (bits[2:0] N=64 only; NOT POPULATED for N=26), Board B, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U4 STGC bit[4] (N=26 only; NOT POPULATED for N=64), Board A, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | TBD | — | — | — | TBD (N=26 builds only) |
 | SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
@@ -46,8 +46,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| TPD4E05U06 — 4-Channel ESD Protection Array | 3 | 1 | — | — | — | — | — | — | — | — | 4 |
-| TPD1E10B06 — Single-Channel ESD (SOD-923) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| TPD4E05U06 — ⚠️ **INVALID MPN** — 4-Channel ESD Array TBD | 3 | 1 | — | — | — | — | — | — | — | — | 4 |
+| TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | 3 |
 | BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 2 |
@@ -189,6 +189,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **Intel EPM240T100I5N:** 6 units (Encoder ×2 per board ×3 boards = 6).
 * **Intel EPM570T100I5N:** 31 units (Stator ×1, Rotor ×1 per board ×30 boards = 30; total 31).
   Same TQFP-100 footprint as EPM240; 570 LEs required for startup-loaded cipher/reflector map registers.
+  Mouser: 989-EPM570T100I5N, DigiKey: 544-2281-ND, JLCPCB: C27319.
   DigiKey/JLCPCB part numbers TBD.
 
 ## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
@@ -231,7 +232,9 @@ table and placement requirements.
 
 * **TPS2065CDBVR:** USB Power Distribution Switch (SOT-23-5) (1.6A Limit).
 * **AP2331W-7:** HDMI Current Limiter (SOT-23-5) (50mA Limit).
-* **TPD4E05U06DRYR:** 4-Channel ESD Protection (U-DFN1010-10).
+* **TPD4E05U06DRYR:** ⚠️ **INVALID MPN** — not a valid TI part number.
+  All previously listed supplier PNs reference unrelated components.
+  Replacement 4-channel ESD array to be selected during schematic capture.
 
 ### Controller Board — RTC Battery Circuit
 
@@ -278,21 +281,21 @@ table and placement requirements.
 
 | Designator | Part | Package | Mouser # | DigiKey # | JLCPCB # | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| U3 | LTC3350EUHF#PBF | QFN-38 5×7 | 584-LTC3350EUHF#PBF ✓ | 1469-1010-1-ND (tube) / **1469-1010-2-ND** (T&R) | — (not in library) | ~4.5k in stock Mouser (tube). T&R variant has ~7.5k DigiKey stock. JLCPCB custom-supply only. |
+| U3 | LTC3350EUHF#PBF | QFN-38 5×7 | 584-LTC3350EUHF#PBF ✓ | 505-LTC3350EUHF#PBF-ND ✓ | C580711 | ~4.5k in stock Mouser (tube). DigiKey 505-prefix confirmed. JLCPCB C580711 confirmed. |
 | U5 | STUSB4500LQTR | QFN-24 4×4 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 | Primary PN: STUSB4500LQTR (lower Iq ~160µA). JLCPCB C506650 confirmed L-variant in stock. If OOS, use STUSB4500QTR as alternative (non-L variant, ~210µA Iq, pin-compatible). |
 | U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 | **296-LM74700QDBVRQ1CT-ND** ✓ | C2941042 | LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. Alt T&R Mouser PN: 595-LM74700QDBVTQ1 (pin-compatible). |
 | U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450E/LB | **MCP121T-450E/LBCT-ND** ✓ | C52146050 | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. JLCPCB lists with TP prefix on MPN but is the same device. |
 | U1 | TPS259804ONRGER | VQFN-24 (RGE) | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 | 16.9V silicon-fixed OVLO variant. OVLO set in silicon — no external R. R3 repurposed as R_ILIM (210 Ω). PNs confirmed. |
 | U2A/U2B | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 | AEC-Q100 automotive-qualified (Q1), VQFN-HR RJR 14-pin 4×3.5mm. ✓ |
-| U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | TPS25751DREFR-ND | — | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). ⚠️ Package changed from QFN-28 to WQFN-38 — schematic symbol and PCB footprint update required. |
+| U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | 296-TPS25751DREFRCT-ND | C30169739 | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). ⚠️ Package changed from QFN-28 to WQFN-38 — schematic symbol and PCB footprint update required. |
 | U7 | TPS75733KTTRG3 | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 | Fixed 3.3V, TO-263 KTT 5-pin. Active-LOW EN (EN LOW = enabled). ✓ |
-| U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | — (extended) | DigiKey temporarily out of stock (~6-week lead time). $3.09/1. VQFN-20 per TI. |
-| U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | — | ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
-| D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | — (extended) | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
+| U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | C470955 | DigiKey stock verified. $3.09/1. VQFN-20 per TI. |
+| U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | C3189530 | ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
+| D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | C1972959 | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
 | J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
 | J3 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
 | J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — (hand-place) | 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. Not in JLCPCB standard catalog; hand-place or pre-fit. |
-| Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
+| Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=28.7kΩ (ERA-3ARB2872V, Mouser 667-ERA-3ARB2872V, DigiKey P28.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.644V (above MCP121T 4.50V — LTC3350 activates first, keeping PWR_GD stable). |
 | U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERJ-3EKF series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
 | U15 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). Monostable one-shot for hardware PWR_BUT shutdown. t=1.1×R28×C32=3.01s. R28=274kΩ (ERJ-3EKF2743V), C32=10µF 16V X7R (CL10B106KA8NNNC), C33=100nF bypass cap. |
@@ -332,32 +335,40 @@ Reference information for placing orders with key component suppliers.
 
 Product page links for all major components for design review and procurement verification.
 
-| Ref | Part / Description | Manufacturer | Product Page |
+| Ref | Part / Description | Manufacturer | Local Datasheet |
 | :--- | :--- | :--- | :--- |
-| U1 | TPS25980 — eFuse / Ideal Diode (16.9V OVLO) | Texas Instruments | [ti.com/product/TPS25980](https://www.ti.com/product/TPS25980) |
-| U2A, U2B | LMQ61460AFSQRJRRQ1 — 6A Synchronous Buck Converter (Q1 automotive) | Texas Instruments | [ti.com/product/LMQ61460-Q1](https://www.ti.com/product/LMQ61460-Q1) |
-| U3 | LTC3350 — Supercap Manager / Charger / Backup | Analog Devices | [analog.com/en/products/ltc3350.html](https://www.analog.com/en/products/ltc3350.html) |
-| U4 | TPS25751 — USB PD 3.1 DRP Controller | Texas Instruments | [ti.com/product/TPS25751](https://www.ti.com/product/TPS25751) |
-| U5 | STUSB4500 — USB-C Sink PD Negotiation Controller | STMicroelectronics | [st.com/en/interfaces-and-transceivers/stusb4500.html](https://www.st.com/en/interfaces-and-transceivers/stusb4500.html) |
-| U6 | LM74700-Q1 — Ideal Diode OR-ing Controller | Texas Instruments | [ti.com/product/LM74700-Q1](https://www.ti.com/product/LM74700-Q1) |
-| U7 | TPS75733 — 3.3V 3A LDO Regulator (3V3_ENIG) | Texas Instruments | [ti.com/product/TPS75733](https://www.ti.com/product/TPS75733) |
-| U8 | MCP121T-450E — 4.50V Voltage Supervisor | Microchip Technology | [microchip.com/en-us/product/MCP121T](https://www.microchip.com/en-us/product/MCP121T) |
-| U9 | TPS2372-4 — IEEE 802.3bt PoE PD Controller | Texas Instruments | [ti.com/product/TPS2372-4](https://www.ti.com/product/TPS2372-4) |
-| U10 | TPS23730 — ACF PoE+ DC/DC Controller | Texas Instruments | [ti.com/product/TPS23730](https://www.ti.com/product/TPS23730) |
-| T2 | POE600F-12LD — Active Clamp Flyback Transformer | Coilcraft | [coilcraft.com/…/poe600f](https://www.coilcraft.com/en-us/products/power-magnetics/power-transformers/poe-transformers/poe600f/) |
-| L1, L2 | WE-CMBNC 7448031002 — Nanocrystalline CMC | Würth Elektronik | [we-online.com (search 7448031002)](https://www.we-online.com/en/components/products/CMBNC) |
-| L3 | SRP1265A-100M — 10µH 14A Power Inductor | Bourns | [bourns.com/…/SRP1265A](https://www.bourns.com/products/inductors/power-inductors/product/SRP1265A) |
-| R12 / R_SENSE | CSS2H-2512R-R010ELF — 10mΩ Current Sense Resistor | Bourns | [bourns.com/…/CSS2H](https://www.bourns.com/products/resistors/current-sense-resistors/product/CSS2H) |
-| J2 | 7499111121A — GbE RJ45 MagJack with LEDs | Würth Elektronik | [we-online.com (search 7499111121A)](https://www.we-online.com/en/components/products/GMJT) |
-| J3 | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [molex.com/…/436500519](https://www.molex.com/en-us/products/part-detail/436500519) |
-| J4 | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [gct.co/part/USB4135-GF-A](https://gct.co/part/USB4135-GF-A) |
-| Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [ti.com/product/CSD17483F4](https://www.ti.com/product/CSD17483F4) |
-| U11 | MIC1555 — CMOS Timer, SOT-23-5 | Microchip Technology | [microchip.com/en-us/product/MIC1555](https://www.microchip.com/en-us/product/MIC1555) |
-| U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | Texas Instruments | [ti.com/product/SN74LVC1G14](https://www.ti.com/product/SN74LVC1G14) |
-| C_SC1–6 | SCMT32C156PRBA0 — 22F / 2.7V Supercapacitor | Tecate Group | [tecategroup.com](https://www.tecategroup.com/ultracapacitors-supercapacitors/) |
-| F1 | AC72ABD — 72°C SMD Thermal Cutoff (TCO) | Bourns | [bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72](https://www.bourns.com/products/fusescircuit-protection/thermally-sensitive-devices/product/AC72) |
-| D1 | TPD1E10B06 — Single-Channel 10V TVS ESD (BATT_PRES) | Texas Instruments | [ti.com/product/TPD1E10B06](https://www.ti.com/product/TPD1E10B06) |
-| D2 | TPD2E2U06 — Dual-Channel 5.5V SMBus ESD (Battery SMBus) | Texas Instruments | [ti.com/product/TPD2E2U06](https://www.ti.com/product/TPD2E2U06) |
-| D3, D4, D5 | TPD4E05U06 — 4-Channel 5V ESD Array (USB-C / RJ45 MDI) | Texas Instruments | [ti.com/product/TPD4E05U06](https://www.ti.com/product/TPD4E05U06) |
-| J1 (Link-Alpha) | ERM8-040 / ERF8-040 — 80-pin 0.8mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
-| J2 (Link-Beta) | ERM8-020 / ERF8-020 — 40-pin 0.8mm-pitch BtB Connector | Samtec | [samtec.com/products/erm8](https://www.samtec.com/products/erm8) |
+| U1 | TPS259804ONRGER — eFuse 16.9V silicon-fixed OVLO | Texas Instruments | [TPS25980-datasheet.pdf](../Datasheets/TPS25980-datasheet.pdf) |
+| U2A, U2B | LMQ61460AFSQRJRRQ1 — 6A Sync Buck (AEC-Q100) | Texas Instruments | [lmq61460-q1-datasheet.pdf](../Datasheets/lmq61460-q1-datasheet.pdf) |
+| U3 | LTC3350EUHF#PBF — Supercap Manager / Charger / Backup | Analog Devices | [ltc3350-datasheet.pdf](../Datasheets/ltc3350-datasheet.pdf) |
+| U4 | TPS25751DREFR — USB PD 3.1 DRP Controller | Texas Instruments | [tps25751-datasheet.pdf](../Datasheets/tps25751-datasheet.pdf) |
+| U5 | STUSB4500LQTR — USB-C Sink PD Controller | STMicroelectronics | [stusb4500l-datasheet.pdf](../Datasheets/stusb4500l-datasheet.pdf) |
+| U6 | LM74700QDBVRQ1 — Ideal-Diode OR-ing Controller | Texas Instruments | [lm74700-q1-datasheet.pdf](../Datasheets/lm74700-q1-datasheet.pdf) |
+| U7 | TPS75733KTTRG3 — 3.3V 3A LDO (3V3_ENIG) | Texas Instruments | [tps757-datasheet.pdf](../Datasheets/tps757-datasheet.pdf) |
+| U8 | MCP121T-450E/LB — 4.50V Voltage Supervisor | Microchip Technology | [MCP121-datasheet.pdf](../Datasheets/MCP121-datasheet.pdf) |
+| U9 | TPS2372-4RGWR — IEEE 802.3bt PoE PD Controller | Texas Instruments | [tps2372-datasheet.pdf](../Datasheets/tps2372-datasheet.pdf) |
+| U10 | TPS23730RMTR — ACF PoE+ DC/DC Controller | Texas Instruments | [tps23730-datasheet.pdf](../Datasheets/tps23730-datasheet.pdf) |
+| U11, U15 | MIC1555YM5-TR — CMOS Timer / LED Oscillator | Microchip Technology | [MIC1555-datasheet.pdf](../Datasheets/MIC1555-datasheet.pdf) |
+| U12 (PM), U2 (STA) | INA219AIDR — Zero-Drift Power Monitor | Texas Instruments | [INA219-datasheet.pdf](../Datasheets/INA219-datasheet.pdf) |
+| U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter | Texas Instruments | [sn74lvc1g14-q1-datasheet.pdf](../Datasheets/sn74lvc1g14-q1-datasheet.pdf) |
+| U2 (CTL) | TPS2065CDBVR — USB Power Switch 1.6A | Texas Instruments | [tps2065c-datasheet.pdf](../Datasheets/tps2065c-datasheet.pdf) |
+| U3 (CTL) | AP2331W-7 — HDMI Current Limiter | Diodes Inc. | [AP2331-datasheet.pdf](../Datasheets/AP2331-datasheet.pdf) |
+| D3, D4, D5 | ⚠️ **TPD4E05U06DRYR — INVALID MPN — part selection required** | TBD | TBD — no datasheet; part not yet selected |
+| D2 | TPD2E2U06DRLR — Dual 5.5V SMBus ESD | Texas Instruments | [tpd2e2u06-datasheet.pdf](../Datasheets/tpd2e2u06-datasheet.pdf) |
+| D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.pdf](../Datasheets/tpd1e10b06-q1-datasheet.pdf) |
+| U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.pdf](../Datasheets/sn74lvc2g125-datasheet.pdf) |
+| U1 (JDB) | FT232HL-REEL — USB 2.0 MPSSE Bridge | FTDI | [FT232H-datasheet.pdf](../Datasheets/FT232H-datasheet.pdf) |
+| U1 (ENC) | EPM240T100I5N — Intel MAX II CPLD 240 LE | Intel (Altera) | [Intel_max2_cpld-handbook.pdf](../Datasheets/Intel_max2_cpld-handbook.pdf) |
+| U1 (STA/ROT) | EPM570T100I5N — Intel MAX II CPLD 570 LE | Intel (Altera) | [Intel_max2_cpld-handbook.pdf](../Datasheets/Intel_max2_cpld-handbook.pdf) |
+| U2/U3/U4 (ROT) | FDC2114RGHR — 4-ch Capacitive Sensor IC ⚠️ MOQ 4500 at distributors; MOQ 2 at JLCPCB | Texas Instruments | [fdc2112-datasheet.pdf](../Datasheets/fdc2112-datasheet.pdf) |
+| U1 (CTL) | CM5 — Raspberry Pi Compute Module 5 | Raspberry Pi Ltd | [RPi-cm5-datasheet.pdf](../Datasheets/RPi-cm5-datasheet.pdf) |
+| Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [csd17483f4-datasheet.pdf](../Datasheets/csd17483f4-datasheet.pdf) |
+| Q4, Q5 | BSS138 (onsemi) — N-ch Logic MOSFET 50V, SOT-23 | onsemi | [BSS138-onsemi-datasheet.pdf](../Datasheets/BSS138-onsemi-datasheet.pdf) |
+| BAT54 | BAT54 (Diotec) — Schottky Diode, SOT-23 | Diotec | [bat54-diotec-datasheet.pdf](../Datasheets/bat54-diotec-datasheet.pdf) |
+| T2 | POE600F-12LD — Active Clamp Flyback Transformer | Coilcraft | [coilcraft.com/POE600F](https://www.coilcraft.com/en-us/products/power-magnetics/power-transformers/poe-transformers/poe600f/) |
+| L1, L2 | WE-CMBNC 7448031002 — Nanocrystalline CMC | Würth Elektronik | [we-online.com](https://www.we-online.com/en/components/products/CMBNC) |
+| L3 | SRP1265A-100M — 10µH 14A Power Inductor | Bourns | [bourns.com/SRP1265A](https://www.bourns.com/products/inductors/power-inductors/product/SRP1265A) |
+| R12 / R_SENSE | CSS2H-2512R-R010ELF — 10mΩ Kelvin Shunt | Bourns | [bourns.com/CSS2H](https://www.bourns.com/products/resistors/current-sense-resistors/product/CSS2H) |
+| J2 (PM) | 7499111121A — GbE RJ45 MagJack with LEDs | Würth Elektronik | [we-online.com](https://www.we-online.com/en/components/products/GMJT) |
+| J3 (PM) | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [molex.com/436500519](https://www.molex.com/en-us/products/part-detail/436500519) |
+| J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [gct.co/USB4135-GF-A](https://gct.co/part/USB4135-GF-A) |
+| J1/J2 (PM/STA) | ERM8 / ERF8 — 0.8mm-pitch BtB Connectors | Samtec | [samtec.com/erm8](https://www.samtec.com/products/erm8) |

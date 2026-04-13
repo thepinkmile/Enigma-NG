@@ -116,7 +116,7 @@ back to position 0.
   into the inner face of the shroud **cover** flange (Board B side).
 * **Sensing:** Bare copper electrode pads on the PCB flat face (no electronic components on
   the shroud). Aluminium (solid) = high capacitance; milled slot = low capacitance. Sensed by
-  FDC2114RGER (U2 on Board A, U3 on Board B).
+  FDC2114RGHR (U2 on Board A, U3 on Board B).
 * **Shroud:** Must remain electrically **floating** (bearing isolation — ceramic or nylon
   rolling elements). Not connected to circuit ground.
 

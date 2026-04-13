@@ -95,7 +95,7 @@ Located at the opposite end of the Stator from the Controller, this board manage
 Modular units containing the encryption logic.
 
 * **Logic:** An Intel MAX II EPM570T100I5N CPLD per rotor.
-* **Telemetry:** FDC2114RGER capacitive encoders (dual-track Gray code for N=64; single-track STGC for N=26) to report rotor position to the CM5 via Virtual JTAG (DEC-027).
+* **Telemetry:** FDC2114RGHR capacitive encoders (dual-track Gray code for N=64; single-track STGC for N=26) to report rotor position to the CM5 via Virtual JTAG (DEC-027).
 * **Mechanical:** Features a 3D-printed/CNC index gear for the manual advancement pawls.
 
 ## 12. Stator Board

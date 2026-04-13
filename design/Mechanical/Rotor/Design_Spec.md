@@ -58,7 +58,7 @@ All mechanical parts must be manufactured to the tolerances specified below.
 | Character engraving width | per-character | ±0.1mm | CNC |
 | Rolling element diameter | TBD | ±0.01mm | Matched set required for even load |
 
-> **Note on capacitive gap:** The FDC2114RGER sensor sensitivity must be validated across the
+> **Note on capacitive gap:** The FDC2114RGHR sensor sensitivity must be validated across the
 > full tolerance range (0.35mm minimum to 0.65mm maximum gap). Bearing precision directly
 > determines sensor reliability.
 
@@ -91,7 +91,7 @@ The Gray code encoder pattern is machined as slots/pockets into the inner face o
 flanges. No electronic components are present on the shroud.
 
 **Sensing principle:** Solid aluminium over a sensor electrode = high capacitance; milled slot
-(air) = low capacitance. The FDC2114RGER on the PCB measures these changes as the shroud
+(air) = low capacitance. The FDC2114RGHR on the PCB measures these changes as the shroud
 rotates.
 
 **Sensor electrode radius:** r=44mm on the PCB flat face (bare copper electrode pads, no
@@ -115,7 +115,7 @@ components).
   only
 * Board B side flange: no encoder slots (plain inner face)
 * 5 sensor electrodes on Board A only (4 read by U2, addr 0x2A, STGC bits[3:0]; 1 read by U4,
-  addr 0x2B, STGC bit[4]; both FDC2114RGER ICs on Board A)
+  addr 0x2B, STGC bit[4]; both FDC2114RGHR ICs on Board A)
 * Encoding: Single-Track Gray Code (STGC) — nearest achievable to Gray code for N=26
   (non-power-of-2)
 * Arc per segment at r=44mm: 10.63mm

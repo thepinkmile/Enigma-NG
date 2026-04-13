@@ -1,4 +1,4 @@
-﻿# Enigma-NG Design Decision Log
+# Enigma-NG Design Decision Log
 
 **Status:** Active
 **Project:** Enigma-NG
@@ -1016,7 +1016,7 @@ as a K-bit code. A combinational lookup table in the CPLD VHDL maps the raw sens
 binary rotor position (0 to N−1). The SW1 modulo-N adder (ring setting) operates on the decoded
 binary value. No external adder hardware is required — the decode and add are pure CPLD logic.
 
-Two **Texas Instruments FDC2114RGER** (4-channel, I²C, 16-VQFN, 3.3V) per rotor replace U2:
+Two **Texas Instruments FDC2114RGHR** (4-channel, I²C, 16-VQFN, 3.3V) per rotor replace U2:
 
 - U2 (address 0x2A): Track A — bits[5:3] (N=64) or STGC bits[3:0] (N=26).
 - U3 (address 0x2B): Track B — bits[2:0] (N=64 only). NOT POPULATED for N=26. See U4 on Board A for N=26 bit[4].
@@ -1053,13 +1053,13 @@ PCB outer diameter Ø92mm (inside Ø100mm aluminium shroud) — per DEC-028
 ### Impact
 
 - `design/Electronics/Rotor/Design_Spec.md`: FR-ROT-02, FR-ROT-08, DR-ROT-03, DR-ROT-09, §1,
-  §2.1 (full rewrite), §3.2 I²C note, BOM U2 → FDC2114RGER, U3 added.
+  §2.1 (full rewrite), §3.2 I²C note, BOM U2 → FDC2114RGHR, U3 added.
 - `design/Electronics/Rotor/Rotor_26_Char_Design.md`: §5 ring setting updated; §6 added
   (geometry, track pattern, STGC→position lookup table).
 - `design/Electronics/Rotor/Rotor_64_Char_Design.md`: §5 ring setting updated; §7 added
   (geometry, track pattern, STGC→position lookup table).
 - `design/Electronics/Rotor/Board_Layout.md`: ASCII diagram updated; PCB Ø92mm (per DEC-028).
-- `design/Electronics/Consolidated_BOM.md`: AS5600 row replaced with 2× FDC2114RGER per rotor
+- `design/Electronics/Consolidated_BOM.md`: AS5600 row replaced with 2× FDC2114RGHR per rotor
   (60 units total across 30 rotors).
 - `design/Electronics/Reflector/STGC_Generator.py`: Original script location noted — should be
   relocated to `design/Electronics/Rotor/` in a future tidy-up commit.
