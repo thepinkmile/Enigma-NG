@@ -163,7 +163,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
           |                           |             |                    |
  [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS75733KTTRG3]  [U8 MCP121T-450E]
  [C_SC1-6: 33F / 5.4V    ]   PD Emulator         3.3V LDO          Supervisor
- (6x Tecate 22F/2.7V 2S3P) -> CM5 5V/5A          -> 3V3_ENIG        -> PWR_GD
+ (6x Vishay MAL222551017E3 22F/2.7V 2S3P) -> CM5 5V/5A -> 3V3_ENIG        -> PWR_GD
                               (via J1 BtB)         (3A / 3.3V)      (open-drain)
 ```
 

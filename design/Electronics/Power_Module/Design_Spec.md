@@ -84,7 +84,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 
 ### 2. Power & UPS Hub
 
-* **Storage:** LTC3350-managed supercap bank — 6× Tecate SCMT32C156PRBA0 (22F/2.7V, SMD) in 2S3P configuration on 5V_MAIN bus. Total: 33F at 5.4V. Hold-up
+* **Storage:** LTC3350-managed supercap bank — 6× Vishay MAL222551017E3 (22F/2.7V, THT radial can, 12.5mm dia × 40mm height) in 2S3P configuration on 5V_MAIN bus. Total: 33F at 5.4V. Hold-up
 
   energy: 108.6J (≥21.7 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 
@@ -102,7 +102,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 * **Protection:** TPD1E10B06DYARQ1 TVS diode on the Presence line plus a dedicated 2-channel TVS array on the SMBus lines to protect the battery interface during insertion.
 * **Stabilizer:** Solder-mask opening "KLEBER-ZONE" for RTV Silicone adhesive.
 * **Indicators:** Green "LOGIK-BEREIT" LED + 5.1V Zener Amber "Safety Glow" LED.
-* **Z-Height:** SMD-mounted supercapacitors (SCMT32C156PRBA0); no special vertical clearance required beyond standard component keep-out.
+* **Z-Height:** Through-hole radial can supercapacitors (MAL222551017E3, 12.5mm dia × 40mm height); enclosure above PM PCB must provide ≥40mm vertical clearance for supercap bodies.
 * **Interface:** Gelid GP-Ultimate (15 W/mK) pad on an **Exposed ENIG** bottom zone to Aluminium Enclosure with internal compression ribs.
 
 ### 3. Telemetry & Power Management
@@ -438,7 +438,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C22 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C24 | TPS23730 soft-start cap (C_SS, SS pin) | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1005-1-ND | C57112 |
-| C_SC1–6 | Supercaps (6× cells, 2S3P) | Tecate SCMT32C156PRBA0 / 22F 2.7V | SMD | (TBD) | (TBD) | (TBD) |
+| C_SC1–6 | Supercaps (6× cells, 2S3P) | Vishay MAL222551017E3 / 22F 2.7V | THT Radial Can 12.5mm×40mm | 594-MAL222551017E3 | — | C9900091157 |
 | D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
 | D3 | USB-C ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
