@@ -99,7 +99,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 * **Presence Logic:** Pin 5 is pulled to **3V3_ENIG** via 10kΩ resistor (R6). Battery internal shorts Pin 5 to GND.
   * Logic HIGH: Battery Disconnected.
   * Logic LOW: Battery Detected.
-* **Protection:** TPD1E10B06 TVS diode on the Presence line plus a dedicated 2-channel TVS array on the SMBus lines to protect the battery interface during insertion.
+* **Protection:** TPD1E10B06DYARQ1 TVS diode on the Presence line plus a dedicated 2-channel TVS array on the SMBus lines to protect the battery interface during insertion.
 * **Stabilizer:** Solder-mask opening "KLEBER-ZONE" for RTV Silicone adhesive.
 * **Indicators:** Green "LOGIK-BEREIT" LED + 5.1V Zener Amber "Safety Glow" LED.
 * **Z-Height:** SMD-mounted supercapacitors (SCMT32C156PRBA0); no special vertical clearance required beyond standard component keep-out.
@@ -299,7 +299,7 @@ GND ──────┴──────────────────�
   * 2× TPD4E05U06 (D4, D5) at the RJ45 entry — one per two GbE differential pairs.
   * TPD4E05U06 (D3) at the USB-C entry.
   * TPD2E2U06 (D2) on the Battery SMBus lines (SDA/SCL).
-  * TPD1E10B06 (D1) on the BATT_PRES_N Presence Detect line.
+  * TPD1E10B06DYARQ1 (D1) on the BATT_PRES_N Presence Detect line.
 * **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching around the board perimeter.
 * **Single-Point GND Bond:** Signal/power reference GND connects to GND_CHASSIS at one point only — located between the OR-ing diode network output
   and the eFuse input (the clean/dirty power boundary). See `Standards/Global_Routing_Spec.md §5` and `Standards/Certification_Evidence.md §2.2` for full rationale.
@@ -460,7 +460,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND (CT) / SRP1265A-100MTR-ND (T&R) / SRP1265A-100MDKR-ND (DKR) | C840531 |
-| Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-CSD17483F4TCT-ND | — |
+| Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 |
 | R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 1% Thick-Film (ERJ-3EKF2323V) | 0603 | 667-ERJ-3EKF2323V | P232KHCT-ND | C403086 |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 1% Thick-Film (ERJ-3EKF2872V) | 0603 | 667-ERJ-3EKF2872V | P28.7KHCT-ND | C403135 |
 | R3 | eFuse ILIM set resistor | 210Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF2100V | P210HCT-ND | C403064 |
@@ -486,10 +486,10 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R25 | SYNC delay chain SW-ringing isolation resistor (R_SW) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R26 | SYNC 180° phase delay resistor (R_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 82.0kΩ 1% Thick-Film (ERJ-2RKF8202X) | 0402 | 667-ERJ-2RKF8202X | P82.0KLCT-ND | C400641 |
 | R27 | U2B SYNC pull-down to AGND (R_PD) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
-| D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 771-BAT54215 | BAT54-7-FCT-ND | C8598 |
-| Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
-| Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C112233 |
+| D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
+| D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
+| Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
+| Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
 | U1 | eFuse | TPS259804ONRGER (16.9V silicon-fixed OVLO) | VQFN-24 4×4mm | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |

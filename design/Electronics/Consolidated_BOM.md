@@ -50,8 +50,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | 3 |
-| BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| BAT54 — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | 3 |
+| BSS138 (onsemi) — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 2 |
+| BAT54 (Diotec) — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | 3 |
 | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 509 |
 | 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | 185 |
@@ -189,8 +189,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **Intel EPM240T100I5N:** 6 units (Encoder ×2 per board ×3 boards = 6).
 * **Intel EPM570T100I5N:** 31 units (Stator ×1, Rotor ×1 per board ×30 boards = 30; total 31).
   Same TQFP-100 footprint as EPM240; 570 LEs required for startup-loaded cipher/reflector map registers.
-  Mouser: 989-EPM570T100I5N, DigiKey: 544-2281-ND, JLCPCB: C27319.
-  DigiKey/JLCPCB part numbers TBD.
+  DigiKey: 544-2281-ND · Mouser: 989-EPM570T100I5N · JLCPCB: C27319.
 
 ## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
 
@@ -244,7 +243,7 @@ table and placement requirements.
 | Ref | Component | Description | Qty | Supplier | Part Number |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | BT1 | Keystone 3034 | CR2032 THT horizontal coin cell holder — RTC backup battery for CM5 MXL7704 PMIC | 1 | Mouser: 534-3034 / DigiKey: 36-3034-ND | Keystone 3034 |
-| D1 (CTRL) | Nexperia BAT54 | SOT-23 Schottky — VBAT (Pin 95) charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 771-BAT54215 / DigiKey: 1727-1064-1-ND | BAT54 |
+| D1 (CTRL) | BAT54 (Diotec) | SOT-23 Schottky — VBAT (Pin 95) charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 637-BAT54 / DigiKey: 4878-BAT54CT-ND / JLCPCB: C25835522 | BAT54 |
 | — | Renata CR2032 | CR2032 3V coin cell (not fitted at PCB assembly — installed at commissioning) | 1 | Mouser: 614-CR2032 / DigiKey: P189-ND | Renata CR2032 |
 
 ## 6. Backplane & Extension Components
