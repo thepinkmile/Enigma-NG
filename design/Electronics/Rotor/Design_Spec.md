@@ -477,8 +477,8 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; STGC bits[3:0] N=26); I²C addr 0x2A | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | U4 | FDC2114RGHR, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | 6-position DIP | TBD | TBD | TBD | TBD |
-| SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
+| SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
+| SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
 
 ### Board B BOM (Output Side — JLCPCB SMT outward face)
 
@@ -489,4 +489,4 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
 | J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** ⚠️ **Part does not exist — MPN requires verification; connector spec for J_INT may need redesign** | 2.54mm pitch, 2×11 (22-pin) | TH | TBD | TBD | TBD |
 | U3 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |
+| SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |

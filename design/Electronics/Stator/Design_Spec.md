@@ -312,6 +312,6 @@ snapped off.
 | R24 | SW2[4] (switch 5) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R25 | SW2[5] (switch 6 — internal reflector enable) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | SW1 | Routing configuration selector | CTS 219-4LPST — 4-position DIP switch, 2.54mm THT | Through-hole | 774-219-4LPST | CT2064-ND | C128947 |
-| SW2 | Reflector map selector / internal reflector enable | CTS 219-6LPST — 6-position DIP switch, 2.54mm THT | Through-hole | 774-219-6LPST | TBD | TBD |
+| SW2 | Reflector map selector / internal reflector enable | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
 | U1 | Stator Management CPLD (routing matrix + optional internal reflector) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-23978-1-ND | C138706 |

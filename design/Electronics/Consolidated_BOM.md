@@ -126,6 +126,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | DPDT 6-pin Momentary Keyboard Switch | — | — | — | 64 | 192 | — | — | — | — | — | 192 |
 | 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 128 | 384 | — | — | — | — | — | 384 |
 | CTS 219-4LPST — 4-pos DIP switch, 2.54mm THT | — | — | 1 | — | — | — | — | — | — | — | 1 |
+| CTS 219-6LPSTR — 6-pos DIP switch, 2.54mm THT | — | — | 1 | — | — | 3 | 90 | — | — | — | 91 |
 
 ## 1. Critical Spares (MOQ Recommendations)
 
@@ -218,6 +219,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | R16–R19 | SW1 pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | SW1 | Routing config DIP switch | CTS 219-4LPST 4-pos 2.54mm THT | THT | 774-219-4LPST | CT2064-ND | C128947 |
+| R20–R25 | SW2 pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| SW2 | Reflector map selector DIP switch | CTS 219-6LPSTR 6-pos 2.54mm THT | THT | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
 
 See `Stator/Design_Spec.md §3 DIP Switch Configuration (SW1)` for the full 16-configuration routing
 table and placement requirements.
@@ -375,3 +378,4 @@ Product page links for all major components for design review and procurement ve
 | J1 (PM) + Rotor/Stator/Reflector/Extension ERM8 | ERM8-040/020/010/005 — 0.8mm-pitch BtB Male Headers | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | C_SC1–6 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
+| SW2 (STA), SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
