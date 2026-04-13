@@ -102,8 +102,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | 32 |
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
 | ⚠️ **Würth 61201221721** — 22-pin (2×11) keyed IDC box header, 2.54mm pitch — Rotor J\_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) — **⚠️ Part does not exist — MPN requires verification; connector spec for J\_INT may need redesign** · All supplier PNs: TBD | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
-| 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) — **⚠️ Part number does not match description — connector spec requires re-review** · All supplier PNs: TBD | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
-| 16-pin 2×8 Molex Shrouded Header 2.54 mm (22-23-2161) — **⚠️ Part number does not match description — connector spec requires re-review** · All supplier PNs: TBD | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
+| Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
+| Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
 | ⚠️ **1×5 2.54mm female IDC header** — JDB J1 INPUT (5V_USB, 3V3_ENIG, D+, D−, GND) — **⚠️ No suitable part found — header spec requires redesign** · All supplier PNs: TBD | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | ⚠️ **1×10 2.54mm female IDC header** — JDB J2 JTAG OUTPUT (10-pin interleaved GND) — **⚠️ No suitable part found — header spec requires redesign** · All supplier PNs: TBD | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | 1 |
@@ -250,7 +250,7 @@ table and placement requirements.
 
 ## 6. Backplane & Extension Components
 
-* **16-pin Inter-Board Link (Molex 22-23-2161, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TTD_RETURN path.
+* **16-pin Inter-Board Link (Adam Tech BHR-16-VUA, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TTD_RETURN path.
 * See individual board BOMs: Rotor/Board_Layout.md, Stator/Board_Layout.md, Extension/Board_Layout.md, Reflector/Board_Layout.md for authoritative connector part numbers.
 * **Copper Shielding Tape:** 50mm (2.0") Conductive Adhesive (Manual cable wrap).
 
