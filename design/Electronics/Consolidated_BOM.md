@@ -373,4 +373,4 @@ Product page links for all major components for design review and procurement ve
 | J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
 | J1 (PM) + Rotor/Stator/Reflector/Extension ERM8 | ERM8-040/020/010/005 — 0.8mm-pitch BtB Male Headers | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
-| C_SC1–6 (PM) | MAL222551017E3 — 22F 2.7V ENYCAP Supercapacitor, THT Radial Can | Vishay | [225edlc-r-enycap.pdf](https://www.vishay.com/docs/28449/225edlc-r-enycap.pdf) |
+| C_SC1–6 (PM) | MAL222551017E3 — 22F 2.7V ENYCAP Supercapacitor, THT Radial Can | Vishay | [Vishay-MAL222551017E3-datasheet.pdf](../Datasheets/Vishay-MAL222551017E3-datasheet.pdf) |

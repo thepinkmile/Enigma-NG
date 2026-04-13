@@ -169,9 +169,9 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 
 * Thermal Matrix vias sit beneath the supercap and eFuse thermal island for heat-spreading only; they are not part of the electrical power path.
 * **Rib Clearway ENIG Bond Zone:** Solder mask opening on L1 in the 3.0mm rib clearway gap between
-  cells. GND_CHASSIS copper strip, min 1.5mm wide × full rib depth. Conductive gasket strip to be
-  placed at rib face prior to lid closure (see DEC-020). Supercap cells to be wrapped in 2-mil
-  polyimide tape before insertion.
+  cells (16mm centre-to-centre pitch, 13.0mm max body diameter). GND_CHASSIS copper strip, min 1.5mm
+  wide × full rib depth. Conductive gasket strip to be placed at rib face prior to lid closure (see
+  DEC-020). Supercap cells to be wrapped in 2-mil polyimide tape before insertion.
 
 ## Power Handshake
 

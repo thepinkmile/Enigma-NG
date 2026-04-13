@@ -68,10 +68,13 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
   (calculated trace widths within ±10% of target based on JLC06161H-2116 datasheet parameters).
 * **Substrate:** High-Tg FR4 for thermal stability.
 * **Finish:** ENIG (Gold) for all user-touch points and thermal pads.
-* **Enclosure:** 42mm Aluminium "Power Can" with internal compression ribs.
+* **Enclosure:** ≥45mm internal clearance Aluminium "Power Can" with internal compression ribs
+  (≥45mm required above PCB surface to clear MAL222551017E3 supercap bodies at 42.5mm max height + assembly margin).
 * **Thermal:** Cross-Hatched Exposed ENIG "Thermal Halos" (2mm offset) at mesh intersections.
   * **Vias:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
-* **Supercap Block:** 2×3 arrangement (6 cells, 15mm centre-to-centre pitch, 3.0mm air gap between cells). Block footprint ≈ 30mm × 45mm.
+* **Supercap Block:** 2×3 arrangement (6 cells, 16mm centre-to-centre pitch, 3.0mm air gap between cells
+  at max body diameter 13.0mm). Block footprint ≈ 29mm × 45mm. THT through-holes: 5.0mm lead pitch
+  (±0.5mm), 1.0mm recommended drill diameter (0.8mm lead diameter).
   The 3.0mm gap is a 'No-Fly Zone' for all PCB traces on L1–L6 (enclosure rib clearway).
   * **Rib Clearway ENIG Bond:** Solder mask is opened in the 3.0mm rib clearway gap on L1 (top copper),
     connected to GND_CHASSIS. Minimum strip width 1.5mm × full rib contact depth. The aluminium enclosure
@@ -80,7 +83,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
     (Kapton) tape before installation to prevent shorts with the metal ribs. Combined with the GND_CHASSIS
     copper pour in the shadow zone (§1 keepout rule), this creates a near-complete Faraday cage around the
     supercap block. See DEC-020.
-* **Routing Keep-out:** 34mm × 49mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
+* **Routing Keep-out:** 33mm × 49mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
 
 ### 2. Power & UPS Hub
 
@@ -102,7 +105,8 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 * **Protection:** TPD1E10B06DYARQ1 TVS diode on the Presence line plus a dedicated 2-channel TVS array on the SMBus lines to protect the battery interface during insertion.
 * **Stabilizer:** Solder-mask opening "KLEBER-ZONE" for RTV Silicone adhesive.
 * **Indicators:** Green "LOGIK-BEREIT" LED + 5.1V Zener Amber "Safety Glow" LED.
-* **Z-Height:** Through-hole radial can supercapacitors (MAL222551017E3, 12.5mm dia × 40mm height); enclosure above PM PCB must provide ≥40mm vertical clearance for supercap bodies.
+* **Z-Height:** Through-hole radial can supercapacitors (MAL222551017E3, 12.5mm nominal / 13.0mm max dia ×
+  40mm nominal / 42.5mm max height); enclosure above PM PCB must provide ≥45mm internal vertical clearance for supercap bodies.
 * **Interface:** Gelid GP-Ultimate (15 W/mK) pad on an **Exposed ENIG** bottom zone to Aluminium Enclosure with internal compression ribs.
 
 ### 3. Telemetry & Power Management
