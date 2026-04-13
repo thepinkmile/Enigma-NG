@@ -64,7 +64,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 10 nF 100 V X7R 0402 Bob Smith termination cap | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 100 pF X7R 25 V 0402 SYNC SW-ringing LP filter (C0402C101K3RACAUTO) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 22 F / 2.7 V Supercapacitor (Vishay MAL222551017E3) | 6 | — | — | — | — | — | — | — | — | — | 6 |
+| 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 6 | — | — | — | — | — | — | — | — | — | 6 |
 | | | | | | | | | | | | |
 | 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 6 | 2 | 9 | — | — | — | — | — | — | — | 17 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | 328 |
@@ -130,7 +130,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 ## 1. Critical Spares (MOQ Recommendations)
 
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
-* **Vishay MAL222551017E3 (22F/2.7V) Supercap:** Order 10 — 6 required per build + 4 spare/test. Source via Mouser (594-MAL222551017E3, 240 in stock) or JLCPCB (C9900091157, MOQ 10).
+* **Abracon ADCR-T02R7SA256MB (25F/2.7V) Supercap:** Order 10 — 6 required per build + 4 spare/test.
+  Source via DigiKey (535-ADCR-T02R7SA256MB-ND) or Mouser (815-ADCRT02R7SA256MB). JLCPCB global sourcing only.
 * **Samtec ERM8-040 (Gold, 80-pin):** Order 3 (MOQ) — Power Module J1, (1× Spare). Order separately from ERM8-020.
 * **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J8, (1× Spare). Poka-yoke pair with ERF8-020.
 * **Samtec ERF8-040 (Gold, 80-pin):** Order 3 (MOQ) — Controller J1, (1× Spare).
@@ -322,7 +323,7 @@ Reference information for placing orders with key component suppliers.
 | S08 | **Samtec** | Connector manufacturer | [samtec.com](https://www.samtec.com) | For ERF8/ERM8 BtB connectors (80-pin Link-Alpha, 40-pin Link-Beta). Order direct or via Farnell/Mouser. Min order typically 3 units. |
 | S09 | **Würth Elektronik** | Passive / connector manufacturer | [we-online.com](https://www.we-online.com) | For RJ45 MagJack (7499111121A), EMI chokes (WE-CMBNC). Order via Farnell, Mouser, or direct. |
 | S10 | **Molex** | Connector manufacturer | [molex.com](https://www.molex.com) | For battery connector (43650-0519 Micro-Fit 3.0, 5-pin vertical THT). Order via Mouser or DigiKey. |
-| S11 | **Vishay** | Passive component manufacturer | [vishay.com](https://www.vishay.com) | For MAL222551017E3 22F/2.7V ENYCAP supercaps. Available from Mouser (240 stock) and JLCPCB. |
+| S11 | **Abracon** | Passive component manufacturer | [abracon.com](https://www.abracon.com) | For ADCR-T02R7SA256MB 25F/2.7V supercaps. Available from DigiKey (935 in stock) and Mouser. JLCPCB global sourcing only. |
 | S12 | **JLCPCB** | PCB fabrication & SMT assembly | [jlcpcb.com](https://www.jlcpcb.com) | Primary PCB manufacturer. Use JLCPCB Part # column for SMT assembly BOM upload. Stackup: JLC04161H-7628 (4-layer, 2oz) for JDB, Stator, Encoder, Rotor, Reflector, Extension; JLC06161H-2116 (6-layer, 2oz) for Power Module and Controller. |
 | S13 | **Newark (Avnet)** | Global distributor (UK stock) | [newark.com](https://www.newark.com) | Good for Würth passives with immediate UK stock. Note: WE-CMBNC 7448031002 is not stocked by Newark/Avnet — use Mouser (710-7448031002), DigiKey (732-5584-ND), or JLCPCB (C1519839). Same-group as Farnell/element14. |
 
@@ -373,4 +374,4 @@ Product page links for all major components for design review and procurement ve
 | J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
 | J1 (PM) + Rotor/Stator/Reflector/Extension ERM8 | ERM8-040/020/010/005 — 0.8mm-pitch BtB Male Headers | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
-| C_SC1–6 (PM) | MAL222551017E3 — 22F 2.7V ENYCAP Supercapacitor, THT Radial Can | Vishay | [Vishay-MAL222551017E3-datasheet.pdf](../Datasheets/Vishay-MAL222551017E3-datasheet.pdf) |
+| C_SC1–6 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |

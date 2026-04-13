@@ -163,13 +163,13 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
           |                           |             |                    |
  [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS75733KTTRG3]  [U8 MCP121T-450E]
  [C_SC1-6: 33F / 5.4V    ]   PD Emulator         3.3V LDO          Supervisor
- (6x Vishay MAL222551017E3 22F/2.7V 2S3P) -> CM5 5V/5A -> 3V3_ENIG        -> PWR_GD
+ (6x Abracon ADCR-T02R7SA256MB 25F/2.7V 2S3P) -> CM5 5V/5A -> 3V3_ENIG        -> PWR_GD
                               (via J1 BtB)         (3A / 3.3V)      (open-drain)
 ```
 
 * Thermal Matrix vias sit beneath the supercap and eFuse thermal island for heat-spreading only; they are not part of the electrical power path.
 * **Rib Clearway ENIG Bond Zone:** Solder mask opening on L1 in the 3.0mm rib clearway gap between
-  cells (16mm centre-to-centre pitch, 13.0mm max body diameter). GND_CHASSIS copper strip, min 1.5mm
+  cells (20mm centre-to-centre pitch, 16.5mm max body diameter). GND_CHASSIS copper strip, min 1.5mm
   wide × full rib depth. Conductive gasket strip to be placed at rib face prior to lid closure (see
   DEC-020). Supercap cells to be wrapped in 2-mil polyimide tape before insertion.
 

@@ -99,7 +99,7 @@ for CE/UKCA EMC compliance.
   → [L3 + C Pi-filter] (differential-mode HF bypass)
   → TCO F1 (72°C thermal fuse)
   → TPS259804ONRGER eFuse (7A ILIM via R3=210Ω, 11.0V UVLO, 16.9V OVLO silicon-fixed, VQFN 4×4mm)
-  → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 6× Vishay MAL222551017E3 supercaps (33F/5.4V, 2S3P)]
+  → [Dual LMQ61460-Q1 5V/12A Buck] → 5V_MAIN → [LTC3350 + 6× Abracon ADCR-T02R7SA256MB supercaps (37.5F/5.4V, 2S3P)]
   → 5V_MAIN bus
   → [CM5 via TPS25751 PD emulator] + [TPS2065C USB 1.6A] + [AP2331W HDMI 50mA] + [TPS75733KTTRG3 3V3 LDO]
   → 3V3_ENIG (all CPLDs + USB-JTAG)
