@@ -24,3 +24,10 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 18 | Rotor encoder finalised; JLCPCB single-side open | 018-rotor-single-side-jlcpcb-open.md |
 | 19 | Rotor review cycle complete, mechanical specs added | 019-rotor-review-cycle-complete.md |
 | 20 | Full system review complete (R8+R9 clean, 9 rounds, 90 fixes) | 020-full-system-review-complete-r8.md |
+| 21 | Full system review complete, eFuse and R1 corrections | 021-full-system-review-complete-ef.md |
+| 22 | Master parts list, FDC2114RGHR, PN corrections | 022-master-parts-list-fdc2114rghr.md |
+| 23 | Parts verification connectors, ESD, supercap search | 023-parts-verification-connectors.md |
+| 24 | Session bb01fc15 start | 024-session-bb01fc15.md |
+| 25 | Abracon supercap selected, DIP switch Item C pending | 025-abracon-supercap-selected-dip.md |
+| 26 | Connector MPNs confirmed, J_INT redesign in progress | 026-connector-mpns-confirmed-j-int.md |
+| 27 | J_INT redesign, POS_B naming, full deep-dive clean | 027-j-int-redesign-pos-b-clean-review.md |
