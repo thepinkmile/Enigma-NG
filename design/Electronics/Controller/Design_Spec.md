@@ -349,7 +349,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 * **Part:** JST SM04B-SRSS-TB(LF)(SN) — 4-pin JST SH 1.0mm pitch right-angle header
 * **Mating Part:** JST SHR-04V-S (female crimp housing)
-* **JLCPCB:** C160390 | **Mouser:** 538-SM04B-SRSS-TB
+* **JLCPCB:** C160404 | **Mouser:** 306-SM04BSRSSTBLFSN | **DigiKey:** 455-SM04B-SRSS-TBCT-ND
 * **Pinout:**
 
 | Pin | Signal | Source |
@@ -408,7 +408,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
     Fasten with the four corner mounting screws for secure thermal contact.
   * **Active Fan Header (J_FAN):** A 4-pin JST SH (1.0mm pitch) fan connector is provided on the Controller
     board, matching the CM5IO J14 standard. Supports 5V PWM-controlled fans.
-    Board part: JST SM04B-SRSS-TB(LF)(SN) (JLCPCB C160390, Mouser 538-SM04B-SRSS-TB).
+    Board part: JST SM04B-SRSS-TB(LF)(SN) (JLCPCB C160404, Mouser 306-SM04BSRSSTBLFSN, DigiKey 455-SM04B-SRSS-TBCT-ND).
     Pinout: Pin 1 = 5V_MAIN, Pin 2 = GND, Pin 3 = TACH (CM5 Pin 16), Pin 4 = PWM (CM5 Pin 19).
     FAN_TACH and FAN_PWM are dedicated BCM2712 fan controller pins on the CM5 module connector
     — no GPIO allocation required.
@@ -488,9 +488,9 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 (Diotec) | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
 | J1 | Link-Alpha 80-pin Socket | ERF8-040-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8040050SDVKTR | SAM8621CT-ND | C3640808 |
 | J2 | Link-Beta 40-pin Socket | ERF8-020-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8020050SDVKTR | SAM8619CT-ND (CT) / SAM8619TR-ND (T&R) / SAM8619DKR-ND (DKR) | C6034565 |
-| J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-0484060003 | WM1394-ND | C123458 |
-| J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A125057-ND | C123459 |
-| J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 538-SM04B-SRSS-TB | N/A | C160390 |
+| J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-48406-0003 | WM10420-ND | C565298 |
+| J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A141617-ND | C195051 |
+| J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
 | J_CM5_A | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | J_CM5_B | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | MH1–MH4 | CM5 brass standoff M2.5 × 4.0mm SMT (Würth 9774040151R) × 4 | M2.5 × 4.0mm | SMT | 710-9774040151R | 732-7089-1-ND | C5182034 |

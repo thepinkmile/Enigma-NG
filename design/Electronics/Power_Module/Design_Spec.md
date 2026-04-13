@@ -454,9 +454,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C33 | VCC bypass for U15 (MIC1555 monostable) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
 | J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM8613CT-ND | C5358550 |
-| J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | — (THT) |
+| J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
 | J3 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
-| J4 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must penetrate Power Module enclosure wall and sit flush with outer machine enclosure — verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | C5438410 |
+| J4 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must penetrate Power Module enclosure wall and sit flush with outer machine enclosure — verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 |
 | L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND (CT) / SRP1265A-100MTR-ND (T&R) / SRP1265A-100MDKR-ND (DKR) | C840531 |
@@ -543,7 +543,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 >   **Right-angle (R/A) mounting**: connector sits on the board edge with the USB-C port facing outward — correct for the Power Module's panel-mount power input.
 >   ⚠️ **Mechanical caveat**: the connector must penetrate the Power Module enclosure wall and sit flush with the outer machine enclosure.
 >   Verify protrusion depth vs enclosure wall thickness at prototype stage — may need a panel cutout with bezel, a panel-mount USB-C extension, or a revised connector with longer reach.
->   Available at DigiKey (2073-USB4135-GF-A-ND) and JLCPCB (C5438410). CC1 and CC2 pins connect
+>   Available at DigiKey (2073-USB4135-GF-ACT-ND) and JLCPCB (C5438410). CC1 and CC2 pins connect
 > to STUSB4500 (U5) for PD 15V negotiation.
 > * **R14/R15 BACKUP divider** — **REVISED (PM-06 superseded):** R14 changed from 26.7kΩ to **28.7kΩ** (ERA-3ARB2872V).
 >   Sets LTC3350 BACKUP comparator trigger at **4.644V** (V_thr=1.2V, R_TOP=28.7kΩ, R_BOT=10.0kΩ → actual 4.644V).

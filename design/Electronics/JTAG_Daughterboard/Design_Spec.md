@@ -60,13 +60,13 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 * **Purpose:** System power in (5V_USB + GND from Controller Board TPS2065C-protected USB rail);
   JTAG signal voltage reference (3V3_ENIG from Controller Board); internal USB 2.0 data to CM5 (D+/D−)
 * **Physical location:** One edge of the board (INPUT side)
-* **JLCPCB:** C50950 (1×5 2.54mm female pin header) — see Board_Layout.md for full pinout
+* **JLCPCB:** TBD ⚠️ **No suitable part found — header spec requires redesign**
 
 ### J2 — JTAG OUTPUT Header (10-Pin)
 
 * **Type:** Single-row 2.54mm pitch female IDC header, 10 pins
 * **Physical location:** Opposing edge of the board (OUTPUT side), physically opposite J1
-* **JLCPCB:** C2337 or equivalent 1×10 2.54mm female pin header — see Board_Layout.md for full pinout
+* **JLCPCB:** TBD ⚠️ **No suitable part found — header spec requires redesign**
 
 > **No external connectors:** The JDB has no external connectors. USB is entirely internal via J1.
 > No USB-C connector exists on the JDB. CC pins are irrelevant (USB 2.0 only).
@@ -177,8 +177,8 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C4 | Decoupling | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R | 0402 | — | — | C19666 |
-| J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | 1×5 female IDC | 2.54mm | — | — | C50950 |
-| J2 | JTAG OUTPUT header (10-pin interleaved GND) | 1×10 female IDC | 2.54mm | — | — | C2337 |
+| J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND ⚠️ **No suitable part found — header spec requires redesign** | 1×5 female IDC | 2.54mm | — | — | TBD |
+| J2 | JTAG OUTPUT header (10-pin interleaved GND) ⚠️ **No suitable part found — header spec requires redesign** | 1×10 female IDC | 2.54mm | — | — | TBD |
 | R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
 | R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |

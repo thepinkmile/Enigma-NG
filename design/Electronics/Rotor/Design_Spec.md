@@ -396,8 +396,10 @@ Fitted on the **inner (facing) surface** of both Board A and Board B. Both board
 keyed IDC box header. The connector is **keyed to prevent incorrect orientation assembly**.
 
 > **Assembly note:** J_INT is manually soldered/assembled AFTER JLCPCB SMT pick-and-place. It is
-> NOT part of the JLCPCB SMT order. Order separately (e.g. Würth 61201221721 or equivalent 2×11
-> 2.54mm keyed IDC box header). Two connectors per rotor assembly (30 rotors × 2 = 60 total).
+> NOT part of the JLCPCB SMT order. ⚠️ **Part does not exist — MPN requires verification;
+> connector spec for J_INT may need redesign.** Previously listed as Würth 61201221721
+> (invalid MPN — part not found in current catalogs). Two connectors per rotor assembly
+> (30 rotors × 2 = 60 total).
 
 Signal allocation (22 pins, 2×11):
 
@@ -466,7 +468,7 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
-| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×11 (22-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
+| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** ⚠️ **Part does not exist — MPN requires verification; connector spec for J_INT may need redesign** | 2.54mm pitch, 2×11 (22-pin) | TH | TBD | TBD | TBD |
 | R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
@@ -485,6 +487,6 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
-| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** | 2.54mm pitch, 2×11 (22-pin) | TH | 710-61201221721 | TBD | N/A — hand assembly |
+| J_INT | Board A↔Board B internal interconnect, keyed IDC box header, inner face — **manually assembled post-JLCPCB SMT** ⚠️ **Part does not exist — MPN requires verification; connector spec for J_INT may need redesign** | 2.54mm pitch, 2×11 (22-pin) | TH | TBD | TBD | TBD |
 | U3 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | 6-position DIP | TBD | TBD | TBD | TBD |

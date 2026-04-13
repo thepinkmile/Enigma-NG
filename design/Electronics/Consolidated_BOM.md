@@ -101,11 +101,11 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ERF8-005 10-pin Samtec Female Socket 0.8 mm (Rotor interface) | — | — | 2 | — | — | 2 | 60 | — | 2 | — | 64 |
 | ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | 32 |
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
-| Würth 61201221721 — 22-pin (2×11) keyed IDC box header, 2.54mm pitch — Rotor J_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
-| 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
-| 16-pin 2×8 Molex Shrouded Header 2.54 mm (22-23-2161) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
-| 1×5 2.54mm female IDC header — JDB J1 INPUT (5V_USB, 3V3_ENIG, D+, D−, GND) | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| 1×10 2.54mm female IDC header — JDB J2 JTAG OUTPUT (10-pin interleaved GND) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| ⚠️ **Würth 61201221721** — 22-pin (2×11) keyed IDC box header, 2.54mm pitch — Rotor J\_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) — **⚠️ Part does not exist — MPN requires verification; connector spec for J\_INT may need redesign** · All supplier PNs: TBD | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
+| 26-pin 2×13 Molex Shrouded Header 2.54 mm (22-23-2261) — **⚠️ Part number does not match description — connector spec requires re-review** · All supplier PNs: TBD | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
+| 16-pin 2×8 Molex Shrouded Header 2.54 mm (22-23-2161) — **⚠️ Part number does not match description — connector spec requires re-review** · All supplier PNs: TBD | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
+| ⚠️ **1×5 2.54mm female IDC header** — JDB J1 INPUT (5V_USB, 3V3_ENIG, D+, D−, GND) — **⚠️ No suitable part found — header spec requires redesign** · All supplier PNs: TBD | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| ⚠️ **1×10 2.54mm female IDC header** — JDB J2 JTAG OUTPUT (10-pin interleaved GND) — **⚠️ No suitable part found — header spec requires redesign** · All supplier PNs: TBD | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | HDMI Type-A Full-Size (TE 2007435-1) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | USB-C SMT Receptacle 6-pos (GCT USB4135-GF-A) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -291,9 +291,9 @@ table and placement requirements.
 | U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | C470955 | DigiKey stock verified. $3.09/1. VQFN-20 per TI. |
 | U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | C3189530 | ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | C1972959 | DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
-| J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | — (THT) | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB does not stock THT MagJacks — hand-place or pre-fit. |
+| J2 | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | C5523983 | Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB C5523983 — hand-place or pre-fit. |
 | J3 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
-| J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-A-ND | — (hand-place) | 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. Not in JLCPCB standard catalog; hand-place or pre-fit. |
+| J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 | 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. JLCPCB C5438410. |
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=28.7kΩ (ERA-3ARB2872V, Mouser 667-ERA-3ARB2872V, DigiKey P28.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.644V (above MCP121T 4.50V — LTC3350 activates first, keeping PWR_GD stable). |
 | U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERJ-3EKF series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
@@ -367,7 +367,11 @@ Product page links for all major components for design review and procurement ve
 | L1, L2 | WE-CMBNC 7448031002 — Nanocrystalline CMC | Würth Elektronik | [we-online.com](https://www.we-online.com/en/components/products/CMBNC) |
 | L3 | SRP1265A-100M — 10µH 14A Power Inductor | Bourns | [bourns.com/SRP1265A](https://www.bourns.com/products/inductors/power-inductors/product/SRP1265A) |
 | R12 / R_SENSE | CSS2H-2512R-R010ELF — 10mΩ Kelvin Shunt | Bourns | [bourns.com/CSS2H](https://www.bourns.com/products/resistors/current-sense-resistors/product/CSS2H) |
-| J2 (PM) | 7499111121A — GbE RJ45 MagJack with LEDs | Würth Elektronik | [we-online.com](https://www.we-online.com/en/components/products/GMJT) |
+| J2 (PM) | 7499111121A — GbE RJ45 MagJack with LEDs | Würth Elektronik | [Wurth-7499111121A-datasheet.pdf](../Datasheets/Wurth-7499111121A-datasheet.pdf) |
 | J3 (PM) | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [molex.com/436500519](https://www.molex.com/en-us/products/part-detail/436500519) |
-| J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [gct.co/USB4135-GF-A](https://gct.co/part/USB4135-GF-A) |
-| J1/J2 (PM/STA) | ERM8 / ERF8 — 0.8mm-pitch BtB Connectors | Samtec | [samtec.com/erm8](https://www.samtec.com/products/erm8) |
+| J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [usb4135-datasheet.pdf](../Datasheets/usb4135-datasheet.pdf) |
+| J3 (CTL) | 48406-0003 — USB 3.0 Type-A Dual-Stack | Molex | [Molex-48406-0003-datasheet.pdf](../Datasheets/Molex-48406-0003-datasheet.pdf) |
+| J4 (CTL) | 2007435-1 — HDMI Type-A Full-Size | TE Connectivity | [TE-2007435-1-datasheet.pdf](../Datasheets/TE-2007435-1-datasheet.pdf) |
+| J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
+| J1 (PM) + Rotor/Stator/Reflector/Extension ERM8 | ERM8-040/020/010/005 — 0.8mm-pitch BtB Male Headers | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
+| J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
