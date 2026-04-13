@@ -335,7 +335,7 @@ Replace **TPS25750** (NRND — Not Recommended for New Designs) with **TPS25751D
 ### Impact
 
 - ⚠️ **Package change**: TPS25750 was QFN-28; TPS25751DREFR is WQFN-38 6×4mm. Schematic symbol and PCB footprint must both be updated.
-- Mouser: `595-TPS25751DREFR`; DigiKey: `TPS25751DREFR-ND`.
+- Mouser: `595-TPS25751DREFR`; DigiKey: `296-TPS25751DREFRCT-ND`; JLCPCB: `C30169739`.
 
 ---
 
