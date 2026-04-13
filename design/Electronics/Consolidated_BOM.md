@@ -104,8 +104,10 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ⚠️ **Würth 61201221721** — 22-pin (2×11) keyed IDC box header, 2.54mm pitch — Rotor J\_INT (manually assembled post-JLCPCB SMT; 2 per rotor assembly) — **⚠️ Part does not exist — MPN requires verification; connector spec for J\_INT may need redesign** · All supplier PNs: TBD | — | — | — | — | — | 2 | 60 | — | — | — | 60 |
 | Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
 | Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
-| ⚠️ **1×5 2.54mm female IDC header** — JDB J1 INPUT (5V_USB, 3V3_ENIG, D+, D−, GND) — **⚠️ No suitable part found — header spec requires redesign** · All supplier PNs: TBD | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| ⚠️ **1×10 2.54mm female IDC header** — JDB J2 JTAG OUTPUT (10-pin interleaved GND) — **⚠️ No suitable part found — header spec requires redesign** · All supplier PNs: TBD | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1 INPUT (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| Adam Tech RS1-05-G — 1×5 2.54mm female socket, Controller J_JDB_PWR (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | — | — | — | — | — | 1 |
+| Adam Tech PH1-10-UA — 1×10 2.54mm male pin header, JDB J2 JTAG OUTPUT (Mouser 737-PH1-10-UA; DigiKey 2057-PH1-10-UA-ND; JLCPCB C3330527) | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| Adam Tech RS1-10-G — 1×10 2.54mm female socket, Controller J_JDB_JTAG (Mouser 737-RS1-10-G; DigiKey 2057-RS1-10-G-ND; JLCPCB C3320525) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | HDMI Type-A Full-Size (TE 2007435-1) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | USB-C SMT Receptacle 6-pos (GCT USB4135-GF-A) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -379,3 +381,9 @@ Product page links for all major components for design review and procurement ve
 | J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | C_SC1–6 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
 | SW2 (STA), SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
+| J4–J6 (STA), J2 (ENC) | T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm | Amphenol | TBD — datasheet to be added |
+| J7 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | TBD — datasheet to be added |
+| J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
+| J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
+| J_JDB_PWR (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
+| J_JDB_JTAG (CTL) | RS1-10-G — 1×10 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |

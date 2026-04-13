@@ -32,7 +32,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) | §2 Core Logic; BOM U1 (FT232H) |
 | DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port; D+/D− route via hat-header J1 | §3 Interface & Wiring; BOM J1 (5-pin INPUT header), Y1 (12MHz crystal) |
 | DR-JDB-08 | Power source | 5V_USB and 3V3_ENIG from Controller Board via hat-header J1; FT232H self-powered USB mode | §6 Electrical Requirements |
-| DR-JDB-09 | Hat-style connectors | J1 = 1×5 2.54mm female IDC (INPUT); J2 = 1×10 2.54mm female IDC (JTAG OUTPUT) | §3 Interface & Wiring; BOM J1, J2 |
+| DR-JDB-09 | Hat-style connectors | J1 = 1×5 2.54mm male pin header (INPUT); J2 = 1×10 2.54mm male pin header (JTAG OUTPUT) | §3 Interface & Wiring; BOM J1, J2 |
 | DR-JDB-10 | GND_CHASSIS not implemented | JDB is internal daughterboard; mounting holes tied to GND per DEC-023 | §3 Interface & Wiring |
 | DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4 per-IC decoupling + C5 4.7µF entry filter | §6 Electrical Requirements; BOM C1–C5 |
 | DR-JDB-12 | JTAG buffer | U5 = SN74LVC2G125DCUR (VSSOP-8) dual-channel buffer for TCK and TMS; placed between FT232H and J2 header | §6 Electrical Requirements; BOM U5; DEC-024 |
@@ -55,18 +55,18 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 ### J1 — INPUT Header (5-Pin, USB/Power Side)
 
-* **Type:** Single-row 2.54mm pitch female IDC header, 5 pins
+* **Type:** Single-row 2.54mm pitch male pin header, 5 pins
 * **Pinout:** Pin 1 = 5V_USB | Pin 2 = 3V3_ENIG | Pin 3 = D+ | Pin 4 = D− | Pin 5 = GND
 * **Purpose:** System power in (5V_USB + GND from Controller Board TPS2065C-protected USB rail);
   JTAG signal voltage reference (3V3_ENIG from Controller Board); internal USB 2.0 data to CM5 (D+/D−)
 * **Physical location:** One edge of the board (INPUT side)
-* **JLCPCB:** TBD ⚠️ **No suitable part found — header spec requires redesign**
+* **Mating Part (Controller J_JDB_PWR):** Adam Tech RS1-05-G — 1×5 2.54mm female socket (JLCPCB C3321119)
 
 ### J2 — JTAG OUTPUT Header (10-Pin)
 
-* **Type:** Single-row 2.54mm pitch female IDC header, 10 pins
+* **Type:** Single-row 2.54mm pitch male pin header, 10 pins
 * **Physical location:** Opposing edge of the board (OUTPUT side), physically opposite J1
-* **JLCPCB:** TBD ⚠️ **No suitable part found — header spec requires redesign**
+* **Mating Part (Controller J_JDB_JTAG):** Adam Tech RS1-10-G — 1×10 2.54mm female socket (JLCPCB C3320525)
 
 > **No external connectors:** The JDB has no external connectors. USB is entirely internal via J1.
 > No USB-C connector exists on the JDB. CC pins are irrelevant (USB 2.0 only).
@@ -177,8 +177,8 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C4 | Decoupling | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R | 0402 | — | — | C19666 |
-| J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND ⚠️ **No suitable part found — header spec requires redesign** | 1×5 female IDC | 2.54mm | — | — | TBD |
-| J2 | JTAG OUTPUT header (10-pin interleaved GND) ⚠️ **No suitable part found — header spec requires redesign** | 1×10 female IDC | 2.54mm | — | — | TBD |
+| J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | Adam Tech PH1-05-UA — 1×5 male pin header, 2.54mm | 2.54mm | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
+| J2 | JTAG OUTPUT header (10-pin interleaved GND) | Adam Tech PH1-10-UA — 1×10 male pin header, 2.54mm | 2.54mm | 737-PH1-10-UA | 2057-PH1-10-UA-ND | C3330527 |
 | R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
 | R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
 | R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
