@@ -131,9 +131,7 @@ power supplies of modern laptops and smartphones to pass EMC testing.
 Before any switching occurs, the raw input power passes through a two-stage filter at the board entry point:
 
 - A **nanocrystalline common-mode choke** (wideband, from Würth Elektronik) blocks high-frequency noise arriving from the source.
-- A **high-frequency nanocrystalline CMC** (Würth WE-CMBNC 7448031002, same as L1) provides supplementary **common-mode** attenuation above ~10 MHz. The original Laird CM5022 was discontinued when Laird's EMC passives
-
-  division was absorbed by TE Connectivity in 2019.
+- A **high-frequency nanocrystalline CMC** (Würth WE-CMBNC 7448031002, same as L1) provides supplementary **common-mode** attenuation above ~10 MHz.
 
 - A Pi-filter (L3 + capacitors) on the combined post-OR-ing VIN_RAW bus provides additional differential-mode attenuation.
 
