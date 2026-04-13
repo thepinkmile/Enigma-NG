@@ -17,7 +17,7 @@ inside an aluminium shroud (Ø100mm outer face, 4mm radial wall). The two boards
 by an ~11.8mm gap and connected by four single-row 2.54mm THT headers (H_SW3 1×7, H_PWR 1×5,
 H_JTAG 1×5, H_SENS 1×5; 22 pins total; mixed gender for physical keying) on
 their inner (facing) surfaces. Total rotor thickness is ~15mm, matching original Enigma rotor
-proportions. The IDC connector is manually assembled post-JLCPCB SMT pick-and-place.
+proportions. These internal headers are manually assembled post-JLCPCB SMT pick-and-place.
 
 **Board A (input side):** Carries the CPLD (U1), FDC2114 U2 (Track A encoder), SW1 (ring
 setting), SW2 (forward map select), and J1–J3 (ERM8 male, input connectors).

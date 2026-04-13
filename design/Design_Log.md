@@ -1128,13 +1128,14 @@ operates continuously and independently of JTAG state.
 ### Decision
 
 The rotor is split into two circular PCBs (Board A input side, Board B output side), each
-Ø92mm, connected by a keyed 2.54mm pitch IDC box header (2×11, 22 pins). This resolves the
+Ø92mm, connected by four single-row 2.54mm THT headers (H_SW3 1×7, H_PWR 1×5, H_JTAG 1×5,
+H_SENS 1×5; 22 pins total; mixed gender for physical keying). This resolves the
 JLCPCB single-side SMT assembly constraint and simultaneously defines the rotor physical
 thickness (~15mm with an 11.8mm board gap). Board A carries the CPLD (U1 EPM570T100I5N),
 FDC2114 U2 (Track A encoder, bits[5:3] for N=64 or all 5 sensors for N=26), SW1 (ring
 setting DIP), SW2 (forward map select DIP), and J1–J3 (ERM8 male, input side). Board B
 carries FDC2114 U3 (Track B, bits[2:0], N=64 only — not populated for N=26), SW3 (return
-map select DIP), and J4–J6 (ERF8 female, output side). The IDC connector is manually
+map select DIP), and J4–J6 (ERF8 female, output side). These internal headers are manually
 assembled post-JLCPCB SMT pick-and-place.
 
 The aluminium shroud (Ø100mm outer, 4mm radial wall → Ø92mm inner) floats electrically,
@@ -1175,15 +1176,15 @@ populated.
 
 - `design/Electronics/Rotor/Design_Spec.md`: §1 (two-board architecture, Ø92mm PCBs, shroud
   description), §2.1 (rewritten for capacitive encoder with milled shroud flanges), §3.4
-  (J_INT IDC connector added), BOM split into Board A / Board B, FR/DR updated.
+  (J_INT internal headers H_SW3/H_PWR/H_JTAG/H_SENS added), BOM split into Board A / Board B, FR/DR updated.
 - `design/Electronics/Rotor/Board_Layout.md`: rewritten for Board A and Board B with
   stacking cross-section; all Ø100mm references updated to Ø92mm.
 - `design/Electronics/Rotor/Rotor_64_Char_Design.md`: de Bruijn track replaced by 3+3
   dual-track reflected Gray code; XOR-chain decode; geometry updated to r=44mm / Ø92mm.
 - `design/Electronics/Rotor/Rotor_26_Char_Design.md`: single-track all-on-Board-A confirmed;
   geometry updated to r=44mm / Ø92mm; U3 not-populated note added.
-- `design/Electronics/Consolidated_BOM.md`: IDC box header connector (2×11, 22-pin) added,
-  2 per rotor assembly (60 total for 30 rotors).
+- `design/Electronics/Consolidated_BOM.md`: J_INT internal headers (H_SW3 PH1-07-UA/RS1-07-G, H_PWR PH1-05-UA/RS1-05-G, H_JTAG PH1-05-UA/RS1-05-G, H_SENS PH1-05-UA/RS1-05-G) added,
+  4 headers per rotor assembly (120 total for 30 rotors).
 
 ---
 
@@ -1371,8 +1372,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) | ERF8 0.8mm pitch female sockets. Rotor 1 input side only (serial chain — not 30 slots). J1 pin 6 = TTD (outgoing TDI). |
-| J4-J6 | Encoder Port headers (×3: HID J4, Plugboard A J5, Plugboard B J6) — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J4–J6 |
-| J7 | Extension/Reflector Link — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | THT, shrouded. Power, ENC_DATA, TTD_RETURN (pin 15). Pinout definition owner — see Stator/Board_Layout.md J7 |
+| J4-J6 | Encoder Port headers (×3: HID J4, Plugboard A J5, Plugboard B J6) — 26-pin 2×13 shrouded box header | Amphenol T821126A1S100CEU (2×13, 2.54mm) | T821126A1S100CEU | — (RS-Online 832-3503) | — | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J4–J6. JLCPCB C3013501 |
+| J7 | Extension/Reflector Link — 16-pin shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | THT, shrouded. Power, ENC_DATA, TTD_RETURN (pin 15). Pinout definition owner — see Stator/Board_Layout.md J7. JLCPCB C17692295 |
 | J8 | Link-Beta BtB — 40-pin plug to Controller Board | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM8611CT-ND | Male plug (ERM8). Mating female on Controller (ERF8-020). 40-pin per DEC-015 |
 | — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|SYS_RESET_N\|GND |
 
@@ -1392,7 +1393,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 (×64) | Plugboard cipher jack sockets (one per key/lamp position) | 6.35mm (¼″) mono switched panel-mount jack socket — already purchased (eBay: SaiBuy.Ltd item 334364197440) | — | — | — | THT panel-mount. 64× per board (26 input + 26 output + 10 plugboard positions + 2 spare). Purchased. |
-| J2 | Data link to Stator — 26-pin 2×13 shrouded box header | Molex 22-23-2261 (2×13, 2.54mm) | 22-23-2261 | 538-22-23-2261 | WM2913-ND | Mating connector for Stator J4/J5/J6. Cross-ref: Stator/Board_Layout.md J4–J6 |
+| J2 | Data link to Stator — 26-pin 2×13 shrouded box header | Amphenol T821126A1S100CEU (2×13, 2.54mm) | T821126A1S100CEU | — (RS-Online 832-3503) | — | Mating connector for Stator J4/J5/J6. Cross-ref: Stator/Board_Layout.md J4–J6. JLCPCB C3013501 |
 | J3 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
 
 ### Reflector Board
@@ -1402,7 +1403,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J1 | Rotor 30 output — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 | Plugs into Rotor 30 J4 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
 | J2 | Rotor 30 output — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 | Plugs into Rotor 30 J5 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
 | J3 | Rotor 30 output — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 | Plugs into Rotor 30 J6 (ERF8-010 female). Definition owner: Rotor/Design_Spec.md §3.4 |
-| J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey | Mating connector for **Stator J7** (or Extension J7/J8). Carries TTD_RETURN on pin 15. |
+| J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Mating connector for **Stator J7** (or Extension J7/J8). Carries TTD_RETURN on pin 15. |
 | J5 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | N/A | 2.54mm pitch. Not a separate connector; probed directly |
 
 ### Extension Board
@@ -1415,8 +1416,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J1 (ERM8-005 male). Cross-ref: Rotor/Design_Spec.md §3.4 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J2 (ERM8-005 male). |
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | ERF8-010-05.0-S-DV-K-TR | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 | Receives next rotor group's first rotor J3 (ERM8-010 male). |
-| J7 | Extension Port IN — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey | Mating connector for Stator J7 (or previous Extension J8). Cross-ref: Stator/Board_Layout.md J7 |
-| J8 | Extension Port OUT — 16-pin 2×8 shrouded box header | Molex 22-23-2161 (2×8, 2.54mm) | 22-23-2161 | 538-22-23-2161 | WM2907-ND | N/A — Molex Milli-Grid, not stocked at JLCPCB; order from Mouser/DigiKey | Feeds next Extension J7 or Reflector J4. Cross-ref: Stator/Board_Layout.md J7 |
+| J7 | Extension Port IN — 16-pin 2×8 shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Mating connector for Stator J7 (or previous Extension J8). Cross-ref: Stator/Board_Layout.md J7 |
+| J8 | Extension Port OUT — 16-pin 2×8 shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Feeds next Extension J7 or Reflector J4. Cross-ref: Stator/Board_Layout.md J7 |
 | J9 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | — | 2.54mm pitch. Not a separate connector |
 
 ### JTAG Daughterboard (FT232H)
