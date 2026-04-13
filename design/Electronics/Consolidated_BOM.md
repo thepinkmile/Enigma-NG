@@ -46,7 +46,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| TPD4E05U06 — ⚠️ **INVALID MPN** — 4-Channel ESD Array TBD | 3 | 1 | — | — | — | — | — | — | — | — | 4 |
+| TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | 3 | 1 | — | — | — | — | — | — | — | — | 4 |
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | 3 |
@@ -231,9 +231,7 @@ table and placement requirements.
 
 * **TPS2065CDBVR:** USB Power Distribution Switch (SOT-23-5) (1.6A Limit).
 * **AP2331W-7:** HDMI Current Limiter (SOT-23-5) (50mA Limit).
-* **TPD4E05U06DRYR:** ⚠️ **INVALID MPN** — not a valid TI part number.
-  All previously listed supplier PNs reference unrelated components.
-  Replacement 4-channel ESD array to be selected during schematic capture.
+* **TPD4E05U06QDQARQ1:** 4-channel ESD array, U-DFN-10. DigiKey: `296-40696-1-ND`; Mouser: `595-PD4E05U06QDQARQ1`; JLCPCB: `C81353`.
 
 ### Controller Board — RTC Battery Circuit
 
@@ -351,7 +349,7 @@ Product page links for all major components for design review and procurement ve
 | U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter | Texas Instruments | [sn74lvc1g14-q1-datasheet.pdf](../Datasheets/sn74lvc1g14-q1-datasheet.pdf) |
 | U2 (CTL) | TPS2065CDBVR — USB Power Switch 1.6A | Texas Instruments | [tps2065c-datasheet.pdf](../Datasheets/tps2065c-datasheet.pdf) |
 | U3 (CTL) | AP2331W-7 — HDMI Current Limiter | Diodes Inc. | [AP2331-datasheet.pdf](../Datasheets/AP2331-datasheet.pdf) |
-| D3, D4, D5 | ⚠️ **TPD4E05U06DRYR — INVALID MPN — part selection required** | TBD | TBD — no datasheet; part not yet selected |
+| D3, D4, D5 (PM); U4 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | TBD — datasheet to be added |
 | D2 | TPD2E2U06DRLR — Dual 5.5V SMBus ESD | Texas Instruments | [tpd2e2u06-datasheet.pdf](../Datasheets/tpd2e2u06-datasheet.pdf) |
 | D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.pdf](../Datasheets/tpd1e10b06-q1-datasheet.pdf) |
 | U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.pdf](../Datasheets/sn74lvc2g125-datasheet.pdf) |

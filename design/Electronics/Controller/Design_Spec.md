@@ -500,7 +500,7 @@ Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
 | U1 | Raspberry Pi Compute Module 5 (CM5) — 8GB RAM / 4GB eMMC minimum; CM5 Lite NOT permitted | N/A | CM5 (SO-DIMM) | various (e.g. CM5008032) | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065C | SOT-23-5 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
 | U3 | HDMI power switch | AP2331W | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
-| U4 | USB/HDMI ESD | **⚠️ TBD** — TPD4E05U06DRYR is **invalid MPN** — part to be selected | TBD | TBD | TBD | TBD |
+| U4 | USB/HDMI ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 
 ### BOM Notes
 

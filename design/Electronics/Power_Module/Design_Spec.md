@@ -441,9 +441,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C_SC1–6 | Supercaps (6× cells, 2S3P) | Tecate SCMT32C156PRBA0 / 22F 2.7V | SMD | (TBD) | (TBD) | (TBD) |
 | D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
-| D3 | USB-C ESD | **⚠️ TBD** — TPD4E05U06DRYR is **invalid MPN** — see §9.0 | TBD | TBD | TBD | TBD |
-| D4 | RJ45 ESD (MDI0/MDI1) | **⚠️ TBD** — TPD4E05U06DRYR is **invalid MPN** — see §9.0 | TBD | TBD | TBD | TBD |
-| D5 | RJ45 ESD (MDI2/MDI3) | **⚠️ TBD** — TPD4E05U06DRYR is **invalid MPN** — see §9.0 | TBD | TBD | TBD | TBD |
+| D3 | USB-C ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 10nF 100V X7R 0402 | 0402 | 80-C0402C103J1RAUTO | 399-C0402C103J1RACAUTOCT-ND | C19862706 |
 | C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
