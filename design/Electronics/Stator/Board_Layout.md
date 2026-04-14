@@ -153,7 +153,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 
 > SW1 and SW2 DIP switches have been removed. Configuration is now handled via
 > panel-mount illuminated rocker switches on the Settings Board (DEC-032).
-> R16–R25 pull-downs are retained on the Stator CPLD config input pins to hold
+> R16–R26 pull-downs are retained on the Stator CPLD config input pins to hold
 > all configuration bits at logic-0 during power-up until CM5 initialises U_EXP4.
 
 | Pin | Signal | Description |
@@ -168,7 +168,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 ## U_EXP4 — MCP23017 CPLD Config Output Driver (@ 0x22)
 
 **Component:** MCP23017T-E/SO, SOIC-28.
-**Placement:** Near Stator CPLD U1, within 15 mm of R16–R25 pull-down resistors. Decoupling cap within 1 mm of VDD pin.
+**Placement:** Near Stator CPLD U1, within 15 mm of R16–R26 pull-down resistors. Decoupling cap within 1 mm of VDD pin.
 **Address:** A2=LOW, A1=HIGH, A0=LOW → 0x22.
 
 Drives the CPLD configuration input pins (SW1_OUT[0:3], SW2_OUT[0:5]) and STATOR_CFG_RDY strobe

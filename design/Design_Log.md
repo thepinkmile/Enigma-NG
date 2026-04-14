@@ -1507,7 +1507,7 @@ Additionally, the CM5 has no way to programmatically override the configuration.
    - U_EXP_SW_IN (MCP23017 @ 0x26): reads switch states
    - U_EXP_LED (MCP23017 @ 0x27): drives per-bit LED cathodes + per-bank colour rails
 3. Add U_EXP4 (MCP23017 @ 0x22) to the Stator Board. Its outputs drive the CPLD configuration
-   input pins directly (SW1[0:3] and SW2[0:5]). Pull-downs R16–R25 are retained on the CPLD
+   input pins directly (SW1[0:3] and SW2[0:5]). Pull-downs R16–R26 are retained on the CPLD
    input pins to hold safe defaults (all-zero) at power-up before CM5 initialises U_EXP4.
 4. CM5 firmware (enigma daemon):
    - Reads U_EXP_SW_IN to get physical switch state
@@ -1537,7 +1537,7 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 - Replacing DIP switches with panel rockers makes configuration user-accessible without opening the enclosure.
 - I²C-only wiring between Settings Board and Stator (4 wires: SDA, SCL, 3V3_ENIG, GND) keeps the
   cable harness minimal vs 10+ parallel signal wires.
-- Retaining R16–R25 pull-downs ensures the CPLD receives a safe all-zero default at power-up
+- Retaining R16–R26 pull-downs ensures the CPLD receives a safe all-zero default at power-up
   (no plugboard insertion, physical reflector pass-through) before the CM5 writes the desired config.
 - Per-bank enable switches give the operator independent control of whether the physical switches or
   CM5 firmware define each bank's configuration.

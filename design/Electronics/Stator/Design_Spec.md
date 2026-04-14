@@ -29,7 +29,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM570 (570 LEs required for startup-loaded reflector map registers + routing matrix) | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 | FR-STA-08 | Select the active plugboard routing configuration via panel-mount rocker switches on the Settings Board via I²C; CM5 can override routing configuration when Bank 1 enable is inactive | Bank 1 (SW_B1_EN + SW_B1[0:3]) on Settings Board provides 16 routing configurations; CM5 reads U_EXP_SW_IN @ 0x26, evaluates bank enable, writes final config to U_EXP4 GPA[0:3] @ 0x22; CPLD re-latches on STATOR_CFG_RDY rising edge | §3 Panel Switch Configuration (Bank 1); §4.2 I²C Devices; BOM U_EXP4, R16–R19 |
-| FR-STA-09 | Optionally apply a stored reflector substitution map at the reflection boundary, replacing the physical Reflector board | Bank 2 (SW_B2_EN + SW_B2[0:5]) on Settings Board provides 64 reflector map configurations; CM5 can override when Bank 2 enable is inactive; final config driven to CPLD by U_EXP4 GPB[0:5] @ 0x22 | §3 Panel Switch Configuration (Bank 2); §4.2 I²C Devices; BOM U_EXP4, R20–R25 |
+| FR-STA-09 | Optionally apply a stored reflector substitution map at the reflection boundary, replacing the physical Reflector board | Bank 2 (SW_B2_EN + SW_B2[0:5]) on Settings Board provides 64 reflector map configurations; CM5 can override when Bank 2 enable is inactive; final config driven to CPLD by U_EXP4 GPB[0:5] @ 0x22 | §3 Panel Switch Configuration (Bank 2); §4.2 I²C Devices; BOM U_EXP4, R21–R26 |
 | FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, ENC bus monitoring, servo control, SYS_RESET_N management, and CPLD configuration driving | Via three MCP23017 expanders: U_EXP1 @ 0x20, U_EXP2 @ 0x21, U_EXP4 @ 0x22 on shared I²C-1 bus | §4 I²C Devices; BOM U_EXP1, U_EXP2, U_EXP4 |
 | FR-STA-11 | Provide I²C PWM output for servo motor control | Via PCA9685 (U_EXP3 @ 0x60) on shared I²C-1 bus; Ch0 = 50Hz SERVO_PWM | §4 I²C Devices; BOM U_EXP3 |
 | FR-STA-12 | Provide servo homing detection via SERVO_HOME switch | SPST NO momentary (active-low); 10kΩ pull-up to 3V3_ENIG + 100nF X7R debounce cap; connected to U_EXP2 GPB[1] | §4 I²C Devices; BOM SW3, R_SH1, C_SH1 |
@@ -50,7 +50,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.11 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.11 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
 | DR-STA-10 | Routing configuration selection | SW1[0:3] routing config inputs now driven by U_EXP4 GPA[0:3]; 4× 10kΩ pull-down resistors R16–R19 retained on CPLD inputs as power-up safe defaults (hold 0 when U_EXP4 is uninitialised); physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 1); BOM U_EXP4, R16–R19 |
-| DR-STA-11 | Reflector map selection | SW2[0:5] reflector config inputs now driven by U_EXP4 GPB[0:5]; 6× 10kΩ pull-down resistors R20–R25 retained on CPLD inputs as power-up safe defaults; physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 2); BOM U_EXP4, R20–R25 |
+| DR-STA-11 | Reflector map selection | SW2[0:5] reflector config inputs now driven by U_EXP4 GPB[0:5]; 6× 10kΩ pull-down resistors R21–R26 retained on CPLD inputs as power-up safe defaults; physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 2); BOM U_EXP4, R21–R26 |
 | DR-STA-12 | I²C GPIO expanders | U_EXP1 = MCP23017T-E/SO @ 0x20; U_EXP2 = MCP23017T-E/SO @ 0x21; U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28 package; on shared I²C-1 bus | BOM U_EXP1, U_EXP2, U_EXP4 |
 | DR-STA-13 | I²C PWM driver | U_EXP3 = PCA9685BS/3 @ 0x60; SSOP-28 package; Ch0 = SERVO_PWM at 50Hz; A5→3V3_ENIG, A4–A0→GND; all-call disabled in daemon init | BOM U_EXP3 |
 | DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM | BOM J_SERVO |
@@ -144,7 +144,7 @@ writes its own configuration. A STATOR_CFG_RDY strobe (U_EXP4 GPA[4]) triggers r
 | `SW_B2[5]` | SW_B2[5] | **Internal reflector enable**: HIGH = apply stored map; LOW = pass through to J7 (physical Reflector) |
 | `SW_B2[4:0]` | SW_B2[4:0] | **Map index** (0–20): selects which involutory map to load from UFM at configuration load |
 
-Pull-down resistors R20–R25 on the Stator CPLD input pins hold each input at logic-0 when U_EXP4
+Pull-down resistors R21–R26 on the Stator CPLD input pins hold each input at logic-0 when U_EXP4
 is uninitialised (default = SW_B2[5]=0, physical Reflector mode, all indices default to 0).
 
 When SW_B2[5]=0, J7 ENC_IN/OUT operate normally and SW_B2[4:0] is ignored (no UFM load).

@@ -99,7 +99,7 @@ readings to U_EXP4 on the Stator). LOW = Bank 1 is CM5-defined (CM5 writes its o
 to U_EXP4 GPA[0:3]).
 
 Pull-down resistors (10kΩ, one per switch signal) hold each input at logic-0 when the
-corresponding switch is open. On the Stator, R16–R25 provide the corresponding pull-downs on the
+corresponding switch is open. On the Stator, R16–R26 provide the corresponding pull-downs on the
 CPLD input pins to maintain a safe all-zero default before CM5 initialises U_EXP4.
 
 The active configuration is driven to the CPLD by U_EXP4 GPA[0:3] on the Stator Board via I²C.
@@ -137,7 +137,7 @@ SW_B2_EN is the bank enable switch: HIGH = Bank 2 is switch-defined. LOW = Bank 
 | `SW_B2[5]` | SW_B2[5] | **Internal reflector enable**: HIGH = apply stored map; LOW = pass through to J7 (physical Reflector) |
 | `SW_B2[4:0]` | SW_B2[4:0] | **Map index** (0–20): selects which involutory map to load from CPLD UFM at configuration load |
 
-Pull-down resistors R20–R25 on the Stator CPLD input pins hold each input at logic-0 when U_EXP4
+Pull-down resistors R21–R26 on the Stator CPLD input pins hold each input at logic-0 when U_EXP4
 is uninitialised (default = SW_B2[5]=0, physical Reflector mode).
 
 When SW_B2[5]=0, J7 ENC_IN/OUT operate normally and SW_B2[4:0] is ignored. When SW_B2[5]=1, the
