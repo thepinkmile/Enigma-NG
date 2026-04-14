@@ -284,7 +284,7 @@ automatic polling intervals.
 | 4 | SCL | I²C clock; shared Stator I²C-1 bus |
 
 **Connector:** JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm THT
-(Mouser: 474-B4B-PH-K-S(LF)(SN), DigiKey: 455-1721-ND, JLCPCB: C131342)
+(Mouser: 474-B4B-PH-K-S(LF)(SN), DigiKey: 455-1721-ND, JLCPCB: TBD — C131342 is the 3-pin B3B-PH-K-S; 4-pin B4B JLCPCB PN unconfirmed)
 
 **Cable:** 4-wire ribbon cable (100mm recommended); matching JST PHR-4 crimp housing on both ends.
 
@@ -296,7 +296,7 @@ automatic polling intervals.
 
 * **Manufacturer:** JLCPCB
 * **Layer count:** 2-layer
-* **Stackup:** JLC04161H-7628 (or equivalent 2-layer stackup)
+* **Stackup:** JLCPCB standard 2-layer FR4
 * **Board thickness:** 1.6mm
 * **Copper weight:** 1oz outer
 * **Surface finish:** ENIG
@@ -311,7 +311,9 @@ automatic polling intervals.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | C131342 |
+| C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x26) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C_U_EXP_LED | VCC decoupling cap for U_EXP_LED (MCP23017 @ 0x27) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) |
 | Q_BNK1_G | Bank 1 green colour-rail NPN transistor | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
 | Q_BNK1_R | Bank 1 red colour-rail NPN transistor | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
 | Q_BNK2_G | Bank 2 green colour-rail NPN transistor | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
