@@ -74,7 +74,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 8 | — | — | — | — | — | — | — | — | — | — | 8 |
 | 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C35 (Samsung CL32B226KAJNNNE, 2× in parallel) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | | | | | | | | | | | | | |
-| 10 kΩ 1% 0603 pull resistor(ERJ-3EKF1002V / C25804) | 6 | 2 | 9 | — | — | — | — | — | — | — | 13 | 30 |
+| 10 kΩ 1% 0603 pull resistor(ERJ-3EKF1002V / C25804) | 6 | 2 | 10 | — | — | — | — | — | — | — | 13 | 31 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | — | 328 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | — | 9 |
 | 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | — | 37 |
@@ -230,9 +230,10 @@ the Rev A single-Extension configuration unless otherwise noted.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 | R16–R19 | SW1[0:3] CPLD config input pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
-| R20–R25 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
+| R20 | STATOR_CFG_RDY input pull-down (×1) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
+| R21–R26 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
 
-Pull-down resistors R16–R25 are retained on the Stator CPLD config input pins as power-up safe
+Pull-down resistors R16–R26 are retained on the Stator CPLD config input pins as power-up safe
 defaults (hold all inputs LOW when U_EXP4 is uninitialised). Physical switches SW1 and SW2 have
 been removed and relocated to the Settings Board. See `Settings_Board/Design_Spec.md` for the
 full switch specifications and `Stator/Design_Spec.md §3 Panel Switch Configuration` for the

@@ -186,7 +186,7 @@ Reads all 12 switch states and the CFG_APPLY momentary button.
 
 ### U_EXP_LED — MCP23017T-E/SO @ 0x27
 
-Drives per-bit LED cathodes and per-bank colour-rail NPN transistors.
+Drives per-bit LED cathodes and per-bank colour-rail PNP transistors.
 
 **Address:** 0x27 — A2=HIGH, A1=HIGH, A0=HIGH → 0x20 | 0b111 = 0x27
 

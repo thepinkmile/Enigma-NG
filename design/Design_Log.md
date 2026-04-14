@@ -1585,7 +1585,7 @@ and mouse for system administration tasks.
    Traces run from CM5 mezzanine connector pins to J_DSI1 near the CM5 socket.
 3. Touch I²C (capacitive touch controller SDA/SCL) is routed via the I²C-1 bus already present
    on the Controller Board.
-4. Display power (5V_MAIN for backlight, 3V3_SYSTEM for panel logic) to be provided via a
+4. Display power (5V_MAIN for backlight, 3V3_ENIG for panel logic) to be provided via a
    separate 4-pin power header adjacent to J_DSI1 (TBD at schematic phase).
 5. The HDMI port (J4) is retained and unaffected — J_DSI1 is additive.
 6. Display Add-on Board design (lid mounting frame, FPC cable assembly, backlight driver if

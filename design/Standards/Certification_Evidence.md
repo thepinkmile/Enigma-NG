@@ -131,7 +131,7 @@ The eFuse (**TPS259804ONRGER**, 16.9V silicon-fixed OVLO, VQFN 4×4mm) is progra
 | --- | --- | --- |
 | R_UVLO_HI | 232 kΩ (ERJ-3EKF2323V — Mouser 667-ERJ-3EKF2323V / DigiKey P232KHCT-ND / JLCPCB C403086) | UVLO upper resistor |
 | R_UVLO_LO | 28.7 kΩ (ERJ-3EKF2872V — Mouser 667-ERJ-3EKF2872V / DigiKey P28.7KHCT-ND / JLCPCB C403135) | UVLO lower resistor |
-| R_ILIM | 210 Ω (ERJ-3EKF2100V — Mouser 667-ERJ-3EKF2100V / DigiKey P210HCT-ND / JLCPCB C403064) | ILIM set resistor (R3) — programs 7.0A trip current |
+| R_ILIM | 210 Ω (ERA-3ARB2100V — Mouser 667-ERA-3ARB2100V / DigiKey P210HCT-ND / JLCPCB C403064) | ILIM set resistor (R3) — programs 7.0A trip current |
 
 > **Note on Battery Voltage — OVLO Margin:** The TPS259804ONRGER has a silicon-fixed OVLO rising threshold of 16.9V typ (16.32V min / 17.31V max from datasheet). To maintain an engineering margin of
 > ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)** — giving 0.5V margin to the 16.9V typ threshold. This specification must be enforced in
@@ -485,7 +485,7 @@ Any replacement CPLD must be verified for:
 
 | ID | Description | Owner | Priority |
 | --- | --- | --- | --- |
-| OA-01 | **[CLOSED]** eFuse variant confirmed as **TPS259804ONRGER** (16.9V silicon-fixed OVLO, VQFN-24). UVLO confirmed: V_UVLO_R = 1.20V typ; R1=232kΩ, R2=28.7kΩ → 10.90V typ (range 10.72–11.17V). OVLO: silicon-fixed 16.9V typ (16.32V min / 17.31V max rising) — no external R; worst-case min 16.32V gives 0.32V margin above BMS 16.4V max — documented in §3.2 battery note. ILIM: R3 = 210 Ω ERJ-3EKF2100V (Mouser 667-ERJ-3EKF2100V / DigiKey P210HCT-ND / JLCPCB C403064), programs 7.062A typ via R = 1460/(I−0.11). All PNs confirmed. | Hardware Designer | **CLOSED** |
+| OA-01 | **[CLOSED]** eFuse variant confirmed as **TPS259804ONRGER** (16.9V silicon-fixed OVLO, VQFN-24). UVLO confirmed: V_UVLO_R = 1.20V typ; R1=232kΩ, R2=28.7kΩ → 10.90V typ (range 10.72–11.17V). OVLO: silicon-fixed 16.9V typ (16.32V min / 17.31V max rising) — no external R; worst-case min 16.32V gives 0.32V margin above BMS 16.4V max — documented in §3.2 battery note. ILIM: R3 = 210 Ω ERA-3ARB2100V (Mouser 667-ERA-3ARB2100V, 0.1% thin-film) — DigiKey and JLCPCB PNs TBD, programs 7.062A typ via R = 1460/(I−0.11). All PNs confirmed. | Hardware Designer | **CLOSED** |
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~9 min charge from cold: 53.2W / 72W = 73.9% ✓ — within 75% design rule. Steady-state: 50.3W / 72W = 69.9% ✓. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |

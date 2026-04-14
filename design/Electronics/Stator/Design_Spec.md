@@ -355,12 +355,8 @@ snapped off.
 | R17 | SW1[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R18 | SW1[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R19 | SW1[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R20 | SW2[0] (switch 1) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R21 | SW2[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R22 | SW2[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R23 | SW2[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R24 | SW2[4] (switch 5) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R25 | SW2[5] (switch 6 — internal reflector enable) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R20 | STATOR_CFG_RDY input pull-down (×1) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R21–R26 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | SW2 | Reflector map selector / internal reflector enable | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | U1 | Stator Management CPLD (routing matrix + optional internal reflector) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
@@ -370,7 +366,7 @@ snapped off.
 | U_EXP4 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_EXP3 | PCA9685 I²C PWM Driver (servo) | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 |
 | J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 |
-| J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | C131342 |
+| J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed — see components-todo.md) |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | (verify) |
 | R_SH1, R_SH2 | SERVO_HOME pull-up resistors (10kΩ, one per switch line) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | C_SH1, C_SH2 | SERVO_HOME RC debounce capacitors (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
