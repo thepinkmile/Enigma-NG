@@ -36,11 +36,27 @@ to be defined at detailed mechanical design phase based on the selected switch p
 See `design/Electronics/Settings_Board/Design_Spec.md` for the electrical specification of the
 Settings Board.
 
+### Lid Display — Optional Touchscreen Add-on
+
+The machine lid must be designed to accommodate an optional touchscreen display add-on (see DEC-033).
+Specific mounting dimensions are deferred pending display size selection (up to 10" supported via DSI1).
+The following provisions must be made at detailed mechanical design phase:
+
+| Feature | Notes |
+| :--- | :--- |
+| Display aperture in lid | Sized for chosen display (TBD — up to 10"); flush-mount or recessed bezel |
+| Display mounting frame / bracket | Secures display panel against lid inner face |
+| FPC hinge routing | Clear path for DSI1 FPC cable from lid through hinge to Controller Board J_DSI1 |
+| Touch controller power | 5V_MAIN + 3V3_SYSTEM routed alongside FPC via power cable through hinge |
+
+See `design/Electronics/Controller/Design_Spec.md` (J_DSI1) and `design/Electronics/Settings_Board/Design_Spec.md` for electrical context.
+
 ## Cross-References
 
 | Document | Description |
 | :--- | :--- |
 | `design/Electronics/Controller/Design_Spec.md` | Controller Board electrical specification |
+| `design/Electronics/Controller/Design_Spec.md` | Controller Board — DSI1 connector J_DSI1 for lid display |
 | `design/Electronics/Stator/Design_Spec.md` | Stator Board electrical specification — includes I²C interface to Settings Board |
 | `design/Electronics/Settings_Board/Design_Spec.md` | Settings Board electrical specification — panel switch and LED expanders |
 | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` | Complete system assembly including all sub-assemblies |
