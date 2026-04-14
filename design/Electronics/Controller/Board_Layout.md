@@ -226,23 +226,23 @@ _______________________________________    _____________    ____________________
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
 | 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
-| 8 | SYS_RESET_N | CTRL→Stator | Active-low system reset; clears all CPLDs in stack |
+| 8 | SPARE | — | Freed by DEC-031; SYS_RESET_N migrated to Stator U_EXP2 GPA[7] @ 0x21 |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |
-| 12 | ENC_IN[0] | Stator→CTRL | Encoder input bit 0 |
-| 13 | ENC_IN[1] | Stator→CTRL | Encoder input bit 1 |
-| 14 | ENC_IN[2] | Stator→CTRL | Encoder input bit 2 |
-| 15 | ENC_IN[3] | Stator→CTRL | Encoder input bit 3 |
-| 16 | ENC_IN[4] | Stator→CTRL | Encoder input bit 4 |
-| 17 | ENC_IN[5] | Stator→CTRL | Encoder input bit 5 |
+| 12 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[0:5] @ 0x20 |
+| 13 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[1:5] @ 0x20 |
+| 14 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[2:5] @ 0x20 |
+| 15 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[3:5] @ 0x20 |
+| 16 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[4:5] @ 0x20 |
+| 17 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[5] @ 0x20 |
 | 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
-| 19 | ENC_OUT[0] | Stator→CTRL | Encoder output bit 0 |
-| 20 | ENC_OUT[1] | Stator→CTRL | Encoder output bit 1 |
-| 21 | ENC_OUT[2] | Stator→CTRL | Encoder output bit 2 |
-| 22 | ENC_OUT[3] | Stator→CTRL | Encoder output bit 3 |
-| 23 | ENC_OUT[4] | Stator→CTRL | Encoder output bit 4 |
-| 24 | ENC_OUT[5] | Stator→CTRL | Encoder output bit 5 |
+| 19 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[0:5] @ 0x20 |
+| 20 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[1:5] @ 0x20 |
+| 21 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[2:5] @ 0x20 |
+| 22 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[3:5] @ 0x20 |
+| 23 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[4:5] @ 0x20 |
+| 24 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[5] @ 0x20 |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |
 | 26 | TTD_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
 | 27 | GND | — | TTD_RETURN shield |
@@ -266,20 +266,20 @@ _______________________________________    _____________    ____________________
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | ENC_IN[0] | Stator → CTRL | Encoder input bit 0 |
-| 2 | ENC_IN[1] | Stator → CTRL | Encoder input bit 1 |
-| 3 | ENC_IN[2] | Stator → CTRL | Encoder input bit 2 |
-| 4 | ENC_IN[3] | Stator → CTRL | Encoder input bit 3 |
-| 5 | ENC_IN[4] | Stator → CTRL | Encoder input bit 4 |
-| 6 | ENC_IN[5] | Stator → CTRL | Encoder input bit 5 |
-| 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
+| 1 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[0:5] @ 0x20 |
+| 2 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[1:5] @ 0x20 |
+| 3 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[2:5] @ 0x20 |
+| 4 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[3:5] @ 0x20 |
+| 5 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[4:5] @ 0x20 |
+| 6 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[5] @ 0x20 |
+| 7 | SPARE | — | SYS_RESET_N now on Stator U_EXP2 GPA[7] @ 0x21 (DEC-031) |
 | 8 | GND | — | Ground reference |
-| 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |
-| 10 | ENC_OUT[1] | Stator → CTRL | Encoder output bit 1 |
-| 11 | ENC_OUT[2] | Stator → CTRL | Encoder output bit 2 |
-| 12 | ENC_OUT[3] | Stator → CTRL | Encoder output bit 3 |
-| 13 | ENC_OUT[4] | Stator → CTRL | Encoder output bit 4 |
-| 14 | ENC_OUT[5] | Stator → CTRL | Encoder output bit 5 |
+| 9 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[0:5] @ 0x20 |
+| 10 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[1:5] @ 0x20 |
+| 11 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[2:5] @ 0x20 |
+| 12 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[3:5] @ 0x20 |
+| 13 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[4:5] @ 0x20 |
+| 14 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[5] @ 0x20 |
 | 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
 | 16 | GND | — | TCK shield / clock return |
 | 17 | TMS | JDB → Stator | JTAG mode select |

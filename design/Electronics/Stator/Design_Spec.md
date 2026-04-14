@@ -95,7 +95,7 @@ The encryption signal passes through the CPLD at three defined interception poin
 
 At each step the CPLD either passes the signal transparently (no plugboard) or routes it through
 Plugboard Pass A (J5) or B (J6) before forwarding. The active insertion positions are determined by
-the VHDL routing case statement selected at power-up from the SW1 DIP switch index.
+the VHDL routing case statement selected by U_EXP4 GPA[0:3] written by the CM5 daemon (see §3 Panel Switch Configuration and DEC-032).
 
 #### Panel Switch Configuration (Bank 1 — Plugboard Routing)
 

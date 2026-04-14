@@ -50,7 +50,7 @@ This 16-pin (2x8) ribbon-style connector follows odd/even row orientation (odd p
 PIN | SIGNAL          | DESCRIPTION
 ----|-----------------|---------------------------------
 1   | 3V3_ENIG        | Power Supply
-2   | SYS_RESET_N     | Active-low CPLD reset (from Controller GPIO 26 via Stator Extension Port)
+2   | SYS_RESET_N     | Active-low CPLD reset (from Stator U_EXP2 GPA[7] @ 0x21 — DEC-031)
 3   | ENC_IN[0]       | Encryption Input Bit 0
 4   | ENC_IN[1]       | Encryption Input Bit 1
 5   | ENC_IN[2]       | Encryption Input Bit 2

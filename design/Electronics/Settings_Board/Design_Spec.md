@@ -28,7 +28,7 @@ daemon over I²C.
 
 * **Location:** Right side of enclosure top face, near rotors.
 * **Mounting:** Panel-mount switches through enclosure panel; PCB mounted behind panel.
-* **Stackup:** 2-layer (signal + GND).
+* **Stackup:** 4-layer JLC04161H-7628 / 2oz copper.
 * **Role:** User-accessible configuration panel; I²C peripheral to Stator Board.
 
 ### Functional & Design Requirements
@@ -47,11 +47,11 @@ daemon over I²C.
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-SBD-01 | PCB stackup | 2-layer, standard 1oz copper (JLCPCB JLC04161H-7628 2-layer or equivalent) | §8 PCB Fabrication |
+| DR-SBD-01 | PCB stackup | 4-layer, 2oz finished copper (JLCPCB JLC04161H-7628) | §8 PCB Fabrication |
 | DR-SBD-02 | Switch type | 12× panel-mount illuminated RGB rocker switches (SPDT, integrated R/G LED); MPN TBD | §3 Switch Bank Descriptions; BOM SW_B1_EN, SW_B1[0:3], SW_B2_EN, SW_B2[0:5] |
 | DR-SBD-03 | Switch input expander | U_EXP_SW_IN = MCP23017T-E/SO @ 0x26; SOIC-28; A2=HIGH, A1=HIGH, A0=LOW | §4 I²C Devices — U_EXP_SW_IN; BOM U_EXP_SW_IN |
 | DR-SBD-04 | LED output expander | U_EXP_LED = MCP23017T-E/SO @ 0x27; SOIC-28; A2=HIGH, A1=HIGH, A0=HIGH | §4 I²C Devices — U_EXP_LED; BOM U_EXP_LED |
-| DR-SBD-05 | LED colour-rail transistors | 4× MMBT3904 SOT-23 NPN (Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R); base driven from U_EXP_LED GPIO via 1kΩ base-limiting resistor | §5 LED Control Logic; BOM Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R |
+| DR-SBD-05 | LED colour-rail transistors | 4× MMBT3906 SOT-23 PNP (Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R); base driven from U_EXP_LED GPIO via 1kΩ base-limiting resistor; GPIO LOW = transistor ON (PNP sourcing topology) | §5 LED Control Logic; BOM Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R |
 | DR-SBD-06 | CFG_APPLY button | SW_CFG_APPLY = SPST momentary pushbutton, active-low; 10kΩ pull-up to 3V3_ENIG (R_CA1) + 100nF X7R 0402 debounce cap to GND (C_CA1; RC τ = 1ms); connected to U_EXP_SW_IN GPB[7] | §6 CFG_APPLY Button; BOM SW_CFG_APPLY, R_CA1, C_CA1 |
 | DR-SBD-07 | I²C connector | J_I2C = 4-pin JST PH 2.0mm B4B-PH-K-S(LF)(SN); pins: 3V3_ENIG, GND, SDA, SCL; ribbon cable to Stator J_CFG | §7 Interconnects; BOM J_I2C |
 | DR-SBD-08 | Switch input pull-downs | 12× 10kΩ 0603 pull-down resistors on all switch signal inputs to U_EXP_SW_IN (GPA[0:4], GPB[0:6]); HIGH = switch-defined active when switch closed | §4 I²C Devices — U_EXP_SW_IN; BOM R_SW1–R_SW12 |
@@ -238,17 +238,18 @@ The bank enable switch (SW_B1_EN / SW_B2_EN) has its own cathode pin (SW_B1_CAT[
 SW_B2_CAT[0]) and is illuminated whenever the bank enable is active, providing a visual on/off
 indicator for the entire bank.
 
-### NPN Transistor Colour-Rail Circuit
+### PNP Transistor Colour-Rail Circuit
 
-Each colour rail (BNK1_G, BNK1_R, BNK2_G, BNK2_R) is driven by a MMBT3904 SOT-23 NPN transistor:
+Each colour rail (BNK1_G, BNK1_R, BNK2_G, BNK2_R) is driven by a MMBT3906 SOT-23 PNP transistor:
 
-* **Base:** driven by U_EXP_LED GPIO output via 1kΩ base-limiting resistor.
+* **Emitter:** tied to 3V3_ENIG.
 * **Collector:** connects to the shared LED anode rail via current-limiting resistor (value TBD —
   depends on switch LED forward voltage and current specification).
-* **Emitter:** tied to 3V3_ENIG.
+* **Base:** driven by U_EXP_LED GPIO output via 1kΩ base-limiting resistor.
 
-When the GPIO output is HIGH, the transistor saturates, pulling the anode rail to 3V3_ENIG through
-the current-limiting resistor and illuminating all LEDs with LOW cathodes in that bank.
+When the GPIO output is LOW, the transistor turns ON, sourcing current from 3V3_ENIG through the
+emitter to collector and illuminating all LEDs with LOW cathodes in that bank. GPIO HIGH = transistor
+OFF = colour rail disabled.
 
 ---
 
@@ -314,15 +315,15 @@ automatic polling intervals.
 | C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x26) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_EXP_LED | VCC decoupling cap for U_EXP_LED (MCP23017 @ 0x27) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) |
-| Q_BNK1_G | Bank 1 green colour-rail NPN transistor | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
-| Q_BNK1_R | Bank 1 red colour-rail NPN transistor | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
-| Q_BNK2_G | Bank 2 green colour-rail NPN transistor | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
-| Q_BNK2_R | Bank 2 red colour-rail NPN transistor | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
+| Q_BNK1_G | Bank 1 green colour-rail PNP transistor | MMBT3906 | SOT-23 | 512-MMBT3906 | MMBT3906CT-ND | C20527 |
+| Q_BNK1_R | Bank 1 red colour-rail PNP transistor | MMBT3906 | SOT-23 | 512-MMBT3906 | MMBT3906CT-ND | C20527 |
+| Q_BNK2_G | Bank 2 green colour-rail PNP transistor | MMBT3906 | SOT-23 | 512-MMBT3906 | MMBT3906CT-ND | C20527 |
+| Q_BNK2_R | Bank 2 red colour-rail PNP transistor | MMBT3906 | SOT-23 | 512-MMBT3906 | MMBT3906CT-ND | C20527 |
 | R_CA1 | CFG_APPLY pull-up resistor | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_SW1–R_SW5 | Bank 1 switch input pull-downs (×5: SW_B1_EN + SW_B1[0:3]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_SW6–R_SW12 | Bank 2 switch input pull-downs (×7: SW_B2_EN + SW_B2[0:5]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_LED_ANODE | LED anode current-limiting resistors (×4, one per colour rail) | TBD Ω (depends on switch LED specs) | 0603 | TBD | TBD | TBD |
-| R_BASE1–R_BASE4 | NPN base-limiting resistors (×4, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 |
+| R_BASE1–R_BASE4 | PNP base-limiting resistors (×4, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 |
 | SW_B1_EN | Bank 1 enable rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD (same variant as PM SW1) | Panel-mount | TBD | TBD | — |
 | SW_B1[0] | Bank 1 routing config bit 0 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
 | SW_B1[1] | Bank 1 routing config bit 1 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |

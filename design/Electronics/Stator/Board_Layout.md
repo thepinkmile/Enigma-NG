@@ -18,7 +18,7 @@ and to provide a short TDO return path for the JTAG chain.
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | PM → Reflector | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
-| 2 | SYS_RESET_N | CTRL→Ext | Active-low CPLD reset broadcast (from Controller GPIO 26 via LINK-BETA) |
+| 2 | SYS_RESET_N | CTRL→Ext | Active-low CPLD reset broadcast (driven by Stator U_EXP2 GPA[7] @ 0x21 via I²C — DEC-031) |
 | 3 | ENC_IN[0] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
 | 4 | ENC_IN[1] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |
 | 5 | ENC_IN[2] | Stator → Reflector | Return-pass start: CPLD drives post-plugboard signal to Reflector chain (Step 2 drive in routing matrix) |

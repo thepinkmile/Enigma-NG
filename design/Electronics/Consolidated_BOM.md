@@ -54,7 +54,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | BAT54 (Diotec) — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 2 | 5 |
 | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| MMBT3904 — NPN General-Purpose Transistor (SOT-23) | — | — | — | — | — | — | — | — | — | — | 4 | 4 |
+| MMBT3906 — PNP General-Purpose Transistor (SOT-23) | — | — | — | — | — | — | — | — | — | — | 4 | 4 |
 | J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (TBD MPN) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 3 | 512 |
@@ -266,11 +266,11 @@ RGB rocker switches. See `Settings_Board/Design_Spec.md` for the full design spe
 | SW_B2_EN, SW_B2[0:5] | Bank 2 illuminated RGB rocker switches (×7: bank enable + reflector bits 0–5) | Marquardt 1800 series panel-mount SPDT latching rocker with RGB LED — MPN TBD (same variant as PM SW1) | Panel-mount | TBD | TBD | — |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount — MPN TBD | Panel-mount | TBD | TBD | — |
 | J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) |
-| Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | NPN colour-rail transistors (×4) | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
+| Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | PNP colour-rail transistors (×4) | MMBT3906 | SOT-23 | 512-MMBT3906 | MMBT3906CT-ND | C20527 |
 | R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_CA1 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_LED_ANODE | LED anode current-limiting resistors (×4, one per colour rail) | TBD Ω | 0603 | TBD | TBD | TBD |
-| R_BASE1–R_BASE4 | NPN base-limiting resistors (×4) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 |
+| R_BASE1–R_BASE4 | PNP base-limiting resistors (×4) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 |
 | C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x26) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_EXP_LED | VCC decoupling cap for U_EXP_LED (MCP23017 @ 0x27) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |

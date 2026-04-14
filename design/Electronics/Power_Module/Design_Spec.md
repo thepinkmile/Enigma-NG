@@ -85,7 +85,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
     (Kapton) tape before installation to prevent shorts with the metal ribs. Combined with the GND_CHASSIS
     copper pour in the shadow zone (§1 keepout rule), this creates a near-complete Faraday cage around the
     supercap block. See DEC-020.
-* **Routing Keep-out:** 41mm × 81mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
+* **Routing Keep-out:** 41mm × 81mm shadow zone on L1–L6 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
 
 ### 2. Power & UPS Hub
 

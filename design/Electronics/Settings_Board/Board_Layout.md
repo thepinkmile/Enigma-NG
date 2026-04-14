@@ -117,8 +117,8 @@ pull-down resistors to GND: open switch = logic-0. CFG_APPLY (GPB[7]) uses 10kΩ
   SDA      ────────│ SDA                       │
   SCL      ────────│ SCL                       │
   3V3_ENIG ──┤ ├──►│ RESET_N    (pin 18)       │ (10kΩ pull-up)
-  GND      ──┤A2├──►│ A2  HIGH                 │
-  GND      ──┤A1├──►│ A1  HIGH                 │
+   3V3_ENIG ──┤A2├──►│ A2  HIGH                 │
+   3V3_ENIG ──┤A1├──►│ A1  HIGH                 │
   GND      ──┤A0└──►│ A0  LOW                  │
              │                                 │
   SW_B1_EN ──┼─────►│ GPA[0]   pull-down 10kΩ  │ ← Bank 1 enable switch
@@ -204,7 +204,7 @@ Colour-rail outputs: HIGH = transistor ON (that colour active for whole bank).
 
 ## 6. LED Colour-Rail Circuit
 
-Each bank has two NPN colour-rail transistors (Green and Red). Only one colour rail is
+Each bank has two PNP colour-rail transistors (Green and Red). Only one colour rail is
 active per bank at a time; the CM5 daemon sets the appropriate rail based on whether the
 bank is in switch-defined (green) or CM5-defined (red) mode.
 
@@ -224,19 +224,19 @@ bank is in switch-defined (green) or CM5-defined (red) mode.
      │                   SW_B1_CAT[0]  SW_B1_CAT[1...]
      │                   (U_EXP_LED GPA[0]) (GPA[1...])
      │
-     │   Q_BNK1_G (MMBT3904 NPN SOT-23)
+     │   Q_BNK1_G (MMBT3906 PNP SOT-23)
      │   ┌─────────┐
      └──►│ Emitter │  ← 3V3_ENIG
          │         │
-         │Collector│──── BNK1_G anode rail (switches Green rail ON when base HIGH)
+         │Collector│──── BNK1_G anode rail (switches Green rail ON when base LOW)
          │         │
          │  Base   │◄──[R_BASE1_G 1kΩ]──── U_EXP_LED GPA[5] (BNK1_G signal)
          └─────────┘
 
-  NOTE: Exact NPN biasing topology (common-emitter vs emitter-follower) and
-  current-limiting resistor R_LED_BNKx value to be confirmed at schematic phase
+  PNP sourcing topology: GPIO LOW = transistor ON = colour rail sourced from 3V3_ENIG.
+  GPIO HIGH = transistor OFF = colour rail floating/off.
+  Current-limiting resistor R_LED_BNKx value to be confirmed at schematic phase
   based on selected switch LED forward voltage (Vf) and target current (If).
-  MMBT3904 may be substituted with MMBT3906 (PNP) if sourcing topology is preferred.
 ```
 
 ---

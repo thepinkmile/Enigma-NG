@@ -131,7 +131,7 @@ This limits peak PoE utilisation to 73.9% (53.2W / 72W) — within the 75% desig
 ### Rationale
 
 - Full 2A supercap charging on PoE would push utilisation to ~98%, leaving <2W margin for transient loads.
-- 0.5A charge current charges the 6× 25F supercap bank (Abracon ADCR-T02R7SA256MB) in approximately 3 minutes from depleted.
+- 0.5A charge current charges the **8× 25F** supercap bank (2S4P, 50F total — Abracon ABSC-SC-0025C0) in approximately 9 minutes from depleted.
 - Normal system usage is expected to exceed 30–45 minutes per session (startup + configuration + use), making a 2-minute charge time acceptable.
 - This limitation should be documented in the User Manual with guidance that maximum system load is not recommended during the initial PoE power-up window.
 
@@ -1003,7 +1003,7 @@ The PWR_GD GPIO (GPIO 27, MCP121T-450E output) is rail-health telemetry only and
 - Driver development requires the physical hardware to be available for testing and validation.
   Writing and verifying kernel interrupt handlers against simulated hardware is impractical.
 - The system is designed for operational sessions of 15–30 minutes or longer. The hold-up window
-  (>=21.7 s) is a generous safety margin; an unplanned shutdown from a fully-charged state is expected
+  (≥33.5 s) is a generous safety margin; an unplanned shutdown from a fully-charged state is expected
   to be harmless. Deferring the driver to the PoC stage does not create a risk for hardware bring-up.
 - Placeholder pseudocode in design/Software/Linux_OS/Power_Management.md documents the intended
   behaviour for reference; it is not a specification.

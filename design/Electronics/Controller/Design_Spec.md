@@ -175,6 +175,9 @@ All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through to th
 | 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
 | 0x20 | MCP23017 (U_EXP1) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
 | 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control |
+| 0x22 | MCP23017 (U_EXP4) | Stator | CPLD config output driver (DEC-032) |
+| 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
+| 0x27 | MCP23017 (U_EXP_LED) | Settings Board | LED cathode + colour-rail driver (DEC-032) |
 | 0x60 | PCA9685 (U_EXP3) | Stator | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
 ## 5. RTC Backup Battery
@@ -216,7 +219,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45, MCP23017 U_EXP1 @ 0x20, MCP23017 U_EXP2 @ 0x21, PCA9685 U_EXP3 @ 0x60. |
+| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45, MCP23017 U_EXP1 @ 0x20, MCP23017 U_EXP2 @ 0x21, MCP23017 U_EXP4 @ 0x22, MCP23017 U_EXP_SW_IN @ 0x26, MCP23017 U_EXP_LED @ 0x27, PCA9685 U_EXP3 @ 0x60. |
 | **4–9** | *(freed)* | — | — | **Previously ENC_IN[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPA[0:5] @ 0x20 (Stator) via I²C. GPIO 4–9 are now available for future use. See DEC-031. |
 | **10–15** | *(freed)* | — | — | **Previously ENC_OUT[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPB[0:5] @ 0x20 (Stator) via I²C. GPIO 10–15 are now available for future use. See DEC-031. |
 | **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ENIG LDO for sequenced rotor stack power-up. |

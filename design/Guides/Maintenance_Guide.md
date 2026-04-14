@@ -63,20 +63,20 @@ Monitors 12-bit encryption sniffer bus, system reset, and JTAG signals.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | ENC_IN[0] | Stator → CTRL | Encoder input bit 0 |
-| 2 | ENC_IN[1] | Stator → CTRL | Encoder input bit 1 |
-| 3 | ENC_IN[2] | Stator → CTRL | Encoder input bit 2 |
-| 4 | ENC_IN[3] | Stator → CTRL | Encoder input bit 3 |
-| 5 | ENC_IN[4] | Stator → CTRL | Encoder input bit 4 |
-| 6 | ENC_IN[5] | Stator → CTRL | Encoder input bit 5 |
-| 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
+| 1 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 2 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 3 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 4 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 5 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 6 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 7 | SPARE | — | SYS_RESET_N freed by DEC-031; now Stator U_EXP2 GPA[7] @ 0x21 |
 | 8 | GND | — | Ground reference |
-| 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |
-| 10 | ENC_OUT[1] | Stator → CTRL | Encoder output bit 1 |
-| 11 | ENC_OUT[2] | Stator → CTRL | Encoder output bit 2 |
-| 12 | ENC_OUT[3] | Stator → CTRL | Encoder output bit 3 |
-| 13 | ENC_OUT[4] | Stator → CTRL | Encoder output bit 4 |
-| 14 | ENC_OUT[5] | Stator → CTRL | Encoder output bit 5 |
+| 9 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 10 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 11 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 12 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 13 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 14 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
 | 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
 | 16 | GND | — | TCK shield / clock return |
 | 17 | TMS | JDB → Stator | JTAG mode select |

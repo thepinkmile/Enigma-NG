@@ -42,9 +42,9 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 
 * **Logic Type:** Passive (Loopback).
 * **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM570T100I5N CPLD**
-  located on the Stator Board. The active routing configuration is selected via SW1 4-position DIP
-  switch on the Stator (16 pre-defined configurations, no JTAG reprogramming required for
-  configuration changes — see `Stator/Design_Spec.md §3`).
+  located on the Stator Board. The active routing configuration is selected via the Settings Board
+  panel switches (Bank 1, SW_B1[0:3]) read by Stator U_EXP_SW_IN @ 0x26 and driven to the Stator
+  CPLD by U_EXP4 @ 0x22 — see DEC-032.
 * **CPLD support:** PCB passive routing (no discrete component).
 * **Signal Path:** Rotor 30 J4–J6 (ERF8 female) → Reflector J1–J3 (ERM8 male) → passive loopback traces → ENC cipher data reflected back; TTD_RETURN exits via J4 (16-pin Molex, pin 15) → Stator J7.
 
