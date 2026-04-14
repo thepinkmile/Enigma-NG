@@ -213,8 +213,8 @@ IPC calculation for worst-case 1.71 A at 2oz external: 1.71 × 0.15 mm = 0.26 mm
 
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Signal (ENC_IN/OUT, FDC2114 I2C SDA/SCL) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic; CPLD data I/O; I2C to FDC2114 capacitive encoder |
-| JTAG signals: TCK, TMS, TTD in/out, SYS_RESET_N (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. |
+| Signal (ENC_IN/OUT, FDC2114 I2C SDA/SCL, SYS_RESET_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic; CPLD data I/O; I2C to FDC2114 capacitive encoder; SYS_RESET_N is a slow-logic CPLD reset sourced from Stator U_EXP2 GPA[7] — not a CI signal |
+| JTAG signals: TCK, TMS, TTD in/out (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. |
 | 3V3_ENIG local draw (J2 → CPLD + FDC2114 supply) | 57 mA | 0.009 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); local IC supply only |
 | 3V3_ENIG pass-through rail (J2 input → J5 output bus) | 1.71 A (Rotor 1) | 0.26 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 3V3_ENIG trunk width (Global_Routing_Spec §1.1); Rotor 1 worst case; feeds L3 pour via thermal vias between J2 and J5 |
 | 3V3_ENIG distribution (inner power pour) | up to 1.71 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution across the board |
