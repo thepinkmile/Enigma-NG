@@ -34,7 +34,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | TPS75733KTTRG3 — 3.3 V LDO Regulator (TO-263 KTT 5-pin) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPS259804ONRGE — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| TPS259804ONRGER — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | LMQ61460AFSQRJRRQ1 — 5 V Synchronous Buck Converter (VQFN-HR RJR 14-pin 4×3.5mm) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | LTC3350EUHF#PBF — Supercapacitor Manager (QFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS25751DREFR — USB PD 3.1 DRP Controller (WQFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -289,7 +289,7 @@ table and placement requirements.
 | U5 | STUSB4500LQTR | QFN-24 4×4 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 | Primary PN: STUSB4500LQTR (lower Iq ~160µA). JLCPCB C506650 confirmed L-variant in stock. If OOS, use STUSB4500QTR as alternative (non-L variant, ~210µA Iq, pin-compatible). |
 | U6 | ~~LM74700-Q1DCKR~~ → **LM74700QDBVRQ1** | SOT-23-6 (DBV) | 595-LM74700QDBVRQ1 | **296-LM74700QDBVRQ1CT-ND** ✓ | C2941042 | LM74700QDBVRQ1 (DBV=SOT-23-6 package, not DCK/SC70). DigiKey 35k+ in stock. Alt T&R Mouser PN: 595-LM74700QDBVTQ1 (pin-compatible). |
 | U8 | MCP121T-450E/LB | SC70-3 | 579-MCP121T-450E/LB | **MCP121T-450E/LBCT-ND** ✓ | C52146050 | DigiKey 2.3k in stock @ $0.53/1. SC70-3 = compact 3-pin package. Microchip prefix 579-. JLCPCB lists with TP prefix on MPN but is the same device. |
-| U1 | TPS259804ONRGE | VQFN-24 (RGE) | 595-TPS259804ONRGE | 296-TPS259804ONRGECT-ND | C2878936 | 16.9V silicon-fixed OVLO variant. OVLO set in silicon — no external R. R3 repurposed as R_ILIM (210 Ω). PNs confirmed. |
+| U1 | TPS259804ONRGER | VQFN-24 (RGE) | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 | 16.9V silicon-fixed OVLO variant. OVLO set in silicon — no external R. R3 repurposed as R_ILIM (210 Ω). PNs confirmed. |
 | U2A/U2B | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 | AEC-Q100 automotive-qualified (Q1), VQFN-HR RJR 14-pin 4×3.5mm. ✓ |
 | U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | 296-TPS25751DREFRCT-ND | C30169739 | ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). Package: WQFN-38 6×4mm (note: different from TPS25750 QFN-28). |
 | U7 | TPS75733KTTRG3 | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 | Fixed 3.3V, TO-263 KTT 5-pin. Active-LOW EN (EN LOW = enabled). ✓ |
@@ -310,7 +310,7 @@ table and placement requirements.
 
 1. **U6** — Replace `LM74700-Q1DCKR` with **`LM74700QDBVRQ1`** everywhere in schematics and BOM. The DCK (SC70) package does not exist for this part; DBV (SOT-23-6) is the correct package.
 2. **U10** — ✅ Resolved: TPS23730 correct package is **RMTR (WQFN-20)** — MPN updated to `TPS23730RMTR` in BOM and Design_Spec.
-3. **U1** — Updated to `TPS259804ONRGE` (16.9V silicon-fixed OVLO VQFN-24 variant). Mouser/DigiKey/JLCPCB PNs confirmed. R3 repurposed as R_ILIM = 210 Ω (ERJ-3EKF2100V).
+3. **U1** — Updated to `TPS259804ONRGER` (16.9V silicon-fixed OVLO VQFN-24 variant). Mouser/DigiKey/JLCPCB PNs confirmed. R3 repurposed as R_ILIM = 210 Ω (ERJ-3EKF2100V).
 4. **U4** — Replaced with TPS25751DREFR (WQFN-38 6×4mm). See DEC-012. Package differs from TPS25750 QFN-28; KiCad symbol/footprint to be created at schematic capture.
 
 ## 10. Suppliers
@@ -341,7 +341,7 @@ Product page links for all major components for design review and procurement ve
 
 | Ref | Part / Description | Manufacturer | Local Datasheet |
 | :--- | :--- | :--- | :--- |
-| U1 | TPS259804ONRGE — eFuse 16.9V silicon-fixed OVLO | Texas Instruments | [TPS25980-datasheet.pdf](../Datasheets/TPS25980-datasheet.pdf) |
+| U1 | TPS259804ONRGER — eFuse 16.9V silicon-fixed OVLO | Texas Instruments | [TPS25980-datasheet.pdf](../Datasheets/TPS25980-datasheet.pdf) |
 | U2A, U2B | LMQ61460AFSQRJRRQ1 — 6A Sync Buck (AEC-Q100) | Texas Instruments | [lmq61460-q1-datasheet.pdf](../Datasheets/lmq61460-q1-datasheet.pdf) |
 | U3 | LTC3350EUHF#PBF — Supercap Manager / Charger / Backup | Analog Devices | [ltc3350-datasheet.pdf](../Datasheets/ltc3350-datasheet.pdf) |
 | U4 | TPS25751DREFR — USB PD 3.1 DRP Controller | Texas Instruments | [tps25751-datasheet.pdf](../Datasheets/tps25751-datasheet.pdf) |
