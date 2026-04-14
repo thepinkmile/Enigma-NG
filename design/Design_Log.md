@@ -435,24 +435,24 @@ The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-0
 | 4 | TMS | CTRL→Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
-| 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
-| 8 | SYS_RESET_N | CTRL→Stator | SYS_RESET_N (active-low) |
+| 7 | GND | — | TDI/SPARE inter-pin shield |
+| 8 | SPARE | — | Freed by DEC-031 (was SYS_RESET_N — migrated to I²C U_EXP2 GPA[7] @ 0x21) |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |
-| 12 | ENC_IN[0] | Stator→CTRL | Encoder input bit 0 |
-| 13 | ENC_IN[1] | Stator→CTRL | Encoder input bit 1 |
-| 14 | ENC_IN[2] | Stator→CTRL | Encoder input bit 2 |
-| 15 | ENC_IN[3] | Stator→CTRL | Encoder input bit 3 |
-| 16 | ENC_IN[4] | Stator→CTRL | Encoder input bit 4 |
-| 17 | ENC_IN[5] | Stator→CTRL | Encoder input bit 5 |
-| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
-| 19 | ENC_OUT[0] | Stator→CTRL | Encoder output bit 0 |
-| 20 | ENC_OUT[1] | Stator→CTRL | Encoder output bit 1 |
-| 21 | ENC_OUT[2] | Stator→CTRL | Encoder output bit 2 |
-| 22 | ENC_OUT[3] | Stator→CTRL | Encoder output bit 3 |
-| 23 | ENC_OUT[4] | Stator→CTRL | Encoder output bit 4 |
-| 24 | ENC_OUT[5] | Stator→CTRL | Encoder output bit 5 |
+| 12 | SPARE | — | Freed by DEC-031 (was ENC_IN[0] — migrated to I²C U_EXP1 @ 0x20) |
+| 13 | SPARE | — | Freed by DEC-031 (was ENC_IN[1]) |
+| 14 | SPARE | — | Freed by DEC-031 (was ENC_IN[2]) |
+| 15 | SPARE | — | Freed by DEC-031 (was ENC_IN[3]) |
+| 16 | SPARE | — | Freed by DEC-031 (was ENC_IN[4]) |
+| 17 | SPARE | — | Freed by DEC-031 (was ENC_IN[5]) |
+| 18 | GND | — | Inter-group shield |
+| 19 | SPARE | — | Freed by DEC-031 (was ENC_OUT[0] — migrated to I²C U_EXP1 @ 0x20) |
+| 20 | SPARE | — | Freed by DEC-031 (was ENC_OUT[1]) |
+| 21 | SPARE | — | Freed by DEC-031 (was ENC_OUT[2]) |
+| 22 | SPARE | — | Freed by DEC-031 (was ENC_OUT[3]) |
+| 23 | SPARE | — | Freed by DEC-031 (was ENC_OUT[4]) |
+| 24 | SPARE | — | Freed by DEC-031 (was ENC_OUT[5]) |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |
 | 26 | TTD_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
 | 27 | GND | — | TTD_RETURN shield |
@@ -487,7 +487,7 @@ connector on the Stator increases stack height with no benefit.
 
 ### Cross-ref
 
-DEC-014 (gender assignment rationale remains valid; part numbers updated).
+DEC-014 (gender assignment rationale remains valid; part numbers updated). DEC-031 (pins 8, 12–17, and 19–24 freed — SYS_RESET_N and ENC_IN/OUT migrated to I²C).
 
 ---
 
@@ -1451,7 +1451,7 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 ### Net Effect on LINK-BETA
 
 - **Freed (13 pins):** ENC_IN[0:5] (×6), ENC_OUT[0:5] (×6), SYS_RESET_N (×1).
-- **Freed:** pins 12–17 remain SPARE; no 5V_MAIN pins were added to LINK-BETA. Servo 5V_MAIN supplied from Stator local rail via J_SERVO.
+- **Freed:** pins 8 (SYS_RESET_N), 12–17 (ENC_IN[0:5]), and 19–24 (ENC_OUT[0:5]) are all SPARE; no 5V_MAIN pins were added to LINK-BETA. Servo 5V_MAIN supplied from Stator local rail via J_SERVO.
 - R6 pull-up (10kΩ to 3V3_ENIG) on Stator keeps SYS_RESET_N HIGH at power-up (CPLDs out of reset).
 
 ### Net Effect on CM5 GPIO
@@ -1793,7 +1793,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J3 | USB 3.0 — Dual-stacked Type-A port | Molex 48406-0003 | 48406-0003 | 538-0484060003 | WM1394-ND | Dual-stack Type-A, 5.0mm protrusion through chassis |
 | J4 | HDMI — Full-size Type-A | TE Connectivity 2007435-1 | 2007435-1 | 571-2007435-1 | A125057-ND | Full-size HDMI Type-A, 5.0mm protrusion through chassis |
 | — | Diagnostic Bank-Alpha | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, placed behind BtB header. Not a separate connector; probed directly with logic analyser clips |
-| — | Diagnostic Bank-Beta | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, L1 layer. Monitors 12-bit Sniffer, JTAG, SYS_RESET_N |
+| — | Diagnostic Bank-Beta | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, L1 layer. Monitors JTAG only (TCK, TMS, TDI, TDO + GND shields). Sniffer (ENC_IN/OUT) and SYS_RESET_N freed by DEC-031; pins 1–14 now SPARE — see Controller/Board_Layout.md Diagnostic Bank-Beta. |
 | — | JTAG Daughterboard link (to FT232H board) | 1×5 INPUT header + 1×10 JTAG header | — | — | — | 2.54mm ENIG male headers on Controller. JDB female headers mate here. USB 2.0 to CM5 internally |
 
 ### Stator Board
