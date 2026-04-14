@@ -87,6 +87,24 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - PATH refresh: `$env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine")+";"+[System.Environment]::GetEnvironmentVariable("PATH","User")`
 - Run: `.\node_modules\.bin\markdownlint.cmd --fix "design/**/*.md"` then without `--fix` to confirm clean.
 
+### ⚠️ Part Number Change Rule (MANDATORY — review agents must follow this)
+
+**Before proposing or applying ANY component MPN change during a review cycle:**
+
+1. A datasheet for the proposed new MPN MUST exist in `design/Datasheets/`.
+2. The agent MUST read that datasheet and verify ALL of the following match the design requirement:
+   - Package / footprint (e.g. VQFN-24, VSSOP-8, SOT-23-5)
+   - Key electrical parameters (voltage rating, current rating, logic levels, OVLO/UVLO thresholds)
+   - Variant identifier (e.g. the `04` in TPS259804 vs `07` in TPS259807)
+3. If no datasheet is present for the proposed part → **do NOT make the change**.
+   Flag it as: "Proposed MPN change — no datasheet available; requires human verification."
+4. If the datasheet exists but any parameter does not match → **do NOT make the change**.
+   Flag it with the specific mismatch.
+
+This rule exists because the TPS259804ONRGER eFuse has been erroneously swapped to TPS259807
+(different variant, no OVLO feature) in multiple review rounds without datasheet verification.
+The same risk applies to any component where the MPN encodes a variant-selecting digit.
+
 ### JTAG Topology (CRITICAL — agents have repeatedly got this wrong)
 
 - TCK/TMS/TDI travel via **BtB connectors** (ERM8/ERF8 Samtec 0.8mm pitch) through entire rotor stack.
