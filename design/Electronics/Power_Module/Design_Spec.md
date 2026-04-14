@@ -319,8 +319,9 @@ GND ──────┴──────────────────�
 
 To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp-up, we use an automated voltage supervisor combined with a manual override.
 
-* **Power Toggle (SW1):** Panel-mount latching SPST rocker switch (Marquardt 1800 series, RGB LED —
-  *Open item — select during mechanical design phase*) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line. When SW1
+* **Power Toggle (SW1):** Panel-mount latching SPDT rocker switch (Marquardt 1800 series, RGB LED —
+  MPN TBD; prefer SPDT variant to unify BOM with Settings Board SW_B1/B2 ×12; unused pole NC or
+  shorted to active pole) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line. When SW1
   is open (ON position), R22 (10kΩ to 3V3_ENIG) holds EN HIGH → eFuse enabled. When SW1 is closed
   (OFF position), EN is pulled to GND → eFuse output cut, all downstream power off.
   * **Current rating:** Low-current logic signal only (EN pin draws microamps) — no high-current switch
@@ -486,7 +487,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KBYCT-ND | — |
 | R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R30 | LTC3350 RT frequency-setting resistor (RT pin to GND — sets switching frequency to 400 kHz) | 33.2kΩ 1% E96 Thick-Film [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | 0402 | ERA-2AEB3322X or equivalent 33.2kΩ 1% 0402 | — | — |
-| SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — *Open item — select during mechanical design phase* (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | *Open item — select during mechanical design phase* | *Open item — select during mechanical design phase* | — |
+| SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount SPDT latching rocker with RGB LED — MPN TBD (prefer SPDT variant to unify BOM with Settings Board SW_B1/B2 switches ×12; unused pole tied NC or shorted to active pole on SW1). Black body; RGB LED insert (R+G minimum). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | TBD | TBD | — |
 | SW2 | CM5 Power Button | Tactile SMT pushbutton, momentary SPST, wired from `PWR_BUT` to GND. Brief press (<2s) sends a power-key event to CM5 PMIC — wakes CM5 from halted state when OS is shut down, or initiates graceful shutdown when OS is running. No pull-up required (CM5 integrates 10kΩ on PWR_BUT). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |

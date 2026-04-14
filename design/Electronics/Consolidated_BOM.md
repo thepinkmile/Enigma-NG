@@ -128,7 +128,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | PoE ACF Isolation Transformer (Coilcraft POE600F-12LD) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | EMI Common-Mode Choke (Würth WE-CMBNC 7448031002) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | DM Filter Inductor 10 µH 15.5 A (Bourns SRP1265A-100M) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| Power / RGB Rocker Switch (Marquardt 1800 series) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| Power / Config RGB Rocker Switch (Marquardt 1800 series SPDT) | 1 | — | — | — | — | — | — | — | — | — | 12 | 13 |
 | Tactile SMT Reset Switch (SKRPACE010) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | Green SMD LED 0402 (Würth 150060VS75000 / C2286) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
 | 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
@@ -262,8 +262,8 @@ RGB rocker switches. See `Settings_Board/Design_Spec.md` for the full design spe
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x26 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_EXP_LED | MCP23017 I²C GPIO Expander (LED cathode + colour rail driver) | MCP23017T-E/SO @ 0x27 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| SW_B1_EN, SW_B1[0:3] | Bank 1 illuminated RGB rocker switches (×5: bank enable + routing bits 0–3) | SPDT panel-mount illuminated RGB rocker — MPN TBD | Panel-mount | TBD | TBD | — |
-| SW_B2_EN, SW_B2[0:5] | Bank 2 illuminated RGB rocker switches (×7: bank enable + reflector bits 0–5) | SPDT panel-mount illuminated RGB rocker — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B1_EN, SW_B1[0:3] | Bank 1 illuminated RGB rocker switches (×5: bank enable + routing bits 0–3) | Marquardt 1800 series panel-mount SPDT latching rocker with RGB LED — MPN TBD (same variant as PM SW1; select SPDT to unify BOM; one pole NC where SPST behaviour needed) | Panel-mount | TBD | TBD | — |
+| SW_B2_EN, SW_B2[0:5] | Bank 2 illuminated RGB rocker switches (×7: bank enable + reflector bits 0–5) | Marquardt 1800 series panel-mount SPDT latching rocker with RGB LED — MPN TBD (same variant as PM SW1) | Panel-mount | TBD | TBD | — |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount — MPN TBD | Panel-mount | TBD | TBD | — |
 | J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) |
 | Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | NPN colour-rail transistors (×4) | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |

@@ -323,18 +323,18 @@ automatic polling intervals.
 | R_SW6–R_SW12 | Bank 2 switch input pull-downs (×7: SW_B2_EN + SW_B2[0:5]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_LED_ANODE | LED anode current-limiting resistors (×4, one per colour rail) | TBD Ω (depends on switch LED specs) | 0603 | TBD | TBD | TBD |
 | R_BASE1–R_BASE4 | NPN base-limiting resistors (×4, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 |
-| SW_B1_EN | Bank 1 enable rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B1[0] | Bank 1 routing config bit 0 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B1[1] | Bank 1 routing config bit 1 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B1[2] | Bank 1 routing config bit 2 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B1[3] | Bank 1 routing config bit 3 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B2_EN | Bank 2 enable rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B2[0] | Bank 2 reflector config bit 0 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B2[1] | Bank 2 reflector config bit 1 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B2[2] | Bank 2 reflector config bit 2 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B2[3] | Bank 2 reflector config bit 3 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B2[4] | Bank 2 reflector config bit 4 rocker switch | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
-| SW_B2[5] | Bank 2 reflector config bit 5 rocker switch (internal reflector enable) | Illuminated RGB SPDT panel-mount rocker (MPN TBD) | Panel-mount | TBD | TBD | — |
+| SW_B1_EN | Bank 1 enable rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD (same variant as PM SW1) | Panel-mount | TBD | TBD | — |
+| SW_B1[0] | Bank 1 routing config bit 0 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B1[1] | Bank 1 routing config bit 1 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B1[2] | Bank 1 routing config bit 2 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B1[3] | Bank 1 routing config bit 3 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2_EN | Bank 2 enable rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2[0] | Bank 2 reflector config bit 0 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2[1] | Bank 2 reflector config bit 1 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2[2] | Bank 2 reflector config bit 2 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2[3] | Bank 2 reflector config bit 3 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2[4] | Bank 2 reflector config bit 4 rocker switch | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2[5] | Bank 2 reflector config bit 5 rocker switch (internal reflector enable) | Marquardt 1800 series SPDT latching rocker with RGB LED — MPN TBD | Panel-mount | TBD | TBD | — |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount (MPN TBD) | Panel-mount | TBD | TBD | — |
 | U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x26 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_EXP_LED | MCP23017 I²C GPIO Expander (LED cathode + colour rail driver) | MCP23017T-E/SO @ 0x27 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
