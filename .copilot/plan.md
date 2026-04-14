@@ -161,6 +161,8 @@ The same risk applies to any component where the MPN encodes a variant-selecting
 - ENC_B (→ POS_B), Würth 61201221721, J_INT as "2×11 IDC" / "22-pin keyed IDC"
 - Molex 22-23-2261 (→ Amphenol T821126A1S100CEU), Molex 22-23-2161 (→ BHR-16-VUA)
 - Würth 61300511021 / 61301011021 (→ RS1-05-G / RS1-10-G), C50950 / C2337 (JDB headers)
+- **22F cells, 33F bank, 21.7 s hold-up** — stale pre-Abracon values; correct = 25F / 37.5F / ≥24.8 s
+- "Passive components only" for Extension §5 — WRONG; U1 (SN74LVC2G125DCUR) is active IC on Extension
 
 ### Key Design Decisions
 

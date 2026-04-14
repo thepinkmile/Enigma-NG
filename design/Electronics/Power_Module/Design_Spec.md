@@ -530,6 +530,22 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 >
 > * **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also
 > available Farnell 4029939.
+>
+> > ⚠️ **Supercap cell lock — do NOT change MPN or count:**
+> > Cells are **Abracon ADCR-T02R7SA256MB, 25F/2.7V** in a **2S3P (6-cell)** arrangement.
+> >
+> > | Parameter | Value |
+> > | :--- | :--- |
+> > | Cell capacitance | 25F / 2.7V each |
+> > | Configuration | 2S3P — 6 cells total (C_SC1–C_SC6) |
+> > | Effective capacitance | 37.5F at 5.4V |
+> > | Hold-up energy | 123.8J |
+> > | Hold-up duration @ 5W load | **≥24.8 seconds** |
+> >
+> > Values **22F**, **33F**, and **21.7 s** are from a prior cell selection (checkpoint 025) and must never
+> > reappear. Any proposed cell change requires recalculating hold-up duration against the ≥20 s design rule
+> > and verifying the LTC3350 CELLS register configuration (currently set for 2 series cells, CELLS = 0x01).
+>
 > * **U4 TPS25751DREFR** — Replaces NRND TPS25750. TPS25751 is PD3.1 USB-IF certified (TID#10306); D-variant integrates the full bi-directional 20V/5A power path required to source 5V/5A (25W) to the
 > CM5 and prevent OS throttling. Package: WQFN-38 6×4mm (differs from TPS25750 QFN-28 — KiCad symbol and footprint to be created at schematic capture).
 > Mouser: `595-TPS25751DREFR`; DigiKey: `296-TPS25751DREFRCT-ND`; JLCPCB: `C30169739`.

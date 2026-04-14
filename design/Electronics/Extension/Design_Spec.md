@@ -149,7 +149,13 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 
 ## 5. Thermal & ESD
 
-* **Thermal:** No active cooling required on the Extension board. Passive components only.
+* **Thermal:** No active cooling required on the Extension board. U1 (SN74LVC2G125DCUR) is the
+  only active IC; it dissipates <10mW and requires no heatsinking. C6 (0.1µF X7R 0402) provides
+  the mandatory local bypass. All other components are passive.
+
+  > ⚠️ **U1 must never be removed.** The Extension board actively re-buffers TCK and TMS for
+  > every 5-rotor group. Without U1, signal integrity in long rotor stacks will fail.
+  > See FR-EXT-01, DR-EXT-04/05/06.
 * **ESD:** TVS diode on exposed signal lines; board relies on enclosure shielding.
 
 ## 6. Bill of Materials

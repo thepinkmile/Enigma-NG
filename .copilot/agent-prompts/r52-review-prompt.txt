@@ -118,7 +118,9 @@ STALE VALUES — FLAG IF ANY OF THESE APPEAR
 - "0.1% Thin-Film" for PM R1/R2/R3
 - "SN74LVC1G14" without DBVRQ1 suffix
 - "Extension board: no U1 buffer" or "Extension: passive pass-through only"
+- "Passive components only" in Extension Design_Spec §5 (Extension has U1 active IC — this was the root cause of U1 removal errors)
 - Pull-up on U7 EN pin (must be pull-down to GND)
+- Supercap values 22F / 33F / 21.7 s — STALE pre-Abracon values; correct = 25F / 37.5F / ≥24.8 s
 
 ===========================================
 REVIEW INSTRUCTIONS

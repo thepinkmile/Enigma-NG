@@ -79,7 +79,7 @@ The internal "USB Blaster" that makes the Enigma-NG self-contained.
 The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** enclosure.
 
 * **EMI Shielding:** Nanocrystalline dual-choke filtering for CE/UKCA compliance.
-* **UPS Function:** 33F Supercapacitor bank providing ≥21.7 seconds "Last-Gasp" hold-time.
+* **UPS Function:** 37.5F Supercapacitor bank (6× Abracon 25F/2.7V, 2S3P) providing ≥24.8 seconds "Last-Gasp" hold-time.
 * **Safety:** 72°C SMD Thermal Cutoff (TCO) and TPS25980 eFuse.
 * **Interface:** Shielded PoE+, USB-C PD, and Smart Battery inputs.
 

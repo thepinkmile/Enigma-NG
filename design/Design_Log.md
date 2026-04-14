@@ -118,7 +118,7 @@ drives the LM74700-Q1 gate control low when PoE is live, disabling the USB-C pat
 
 ## DEC-004 — Supercap Charge Current 0.5A Under PoE
 
-- **Status:** Decided
+- **Status:** Superseded by DEC-029 (cell specification updated; 0.5A charge current constraint retained)
 - **Date:** 2025
 - **Category:** Electrical
 - **Area:** LTC3350 supercap charger, PoE power budget
@@ -131,7 +131,7 @@ This limits peak PoE utilisation to 73.9% (53.2W / 72W) — within the 75% desig
 ### Rationale
 
 - Full 2A supercap charging on PoE would push utilisation to ~98%, leaving <2W margin for transient loads.
-- 0.5A charge current charges the 6× 22F supercap bank in approximately 3 minutes from depleted.
+- 0.5A charge current charges the 6× 25F supercap bank (Abracon ADCR-T02R7SA256MB) in approximately 3 minutes from depleted.
 - Normal system usage is expected to exceed 30–45 minutes per session (startup + configuration + use), making a 2-minute charge time acceptable.
 - This limitation should be documented in the User Manual with guidance that maximum system load is not recommended during the initial PoE power-up window.
 
@@ -806,7 +806,7 @@ metal chassis dimensions are finalised. Stator/Encoder/Rotor mechanical designs 
 
 ## DEC-021 — Supercapacitor Bank Upgrade: 2×2 2S2P → 2×3 2S3P
 
-- **Status:** Accepted — 2026-04-08
+- **Status:** Superseded by DEC-029 (arrangement 2S3P retained; cell capacitance updated 22F → 25F Abracon)
 - **Date:** 2026-04-08
 - **Category:** Electrical
 - **Area:** Power Module — Supercap Bank, Board Layout, Hold-up Specification
@@ -843,6 +843,12 @@ with the inter-cell air gap increased from 2.0mm to **3.0mm**.
   enclosure compression ribs, while maintaining margin for manufacturing tolerances.
 - **Board space:** The Power Module board dimensions are not yet fixed; the design is being built
   around this component block. The increased footprint (30mm × 45mm vs 28mm × 28mm) is accepted.
+
+> **Post-decision update (2026-04-08, checkpoint 025):** The 22F generic cells specified above
+> were subsequently replaced with **Abracon ADCR-T02R7SA256MB (25F/2.7V)** when a verified in-stock
+> THT radial supercap was sourced. The 2S3P arrangement and all mechanical dimensions are unchanged.
+> Effective capacitance increases from 33F to **37.5F**; hold-up increases from 21.7 s to **≥24.8 s**.
+> The values **22F / 33F / 21.7 s** are historical and must not be restored.
 
 ---
 
@@ -1198,6 +1204,97 @@ populated.
   geometry updated to r=44mm / Ø92mm; U3 not-populated note added.
 - `design/Electronics/Consolidated_BOM.md`: J_INT internal headers (H_SW3 PH1-07-UA/RS1-07-G, H_PWR PH1-05-UA/RS1-05-G, H_JTAG PH1-05-UA/RS1-05-G, H_SENS PH1-05-UA/RS1-05-G) added,
   4 headers per rotor assembly (120 total for 30 rotors).
+
+---
+
+## DEC-029 — Supercapacitor Hold-Up Specification: 25F Abracon Cells, ≥20 s Requirement
+
+- **Status:** Accepted — 2026-04-14
+- **Date:** 2026-04-14
+- **Category:** Electrical
+- **Area:** Power Module — Supercap Bank, Hold-up Specification
+- **Supersedes:** DEC-004 (cell reference), DEC-021 (cell capacitance specification)
+- **References:** DR-PM-07, DR-PM-09, BOM C_SC1–6
+
+### Decision
+
+The supercapacitor hold-up **minimum requirement is ≥20 seconds** at a 5W shutdown load. The
+confirmed cell selection (Abracon ADCR-T02R7SA256MB, 25F/2.7V, 2S3P — 6 cells) meets and
+exceeds this requirement under all credible discharge models.
+
+> ⚠️ **Cell lock:** Cells are **Abracon ADCR-T02R7SA256MB, 25F/2.7V** in **2S3P (6 cells)**.
+> Stale values **22F**, **33F**, and **21.7 s** must never reappear in any design document.
+> Any proposed cell change requires recalculating hold-up against the ≥20 s rule below.
+
+### Configuration
+
+| Parameter | Value |
+| :--- | :--- |
+| Cell part number | Abracon ADCR-T02R7SA256MB |
+| Cell capacitance | 25F / 2.7V each |
+| Configuration | 2S3P — 6 cells total (C_SC1–C_SC6) |
+| Effective capacitance | 37.5F at 5.4V |
+| Charge voltage (2S) | 5.4V |
+
+### Hold-Up Calculation
+
+Usable energy from a capacitor bank discharged from V_hi to V_lo:
+
+> **E = ½ × C × (V_hi² − V_lo²)**
+
+Load power during shutdown: **P = 5W** (CM5 idle, OS shutdown sequence).
+
+Hold-up duration: **t = E / P**
+
+#### Conservative model (pure-buck — LTC3350 falls out of regulation at V_lo ≈ 4.75V)
+
+This is the absolute worst-case: the converter is treated as a simple buck with no boost
+capability and drops out when V_CAP falls below the output voltage threshold.
+
+| Step | Calculation | Result |
+| :--- | :--- | :--- |
+| Usable energy | ½ × 37.5 × (5.4² − 4.75²) | **123.7J** |
+| Hold-up @ 5W | 123.7J / 5W | **≥24.7 s ✅** |
+
+#### Realistic model (LTC3350 boost mode, V_lo = 2.0V, η = 85%)
+
+The LTC3350 is a 4-switch synchronous buck-boost. In backup mode it actively boosts the
+supercap voltage to maintain 5V output well below V_CAP = 5V. Minimum practical V_CAP
+(protecting cells from over-discharge) is ~2.0V for a 2S bank.
+
+| Step | Calculation | Result |
+| :--- | :--- | :--- |
+| Stored energy | ½ × 37.5 × (5.4² − 2.0²) | 471.8J |
+| Delivered energy (85% η) | 471.8J × 0.85 | **401J** |
+| Hold-up @ 5W | 401J / 5W | **≈80 s ✅** |
+
+#### Minimum threshold to satisfy ≥20 s rule
+
+To just reach 20 s at 5W, the capacitor bank needs to deliver 100J.
+With the conservative pure-buck model, this requires V_CAP to discharge only to:
+
+> V_lo = √(5.4² − 2 × 100 / 37.5) = √(29.16 − 5.33) = √23.83 = **4.88V**
+
+The LTC3350 maintains output until V_CAP falls well below 4.88V in all operating modes.
+The 20 s requirement is therefore met with significant margin in every scenario.
+
+### Rationale
+
+- The original 22F generic cells (DEC-021) and the 33F/21.7 s figures they produced have been
+  replaced by confirmed in-stock Abracon parts that improve hold-up from 21.7 s to ≥24.7 s
+  (conservative model), or ≈80 s (realistic model). See post-decision note in DEC-021.
+- The ≥20 s hold-up target provides sufficient time for a CM5 Linux OS clean shutdown
+  (typically 10–15 s). The margin above 20 s covers worst-case OS shutdown latency, heavier
+  CM5 loads at bring-up, and supercap capacity degradation over prototype life.
+- The 0.5A PoE charge current limit from DEC-004 is retained unchanged; charge time from
+  depleted remains approximately 3 minutes. The PoE utilisation calculations in DEC-004 are
+  unaffected by the cell change (charge power = V × I = 5.4V × 0.5A = 2.7W, unchanged).
+
+### Constraints
+
+- Do not change the cell MPN, cell count, or configuration without re-running the hold-up
+  calculation against the ≥20 s rule and updating DR-PM-07, DR-PM-09, and this DEC.
+- LTC3350 CELLS register must remain configured for 2 series cells (CELLS = 0x01).
 
 ---
 

@@ -32,8 +32,8 @@ TOP VIEW (L1) - 6-Layer / 2oz Copper
 |    ______________________             __________________________            |
 |   | [C_SC1] [C_SC2] [C_SC3] |           |                          |           |
 |   | [C_SC4] [C_SC5] [C_SC6] |           |  [ Amber "Safety Glow" ] |           |
-|   | (33F/5.4V Supercap)    |           |  [ J3 Molex 43650-0519 ] |           |
-|   | (22F×6 cells, 2S3P)    |           |__________________________|           |
+|   | (37.5F/5.4V Supercap)  |           |  [ J3 Molex 43650-0519 ] |           |
+|   | (25F×6 cells, 2S3P)    |           |__________________________|           |
 |   |______________________|                                                  |
 |                |                                                            |
 |         [ THERMAL HUB ] <--- Type VII Hex-Matrix Vias to Bottom Slug        |
@@ -162,7 +162,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
           +---------------------------+-------------+--------------------+
           |                           |             |                    |
  [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS75733KTTRG3]  [U8 MCP121T-450E]
- [C_SC1-6: 33F / 5.4V    ]   PD Emulator         3.3V LDO          Supervisor
+ [C_SC1-6: 37.5F / 5.4V ]   PD Emulator         3.3V LDO          Supervisor
  (6x Abracon ADCR-T02R7SA256MB 25F/2.7V 2S3P) -> CM5 5V/5A -> 3V3_ENIG        -> PWR_GD
                               (via J1 BtB)         (3A / 3.3V)      (open-drain)
 ```
