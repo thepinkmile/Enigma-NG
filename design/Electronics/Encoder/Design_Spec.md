@@ -124,8 +124,8 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
   > See `design/Electronics/Stator/Board_Layout.md` — J4–J6 for the full pin table.
 - **Status LEDs (×2):** One active-low debug LED per CPLD. CPLD output LOW = LED ON.
   330Ω current-limiting resistor per LED; ~4mA drive current at 3.3V.
-- **Plugboard Jack Sockets:** See `design/Mechanical/Plugboard/Design_Spec.md`.
-- **Keyboard Switches:** See `design/Mechanical/Keyboard/Design_Spec.md`.
+- **Plugboard Jack Sockets:** See `design/Mechanical/Plugboard_Assembly/Design_Spec.md`.
+- **Keyboard Switches:** See `design/Mechanical/HID_Assembly/Design_Spec.md`.
 - **PCB Spade Terminal Banks (2× banks of 64, 128 total):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs.
   - **Bank 1 (BT1–BT64) — Decode Half outputs:** CPLD A (U1) decoder output lines. In plugboard mode:
     wired via harness to the Tip and Switch terminals of the 64 jack sockets. In HID lightboard mode:
@@ -155,9 +155,9 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
   **Maximum 32 cables** may be installed simultaneously (64 jacks ÷ 2 jacks per cable).
 
   > **Note:** Physical harness assembly, jack panel layout, and cable construction are mechanical design
-  > items. See `design/Mechanical/Plugboard/Design_Spec.md` for full harness specification.
+  > items. See `design/Mechanical/Plugboard_Assembly/Design_Spec.md` for full harness specification.
   > Insertion detection (Switch contact opens when plug inserted) monitoring path is an **open item**
-  > — to be defined in Mechanical/Plugboard/Design_Spec.md.
+  > — to be defined in Mechanical/Plugboard_Assembly/Design_Spec.md.
 - **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54mm pitch.
   Not a separate connector — bare gold pads probed directly with logic analyser clips or ICT fixtures.
   Mirrors the Data Link signals: Row 1 = 3V3_ENIG, GND, ENC_IN[0:5]; Row 2 = 3V3_ENIG, GND, ENC_OUT[0:5].
@@ -184,21 +184,47 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
 
 ## 6. Key Mapping (64-Way QWERTY for Keyboard)
 
-Key mapping implementation detail — including QWERTY layout, hardware RC de-bounce circuit,
-Shift key state-machine logic, and LED drive — has been migrated to the Mechanical Keyboard
-specification.
+The Encoder CPLD maps 64 mechanical key inputs to the parallel 6-bit data bus. Key assignments
+follow a standard QWERTY layout extended with numbers, symbols, and modifier keys.
 
-> See `design/Mechanical/Keyboard/Design_Spec.md §3 Key Mapping` for the full key mapping
-> specification.
+- **Layout:** Standard QWERTY + Numbers + Symbols + Shift (64 keys total).
+- **Signal polarity:** Lines are **active-low**. The external 10 kΩ pull-up to 3V3_ENIG holds
+  each CPLD input HIGH when the key is not pressed. Key press closes the switch contact to GND,
+  pulling the CPLD input LOW; the CPLD detects the falling edge.
+- **Debouncing:** Hardware RC de-bounce circuit per input line: 10 kΩ pull-up resistor to
+  3V3_ENIG + 100 nF X7R capacitor to GND on each key input line (RC time constant τ = 1 ms).
+  The EPM240T100I5N inputs are configurable as **3.3 V Schmitt trigger inputs** (confirmed);
+  internal weak pull-up is 50 kΩ–100 kΩ. The external 10 kΩ pull-up dominates and sets a
+  well-defined idle-high state. The 10 kΩ value is confirmed appropriate — no change required.
+- **Shift Logic:** The Left Shift and Right Shift keys act as logic-level triggers for the CPLD
+  state machine, toggling between the lower and upper character planes of the 64-way key map.
+- **LED Drive:** The Encoder CPLDs directly drive the **Shift Status LEDs** and the 64-character
+  lamp matrix output via MOSFET arrays.
+
+> For keyboard switch mechanical specification and panel assembly, see
+> `design/Mechanical/HID_Assembly/Design_Spec.md`.
 
 ## 7. Plugboard Jack-Sensing
 
-Plugboard jack-sensing implementation detail — including CPLD insertion-detect logic, switch contact
-signal behaviour, sub-microsecond detection latency, and harness assembly — has been migrated to the
-Mechanical Plugboard specification.
+The Encoder CPLD monitors the 64 Stecker jack sockets for plug insertion state and updates the
+encryption matrix in real time.
 
-> See `design/Mechanical/Plugboard/Design_Spec.md §4 Plugboard Jack-Sensing` for the full
-> jack-sensing specification.
+- **Logic:** The CPLD monitors 64 insertion-detect lines (spade bank BT65–BT128, Switch contacts)
+  sourced from the 6.35 mm mono switched jack sockets.
+- **Signal:** Lines are **active-low**. An external **10 kΩ pull-up to 3V3_ENIG** (R9–R72 on the
+  Encoder PCB) holds each CPLD input HIGH when no plug is inserted; this dominates the CPLD
+  internal weak pull-up (50 kΩ–100 kΩ), providing a well-defined idle-high state and improved
+  harness noise immunity. A **100 nF RC filter capacitor** (C22–C85) is paired with each pull-up
+  (RC τ = 1 ms), further attenuating harness-coupled noise. On plug insertion the switch contact
+  closes to GND, pulling the CPLD input LOW. Inputs are configured as **3.3 V Schmitt trigger
+  inputs** (confirmed); cable insertion is a slow mechanical event well within the Schmitt
+  hysteresis window. The CPLD detects the falling edge and marks the corresponding channel as
+  patched.
+- **Latency:** Sub-microsecond detection of Stecker cable insertion; the internal encryption
+  matrix is updated within one CPLD clock cycle.
+
+> For jack panel layout, harness assembly, and cable construction, see
+> `design/Mechanical/Plugboard_Assembly/Design_Spec.md`.
 
 ## 8. Thermal & ESD
 
