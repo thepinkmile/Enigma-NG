@@ -295,10 +295,10 @@ automatic polling intervals.
 ## 8. PCB Fabrication
 
 * **Manufacturer:** JLCPCB
-* **Layer count:** 2-layer
-* **Stackup:** JLCPCB standard 2-layer FR4
+* **Layer count:** 4-layer
+* **Stackup:** JLC04161H-7628
 * **Board thickness:** 1.6mm
-* **Copper weight:** 1oz outer
+* **Copper weight:** 2oz outer (system-wide standard)
 * **Surface finish:** ENIG
 * **Min trace/space:** 0.1mm / 0.1mm
 * **Min drill:** 0.2mm

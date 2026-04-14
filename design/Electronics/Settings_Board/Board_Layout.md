@@ -16,7 +16,7 @@ enclosure top-face panel cutouts; the PCB sits directly behind the panel. A 4-wi
 cable (J_I2C) exits to the left toward the Stator Board J_CFG.
 
 ```text
-TOP VIEW (L1) — 2-Layer / Standard Copper
+TOP VIEW (L1) — 4-Layer / 2oz Copper (JLC04161H-7628)
                      ENCLOSURE PANEL FACE  ←  switches protrude through here
 ╔══╦═══╦═══╦═══╦═══╦═╦══╦═══╦═══╦═══╦═══╦═══╦═══╦═══╗
 ║  ║   ║   ║   ║   ║ ║  ║   ║   ║   ║   ║   ║   ║[■]║
@@ -283,17 +283,19 @@ corresponding GPIO expander pin and LED driver pin.
 ## 8. PCB Stackup & Routing Notes
 
 **Manufacturer:** JLCPCB
-**Layer count:** 2-layer
-**Stackup:** JLCPCB standard 2-layer FR4
+**Layer count:** 4-layer
+**Stackup:** JLC04161H-7628 (standard 4-layer, 2oz copper — system default per Global_Routing_Spec.md)
 **Board thickness:** 1.6mm
-**Copper weight:** 1oz outer
+**Copper weight:** 2oz outer (system-wide standard)
 **Surface finish:** ENIG
 **Min trace/space:** 0.15mm / 0.15mm
 
-| Layer | Role |
-| :--- | :--- |
-| L1 (Top) | Signal routing — I²C, GPIO, LED cathode lines, switch signals |
-| L2 (Bottom) | GND pour (flood fill) |
+| Layer | Role | Notes |
+| :--- | :--- | :--- |
+| L1 (Top) | Signal routing — I²C, GPIO, LED cathode lines, switch signals | All active components on L1 |
+| L2 | GND pour (flood fill) | Solid GND reference plane |
+| L3 | 3V3_ENIG power plane | Dedicated power distribution |
+| L4 (Bottom) | GND pour + Data Plate silkscreen | B.Silkscreen Data Plate; GND_CHASSIS bond |
 
 ### Trace Width Guidance
 
@@ -302,7 +304,7 @@ corresponding GPIO expander pin and LED driver pin.
 | I²C (SDA, SCL) | 0.20 mm | L1 | Low-frequency signal; standard logic trace |
 | GPIO signals (cathodes, colour-rail, switch inputs) | 0.20 mm | L1 | Low-current logic signals |
 | 3V3_ENIG supply trace | 0.50 mm | L1 | Board total load < 200mA — ample margin |
-| GND | Flood fill | L2 | Solid GND reference plane |
+| GND | Flood fill | L2, L4 | Solid GND reference planes |
 
 > No controlled-impedance or high-speed routing requirements. Standard signal routing rules apply.
 
