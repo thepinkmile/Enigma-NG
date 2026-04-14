@@ -225,7 +225,7 @@ _______________________________________    _____________    ____________________
 | 4 | TMS | CTRL→Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
-| 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
+| 7 | GND | — | TDI/SPARE inter-pin shield |
 | 8 | SPARE | — | Freed by DEC-031; SYS_RESET_N migrated to Stator U_EXP2 GPA[7] @ 0x21 |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
@@ -296,8 +296,8 @@ _______________________________________    _____________    ____________________
 | (O) [  LINK-ALPHA (ERF8-040)  ] --(5V/GBE)--|----->| [ CM5 COMPUTE MODULE ]         |      | (O)                         |
 | (1)  (Female Socket / 80-pin)               |      |  (Wireless/8GB/32GB)           |      | (3)                         |
 |        |                 |                  |      |                                |      |                             |
-|  [ 3V3_ENIG  ]     [ SNIFFER BUS (12-bit) ] |<---->| [ 12-bit GPIO ]  [ 100Ω HDMI ] |      |                             |
-|  (2oz L3 BRIDGE)   (6-In / 6-Out Binary)    |      |                        |       |      |                             |
+|  [ 3V3_ENIG  ]     [ SPARE               ] |<---->| [ SPARE       ]  [ 100Ω HDMI ] |      |                             |
+|  (2oz L3 BRIDGE)   (SPARE)              |      |                        |       |      |                             |
 |       |                                     |      |                  [ AP2331W   ] |      |                             |
 |       |       [ JTAG DAUGHTERBOARD ]        |      |                  [ TPD4E05U06] |------|------> [ HDMI TYPE-A  ]     |
 |       |        (1x5 & 1x10 Headers)         |      |                                |      |        [   2007435-1  ]     |
@@ -320,14 +320,14 @@ _______________________________________    _____________    ____________________
 | (O) [R]    [ LINK-BETA (ERF8-020) ]  [ LINK-ALPHA (ERF8-040) ]   [R] (O) |
 |            (Stator / Logic Out)      (Power / Ethernet In)           |
 |                   |                          |                     |
-|            [ DIAG BANK-B  ]        [ DIAG BANK-A      ]            |
-|            [ (ENCRYPTION) ]        [ (POWER & STATUS) ]            |
+|            [ SPARE        ]        [ DIAG BANK-A      ]            |
+|            [ (SPARE)      ]        [ (POWER & STATUS) ]            |
 |               |      |                       |                (O)  |
 |          (JTAG Link) |                       |                     |
 |               |      |               [  CM5 MODULE  ]    [ USB3 ]  |
 |               |      |               [ (RIGHT-SIDE) ]    [STACK ]  |--- PROTRUDES
 |   [ JTAG DAUGHTER ]  |               [              ]----[ PORT ]  |
-|   [  MOUNT (2x10) ]  +--(6-In/6-Out)-[ (GPIO 0-11)  ]              |
+|   [  MOUNT (2x10) ]  +--(SPARE)     -[ (SPARE)      ]              |
 |               |                      [              ]              |
 |               +------(USB 2.0)-------[ (HDMI/USB3)  ]----[ HDMI ]  |
 |                                      |______________|    [ FULL ]  |--- PROTRUDES

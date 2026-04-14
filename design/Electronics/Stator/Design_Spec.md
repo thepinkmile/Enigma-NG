@@ -180,7 +180,7 @@ symmetry. Pre-loaded indices:
   * **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK line is floating.
   * **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low signal; pull-up ensures CPLD remains
     out of reset by default.
-* **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TCK, TMS, TDI, TDO, SYS_RESET_N) shall
+* **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TCK, TMS, TDI, TDO) shall
   be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting **50 Ω controlled
   impedance**. See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **JTAG Series Termination at Encoder Port Outputs (R7–R15):** 75 Ω series resistors placed within
@@ -214,8 +214,8 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 ## 4. Interconnects
 
 * **Controller Link (Link-Beta):** The **40-pin ERM8-020-05.0-S-DV-K-TR** male header on the Stator Board plugs into the matching ERF8-020 female socket on the Controller Board.
-  * **Data In:** Receives JTAG, Reset from Controller.
-  * **Data Out:** Transmits 12-bit Sniffer data to Controller.
+  * **Data In:** Receives JTAG from Controller.
+  * **Data Out:** ENC monitoring via I²C U_EXP1 @ 0x20 (not via LINK-BETA hardware pins).
   * **Power:** Receives 3V3_ENIG via the Controller pass-through for all backplane CPLDs.
   * **Cross-ref:** See `Controller/Design_Spec.md` Link-Beta mapping for explicit pin-number allocation; this Stator document mirrors that mapping for compatibility and implementation validation.
 * **Encoder Interconnects:** 26-pin (2×13) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
@@ -368,8 +368,8 @@ snapped off.
 | J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 |
 | J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed — see components-todo.md) |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | (verify) |
-| R_SH1, R_SH2 | SERVO_HOME pull-up resistors (10kΩ, one per switch line) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| C_SH1, C_SH2 | SERVO_HOME RC debounce capacitors (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| R_SH1 | SERVO_HOME pull-up resistor (10kΩ) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| C_SH1 | SERVO_HOME RC debounce capacitor (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 
 > **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item — see
 > `design/Mechanical/Rotor_Actuation_Assembly/Design_Spec.md`.

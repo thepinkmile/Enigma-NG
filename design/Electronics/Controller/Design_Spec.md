@@ -68,7 +68,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Cross-ref:** See `Power_Module/Design_Spec.md` and `Power_Module/Board_Layout.md` for the matching Link-Alpha
     pin allocation and power flow definitions.
 * **Link-Beta (Logic/Stator):** ERF8 Female Socket 40-pin Encryption/JTAG interface to Stator Board.
-  * Provides: JTAG, Reset, and 3V3_ENIG to Stator.
+  * Provides: JTAG and 3V3_ENIG to Stator.
   * **Cross-ref:** See `Stator/Design_Spec.md` and `Stator/Board_Layout.md` for explicit pin mapping and connector
     compliance. See DEC-015 for 40-pin reduction rationale and poka-yoke safety note.
 * **3V3_ENIG:** The Controller is an active consumer of 3V3_ENIG — CM5 VDD_GPIO_REF and on-board peripherals are powered from this rail via the LINK-ALPHA tap node.
@@ -99,7 +99,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Connector:** Samtec ERF8-020 (Female Socket, 40-pin, 0.8mm pitch). See DEC-015.
   * **Mating Style:** Board-to-Board vertical stack; SMT reflow. Mates with ERM8-020 (Male) on Stator.
   * **Pin Summary:**
-    * **Pins 1–9:** JTAG chain + Reset, GND-shielded (5 internal GND pins).
+    * **Pins 1–9:** JTAG chain only, GND-shielded (5 internal GND pins).
     * **Pins 10–11:** GND isolation moat.
     * **Pins 12–24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now spare (monitoring via I²C expander U_EXP1). pins 12–17 are all **SPARE** (freed by DEC-031); no 5V_MAIN on LINK-BETA.
     * **Pins 25–27:** TTD_RETURN + GND shields.
@@ -338,7 +338,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 4 | TMS | CTRL → Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL → Stator | JTAG data in |
-| 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
+| 7 | GND | — | TDI/SPARE inter-pin shield |
 | 8 | spare | — | Previously SYS_RESET_N (CM5 GPIO 26); now via I²C expander U_EXP2 GPA[7]. See DEC-031. |
 | 9–11 | GND | — | JTAG trailing shield + isolation moat |
 | 12–17 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] monitoring now via I²C expander U_EXP1 GPA[0:5] @ 0x20. |
