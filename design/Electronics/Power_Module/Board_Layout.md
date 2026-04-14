@@ -30,10 +30,10 @@ TOP VIEW (L1) - 6-Layer / 2oz Copper
 |   [ eFuse U1 ] <--- TPS25980 + [0603 Thick-Film Ladder]                      |
 |                                                                             |
 |    ______________________             __________________________            |
-|   | [C_SC1] [C_SC2] [C_SC3] |           |                          |           |
-|   | [C_SC4] [C_SC5] [C_SC6] |           |  [ Amber "Safety Glow" ] |           |
-|   | (37.5F/5.4V Supercap)  |           |  [ J3 Molex 43650-0519 ] |           |
-|   | (25F×6 cells, 2S3P)    |           |__________________________|           |
+|   | [C_SC1] [C_SC2] [C_SC3] [C_SC4] |           |                          |           |
+|   | [C_SC5] [C_SC6] [C_SC7] [C_SC8] |           |  [ Amber "Safety Glow" ] |           |
+|   | (50F/5.4V Supercap)    |           |  [ J3 Molex 43650-0519 ] |           |
+|   | (25F×8 cells, 2S4P)    |           |__________________________|           |
 |   |______________________|                                                  |
 |                |                                                            |
 |         [ THERMAL HUB ] <--- Type VII Hex-Matrix Vias to Bottom Slug        |
@@ -68,7 +68,7 @@ TOP VIEW (L1) - 6-Layer / 2oz Copper
 |   ( All Passives/Caps/Inductors Cluster around their ICs on Top )           |
 |_____________________________________________________________________________|
 |                                                                             |
-|          [ U3 LTC3350 ]  [ C_SC1-6: 2×3 SUPERCAP BLOCK (on 5V_MAIN) ]       |
+|          [ U3 LTC3350 ]  [ C_SC1-8: 2×4 SUPERCAP BLOCK (on 5V_MAIN) ]       |
 |                                                                             |
 |      (Thermal Hex-Matrix Vias scattered underneath these high-heat zones)   |
 |_____________________________________________________________________________|
@@ -162,8 +162,8 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
           +---------------------------+-------------+--------------------+
           |                           |             |                    |
  [U3 LTC3350 Supercap Mgr]  [U4 TPS25751     ]  [U7 TPS75733KTTRG3]  [U8 MCP121T-450E]
- [C_SC1-6: 37.5F / 5.4V ]   PD Emulator         3.3V LDO          Supervisor
- (6x Abracon ADCR-T02R7SA256MB 25F/2.7V 2S3P) -> CM5 5V/5A -> 3V3_ENIG        -> PWR_GD
+ [C_SC1-8: 50F / 5.4V   ]   PD Emulator         3.3V LDO          Supervisor
+ (8x Abracon ADCR-T02R7SA256MB 25F/2.7V 2S4P) -> CM5 5V/5A -> 3V3_ENIG        -> PWR_GD
                               (via J1 BtB)         (3A / 3.3V)      (open-drain)
 ```
 
@@ -228,8 +228,8 @@ EXTERNAL PORTS (REAR)           INTERNAL PROTECTION & STORAGE          CONTROLLE
                                 |    |                      |                       ^
                                 | [5V_MAIN]-----------------|-------[U2A/U2B BUCK]--|
                                 |    |                      |       [U7 3.3V LDO]---|
-                                | [LTC3350 + C_SC1-6]-------|                       |
-                                |    | ( 2x3 Block on )     |                       |
+                                | [LTC3350 + C_SC1-8]-------|                       |
+                                |    | ( 2x4 Block on )     |                       |
                                 |    | ( 5V_MAIN )          |       |[SUPERVISOR]---|
                                 |    |                      |                       |
                                 | [5.1V ZENER GLOW] --------|--->[AMBER LED EXT]----+
@@ -384,7 +384,7 @@ solving for w at I=1A, ΔT=10°C gives w ≈ 0.15 mm). See Global_Routing_Spec.m
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Signal (I2C, GPIO, LED ctrl, status) | < 50 mA | 0.008 mm | 0.20 mm | **0.20 mm** | L1 | General 3.3 V logic |
-| Supercap charge (LTC3350 → C_SC1–6) | 0.5 A | 0.075 mm | 0.50 mm | **0.50 mm** | L1 | Soft-charge limited by LTC3350 RICHARGE |
+| Supercap charge (LTC3350 → C_SC1–8) | 0.5 A | 0.075 mm | 0.50 mm | **0.50 mm** | L1 | Soft-charge limited by LTC3350 RICHARGE |
 | 3V3_ENIG (LDO output → LINK-ALPHA pins 39–44) | 3.0 A | 0.45 mm | 0.80 mm | **0.80 mm** | L1 | Medium-power supply; extra margin for 3 A upper bound |
 | 12V_POE (ACF transformer output → OR-ing U6) | 4.43 A | 0.67 mm | 1.00 mm | **1.00 mm** | L1 | 53.2 W PoE budget ÷ 12 V = 4.43 A peak |
 | Battery input (J3 → OR-ing U6) | 3.89 A | 0.59 mm | 1.00 mm | **1.00 mm** | L1 | Peak draw (8.76 A system + 1 A LTC3350 supercap) × 5 V ÷ (0.87 × 14.4 V) = 3.89 A |

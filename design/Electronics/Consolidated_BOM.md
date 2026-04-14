@@ -64,7 +64,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 10 nF 100 V X7R 0402 Bob Smith termination cap | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 100 pF X7R 25 V 0402 SYNC SW-ringing LP filter (C0402C101K3RACAUTO) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 6 | — | — | — | — | — | — | — | — | — | 6 |
+| 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 8 | — | — | — | — | — | — | — | — | — | 8 |
+| 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C35 (Samsung CL32B226KAJNNNE, 2× in parallel) | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | | | | | | | | | | | | |
 | 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 6 | 2 | 9 | — | — | — | — | — | — | — | 17 |
 | 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | 328 |
@@ -88,8 +89,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 210 Ω 1% 0603 thick-film eFuse ILIM (ERJ-3EKF2100V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 86.6 kΩ 1% 0603 thick-film SYNC FSET resistor (ERJ-3EKF8662V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 82.0 kΩ 1% 0402 thick-film SYNC phase-delay R\_DLY (ERJ-2RKF8202X) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 28.7 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB2872V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 30.1 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB3012V or equivalent — see DEC-030) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB1002V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 33.2 kΩ 1% 0402 thick-film LTC3350 RT freq-set (ERA-2AEB3322X or equivalent) | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 2 | — | 2 |
 | Ferrite bead 120 Ω @100 MHz 4.0 A 1206 (Laird HI1206P121R-10) | — | — | 4 | — | — | — | — | — | — | — | 4 |
 | | | | | | | | | | | | |
@@ -134,7 +136,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 ## 1. Critical Spares (MOQ Recommendations)
 
 * **Bourns AC72 TCO:** Order 5 (MOQ) - (2x Spares).
-* **Abracon ADCR-T02R7SA256MB (25F/2.7V) Supercap:** Order 10 — 6 required per build + 4 spare/test.
+* **Abracon ADCR-T02R7SA256MB (25F/2.7V) Supercap:** Order 12 — 8 required per build + 4 spare/test.
   Source via DigiKey (535-ADCR-T02R7SA256MB-ND) or Mouser (815-ADCRT02R7SA256MB). JLCPCB global sourcing only.
 * **Samtec ERM8-040 (Gold, 80-pin):** Order 3 (MOQ) — Power Module J1, (1× Spare). Order separately from ERM8-020.
 * **Samtec ERM8-020 (Gold, 40-pin):** Order 3 (MOQ) — Stator J8, (1× Spare). Poka-yoke pair with ERF8-020.
@@ -300,7 +302,8 @@ table and placement requirements.
 | J3 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
 | J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 | 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. JLCPCB C5438410. |
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 | N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 (U6) for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One per input path. ⚠️ Verify U6 instance count — LM74700-Q1 controls one FET per IC; three inputs may require three U6 instances at schematic capture. |
-| R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=28.7kΩ (ERA-3ARB2872V, Mouser 667-ERA-3ARB2872V, DigiKey P28.7KBYCT-ND). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.644V (above MCP121T 4.50V — LTC3350 activates first, keeping PWR_GD stable). |
+| R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | BACKUP pin voltage divider for LTC3350 (U3). R14=30.1kΩ (ERA-3ARB3012V or equivalent 30.1kΩ 0.1% 0603 [MPN TBD] — see DEC-030). R15=10.0kΩ (ERA-3ARB1002V, Mouser 667-ERA-3ARB1002V, DigiKey P10.0KBYCT-ND). Sets BACKUP trigger at 4.812V (312mV above MCP121T 4.50V — see DEC-030). |
+| R30 | ERA-2AEB3322X or equivalent 33.2kΩ 1% 0402 | 0402 1% Thick-Film | ERA-2AEB3322X or equiv | — | — | LTC3350 RT frequency-setting resistor — sets 400 kHz switching frequency (vs default 200 kHz with RT=INTVCC). Required for ≥4-cycle backup switchover window. See DEC-030. |
 | U11 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERJ-3EKF series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
 | U15 | MIC1555YM5-TR | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 | CMOS timer IC (Microchip). Monostable one-shot for hardware PWR_BUT shutdown. t=1.1×R28×C32=3.01s. R28=274kΩ (ERJ-3EKF2743V), C32=10µF 16V X7R (CL10B106KA8NNNC), C33=100nF bypass cap. |
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
@@ -380,7 +383,7 @@ Product page links for all major components for design review and procurement ve
 | J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
 | J1 (PM) + Rotor/Stator/Reflector/Extension ERM8 | ERM8-040/020/010/005 — 0.8mm-pitch BtB Male Headers | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
-| C_SC1–6 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
+| C_SC1–8 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
 | SW2 (STA), SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
 | J4–J6 (STA), J2 (ENC) | T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm | Amphenol | TBD — datasheet to be added |
 | J7 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | TBD — datasheet to be added |

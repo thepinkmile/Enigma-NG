@@ -1207,24 +1207,32 @@ populated.
 
 ---
 
-## DEC-029 — Supercapacitor Hold-Up Specification: 25F Abracon Cells, ≥20 s Requirement
+## DEC-029 — Supercapacitor Hold-Up Specification: 25F Abracon Cells, 2S4P, ≥20 s at 15W
 
 - **Status:** Accepted — 2026-04-14
 - **Date:** 2026-04-14
 - **Category:** Electrical
 - **Area:** Power Module — Supercap Bank, Hold-up Specification
-- **Supersedes:** DEC-004 (cell reference), DEC-021 (cell capacitance specification)
-- **References:** DR-PM-07, DR-PM-09, BOM C_SC1–6
+- **Supersedes:** DEC-004 (cell reference), DEC-021 (cell capacitance and count)
+- **References:** DR-PM-07, DR-PM-09, BOM C_SC1–8
 
 ### Decision
 
-The supercapacitor hold-up **minimum requirement is ≥20 seconds** at a 5W shutdown load. The
-confirmed cell selection (Abracon ADCR-T02R7SA256MB, 25F/2.7V, 2S3P — 6 cells) meets and
-exceeds this requirement under all credible discharge models.
+The supercapacitor hold-up **minimum requirement is ≥20 seconds** at a **15W shutdown load**
+(CM5 typical operating current: 5V × 3A = 15W). The confirmed cell selection (Abracon
+ADCR-T02R7SA256MB, 25F/2.7V) in a **2S4P (8-cell)** arrangement provides ≥33.5 seconds.
 
-> ⚠️ **Cell lock:** Cells are **Abracon ADCR-T02R7SA256MB, 25F/2.7V** in **2S3P (6 cells)**.
-> Stale values **22F**, **33F**, and **21.7 s** must never reappear in any design document.
-> Any proposed cell change requires recalculating hold-up against the ≥20 s rule below.
+> ⚠️ **Cell lock:** Cells are **Abracon ADCR-T02R7SA256MB, 25F/2.7V** in **2S4P (8 cells)**.
+> Stale values **22F**, **33F**, **37.5F**, **21.7 s**, and **24.8 s** must never reappear.
+> Any proposed cell or configuration change requires recalculating hold-up against the ≥20 s
+> rule below using the **15W** load figure.
+
+### Correct Load Figure
+
+> ⚠️ The CM5 draws **5V × 3A = 15W** during typical operation. When a power-loss event
+> occurs, the CM5 is running at this load and continues to draw it throughout the OS shutdown
+> sequence (~10–15 s). Earlier documents used 5W (1A) which significantly overstated margin.
+> **All hold-up calculations must use 15W** as the minimum design load.
 
 ### Configuration
 
@@ -1232,69 +1240,131 @@ exceeds this requirement under all credible discharge models.
 | :--- | :--- |
 | Cell part number | Abracon ADCR-T02R7SA256MB |
 | Cell capacitance | 25F / 2.7V each |
-| Configuration | 2S3P — 6 cells total (C_SC1–C_SC6) |
-| Effective capacitance | 37.5F at 5.4V |
+| Configuration | 2S4P — 8 cells total (C_SC1–C_SC8) |
+| Effective capacitance | 50F at 5.4V |
 | Charge voltage (2S) | 5.4V |
+| Block footprint | 37mm × 77mm (2 columns × 4 rows, 20mm pitch) |
+| Shadow zone | 41mm × 81mm |
 
 ### Hold-Up Calculation
 
-Usable energy from a capacitor bank discharged from V_hi to V_lo:
+Usable energy from a capacitor bank discharged from V\_hi to V\_lo:
 
-> **E = ½ × C × (V_hi² − V_lo²)**
+> **E = ½ × C × (V\_hi² − V\_lo²)**
 
-Load power during shutdown: **P = 5W** (CM5 idle, OS shutdown sequence).
+Load power during shutdown: **P = 15W** (CM5 at 5V × 3A typical).
 
-Hold-up duration: **t = E / P**
+Hold-up duration: **t = E × η / P**
 
-#### Conservative model (pure-buck — LTC3350 falls out of regulation at V_lo ≈ 4.75V)
-
-This is the absolute worst-case: the converter is treated as a simple buck with no boost
-capability and drops out when V_CAP falls below the output voltage threshold.
+#### Conservative model (pure-buck — LTC3350 loses regulation at V\_lo ≈ 4.75V)
 
 | Step | Calculation | Result |
 | :--- | :--- | :--- |
-| Usable energy | ½ × 37.5 × (5.4² − 4.75²) | **123.7J** |
-| Hold-up @ 5W | 123.7J / 5W | **≥24.7 s ✅** |
+| Usable energy | ½ × 50 × (5.4² − 4.75²) | 164.9J |
+| Hold-up @ 15W | 164.9J / 15W | **11.0 s ❌** |
 
-#### Realistic model (LTC3350 boost mode, V_lo = 2.0V, η = 85%)
+This model is unrealistic — the LTC3350 is a 4-switch synchronous buck-boost, not a simple
+buck. It is shown here only to illustrate that relying on the cap voltage staying above the
+output voltage is not sufficient at this load.
 
-The LTC3350 is a 4-switch synchronous buck-boost. In backup mode it actively boosts the
-supercap voltage to maintain 5V output well below V_CAP = 5V. Minimum practical V_CAP
-(protecting cells from over-discharge) is ~2.0V for a 2S bank.
+#### Realistic model (LTC3350 boost mode, V\_lo = 2.0V, η = 80%)
+
+The LTC3350 actively boosts the supercap voltage to maintain 5V output in backup mode.
+Minimum practical V\_CAP of ~2.0V protects cells from over-discharge (1.0V/cell for 2S).
 
 | Step | Calculation | Result |
 | :--- | :--- | :--- |
-| Stored energy | ½ × 37.5 × (5.4² − 2.0²) | 471.8J |
-| Delivered energy (85% η) | 471.8J × 0.85 | **401J** |
-| Hold-up @ 5W | 401J / 5W | **≈80 s ✅** |
+| Stored energy (V\_lo = 2.0V) | ½ × 50 × (5.4² − 2.0²) | 629J |
+| Delivered (η = 80%) | 629J × 0.80 | **503J** |
+| Hold-up @ 15W | 503J / 15W | **≥33.5 s ✅** |
 
-#### Minimum threshold to satisfy ≥20 s rule
+#### Sensitivity to LTC3350 efficiency at 15W load
 
-To just reach 20 s at 5W, the capacitor bank needs to deliver 100J.
-With the conservative pure-buck model, this requires V_CAP to discharge only to:
+| Efficiency | Delivered energy | Hold-up | Pass ≥20 s? |
+| :--- | :--- | :--- | :--- |
+| 85% | 535J | 35.6 s | ✅ |
+| 80% | 503J | 33.5 s | ✅ |
+| 75% | 472J | 31.5 s | ✅ |
+| 67% | 421J | 28.1 s | ✅ |
+| 48% (minimum) | 302J | 20.1 s | ✅ (edge) |
 
-> V_lo = √(5.4² − 2 × 100 / 37.5) = √(29.16 − 5.33) = √23.83 = **4.88V**
-
-The LTC3350 maintains output until V_CAP falls well below 4.88V in all operating modes.
-The 20 s requirement is therefore met with significant margin in every scenario.
+The ≥20 s rule is satisfied even if converter efficiency degrades to ~48%, which is far below
+any credible operating point for a synchronous buck-boost at these voltages and currents.
 
 ### Rationale
 
-- The original 22F generic cells (DEC-021) and the 33F/21.7 s figures they produced have been
-  replaced by confirmed in-stock Abracon parts that improve hold-up from 21.7 s to ≥24.7 s
-  (conservative model), or ≈80 s (realistic model). See post-decision note in DEC-021.
-- The ≥20 s hold-up target provides sufficient time for a CM5 Linux OS clean shutdown
-  (typically 10–15 s). The margin above 20 s covers worst-case OS shutdown latency, heavier
-  CM5 loads at bring-up, and supercap capacity degradation over prototype life.
-- The 0.5A PoE charge current limit from DEC-004 is retained unchanged; charge time from
-  depleted remains approximately 3 minutes. The PoE utilisation calculations in DEC-004 are
-  unaffected by the cell change (charge power = V × I = 5.4V × 0.5A = 2.7W, unchanged).
+- **Why 2S4P (8 cells) and not 2S3P (6 cells)?** At 15W, 2S3P (37.5F) delivers 377J at 80%
+  efficiency → 25.2 s. This passes the 20 s rule but leaves only 26% margin. 2S4P (50F)
+  delivers 503J → 33.5 s, a 68% margin, providing meaningful headroom against LTC3350
+  efficiency variation, higher CM5 loads during bring-up, and supercap aging.
+- **Why 15W?** The CM5 module draws 5V × 3A under typical operating load. When power is lost,
+  the OS shutdown sequence takes ~10–15 s during which the CM5 continues at near-full load.
+  Using 5W (1A) as the design load significantly understates the required hold-up margin and
+  was an error in DEC-004 and DEC-021.
+- **0.5A PoE charge current (from DEC-004) retained:** charge power = 5.4V × 0.5A = 2.7W,
+  unaffected by the cell count increase. Charge time from fully depleted ≈ **9 minutes**
+  (100F per series position × 2.7V / 0.5A = 540 s). PoE utilisation calculations in
+  Certification\_Evidence are unaffected.
 
 ### Constraints
 
 - Do not change the cell MPN, cell count, or configuration without re-running the hold-up
-  calculation against the ≥20 s rule and updating DR-PM-07, DR-PM-09, and this DEC.
+  calculation at **15W** against the ≥20 s rule and updating DR-PM-07, DR-PM-09, and this DEC.
 - LTC3350 CELLS register must remain configured for 2 series cells (CELLS = 0x01).
+- PCB shadow zone: 41mm × 81mm. No traces on L1–L6 within this zone (enclosure rib clearway).
+
+---
+
+## DEC-030 — 5V_MAIN Backup Switchover Transient Fix (R14, R30, C35)
+
+- **Status:** Accepted
+- **Date:** 2026-04-14
+- **Category:** Electrical
+- **Area:** Power Module — LTC3350 Backup Switchover, 5V_MAIN Bulk Capacitance
+
+### Issue
+
+At 3A load (CM5 typical draw), the existing 5V_MAIN bulk capacitance (C9=22µF + C10=22µF +
+C13=10µF = 54µF total) provides only 2.59µs before PWR_GD deasserts
+(54µF × 144mV / 3A). The LTC3350 at default 200kHz (5µs/cycle) gets only 0.52 cycles
+to complete backup switchover — INSUFFICIENT.
+
+### Root Cause Analysis
+
+- Old R14 = 28.7kΩ → backup threshold = 4.644V; PWR_GD deassert = 4.50V; gap = 144mV
+- LTC3350 RT=INTVCC (no resistor) = 200kHz → 5µs/cycle
+- 54µF × 144mV / 3A = 2.59µs = 0.52 cycles → FAILS
+
+### Fix (three combined changes)
+
+1. **R14: 28.7kΩ → 30.1kΩ** — raises backup threshold to 4.812V; new gap = 312mV
+2. **R30: new 33.2kΩ resistor** (LTC3350 RT pin to GND) — sets switching frequency to 400kHz (2.5µs/cycle)
+3. **C35: 2× Samsung CL32B226KAJNNNE** (22µF 25V X7R 1210) in parallel = 44µF additional bulk on 5V_MAIN
+
+### Result with Fix
+
+- Total bulk = 54µF + 44µF = 98µF
+- Time window = 98µF × 312mV / 3A = **10.2µs**
+- Cycles at 400kHz = 10.2µs / 2.5µs = **4.1 cycles ✓**
+- False-trigger headroom: 5V×0.98 − 4.812V = 88mV (LTC3350 ~12µs deglitch filters brief dips)
+
+### Component Selection Rationale for C35
+
+- **Selected: 2× Samsung CL32B226KAJNNNE** (22µF 25V X7R 1210, existing BOM part)
+  - ESR ≈ 10mΩ (negligible, stable −55°C to +125°C)
+  - Uses existing qualified BOM part — no new component qualification needed
+  - 4.1 cycles margin at all operating temperatures
+- Evaluated and rejected: HZA107M025X16T-F (CDE hybrid polymer-Al, 30mΩ ESR, 4.56 cycles at
+  +20°C but marginal 2.1 cycles at −40°C — not selected as existing BOM part is sufficient)
+- Evaluated and rejected: KEMET T495X107K025ATA150 (MnO₂ tantalum, 150mΩ ESR — V_ESR = 450mV
+  at 3A, EXCEEDS entire 312mV budget; also MnO₂ tantalum short-circuit failure mode is unsafe
+  in low-impedance power supply)
+
+### No Change Required To
+
+- eFuse (HV input side)
+- LDO TPS75733 (stays in regulation)
+- MIC1555/R28/C32 (3.01s timing unchanged)
 
 ---
 

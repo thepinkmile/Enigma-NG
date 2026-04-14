@@ -13,12 +13,12 @@ PMIC power-button input (`PWR_BUT`). No firmware polling is required for the pri
 
 **Primary shutdown path (hardware-automatic):**
 
-1. Primary power fails → 5V_MAIN falls to **4.644V** → LTC3350 `/INTB` asserts LOW.
+1. Primary power fails → 5V_MAIN falls to **4.812V** → LTC3350 `/INTB` asserts LOW.
 2. MIC1555 U15 (monostable one-shot) triggers → `PWR_BUT` held LOW for **3.01 seconds**.
 3. CM5 PMIC sends power-key event → Linux `systemd-logind` `HandlePowerKey=poweroff` → graceful
    OS shutdown, identical to `sudo shutdown -h now`.
 4. LTC3350 simultaneously restores 5V_MAIN to 5V; PWR_GD stays HIGH throughout shutdown.
-5. Hold-up window: **≥24.8 seconds** from backup activation — OS typically shuts down in 10–15 s.
+5. Hold-up window: **≥33.5 seconds** from backup activation — OS typically shuts down in 10–15 s.
 
 **Secondary telemetry signals (software-visible, not shutdown triggers):**
 
@@ -38,7 +38,7 @@ PMIC power-button input (`PWR_BUT`). No firmware polling is required for the pri
 | --- | --- | --- | --- | --- |
 | PWR_BUT | CM5 PMIC pin (via Link-Alpha pin 48) | CM5 module internal 10kΩ | MIC1555 U15 one-shot / SW2 tactile | **Primary shutdown trigger** — 3 s LOW pulse from U15 on backup-mode entry; or manual press of SW2 |
 | PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | **Rail-health telemetry only** — HIGH while 5V_MAIN ≥ 4.50V; stays HIGH throughout hold-up; deasserts only on supercap depletion |
-| LTC3350 /INTB | GPIO (TBD — assign at schematic capture) | R29 10kΩ to 3V3_ENIG (Power Module) | LTC3350 U3 | **Backup-mode indicator** — active-LOW when LTC3350 in backup mode (5V_MAIN < 4.644V, R14=28.7kΩ; see DR-PM-08); also triggers MIC1555 U15 one-shot directly in hardware |
+| LTC3350 /INTB | GPIO (TBD — assign at schematic capture) | R29 10kΩ to 3V3_ENIG (Power Module) | LTC3350 U3 | **Backup-mode indicator** — active-LOW when LTC3350 in backup mode (5V_MAIN < 4.812V, R14=30.1kΩ; see DR-PM-08, DEC-030); also triggers MIC1555 U15 one-shot directly in hardware |
 
 ## Option C: Recommended Implementation
 
@@ -94,12 +94,12 @@ The driver will:
 | Event | Time from power loss | Action |
 | --- | --- | --- |
 | Mains fails / PoE drops | t = 0 | Input source lost |
-| 5V_MAIN falls to 4.644V — LTC3350 BACKUP asserted | ~10 ms | `/INTB` goes LOW; MIC1555 U15 one-shot triggers; LTC3350 begins restoring 5V_MAIN |
+| 5V_MAIN falls to 4.812V — LTC3350 BACKUP asserted | ~10 ms | `/INTB` goes LOW; MIC1555 U15 one-shot triggers; LTC3350 begins restoring 5V_MAIN |
 | `PWR_BUT` held LOW (3.01 s pulse begins) | ~10 ms | CM5 PMIC receives power-key event; `systemd-logind` HandlePowerKey=poweroff initiated |
-| LTC3350 hold-up fully engaged | ~20 ms | 5V_MAIN restored to 5V; PWR_GD stays HIGH; ≥24.8 s window active |
+| LTC3350 hold-up fully engaged | ~20 ms | 5V_MAIN restored to 5V; PWR_GD stays HIGH; ≥33.5 s window active |
 | `PWR_BUT` pulse ends | ~3.02 s | MIC1555 output returns HIGH; Q5 off; PWR_BUT returns HIGH via CM5 pull-up |
 | OS syncs filesystems, halts | ~10–15 s | ROTOR_EN de-asserted; CM5 PMIC halted |
-| Supercaps depleted / system off | ≥24.8 s from power loss | 5V_MAIN → 0V; MCP121T deasserts PWR_GD |
+| Supercaps depleted / system off | ≥33.5 s from power loss | 5V_MAIN → 0V; MCP121T deasserts PWR_GD |
 
 ## Dependencies
 

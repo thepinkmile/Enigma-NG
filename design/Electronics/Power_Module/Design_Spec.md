@@ -32,9 +32,9 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460AFSQRJRRQ1), U7 (TPS75733) |
-| FR-PM-02 | Maintain system power for ≥24.8 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–6 (supercaps) |
+| FR-PM-02 | Maintain system power for ≥33.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–8 (supercaps) |
 | FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW when 5V_MAIN drops below threshold | Rail-health telemetry to CM5 GPIO 27; does not initiate shutdown directly | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
-| FR-PM-07 | Automatically pulse CM5 PWR_BUT LOW for 3 seconds when LTC3350 enters backup mode (primary power lost), initiating a hardware-guaranteed graceful OS shutdown without firmware polling | Ensures graceful shutdown within the 24.8 s hold-up window regardless of OS state | §3 Power Sequencing; §5 Protection & Logic; BOM U15 (MIC1555 monostable), Q5, R28, R29, C32, C33 |
+| FR-PM-07 | Automatically pulse CM5 PWR_BUT LOW for 3 seconds when LTC3350 enters backup mode (primary power lost), initiating a hardware-guaranteed graceful OS shutdown without firmware polling | Ensures graceful shutdown within the 33.5 s hold-up window regardless of OS state | §3 Power Sequencing; §5 Protection & Logic; BOM U15 (MIC1555 monostable), Q5, R28, R29, C32, C33 |
 | FR-PM-08 | Provide manual CM5 power button (SW2) wired to PWR_BUT, enabling graceful power-on after OS shutdown while system power remains available | Allows CM5 restart without a full power cycle; replaces incorrect GLOBAL_EN hard-reset approach | §3 Power Sequencing; BOM SW2, R29 |
 | FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
 | FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups), U12 (INA219 at 0x40), R23 (10mΩ shunt) |
@@ -50,11 +50,13 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460AFSQRJRRQ1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERJ-3EKF2100V, 210 Ω, 1% thick-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
-| DR-PM-07 | Supercapacitor bank | 6× 25 F / 2.7 V in 2S3P configuration = 37.5 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–6 |
-| DR-PM-08 | Backup activation threshold | 4.644 V (R14 = 28.7 kΩ, ERA-3ARB2872V) — fires before MCP121T 4.50 V threshold, preventing PWR_GD glitch during power-loss transient | §5 Protection & Logic; BOM R14 (28.7kΩ), R15 (10.0kΩ) |
-| DR-PM-09 | Holdup duration | ≥24.8 s at 5 W load (CM5 idle power) | §2 Power & UPS Hub; BOM C_SC1–6 (25F/2.7V), U3 (LTC3350) |
-| DR-PM-10 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
-| DR-PM-11 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
+| DR-PM-07 | Supercapacitor bank | 8× 25 F / 2.7 V in 2S4P configuration = 50 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–8 |
+| DR-PM-08 | Backup activation threshold | 4.812 V (R14 = 30.1 kΩ, E96 0.1% thin-film — see DEC-030) — fires 312 mV before MCP121T 4.50 V threshold, providing ≥4 LTC3350 cycles at 400 kHz for backup switchover | §5 Protection & Logic; BOM R14 (30.1kΩ), R15 (10.0kΩ) |
+| DR-PM-09 | Holdup duration | ≥33.5 s at 15 W load (CM5 typical 5V × 3A) | §2 Power & UPS Hub; BOM C_SC1–8 (25F/2.7V), U3 (LTC3350) |
+| DR-PM-10 | 5V_MAIN backup bulk capacitor | C35: 2× Samsung CL32B226KAJNNNE in parallel = 44µF at 25V X7R 1210 — holds 5V_MAIN above backup threshold (4.812V) for ≥4 LTC3350 cycles at 400 kHz during backup switchover at 3A load | §5 Protection & Logic; BOM C35 (2× CL32B226KAJNNNE) — see DEC-030 |
+| DR-PM-11 | LTC3350 RT frequency-setting resistor | R30: 33.2 kΩ (E96) to GND — sets LTC3350 switching frequency to 400 kHz (vs default 200 kHz with RT=INTVCC); required to achieve ≥4 cycles within 10.2µs backup switchover window | §5 Protection & Logic; BOM R30 (33.2kΩ) — see DEC-030 |
+| DR-PM-12 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
+| DR-PM-13 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
 
 ## 2. Design
 
@@ -72,8 +74,8 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
   (≥30mm required above PCB surface to clear ADCR-T02R7SA256MB supercap bodies at 27.0mm max height + assembly margin).
 * **Thermal:** Cross-Hatched Exposed ENIG "Thermal Halos" (2mm offset) at mesh intersections.
   * **Vias:** Type VII (Epoxy-filled & Capped) Hexagonal Thermal Via Matrix.
-* **Supercap Block:** 2×3 arrangement (6 cells, 20mm centre-to-centre pitch, 3.5mm air gap between cells
-  at max body diameter 16.5mm). Block footprint ≈ 37mm × 57mm. THT through-holes: 7.5mm lead pitch
+* **Supercap Block:** 2×4 arrangement (8 cells, 20mm centre-to-centre pitch, 3.5mm air gap between cells
+  at max body diameter 16.5mm). Block footprint ≈ 41mm × 77mm. THT through-holes: 7.5mm lead pitch
   (±0.5mm), 1.0mm recommended drill diameter (0.8mm lead diameter).
   The 3.0mm gap is a 'No-Fly Zone' for all PCB traces on L1–L6 (enclosure rib clearway).
   * **Rib Clearway ENIG Bond:** Solder mask is opened in the 3.0mm rib clearway gap on L1 (top copper),
@@ -83,13 +85,13 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
     (Kapton) tape before installation to prevent shorts with the metal ribs. Combined with the GND_CHASSIS
     copper pour in the shadow zone (§1 keepout rule), this creates a near-complete Faraday cage around the
     supercap block. See DEC-020.
-* **Routing Keep-out:** 41mm × 61mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
+* **Routing Keep-out:** 41mm × 81mm shadow zone on L1/L2 beneath the Supercap Block — only GND_CHASSIS copper and Type VII thermal vias permitted within this zone.
 
 ### 2. Power & UPS Hub
 
-* **Storage:** LTC3350-managed supercap bank — 6× Abracon ADCR-T02R7SA256MB (25F/2.7V, THT radial can, 16.0mm dia × 25.0mm height) in 2S3P configuration on 5V_MAIN bus. Total: 37.5F at 5.4V. Hold-up
+* **Storage:** LTC3350-managed supercap bank — 8× Abracon ADCR-T02R7SA256MB (25F/2.7V, THT radial can, 16.0mm dia × 25.0mm height) in 2S4P configuration on 5V_MAIN bus. Total: 50F at 5.4V. Hold-up
 
-  energy: 123.8J (≥24.8 seconds at 5W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
+  energy: 503J (≥33.5 seconds at 15W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
@@ -215,7 +217,7 @@ GND ──────┴──────────────────�
     then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or
     Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
   * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
-* **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 6-cell bank (2S3P, 37.5F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
+* **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 8-cell bank (2S4P, 50F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
   * **RICHARGE calculation:** `ICH = VICHARGE / (RICHARGE × RSENSE)` where:
     * `VICHARGE = 1.485V` (LTC3350 internal reference).
     * `RSENSE = 10mΩ` (R_SENSE, 2512 package, in charging path).
@@ -227,7 +229,7 @@ GND ──────┴──────────────────�
     with independent sense traces to avoid trace resistance adding to the measured value (even 1mΩ trace adds 10% error on a 10mΩ sense resistor).
   * **Backup Trigger:** LTC3350 BACKUP pin activates hold-up mode when 5V_MAIN drops below the programmed threshold
     (resistor divider R14/R15 from 5V_MAIN to BACKUP pin; threshold = 1.2V × (R14+R15)/R15).
-    * **Applied values (PM-06 revised):** R14=28.7kΩ (ERA-3ARB2872V) / R15=10.0kΩ → threshold = **4.644V** — 140mV *above*
+    * **Applied values (PM-06 revised, DEC-030):** R14=30.1kΩ (E96 0.1% thin-film) / R15=10.0kΩ → threshold = **4.812V** — 312mV *above*
       the MCP121T PWR_GD threshold (4.50V). LTC3350 backup activates **before** MCP121T can deassert `PWR_GD`,
       eliminating a PWR_GD glitch that would occur while the rail traverses the gap between the two thresholds. LTC3350
       immediately restores 5V_MAIN to 5V on activation; MCP121T never deasserts during the hold-up window. Graceful shutdown
@@ -235,7 +237,7 @@ GND ──────┴──────────────────�
     * ⚠️ **Design note:** The original PM-06 fix set R14=26.7kΩ (4.40V threshold, 100mV *below* PWR_GD) so that the CM5
       received a PWR_GD warning before backup engaged. This ordering is superseded: shutdown is now hardware-triggered via
       `PWR_BUT`, so the threshold must be *above* 4.50V to guarantee PWR_GD stability throughout hold-up.
-    * Hold-up duration from fully-charged bank: ≥24.8 seconds at 5W CM5 graceful-shutdown load.
+    * Hold-up duration from fully-charged bank: ≥33.5 seconds at 15W CM5 graceful-shutdown load.
 
 * **PoE Subsystem:**
   * **PD Interface:** TPS2372-4 (U9, VQFN-20) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
@@ -350,9 +352,9 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 2. **Gate:** TPS25980 eFuse validates voltage (11V–16.9V) and current (≤7A); TCO F1 provides thermal protection.
 3. **Bucks:** Dual LMQ61460AFSQRJRRQ1 5V interleaved buck regulators (U2A/U2B, 180° DRSS phase offset) and TPS75733 3V3_ENIG LDO (U7) start.
-4. **Supercap charging:** LTC3350 begins managed soft-charge of the 6-cell supercap bank (37.5F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
+4. **Supercap charging:** LTC3350 begins managed soft-charge of the 8-cell supercap bank (50F/5.4V) from 5V_MAIN, current-limited to 0.5A (RICHARGE programmed accordingly). Charge duration from fully
 
-   depleted state: approximately 3 minutes. Once fully charged, the bank provides ≥24.8 seconds of hold-up at the 5W CM5 graceful shutdown load.
+   depleted state: approximately 9 minutes. Once fully charged, the bank provides ≥33.5 seconds of hold-up at the 15W CM5 graceful shutdown load.
 
 5. **Supervisor:** Once 5V_MAIN hits 4.5V, MCP121T-450E asserts PWR_GD HIGH after a 200ms delay.
 6. **Release:** CM5 PMIC begins internal 1.8V/1.1V sequencing.
@@ -372,7 +374,7 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
 2. **OS Shutdown:** CM5 OS saves state, syncs filesystems, and executes `halt`.
 3. **ROTOR_EN HIGH:** CM5 GPIO 16 is asserted HIGH before halt completes, disabling the TPS75733 LDO (active-LOW EN: HIGH = shutdown) → 3V3_ENIG off (CPLDs and rotor stack de-energised).
 4. **CM5 PMIC halt:** CM5 internal PMIC drops 1.8V/1.1V rails. Total time from trigger to PMIC halt: ~10–15 seconds.
-5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≥24.8 seconds.
+5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≥33.5 seconds.
 6. **PWR_GD drop:** Once 5V_MAIN falls below 4.5V, MCP121T-450E deasserts PWR_GD.
 7. **Rail collapse:** After CM5 load is gone, 5V_MAIN falls to 0V. LTC3350 stops discharge.
 8. **Power source removed:** User removes PoE cable, USB-C adapter, or battery. eFuse input drops to 0V.
@@ -442,7 +444,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C22 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C24 | TPS23730 soft-start cap (C_SS, SS pin) | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1005-1-ND | C57112 |
-| C_SC1–6 | Supercaps (6× cells, 2S3P) | Abracon ADCR-T02R7SA256MB / 25F 2.7V | THT Radial Can 16.0mm×25.0mm | 815-ADCRT02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | Global sourcing |
+| C_SC1–8 | Supercaps (8× cells, 2S4P) | Abracon ADCR-T02R7SA256MB / 25F 2.7V | THT Radial Can 16.0mm×25.0mm | 815-ADCRT02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | Global sourcing |
 | D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
 | D3 | USB-C ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
@@ -456,6 +458,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C30, C31 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C32 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R | 0603 | 187-CL10B106KA8NNNC | 1276-1204-1-ND | C19702 |
 | C33 | VCC bypass for U15 (MIC1555 monostable) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C35 | 5V_MAIN backup switchover bulk cap (2× in parallel — see DEC-030) | 2× Samsung CL32B226KAJNNNE, 22µF 25V X7R 1210 | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
 | J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM8613CT-ND | C5358550 |
 | J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
@@ -476,12 +479,13 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
-| R14 | LTC3350 BACKUP divider upper (R_TOP) — **REVISED: threshold raised above PWR_GD deassert point** | 28.7kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.644V → R_TOP/R_BOT=(4.644/1.2)−1=2.87 → R_BOT=10kΩ → R_TOP=28.7kΩ → E96=28.7kΩ → actual trigger: 4.644V, 140mV above MCP121T 4.50V threshold] | 0603 | 667-ERA-3ARB2872V | P28.7KBYCT-ND | — |
+| R14 | LTC3350 BACKUP divider upper (R_TOP) — **REVISED (DEC-030): threshold raised to 4.812V for 312mV gap** | 30.1kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.812V → R_TOP/R_BOT=(4.812/1.2)−1=3.01 → R_BOT=10kΩ → R_TOP=30.1kΩ → E96=30.1kΩ → actual trigger: 4.812V, 312mV above MCP121T 4.50V threshold — see DEC-030] | 0603 | 30.1kΩ 1% 0402 [MPN TBD — ERA-3ARB3012V or equivalent 30.1kΩ 0.1% 0603] | — | — |
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB1002V | P10.0KBYCT-ND | — |
 | R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
 | R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KBYCT-ND | — |
 | R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R30 | LTC3350 RT frequency-setting resistor (RT pin to GND — sets switching frequency to 400 kHz) | 33.2kΩ 1% E96 Thick-Film [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | 0402 | ERA-2AEB3322X or equivalent 33.2kΩ 1% 0402 | — | — |
 | SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount latching SPST rocker with RGB LED — *Open item — select during mechanical design phase* (select variant with red/green/blue capable LED insert and black body). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | *Open item — select during mechanical design phase* | *Open item — select during mechanical design phase* | — |
 | SW2 | CM5 Power Button | Tactile SMT pushbutton, momentary SPST, wired from `PWR_BUT` to GND. Brief press (<2s) sends a power-key event to CM5 PMIC — wakes CM5 from halted state when OS is shut down, or initiates graceful shutdown when OS is running. No pull-up required (CM5 integrates 10kΩ on PWR_BUT). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
@@ -532,17 +536,17 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > available Farnell 4029939.
 >
 > > ⚠️ **Supercap cell lock — do NOT change MPN or count:**
-> > Cells are **Abracon ADCR-T02R7SA256MB, 25F/2.7V** in a **2S3P (6-cell)** arrangement.
+> > Cells are **Abracon ADCR-T02R7SA256MB, 25F/2.7V** in a **2S4P (8-cell)** arrangement.
 > >
 > > | Parameter | Value |
 > > | :--- | :--- |
 > > | Cell capacitance | 25F / 2.7V each |
-> > | Configuration | 2S3P — 6 cells total (C_SC1–C_SC6) |
-> > | Effective capacitance | 37.5F at 5.4V |
-> > | Hold-up energy | 123.8J |
-> > | Hold-up duration @ 5W load | **≥24.8 seconds** |
+> > | Configuration | 2S4P — 8 cells total (C_SC1–C_SC8) |
+> > | Effective capacitance | 50F at 5.4V |
+> > | Hold-up energy | 503J |
+> > | Hold-up duration @ 15W load | **≥33.5 seconds** |
 > >
-> > Values **22F**, **33F**, and **21.7 s** are from a prior cell selection (checkpoint 025) and must never
+> > Values **22F**, **33F**, **21.7 s**, **24.8 s**, **37.5F**, and **2S3P** are from prior cell selections and must never
 > > reappear. Any proposed cell change requires recalculating hold-up duration against the ≥20 s design rule
 > > and verifying the LTC3350 CELLS register configuration (currently set for 2 series cells, CELLS = 0x01).
 >
@@ -578,8 +582,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 >   Verify protrusion depth vs enclosure wall thickness at prototype stage — may need a panel cutout with bezel, a panel-mount USB-C extension, or a revised connector with longer reach.
 >   Available at DigiKey (2073-USB4135-GF-ACT-ND) and JLCPCB (C5438410). CC1 and CC2 pins connect
 > to STUSB4500 (U5) for PD 15V negotiation.
-> * **R14/R15 BACKUP divider** — **REVISED (PM-06 superseded):** R14 changed from 26.7kΩ to **28.7kΩ** (ERA-3ARB2872V).
->   Sets LTC3350 BACKUP comparator trigger at **4.644V** (V_thr=1.2V, R_TOP=28.7kΩ, R_BOT=10.0kΩ → actual 4.644V).
+> * **R14/R15 BACKUP divider** — **REVISED (DEC-030 supersedes PM-06):** R14 changed from 28.7kΩ to **30.1kΩ** (E96 0.1% thin-film).
+>   Sets LTC3350 BACKUP comparator trigger at **4.812V** (V_thr=1.2V, R_TOP=30.1kΩ, R_BOT=10.0kΩ → actual 4.812V).
 >   This fires **before** MCP121T deasserts at 4.50V — LTC3350 activates first, immediately restoring 5V_MAIN and keeping
 >   PWR_GD stable throughout the hold-up window. The previous 4.40V threshold (PM-06 fix) caused a brief PWR_GD glitch as
 >   the rail traversed the 4.40V–4.50V gap before LTC3350 could respond. Graceful shutdown is now triggered via the
