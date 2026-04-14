@@ -144,27 +144,56 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 
 ---
 
-## SW1 — Routing Configuration DIP Switch
+## J_CFG — Settings Board I²C Connector
 
-**Component:** CTS 219-4LPST, 4-position DIP switch, 2.54mm through-hole.
-**Placement:** Near Stator CPLD U1 (within 10 mm). Accessible from board edge without rotor stack removal.
-**Silkscreen:** Label `KONFIGURATION` / `CONFIG SELECT` with index numbers 0–15 marked adjacent to the switch body.
-**Pull-downs:** R16–R19 (10kΩ 0603) placed within 3 mm of each switch pin — one per switch position.
+**Component:** JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm THT (JLCPCB PN TBD; confirm 4-pin B4B variant).
+**Placement:** Board edge facing the enclosure panel, accessible without rotor stack removal.
+**Silkscreen:** Label `EINSTELLUNGEN` / `SETTINGS` adjacent to connector.
+**Cable:** 4-wire ribbon cable to Settings Board J_I2C (100mm recommended).
 
-See `Stator/Design_Spec.md §3 DIP Switch Configuration (SW1)` for the full 16-configuration table.
+> SW1 and SW2 DIP switches have been removed. Configuration is now handled via
+> panel-mount illuminated rocker switches on the Settings Board (DEC-032).
+> R16–R25 pull-downs are retained on the Stator CPLD config input pins to hold
+> all configuration bits at logic-0 during power-up until CM5 initialises U_EXP4.
+
+| Pin | Signal | Description |
+| :--- | :--- | :--- |
+| 1 | 3V3_ENIG | Board power supply to Settings Board |
+| 2 | GND | Signal return / GND_CHASSIS bond |
+| 3 | SDA | I²C-1 data — shared Stator I²C-1 bus |
+| 4 | SCL | I²C-1 clock — shared Stator I²C-1 bus |
 
 ---
 
-## SW2 — Reflector Map Selector / Internal Reflector Enable
+## U_EXP4 — MCP23017 CPLD Config Output Driver (@ 0x22)
 
-**Component:** CTS 219-6LPSTR, 6-position DIP switch, 2.54mm through-hole.
-**Placement:** Reflector-facing edge of Stator (near J7), within 10 mm of CPLD U1. Accessible without rotor stack removal.
-**Silkscreen:** Label `REFLEKTOR` / `REFLECTOR SELECT`; mark switches 1–5 as map index and switch 6 as `INT/EXT`.
-**Pull-downs:** R20–R25 (10kΩ 0603) placed within 3 mm of each switch pin — one per switch position.
+**Component:** MCP23017T-E/SO, SOIC-28.
+**Placement:** Near Stator CPLD U1, within 15 mm of R16–R25 pull-down resistors. Decoupling cap within 1 mm of VDD pin.
+**Address:** A2=LOW, A1=HIGH, A0=LOW → 0x22.
 
-Switch 6 (`SW2[5]`) default-off (pull-down to 0) = physical Reflector mode (J7 active). Set to 1 to enable the internal stored reflector map (J7 ENC_IN/OUT ignored by CPLD).
+Drives the CPLD configuration input pins (SW1_OUT[0:3], SW2_OUT[0:5]) and STATOR_CFG_RDY strobe
+under CM5 firmware control. CM5 writes the active configuration (sourced from either the Settings
+Board switches or its own override) to U_EXP4 via I²C, then pulses STATOR_CFG_RDY HIGH to trigger
+CPLD re-latch.
 
-See `Stator/Design_Spec.md §3 Reflector Map Configuration (SW2)` for the full map index table and UKW-A/B/C pre-loaded entries.
+| Port | Pin | Signal | Direction | Connected to |
+| :--- | :--- | :--- | :--- | :--- |
+| GPA | [0] | SW1_OUT[0] | Output | CPLD config input bit 0 (via R16 pull-down) |
+| GPA | [1] | SW1_OUT[1] | Output | CPLD config input bit 1 (via R17 pull-down) |
+| GPA | [2] | SW1_OUT[2] | Output | CPLD config input bit 2 (via R18 pull-down) |
+| GPA | [3] | SW1_OUT[3] | Output | CPLD config input bit 3 (via R19 pull-down) |
+| GPA | [4] | STATOR_CFG_RDY | Output | CPLD re-latch strobe; rising edge triggers re-latch (via R20 pull-down) |
+| GPA | [5:7] | — | — | Spare |
+| GPB | [0] | SW2_OUT[0] | Output | CPLD reflector config bit 0 (via R21 pull-down) |
+| GPB | [1] | SW2_OUT[1] | Output | CPLD reflector config bit 1 (via R22 pull-down) |
+| GPB | [2] | SW2_OUT[2] | Output | CPLD reflector config bit 2 (via R23 pull-down) |
+| GPB | [3] | SW2_OUT[3] | Output | CPLD reflector config bit 3 (via R24 pull-down) |
+| GPB | [4] | SW2_OUT[4] | Output | CPLD reflector config bit 4 (via R25 pull-down) |
+| GPB | [5] | SW2_OUT[5] | Output | CPLD internal reflector enable (via R26 pull-down) |
+| GPB | [6:7] | — | — | Spare |
+
+See `Settings_Board/Design_Spec.md` for the full CM5 firmware flow and LED control logic.
+See `Stator/Design_Spec.md §3` for the CPLD configuration tables.
 
 ---
 
