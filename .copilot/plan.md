@@ -8,10 +8,11 @@
 
 ## Overview
 
-All board detailed designs are functionally complete. Two full system review cycles completed —
-the latest (checkpoint 027) confirmed two consecutive clean passes after the J_INT redesign and
-connector MPN confirmation work. The design is in a clean, verified state ready for passive
-components sourcing and then KiCad setup.
+All board detailed designs are functionally complete. In session bb01fc15 (checkpoints 028–033):
+supercap upgraded to 2S4P Abracon 25F/37.5F bank (DEC-029/030/031), CM5 Virtual Keyboard
+feature added with MCP23017 ×2 + PCA9685 on Stator (DEC-031), and `design/Mechanical/` was
+fully restructured from PCB-named stubs to assembly-based folders. A full system review cycle
+is needed to validate the Stator + Controller changes from DEC-031.
 
 Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive content.
 
@@ -22,11 +23,11 @@ Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive 
 | Board | Status |
 |-------|--------|
 | Power Module | ✅ Complete |
-| Stator | ✅ Complete |
+| Stator | ✅ Complete (updated: DEC-031 CM5 key injection — checkpoint 033) |
 | Reflector | ✅ Complete |
 | Extension | ✅ Complete |
 | JDB | ✅ Complete |
-| Controller | ✅ Complete |
+| Controller | ✅ Complete (updated: GPIO/LINK-BETA freed for expanders — checkpoint 033) |
 | Encoder | ✅ Complete |
 | Rotor | ✅ Complete (design docs + 4-header J_INT + POS_B — checkpoint 027) |
 
@@ -34,8 +35,8 @@ Review rule: 2 consecutive clean passes — lint (`markdownlint`) AND deep-dive 
 
 ## Full System Review Status
 
-**COMPLETE — checkpoint 027** (two consecutive clean passes; 10 findings fixed in R1,
-R2+R3 clean; all connector MPN work verified)
+**Pending** — Stator and Controller changed in checkpoint 033; review needed before declaring
+design complete.
 
 ---
 
@@ -44,17 +45,18 @@ R2+R3 clean; all connector MPN work verified)
 | ID | Title | Status |
 |----|-------|--------|
 | `kicad-setup-docs` | KiCad setup documentation | pending |
+| `full-system-review` | Full system review cycle post-DEC-031 (2 clean passes) | pending |
 
 ---
 
 ## Immediate Next Steps
 
-1. **Passive components** — verify and source MPNs for all passive BOM items (resistors,
-   capacitors, inductors, crystals, etc.) working through Consolidated_BOM.md systematically.
-2. **Item J** — Marquardt 1800 illuminated power switch (RGB LED) — MPN deferred; pick up
-   when ready.
-3. **Post-passives review cycle** — deep-dive R1+R2 clean passes once passives are confirmed.
-4. **KiCad project setup** — create project structure, import footprints, begin schematic capture.
+1. **Full system review cycle** — deep-dive R1+R2 clean passes to validate Stator/Controller
+   changes from DEC-031 (CM5 key injection) and all mechanical restructure cross-refs.
+2. **STGC_Generator.py relocation** — move to `design/Electronics/Rotor/`; update algorithm
+   (relaxed unique-only constraint; current Gray single-bit-change is too strict).
+3. **KiCad project setup** — create project structure, import footprints, begin schematic capture.
+4. **Item J** — Marquardt 1800 illuminated power switch (RGB LED) — MPN deferred.
 
 ---
 
@@ -163,6 +165,12 @@ The same risk applies to any component where the MPN encodes a variant-selecting
 - Würth 61300511021 / 61301011021 (→ RS1-05-G / RS1-10-G), C50950 / C2337 (JDB headers)
 - **22F cells, 33F bank, 21.7 s hold-up** — stale pre-Abracon values; correct = 25F / 37.5F / ≥24.8 s
 - "Passive components only" for Extension §5 — WRONG; U1 (SN74LVC2G125DCUR) is active IC on Extension
+- **2S3P, 37.5F bank (3P), 6 cells, 24.8s, 5W load, 3 min charge** — stale pre-2S4P; correct = 2S4P, 50F bank, 8 cells
+- **R14=28.7kΩ, threshold 4.644V** — stale pre-transient-fix; correct R14 per DEC-030
+- **Old mechanical paths**: design/Mechanical/Keyboard/, design/Mechanical/Plugboard/ (replaced by HID_Assembly/ + Plugboard_Assembly/)
+- **CM5 GPIO 4–15 and 26 driving ENC_IN/OUT/SYS_RESET_N directly** — stale; all migrated to MCP23017 expanders
+- **SYS_RESET_N on CM5 GPIO 26** — stale; now U_EXP2 GPA[7] on Stator MCP23017
+- **PCA9685 @ 0x40 or any address other than 0x60** — correct address is 0x60 (A5=HIGH, A4–A0=GND)
 
 ### Key Design Decisions
 

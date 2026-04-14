@@ -31,3 +31,9 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 25 | Abracon supercap selected, DIP switch Item C pending | 025-abracon-supercap-selected-dip.md |
 | 26 | Connector MPNs confirmed, J_INT redesign in progress | 026-connector-mpns-confirmed-j-int.md |
 | 27 | J_INT redesign, POS_B naming, full deep-dive clean | 027-j-int-redesign-pos-b-clean-review.md |
+| 28 | Session bb01fc15 start | 028-session-bb01fc15.md |
+| 29 | DEC-029 supercap 2S4P upgrade, 15W load correction | 029-dec-029-supercap-2s4p-upgrade.md |
+| 30 | C35 transient fix (DEC-030), 2S4P cascade confirmed | 030-c35-transient-fix-2s4p-cascade.md |
+| 31 | C35 confirmed 2×22µF, 2S4P cascade complete | 031-c35-confirmed-2-22-f-2s4p-casc.md |
+| 32 | CM5 key injection and servo design confirmed | 032-cm5-key-injection-and-servo-de.md |
+| 33 | Mechanical restructure + CM5 virtual keyboard feature | 033-mechanical-restructure-cm5-virtual-kb.md |
