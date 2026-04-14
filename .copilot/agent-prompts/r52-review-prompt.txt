@@ -131,6 +131,10 @@ REVIEW INSTRUCTIONS
 5. Do NOT flag markdown formatting issues.
 6. Do NOT suggest removing the Extension U1 buffer.
 7. Be conservative: only report issues you are confident about.
+8. PART NUMBER CHANGE RULE: Before proposing any MPN change, a datasheet for the proposed
+   new MPN MUST exist in design/Datasheets/. Read it and verify the package and key parameters
+   match the design requirement. If no datasheet exists, flag as "requires human verification"
+   and do NOT apply the change.
 
 After reviewing all files, run markdownlint:
   $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine")+";"+[System.Environment]::GetEnvironmentVariable("PATH","User")
