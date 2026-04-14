@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-14
 
 ## Overview
 
@@ -21,117 +21,121 @@ quantities for one Extension board; Rev A uses ×1 Extension board, while the fu
 requires ×5 Extension boards (one between each pair of 5-rotor groups). System Total reflects
 the Rev A single-Extension configuration unless otherwise noted.
 
-| MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | System Total |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
-| EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; drop-in for EPM240; used on Stator and Rotor boards) | — | — | 1 | — | — | 1 | 30 | — | — | — | 31 |
-| INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | 2 |
-| FDC2114RGHR — 4-ch Capacitive Sensor IC, U2 Track A (bits[5:3] N=64; bits[3:0] N=26), Board A, addr 0x2A (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| FDC2114RGHR — 4-ch Capacitive Sensor IC, U3 Track B (bits[2:0] N=64 only; NOT POPULATED for N=26), Board B, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| FDC2114RGHR — 4-ch Capacitive Sensor IC, U4 STGC bit[4] (N=26 only; NOT POPULATED for N=64), Board A, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | TBD | — | — | — | TBD (N=26 builds only) |
-| SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | 2 |
-| SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| TPS75733KTTRG3 — 3.3 V LDO Regulator (TO-263 KTT 5-pin) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPS259804ONRGER — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| LMQ61460AFSQRJRRQ1 — 5 V Synchronous Buck Converter (VQFN-HR RJR 14-pin 4×3.5mm) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| LTC3350EUHF#PBF — Supercapacitor Manager (QFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPS25751DREFR — USB PD 3.1 DRP Controller (WQFN-38) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| STUSB4500LQTR — USB-C Sink Controller (QFN-24) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| LM74700QDBVRQ1 — Ideal-Diode OR-ing Controller (SOT-23-6) | 3 | — | — | — | — | — | — | — | — | — | 3 |
-| MCP121T-450E/LB — 4.5 V Voltage Supervisor (SC70-3) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPS2372-4 — PoE PD Interface Type 4 (VQFN-20) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPS23730RMTR — PoE ACF DC-DC Controller (WQFN-20) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | 3 | 1 | — | — | — | — | — | — | — | — | 4 |
-| TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | 3 |
-| BSS138 (onsemi) — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| BAT54 (Diotec) — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | 3 |
-| | | | | | | | | | | | |
-| 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 509 |
-| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | 185 |
-| 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 15 | — | — | — | — | — | — | — | — | — | 15 |
-| 4.7 µF X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| 10 µF 16 V X7R 0603 monostable timing cap (CL10B106KA8NNNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 3 | — | — | — | — | — | — | — | — | — | 3 |
-| 10 µF 25 V X7R 1206 LDO input cap (C1206C106K3RACTU) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 10 nF X7R 50 V 0402 soft-start cap (CL05B103KB5NNNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 10 nF 100 V X7R 0402 Bob Smith termination cap | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 100 pF X7R 25 V 0402 SYNC SW-ringing LP filter (C0402C101K3RACAUTO) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 8 | — | — | — | — | — | — | — | — | — | 8 |
-| 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C35 (Samsung CL32B226KAJNNNE, 2× in parallel) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| | | | | | | | | | | | |
-| 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C25804) | 6 | 2 | 9 | — | — | — | — | — | — | — | 17 |
-| 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | 328 |
-| 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | 9 |
-| 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | 37 |
-| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | — | — | — | — | — | — | — | — | — | — |
-| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 4 | 7 |
-| 22 Ω 0603 1% JTAG end-of-chain damping (ERJ-3EKF2200V) | — | — | — | — | — | — | — | 1 | — | — | 1 |
-| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
-| 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C25806) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| 20 mΩ 1% 1206 current-sense shunt (ERJ-6ENF20R0V / C123465) | — | — | — | — | — | — | — | — | — | — | — |
-| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 2 | — | 1 | — | — | — | — | — | — | — | 3 |
-| 121 kΩ 1% 0603 PoE MPS current set (ERJ-3EKF1213V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 301 Ω 1% 0603 charge current set (ERJ-3EKF3010V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 274 kΩ 1% 0603 MIC1555 U15 monostable R28 (ERJ-3EKF2743V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 232 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2323V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 28.7 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2872V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 210 Ω 1% 0603 thick-film eFuse ILIM (ERJ-3EKF2100V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 86.6 kΩ 1% 0603 thick-film SYNC FSET resistor (ERJ-3EKF8662V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 82.0 kΩ 1% 0402 thick-film SYNC phase-delay R\_DLY (ERJ-2RKF8202X) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 30.1 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB3012V or equivalent — see DEC-030) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB1002V) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 33.2 kΩ 1% 0402 thick-film LTC3350 RT freq-set (ERA-2AEB3322X or equivalent) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 2 | — | 2 |
-| Ferrite bead 120 Ω @100 MHz 4.0 A 1206 (Laird HI1206P121R-10) | — | — | 4 | — | — | — | — | — | — | — | 4 |
-| | | | | | | | | | | | |
-| ERM8-040 80-pin Samtec BtB Male Header (Link-Alpha) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| ERF8-040 80-pin Samtec BtB Female Socket (Link-Alpha) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| ERM8-020 40-pin Samtec BtB Male Header (Link-Beta) | — | — | 1 | — | — | — | — | — | — | — | 1 |
-| ERF8-020 40-pin Samtec BtB Female Socket (Link-Beta) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| ERM8-005 10-pin Samtec Male Header 0.8 mm (Rotor interface) | — | — | — | — | — | 2 | 60 | 2 | 2 | — | 64 |
-| ERF8-005 10-pin Samtec Female Socket 0.8 mm (Rotor interface) | — | — | 2 | — | — | 2 | 60 | — | 2 | — | 64 |
-| ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | 32 |
-| ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | 32 |
-| Adam Tech PH1-07-UA — 1×7 2.54mm male pin header, Rotor Board A H\_SW3 (Mouser 737-PH1-07-UA; DigiKey 2057-PH1-07-UA-ND; JLCPCB C3331618) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| Adam Tech RS1-07-G — 1×7 2.54mm female socket, Rotor Board B H\_SW3 (Mouser 737-RS1-07-G; DigiKey 2057-RS1-07-G-ND; JLCPCB C3321543) | — | — | — | — | — | 1 | 30 | — | — | — | 30 |
-| Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 3 | 1 | 3 | — | — | — | — | — | 6 |
-| Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | 4 |
-| Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1/Rotor H\_PWR+H\_JTAG(BrdB)+H\_SENS(BrdA) (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | 3 | 90 | — | — | 1 | 91 |
-| Adam Tech RS1-05-G — 1×5 2.54mm female socket, CTL J\_JDB\_PWR/Rotor H\_PWR+H\_JTAG(BrdA)+H\_SENS(BrdB) (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | 3 | 90 | — | — | — | 91 |
-| Adam Tech PH1-10-UA — 1×10 2.54mm male pin header, JDB J2 JTAG OUTPUT (Mouser 737-PH1-10-UA; DigiKey 2057-PH1-10-UA-ND; JLCPCB C3330527) | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| Adam Tech RS1-10-G — 1×10 2.54mm female socket, Controller J_JDB_JTAG (Mouser 737-RS1-10-G; DigiKey 2057-RS1-10-G-ND; JLCPCB C3320525) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| HDMI Type-A Full-Size (TE 2007435-1) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| USB-C SMT Receptacle 6-pos (GCT USB4135-GF-A) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| RJ45 MagJack (Würth 7499111121A) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| Battery Connector 5-pin Micro-Fit 3.0 (Molex 43650-0519) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| | | | | | | | | | | | |
-| 12 MHz Crystal SMD (Abracon ABM8-12.000MHz-B2-T / C9002) | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| 72°C SMD Thermal Cutoff (Bourns AC72ABD) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| CR2032 Coin Cell Holder (Keystone 3034) | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| Würth 9774040151R M2.5 × 4.0mm SMT Brass Standoff (CM5 mount) | — | 4 | — | — | — | — | — | — | — | — | 4 |
-| PoE ACF Isolation Transformer (Coilcraft POE600F-12LD) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| EMI Common-Mode Choke (Würth WE-CMBNC 7448031002) | 2 | — | — | — | — | — | — | — | — | — | 2 |
-| DM Filter Inductor 10 µH 15.5 A (Bourns SRP1265A-100M) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| Power / RGB Rocker Switch (Marquardt 1800 series) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| Tactile SMT Reset Switch (SKRPACE010) | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| Green SMD LED 0402 (Würth 150060VS75000 / C2286) | — | — | — | 2 | 6 | — | — | — | — | — | 6 |
-| 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | 192 |
-| DPDT 6-pin Momentary Keyboard Switch | — | — | — | 64 | 192 | — | — | — | — | — | 192 |
-| 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 128 | 384 | — | — | — | — | — | 384 |
-| CTS 219-4LPST — 4-pos DIP switch, 2.54mm THT | — | — | — | — | — | — | — | — | — | — | 0 |
-| CTS 219-6LPSTR — 6-pos DIP switch, 2.54mm THT | — | — | — | — | — | 3 | 90 | — | — | — | 90 |
+| MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | SBD | System Total |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
+| EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; drop-in for EPM240; used on Stator and Rotor boards) | — | — | 1 | — | — | 1 | 30 | — | — | — | — | 31 |
+| INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | — | 2 |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U2 Track A (bits[5:3] N=64; bits[3:0] N=26), Board A, addr 0x2A (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U3 Track B (bits[2:0] N=64 only; NOT POPULATED for N=26), Board B, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U4 STGC bit[4] (N=26 only; NOT POPULATED for N=64), Board A, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | TBD | — | — | — | — | TBD (N=26 builds only) |
+| SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | — | 2 |
+| SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| FT232H — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
+| CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| TPS75733KTTRG3 — 3.3 V LDO Regulator (TO-263 KTT 5-pin) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| TPS259804ONRGER — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| LMQ61460AFSQRJRRQ1 — 5 V Synchronous Buck Converter (VQFN-HR RJR 14-pin 4×3.5mm) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| LTC3350EUHF#PBF — Supercapacitor Manager (QFN-38) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| TPS25751DREFR — USB PD 3.1 DRP Controller (WQFN-38) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| STUSB4500LQTR — USB-C Sink Controller (QFN-24) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| LM74700QDBVRQ1 — Ideal-Diode OR-ing Controller (SOT-23-6) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
+| MCP121T-450E/LB — 4.5 V Voltage Supervisor (SC70-3) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| TPS2372-4 — PoE PD Interface Type 4 (VQFN-20) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| TPS23730RMTR — PoE ACF DC-DC Controller (WQFN-20) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | 3 | 1 | — | — | — | — | — | — | — | — | — | 4 |
+| TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
+| BSS138 (onsemi) — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| BAT54 (Diotec) — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
+| MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 2 | 5 |
+| PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
+| MMBT3904 — NPN General-Purpose Transistor (SOT-23) | — | — | — | — | — | — | — | — | — | — | 4 | 4 |
+| J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (TBD MPN) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| | | | | | | | | | | | | |
+| 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 8 | 80 | 240 | 8 | 240 | — | 1 | 4 | 3 | 512 |
+| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | — | 185 |
+| 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 15 | — | — | — | — | — | — | — | — | — | — | 15 |
+| 4.7 µF X7R 0402 entry filter (JDB 5V_USB, C19666) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
+| 10 µF 16 V X7R 0603 monostable timing cap (CL10B106KA8NNNC) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
+| 10 µF 25 V X7R 1206 LDO input cap (C1206C106K3RACTU) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 10 nF X7R 50 V 0402 soft-start cap (CL05B103KB5NNNC) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 10 nF 100 V X7R 0402 Bob Smith termination cap | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 100 pF X7R 25 V 0402 SYNC SW-ringing LP filter (C0402C101K3RACAUTO) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 8 | — | — | — | — | — | — | — | — | — | — | 8 |
+| 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C35 (Samsung CL32B226KAJNNNE, 2× in parallel) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| | | | | | | | | | | | | |
+| 10 kΩ 1% 0603 pull resistor(ERJ-3EKF1002V / C25804) | 6 | 2 | 9 | — | — | — | — | — | — | — | 13 | 30 |
+| 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C25744) | 2 | — | — | 68 | 204 | 4 | 120 | — | — | 2 | — | 328 |
+| 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | — | 9 |
+| 75 Ω 1% 0402 series resistor (ERJ-2RKF75R0X) | 4 | — | — | 1 | 3 | 1 | 30 | — | — | — | — | 37 |
+| 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | — | — | — | — | — | — | — | — | — | — | — |
+| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 4 | — | 7 |
+| 22 Ω 0603 1% JTAG end-of-chain damping (ERJ-3EKF2200V) | — | — | — | — | — | — | — | 1 | — | — | — | 1 |
+| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
+| 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C25806) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| 20 mΩ 1% 1206 current-sense shunt (ERJ-6ENF20R0V / C123465) | — | — | — | — | — | — | — | — | — | — | — | — |
+| 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 2 | — | 1 | — | — | — | — | — | — | — | — | 3 |
+| 121 kΩ 1% 0603 PoE MPS current set (ERJ-3EKF1213V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 301 Ω 1% 0603 charge current set (ERJ-3EKF3010V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 274 kΩ 1% 0603 MIC1555 U15 monostable R28 (ERJ-3EKF2743V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 715 kΩ 1% 0603 MIC1555 timer R\_B (ERJ-3EKF7153V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 232 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2323V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 28.7 kΩ 1% 0603 thick-film eFuse UVLO (ERJ-3EKF2872V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 210 Ω 1% 0603 thick-film eFuse ILIM (ERJ-3EKF2100V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 86.6 kΩ 1% 0603 thick-film SYNC FSET resistor (ERJ-3EKF8662V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 82.0 kΩ 1% 0402 thick-film SYNC phase-delay R\_DLY (ERJ-2RKF8202X) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 30.1 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB3012V or equivalent — see DEC-030) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB1002V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 33.2 kΩ 1% 0402 thick-film LTC3350 RT freq-set (ERA-2AEB3322X or equivalent) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 2 | — | — | 2 |
+| Ferrite bead 120 Ω @100 MHz 4.0 A 1206 (Laird HI1206P121R-10) | — | — | 4 | — | — | — | — | — | — | — | — | 4 |
+| | | | | | | | | | | | | |
+| ERM8-040 80-pin Samtec BtB Male Header(Link-Alpha) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| ERF8-040 80-pin Samtec BtB Female Socket (Link-Alpha) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| ERM8-020 40-pin Samtec BtB Male Header (Link-Beta) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
+| ERF8-020 40-pin Samtec BtB Female Socket (Link-Beta) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| ERM8-005 10-pin Samtec Male Header 0.8 mm (Rotor interface) | — | — | — | — | — | 2 | 60 | 2 | 2 | — | — | 64 |
+| ERF8-005 10-pin Samtec Female Socket 0.8 mm (Rotor interface) | — | — | 2 | — | — | 2 | 60 | — | 2 | — | — | 64 |
+| ERM8-010 20-pin Samtec Male Header 0.8 mm (ENC data) | — | — | — | — | — | 1 | 30 | 1 | 1 | — | — | 32 |
+| ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | — | 32 |
+| Adam Tech PH1-07-UA — 1×7 2.54mm male pin header, Rotor Board A H\_SW3 (Mouser 737-PH1-07-UA; DigiKey 2057-PH1-07-UA-ND; JLCPCB C3331618) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
+| Adam Tech RS1-07-G — 1×7 2.54mm female socket, Rotor Board B H\_SW3 (Mouser 737-RS1-07-G; DigiKey 2057-RS1-07-G-ND; JLCPCB C3321543) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
+| Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 3 | 1 | 3 | — | — | — | — | — | — | 6 |
+| Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | — | 4 |
+| Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1/Rotor H\_PWR+H\_JTAG(BrdB)+H\_SENS(BrdA) (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | 3 | 90 | — | — | 1 | — | 91 |
+| Adam Tech RS1-05-G — 1×5 2.54mm female socket, CTL J\_JDB\_PWR/Rotor H\_PWR+H\_JTAG(BrdA)+H\_SENS(BrdB) (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | 3 | 90 | — | — | — | — | 91 |
+| Adam Tech PH1-10-UA — 1×10 2.54mm male pin header, JDB J2 JTAG OUTPUT (Mouser 737-PH1-10-UA; DigiKey 2057-PH1-10-UA-ND; JLCPCB C3330527) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
+| Adam Tech RS1-10-G — 1×10 2.54mm female socket, Controller J_JDB_JTAG (Mouser 737-RS1-10-G; DigiKey 2057-RS1-10-G-ND; JLCPCB C3320525) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| HDMI Type-A Full-Size (TE 2007435-1) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| USB-C SMT Receptacle 6-pos (GCT USB4135-GF-A) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| RJ45 MagJack (Würth 7499111121A) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| Battery Connector 5-pin Micro-Fit 3.0 (Molex 43650-0519) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| | | | | | | | | | | | | |
+| 12 MHz Crystal SMD(Abracon ABM8-12.000MHz-B2-T / C9002) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
+| 72°C SMD Thermal Cutoff (Bourns AC72ABD) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| CR2032 Coin Cell Holder (Keystone 3034) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| Würth 9774040151R M2.5 × 4.0mm SMT Brass Standoff (CM5 mount) | — | 4 | — | — | — | — | — | — | — | — | — | 4 |
+| PoE ACF Isolation Transformer (Coilcraft POE600F-12LD) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| EMI Common-Mode Choke (Würth WE-CMBNC 7448031002) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| DM Filter Inductor 10 µH 15.5 A (Bourns SRP1265A-100M) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| Power / RGB Rocker Switch (Marquardt 1800 series) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| Tactile SMT Reset Switch (SKRPACE010) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| Green SMD LED 0402 (Würth 150060VS75000 / C2286) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
+| 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
+| DPDT 6-pin Momentary Keyboard Switch | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
+| 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 128 | 384 | — | — | — | — | — | — | 384 |
+| CTS 219-4LPST — 4-pos DIP switch, 2.54mm THT | — | — | — | — | — | — | — | — | — | — | — | 0 |
+| CTS 219-6LPSTR — 6-pos DIP switch, 2.54mm THT | — | — | — | — | — | 3 | 90 | — | — | — | — | 90 |
 
 ## 1. Critical Spares (MOQ Recommendations)
 
@@ -239,7 +243,7 @@ configuration tables.
 | U_EXP4 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_EXP3 | PCA9685 I²C PWM Driver | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 |
 | J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 |
-| J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | C131342 |
+| J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — |
 
 U_EXP1 @ 0x20: ENC_IN/ENC_OUT monitoring. U_EXP2 @ 0x21: virtual keypress injection, SOURCE_SEL,
@@ -261,13 +265,15 @@ RGB rocker switches. See `Settings_Board/Design_Spec.md` for the full design spe
 | SW_B1_EN, SW_B1[0:3] | Bank 1 illuminated RGB rocker switches (×5: bank enable + routing bits 0–3) | SPDT panel-mount illuminated RGB rocker — MPN TBD | Panel-mount | TBD | TBD | — |
 | SW_B2_EN, SW_B2[0:5] | Bank 2 illuminated RGB rocker switches (×7: bank enable + reflector bits 0–5) | SPDT panel-mount illuminated RGB rocker — MPN TBD | Panel-mount | TBD | TBD | — |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount — MPN TBD | Panel-mount | TBD | TBD | — |
-| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | C131342 |
+| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) |
 | Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | NPN colour-rail transistors (×4) | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
 | R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_CA1 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_LED_ANODE | LED anode current-limiting resistors (×4, one per colour rail) | TBD Ω | 0603 | TBD | TBD | TBD |
 | R_BASE1–R_BASE4 | NPN base-limiting resistors (×4) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 |
 | C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x26) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C_U_EXP_LED | VCC decoupling cap for U_EXP_LED (MCP23017 @ 0x27) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 
 U_EXP_SW_IN @ 0x26: reads all 12 switch states + CFG_APPLY. U_EXP_LED @ 0x27: drives per-bit
 LED cathodes and per-bank green/red colour-rail transistors. Both share the Stator I²C-1 bus via
@@ -295,6 +301,13 @@ the J_I2C → J_CFG ribbon cable. Switch MPNs are TBD pending illuminated rocker
 | BT1 | Keystone 3034 | CR2032 THT horizontal coin cell holder — RTC backup battery for CM5 MXL7704 PMIC | 1 | Mouser: 534-3034 / DigiKey: 36-3034-ND | Keystone 3034 |
 | D1 (CTRL) | BAT54 (Diotec) | SOT-23 Schottky — VBAT (Pin 95) charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 637-BAT54 / DigiKey: 4878-BAT54CT-ND / JLCPCB: C25835522 | BAT54 |
 | — | Renata CR2032 | CR2032 3V coin cell (not fitted at PCB assembly — installed at commissioning) | 1 | Mouser: 614-CR2032 / DigiKey: P189-ND | Renata CR2032 |
+
+### Controller Board — Connectors & Headers
+
+| Ref | Component | Description | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| J_DSI1 | DSI1 FPC connector (15-pin 1.0mm ZIF) | DSI1 4-lane FPC/ZIF connector for optional lid-mounted touchscreen; MPN TBD — confirm against CM5 DSI1 pin mapping at schematic phase; 100 Ω differential, route on L3 | TBD | TBD | TBD |
+| J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) — 5V PWM fan connector (Pin 1 = 5V_MAIN, Pin 2 = GND, Pin 3 = TACH, Pin 4 = PWM) | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
 
 ## 6. Backplane & Extension Components
 
