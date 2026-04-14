@@ -37,3 +37,6 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 31 | C35 confirmed 2×22µF, 2S4P cascade complete | 031-c35-confirmed-2-22-f-2s4p-casc.md |
 | 32 | CM5 key injection and servo design confirmed | 032-cm5-key-injection-and-servo-de.md |
 | 33 | Mechanical restructure + CM5 virtual keyboard feature | 033-mechanical-restructure-cm5-virtual-kb.md |
+| 34 | Settings Board panel switch requirements gathering | 034-settings-board-panel-switch-re.md |
+| 35 | Settings Board, DSI provision, BOM audit launched | 035-settings-board-dsi-provision-b.md |
+| 36 | Settings Board layout, BOM audit complete, switch unification | 036-settings-board-layout-bom-audit.md |
