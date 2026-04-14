@@ -1467,10 +1467,91 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 | 0x0B | Smart Battery | Power Module |
 | 0x20 | MCP23017 (U_EXP1) | Stator |
 | 0x21 | MCP23017 (U_EXP2) | Stator |
+| 0x22 | MCP23017 (U_EXP4) | Stator |
+| 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board |
+| 0x27 | MCP23017 (U_EXP_LED) | Settings Board |
 | 0x28 | STUSB4500 | Power Module |
 | 0x40 | INA219 (U12) | Power Module |
 | 0x45 | INA219 (U2) | Stator |
 | 0x60 | PCA9685 (U_EXP3) | Stator |
+
+---
+
+## DEC-032 — Settings Board: Panel-Mount Illuminated Configuration Switches with CM5 Override
+
+- **Status:** Decided
+- **Date:** 2026-04-14
+- **Category:** Electrical / HMI
+- **Area:** Stator Board — Configuration Interface; new Settings Board PCB
+- **Author:** Izzyonstage & GitHub Copilot
+
+### Summary
+
+Replace the Stator Board's DIP switches (SW1 routing, SW2 reflector map) with panel-mount
+illuminated RGB rocker switches on a dedicated Settings Board PCB. The Settings Board connects to
+the Stator via I²C only (no parallel signal wiring). A new MCP23017 expander (U_EXP4 @ 0x22) on
+the Stator Board bridges the I²C configuration data to the CPLD config input pins.
+
+### Problem
+
+The Stator's DIP switches (SW1, SW2) are internal PCB components, requiring the enclosure to be
+opened to change the routing or reflector map configuration. This is inconvenient for regular use.
+Additionally, the CM5 has no way to programmatically override the configuration.
+
+### Decision
+
+1. Remove SW1 and SW2 from the Stator Board.
+2. Add a new Settings Board PCB (panel-mount, right side of enclosure top face near rotors) with:
+   - 12 illuminated RGB rocker switches (5 for Bank 1 routing, 7 for Bank 2 reflector mapping)
+   - 1 momentary CFG_APPLY pushbutton
+   - U_EXP_SW_IN (MCP23017 @ 0x26): reads switch states
+   - U_EXP_LED (MCP23017 @ 0x27): drives per-bit LED cathodes + per-bank colour rails
+3. Add U_EXP4 (MCP23017 @ 0x22) to the Stator Board. Its outputs drive the CPLD configuration
+   input pins directly (SW1[0:3] and SW2[0:5]). Pull-downs R16–R25 are retained on the CPLD
+   input pins to hold safe defaults (all-zero) at power-up before CM5 initialises U_EXP4.
+4. CM5 firmware (enigma daemon):
+   - Reads U_EXP_SW_IN to get physical switch state
+   - If bank enable HIGH (switch-defined): writes switch values to U_EXP4, drives LED colour green
+   - If bank enable LOW (CM5-defined): CM5 writes its own config to U_EXP4, drives LED colour red
+   - After writing final config to U_EXP4, pulses STATOR_CFG_RDY (U_EXP4 GPA[4]) LOW→HIGH to
+     trigger CPLD re-latch of new configuration
+5. Physical CFG_APPLY button on Settings Board: reads via U_EXP_SW_IN GPB[7]; CM5 daemon polls
+   this and triggers the same U_EXP4 write + STATOR_CFG_RDY strobe when pressed.
+
+### LED Colour Scheme
+
+- **Green illumination:** Bank is in switch-defined mode (bank enable HIGH); illuminated bits show active switch positions.
+- **Red illumination:** Bank is in CM5-defined mode (bank enable LOW); illuminated bits show CM5-programmed configuration.
+- Per-bank shared colour rail: all switches in a bank share the same colour (green or red) while individual cathode control shows which bits are set.
+
+### I²C Address Assignments (new)
+
+| Address | Device | Location |
+| :--- | :--- | :--- |
+| 0x22 | MCP23017 (U_EXP4) | Stator — CPLD config output driver |
+| 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board — switch input reader |
+| 0x27 | MCP23017 (U_EXP_LED) | Settings Board — LED cathode + colour rail driver |
+
+### Rationale
+
+- Replacing DIP switches with panel rockers makes configuration user-accessible without opening the enclosure.
+- I²C-only wiring between Settings Board and Stator (4 wires: SDA, SCL, 3V3_ENIG, GND) keeps the
+  cable harness minimal vs 10+ parallel signal wires.
+- Retaining R16–R25 pull-downs ensures the CPLD receives a safe all-zero default at power-up
+  (no plugboard insertion, physical reflector pass-through) before the CM5 writes the desired config.
+- Per-bank enable switches give the operator independent control of whether the physical switches or
+  CM5 firmware define each bank's configuration.
+- RGB illumination (green/red) provides immediate visual feedback on configuration source with no
+  additional UI required.
+
+### Impact
+
+- **Stator Board:** SW1 and SW2 removed; U_EXP4 and J_CFG added; STATOR_CFG_RDY signal added to CPLD
+- **New Board:** Settings Board added to system BOM
+- **Firmware:** enigma daemon startup sequence must: read U_EXP_SW_IN, evaluate bank enables, write
+  U_EXP4, pulse STATOR_CFG_RDY, update U_EXP_LED
+- **CPLD:** STATOR_CFG_RDY is a new input pin; CPLD must re-latch SW1/SW2 values on rising edge
+  (replaces power-up-only latch)
 
 ---
 

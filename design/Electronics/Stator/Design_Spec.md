@@ -28,12 +28,13 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables; route 6-bit data bus to plugboard passes at configurable signal chain positions | J4 = HID; J5 = Plugboard Pass A (configurable); J6 = Plugboard Pass B (configurable) | §3 Plugboard Routing; §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM570 (570 LEs required for startup-loaded reflector map registers + routing matrix) | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
-| FR-STA-08 | Select the active plugboard routing configuration via hardware DIP switch without JTAG reprogramming | 4-position DIP switch (SW1) providing 16 pre-defined configurations; CPLD reads SW1[3:0] at power-up and selects routing case from VHDL fabric | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
-| FR-STA-09 | Optionally apply a stored reflector substitution map at the reflection boundary, replacing the physical Reflector board | 6-position DIP switch (SW2); SW2[5]=1 enables internal map; SW2[4:0] selects index 0–20 from 21 involutory maps stored in CPLD UFM; SW2[5]=0 passes data to J7 normally | §3 Reflector Map Configuration; BOM SW2, R20–R25 |
-| FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, ENC bus monitoring, servo control, and SYS_RESET_N management | Via two MCP23017 expanders: U_EXP1 @ 0x20, U_EXP2 @ 0x21 on shared I²C-1 bus | §4 I²C Devices; BOM U_EXP1, U_EXP2 |
+| FR-STA-08 | Select the active plugboard routing configuration via panel-mount rocker switches on the Settings Board via I²C; CM5 can override routing configuration when Bank 1 enable is inactive | Bank 1 (SW_B1_EN + SW_B1[0:3]) on Settings Board provides 16 routing configurations; CM5 reads U_EXP_SW_IN @ 0x26, evaluates bank enable, writes final config to U_EXP4 GPA[0:3] @ 0x22; CPLD re-latches on STATOR_CFG_RDY rising edge | §3 Panel Switch Configuration (Bank 1); §4.2 I²C Devices; BOM U_EXP4, R16–R19 |
+| FR-STA-09 | Optionally apply a stored reflector substitution map at the reflection boundary, replacing the physical Reflector board | Bank 2 (SW_B2_EN + SW_B2[0:5]) on Settings Board provides 64 reflector map configurations; CM5 can override when Bank 2 enable is inactive; final config driven to CPLD by U_EXP4 GPB[0:5] @ 0x22 | §3 Panel Switch Configuration (Bank 2); §4.2 I²C Devices; BOM U_EXP4, R20–R25 |
+| FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, ENC bus monitoring, servo control, SYS_RESET_N management, and CPLD configuration driving | Via three MCP23017 expanders: U_EXP1 @ 0x20, U_EXP2 @ 0x21, U_EXP4 @ 0x22 on shared I²C-1 bus | §4 I²C Devices; BOM U_EXP1, U_EXP2, U_EXP4 |
 | FR-STA-11 | Provide I²C PWM output for servo motor control | Via PCA9685 (U_EXP3 @ 0x60) on shared I²C-1 bus; Ch0 = 50Hz SERVO_PWM | §4 I²C Devices; BOM U_EXP3 |
 | FR-STA-12 | Provide servo homing detection via SERVO_HOME switch | SPST NO momentary (active-low); 10kΩ pull-up to 3V3_ENIG + 100nF X7R debounce cap; connected to U_EXP2 GPB[1] | §4 I²C Devices; BOM SW3, R_SH1, C_SH1 |
 | FR-STA-13 | Implement SOURCE_SEL MUX in Stator CPLD to select between keyboard and CM5 virtual keypress | MUX at J4 ENC_OUT[0:5] entry point; SOURCE_SEL driven by U_EXP2 GPA[6]; 0=keyboard, 1=CM5 virtual | §3 CPLD SOURCE_SEL MUX |
+| FR-STA-14 | Connect to Settings Board via I²C-1 bus for panel rocker switch configuration and LED status output | J_CFG = 4-pin JST PH 2.0mm connector (3V3_ENIG, GND, SDA, SCL); Settings Board expanders 0x26 (switch input) and 0x27 (LED output) share the Stator I²C-1 bus | §4.2 I²C Devices; BOM J_CFG |
 
 #### Design Requirements
 
@@ -48,12 +49,15 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240 (drop-in); 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.11 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.11 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
-| DR-STA-10 | Routing configuration selection | SW1 = 4-position DIP switch, 2.54mm THT (binary index 0–15); 4× 10kΩ pull-down resistors R16–R19 on SW1 inputs | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
-| DR-STA-11 | Reflector map selection | SW2 = 6-position DIP switch, 2.54mm THT; SW2[4:0] = map index 0–20; SW2[5] = internal reflector enable; 6× 10kΩ pull-down resistors R20–R25 on SW2 inputs | §3 Reflector Map Configuration; BOM SW2, R20–R25 |
-| DR-STA-12 | I²C GPIO expanders | U_EXP1 = MCP23017T-E/SO @ 0x20; U_EXP2 = MCP23017T-E/SO @ 0x21; SOIC-28 package; on shared I²C-1 bus | BOM U_EXP1, U_EXP2 |
+| DR-STA-10 | Routing configuration selection | SW1[0:3] routing config inputs now driven by U_EXP4 GPA[0:3]; 4× 10kΩ pull-down resistors R16–R19 retained on CPLD inputs as power-up safe defaults (hold 0 when U_EXP4 is uninitialised); physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 1); BOM U_EXP4, R16–R19 |
+| DR-STA-11 | Reflector map selection | SW2[0:5] reflector config inputs now driven by U_EXP4 GPB[0:5]; 6× 10kΩ pull-down resistors R20–R25 retained on CPLD inputs as power-up safe defaults; physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 2); BOM U_EXP4, R20–R25 |
+| DR-STA-12 | I²C GPIO expanders | U_EXP1 = MCP23017T-E/SO @ 0x20; U_EXP2 = MCP23017T-E/SO @ 0x21; U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28 package; on shared I²C-1 bus | BOM U_EXP1, U_EXP2, U_EXP4 |
 | DR-STA-13 | I²C PWM driver | U_EXP3 = PCA9685BS/3 @ 0x60; SSOP-28 package; Ch0 = SERVO_PWM at 50Hz; A5→3V3_ENIG, A4–A0→GND; all-call disabled in daemon init | BOM U_EXP3 |
 | DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM | BOM J_SERVO |
 | DR-STA-15 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to 3V3_ENIG + 100nF X7R cap to GND (RC τ=1ms); connected to U_EXP2 GPB[1] | BOM SW3, R_SH1, C_SH1 |
+| DR-STA-16 | U_EXP4 specification | U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28; A2=LOW, A1=HIGH, A0=LOW; GPA[0:3] = SW1[0:3] CPLD config outputs; GPA[4] = STATOR_CFG_RDY strobe output; GPB[0:5] = SW2[0:5] CPLD config outputs | BOM U_EXP4 |
+| DR-STA-17 | J_CFG connector | J_CFG = 4-pin JST PH 2.0mm B4B-PH-K-S(LF)(SN); pins: 3V3_ENIG, GND, SDA, SCL; connects to Settings Board J_I2C via 4-wire ribbon cable | BOM J_CFG |
+| DR-STA-18 | STATOR_CFG_RDY signal | STATOR_CFG_RDY = new CPLD input pin from U_EXP4 GPA[4]; 10kΩ pull-down to GND (default LOW); CPLD re-latches SW1[0:3] and SW2[0:5] config values on rising edge | BOM U_EXP4; §3 Panel Switch Configuration (Bank 1) |
 
 ## 2. Core Features
 
@@ -93,15 +97,20 @@ At each step the CPLD either passes the signal transparently (no plugboard) or r
 Plugboard Pass A (J5) or B (J6) before forwarding. The active insertion positions are determined by
 the VHDL routing case statement selected at power-up from the SW1 DIP switch index.
 
-#### DIP Switch Configuration (SW1)
+#### Panel Switch Configuration (Bank 1 — Plugboard Routing)
 
-SW1 provides a 4-bit binary index (0–15) selecting the active routing case from 16 configurations
-synthesised into the CPLD fabric. No JTAG reprogramming is required to change configuration —
-only a single JTAG flash at initial programming. SW1[1:0] (switches 1 & 2) encode J5 position;
-SW1[3:2] (switches 3 & 4) encode J6 position. Pull-down resistors R16–R19 hold each input at
-logic-0 when the corresponding switch is open.
+Bank 1 panel switches on the Settings Board provide a 4-bit binary index (SW_B1[3:0], 0–15)
+selecting the active routing case from 16 configurations synthesised into the CPLD fabric.
+No JTAG reprogramming is required to change configuration — only a single JTAG flash at initial
+programming. SW_B1[1:0] encode J5 position; SW_B1[3:2] encode J6 position.
 
-| SW1 Index (SW4:SW3:SW2:SW1) | J5 (Plugboard A) insertion point | J6 (Plugboard B) insertion point | Historical reference |
+The active configuration is now driven to the CPLD by U_EXP4 GPA[0:3] via I²C. When Bank 1
+enable (SW_B1_EN) is HIGH, the CM5 daemon forwards the physical switch reading to U_EXP4; when
+LOW, the CM5 writes its own configuration. A STATOR_CFG_RDY strobe (U_EXP4 GPA[4]) triggers
+re-latch. Pull-down resistors R16–R19 hold each CPLD input at logic-0 when U_EXP4 is
+uninitialised (power-up safe default).
+
+| SW1 Index (SW_B1[3]:SW_B1[2]:SW_B1[1]:SW_B1[0]) | J5 (Plugboard A) insertion point | J6 (Plugboard B) insertion point | Historical reference |
 | :--- | :--- | :--- | :--- |
 | 0 (0000) | None | None | No plugboard — straight through |
 | 1 (0001) | Pre-Rotor 1 | None | Single pre-Rotor 1 pass |
@@ -120,28 +129,32 @@ logic-0 when the corresponding switch is open.
 | 14 (1110) | At Reflector | Post-Rotor 1 return | — |
 | 15 (1111) | Post-Rotor 1 return | Post-Rotor 1 return | Cascaded post-Rotor 1 |
 
-#### Reflector Map Configuration (SW2)
+#### Panel Switch Configuration (Bank 2 — Reflector Mapping)
 
-SW2 is a 6-position DIP switch on the reflector-facing side of the Stator, read at power-up.
-It controls whether the Stator CPLD applies an internal reflector substitution map at the
-reflection boundary (replacing the physical Reflector board) or passes data through J7 normally.
+Bank 2 panel switches on the Settings Board control whether the Stator CPLD applies an internal
+reflector substitution map at the reflection boundary (replacing the physical Reflector board) or
+passes data through J7 normally.
 
-| Bit | SW2 position | Function |
+The active configuration is driven to the CPLD by U_EXP4 GPB[0:5] via I²C. When Bank 2 enable
+(SW_B2_EN) is HIGH, the CM5 daemon forwards the physical switch readings; when LOW, the CM5
+writes its own configuration. A STATOR_CFG_RDY strobe (U_EXP4 GPA[4]) triggers re-latch.
+
+| Bit | SW_B2 position | Function |
 | :--- | :--- | :--- |
-| `[5]` | Switch 6 | **Internal reflector enable**: 1 = apply stored map; 0 = pass through to J7 (physical Reflector) |
-| `[4:0]` | Switches 5–1 | **Map index** (0–20): selects which involutory map to load from UFM at power-up |
+| `SW_B2[5]` | SW_B2[5] | **Internal reflector enable**: HIGH = apply stored map; LOW = pass through to J7 (physical Reflector) |
+| `SW_B2[4:0]` | SW_B2[4:0] | **Map index** (0–20): selects which involutory map to load from UFM at configuration load |
 
-Pull-down resistors R20–R25 hold each input at logic-0 when the corresponding switch is open
-(default = SW2[5]=0, physical Reflector mode, all indices default to 0).
+Pull-down resistors R20–R25 on the Stator CPLD input pins hold each input at logic-0 when U_EXP4
+is uninitialised (default = SW_B2[5]=0, physical Reflector mode, all indices default to 0).
 
-When SW2[5]=0, J7 ENC_IN/OUT operate normally and SW2[4:0] is ignored (no UFM load on power-up).
-When SW2[5]=1, the CPLD serially reads the indexed map from UFM into internal flip-flop registers
-at power-up (~40 µs). At the reflection boundary (Step 2 in the routing matrix), the CPLD applies
+When SW_B2[5]=0, J7 ENC_IN/OUT operate normally and SW_B2[4:0] is ignored (no UFM load).
+When SW_B2[5]=1, the CPLD serially reads the indexed map from UFM into internal flip-flop registers
+(~40 µs). At the reflection boundary (Step 2 in the routing matrix), the CPLD applies
 the loaded map combinationally instead of forwarding to J7. J7 ENC_IN/OUT remain electrically
 present but are not driven or sampled by the CPLD in this mode.
 
-SW1 (routing matrix) and SW2 (reflector mode) are fully independent; all 16 SW1 configurations
-are valid regardless of the SW2 setting.
+Bank 1 (routing matrix) and Bank 2 (reflector mode) are fully independent; all 16 Bank 1
+configurations are valid regardless of the Bank 2 setting.
 
 **UFM map storage:** 21 involutory (self-inverse) reflector maps; same 64-entry × 6-bit format as
 Rotor UFM maps (384 bits per map; 21 × 384 = 8,064 bits ≤ 8,192-bit UFM). Maps are involutory by
@@ -209,15 +222,16 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 * **Plugboard Routing — Configurable Signal Chain Positions:**
   The Stator CPLD implements a configurable routing matrix (see §3 CPLD Signal Routing Matrix) with
   three plugboard insertion positions in the full encryption cycle. The active configuration is
-  selected at power-up by SW1 (4-position DIP switch, 16 pre-defined configurations — no JTAG
+  selected via Bank 1 panel switches on the Settings Board (SW_B1[0:3] + SW_B1_EN), read by CM5
+  and driven to the CPLD by U_EXP4 GPA[0:3] (16 pre-defined configurations — no JTAG
   reprogramming required for configuration changes). Each of the three Encoder ports plays a fixed
   or configurable role:
 
   | Port | Default role | Plugboard signal chain position |
   | :--- | :--- | :--- |
   | **J4** | HID — Keyboard & Lightboard | Fixed: HID interface (not used for plugboard passes) |
-  | **J5** | Plugboard Pass A | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW1[1:0]) |
-  | **J6** | Plugboard Pass B | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW1[3:2]) |
+  | **J5** | Plugboard Pass A | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW_B1[1:0]) |
+  | **J6** | Plugboard Pass B | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW_B1[3:2]) |
 
   The Stator CPLD implements all 16 configurations as synthesised VHDL case logic. See
   `design/Electronics/Stator/Board_Layout.md` and `design/Electronics/Encoder/Design_Spec.md §1`
@@ -256,6 +270,7 @@ servo is supplied via 2 dedicated LINK-BETA pins (see DEC-031).
 | :--- | :--- | :--- | :--- |
 | 0x20 | MCP23017 | U_EXP1 | ENC_IN/ENC_OUT monitoring (16 GPIO) |
 | 0x21 | MCP23017 | U_EXP2 | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control (16 GPIO) |
+| 0x22 | MCP23017 | U_EXP4 | CPLD configuration output driver: SW1[0:3] routing + SW2[0:5] reflector map + STATOR_CFG_RDY strobe (16 GPIO) |
 | 0x45 | INA219 | U2 | Rotor stack current/power telemetry |
 | 0x60 | PCA9685 | U_EXP3 | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
@@ -349,14 +364,16 @@ snapped off.
 | R23 | SW2[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R24 | SW2[4] (switch 5) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R25 | SW2[5] (switch 6 — internal reflector enable) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| SW1 | Routing configuration selector | CTS 219-4LPST — 4-position DIP switch, 2.54mm THT | Through-hole | 774-219-4LPST | CT2064-ND | C128947 |
-| SW2 | Reflector map selector / internal reflector enable | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
+| SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
+| SW2 | Reflector map selector / internal reflector enable | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | U1 | Stator Management CPLD (routing matrix + optional internal reflector) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-23978-1-ND | C138706 |
 | U_EXP1 | MCP23017 I²C GPIO Expander (ENC monitoring) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_EXP2 | MCP23017 I²C GPIO Expander (virtual keypress, servo control) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_EXP4 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_EXP3 | PCA9685 I²C PWM Driver (servo) | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 |
 | J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 |
+| J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | C131342 |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | (verify) |
 | R_SH1, R_SH2 | SERVO_HOME pull-up resistors (10kΩ, one per switch line) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | C_SH1, C_SH2 | SERVO_HOME RC debounce capacitors (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |

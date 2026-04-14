@@ -130,8 +130,8 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | 192 |
 | DPDT 6-pin Momentary Keyboard Switch | — | — | — | 64 | 192 | — | — | — | — | — | 192 |
 | 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 128 | 384 | — | — | — | — | — | 384 |
-| CTS 219-4LPST — 4-pos DIP switch, 2.54mm THT | — | — | 1 | — | — | — | — | — | — | — | 1 |
-| CTS 219-6LPSTR — 6-pos DIP switch, 2.54mm THT | — | — | 1 | — | — | 3 | 90 | — | — | — | 91 |
+| CTS 219-4LPST — 4-pos DIP switch, 2.54mm THT | — | — | — | — | — | — | — | — | — | — | 0 |
+| CTS 219-6LPSTR — 6-pos DIP switch, 2.54mm THT | — | — | — | — | — | 3 | 90 | — | — | — | 90 |
 
 ## 1. Critical Spares (MOQ Recommendations)
 
@@ -218,32 +218,60 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **Total PCB blade terminals: 128** — two rows of 64, all Keystone 1285-ST.
 * Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
 
-## 4b. Stator Board — DIP Switch Configuration Components
+## 4b. Stator Board — Panel Switch Configuration Components
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| R16–R19 | SW1 pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| SW1 | Routing config DIP switch | CTS 219-4LPST 4-pos 2.54mm THT | THT | 774-219-4LPST | CT2064-ND | C128947 |
-| R20–R25 | SW2 pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| SW2 | Reflector map selector DIP switch | CTS 219-6LPSTR 6-pos 2.54mm THT | THT | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
+| R16–R19 | SW1[0:3] CPLD config input pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R20–R25 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 
-See `Stator/Design_Spec.md §3 DIP Switch Configuration (SW1)` for the full 16-configuration routing
-table and placement requirements.
+Pull-down resistors R16–R25 are retained on the Stator CPLD config input pins as power-up safe
+defaults (hold all inputs LOW when U_EXP4 is uninitialised). Physical switches SW1 and SW2 have
+been removed and relocated to the Settings Board. See `Settings_Board/Design_Spec.md` for the
+full switch specifications and `Stator/Design_Spec.md §3 Panel Switch Configuration` for the
+configuration tables.
 
 ## 4c. Stator Board — Virtual Keyboard / Key Injection Components
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | U_EXP1, U_EXP2 | MCP23017 I²C GPIO Expander (×2) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_EXP4 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_EXP3 | PCA9685 I²C PWM Driver | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 |
 | J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 |
+| J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | C131342 |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — |
 
 U_EXP1 @ 0x20: ENC_IN/ENC_OUT monitoring. U_EXP2 @ 0x21: virtual keypress injection, SOURCE_SEL,
-SYS_RESET_N, servo control. U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz).
+SYS_RESET_N, servo control. U_EXP4 @ 0x22: CPLD config output driver (SW1[0:3] + SW2[0:5] +
+STATOR_CFG_RDY). U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz). J_CFG connects to Settings Board J_I2C.
 
 > **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item (Amazon, already
 > purchased). It is not in the electronic BOM.
+
+## 4d. Settings Board
+
+The Settings Board replaces the Stator DIP switches with user-accessible panel-mount illuminated
+RGB rocker switches. See `Settings_Board/Design_Spec.md` for the full design specification.
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x26 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_EXP_LED | MCP23017 I²C GPIO Expander (LED cathode + colour rail driver) | MCP23017T-E/SO @ 0x27 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| SW_B1_EN, SW_B1[0:3] | Bank 1 illuminated RGB rocker switches (×5: bank enable + routing bits 0–3) | SPDT panel-mount illuminated RGB rocker — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_B2_EN, SW_B2[0:5] | Bank 2 illuminated RGB rocker switches (×7: bank enable + reflector bits 0–5) | SPDT panel-mount illuminated RGB rocker — MPN TBD | Panel-mount | TBD | TBD | — |
+| SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount — MPN TBD | Panel-mount | TBD | TBD | — |
+| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | C131342 |
+| Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | NPN colour-rail transistors (×4) | MMBT3904 | SOT-23 | 512-MMBT3904 | MMBT3904CT-ND | C20526 |
+| R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R_CA1 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R_LED_ANODE | LED anode current-limiting resistors (×4, one per colour rail) | TBD Ω | 0603 | TBD | TBD | TBD |
+| R_BASE1–R_BASE4 | NPN base-limiting resistors (×4) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 |
+| C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+
+U_EXP_SW_IN @ 0x26: reads all 12 switch states + CFG_APPLY. U_EXP_LED @ 0x27: drives per-bit
+LED cathodes and per-bank green/red colour-rail transistors. Both share the Stator I²C-1 bus via
+the J_I2C → J_CFG ribbon cable. Switch MPNs are TBD pending illuminated rocker switch selection.
 
 ## 5. Controller Specifics
 
