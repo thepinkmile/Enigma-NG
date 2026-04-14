@@ -21,7 +21,7 @@ The Settings Board communicates with the Stator Board exclusively via a 4-wire I
 (J_I2C → Stator J_CFG), sharing the Stator I²C-1 bus. It hosts two MCP23017 GPIO expanders:
 
 * **U_EXP_SW_IN (@ 0x26):** Reads all 12 switch states and the CFG_APPLY momentary button.
-* **U_EXP_LED (@ 0x27):** Drives per-bit LED cathodes and per-bank colour-rail NPN transistors.
+* **U_EXP_LED (@ 0x27):** Drives per-bit LED cathodes and per-bank colour-rail PNP transistors.
 
 No JTAG chain is present on this board. All configuration logic is handled by the CM5 enigma
 daemon over I²C.
@@ -70,7 +70,7 @@ daemon over I²C.
   HIGH, the physical switch positions define the configuration. When LOW, the CM5 firmware defines
   the configuration.
 * **RGB LED Feedback:** Green = switch-defined active; Red = CM5-defined override. Per-bit cathode
-  control illuminates only set bits. Shared per-bank colour rail simplifies wiring (4 NPN
+  control illuminates only set bits. Shared per-bank colour rail simplifies wiring (4 PNP
   transistors total).
 * **CFG_APPLY Button:** Momentary pushbutton triggers configuration re-latch cycle via CM5 daemon.
   CM5 reads switch state, writes U_EXP4 on Stator, and pulses STATOR_CFG_RDY.
@@ -197,9 +197,9 @@ Drives per-bit LED cathodes and per-bank colour-rail NPN transistors.
 | GPA | [2] | SW_B1_CAT[2] | Output | Bank 1 LED cathode for SW_B1[1]; LOW = LED on |
 | GPA | [3] | SW_B1_CAT[3] | Output | Bank 1 LED cathode for SW_B1[2]; LOW = LED on |
 | GPA | [4] | SW_B1_CAT[4] | Output | Bank 1 LED cathode for SW_B1[3]; LOW = LED on |
-| GPA | [5] | BNK1_G | Output | Bank 1 green colour-rail; drives base of Q_BNK1_G (NPN); HIGH = green anode active |
-| GPA | [6] | BNK1_R | Output | Bank 1 red colour-rail; drives base of Q_BNK1_R (NPN); HIGH = red anode active |
-| GPA | [7] | BNK2_G | Output | Bank 2 green colour-rail; drives base of Q_BNK2_G (NPN); HIGH = green anode active |
+| GPA | [5] | BNK1_G | Output | Bank 1 green colour-rail; drives base of Q_BNK1_G (PNP); LOW = colour rail active |
+| GPA | [6] | BNK1_R | Output | Bank 1 red colour-rail; drives base of Q_BNK1_R (PNP); LOW = colour rail active |
+| GPA | [7] | BNK2_G | Output | Bank 2 green colour-rail; drives base of Q_BNK2_G (PNP); LOW = colour rail active |
 | GPB | [0] | SW_B2_CAT[0] | Output | Bank 2 LED cathode for SW_B2_EN; LOW = LED on |
 | GPB | [1] | SW_B2_CAT[1] | Output | Bank 2 LED cathode for SW_B2[0]; LOW = LED on |
 | GPB | [2] | SW_B2_CAT[2] | Output | Bank 2 LED cathode for SW_B2[1]; LOW = LED on |
@@ -207,10 +207,10 @@ Drives per-bit LED cathodes and per-bank colour-rail NPN transistors.
 | GPB | [4] | SW_B2_CAT[4] | Output | Bank 2 LED cathode for SW_B2[3]; LOW = LED on |
 | GPB | [5] | SW_B2_CAT[5] | Output | Bank 2 LED cathode for SW_B2[4]; LOW = LED on |
 | GPB | [6] | SW_B2_CAT[6] | Output | Bank 2 LED cathode for SW_B2[5]; LOW = LED on |
-| GPB | [7] | BNK2_R | Output | Bank 2 red colour-rail; drives base of Q_BNK2_R (NPN); HIGH = red anode active |
+| GPB | [7] | BNK2_R | Output | Bank 2 red colour-rail; drives base of Q_BNK2_R (PNP); LOW = colour rail active |
 
 > Individual cathode LOW drives current through the switch LED to the shared colour-rail anode
-> (via NPN transistor). Only the active colour-rail transistor is enabled at any time; switching
+> (via PNP transistor). Only the active colour-rail transistor is enabled at any time; switching
 > the colour rail changes the illumination colour for all lit LEDs in that bank simultaneously.
 
 ---

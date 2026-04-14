@@ -1451,7 +1451,7 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 ### Net Effect on LINK-BETA
 
 - **Freed (13 pins):** ENC_IN[0:5] (×6), ENC_OUT[0:5] (×6), SYS_RESET_N (×1).
-- **Added:** 2× 5V_MAIN pins for servo power delivery (5V_MAIN was not previously on LINK-BETA).
+- **Freed:** pins 12–17 remain SPARE; no 5V_MAIN pins were added to LINK-BETA. Servo 5V_MAIN supplied from Stator local rail via J_SERVO.
 - R6 pull-up (10kΩ to 3V3_ENIG) on Stator keeps SYS_RESET_N HIGH at power-up (CPLDs out of reset).
 
 ### Net Effect on CM5 GPIO

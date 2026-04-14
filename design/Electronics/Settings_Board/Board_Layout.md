@@ -50,7 +50,7 @@ TOP VIEW (L1) — 4-Layer / 2oz Copper (JLC04161H-7628)
 │  (I²C ribbon    │  (MCP23017 @ 0x26)    │  (MCP23017 @     │  Q_BNK1_R      │
 │  to Stator)     │  Switch input reader  │  0x27)           │  Q_BNK2_G      │
 │                 │  + pull-down Rs       │  LED cathode +   │  Q_BNK2_R      │
-│                 │  + R_CA1, C_CA1       │  colour rail     │  (SOT-23 NPN)  │
+│                 │  + R_CA1, C_CA1       │  colour rail     │  (SOT-23 PNP)  │
 │                 │  (CFG_APPLY RC)       │  transistor Rdrs │  SW_CFG_APPLY  │
 └─────────────────┴───────────────────────┴──────────────────┴────────────────┘
 ```
@@ -65,7 +65,7 @@ TOP VIEW (L1) — 4-Layer / 2oz Copper (JLC04161H-7628)
   GPB faces toward Bank 2 switches and CFG_APPLY button to minimise trace length.
 - **U_EXP_LED (Zone C):** Right half of PCB, centred. GPA cathode outputs face Bank 1 switches;
   GPB cathode outputs face Bank 2 switches.
-- **NPN transistors Q1–Q4 (Zone D):** Clustered at right edge near U_EXP_LED GPA[5:7]/GPB[7]
+- **PNP transistors Q1–Q4 (Zone D):** Clustered at right edge near U_EXP_LED GPA[5:7]/GPB[7]
   colour-rail outputs. Base resistors placed adjacent to each transistor base pin.
 - **Decoupling caps (0.1µF X7R 0402):** One per MCP23017 VDD pin, placed within 1mm.
 - **Pull-down resistors (R_SW1–R_SW12):** Grouped per bank, placed between the switch pads
@@ -162,7 +162,7 @@ pull-down resistors to GND: open switch = logic-0. CFG_APPLY (GPB[7]) uses 10kΩ
 **Package:** SOIC-28 | **Address:** A2=H, A1=H, A0=H → 0x27
 
 All GPIO pins configured as outputs. Cathode outputs: LOW = LED lit; HIGH = LED off.
-Colour-rail outputs: HIGH = transistor ON (that colour active for whole bank).
+Colour-rail outputs: LOW = transistor ON.
 
 ```text
                    U_EXP_LED (MCP23017 @ 0x27)
@@ -269,7 +269,7 @@ corresponding GPIO expander pin and LED driver pin.
 
   Colour-rail transistor control (U_EXP_LED outputs only — no switch input):
   ┌──────────────┬──────────────────────────┬────────────────────────────────┐
-  │ Transistor   │ U_EXP_LED Pin            │ Effect when HIGH               │
+  │ Transistor   │ U_EXP_LED Pin            │ Effect when **LOW**               │
   ├──────────────┼──────────────────────────┼────────────────────────────────┤
   │ Q_BNK1_G     │ GPA[5]  (via R_BASE1_G)  │ Bank 1 switches illuminate GREEN│
   │ Q_BNK1_R     │ GPA[6]  (via R_BASE1_R)  │ Bank 1 switches illuminate RED  │

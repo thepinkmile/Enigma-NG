@@ -264,7 +264,7 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 ### 4.2 I²C Devices on Stator
 
 All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via LINK-BETA. 5V_MAIN for the
-servo is supplied via 2 dedicated LINK-BETA pins (see DEC-031).
+servo motor is supplied from the Stator board's local 5V_MAIN rail via J_SERVO.
 
 | Address | Device | Ref | Function |
 | :--- | :--- | :--- | :--- |
@@ -273,9 +273,6 @@ servo is supplied via 2 dedicated LINK-BETA pins (see DEC-031).
 | 0x22 | MCP23017 | U_EXP4 | CPLD configuration output driver: SW1[0:3] routing + SW2[0:5] reflector map + STATOR_CFG_RDY strobe (16 GPIO) |
 | 0x45 | INA219 | U2 | Rotor stack current/power telemetry |
 | 0x60 | PCA9685 | U_EXP3 | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
-
-> **5V_MAIN on LINK-BETA:** 5V_MAIN is now available on LINK-BETA (2 pins) to power the servo
-> via J_SERVO. Previously only 3V3_ENIG was passed via LINK-BETA.
 
 ### 4.1 Prototype Bench-Testing Provision (Break-Off Coupons)
 

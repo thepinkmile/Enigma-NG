@@ -101,7 +101,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Pin Summary:**
     * **Pins 1–9:** JTAG chain + Reset, GND-shielded (5 internal GND pins).
     * **Pins 10–11:** GND isolation moat.
-    * **Pins 12–24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now spare (monitoring via I²C expander U_EXP1). 2 pins (12–13) reassigned to 5V_MAIN for servo power. See DEC-031.
+    * **Pins 12–24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now spare (monitoring via I²C expander U_EXP1). pins 12–17 are all **SPARE** (freed by DEC-031); no 5V_MAIN on LINK-BETA.
     * **Pins 25–27:** TTD_RETURN + GND shields.
     * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity).
     * **Pins 36–40:** GND power return (5 pins).
@@ -341,9 +341,8 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
 | 8 | spare | — | Previously SYS_RESET_N (CM5 GPIO 26); now via I²C expander U_EXP2 GPA[7]. See DEC-031. |
 | 9–11 | GND | — | JTAG trailing shield + isolation moat |
-| 12–13 | 5V_MAIN | PM → Stator | Servo power delivery (2 pins for adequate current). See DEC-031. |
-| 14 | GND | — | 5V_MAIN return |
-| 15–18 | spare | — | Previously ENC_IN[2:5] and GND shield; monitoring now via I²C expander U_EXP1. See DEC-031. |
+| 12–17 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] monitoring now via I²C expander U_EXP1 GPA[0:5] @ 0x20. |
+| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
 | 19–24 | spare | — | Previously ENC_OUT[0:5]; monitoring now via I²C expander U_EXP1 GPB[0:5]. See DEC-031. |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |
 | 26 | TTD_RETURN | Stator → CTRL | JTAG TDO short-path return (bypasses rotor stack) |
@@ -377,7 +376,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Interface:** MIPI DSI1 — 4-lane differential (CLK+/−, D0+/−, D1+/−, D2+/−, D3+/−).
 * **Impedance:** 100 Ω differential; route on L3 (stripline) — same rule as HDMI/Ethernet.
 * **MPN:** TBD — confirm against CM5 DSI1 pin mapping at schematic phase.
-* **Power:** Display power (5V_MAIN backlight, 3V3_SYSTEM panel logic) via a separate 4-pin power header adjacent to J_DSI1 (TBD at schematic phase).
+* **Power:** Display power (5V_MAIN backlight, **3V3_ENIG** panel logic) via a separate 4-pin power header adjacent to J_DSI1 (TBD at schematic phase).
 
 ## 9. PCB Fabrication & Stackup
 
