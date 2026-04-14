@@ -1368,6 +1368,112 @@ to complete backup switchover — INSUFFICIENT.
 
 ---
 
+## DEC-031 — CM5 Virtual Keyboard (Key Injection) Feature Architecture
+
+- **Status:** Decided
+- **Date:** 2026-04-14
+- **Category:** Electrical / Firmware
+- **Area:** Stator Board — I²C Expanders, Servo, CPLD SOURCE_SEL MUX
+- **Author:** Izzyonstage & GitHub Copilot
+
+### Summary
+
+Design decision for enabling the CM5 to autonomously inject virtual keypresses into the Enigma
+cipher pipeline, enabling automated rotor configuration testing and fully autonomous cipher operation.
+
+### Problem
+
+The Enigma machine requires a physical keypress to advance rotors and inject input into the cipher
+pipeline. For autonomous CM5 operation (testing, remote cipher operation), a mechanism is needed to
+inject keypresses without human intervention.
+
+### Decision
+
+Add three I²C expanders to the Stator board on the shared I²C-1 bus:
+
+1. **MCP23017 @ 0x20 (U_EXP1):** 16-bit GPIO expander for ENC_IN/ENC_OUT monitoring. Replaces
+   CM5 GPIO 4–15 (12 pins freed).
+   - GPA[0:5] = ENC_IN[0:5] monitor (inputs)
+   - GPB[0:5] = ENC_OUT[0:5] monitor (inputs)
+   - GPA[6:7], GPB[6:7] = spare
+
+2. **MCP23017 @ 0x21 (U_EXP2):** 16-bit GPIO expander for virtual keypress injection, SOURCE_SEL
+   MUX control, SYS_RESET_N (replaces CM5 GPIO 26 — 1 pin freed), servo enable, and SERVO_HOME sense.
+   - GPA[0:4] = KEY_ADDR[0:4] (outputs — 5-bit key address to Stator CPLD)
+   - GPA[5] = KEY_EN (output — enable for virtual keypress injection)
+   - GPA[6] = SOURCE_SEL (output — MUX select: 0=keyboard, 1=CM5 virtual)
+   - GPA[7] = SYS_RESET_N (output — system-wide CPLD reset)
+   - GPB[0] = SERVO_EN (output — enables servo PWM output)
+   - GPB[1] = SERVO_HOME (input — active-low homing switch, 10kΩ pull-up + 100nF debounce)
+   - GPB[2:7] = spare
+
+3. **PCA9685 @ 0x60 (U_EXP3):** 16-channel I²C PWM driver for servo motor control.
+   - Ch0 = SERVO_PWM (50Hz PWM for servo position control)
+   - A5 → 3V3_ENIG (sets bit 5 = 1), A4–A0 → GND (bits 4:0 = 0) → address 0x60
+   - All-call address (0x70) disabled in enigma daemon init (MODE1 reg bit 0 = 0)
+
+### Rationale for MCP23017 (×2)
+
+- 32 GPIO total provides headroom for future I/O expansion.
+- SYS_RESET_N migration to expander reduces LINK-BETA pin count and frees CM5 GPIO 26.
+- All monitoring and control signals consolidated on Stator (co-located with servo and CPLD).
+- Only 2 wires (I²C SDA/SCL) needed on LINK-BETA instead of 13 discrete signal pins.
+
+### Rationale for PCA9685 @ 0x60
+
+- MCP23017 cannot generate PWM; a dedicated PWM IC is required for servo control.
+- Address 0x60 chosen (not 0x40 base) for I²C debugging clarity — all peripheral ICs sit at lower
+  addresses; the expander group starts at 0x60.
+- A5=HIGH, A4–A0=LOW wiring achieves 0x60.
+- All-call address 0x70 disabled in enigma daemon init (MODE1 register bit 0 = 0).
+
+### Servo Motor
+
+- **Part:** Miuzei Metal Gearbox 90 servo (purchased — Amazon, 6 for $18, geekpow seller).
+- **Voltage:** 4.8–6V rated; powered from 5V_MAIN (within spec).
+- **Actuation cycle:** 0°→180°→0° sweep = one virtual keypress.
+- **Mounted:** on Stator PCB via J_SERVO (3-pin JST PH 2.0mm: 5V_MAIN, GND, SERVO_PWM).
+
+### SERVO_HOME Switch
+
+- SPST normally-open momentary switch, active-low.
+- Mounted on Stator PCB.
+- 10kΩ pull-up to 3V3_ENIG + 100nF X7R cap to GND (RC τ = 1ms).
+- Connected to MCP23017 U_EXP2 GPB[1].
+- Homing sequence: assert SERVO_EN → command 0° → poll SERVO_HOME LOW within 3-second timeout.
+
+### SOURCE_SEL MUX
+
+- GPA[6] on U_EXP2 drives Stator CPLD SOURCE_SEL input at J4 ENC_OUT[0:5] entry point.
+- SOURCE_SEL=0: keyboard ENC_OUT is forwarded to the encryption pipeline.
+- SOURCE_SEL=1: KEY_ADDR[0:4] + KEY_EN from U_EXP2 GPA[0:5] synthesises a virtual ENC_OUT signal.
+
+### Net Effect on LINK-BETA
+
+- **Freed (13 pins):** ENC_IN[0:5] (×6), ENC_OUT[0:5] (×6), SYS_RESET_N (×1).
+- **Added:** 2× 5V_MAIN pins for servo power delivery (5V_MAIN was not previously on LINK-BETA).
+- R6 pull-up (10kΩ to 3V3_ENIG) on Stator keeps SYS_RESET_N HIGH at power-up (CPLDs out of reset).
+
+### Net Effect on CM5 GPIO
+
+- **Freed (13 pins):** GPIO 4–15 (ENC monitoring), GPIO 26 (SYS_RESET_N).
+- No new CM5 GPIO assignments required.
+
+### I²C Bus Address Map (no conflicts)
+
+| Address | Device | Location |
+| :--- | :--- | :--- |
+| 0x09 | LTC3350 | Power Module |
+| 0x0B | Smart Battery | Power Module |
+| 0x20 | MCP23017 (U_EXP1) | Stator |
+| 0x21 | MCP23017 (U_EXP2) | Stator |
+| 0x28 | STUSB4500 | Power Module |
+| 0x40 | INA219 (U12) | Power Module |
+| 0x45 | INA219 (U2) | Stator |
+| 0x60 | PCA9685 (U_EXP3) | Stator |
+
+---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.

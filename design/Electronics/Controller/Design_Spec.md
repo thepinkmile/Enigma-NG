@@ -99,25 +99,22 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Pin Summary:**
     * **Pins 1–9:** JTAG chain + Reset, GND-shielded (5 internal GND pins).
     * **Pins 10–11:** GND isolation moat.
-    * **Pins 12–24:** ENC_IN[0:5] and ENC_OUT[0:5] (interleaved with GND shields).
+    * **Pins 12–24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now spare (monitoring via I²C expander U_EXP1). 2 pins (12–13) reassigned to 5V_MAIN for servo power. See DEC-031.
     * **Pins 25–27:** TTD_RETURN + GND shields.
     * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity).
     * **Pins 36–40:** GND power return (5 pins).
   * **Full pin table:** See `Controller/Board_Layout.md` LINK-BETA section.
 * **Programming:** Internal USB 2.0 link to the JTAG Daughterboard.
 * **Encryption Sniffer Bus**
-  * **Purpose:** Both buses are **read-only inputs to the CM5**. The CM5 passively monitors the live
-    Enigma encoding activity for real-time display in the GUI application. The CM5 does not participate
-    in or control the encoding process — it only observes it.
+  * **Purpose:** ENC_IN/ENC_OUT monitoring has been migrated from CM5 GPIO to MCP23017 U_EXP1
+    (@ 0x20, Stator) via I²C. CM5 GPIO 4–15 are now freed for future use. See DEC-031.
   * **Naming convention:** Signal names are relative to the **Enigma machine**, not the CM5.
     `ENC_IN` = the plaintext character entering the machine (from the Keyboard/Encoder board);
-    `ENC_OUT` = the encrypted character exiting the machine (to the Lightboard). Both are inputs
-    to the CM5 GPIO bank.
-  * **ENC_IN [0:5]:** GPIO 4–9 (CM5 Input — snoop of 6-bit plaintext character code driven by
-    the Keyboard onto the Enigma input bus).
-  * **ENC_OUT [0:5]:** GPIO 10–15 (CM5 Input — snoop of 6-bit encrypted character code presented
-    to the Lightboard by the Rotor/Reflector stack).
-  * **Reset:** GPIO 26 (SYS_RESET_N) triggers a hardware clear on all Intel MAX II CPLDs (EPM240T100I5N Encoder ×6 and EPM570T100I5N Rotor ×30 + Stator ×1).
+    `ENC_OUT` = the encrypted character exiting the machine (to the Lightboard).
+  * **ENC_IN [0:5]:** Now read via MCP23017 U_EXP1 GPA[0:5] @ 0x20 (Stator) over I²C-1.
+  * **ENC_OUT [0:5]:** Now read via MCP23017 U_EXP1 GPB[0:5] @ 0x20 (Stator) over I²C-1.
+  * **Reset:** SYS_RESET_N migrated to MCP23017 U_EXP2 GPA[7] @ 0x21 (Stator) via I²C.
+    R6 pull-up (10kΩ to 3V3_ENIG) on Stator keeps CPLDs out of reset at power-up. See DEC-031.
   * **Software cross-reference:**
     * GUI application real-time display logic: `design/Software/GUI_App/Design_Spec.md`
     * Linux OS power management, I²C telemetry, and system daemon: `design/Software/Linux_OS/Power_Management.md`
@@ -174,6 +171,9 @@ All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through to th
 | 0x28 | STUSB4500 | Power Module | USB-C PD controller |
 | 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |
 | 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
+| 0x20 | MCP23017 (U_EXP1) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
+| 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control |
+| 0x60 | PCA9685 (U_EXP3) | Stator | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
 ## 5. RTC Backup Battery
 
@@ -214,9 +214,9 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45. |
-| **4–9** | **ENC_IN[0:5]** | Input | 3.3V | **6-bit Keyboard Snoop Bus** (D0–D5). CM5 passively monitors the plaintext character code driven onto the Enigma machine input bus by the Keyboard (Encoder board). Read-only — CM5 does not drive this bus. |
-| **10–15** | **ENC_OUT[0:5]** | Input | 3.3V | **6-bit Lightboard Snoop Bus** (D6–D11). CM5 passively monitors the encrypted output character code produced by the Rotor/Reflector stack and presented to the Lightboard. Read-only — CM5 does not drive this bus. |
+| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45, MCP23017 U_EXP1 @ 0x20, MCP23017 U_EXP2 @ 0x21, PCA9685 U_EXP3 @ 0x60. |
+| **4–9** | *(freed)* | — | — | **Previously ENC_IN[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPA[0:5] @ 0x20 (Stator) via I²C. GPIO 4–9 are now available for future use. See DEC-031. |
+| **10–15** | *(freed)* | — | — | **Previously ENC_OUT[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPB[0:5] @ 0x20 (Stator) via I²C. GPIO 10–15 are now available for future use. See DEC-031. |
 | **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ENIG LDO for sequenced rotor stack power-up. |
 | **17** | **SW_LED_R** | PWM | 3.3V | RGB switch (SW1) — Red channel. Fault / graceful shutdown indicator. |
 | **18** | **SW_LED_G** | PWM | 3.3V | RGB switch (SW1) — Green channel. USB-C active power source. |
@@ -227,7 +227,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **23** | **BATT_PRES_N** | Input | 3.3V | Active Low: Battery present (via BtB pin 45; from Power Module J3 presence detect circuit R6/TPD1E10B06DYARQ1). |
 | **24** | **POE_STAT** | Input | 3.3V | Active Low: PoE live — LOW when PoE power good (TPS2372-4 /PG open-drain, per DEC-003). |
 | **25** | **SYS_FAULT** | Input | 3.3V | Active Low: eFuse fault interrupt from TPS25980 FAULT pin on Power Module (via BtB pin 29). Triggers OS fault handler in power monitor daemon; useful for power dashboard diagnostics even during graceful shutdown. |
-| **26** | **SYS_RESET_N** | Output | 3.3V | Active Low: system-wide CPLD reset. Broadcast to all Intel MAX II CPLDs (EPM240T100I5N Encoder ×6 and EPM570T100I5N Rotor ×30 + Stator ×1) via LINK-BETA pin 8 (Stator), Extension Ports, and Encoder Ports. On-board CPLDs (HID Encoder, Plugboard #1/#2) driven directly. |
+| **26** | *(freed)* | — | — | **Previously SYS_RESET_N.** System-wide CPLD reset migrated to MCP23017 U_EXP2 GPA[7] @ 0x21 (Stator) via I²C. R6 pull-up (10kΩ to 3V3_ENIG) on Stator ensures CPLDs remain out of reset at power-up. GPIO 26 is now available for future use. See DEC-031. |
 | **27** | **PWR_GD** | Input | 3.3V | Rail-health telemetry only — HIGH while 5V_MAIN ≥ 4.50V; does NOT trigger shutdown. Arrives via Link-Alpha pin 34. |
 
 ## 7. Protection & EMI
@@ -334,11 +334,12 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL → Stator | JTAG data in |
 | 7 | GND | — | TDI/SYS_RESET_N inter-pin shield |
-| 8 | SYS_RESET_N | CTRL → Stator | Active-low system reset; clears all CPLDs in stack (CM5 GPIO 26) |
+| 8 | spare | — | Previously SYS_RESET_N (CM5 GPIO 26); now via I²C expander U_EXP2 GPA[7]. See DEC-031. |
 | 9–11 | GND | — | JTAG trailing shield + isolation moat |
-| 12–17 | ENC_IN[0:5] | Stator → CTRL | Keyboard snoop 6-bit bus — plaintext character input to Enigma machine (CM5 GPIOs 4–9, read-only) |
-| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
-| 19–24 | ENC_OUT[0:5] | Stator → CTRL | Encoder output 6-bit bus (CM5 GPIOs 10–15) |
+| 12–13 | 5V_MAIN | PM → Stator | Servo power delivery (2 pins for adequate current). See DEC-031. |
+| 14 | GND | — | 5V_MAIN return |
+| 15–18 | spare | — | Previously ENC_IN[2:5] and GND shield; monitoring now via I²C expander U_EXP1. See DEC-031. |
+| 19–24 | spare | — | Previously ENC_OUT[0:5]; monitoring now via I²C expander U_EXP1 GPB[0:5]. See DEC-031. |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |
 | 26 | TTD_RETURN | Stator → CTRL | JTAG TDO short-path return (bypasses rotor stack) |
 | 27 | GND | — | TTD_RETURN shield |
@@ -453,24 +454,24 @@ Monitors 5V_MAIN, 3V3_ENIG, I²C Telemetry, Status LEDs, and BATT_PRES.
 
 #### Diagnostic Bank-Beta (Logic/Exit) — 2×10
 
-Monitors 12-bit Sniffer bus (ENC_IN/ENC_OUT), SYS_RESET_N, and JTAG signals.
+Monitors JTAG signals and spare pads (ENC_IN/ENC_OUT/SYS_RESET_N migrated to I²C expanders — see DEC-031).
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | ENC_IN[0] | Stator → CTRL | Keyboard snoop bit 0 (plaintext input to Enigma machine) |
-| 2 | ENC_IN[1] | Stator → CTRL | Keyboard snoop bit 1 |
-| 3 | ENC_IN[2] | Stator → CTRL | Keyboard snoop bit 2 |
-| 4 | ENC_IN[3] | Stator → CTRL | Keyboard snoop bit 3 |
-| 5 | ENC_IN[4] | Stator → CTRL | Keyboard snoop bit 4 |
-| 6 | ENC_IN[5] | Stator → CTRL | Keyboard snoop bit 5 |
-| 7 | SYS_RESET_N | CTRL → Stator | Active-low system reset (GPIO 26) |
+| 1 | spare | — | Previously ENC_IN[0] (keyboard snoop). Monitoring via I²C expander U_EXP1. See DEC-031. |
+| 2 | spare | — | Previously ENC_IN[1]. See DEC-031. |
+| 3 | spare | — | Previously ENC_IN[2]. See DEC-031. |
+| 4 | spare | — | Previously ENC_IN[3]. See DEC-031. |
+| 5 | spare | — | Previously ENC_IN[4]. See DEC-031. |
+| 6 | spare | — | Previously ENC_IN[5]. See DEC-031. |
+| 7 | spare | — | Previously SYS_RESET_N (GPIO 26); now via I²C expander U_EXP2. See DEC-031. |
 | 8 | GND | — | Ground reference |
-| 9 | ENC_OUT[0] | Stator → CTRL | Encoder output bit 0 |
-| 10 | ENC_OUT[1] | Stator → CTRL | Encoder output bit 1 |
-| 11 | ENC_OUT[2] | Stator → CTRL | Encoder output bit 2 |
-| 12 | ENC_OUT[3] | Stator → CTRL | Encoder output bit 3 |
-| 13 | ENC_OUT[4] | Stator → CTRL | Encoder output bit 4 |
-| 14 | ENC_OUT[5] | Stator → CTRL | Encoder output bit 5 |
+| 9 | spare | — | Previously ENC_OUT[0]. Monitoring via I²C expander U_EXP1. See DEC-031. |
+| 10 | spare | — | Previously ENC_OUT[1]. See DEC-031. |
+| 11 | spare | — | Previously ENC_OUT[2]. See DEC-031. |
+| 12 | spare | — | Previously ENC_OUT[3]. See DEC-031. |
+| 13 | spare | — | Previously ENC_OUT[4]. See DEC-031. |
+| 14 | spare | — | Previously ENC_OUT[5]. See DEC-031. |
 | 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
 | 16 | GND | — | TCK shield / clock return |
 | 17 | TMS | JDB → Stator | JTAG mode select |

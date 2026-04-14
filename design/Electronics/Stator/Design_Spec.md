@@ -30,6 +30,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 | FR-STA-08 | Select the active plugboard routing configuration via hardware DIP switch without JTAG reprogramming | 4-position DIP switch (SW1) providing 16 pre-defined configurations; CPLD reads SW1[3:0] at power-up and selects routing case from VHDL fabric | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
 | FR-STA-09 | Optionally apply a stored reflector substitution map at the reflection boundary, replacing the physical Reflector board | 6-position DIP switch (SW2); SW2[5]=1 enables internal map; SW2[4:0] selects index 0–20 from 21 involutory maps stored in CPLD UFM; SW2[5]=0 passes data to J7 normally | §3 Reflector Map Configuration; BOM SW2, R20–R25 |
+| FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, ENC bus monitoring, servo control, and SYS_RESET_N management | Via two MCP23017 expanders: U_EXP1 @ 0x20, U_EXP2 @ 0x21 on shared I²C-1 bus | §4 I²C Devices; BOM U_EXP1, U_EXP2 |
+| FR-STA-11 | Provide I²C PWM output for servo motor control | Via PCA9685 (U_EXP3 @ 0x60) on shared I²C-1 bus; Ch0 = 50Hz SERVO_PWM | §4 I²C Devices; BOM U_EXP3 |
+| FR-STA-12 | Provide servo homing detection via SERVO_HOME switch | SPST NO momentary (active-low); 10kΩ pull-up to 3V3_ENIG + 100nF X7R debounce cap; connected to U_EXP2 GPB[1] | §4 I²C Devices; BOM SW3, R_SH1, C_SH1 |
+| FR-STA-13 | Implement SOURCE_SEL MUX in Stator CPLD to select between keyboard and CM5 virtual keypress | MUX at J4 ENC_OUT[0:5] entry point; SOURCE_SEL driven by U_EXP2 GPA[6]; 0=keyboard, 1=CM5 virtual | §3 CPLD SOURCE_SEL MUX |
 
 #### Design Requirements
 
@@ -46,6 +50,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.11 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
 | DR-STA-10 | Routing configuration selection | SW1 = 4-position DIP switch, 2.54mm THT (binary index 0–15); 4× 10kΩ pull-down resistors R16–R19 on SW1 inputs | §3 CPLD Signal Routing Matrix; BOM SW1, R16–R19 |
 | DR-STA-11 | Reflector map selection | SW2 = 6-position DIP switch, 2.54mm THT; SW2[4:0] = map index 0–20; SW2[5] = internal reflector enable; 6× 10kΩ pull-down resistors R20–R25 on SW2 inputs | §3 Reflector Map Configuration; BOM SW2, R20–R25 |
+| DR-STA-12 | I²C GPIO expanders | U_EXP1 = MCP23017T-E/SO @ 0x20; U_EXP2 = MCP23017T-E/SO @ 0x21; SOIC-28 package; on shared I²C-1 bus | BOM U_EXP1, U_EXP2 |
+| DR-STA-13 | I²C PWM driver | U_EXP3 = PCA9685BS/3 @ 0x60; SSOP-28 package; Ch0 = SERVO_PWM at 50Hz; A5→3V3_ENIG, A4–A0→GND; all-call disabled in daemon init | BOM U_EXP3 |
+| DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM | BOM J_SERVO |
+| DR-STA-15 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to 3V3_ENIG + 100nF X7R cap to GND (RC τ=1ms); connected to U_EXP2 GPB[1] | BOM SW3, R_SH1, C_SH1 |
 
 ## 2. Core Features
 
@@ -173,7 +181,22 @@ symmetry. Pre-loaded indices:
   * **R15:** J5 TDO return → J6 TDI (Plugboard B cable drive). Placed on Stator within 2 mm of J6 pin 13, on the
     trace carrying J5's TDO return signal.
   * All R13–R15 are **Stator-side** resistors — no series resistors are required at the Encoder cable inputs.
-* **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail.
+* **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail. SYS_RESET_N is driven by
+  MCP23017 U_EXP2 GPA[7] (@ 0x21) via I²C; R6 (10kΩ pull-up to 3V3_ENIG) ensures CPLDs remain
+  out of reset at power-up (see DEC-031).
+
+#### CPLD SOURCE_SEL MUX
+
+The Stator CPLD VHDL must implement a SOURCE_SEL MUX at the J4 ENC_OUT[0:5] entry point (Step 1 —
+Forward entry in the routing matrix). The SOURCE_SEL signal is driven by U_EXP2 GPA[6] via I²C:
+
+* **SOURCE_SEL=0 (default):** Keyboard ENC_OUT[0:5] from J4 is forwarded to the encryption
+  pipeline. Normal operator keyboard use.
+* **SOURCE_SEL=1:** KEY_ADDR[0:4] + KEY_EN from U_EXP2 GPA[0:5] synthesises a virtual ENC_OUT
+  signal in CPLD fabric, replacing the J4 keyboard input. CM5 autonomous / virtual keypress mode.
+
+This allows the CM5 to inject any 5-bit key address without physical keyboard interaction. The
+physical keyboard is electrically disconnected from the cipher pipeline when SOURCE_SEL=1.
 
 ## 4. Interconnects
 
@@ -223,6 +246,21 @@ symmetry. Pre-loaded indices:
     the next Rotor J1/J2/J3 input); Extension boards provide inter-group bridging at group boundaries in
     the serial chain (Stator → Rotor 1 → … → Rotor 30 → Reflector J1–J3).
 * **Diagnostics:** 2x10 ENIG Gold Diagnostic Looped Probe Pad Bank (L1, Mirror of Controller).
+
+### 4.2 I²C Devices on Stator
+
+All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via LINK-BETA. 5V_MAIN for the
+servo is supplied via 2 dedicated LINK-BETA pins (see DEC-031).
+
+| Address | Device | Ref | Function |
+| :--- | :--- | :--- | :--- |
+| 0x20 | MCP23017 | U_EXP1 | ENC_IN/ENC_OUT monitoring (16 GPIO) |
+| 0x21 | MCP23017 | U_EXP2 | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control (16 GPIO) |
+| 0x45 | INA219 | U2 | Rotor stack current/power telemetry |
+| 0x60 | PCA9685 | U_EXP3 | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
+
+> **5V_MAIN on LINK-BETA:** 5V_MAIN is now available on LINK-BETA (2 pins) to power the servo
+> via J_SERVO. Previously only 3V3_ENIG was passed via LINK-BETA.
 
 ### 4.1 Prototype Bench-Testing Provision (Break-Off Coupons)
 
@@ -315,3 +353,13 @@ snapped off.
 | SW2 | Reflector map selector / internal reflector enable | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
 | U1 | Stator Management CPLD (routing matrix + optional internal reflector) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-23978-1-ND | C138706 |
+| U_EXP1 | MCP23017 I²C GPIO Expander (ENC monitoring) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_EXP2 | MCP23017 I²C GPIO Expander (virtual keypress, servo control) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_EXP3 | PCA9685 I²C PWM Driver (servo) | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 |
+| J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 |
+| SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | (verify) |
+| R_SH1, R_SH2 | SERVO_HOME pull-up resistors (10kΩ, one per switch line) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| C_SH1, C_SH2 | SERVO_HOME RC debounce capacitors (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+
+> **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item — see
+> `design/Mechanical/Rotor_Actuation_Assembly/Design_Spec.md`.

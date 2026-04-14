@@ -330,3 +330,81 @@ sudo hwclock --show
 - [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
 - [x] SW_LED_CTRL (GPIO 20) added to Link-Alpha pin 47 wiring — completed; see Controller/Board_Layout.md LINK-ALPHA table.
 - [ ] Verify CM5 VBAT (Pin 95) is correctly identified in the CM5 Hirose DF40 200-pin connector datasheet before PCB layout.
+
+## PCA9685 Servo PWM Driver
+
+The servo motor (Miuzei Metal Gearbox 90) is driven by a PCA9685 I²C PWM driver (U_EXP3) at
+address **0x60** on the I²C-1 bus. The servo requires a 50Hz PWM signal with pulse widths between
+approximately 1ms (0°) and 2ms (180°).
+
+### Device Tree Overlay
+
+The PCA9685 is configured via a Device Tree overlay on I²C-1:
+
+```dts
+// /boot/overlays/enigma-pca9685.dts
+/dts-v1/;
+/plugin/;
+
+&i2c1 {
+    #address-cells = <1>;
+    #size-cells = <0>;
+
+    pca9685: pwm@60 {
+        compatible = "nxp,pca9685-pwm";
+        reg = <0x60>;
+        #pwm-cells = <2>;
+        clock-frequency = <25000000>;  /* 25 MHz internal oscillator */
+    };
+};
+```
+
+Load via `/boot/firmware/config.txt`:
+
+```ini
+dtoverlay=enigma-pca9685
+```
+
+### Enigma Daemon Hardware Initialisation Sequence
+
+On startup, the `enigmad` daemon performs the following hardware init sequence before accepting
+any cipher commands:
+
+1. **PCA9685 all-call disable:** Write MODE1 register (0x00) with bit 0 (ALLCAL) = 0 to disable
+   the all-call I²C address (0x70). This prevents unintended broadcast writes from affecting the
+   PCA9685 when addressing other devices.
+
+   ```python
+   # Pseudocode
+   i2c.write_byte_data(0x60, 0x00, 0x20)  # MODE1: SLEEP=1, ALLCAL=0
+   time.sleep(0.001)
+   i2c.write_byte_data(0x60, 0x00, 0x00)  # MODE1: wake, 50Hz ready
+   pca9685_set_pwm_freq(50)               # Set 50Hz for servo
+   ```
+
+2. **Servo homing sequence:**
+   - Assert SERVO_EN (U_EXP2 GPB[0] HIGH via I²C to 0x21).
+   - Command servo to 0° (pulse width ≈ 1ms at 50Hz).
+   - Poll SERVO_HOME (U_EXP2 GPB[1]) — wait for LOW within 3-second timeout.
+   - If timeout expires, log error and halt init (servo not homed — mechanical fault).
+   - On SERVO_HOME LOW confirmed: servo is at 0° reference position.
+
+3. **MCP23017 port direction init:**
+   - U_EXP1 (0x20): GPA = 0xFF (all inputs), GPB = 0xFF (all inputs).
+   - U_EXP2 (0x21): GPA = 0x00 (all outputs), GPB[0] = output, GPB[1] = input, GPB[2:7] = output.
+
+### Virtual Keypress Sequence (One Key Injection Cycle)
+
+To inject a virtual keypress for character N (5-bit address):
+
+1. Assert SOURCE_SEL=1 (U_EXP2 GPA[6] HIGH) — switches CPLD to CM5 virtual input mode.
+2. Write KEY_ADDR[4:0] = N to U_EXP2 GPA[4:0].
+3. Assert KEY_EN (U_EXP2 GPA[5] HIGH) — CPLD samples the key address.
+4. Deassert KEY_EN (LOW).
+5. Assert SERVO_EN (U_EXP2 GPB[0] HIGH) — enables PCA9685 Ch0 output.
+6. Command servo 0°→180° (one sweep half).
+7. Wait for mechanical actuation period (≈ 300ms).
+8. Command servo 180°→0° (return sweep).
+9. Wait for return (≈ 300ms).
+10. Deassert SERVO_EN (GPB[0] LOW).
+11. Deassert SOURCE_SEL (GPA[6] LOW) — returns CPLD to keyboard input mode.

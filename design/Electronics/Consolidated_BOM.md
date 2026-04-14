@@ -230,6 +230,21 @@ the Rev A single-Extension configuration unless otherwise noted.
 See `Stator/Design_Spec.md §3 DIP Switch Configuration (SW1)` for the full 16-configuration routing
 table and placement requirements.
 
+## 4c. Stator Board — Virtual Keyboard / Key Injection Components
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| U_EXP1, U_EXP2 | MCP23017 I²C GPIO Expander (×2) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_EXP3 | PCA9685 I²C PWM Driver | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 |
+| J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 |
+| SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — |
+
+U_EXP1 @ 0x20: ENC_IN/ENC_OUT monitoring. U_EXP2 @ 0x21: virtual keypress injection, SOURCE_SEL,
+SYS_RESET_N, servo control. U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz).
+
+> **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item (Amazon, already
+> purchased). It is not in the electronic BOM.
+
 ## 5. Controller Specifics
 
 * **CM5 Module:** Raspberry Pi SC1180 (8GB/32GB/Wireless).
