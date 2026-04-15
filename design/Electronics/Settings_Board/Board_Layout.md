@@ -65,7 +65,7 @@ TOP VIEW (L1) — 4-Layer / 2oz Copper (JLC04161H-7628)
   GPB faces toward Bank 2 switches and CFG_APPLY button to minimise trace length.
 - **U_EXP_LED (Zone C):** Right half of PCB, centred. GPA cathode outputs face Bank 1 switches;
   GPB cathode outputs face Bank 2 switches.
-- **PNP transistors Q1–Q4 (Zone D):** Clustered at right edge near U_EXP_LED GPA[5:7]/GPB[7]
+- **PNP transistors Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R (Zone D):** Clustered at right edge near U_EXP_LED GPA[5:7]/GPB[7]
   colour-rail outputs. Base resistors placed adjacent to each transistor base pin.
 - **Decoupling caps (0.1µF X7R 0402):** One per MCP23017 VDD pin, placed within 1mm.
 - **Pull-down resistors (R_SW1–R_SW12):** Grouped per bank, placed between the switch pads
