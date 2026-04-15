@@ -80,7 +80,7 @@ The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** e
 
 * **EMI Shielding:** Nanocrystalline dual-choke filtering for CE/UKCA compliance.
 * **UPS Function:** 50F Supercapacitor bank (8× Abracon 25F/2.7V, 2S4P) providing ≥33.5 seconds "Last-Gasp" hold-time.
-* **Safety:** 72°C SMD Thermal Cutoff (TCO) and TPS25980 eFuse.
+* **Safety:** 72°C SMD Thermal Cutoff (TCO) and TPS259804ONRGER eFuse (16.9V fixed OVLO).
 * **Interface:** Shielded PoE+, USB-C PD, and Smart Battery inputs.
 
 ## 10. Reflector Board (The "Turnaround")
