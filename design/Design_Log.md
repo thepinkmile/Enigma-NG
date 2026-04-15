@@ -131,7 +131,7 @@ This limits peak PoE utilisation to 73.9% (53.2W / 72W) — within the 75% desig
 ### Rationale
 
 - Full 2A supercap charging on PoE would push utilisation to ~98%, leaving <2W margin for transient loads.
-- 0.5A charge current charges the **8× 25F** supercap bank (2S4P, 50F total — Abracon ABSC-SC-0025C0) in approximately 9 minutes from depleted.
+- 0.5A charge current charges the **8× 25F** supercap bank (2S4P, 50F total — Abracon ADCR-T02R7SA256MB) in approximately 9 minutes from depleted.
 - Normal system usage is expected to exceed 30–45 minutes per session (startup + configuration + use), making a 2-minute charge time acceptable.
 - This limitation should be documented in the User Manual with guidance that maximum system load is not recommended during the initial PoE power-up window.
 
