@@ -210,8 +210,8 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Signal (ENC_IN/OUT, SYS_RESET_N, I2C, TTD_RETURN) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; all CPLD I/O and encoder data lines |
-| JTAG signals: TCK, TMS, TDI, TDO (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
+| Signal (ENC_IN/OUT, SYS_RESET_N, I2C) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; all CPLD I/O and encoder data lines |
+| JTAG signals: TCK, TMS, TDI, TDO, TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
 | JTAG fan-out to encoder ports (L1, cable-drive side) | signal | — | 0.20 mm | **0.20 mm** | L1 | Traces from series resistors R7–R15 to J4/J5/J6 connector pads (post-termination section) |
 | 3V3_ENIG entry trace (LINK-BETA → shunt R1) | 2.11 A | 0.33 mm | 0.80 mm | **0.80 mm** | L1 | Carries full rotor-stack + encoder load; series path through CSS2H 10 mΩ Kelvin shunt; consistent with PM §9 and Global_Routing_Spec §1.1 |
 | 3V3_ENIG fan-out (post-shunt → L3 pour via-down) | 2.11 A | 0.33 mm | 0.80 mm | **0.80 mm** | L1 | Entry to inner power pour via thermal via cluster |
