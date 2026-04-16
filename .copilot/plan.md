@@ -10,13 +10,17 @@
 
 All board detailed designs are complete. Recent sessions added three new features:
 - **Virtual Keyboard / CM5 Key Injection** (DEC-028, checkpoints 032–033)
-- **Settings Board** — panel-mount illuminated RGB rocker switches replacing Stator DIP switches,
-  with CM5 I²C override via U_EXP4 (DEC-032, checkpoints 034–036)
+- **Settings Board** — panel-mount toggle switches with discrete RGB indicators replacing Stator
+  DIP switches, with CM5 I²C override via U_EXP4 (DEC-032, DEC-034; checkpoints 034–036)
 - **DSI1 Display Provision** on Controller Board — ZIF/FPC connector for optional lid touchscreen
   (DEC-033, checkpoint 035)
 
-A full system BOM deep-dive audit was completed (checkpoint 036). 13 RGB rocker switches are
-still unified to one Marquardt 1800 series SPDT family, but component confirmation is now being
+A full system BOM deep-dive audit was completed (checkpoint 036). The old unified-switch
+assumption has now been retired: the Settings Board uses E-Switch 200-series toggles with discrete
+Kingbright RGB LEDs, while the Power Module uses the Adafruit 4660 rugged metal switch. The
+Settings Board LED path now also carries a per-switch 0Ω blue debug link for easier prototype
+bring-up. Component
+confirmation is now being
 reworked from `.copilot/components-todo.md`, which has grown beyond the original TBD-only list
 into a combined supplier-verification table plus full BOM coverage checklist so non-TBD items are
 not silently skipped. Connector verification has started there, with J_DSI1, J_CFG / J_I2C,
@@ -112,9 +116,11 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 | Ref | Description | Constraint |
 | :--- | :--- | :--- |
-| SW1 (PM) + SW_B1/B2 ×12 (SBD) | Marquardt 1800 SPDT latching rocker, RGB LED, black body | All 13 must be same MPN |
+| SW_B1/B2 ×12 (SBD) | E-Switch 200MSP1T2B4M2QE SPDT latching toggle | Selected |
+| LED_B1/B2 ×12 (SBD) | Kingbright WP154A4SEJ3VBDZGW/CA common-anode RGB LED | Selected; use separate red/green resistor values per switch plus per-switch blue debug link |
+| SW1 (PM) | Adafruit 4660 rugged metal RGB latching power switch | Selected |
 | SW_CFG_APPLY | Panel-mount SPST NO momentary pushbutton | Quality feel preferred |
-| R_LED_ANODE ×4 | 0603 anode current-limiting resistors | Value blocked on switch LED Vf/If |
+| R_LED_R ×12, R_LED_G ×12 | 0603 per-switch red/green LED resistors | Value tuning still open |
 | J_I2C / J_CFG | JST B4B-PH-K-S 4-pin 2.0mm — JLCPCB PN | C131342 is 3-pin (wrong); 4-pin PN needed |
 | J_DSI1 | 15-pin 1.0mm ZIF/FPC (CM5 DSI1) | Verify CM5 DSI1 pinout at schematic phase |
 
@@ -142,14 +148,14 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
    component re-verification, with a 30-row supplier-detail table plus a 106-line BOM coverage
    checklist. Treat every populated MPN/distributor field as provisional until manually checked
    unless the row is explicitly marked `VERIFIED`.
-   - Priority detail rows 1–5: TBD parts (switches, connectors, R_LED_ANODE)
+   - Priority detail rows 1–5: historical TBD rows now being superseded by confirmed switch / LED selections and remaining resistor tuning
    - Connector rows already verified: 3 (J_DSI1), 5 (J_CFG / J_I2C), 23 (J_SERVO), 26 (J_FAN)
    - Remaining coverage items marked `NEEDS DETAIL ROW` still need promotion into the detailed table
 4. **Apply confirmed parts only after re-verification** — update Consolidated_BOM.md + board BOMs
    once rows are explicitly confirmed.
 5. **Address Settings Board findings** — after component verification, apply fixes and re-run 
    review cycle per new Review Cycle Process (expect 1–2 rounds to achieve 2 clean passes).
-6. **R_LED_ANODE calculation** — R = (3.3V − Vf) / If once Marquardt LED spec is confirmed.
+6. **Settings Board LED resistor tuning** — final red/green resistor values remain to be tuned for the selected common-anode discrete LED under nominal 3.3V operation.
 7. **KiCad project setup** — when schematic phase begins and all TBD parts are locked.
 
 ---
@@ -257,7 +263,7 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - "accepted exception" for LMQ or PoE cold-start (zero exceptions remain in the system)
 - "Extension board: NO U1 buffer" — WRONG; Extension U1 IS correct and present
 - ERJ-3EKF2100V for R3 R_ILIM (wrong, 1% thick-film) → ERA-3ARB2100V (correct, 0.1% thin-film)
-- "NPN" / "MMBT3904" for Settings Board colour-rail transistors → PNP MMBT3906
+- "PNP MMBT3906 sourcing rails" for the Settings Board discrete-LED design — superseded by BSS138 low-side colour-rail sinks in DEC-034
 - U_EXP_SW_OUT @ 0x24 (stale artefact — never existed; use U_EXP_SW_IN @ 0x26)
 - "Q1"/"Q2"/"Q3"/"Q4" as transistor names on Settings Board → Q_BNK1_G/R, Q_BNK2_G/R
 - SYS_RESET_N in JTAG CI (0.127mm) row — it routes at 0.20mm (DEC-031, I²C-sourced)
@@ -275,7 +281,7 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - PCA9685 @ 0x40 or any address other than 0x60 — correct address is 0x60 (A5=HIGH, A4–A0=GND)
 - SW1 / SW2 DIP switches on Stator — REMOVED (replaced by Settings Board DEC-032)
 - 2-layer stackup for Settings Board — WRONG; all boards use 4-layer JLC04161H-7628 (Controller = 6-layer)
-- SPST for Marquardt 1800 SW1 (Power Module) — WRONG; unified to SPDT with Settings Board switches
+- unified Marquardt rocker assumption across PM + Settings Board — WRONG; superseded by DEC-034 split selections
 
 ### Key Design Decisions
 
@@ -291,9 +297,11 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - MCP23017 I²C addresses: 0x20 (U_EXP1 STA), 0x21 (U_EXP2 STA), 0x22 (U_EXP4 STA),
   0x26 (U_EXP_SW_IN SBD), 0x27 (U_EXP_LED SBD). All 8 addresses (0x20–0x27) now in use.
 - Settings Board LED: green = switch-defined, red = CM5-defined (per bank)
-- Marquardt 1800 SPDT rocker: same MPN for all 13 switches (PM SW1 + SBD ×12)
-- Settings Board topology: PNP MMBT3906 for colour-rail switching; emitter → 3V3_ENIG,
-  collector → LED colour rail; GPIO LOW = transistor ON (active-low drive)
+- Settings Board switches: E-Switch 200MSP1T2B4M2QE for all 12 panel toggles
+- Settings Board indicator LED: Kingbright WP154A4SEJ3VBDZGW/CA (common-anode, red/green used; blue retained behind 0Ω debug link)
+- Power Module SW1: Adafruit 4660 rugged metal RGB latching switch
+- Settings Board topology: individual LED anode drive plus BSS138 low-side shared red/green colour rails;
+  separate red/green resistors per switch, plus per-switch 0Ω blue debug links; nominal 3.3V operation
 - Settings Board transistors: Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R (functional names)
 - Settings Board I²C expanders: U_EXP_SW_IN @ 0x26 (reads switches), U_EXP_LED @ 0x27
   (drives LEDs + colour rails). U_EXP_SW_OUT @ 0x24 is a STALE ARTEFACT — never use.
