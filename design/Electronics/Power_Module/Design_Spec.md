@@ -213,7 +213,7 @@ GND ──────┴──────────────────�
   * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 1% Thick-Film 0603. ILIM: 210Ω R_ILIM (R3) — **0.1% Thin-Film (ERA-3ARB2100V)**.
     Note: OVLO is silicon-fixed on TPS259804ONRGER — no external OVLO resistor required or present.
   * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
-    **SW1 (power toggle rocker) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
+    **SW1 (power toggle switch) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
     then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or
     Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
   * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
@@ -319,14 +319,18 @@ GND ──────┴──────────────────�
 
 To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp-up, we use an automated voltage supervisor combined with a manual override.
 
-* **Power Toggle (SW1):** Panel-mount latching SPDT rocker switch (Marquardt 1800 series, RGB LED —
-  MPN TBD; prefer SPDT variant to unify BOM with Settings Board SW_B1/B2 ×12; unused pole NC or
-  shorted to active pole) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line. When SW1
-  is open (ON position), R22 (10kΩ to 3V3_ENIG) holds EN HIGH → eFuse enabled. When SW1 is closed
-  (OFF position), EN is pulled to GND → eFuse output cut, all downstream power off.
-  * **Current rating:** Low-current logic signal only (EN pin draws microamps) — no high-current switch
-    rating required. Any 50mA+ rated switch is suitable.
-  * **RGB LED circuit:** SW1 integrates an RGB LED status indicator. The LED is driven by a hardware
+* **Power Toggle (SW1):** Panel-mount latching rugged metal power switch with RGB ring LED
+  (Adafruit 4660) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line.
+  When SW1 is open (ON position), R22 (10kΩ to 3V3_ENIG) holds EN HIGH → eFuse enabled. When SW1
+  is closed (OFF position), EN is pulled to GND → eFuse output cut, all downstream power off.
+  * **Current rating:** The EN contact is low-current logic only (microamp-scale load), but the
+    selected front-panel hardware remains the Adafruit 4660 or an exact mechanical/electrical
+    equivalent with the same 16mm panel fit, latching action, RGB ring interface, and 2.8mm
+    terminal scheme.
+  * **Mechanical / wiring:** Use the switch's 2.8mm pin terminals via six matching PCB-mounted
+    2.8mm male spade tabs on the Power Module so the panel switch can be wired as a
+    field-serviceable harnessed subassembly.
+  * **RGB LED circuit:** SW1 integrates an RGB LED status indicator ring. The LED is driven by a hardware
     handoff circuit: before CM5 boot, the MIC1555 oscillator (U11) drives the Red and Green channels
     via Q4 (BSS138 NMOSFET gate) to produce a 1Hz orange flash (R+G simultaneously). Once CM5
     firmware asserts SW_LED_CTRL (BtB pin 47, CM5 GPIO 20) HIGH, Q4 is disabled and CM5 drives
@@ -487,7 +491,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KBYCT-ND | — |
 | R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R30 | LTC3350 RT frequency-setting resistor (RT pin to GND — sets switching frequency to 400 kHz) | 33.2kΩ 1% E96 Thick-Film [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | 0402 | 667-ERA-2AEB3322X | P33.2KDCCT-ND | C2087909 |
-| SW1 | Main Power Toggle + RGB Status | Marquardt 1800 series panel-mount SPDT latching rocker with RGB LED — MPN TBD (prefer SPDT variant to unify BOM with Settings Board SW_B1/B2 switches ×12; unused pole tied NC or shorted to active pole on SW1). Black body; RGB LED insert (R+G minimum). Connects to TPS25980 eFuse EN pin (low-current, logic-level only). Connected via Keystone 1285 spade blade terminals for SW contacts; RGB LED pins connect directly to PCB pads. | Panel-mount | TBD | TBD | — |
+| SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
+| BT_SW1_1–BT_SW1_6 | PCB male spade tabs for SW1 harness | 2.8mm (0.110in) vertical PCB-mount male blade terminals; six total to mate with the Adafruit 4660 switch terminals (switch contact + RGB ring LED harness) | THT blade tab | TBD | TBD | TBD |
 | SW2 | CM5 Power Button | Tactile SMT pushbutton, momentary SPST, wired from `PWR_BUT` to GND. Brief press (<2s) sends a power-key event to CM5 PMIC — wakes CM5 from halted state when OS is shut down, or initiates graceful shutdown when OS is running. No pull-up required (CM5 integrates 10kΩ on PWR_BUT). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |

@@ -326,7 +326,7 @@ sudo hwclock --show
 - [ ] Verify LTC3350 I²C address (0x09 is default; may change based on ADDR pin strapping — check schematic)
 - [ ] Test hold-up timing under actual CM5 load profile (5W assumed; measure at first prototype)
 - [ ] Consider adding LTC3350 charge status polling (SOC readout) for optional status LED control from software
-- [ ] Confirm Marquardt 1800 series exact PN for RGB LED rocker (select at mechanical design stage for panel cutout dimensions)
+- [x] Power Module SW1 selected: Adafruit 4660 rugged metal RGB latching switch with 16mm panel cutout and 2.8mm pin terminals
 - [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
 - [x] SW_LED_CTRL (GPIO 20) added to Link-Alpha pin 47 wiring — completed; see Controller/Board_Layout.md LINK-ALPHA table.
 - [ ] Verify CM5 VBAT (Pin 95) is correctly identified in the CM5 Hirose DF40 200-pin connector datasheet before PCB layout.

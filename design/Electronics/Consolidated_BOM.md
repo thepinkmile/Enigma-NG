@@ -53,11 +53,10 @@ the Rev A single-Extension configuration unless otherwise noted.
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
-| BSS138 (onsemi) — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| BSS138 (onsemi) — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 4 | 6 |
 | BAT54 (Diotec) — Schottky Diode (SOD-323 / SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 2 | 5 |
 | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| MMBT3906 — PNP General-Purpose Transistor (SOT-23) | — | — | — | — | — | — | — | — | — | — | 4 | 4 |
 | J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (TBD MPN) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 9 | 80 | 240 | 8 | 240 | — | 1 | 4 | 3 | 513 |
@@ -99,7 +98,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 30.1 kΩ 0.1% 0603 thin-film supercap BACKUP R\_TOP (ERA-3ARB3012V — see DEC-030) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB103V) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 33.2 kΩ 1% 0402 thick-film LTC3350 RT freq-set (ERA-2AEB3322X) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 2 | — | — | 2 |
+| 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 2 | — | 12 | 14 |
 | Ferrite bead 120 Ω @100 MHz 4.0 A 1206 (Laird HI1206P121R-10) | — | — | 4 | — | — | — | — | — | — | — | — | 4 |
 | | | | | | | | | | | | | |
 | ERM8-040 80-pin Samtec BtB Male Header(Link-Alpha) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -131,7 +130,10 @@ the Rev A single-Extension configuration unless otherwise noted.
 | PoE ACF Isolation Transformer (Coilcraft POE600F-12LD) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | EMI Common-Mode Choke (Würth WE-CMBNC 7448031002) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | DM Filter Inductor 10 µH 15.5 A (Bourns SRP1265A-100M) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| Power / Config RGB Rocker Switch (Marquardt 1800 series SPDT) | 1 | — | — | — | — | — | — | — | — | — | 12 | 13 |
+| Power Module RGB Metal Power Switch (Adafruit 4660) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| Power Module 2.8 mm PCB Male Spade Tabs (SW1 harness) | 6 | — | — | — | — | — | — | — | — | — | — | 6 |
+| Settings Board SPDT Toggle Switch (E-Switch 200MSP1T2B4M2QE) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
+| Settings Board Discrete RGB LED (Kingbright WP154A4SEJ3VBDZGW/CA) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
 | Tactile SMT Reset Switch (SKRPACE010) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | Green SMD LED 0402 (Würth 150060VS75000 / C2286) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
 | 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
@@ -259,29 +261,36 @@ STATOR_CFG_RDY). U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz). J_CFG connects to Settin
 
 ## 4d. Settings Board
 
-The Settings Board replaces the Stator DIP switches with user-accessible panel-mount illuminated
-RGB rocker switches. See `Settings_Board/Design_Spec.md` for the full design specification.
+The Settings Board replaces the Stator DIP switches with user-accessible panel-mount toggle
+switches plus discrete RGB indicator LEDs. See `Settings_Board/Design_Spec.md` for the full design
+specification.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 | U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x26 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| U_EXP_LED | MCP23017 I²C GPIO Expander (LED cathode + colour rail driver) | MCP23017T-E/SO @ 0x27 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| SW_B1_EN, SW_B1[0:3] | Bank 1 illuminated RGB rocker switches (×5: bank enable + routing bits 0–3) | Marquardt 1800 series panel-mount SPDT latching rocker with RGB LED — MPN TBD (same variant as PM SW1; select SPDT to unify BOM; one pole NC where SPST behaviour needed) | Panel-mount | TBD | TBD | — | ⏳ MPN TBD |
-| SW_B2_EN, SW_B2[0:5] | Bank 2 illuminated RGB rocker switches (×7: bank enable + reflector bits 0–5) | Marquardt 1800 series panel-mount SPDT latching rocker with RGB LED — MPN TBD (same variant as PM SW1) | Panel-mount | TBD | TBD | — | ⏳ MPN TBD |
+| U_EXP_LED | MCP23017 I²C GPIO Expander (LED anode + colour rail driver) | MCP23017T-E/SO @ 0x27 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| SW_B1_EN, SW_B1[0:3] | Bank 1 configuration toggle switches (×5: bank enable + routing bits 0–3) | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
+| SW_B2_EN, SW_B2[0:5] | Bank 2 configuration toggle switches (×7: bank enable + reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
+| LED_B1_EN, LED_B1[0:3] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED; red/green used in normal operation, blue routed via 0Ω debug link | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
+| LED_B2_EN, LED_B2[0:5] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount — MPN TBD | Panel-mount | TBD | TBD | — | ⏳ MPN TBD |
 | J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) | ⏳ JLCPCB PN TBD |
-| Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | PNP colour-rail transistors (×4) | MMBT3906 | SOT-23 | 512-MMBT3906 | MMBT3906CT-ND | C20527 | 🔒 |
+| Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | Low-side colour-rail sink MOSFETs (×4) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 | 🔒 |
 | R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
 | R_CA1 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
-| R_LED_ANODE | LED anode current-limiting resistors (×4, one per colour rail) | TBD Ω | 0603 | TBD | TBD | TBD | ⏳ value TBD |
-| R_BASE1–R_BASE4 | PNP base-limiting resistors (×4) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P1.00KLBCT-ND | C25705 | 🔒 |
+| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | TBD Ω — tuned for nominal 3.3V operation and desired panel brightness | 0603 | TBD | TBD | TBD | ⏳ value TBD |
+| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | TBD Ω — tuned for nominal 3.3V operation and desired panel brightness | 0603 | TBD | TBD | TBD | ⏳ value TBD |
+| R_LED_B (x12) | Per-switch blue LED debug links | 0Ω link; routes each blue cathode to an isolated debug node for prototype bodge / measurement work | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 | ✅ |
+| R_GATE1–R_GATE4 | MOSFET gate resistors (×4) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 | 🔒 |
 | C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 | C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x26) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 | C_U_EXP_LED | VCC decoupling cap for U_EXP_LED (MCP23017 @ 0x27) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 
-U_EXP_SW_IN @ 0x26: reads all 12 switch states + CFG_APPLY. U_EXP_LED @ 0x27: drives per-bit
-LED cathodes and per-bank green/red colour-rail transistors. Both share the Stator I²C-1 bus via
-the J_I2C → J_CFG ribbon cable. Switch MPNs are TBD pending illuminated rocker switch selection.
+U_EXP_SW_IN @ 0x26: reads all 12 switch states + CFG_APPLY. U_EXP_LED @ 0x27: drives per-bit LED
+anodes and per-bank green/red colour-rail MOSFET sinks. Both share the Stator I²C-1 bus via the
+J_I2C → J_CFG ribbon cable. Discrete LED brightness is balanced with separate red and green series
+resistors per switch under nominal 3.3V operation, while the blue die is retained behind a
+per-switch 0Ω debug link.
 
 ## 5. Controller Specifics
 
@@ -445,7 +454,7 @@ Product page links for all major components for design review and procurement ve
 | J1 (PM) + Rotor/Stator/Reflector/Extension ERM8 | ERM8-040/020/010/005 — 0.8mm-pitch BtB Male Headers | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | C_SC1–8 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
-| SW2 (STA), SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
+| SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
 | J4–J6 (STA), J2 (ENC) | T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm | Amphenol | TBD — datasheet to be added |
 | J7 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | TBD — datasheet to be added |
 | J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |

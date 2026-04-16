@@ -20,18 +20,21 @@ Content to be populated during detailed mechanical design phase.
 ### Settings Board — Configuration Switch Panel
 
 The right side of the enclosure **top face**, positioned near the rotor stack, must provide panel
-cutouts for the 12 illuminated RGB rocker switches and 1 CFG_APPLY pushbutton of the Settings Board.
+cutouts for the 12 Settings Board toggle switches, 12 matching RGB indicator LEDs, and 1 CFG_APPLY
+pushbutton.
 
 | Feature | Quantity | Location | Notes |
 | :--- | :---: | :--- | :--- |
-| Rocker switch cutouts (Bank 1 — Plugboard Routing) | 5 | Right side, top face, near rotors | Bank 1 enable + SW_B1[0:3] — panel-mount SPDT illuminated rocker |
-| Rocker switch cutouts (Bank 2 — Reflector Mapping) | 7 | Right side, top face, near rotors | Bank 2 enable + SW_B2[0:5] — panel-mount SPDT illuminated rocker |
+| Toggle switch cutouts (Bank 1 — Plugboard Routing) | 5 | Right side, top face, near rotors | Bank 1 enable + SW_B1[0:3] — panel-mount SPDT toggle |
+| Toggle switch cutouts (Bank 2 — Reflector Mapping) | 7 | Right side, top face, near rotors | Bank 2 enable + SW_B2[0:5] — panel-mount SPDT toggle |
+| RGB LED apertures (Bank 1 indicators) | 5 | Adjacent to Bank 1 toggles | One 5mm indicator LED per switch position |
+| RGB LED apertures (Bank 2 indicators) | 7 | Adjacent to Bank 2 toggles | One 5mm indicator LED per switch position |
 | CFG_APPLY pushbutton cutout | 1 | Right side, top face | Momentary pushbutton; triggers CPLD config re-latch |
 
-The Settings Board PCB mounts internally to the enclosure panel, with switches and the pushbutton
-protruding through the panel cutouts. The board connects to the Stator Board via a 4-wire I²C
-ribbon cable (SDA, SCL, 3V3_ENIG, GND). Panel cutout dimensions and switch bezel clearances are
-to be defined at detailed mechanical design phase based on the selected switch part.
+The Settings Board PCB mounts internally to the enclosure panel, with the toggles, LEDs, and the
+pushbutton protruding through their panel cutouts. The board connects to the Stator Board via a
+4-wire I²C ribbon cable (SDA, SCL, 3V3_ENIG, GND). Final toggle-hole, LED-hole, and stand-off /
+spacer geometry are to be defined at detailed mechanical design phase based on the selected parts.
 
 See `design/Electronics/Settings_Board/Design_Spec.md` for the electrical specification of the
 Settings Board.

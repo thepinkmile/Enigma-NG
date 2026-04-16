@@ -177,7 +177,7 @@ All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through to th
 | 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control |
 | 0x22 | MCP23017 (U_EXP4) | Stator | CPLD config output driver (DEC-032) |
 | 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
-| 0x27 | MCP23017 (U_EXP_LED) | Settings Board | LED cathode + colour-rail driver (DEC-032) |
+| 0x27 | MCP23017 (U_EXP_LED) | Settings Board | LED anode + colour-rail driver (current Settings Board implementation; see DEC-034) |
 | 0x60 | PCA9685 (U_EXP3) | Stator | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
 ## 5. RTC Backup Battery

@@ -35,7 +35,7 @@ The following table lists every component category present in the assembled mach
 | Main Enclosure | 1 | Chassis, panels, cable routing, EMI bonding, fan | `Main_Enclosure/Design_Spec.md` |
 | Servo Motor | 1 | Miuzei Metal Gearbox 90 (5V, 3-pin, PCB-mount on Stator) | `Rotor_Actuation_Assembly/Design_Spec.md` |
 | SERVO_HOME Switch | 1 | SPST NO momentary (Omron SS-01GL13), PCB-mount on Stator | `Stator/Design_Spec.md` (Electronics) |
-| Settings Board | 1 | Panel-mount configuration switch PCB (12× illuminated RGB rockers + CFG_APPLY button); mounts to right side top face of Main Enclosure; connects to Stator via I²C ribbon | `Settings_Board/Design_Spec.md` (Electronics) |
+| Settings Board | 1 | Panel-mount configuration switch PCB (12× SPDT toggles, 12× discrete RGB indicators, + CFG_APPLY button); mounts to right side top face of Main Enclosure; connects to Stator via I²C ribbon | `Settings_Board/Design_Spec.md` (Electronics) |
 | Cable Harnesses | TBD | LINK-ALPHA, LINK-BETA, encoder IDC ribbons, reflector cable, fan cable, Settings Board I²C ribbon | Each sub-assembly doc |
 | Connectors | TBD | ERF8/ERM8 BtB, JST PH servo, JST SH fan, Molex IDC encoder, etc. | Per sub-assembly BOM |
 
@@ -53,10 +53,10 @@ steps are detailed in each referenced document; this section defines integration
 | 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Stator J_SERVO. Verify SERVO_HOME switch actuation. |
 | 6 | HID Assembly | Build keyboard panel + lightboard panel + HID Encoder PCB. Connect IDC ribbon to Stator J4. |
 | 7 | Plugboard Assembly | Build plugboard jack panel + Encoder PCBs. Connect IDC ribbons to Stator J5/J6. |
-| 8 | Reflector | Install Reflector sub-assembly. Connect 16-pin Molex cable to Stator J7. (Skip if using Stator CPLD internal reflector via SW2.) |
+| 8 | Reflector | Install Reflector sub-assembly. Connect 16-pin Molex cable to Stator J7. (Skip if using Stator CPLD internal reflector via Settings Board reflector-enable toggle `SW_B2[5]`.) |
 | 9 | Extension (if used) | Daisy-chain Extension boards between Rotor 30 and Reflector for multi-stack configurations. |
 | 10 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Connect LINK-ALPHA to Power Module (J1). Connect LINK-BETA to Stator (J2/J8). |
-| 11 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route 4-wire I²C ribbon cable (SDA, SCL, 3V3_ENIG, GND) to Stator J_CFG. Verify switch and LED function via CM5 I²C scan before final panel closure. |
+| 11 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route 4-wire I²C ribbon cable (SDA, SCL, 3V3_ENIG, GND) to Stator J_CFG. Verify `U_EXP_SW_IN` / `U_EXP_LED` appear on the I²C bus, then run a functional check that reads switch-state changes and drives each bank's red/green indicator rails before final panel closure. |
 | 12 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
 
 > **Note on the JTAG Daughterboard (JDB):** The JDB is a PCB hat that mounts directly on the

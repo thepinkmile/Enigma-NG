@@ -152,7 +152,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 **Cable:** 4-wire ribbon cable to Settings Board J_I2C (100mm recommended).
 
 > SW1 and SW2 DIP switches have been removed. Configuration is now handled via
-> panel-mount illuminated rocker switches on the Settings Board (DEC-032).
+> panel-mount toggle switches with discrete RGB indicators on the Settings Board (current implementation; see DEC-034).
 > R16–R26 pull-downs are retained on the Stator CPLD config input pins to hold
 > all configuration bits at logic-0 during power-up until CM5 initialises U_EXP4.
 

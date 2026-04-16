@@ -1488,7 +1488,7 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 ### Summary
 
 Replace the Stator Board's DIP switches (SW1 routing, SW2 reflector map) with panel-mount
-illuminated RGB rocker switches on a dedicated Settings Board PCB. The Settings Board connects to
+toggle switches plus discrete RGB indicators on a dedicated Settings Board PCB. The Settings Board connects to
 the Stator via I²C only (no parallel signal wiring). A new MCP23017 expander (U_EXP4 @ 0x22) on
 the Stator Board bridges the I²C configuration data to the CPLD config input pins.
 
@@ -1502,10 +1502,10 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 
 1. Remove SW1 and SW2 from the Stator Board.
 2. Add a new Settings Board PCB (panel-mount, right side of enclosure top face near rotors) with:
-   - 12 illuminated RGB rocker switches (5 for Bank 1 routing, 7 for Bank 2 reflector mapping)
+   - 12 panel toggle switches plus 12 discrete RGB indicators (5 for Bank 1 routing, 7 for Bank 2 reflector mapping)
    - 1 momentary CFG_APPLY pushbutton
    - U_EXP_SW_IN (MCP23017 @ 0x26): reads switch states
-   - U_EXP_LED (MCP23017 @ 0x27): drives per-bit LED cathodes + per-bank colour rails
+   - U_EXP_LED (MCP23017 @ 0x27): drives per-bit LED anodes + per-bank colour rails
 3. Add U_EXP4 (MCP23017 @ 0x22) to the Stator Board. Its outputs drive the CPLD configuration
    input pins directly (SW1[0:3] and SW2[0:5]). Pull-downs R16–R26 are retained on the CPLD
    input pins to hold safe defaults (all-zero) at power-up before CM5 initialises U_EXP4.
@@ -1522,7 +1522,7 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 
 - **Green illumination:** Bank is in switch-defined mode (bank enable HIGH); illuminated bits show active switch positions.
 - **Red illumination:** Bank is in CM5-defined mode (bank enable LOW); illuminated bits show CM5-programmed configuration.
-- Per-bank shared colour rail: all switches in a bank share the same colour (green or red) while individual cathode control shows which bits are set.
+- Per-bank shared colour rail: all switches in a bank share the same colour (green or red) while individual anode control shows which bits are set.
 
 ### I²C Address Assignments (new)
 
@@ -1530,11 +1530,11 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 | :--- | :--- | :--- |
 | 0x22 | MCP23017 (U_EXP4) | Stator — CPLD config output driver |
 | 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board — switch input reader |
-| 0x27 | MCP23017 (U_EXP_LED) | Settings Board — LED cathode + colour rail driver |
+| 0x27 | MCP23017 (U_EXP_LED) | Settings Board — LED anode + colour rail driver |
 
 ### Rationale
 
-- Replacing DIP switches with panel rockers makes configuration user-accessible without opening the enclosure.
+- Replacing DIP switches with panel toggles makes configuration user-accessible without opening the enclosure.
 - I²C-only wiring between Settings Board and Stator (4 wires: SDA, SCL, 3V3_ENIG, GND) keeps the
   cable harness minimal vs 10+ parallel signal wires.
 - Retaining R16–R26 pull-downs ensures the CPLD receives a safe all-zero default at power-up
@@ -1614,6 +1614,69 @@ and mouse for system administration tasks.
 - **Main Enclosure:** Lid requires provision for display mounting and FPC hinge routing (see `Main_Enclosure/Design_Spec.md`)
 - **Display Add-on Board:** Deferred — to be designed as a separate optional add-on
 - **Firmware / OS:** Standard RPi DSI1 display driver; no custom firmware changes needed for basic display output
+
+---
+
+## DEC-034 — Switch Hardware Refresh: Settings Board Toggle + Discrete RGB LED, Ruggedized PM SW1
+
+- **Status:** Decided
+- **Date:** 2026-04-16
+- **Category:** Electrical / HMI / Mechanical interface
+- **Area:** Settings Board; Power Module front-panel switchgear
+- **Author:** Izzyonstage & GitHub Copilot
+
+### Summary
+
+Replace the old unified Marquardt rocker-switch assumption with two purpose-specific solutions:
+E-Switch 200-series toggle switches plus discrete RGB LEDs on the Settings Board, and the Adafruit
+4660 rugged metal RGB latching switch for Power Module SW1.
+
+### Problem
+
+The previous design direction forced the Settings Board and Power Module onto one shared switch
+family even though the two locations serve different aesthetic, mechanical, and service roles. The
+Settings Board benefits from classic toggle controls with separate indicators, while the Power Module
+benefits from a sealed, rugged metal power switch with a more robust panel interface and
+spade-terminal wiring.
+
+### Decision
+
+1. **Settings Board switch selection:** Use `200MSP1T2B4M2QE` for all 12 configuration toggles
+   (`SW_B1_EN`, `SW_B1[0:3]`, `SW_B2_EN`, `SW_B2[0:5]`).
+2. **Settings Board LED selection:** Use `WP154A4SEJ3VBDZGW/CA` for all 12 switch indicators.
+   - Kingbright 5mm common-anode RGB through-hole LED
+   - Red + green channels used in normal operation; blue retained behind a per-switch 0Ω debug link
+   - Separate red and green series resistors per switch allow colour balancing under nominal 3.3V operation
+3. **Settings Board LED topology update:** Change the indicator drive from the previous
+   common-cathode / PNP sourcing concept to:
+   - individual LED anode drive from `U_EXP_LED`
+   - per-bank red / green shared cathode rails
+   - low-side BSS138 sink devices on each bank colour rail
+4. **Power Module switch selection:** Use Adafruit `4660` for `SW1`.
+   - Latching rugged metal power switch
+   - RGB ring illumination
+   - 16mm panel cutout
+   - 2.8mm pin terminals routed to PCB-mounted 2.8mm male spade tabs for serviceable harnessing
+
+### Rationale
+
+- The Settings Board now matches the machine's more period-correct control aesthetic better than a
+  rocker-based panel.
+- Separate LEDs give more freedom over indicator placement and future panel detailing than
+  integrated illuminated switches.
+- The Power Module switch benefits from a tougher sealed metal body and clearer power-switch
+  identity than the previous shared-family concept.
+- Breaking the false BOM unification removes a mechanical compromise that was not buying any real
+  electrical simplification.
+
+### Impact
+
+- **Settings Board Design_Spec / Board_Layout:** switch type, LED type, and LED driver polarity all
+  change
+- **Consolidated BOM:** split the old shared rocker line into distinct Settings Board and Power
+  Module entries
+- **Power Module Design_Spec:** SW1 selection and harnessing updated to the rugged metal switch
+- **Copilot handoff / component tracking:** the old Marquardt-all-13-switches assumption is retired
 
 ---
 
