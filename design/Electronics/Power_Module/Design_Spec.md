@@ -14,10 +14,13 @@ It provides the basis of the clean power rails into the controller board and oth
 It produces 2 power rails from a common ~12V input source. These power rails are:
 
 * **5V_MAIN** Providing up to 12A for powering the CM5 module (dual-phase interleaved LMQ61460AFSQRJRRQ1).
-* **3V3_ENIG** Providing clean 3.3V power for CPLDs, USB-JTAG interface, I2C logic, status indicator logic, and the full rotor stack.
+* **3V3_ENIG** Providing clean 3.3V power for CPLDs, USB-JTAG VCCIO, I2C logic, status
+  indicator logic, and the full rotor stack.
 
-**NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. The **3V3_ENIG** rail (generated on this Power Module by the TPS75733 LDO) is the unified 3.3V rail supplying
-CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG power crosses to the Controller Board via BtB Link-Alpha pins 39–44.
+**NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. The **3V3_ENIG** rail
+(generated on this Power Module by the TPS75733 LDO) is the unified 3.3V rail supplying
+CPLDs, USB-JTAG logic/VCCIO, and low-voltage control/telemetry domains. 3V3_ENIG power
+crosses to the Controller Board via BtB Link-Alpha pins 39–44.
 
 * **Controller Link (Link-Alpha):** 80-pin ERM8 connector for power/ethernet/telemetry handshake with the Controller Board.
   * **Provided to Controller:** 5V_MAIN, 3V3_ENIG, GBE signals, and PWR_GD.
@@ -37,7 +40,7 @@ CPLDs, USB-JTAG logic, and system peripherals (USB, HDMI, Ethernet). 3V3_ENIG po
 | FR-PM-07 | Automatically pulse CM5 PWR_BUT LOW for 3 seconds when LTC3350 enters backup mode (primary power lost), initiating a hardware-guaranteed graceful OS shutdown without firmware polling | Ensures graceful shutdown within the 33.5 s hold-up window regardless of OS state | §3 Power Sequencing; §5 Protection & Logic; BOM U15 (MIC1555 monostable), Q5, R28, R29, C32, C33 |
 | FR-PM-08 | Provide manual CM5 power button (SW2) wired to PWR_BUT, enabling graceful power-on after OS shutdown while system power remains available | Allows CM5 restart without a full power cycle; replaces incorrect GLOBAL_EN hard-reset approach | §3 Power Sequencing; BOM SW2, R29 |
 | FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
-| FR-PM-05 | Monitor output voltage and current on each rail and report via I2C | Telemetry for runtime health monitoring | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups), U12 (INA219 at 0x40), R23 (10mΩ shunt) |
+| FR-PM-05 | Monitor 5V_MAIN output voltage and current and report via I2C | Runtime health telemetry for the primary CM5 supply rail; downstream rails are monitored elsewhere in the system where specified | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups), U12 (INA219 at 0x40), R23 (10mΩ shunt) |
 | FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software | §5 Protection & Logic; BOM U1 (TPS25980 eFuse), R1–R3 |
 
 #### Design Requirements
@@ -205,16 +208,19 @@ GND ──────┴──────────────────�
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.
 * **Internal Handshake:** TPS25751 PD Emulator (U4) provides **5V/5A** "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
-* **OR-ing Priority:** PoE (12V) is the lowest-voltage source and would be silently bypassed by passive OR-ing in favour of USB-C (15V). The LM74700-Q1 USB-C path enable pin is driven by the
-
-  TPS2372-4 `/PG` signal — when PoE is live, the USB-C path is actively disabled. Battery path activates only if both PoE and USB-C are absent.
+* **OR-ing Priority:** In a purely passive ideal-diode OR-ing network, PoE's 12V rail would lose to
+  the higher-voltage USB-C 15V rail. The implemented design prevents that: the LM74700-Q1 USB-C path
+  enable pin is driven by the TPS2372-4 `/PG` signal, so when PoE is live the USB-C path is actively
+  disabled. The Battery path
+  is the third ideal-diode input; its precedence relative to USB-C follows the active source
+  voltages at the OR-ing stage unless additional gating is added at schematic capture.
 
 * **eFuse:** TPS259804ONRGER (16.9V OVLO silicon-fixed, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 1% Thick-Film 0603. ILIM: 210Ω R_ILIM (R3) — **0.1% Thin-Film (ERA-3ARB2100V)**.
     Note: OVLO is silicon-fixed on TPS259804ONRGER — no external OVLO resistor required or present.
   * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
     **SW1 (power toggle switch) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
-    then flip SW1 back to ON (EN pulled HIGH via R22 → normal operation resumes). At least one input source (PoE, USB-C, or
+    then flip SW1 back to ON (EN pulled HIGH via R22 to VIN_BUS → normal operation resumes). At least one input source (PoE, USB-C, or
     Battery) must remain present so VIN_BUS is available when the eFuse re-enables.
   * ⚠️ If all three input sources are simultaneously absent, the supercap bank must be recharged before the system will restart. No dedicated reset button is needed beyond SW1.
 * **Supercap Manager:** LTC3350 (QFN-38, 5×7mm) on 5V_MAIN bus. Manages 8-cell bank (2S4P, 50F/5.4V); provides 0.5A soft-charge current limit; automatic hold-up switchover on 5V_MAIN loss.
@@ -268,7 +274,7 @@ GND ──────┴──────────────────�
   * ROTOR_EN LOW → LDO **enabled** → 3V3_ENIG present (CPLDs + rotor stack powered).
   * **Thermal Budget (TPS75733):**
     * V_dropout ≈ 0.18V (TPS75733 typical at 1.85A). Typical dissipation: **~0.33W** (1.85A load, Vdo≈0.18V).
-    * At worst-case 2.11A load: P_diss ≈ 0.22V × 2.11A ≈ **~0.46W** worst-case.
+    * At worst-case 2.05A load: P_diss ≈ 0.22V × 2.05A ≈ **~0.45W** worst-case.
     * Standard TO-263 package thermal pad and ground vias are sufficient at this dissipation level. The ≥200mm² copper pour requirement from the previous high-dissipation LDO design is removed.
     * At 40°C ambient with standard PCB copper: T_J well within 125°C limit. ✓
 
@@ -321,7 +327,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 * **Power Toggle (SW1):** Panel-mount latching rugged metal power switch with RGB ring LED
   (Adafruit 4660) connected to the TPS25980 eFuse **EN pin**, not the main VIN_BUS power line.
-  When SW1 is open (ON position), R22 (10kΩ to 3V3_ENIG) holds EN HIGH → eFuse enabled. When SW1
+  When SW1 is open (ON position), R22 (10kΩ to VIN_BUS) holds EN HIGH → eFuse enabled. When SW1
   is closed (OFF position), EN is pulled to GND → eFuse output cut, all downstream power off.
   * **Current rating:** The EN contact is low-current logic only (microamp-scale load), but the
     selected front-panel hardware remains the Adafruit 4660 or an exact mechanical/electrical
@@ -417,7 +423,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | :--- | :--- | :--- | :--- |
 | U1 TPS25980 eFuse | 0.56W | 0.65W (7A) | 3mΩ Ron (typ.) + ~0.5W quiescent |
 | U2A + U2B LMQ61460-Q1 (×2) | 5.2W total | 6.7W (15V USB-C, 90% η) | 2.6W per device at 92% η; exposed pads to GND vias |
-| U7 TPS75733 LDO | 0.33W (1.85A load) | 0.46W (2.11A load, Vdo≈0.22V) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
+| U7 TPS75733 LDO | 0.33W (1.85A load) | 0.45W (2.05A load, Vdo≈0.22V) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 | T2 POE600F-12LD | 5.1W | 5.7W | At 90–88% efficiency, 51–57W load |
 | U3 LTC3350 | 0.3W | 0.5W | Charge path only (0.5A); low concern |
 | U9 TPS2372-4 | ~0.2W | ~0.3W | VQFN-20 thermal pad to GND pour |
@@ -500,8 +506,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R25 | SYNC delay chain SW-ringing isolation resistor (R_SW) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R26 | SYNC 180° phase delay resistor (R_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 82.0kΩ 1% Thick-Film (ERJ-2RKF8202X) | 0402 | 667-ERJ-2RKF8202X | P82.0KLCT-ND | C400641 |
 | R27 | U2B SYNC pull-down to AGND (R_PD) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOD-323 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
-| D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOD-323 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
+| D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
+| D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |

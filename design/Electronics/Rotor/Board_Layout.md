@@ -196,18 +196,19 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) handles bus current w
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Rotor power analysis (pass-through sizing):**
-Each rotor draws 50 mA (EPM570) + 6.5 mA (FDC2114 U2/U3) = **56.5 mA ≈ 57 mA** locally.
+Each rotor draws 50 mA (EPM570) + 2 × 2.1 mA (FDC2114 pair U2/U3 or U2/U4) = **54.2 mA ≈ 55 mA** locally.
 The J2 power input connector daisy-chains 3V3_ENIG through J5 to the next rotor. All 30 rotor PCBs
 are **identical**, so traces must be sized for the worst case — **Rotor 1**, which receives
-30 × 57 mA = **1.71 A** through its J2 connector and passes 29 × 57 mA = 1.65 A to Rotor 2 via J5.
+Using the 55 mA design budget, Rotor 1 carries **1.65 A** through its J2 connector and passes
+29 × 55 mA = **1.60 A** to Rotor 2 via J5.
 
 | Rotor position | J2 input current | Local draw | J5 output current |
 | :--- | :--- | :--- | :--- |
-| Rotor 1 (worst case) | 1.71 A | 57 mA | 1.65 A |
-| Rotor 15 (mid-stack) | 0.86 A | 57 mA | 0.80 A |
-| Rotor 30 (last) | 57 mA | 57 mA | 0 A |
+| Rotor 1 (worst case) | 1.65 A | 55 mA | 1.60 A |
+| Rotor 15 (mid-stack) | 0.88 A | 55 mA | 0.83 A |
+| Rotor 30 (last) | 55 mA | 55 mA | 0 A |
 
-IPC calculation for worst-case 1.71 A at 2oz external: 1.71 × 0.15 mm = 0.26 mm → **0.80 mm** (3V3_ENIG canonical width per Global_Routing_Spec §1.1; consistent with PM and Stator 3V3_ENIG trunk traces).
+IPC calculation for worst-case 1.65 A at 2oz external: 1.65 × 0.15 mm = 0.25 mm → **0.80 mm** (3V3_ENIG canonical width per Global_Routing_Spec §1.1; consistent with PM and Stator 3V3_ENIG trunk traces).
 
 ### Trace Width Table
 
@@ -215,9 +216,9 @@ IPC calculation for worst-case 1.71 A at 2oz external: 1.71 × 0.15 mm = 0.26 mm
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Signal (ENC_IN/OUT, FDC2114 I2C SDA/SCL, SYS_RESET_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic; CPLD data I/O; I2C to FDC2114 capacitive encoder; SYS_RESET_N is a slow-logic CPLD reset sourced from Stator U_EXP2 GPA[7] — not a CI signal |
 | JTAG signals: TCK, TMS, TTD in/out (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. |
-| 3V3_ENIG local draw (J2 → CPLD + FDC2114 supply) | 57 mA | 0.009 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); local IC supply only |
-| 3V3_ENIG pass-through rail (J2 input → J5 output bus) | 1.71 A (Rotor 1) | 0.26 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 3V3_ENIG trunk width (Global_Routing_Spec §1.1); Rotor 1 worst case; feeds L3 pour via thermal vias between J2 and J5 |
-| 3V3_ENIG distribution (inner power pour) | up to 1.71 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution across the board |
+| 3V3_ENIG local draw (J2 → CPLD + FDC2114 supply) | 55 mA | 0.008 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); local IC supply only |
+| 3V3_ENIG pass-through rail (J2 input → J5 output bus) | 1.65 A (Rotor 1 budget) | 0.25 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 3V3_ENIG trunk width (Global_Routing_Spec §1.1); Rotor 1 worst case; feeds L3 pour via thermal vias between J2 and J5 |
+| 3V3_ENIG distribution (inner power pour) | up to 1.65 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution across the board |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
 
 ### Notes
@@ -230,4 +231,4 @@ IPC calculation for worst-case 1.71 A at 2oz external: 1.71 × 0.15 mm = 0.26 mm
   J4 kept < 5 mm and routed at 0.127 mm consistent with the CI chain.
 * **3V3_ENIG power rail:** The L3 copper pour is the primary current path. L1 surface traces at
   0.80 mm connect J2/J5 connector pads to the L3 pour via thermal vias. All 30 rotor boards share
-  the same PCB layout — the 1.71 A worst-case sizing ensures safe operation at every stack position.
+  the same PCB layout — the 1.65 A worst-case sizing ensures safe operation at every stack position.

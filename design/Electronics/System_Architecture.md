@@ -18,6 +18,8 @@ The Enigma-NG system comprises the following boards:
 - **Power Module** — Generates 5V_MAIN and 3V3_ENIG rails from ~12V input; connects to Controller via
   Link-Alpha.
 - **Stator** — Central backplane; the first fixed stage of the cipher path. Connects to all other boards.
+- **Settings Board** — Panel-mount switch and RGB indicator board on the shared Stator I2C-1 bus;
+  provides user-facing routing/reflector configuration input.
 - **Rotors (×30)** — Arranged in groups of 5, chaining directly output-to-input. An Extension Board sits
   between each group of 5 to re-buffer broadcast signals.
 - **Extension Board (up to ×5 within Rev A power budget)** — Bridges between rotor groups;
@@ -144,7 +146,8 @@ Power Module (TPS75733KTTRG3 LDO)
       → Rotor 1 J2 (PWR input)
         → Rotor 1 J5 (PWR output) → Rotor 2 J2 (PWR input)
           → ... [all 30 rotors chained via J2/J5]
-            → Rotor 30 J5 → Reflector J2
+            → Rotor 30 J5 (mechanical mate to Reflector J2; power pins NC on Reflector)
+      → Reflector J4 (direct ribbon return from Stator J7; actual 3V3_ENIG/GND feed)
 ```
 
 ---

@@ -11,8 +11,8 @@
 
 ## 1. Overview
 
-A plugboard with dual ¼ inch jack sockets. Each socket is connected to one of the attached Encoder
-Boards.
+A plugboard with 64 switched 1/4 inch jack sockets. Each socket bridges one Decoder output line to
+one Encoder input line on the attached Encoder Board.
 
 ---
 
@@ -20,7 +20,7 @@ Boards.
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-PLG-01 | Accept encoder input signal via plugboard jack interface | 6.35 mm (¼″) mono switched jack (Tip + Switch contact; Sleeve to chassis GND) | See `design/Electronics/Encoder/Design_Spec.md` for Encoder Board interconnect details |
+| FR-PLG-01 | Accept encoder input signal via plugboard jack interface | 6.35 mm (¼″) mono switched jack (Tip + Switch contact on Decode Half; Sleeve on Encode Half) | See `design/Electronics/Encoder/Design_Spec.md` for Encoder Board interconnect details |
 
 ---
 
@@ -28,7 +28,7 @@ Boards.
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-PLG-01 | Plugboard Plug Interface | J1 = 6.35 mm (¼″) mono switched jack (Tip + Switch contact; Sleeve to chassis GND) | BOM J1 (×64 Stecker jack sockets) |
+| DR-PLG-01 | Plugboard Plug Interface | J1 = 6.35 mm (¼″) mono switched jack (Tip + Switch contact tied to BT1–BT64; Sleeve to BT65–BT128) | BOM J1 (×64 Stecker jack sockets) |
 
 ---
 
@@ -41,8 +41,9 @@ Boards.
 
 ## 5. Physical Harness
 
-64× 2-wire assemblies (Tip wire + Switch wire), each terminated with 6.35 mm female crimp spade
-terminals. Assemblies connect the panel-mount jacks to spade banks BT1–BT128 on the Encoder PCB.
+64× 3-wire assemblies (Tip wire + Switch wire + Sleeve wire), each terminated with 6.35 mm female
+crimp spade terminals. Tip and Switch both terminate on the Decode Half bank (BT1–BT64, same node
+per character); Sleeve terminates on the Encode Half bank (BT65–BT128).
 
 ---
 

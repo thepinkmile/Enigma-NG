@@ -107,9 +107,11 @@ for CE/UKCA EMC compliance.
 
 **Input priority rationale:**
 
-- PoE is primary as it is the highest-capacity source (72W vs 75W USB-C adapter), and in fixed installations is the most reliable and managed power source.
-- USB-C is secondary as it depends on the availability of an appropriate adapter.
-- Battery is tertiary as its capacity is finite.
+- PoE is the explicitly prioritised mains-backed source in the documented LM74700/TPS2372-4 input
+  gating, making it the preferred fixed-installation supply path.
+- USB-C shares the OR-ing network with Battery and is the preferred bench/service power source when
+  PoE is absent.
+- Battery shares the same OR-ing path as USB-C and acts as the portable/off-grid fallback source.
 
 The LM74700-Q1 + CSD17483F4T ideal-diode OR-ing provides near-zero forward voltage drop compared to Schottky diodes, minimising thermal dissipation at the input selection stage, which directly reduces
 junction temperatures across the power chain and supports IEC 60068-2 thermal test compliance.
@@ -228,12 +230,12 @@ inter-modulation products would appear at sum and difference frequencies, partia
 
 | Parameter | Value | Rationale |
 | --- | --- | --- |
-| Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; TPS75733 Vdo ≈ 0.22V worst-case at 2.11A — well above minimum input requirement |
+| Input | 5V_MAIN bus | Dropout: 5V − 3.3V = 1.7V; TPS75733 Vdo ≈ 0.22V worst-case at 2.05A — well above minimum input requirement |
 | Output noise | Low-noise linear LDO | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | High PSRR linear LDO | Attenuates Buck output ripple (800kHz effective) — negligible at CPLD supply |
-| Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 30 rotors × FDC2114RGHR (U2+U3/U4, ~6mA typ per IC × up to 2 ICs = ~12mA per rotor) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Controller-local (50mA) = 2,107mA → **2.11A rounded; 70.4% utilisation** ✓ (per Power_Budgets.md) |
+| Max output current | 3A | Peak load: 37 CPLDs × 50mA (1,850mA) + 60× FDC2114RGHR at 2.1mA typ (126mA) + FT232H VCCIO (10mA) + INA219 ×2 (2mA) + Extension buffers (10mA) + Controller-local (50mA) = 2,048mA → **2.05A rounded; 68.3% utilisation** ✓ (per Power_Budgets.md) |
 | Package | TO-263 (KTT) 5-pin 10.16×15.24mm | Standard power package; thermal pad to PCB; no large copper pour required |
-| Input power dissipation | Vdo≈0.18V × 2.11A = **~0.38W** (typ.); ≤**0.46W** worst-case | Standard TO-263 thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
+| Input power dissipation | Vdo≈0.18V × 2.05A = **~0.37W** (typ.); ≤**0.45W** worst-case | Standard TO-263 thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
@@ -254,7 +256,7 @@ consistent with military component derating standards.
 | Raspberry Pi CM5 (full rated) | 5.00A | Linux OS undervoltage threshold: 5V/5A (25W); full allocation maintained |
 | USB 3.0 (TPS2065C rated limit) | 1.60A | Single USB 3.0 port; TPS2065C current-limited |
 | HDMI (AP2331W rated limit) | 0.05A | Hot-plug current spike handled by AP2331W |
-| 3V3_ENIG LDO input (37 CPLDs) | 2.11A | 37 CPLDs × 50mA + FDC2114RGHR capacitive sensor ICs + other consumers = 2,107mA → 2.11A (per Power_Budgets.md); 3A LDO peak |
+| 3V3_ENIG LDO input (37 CPLDs) | 2.05A | 37 CPLDs × 50mA + 60× FDC2114RGHR at 2.1mA + other consumers = 2,048mA → 2.05A (per Power_Budgets.md); 3A LDO peak |
 | **Total peak** | **8.76A** | **73.0% of 12A rated Buck output** ✓ |
 
 **Component utilisation summary:**
@@ -262,7 +264,7 @@ consistent with military component derating standards.
 | Component | Function | Rated | Peak Load | Utilisation |
 | --- | --- | --- | --- | --- |
 | 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.76A | **73.0%** ✓ |
-| TPS75733KTTRG3 | 3V3_ENIG LDO | 3A | 2.11A | **70.4%** ✓ |
+| TPS75733KTTRG3 | 3V3_ENIG LDO | 3A | 2.05A | **68.3%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.67A* | **66.7%** ✓ |
 | TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 50.3W (steady) | **69.9%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
@@ -402,7 +404,9 @@ using:
 
   - **OR-ing priority note:** PoE at 12V is lower than USB-C at 15V. The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal to enforce PoE priority when PoE is live. Battery
 
-    path activates only if both higher-priority sources are absent.
+    is the third ideal-diode input; its precedence relative to USB-C follows the active source
+
+    voltages at the OR-ing stage unless additional gating is added.
 
 **System capacity: 72W** (TPS2372-4 external hotswap allows TPS23730 DC-DC to operate beyond the 51W Type 3 integrated limit; confirmed by TI PMP23365 reference design at 72W/Class 8 with TPS2372-4).
 

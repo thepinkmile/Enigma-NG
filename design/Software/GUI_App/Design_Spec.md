@@ -22,7 +22,7 @@
 * **The Virtual Enigma:** A 3D or high-res 2D representation of the 30-rotor stack.
 * **Live Power Telemetry:** Real-time Gauges for Voltage, Current (mA), and Power (W) sourced from the INA219.
   * **Rotor stack monitor:** INA219 at I²C address **0x45** (on Stator board), `R_SHUNT = 0.010Ω` (10mΩ CSS2H-2512R-R010ELF), calibration register `CAL = 0x0400`;
-    current formula: `I = V_shunt / 0.010`, range 0–3A, typical 1–2.11A; Current_LSB = 4mA.
+    current formula: `I = V_shunt / 0.010`, range 0–3A, typical 1–2.05A; Current_LSB = 4mA.
   * **Power Module monitor:** INA219 at I²C address **0x40** (on Power Module board), monitors 5V_MAIN rail.
   * See `Software/Linux_OS/Power_Management.md §INA219` for full driver code and register setup.
 * **Source Indicators:** Dynamic icons for PoE+, USB-C, and Battery (with "Time-to-Empty" countdown).

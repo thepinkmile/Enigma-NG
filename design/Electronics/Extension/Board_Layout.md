@@ -88,8 +88,8 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) carries the bus curre
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Extension board power pass-through analysis:**
-The Extension board passes 3V3_ENIG from its J7 input to the next rotor group (up to 5 rotors × 57 mA = 285 mA local group draw plus remaining upstream groups).
-Worst-case: first Extension board (Rotor group 2) passes power for Rotors 6–30 = 25 rotors × 57 mA = 1.43 A through its J5 output.
+The Extension board passes 3V3_ENIG from its J7 input to the next rotor group (up to 5 rotors × 55 mA = 275 mA local group draw plus remaining upstream groups).
+Worst-case: first Extension board (Rotor group 2) passes power for Rotors 6–30 = 25 rotors × 55 mA = 1.38 A through its J5 output.
 All Extension boards share an identical PCB layout; traces must be sized for the worst case — the first Extension board in the stack.
 
 ### Trace Width Table

@@ -30,15 +30,16 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 ## Core Component Overview
 
 * **Controller:** Raspberry Pi Compute Module 5 (CM5) carrier board for monitoring and programming the system.
-* **Power Module:** Triple-input priority (PoE+ > USB-C PD > Battery) with 11V–16.9V eFuse protection.
+* **Power Module:** Triple-input OR-ing with documented PoE-over-USB-C priority and
+  voltage-dependent USB-C/Battery precedence, plus 11V–16.9V eFuse protection.
 * **Stator:** A CPLD powered component mapper and the initial starting point of the rotor stack.
 * **Extension:** A block that allows extension of the rotor stack in 5-rotor increments.
 * **Reflector:** A logic loopback from the end of the rotor stack. Also, uses the Stator for mapping comonents (if/when required).
 
 ## Core Requirements
 
-* **Interface:** 80-pin Samtec Right-Angle Board-to-Board (BtB) links between Power->Controller and Controller->Stator.
-* **Diagnostics:** 2x10 Gold-plated (ENIG) test loop bank for 12-bit data, JTAG and signal monitoring.
+* **Interface:** 80-pin Samtec BtB Link-Alpha between Power→Controller, plus 40-pin Samtec BtB Link-Beta between Controller→Stator.
+* **Diagnostics:** 2x10 Gold-plated (ENIG) test loop bank for power, I2C, JTAG, and spare-signal monitoring.
 * **UI:** .NET 10.0 Cross-platform GUI with:
   * Live power telemetry.
   * Historical resources.
@@ -51,21 +52,26 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ### 1. Power Module (The Heart)
 
-* **Input:** Triple-input priority selection (PoE+ 802.3bt Type 4 > USB-C 15V PD > Battery 11–16.4V) via LM74700-Q1 + CSD17483F4T ideal-diode FETs.
-* **PoE:** Fully discrete 802.3bt Type 4 implementation — TPS2372-4 (PD interface) + TPS23730 (ACF DC-DC) + T2 custom isolation transformer. Capacity: 72W. Worst-case utilisation: 73.9%.
+* **Input:** Triple-input OR-ing between PoE+ 802.3bt Type 4, USB-C 15V PD, and Battery
+  11–16.4V via LM74700-Q1 + CSD17483F4T ideal-diode FETs. PoE is explicitly prioritised over
+  USB-C; USB-C vs Battery precedence follows the active input voltages unless extra gating is added.
+* **PoE:** Fully discrete 802.3bt Type 4 front end — TPS2372-4 (PD interface) + TPS23730 (ACF DC-DC) + Coilcraft POE600F-12LD transformer stage. Implemented 12V power stage capacity: 60W.
 * **Protection:** TPS25980 eFuse — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON. Plus 72°C TCO thermal fuse.
 * **Buck:** Dual-phase interleaved LMQ61460-Q1 (×2, 6A each, 12A combined, 400kHz DRSS, 180° SYNC). Effective ripple: 800kHz.
-* **LDO:** TPS75733KTTRG3 3V3_ENIG (8.8µVRMS noise, 72dB PSRR, 3A, 2.11 A load at 70.4% utilisation).
-* **UPS:** LTC3350 supercap manager + 6× Tecate SCMT32C156PRBA0 (2S3P, 33 F) on 5V_MAIN bus. 33 F at 5.4V → ≥21.7 second hold-up for clean CM5 shutdown.
+* **LDO:** TPS75733KTTRG3 3V3_ENIG (8.8µVRMS noise, 72dB PSRR, 3A, 2.05 A typical load at 68.3% utilisation).
+* **UPS:** LTC3350 supercap manager + 8× Abracon ADCR-T02R7SA256MB (2S4P, 50 F) on 5V_MAIN bus. 50 F at 5.4V → ≥33.5 second hold-up for clean CM5 shutdown.
 * **Output Rails:** 5V_MAIN (12A) and 3V3_ENIG (3A — logic, CPLDs, and rotor stack) via 80-pin Samtec ERF8 BtB to Controller Board for distribution.
+* **Panel Controls:** SW1 rugged power toggle with RGB ring LED and SW2 CM5 power button are panel-mounted controls wired to the Power Module harness.
 
 ### 2. Controller Board (The Brain)
 
 * **Module:** Raspberry Pi CM5 (BCM2712) on a custom 6-layer 2oz carrier.
 * **Power Input:** 3-way seamless switching (LM74700-Q1 ideal-diode on Power Module).
-  * **Smart Battery:** 4-pin Molex connector (12V-14.4V nominal) with SMBus telemetry.
-  * **PoE+ (802.3bt Type 4):** Up to 71.3W Power-over-Ethernet via Power Module discrete TPS2372-4 + TPS23730 + T2 ACF design. Single Ethernet cable carries both data and power.
-  * **USB-C PD:** 5V/5A negotiated input.
+  * **Smart Battery:** 5-pin Molex Micro-Fit connector (11V-16.4V nominal) with SMBus telemetry + BATT_PRES_N.
+  * **PoE+ (802.3bt Type 4):** Power-over-Ethernet delivered through the Power Module discrete
+    TPS2372-4 + TPS23730 + POE600F-12LD path. The implemented 12V stage is sized at 60W. Single
+    Ethernet cable carries both data and power.
+  * **USB-C PD:** 15V USB-C PD negotiated input.
 * **Protection:** Over-voltage and over-current protection provided by Power Module eFuse upstream; local reverse-polarity and ESD protection on BtB interface.
 * **Rotor Rail:** The rotor stack is powered by the **3V3_ENIG** rail (TPS75733KTTRG3 LDO, 3A) generated on the Power Module; routed to rotor stack via Controller Board → Link-Beta. CM5 GPIO 16
 
@@ -73,7 +79,6 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 * **JTAG Master:** Embedded FT232H (Permanent USB Blaster) on internal USB 2.0.
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
-* **User Interface:** Illuminated Vintage Amber **Safe Shutdown Button**, Master Toggle, and Status LEDs.
 
 ### 3. Stator Board (Nervous System)
 
@@ -85,7 +90,7 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 * **Dimensions:** Ø92 mm PCB / **Ø100 mm shroud outer**.
 * **Segments:** 64 characters with **8mm arc width** for high readability.
 * **Memory:** 10 pre-loaded bidirectional wiring sets; 4-position DIP switch for "Rotor Identity" selection.
-* **Sensing:** FDC2114RGER capacitive encoder ICs (dual-track, 3+3 per rotor).
+* **Sensing:** FDC2114RGHR capacitive encoder ICs (dual-track, 3+3 per rotor).
 * **Tri-Connector Bus:**
   * Power (2x2), JTAG (2x4 Shielded), and Enigma (2x6 Bidirectional Relay) in a "Tripod" layout.
 * **Signal Integrity:** **SN74LVC2G125DCUR** buffer on each Extension Board (one per 5-rotor group) for TCK/TMS regeneration.
@@ -125,16 +130,16 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 ## ⚠️ Safety & Design Rules (KiCAD 9)
 
 * **eFuse Latch-off:** Electronic fault protection requires manual power cycle to reset.
-* **Soft Start:** Master toggle drives regulator Enable (EN) pins to prevent inrush.
+* **Soft Start:** SW1 drives the TPS25980 eFuse EN pin; the CM5 separately gates the 3V3_ENIG LDO with ROTOR_EN.
 * **ESD Hardening:** TVS diodes on all exposed pins (JTAG, Enigma, and 64-jack lines).
-* **Stackup:** 4-layer 1.6mm FR4; L2 Solid GND plane; 90Ω (USB) / 100Ω (HDMI) diff pairs.
+* **Stackup:** Mixed stackup architecture: Controller Board and Power Module are 6-layer boards; the remaining electronics boards are 4-layer / 2oz designs.
 
 ---
 
 ## 📅 Development Roadmap
 
 1. **Controller Board:** KiCAD 9 Schematic & Layout (Power, CM5, High-Speed I/O, JTAG Master).
-2. **Universal Rotor:** Hardware Prototype (MAX II, Ø100mm shroud outer, FDC2114RGER capacitive encoders).
+2. **Universal Rotor:** Hardware Prototype (MAX II, Ø100mm shroud outer, FDC2114RGHR capacitive encoders).
 3. **Power Injection & Support (PIS):** Passive "Mid-Span" bridge for mechanical alignment and 3.3V rail boosting.
 4. **Universal Interface:** 64-Jack Plugboard and 64-key "Hold-to-Shift" layout.
 5. **Firmware:** Verilog for Rotor libraries and Interface Encoding/Decoding.

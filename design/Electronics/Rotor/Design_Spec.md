@@ -76,7 +76,7 @@ For mechanical dimensions, tolerances, shroud specification, and encoder slot ge
 | DR-ROT-04 | Input connectors (Board A) | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors (Board B) | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
 | DR-ROT-11 | Internal connectors (H_SW3/H_PWR/H_JTAG/H_SENS) | Four single-row 2.54mm THT headers on inner face of both boards (H_SW3: 1×7, H_PWR: 1×5, H_JTAG: 1×5, H_SENS: 1×5; total 22 pins); mixed gender between boards provides physical keying; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM H_SW3/H_PWR/H_JTAG/H_SENS |
-| DR-ROT-06 | Power consumption | ≤50 mA per rotor from 3V3_ENIG | §3.1 Power Management |
+| DR-ROT-06 | Power consumption | ≈54.2 mA typical per rotor from 3V3_ENIG (design budget: 55 mA) | §3.1 Power Management |
 | DR-ROT-07 | Stack quantity | 30 rotor boards in the complete system | §1 Overview |
 | DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; 8mm solid metal support rod (non-threaded) through all 30 rotors for alignment and connector stress relief; stack is horizontal | §2.3 Mechanical Details |
 | DR-ROT-09 | Ring setting DIP switches (SW1) | 6-position DIP switch on input side only; SW1[5:0] summed mod N with CPLD STGC-decoded position to yield effective rotor position | §2.3 Mechanical Details; BOM SW1 |
@@ -108,16 +108,16 @@ flanges — no conductive ink, no magnets, and no mechanical contacts.
 
 #### Sensing ICs
 
-Two **Texas Instruments FDC2114RGHR** (4-channel capacitive-to-digital converter, I²C, 3.3 V,
-16-VQFN) per rotor:
+Each rotor variant populates **two Texas Instruments FDC2114RGHR** (4-channel
+capacitive-to-digital converter, I²C, 3.3 V, 16-VQFN), but the second device differs by variant:
 
 * **U2 (Board A)** — senses Track A (bits[5:3] for N=64; STGC bits[3:0] for N=26); I²C address 0x2A.
   Track A slots milled into the inner face of the shroud **dish** flange (Board A side).
-* **U3 (Board B)** — senses Track B (bits[2:0] for N=64 only); I²C address 0x2B.
+* **U3 (Board B, N=64 only)** — senses Track B (bits[2:0] for N=64 only); I²C address 0x2B.
   Track B slots milled into the inner face of the shroud **cover** flange (Board B side).
   **U3 is not populated for N=26 rotors.** Unused channels have their IN pins tied to GND
   via 100 kΩ.
-* **U4 (Board A, N=26 only)** — FDC2114RGHR, addr 0x2B. CH0 = STGC bit[4]; CH1–CH3 unused
+* **U4 (Board A, N=26 only)** — second FDC2114 for the N=26 variant, addr 0x2B. CH0 = STGC bit[4]; CH1–CH3 unused
   (IN pins tied to GND via 100 kΩ). **U4 is not populated for N=64** (where addr 0x2B is used
   by U3 on Board B instead). N=26 variant: U2 (addr 0x2A) reads STGC bits[3:0], U4 (addr 0x2B,
   Board A) reads STGC bit[4].
@@ -240,8 +240,8 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
 
 ### 3.1 Power Management
 
-* **Input:** 3.3V/**50mA per rotor** (sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta).
-  See `design/Electronics/Power_Budgets.md` for full budget — 30 rotors draw 1.50A typical; the 150mA/rotor figure previously used was a conservative overestimate.
+* **Input:** 3.3V/**~54.2mA typical per rotor** (design budget: **55mA/rotor**) sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta.
+  See `design/Electronics/Power_Budgets.md` for full budget — 30 rotors draw **1.63A typical / 1.65A budget**; the 150mA/rotor figure previously used was a conservative overestimate.
 * **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 
@@ -438,34 +438,34 @@ Board A: **RS1-05-G** (female) · Board B: **PH1-05-UA** (male)
 
 Board A: **RS1-05-G** (female) · Board B: **PH1-05-UA** (male)
 
-Interleaved GND pinout consistent with the 10-pin JTAG chain convention used throughout this design.
+Compact internal transfer of the four JTAG/reset nets plus one shared ground between Board A and Board B.
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
 | 1 | TCK | A→B | JTAG clock |
-| 2 | GND | — | Ground shield |
+| 2 | GND | — | Shared signal return |
 | 3 | TMS | A→B | JTAG mode select |
-| 4 | GND | — | Ground shield |
-| 5 | TDO | A→B | JTAG data out (CPLD Board A → J4 pin 6 Board B path) |
+| 4 | SYS_RESET_N | A→B | Active-low reset forwarded to Board B and onward to J4 pin 8 |
+| 5 | TTD | A→B | JTAG serial data (Board A J1 pin 6 input → Board B J4 pin 6 output path) |
 
 ##### H_SENS — Board B Sensor Interface (1×5, 5-pin)
 
 Board A: **PH1-05-UA** (male) · Board B: **RS1-05-G** (female)
 
-Carries both I²C (Board A CPLD polls FDC2114 U3 on Board B) and the Track B position readback
-(U3 results returned to Board A CPLD for 6-bit Gray code decode). All 5 signals are associated
-with FDC2114 U3 on Board B.
+Carries the local I²C link used by the Board A CPLD to poll FDC2114 U3 on Board B. U3 measurement
+results return over I²C; no dedicated POS_B parallel readback wires are required. The remaining pins
+are reserved so the same 1×5 keyed header footprint can be retained across both rotor variants.
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
 | 1 | SDA | A→B | I²C data (CPLD master → U3 FDC2114 on Board B) |
 | 2 | SCL | A→B | I²C clock (CPLD master → U3 FDC2114 on Board B) |
-| 3 | POS_B[0] | B→A | Track B position bit 0 (N=64 only) |
-| 4 | POS_B[1] | B→A | Track B position bit 1 (N=64 only) |
-| 5 | POS_B[2] | B→A | Track B position bit 2 (N=64 only) |
+| 3 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
+| 4 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
+| 5 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
 
-> **N=64 note:** POS_B[0:2] are only used in N=64 dual-track rotor builds. For N=26 builds,
-> U3 on Board B is not populated and POS_B pins are unused (left floating).
+> **Variant note:** N=64 builds populate U3 on Board B and use only SDA/SCL on this header. N=26
+> builds do not populate U3; pins 3–5 remain reserved/unused in both variants.
 
 ### 3.5 Prototype Bench-Testing Provision (Break-Off Coupons)
 
@@ -507,7 +507,7 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | H_SW3 | Board A↔B internal interconnect, inner face, return map select — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-07-UA — 1×7 2.54mm male pin header | Through-hole | 737-PH1-07-UA | 2057-PH1-07-UA-ND | C3331618 |
 | H_PWR | Board A↔B internal interconnect, inner face, power distribution — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | H_JTAG | Board A↔B internal interconnect, inner face, JTAG pass-through — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + POS_B) — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
+| H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
@@ -529,6 +529,6 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | H_SW3 | Board A↔B internal interconnect, inner face, return map select — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-07-G — 1×7 2.54mm female socket | Through-hole | 737-RS1-07-G | 2057-RS1-07-G-ND | C3321543 |
 | H_PWR | Board A↔B internal interconnect, inner face, power distribution — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | H_JTAG | Board A↔B internal interconnect, inner face, JTAG pass-through — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + POS_B) — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
+| H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | U3 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |

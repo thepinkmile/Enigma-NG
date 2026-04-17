@@ -101,8 +101,9 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Pin Summary:**
     * **Pins 1–9:** JTAG chain only, GND-shielded (5 internal GND pins).
     * **Pins 10–11:** GND isolation moat.
-    * **Pins 12–24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now spare (monitoring via I²C expander U_EXP1). pins 12–17 are all **SPARE** (freed by DEC-031); no 5V_MAIN on LINK-BETA.
-    * **Pins 25–27:** TTD_RETURN + GND shields.
+    * **Pins 12–13:** I2C1_SDA / I2C1_SCL extend the CM5 I²C-1 bus onto the Stator for U_EXP1/U_EXP2/U_EXP4, INA219, PCA9685, and the downstream Settings Board expanders.
+    * **Pins 14–24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now mostly spare (monitoring via I²C expander U_EXP1). Pins 14–17 and 19–24 are **SPARE**; no 5V_MAIN on LINK-BETA.
+    * **Pins 25–27:** GND / TTD_RETURN / GND shield cluster (TTD_RETURN on pin 26 only).
     * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity).
     * **Pins 36–40:** GND power return (5 pins).
   * **Full pin table:** See `Controller/Board_Layout.md` LINK-BETA section.
@@ -341,7 +342,9 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 7 | GND | — | TDI/SPARE inter-pin shield |
 | 8 | spare | — | Previously SYS_RESET_N (CM5 GPIO 26); now via I²C expander U_EXP2 GPA[7]. See DEC-031. |
 | 9–11 | GND | — | JTAG trailing shield + isolation moat |
-| 12–17 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] monitoring now via I²C expander U_EXP1 GPA[0:5] @ 0x20. |
+| 12 | I2C1_SDA | Bidir | I²C-1 data extension to Stator/Settings bus (mirrors Link-Alpha pin 35 / CM5 GPIO 2). |
+| 13 | I2C1_SCL | Bidir | I²C-1 clock extension to Stator/Settings bus (mirrors Link-Alpha pin 36 / CM5 GPIO 3). |
+| 14–17 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via I²C expander U_EXP1 GPA[0:5] @ 0x20. |
 | 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
 | 19–24 | spare | — | Previously ENC_OUT[0:5]; monitoring now via I²C expander U_EXP1 GPB[0:5]. See DEC-031. |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |

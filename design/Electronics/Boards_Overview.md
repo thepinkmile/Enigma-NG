@@ -8,9 +8,9 @@
 
 ## 1. Overview
 
-The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided into eight distinct
-boards to ensure maximum signal integrity, industrial-grade power protection, and mechanical
-robustness.
+The Enigma-NG system uses a modular, "Museum-Grade" architecture. It is divided into nine distinct
+board designs to ensure maximum signal integrity, industrial-grade power protection, and
+mechanical robustness.
 
 The `design/Standards/Global_Routing_Spec.md` applies to all boards in the Enigma-NG system except where a board's design spec explicitly documents an exemption from a specific rule.
 
@@ -48,6 +48,7 @@ The `design/Standards/Global_Routing_Spec.md` applies to all boards in the Enigm
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 6-Layer / 2oz | **Design Locked** |
 | **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
 | **Rotor Module** | Smart encryption units (30x) with MAX II EPM570T100I5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
+| **Settings Board** | Panel-mount switch and RGB LED configuration interface on the shared Stator I2C-1 bus. | 4-Layer / 2oz | **In Review** |
 | **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 2oz | **Design Locked** |
 
 ## 6. Controller Board
@@ -102,7 +103,7 @@ Modular units containing the encryption logic.
 
 The mechanical and electrical backbone.
 
-* **Distribution:** A backplane providing ~2.11A worst-case 3V3_ENIG distribution and signal routing for the rotor stack.
+* **Distribution:** A backplane providing ~2.05A worst-case typical 3V3_ENIG distribution and signal routing for the rotor stack.
 * **Connectivity:** Bridges the Controller, Encoder, and Rotor stack into a single parallel bus.
 * **Programmability:** An Intel MAX II EPM570T100I5N CPLD is used to allow the GUI Application to re-configure the connection of the plugboard encoders either:
   * Before the rotor stack.

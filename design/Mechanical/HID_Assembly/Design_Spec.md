@@ -22,10 +22,10 @@ assembly.
 * **Keyboard Switches (×64):** DPDT 6-pin momentary push-button switches, one per key position.
   * Mounted in the keyboard panel (mechanical chassis); connect to the Encoder PCB via a
     field-installable spade-terminal harness.
-  * **Pole 1 — COM1 + NO1** → key-press signal path to CPLD input (Row 3 spade bank BT129–BT192
-    COM, BT193–BT256 NO).
-  * **Pole 2 pins (3×)** → mechanically soldered to PCB for physical key anchoring only;
-    **no electrical connection**.
+  * **Pole 1 — COM1 + NO1** provides the active-low key path: COM1 → assigned Encoder input
+    **BT65–BT128**, NO1 → local **GND** return. Pressing the key pulls the Encoder input LOW.
+  * **Pole 2 pins (3×)** are unused electrically and may be retained only for mechanical anchoring;
+    **no connection to the Encoder electrical netlist**.
   * **NC1** → not connected.
   * Keys connect only to the keyboard side of the Encoder board; there is no direct switch
     connection to the Lightboard.

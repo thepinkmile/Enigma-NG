@@ -34,7 +34,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-11 | Provide I²C PWM output for servo motor control | Via PCA9685 (U_EXP3 @ 0x60) on shared I²C-1 bus; Ch0 = 50Hz SERVO_PWM | §4 I²C Devices; BOM U_EXP3 |
 | FR-STA-12 | Provide servo homing detection via SERVO_HOME switch | SPST NO momentary (active-low); 10kΩ pull-up to 3V3_ENIG + 100nF X7R debounce cap; connected to U_EXP2 GPB[1] | §4 I²C Devices; BOM SW3, R_SH1, C_SH1 |
 | FR-STA-13 | Implement SOURCE_SEL MUX in Stator CPLD to select between keyboard and CM5 virtual keypress | MUX at J4 ENC_OUT[0:5] entry point; SOURCE_SEL driven by U_EXP2 GPA[6]; 0=keyboard, 1=CM5 virtual | §3 CPLD SOURCE_SEL MUX |
-| FR-STA-14 | Connect to Settings Board via I²C-1 bus for panel rocker switch configuration and LED status output | J_CFG = 4-pin JST PH 2.0mm connector (3V3_ENIG, GND, SDA, SCL); Settings Board expanders 0x26 (switch input) and 0x27 (LED output) share the Stator I²C-1 bus | §4.2 I²C Devices; BOM J_CFG |
+| FR-STA-14 | Connect to Settings Board via I²C-1 bus for panel toggle-switch configuration and LED status output | J_CFG = 4-pin JST PH 2.0mm connector (3V3_ENIG, GND, SDA, SCL); Settings Board expanders 0x26 (switch input) and 0x27 (LED output) share the Stator I²C-1 bus | §4.2 I²C Devices; BOM J_CFG |
 
 #### Design Requirements
 
@@ -47,13 +47,13 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-05 | TTD_RETURN input | J7 = 16-pin Molex; TTD_RETURN on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 (16-pin Molex) |
 | DR-STA-06 | Link-Beta connector | J8 = ERM8-020-05.0-S-DV-K-TR (40-pin male, 0.8 mm pitch) to Controller J2 | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240 (drop-in); 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
-| DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), rated ≥2.11 A | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
-| DR-STA-09 | Maximum 3V3_ENIG load | 2.11 A worst-case (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
+| DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), sized for the 2.05 A worst-case typical stack load | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
+| DR-STA-09 | Maximum 3V3_ENIG load | 2.05 A worst-case typical (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
 | DR-STA-10 | Routing configuration selection | SW1[0:3] routing config inputs now driven by U_EXP4 GPA[0:3]; 4× 10kΩ pull-down resistors R16–R19 retained on CPLD inputs as power-up safe defaults (hold 0 when U_EXP4 is uninitialised); physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 1); BOM U_EXP4, R16–R19 |
 | DR-STA-11 | Reflector map selection | SW2[0:5] reflector config inputs now driven by U_EXP4 GPB[0:5]; 6× 10kΩ pull-down resistors R21–R26 retained on CPLD inputs as power-up safe defaults; physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 2); BOM U_EXP4, R21–R26 |
 | DR-STA-12 | I²C GPIO expanders | U_EXP1 = MCP23017T-E/SO @ 0x20; U_EXP2 = MCP23017T-E/SO @ 0x21; U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28 package; on shared I²C-1 bus | BOM U_EXP1, U_EXP2, U_EXP4 |
 | DR-STA-13 | I²C PWM driver | U_EXP3 = PCA9685BS/3 @ 0x60; SSOP-28 package; Ch0 = SERVO_PWM at 50Hz; A5→3V3_ENIG, A4–A0→GND; all-call disabled in daemon init | BOM U_EXP3 |
-| DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM | BOM J_SERVO |
+| DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_SERVO_TBD, GND, SERVO_PWM. Servo control is on the Stator; the 5V power source remains an open architecture item because Link-Beta does not carry 5V_MAIN. | BOM J_SERVO |
 | DR-STA-15 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to 3V3_ENIG + 100nF X7R cap to GND (RC τ=1ms); connected to U_EXP2 GPB[1] | BOM SW3, R_SH1, C_SH1 |
 | DR-STA-16 | U_EXP4 specification | U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28; A2=LOW, A1=HIGH, A0=LOW; GPA[0:3] = SW1[0:3] CPLD config outputs; GPA[4] = STATOR_CFG_RDY strobe output; GPB[0:5] = SW2[0:5] CPLD config outputs | BOM U_EXP4 |
 | DR-STA-17 | J_CFG connector | J_CFG = 4-pin JST PH 2.0mm B4B-PH-K-S(LF)(SN); pins: 3V3_ENIG, GND, SDA, SCL; connects to Settings Board J_I2C via 4-wire ribbon cable | BOM J_CFG |
@@ -62,7 +62,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 ## 2. Core Features
 
 * **Modular Slots:** 1× Samtec ERF8 female socket set (3 connectors: ERF8-005 JTAG, ERF8-005 Power, ERF8-010 ENC\_DATA) mating with the ERM8 male headers on the Rotor.
-* **Power Tree:** A 2oz copper pour for the `3V3_ENIG` rail to handle the **2.11A worst-case** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
+* **Power Tree:** A 2oz copper pour for the `3V3_ENIG` rail to handle the **2.05A worst-case typical** load without voltage sag (see `design/Electronics/Power_Budgets.md`).
   The 5A figure previously quoted was a conservative design margin; the LDO hard limit is 3.0A.
 
 ### GND_CHASSIS Single-Point Bond
@@ -170,9 +170,9 @@ symmetry. Pre-loaded indices:
 
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between Link-Beta entry and rotor power distribution to isolate switching transients from Controller logic.
-* **Current Margin Check:** Rotor rail is budgeted at **1.50A typical** (30 rotors × 50mA — see `design/Electronics/Power_Budgets.md`);
-  with 4 parallel feeds this is ~**375mA per bead** nominal sharing,
-  well within the **3.5A** bead rating. Total 3V3_ENIG worst case including all CPLDs and encoders: 2.11A (30% headroom vs 3.0A LDO).
+* **Current Margin Check:** Rotor rail is budgeted at **1.65A** (30 rotors × 55mA budget — see `design/Electronics/Power_Budgets.md`);
+  with 4 parallel feeds this is ~**413mA per bead** nominal sharing,
+  well within the **3.5A** bead rating. Total 3V3_ENIG worst case including all CPLDs and encoders: 2.05A (~32% headroom vs 3.0A LDO).
 * **JTAG Return:** Includes 10kΩ pull-up on TTD_RETURN at the Link-Beta exit (R2).
 * **JTAG Pull Resistors (×4, placed near Stator CPLD U1):**
   * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up and when controller is idle.
@@ -236,10 +236,12 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
   The Stator CPLD implements all 16 configurations as synthesised VHDL case logic. See
   `design/Electronics/Stator/Board_Layout.md` and `design/Electronics/Encoder/Design_Spec.md §1`
   for further detail.
-* **Reflector/Extension Interconnect:**16-pin (2x8) Vertical Shrouded Header (Power, ENC_DATA, TTD_RETURN).
+* **Reflector/Extension Interconnect:**16-pin (2x8) Vertical Shrouded Header (Power, SYS_RESET_N,
+  ENC_DATA, TTD_RETURN).
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).
-  * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
+  * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), SYS_RESET_N,
+    ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
     * `Extension/Design_Spec.md`
     * `Reflector/Design_Spec.md`
   * **ENC_DATA (bidirectional — simultaneous):** J7 carries ENC_DATA on two separate pin groups
@@ -263,14 +265,17 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 
 ### 4.2 I²C Devices on Stator
 
-All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via LINK-BETA. 5V_MAIN for the
-servo motor is supplied from the Stator board's local 5V_MAIN rail via J_SERVO.
+All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via LINK-BETA. The servo-control PWM
+originates on the Stator, but the J_SERVO 5V supply allocation remains open because LINK-BETA does
+not currently carry 5V_MAIN.
 
 | Address | Device | Ref | Function |
 | :--- | :--- | :--- | :--- |
 | 0x20 | MCP23017 | U_EXP1 | ENC_IN/ENC_OUT monitoring (16 GPIO) |
 | 0x21 | MCP23017 | U_EXP2 | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control (16 GPIO) |
 | 0x22 | MCP23017 | U_EXP4 | CPLD configuration output driver: SW1[0:3] routing + SW2[0:5] reflector map + STATOR_CFG_RDY strobe (16 GPIO) |
+| 0x26 | MCP23017 | U_EXP_SW_IN | Settings Board switch-input expander on J_CFG branch of the shared I2C-1 bus |
+| 0x27 | MCP23017 | U_EXP_LED | Settings Board LED/anode + colour-rail driver on J_CFG branch of the shared I2C-1 bus |
 | 0x45 | INA219 | U2 | Rotor stack current/power telemetry |
 | 0x60 | PCA9685 | U_EXP3 | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 

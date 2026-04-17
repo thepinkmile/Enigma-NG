@@ -101,7 +101,7 @@ TOP VIEW (L1) - 6-Layer / 2oz Copper
 [ J2 RJ45 MAGJACK ]       [ ESD FIREWALL ]      [ PoE DISCRETE DC-DC ]                  [ INPUT SELECTOR ]
  ____________________      _________________     ________________________________         __________________
 |                    |    |                 |   |                                |       |                 |
-| RJ45 (Wurth        |    | [D4 TPD4E05U06] |   | [U9 TPS2372-4]                 |       | [U6 LM74700-Q1] |
+| RJ45 (Wurth        |    | [D4 TPD4E05U06] |   | [U9 TPS2372-4]                 |       | [U6a/U6b/U6c]   |
 | 7499111121A)       |--->| [D5 TPD4E05U06] |-->|  Type 4 PD / Hotswap           |       | (OR-ing Input)  |
 | (4-pair 37-57V CT) |    |________|________|   |  ↓                             |       |_________________|
 |                    |             |            | [U10 TPS23730 ACF DC-DC]       |
@@ -119,7 +119,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
 [ USB-C BULKHEAD (J4) ]         [ ESD & FILTERING ]               [ INPUT SELECTOR ]            [   BtB Connector  ]
  _____________________           ____________________                                            __________________
 |                     |         |                    |                                          |                  |
-| VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |----------->| [U6 LM74700QDBVRQ1] |       | [ SAMTEC ERM8 ]  |
+| VBUS (4 PINS) ------|-------->| [ TPD4E05U06 ESD ] |----------->| [U6a/U6b/U6c]     |       | [ SAMTEC ERM8 ]  |
 |                     |         |                    |                                          |                  |
 | GND (4 PINS)  ------|-------->|                    |            |_____________________|       |                  |
 |                     |         |                    |                                          |                  |
@@ -142,7 +142,7 @@ Note: T2 is the Coilcraft POE600F-12LD -- off-the-shelf 60W ACF PoE transformer 
             |                          |                          |
             \__________________________|__________________________/
                                        |
-                          [U6 LM74700QDBVRQ1 + Q1/Q2/Q3]
+                           [U6a/U6b/U6c + Q1/Q2/Q3]
                             (ideal-diode priority OR-ing)
                                         |
                                [ VIN_RAW post-OR-ing ]

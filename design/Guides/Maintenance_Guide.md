@@ -59,7 +59,8 @@ Monitors power rails, I²C telemetry bus, LED control signals, and power status.
 
 ### Bank-Beta (Logic/Exit) — Top-Left of Controller
 
-Monitors 12-bit encryption sniffer bus, system reset, and JTAG signals.
+Monitors the remaining Link-Beta bring-up signals: JTAG, TTD_RETURN, I2C extension lines, and the
+post-DEC-031 spare pads that replaced the former 12-bit encryption sniffer allocation.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |

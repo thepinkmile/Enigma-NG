@@ -35,7 +35,7 @@ being an unachievable worst-case peak).
 
 | Condition | ICC |
 | :--- | :--- |
-| Active, fast-mode (highest polling rate) | 6.5 mA typ |
+| Active | 2.1 mA typ |
 
 ---
 
@@ -49,23 +49,23 @@ being an unachievable worst-case peak).
 | Plugboard Encoder B CPLDs (EPM240 ×2) | 2 | 50 | 100 | Stecker map CPLD |
 | FT232H VCCIO (JTAG Daughterboard) | 1 | 10 | 10 | VCCIO domain only; VCC (100 mA) is 5V_USB-sourced — see 5V_MAIN table |
 | Rotor CPLDs (EPM570T100I5N ×30) | 30 | 50 | 1500 | All rotors cipher-active simultaneously |
-| Rotor FDC2114RGHR capacitive sensor ICs (U2+U3 or U2+U4 per rotor, ×30 rotors) | 30 | 6.5 | 195 | Continuous position polling |
+| Rotor FDC2114RGHR capacitive sensor ICs (U2/U3 or U2/U4, 2 ICs per rotor, 60 ICs total) | 60 | 2.1 | 126 | Continuous position polling; two ICs per rotor add 4.2 mA to the 50 mA CPLD budget, giving 54.2 mA typ / 55 mA budget per rotor |
 | INA219 current monitor (Stator) | 1 | 1 | 1 | Negligible |
 | INA219 current monitor (Power Module) | 1 | 1 | 1 | Negligible |
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
 | Controller-local (RJ45 LEDs, logic) | — | — | 50 | Controller overhead subtracted at LINK-ALPHA |
-| **Typical total** | | | **2,117 mA** | |
-| **Rounded budget** | | | **≤ 2.11 A** | |
+| **Typical total** | | | **2,048 mA** | |
+| **Rounded budget** | | | **≤ 2.05 A** | |
 
 ### Headroom vs LDO Limit
 
 | Limit | Value | Margin |
 | :--- | :--- | :--- |
 | LDO hard limit | 3.00 A | — |
-| Typical worst-case load | 2.11 A | **+0.89 A (30%)** |
+| Typical worst-case load | 2.05 A | **+0.95 A (32%)** |
 | LINK-BETA connector capacity | 4.00 A | Not the constraint |
 
-> ✅ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides 30% headroom above the worst-case typical load.
+> ✅ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides ~32% headroom above the worst-case typical load.
 > No LDO upgrade is required for the current 30-rotor design.
 
 ---
@@ -76,17 +76,17 @@ being an unachievable worst-case peak).
 
 | Document | Old figure | Resolved value | Action |
 | :--- | :--- | :--- | :--- |
-| Stator §2 "5A peak" | 5.0 A | **2.11 A** worst-case typical | ✅ Complete — Stator §2 updated to 2.11A worst-case; 5A figure retired |
+| Stator §2 "5A peak" | 5.0 A | **2.05 A** worst-case typical | ✅ Complete — Stator §2 updated to 2.05A worst-case typical; 5A figure retired |
 | LINK-BETA capacity | 4.0 A | 4.0 A (connector limit — not the constraint) | No change — correct, just not the bottleneck |
-| Rotor ×30 claim "4.5A" | 4.5 A | **1.50 A** (30 × 50 mA) | ✅ Complete — Rotor DR-ROT-06 and §3.1 updated to ≤50 mA per rotor; 150 mA figure retired |
+| Rotor ×30 claim "4.5A" | 4.5 A | **1.65 A** (30 × 55 mA budget; 1.63 A typ) | ✅ Complete — Rotor DR-ROT-06 and §3.1 now use the 54.2 mA typical / 55 mA budget figure; 150 mA figure retired |
 | Shunt resistor | Stator: 20 mΩ, Controller: 10 mΩ | **10 mΩ CSS2H** (Stator R1 = CSS2H-2512R-R010ELF; Controller has no shunt) | ✅ Complete — Stator R1 updated to CSS2H-2512R-R010ELF (10mΩ, 2512 Kelvin) |
 
 **INA219 shunt selection rationale (10 mΩ CSS2H-2512R-R010ELF):**
 
-* V_drop at 2.11A: 2.11 × 0.010 = **21 mV** — within INA219 ±80 mV PGA range.
+* V_drop at 2.05A: 2.05 × 0.010 = **20.5 mV** — within INA219 ±80 mV PGA range.
 * V_drop at 3.00A max: 3.00 × 0.010 = **30 mV** — within ±80 mV range.
 * Resolution: with 12-bit ADC at ±80 mV range, LSB = 2×80mV/4096 ≈ **39 µV/LSB** → I_LSB = 39µV/0.010Ω ≈ **4 mA** current resolution.
-* Power dissipation at 2.11A: 2.11² × 0.010 = **45 mW** — 2512 Kelvin package (rated ≥0.5W) is adequate with >10× margin.
+* Power dissipation at 2.05A: 2.05² × 0.010 = **42 mW** — 2512 Kelvin package (rated ≥0.5W) is adequate with >10× margin.
 * Power dissipation at 3.00A max: 3.00² × 0.010 = **90 mW** — 2512 Kelvin package ≥0.5W still OK.
 * CAL register: 0x0400 (1024) — unchanged. CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.004 × 0.010) = 1024 ✓
 * Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). Used on **PM R12** (LTC3350 RSENSE), **PM R23** (INA219 U12, 0x40, 5V_MAIN monitoring) and **Stator R1**
@@ -100,7 +100,7 @@ being an unachievable worst-case peak).
 | Consumer | Current | Notes |
 | :--- | :--- | :--- |
 | CM5 (Raspberry Pi Compute Module 5) | 5.0 A max | CM5 boot-to-load current profile; 25W at 5V = 5A |
-| 3V3_ENIG LDO quiescent (TPS75733KTTRG3) | 2.11 A | Sourced from 5V_MAIN; P_in = 5V × 2.11A = 10.55W |
+| 3V3_ENIG LDO quiescent (TPS75733KTTRG3) | 2.05 A | Sourced from 5V_MAIN; P_in = 5V × 2.05A = 10.25W |
 | Status LEDs, RJ45, misc. | 0.1 A | |
 | FT232H VCC (JTAG Daughterboard — via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
 | USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |

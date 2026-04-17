@@ -75,17 +75,19 @@ convert it into two clean, regulated power rails for the rest of the system.
 
 ### 3.1 Input Sources and Priority
 
-The Enigma-NG can be powered from any of three sources simultaneously. An intelligent input selection circuit — using "ideal diode" transistors controlled by a priority-management chip —
-automatically selects the best available source without any interruption to the system. The priority order is:
+The Enigma-NG can be powered from any of three sources simultaneously. An intelligent input
+selection circuit — using ideal-diode transistors and per-path control signals — automatically
+selects the best available source without interrupting the system. The documented behaviour is:
 
 | Priority | Source | Typical Voltage | Notes |
 | :---: | --- | --- | --- |
-| 1st | **PoE+ (Power over Ethernet)** | ~12V | 802.3bt Type 4 — highest available power (up to 72W); recommended for fixed installations |
-| 2nd | **USB-C (PD adapter)** | 15V | Requires a 75W USB-C PD adapter (15V/5A); adequate for normal operation |
-| 3rd | **Battery** | 11–16.4V | Lithium-based smart battery pack; tertiary source used when no mains is available |
+| 1st | **PoE+ (Power over Ethernet)** | ~12V | Explicitly prioritised over USB-C by the documented LM74700/TPS2372-4 gating; recommended for fixed installations |
+| 2nd / 3rd | **USB-C (PD adapter)** | 15V | Shares the OR-ing network with Battery; precedence vs Battery depends on the active source voltages unless additional gating is added |
+| 2nd / 3rd | **Battery** | 11–16.4V | Shares the OR-ing network with USB-C; used as a fallback/off-grid source |
 
-If a higher-priority source becomes available while a lower-priority one is in use, the system switches seamlessly. If the primary source fails, the system automatically falls back to the next
-available source, with the supercapacitor bank bridging any momentary gap during the transition.
+If a higher-priority documented source becomes available while a lower-priority one is in use, the
+system switches seamlessly. The supercapacitor bank bridges any momentary gap during source
+transitions.
 
 A thermal fuse (72°C) and electronic protection circuit (eFuse) guard the input against excessive current and out-of-range voltages. The system will not start if the input voltage is below **11V** or
 above **16.9V**, protecting all downstream components.
@@ -97,7 +99,7 @@ The Power Module produces two regulated output rails:
 | Rail | Voltage | Max Current | Powers |
 | --- | --- | --- | --- |
 | **5V_MAIN** | 5.0V | 12A (rated) | Raspberry Pi CM5, USB 3.0 ports, HDMI output |
-| **3V3_ENIG** | 3.3V | 3A (rated) | All CPLD logic chips (Rotor stack), USB-JTAG interface chip |
+| **3V3_ENIG** | 3.3V | 3A (rated) | All CPLD logic chips, FT232H VCCIO domain, and low-voltage control/telemetry logic |
 
 > **Note:** The CM5 module internally generates additional supply voltages (1.8V, 1.1V) for its own processors; these are not produced by the Power Module.
 

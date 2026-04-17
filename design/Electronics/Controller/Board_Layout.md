@@ -230,12 +230,12 @@ _______________________________________    _____________    ____________________
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |
-| 12 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[0:5] @ 0x20 |
-| 13 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[1:5] @ 0x20 |
-| 14 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[2:5] @ 0x20 |
-| 15 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[3:5] @ 0x20 |
-| 16 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[4:5] @ 0x20 |
-| 17 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[5] @ 0x20 |
+| 12 | I2C1_SDA | Bidir | Stator/Settings I2C-1 data extension from CM5 GPIO 2 (mirrors Link-Alpha pin 35 onto LINK-BETA) |
+| 13 | I2C1_SCL | Bidir | Stator/Settings I2C-1 clock extension from CM5 GPIO 3 (mirrors Link-Alpha pin 36 onto LINK-BETA) |
+| 14 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
+| 15 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
+| 16 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
+| 17 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
 | 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
 | 19 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[0:5] @ 0x20 |
 | 20 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[1:5] @ 0x20 |
@@ -260,7 +260,7 @@ _______________________________________    _____________    ____________________
 | 39 | GND | — | Power return |
 | 40 | GND | — | Power return |
 
-**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for the 30-rotor worst case (2.11 A per Power_Budgets.md).
+**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for the 30-rotor worst case (2.05 A per Power_Budgets.md).
 
 ### DIAGNOSTIC BANK-BETA (Top-Left)
 
@@ -424,5 +424,5 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
   power pins via a 2.00 mm bus trace supplemented by an L3 inner pour (5V_MAIN plane).
 * **3V3_ENIG pass-through:** The Controller receives 3V3_ENIG from PM via Link-Alpha (6 pins, 3.0 A) and
   distributes locally to CM5 logic supply and CM5-adjacent decoupling. It also passes 3V3_ENIG downstream
-  to the Stator via Link-Beta (8 pins × 0.5 A = 4.0 A capacity — adequate for 2.11 A 30-rotor worst case).
+  to the Stator via Link-Beta (8 pins × 0.5 A = 4.0 A capacity — adequate for 2.05 A 30-rotor worst case).
   All 3V3_ENIG traces: 0.80 mm consistent with PM §9 and Global_Routing_Spec §1.1.

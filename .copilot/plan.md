@@ -68,7 +68,8 @@ Round N: Run lint + electronics review
       Run Round N+1
 ```
 
-**Current Status:** Full system review cycle complete (R15 clean pass #2 of 2, checkpoint 042).
+**Current Status:** Repository-scoped active-doc cleanup complete; two consecutive clean review
+passes achieved and synced in checkpoint 047.
 
 ---
 
@@ -131,6 +132,7 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 | ID | Title | Status |
 |----|-------|--------|
 | `review-r14` | Review cycle completion after R14/R15 reruns | **done** |
+| `repo-review-cleanup` | Repository-scoped active-doc cleanup and two-clean-pass review gate | **done** |
 | `electronics-review-agent` | Create first-cut hardware/electronics review agent from generic review pattern | **done** |
 | `components-sourcing` | Work through `.copilot/components-todo.md` detailed verification rows plus BOM coverage checklist and confirm valid candidate parts | pending |
 | `kicad-setup-docs` | KiCad setup documentation | pending (low priority) |
@@ -139,24 +141,20 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Full system review cycle complete** ✅ — R15 achieved clean pass #2 of 2 after the
-   `Boards_Overview.md` eFuse wording was tightened to the locked variant.
-2. **Electronics review agent tested** ✅ — Direct invocation successful (checkpoint 044). Agent 
-   performed Settings Board review with 11 findings (3 CRITICAL, 6 SIGNIFICANT, 2 CLARITY), all 
-   legitimate sourcing/documentation issues. Review cycle process formalized in plan.md.
-3. **Re-verify components:** `.copilot/components-todo.md` is now the single working workspace for
+1. **Repository review cleanup complete** ✅ — repo-wide active-doc cleanup achieved two
+   consecutive clean passes and is captured in checkpoint 047.
+2. **Re-verify components:** `.copilot/components-todo.md` is now the single working workspace for
    component re-verification, with a 30-row supplier-detail table plus a 106-line BOM coverage
    checklist. Treat every populated MPN/distributor field as provisional until manually checked
    unless the row is explicitly marked `VERIFIED`.
-   - Priority detail rows 1–5: historical TBD rows now being superseded by confirmed switch / LED selections and remaining resistor tuning
-   - Connector rows already verified: 3 (J_DSI1), 5 (J_CFG / J_I2C), 23 (J_SERVO), 26 (J_FAN)
-   - Remaining coverage items marked `NEEDS DETAIL ROW` still need promotion into the detailed table
-4. **Apply confirmed parts only after re-verification** — update Consolidated_BOM.md + board BOMs
+    - Priority detail rows 1–5: historical TBD rows now being superseded by confirmed switch / LED selections and remaining resistor tuning
+    - Connector rows already verified: 3 (J_DSI1), 5 (J_CFG / J_I2C), 23 (J_SERVO), 26 (J_FAN)
+    - Remaining coverage items marked `NEEDS DETAIL ROW` still need promotion into the detailed table
+3. **Apply confirmed parts only after re-verification** — update Consolidated_BOM.md + board BOMs
    once rows are explicitly confirmed.
-5. **Address Settings Board findings** — after component verification, apply fixes and re-run 
-   review cycle per new Review Cycle Process (expect 1–2 rounds to achieve 2 clean passes).
-6. **Settings Board LED resistor tuning** — final red/green resistor values remain to be tuned for the selected common-anode discrete LED under nominal 3.3V operation.
-7. **KiCad project setup** — when schematic phase begins and all TBD parts are locked.
+4. **Settings Board part lock** — remaining user-input / verification items are LED resistor tuning,
+   `CFG_APPLY` pushbutton selection, and the `J_CFG` / `J_I2C` JLCPCB part number.
+5. **KiCad project setup** — when schematic phase begins and all TBD parts are locked.
 
 ---
 
