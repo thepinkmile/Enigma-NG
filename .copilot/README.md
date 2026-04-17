@@ -1,8 +1,8 @@
 # Copilot Session State
 
-This folder contains the canonical repo-local GitHub Copilot handoff state for the Enigma-NG project.
-Its contents are the source of truth for resuming work across sessions and are intended to remain
-safe to version control.
+This folder contains the canonical GitHub Copilot handoff state for the Enigma-NG project.
+**This folder is tracked in version control** and serves as the single source of truth for
+resuming work across sessions.
 
 ## Purpose
 
@@ -25,6 +25,8 @@ Tell Copilot:
 | `plan.md` | Current session plan — todos, board status, critical notes, next steps |
 | `checkpoints/index.md` | Chronological list of all checkpoints |
 | `checkpoints/NNN-*.md` | Individual checkpoint snapshots (history, work done, technical details) |
+| `components-todo.md` | Component re-verification tracking table (107 unique parts) |
+| `files/` | Session artifacts (design docs, changelogs, reference material) |
 
 ## Maintenance
 
@@ -35,13 +37,15 @@ The assistant updates these files at meaningful milestones:
 - A checkpoint is only complete once the checkpoint markdown, checkpoint index, plan, and any
   related handoff artifacts have all been written or synced into this repo-local `.copilot\` folder.
 
-## Commit safety
+**All changes to `.copilot/` must be committed to version control** so the handoff state is
+preserved across sessions and machines.
 
-No credentials or API secrets are expected here, but raw session-state material can include
-local-machine metadata such as:
+## Version Control
 
-- user-profile paths like `%USERPROFILE%\.copilot\...`
-- Copilot session UUIDs
+**This folder is tracked in git.** All checkpoint files, plan updates, component tracking,
+and session artifacts should be committed alongside design specification changes.
 
-When syncing content into this folder, normalize that metadata first so committed handoff files stay
-portable across machines and users.
+Content here is sanitized to be portable across machines and users:
+- Repo-relative paths (not machine-specific absolute paths)
+- `%USERPROFILE%` placeholders for user-profile references
+- No Copilot session UUIDs or credentials

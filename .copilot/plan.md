@@ -8,27 +8,22 @@
 
 ## Overview
 
-All board detailed designs are complete. Recent sessions added three new features:
+All board detailed designs are complete. Recent sessions completed:
 - **Virtual Keyboard / CM5 Key Injection** (DEC-028, checkpoints 032–033)
-- **Settings Board** — panel-mount toggle switches with discrete RGB indicators replacing Stator
+- **Settings Board** — panel-mount toggle switches with RGB indicators replacing Stator
   DIP switches, with CM5 I²C override via U_EXP4 (DEC-032, DEC-034; checkpoints 034–036)
 - **DSI1 Display Provision** on Controller Board — ZIF/FPC connector for optional lid touchscreen
   (DEC-033, checkpoint 035)
+- **5V RGB LED Upgrade** (2026-04-17, checkpoint 004) — Settings Board LED system upgraded from
+  3.3V single-color to 5V full RGB operation with dual MCP23017s, shared color-rail topology,
+  and 5V_MAIN routing from Controller through Link-Beta to Stator to Settings Board
 
-A full system BOM deep-dive audit was completed (checkpoint 036). The old unified-switch
-assumption has now been retired: the Settings Board uses E-Switch 200-series toggles with discrete
-Kingbright RGB LEDs, while the Power Module uses the Adafruit 4660 rugged metal switch. The
-Settings Board LED path now also carries a per-switch 0Ω blue debug link for easier prototype
-bring-up. Component
-confirmation is now being
-reworked from `.copilot/components-todo.md`, which has grown beyond the original TBD-only list
-into a combined supplier-verification table plus full BOM coverage checklist so non-TBD items are
-not silently skipped. Connector verification has started there, with J_DSI1, J_CFG / J_I2C,
-J_SERVO, and J_FAN already marked verified. A first-cut custom **Electronics review
-engineer** agent has also been added under `.github/agents/` to steer future hardware-document
-reviews away from software-centric assumptions. That agent prompt was then tested successfully by
-driving a general-purpose review agent with the new instructions; direct by-name invocation should
-be re-checked in a fresh session.
+Full system BOM deep-dive audit completed (checkpoint 036). Settings Board now uses E-Switch
+200-series toggles with Kingbright RGB LEDs (full RGB @ 5V, 20mA per color), while Power Module
+uses Adafruit 4660 rugged metal switch. Component re-verification is tracked in
+`.copilot/components-todo.md` — currently 8 items VERIFIED (connectors, switches, LEDs), 98
+RECHECK pending. Custom **Electronics review engineer** agent available under `.github/agents/`
+for hardware-document reviews.
 
 ---
 
@@ -141,20 +136,19 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Repository review cleanup complete** ✅ — repo-wide active-doc cleanup achieved two
-   consecutive clean passes and is captured in checkpoint 047.
-2. **Re-verify components:** `.copilot/components-todo.md` is now the single working workspace for
-   component re-verification, with a 30-row supplier-detail table plus a 106-line BOM coverage
-   checklist. Treat every populated MPN/distributor field as provisional until manually checked
-   unless the row is explicitly marked `VERIFIED`.
-    - Priority detail rows 1–5: historical TBD rows now being superseded by confirmed switch / LED selections and remaining resistor tuning
-    - Connector rows already verified: 3 (J_DSI1), 5 (J_CFG / J_I2C), 23 (J_SERVO), 26 (J_FAN)
-    - Remaining coverage items marked `NEEDS DETAIL ROW` still need promotion into the detailed table
-3. **Apply confirmed parts only after re-verification** — update Consolidated_BOM.md + board BOMs
-   once rows are explicitly confirmed.
-4. **Settings Board part lock** — remaining user-input / verification items are LED resistor tuning,
-   `CFG_APPLY` pushbutton selection, and the `J_CFG` / `J_I2C` JLCPCB part number.
-5. **KiCad project setup** — when schematic phase begins and all TBD parts are locked.
+1. **Settings Board 5V RGB upgrade complete** ✅ — Design specs updated, BOM consolidated,
+   component counts synchronized. Commit 6b27f3a. Checkpoint 004.
+2. **Re-verify components:** `.copilot/components-todo.md` is the single working workspace for
+   component re-verification.
+    - **VERIFIED (8 items):** S002 (panel toggles), S004 (power switch), L001 (RGB LEDs), J022-J025 (connectors)
+    - **RECHECK (98 items):** Including 5V RGB upgrade components (IC018, T001, T003, R027-R029, R051)
+    - Treat every populated MPN/distributor field as provisional until manually checked and marked `VERIFIED`
+3. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED` rows
+4. **Settings Board remaining items:**
+    - LED resistor values (R028/R029/R051) now calculated for 5V @ 20mA but need MPN re-verification
+    - `CFG_APPLY` pushbutton selection (S003) still pending
+    - Connector JLCPCB part numbers need verification
+5. **KiCad project setup** — when schematic phase begins and all TBD parts are locked
 
 ---
 

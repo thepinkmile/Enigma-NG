@@ -55,3 +55,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 45 | Components todo coverage sync, connector verification state captured | 045-components-todo-coverage-sync.md |
 | 46 | Copilot handoff sanitized for version control and sync rules tightened | 046-copilot-sanitized-for-version-control.md |
 | 47 | Repository review cleanup, two clean passes | 047-repository-review-cleanup-two-clean-passes.md |
+| 48 | Settings Board 5V RGB upgrade complete | 004-settings-board-5v-rgb-upgrade.md |
