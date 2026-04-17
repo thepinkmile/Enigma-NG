@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-14
+**Last Updated:** 2026-04-17
 
 ## Overview
 
@@ -53,9 +53,9 @@ the Rev A single-Extension configuration unless otherwise noted.
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
-| BSS138 (onsemi) — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 4 | 6 |
+| BSS138 (onsemi) — 50 V N-ch Logic-Level MOSFET (SOT-23) | 2 | — | — | — | — | — | — | — | — | — | 6 | 8 |
 | BAT54 (Diotec) — Schottky Diode (SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
-| MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 2 | 5 |
+| MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | 1 | — | 3 | — | — | — | — | — | — | — | 3 | 7 |
 | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (TBD MPN) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
@@ -249,12 +249,13 @@ configuration tables.
 | U_EXP4 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
 | U_EXP3 | PCA9685 I²C PWM Driver | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 | 🔒 |
 | J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 474-B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | C131342 | 🔒 |
-| J_CFG | Settings Board I²C connector (4-pin JST PH 2.0mm) | JST B4B-PH-K-S(LF)(SN) | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) | ⏳ (JLCPCB PN TBD — see components-todo.md) |
+| J_CFG | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 474-B6B-PH-K-S(LF)(SN) | 455-1723-ND | TBD | ⏳ (JLCPCB PN TBD — see components-todo.md) |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — | 🔒 |
 
 U_EXP1 @ 0x20: ENC_IN/ENC_OUT monitoring. U_EXP2 @ 0x21: virtual keypress injection, SOURCE_SEL,
 SYS_RESET_N, servo control. U_EXP4 @ 0x22: CPLD config output driver (SW1[0:3] + SW2[0:5] +
-STATOR_CFG_RDY). U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz). J_CFG connects to Settings Board J_I2C.
+STATOR_CFG_RDY). U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz). J_CFG (6-pin JST PH) connects to Settings
+Board J_I2C and carries 3V3_ENIG, 5V_LED (from Link-Beta 5V_MAIN), 2× GND, SDA, SCL.
 
 > **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item (Amazon, already
 > purchased). It is not in the electronic BOM.
@@ -268,29 +269,31 @@ specification.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 | U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x26 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| U_EXP_LED | MCP23017 I²C GPIO Expander (LED anode + colour rail driver) | MCP23017T-E/SO @ 0x27 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| U_LED_B1 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x40 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| U_LED_B2 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x41 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
 | SW_B1_EN, SW_B1[0:3] | Bank 1 configuration toggle switches (×5: bank enable + routing bits 0–3) | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
 | SW_B2_EN, SW_B2[0:5] | Bank 2 configuration toggle switches (×7: bank enable + reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
 | LED_B1_EN, LED_B1[0:3] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED; red/green used in normal operation, blue routed via 0Ω debug link | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
 | LED_B2_EN, LED_B2[0:5] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount — MPN TBD | Panel-mount | TBD | TBD | — | ⏳ MPN TBD |
-| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) | ⏳ JLCPCB PN TBD |
-| Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R | Low-side colour-rail sink MOSFETs (×4) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 | 🔒 |
+| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 474-B6B-PH-K-S(LF)(SN) | 455-1723-ND | TBD | ⏳ JLCPCB PN TBD |
+| Q_BNK1_R, Q_BNK1_G, Q_BNK1_B, Q_BNK2_R, Q_BNK2_G, Q_BNK2_B | Low-side colour-rail sink MOSFETs (×6 total; 3 per bank for RGB) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 | 🔒 |
 | R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
 | R_CA1 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
-| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | TBD Ω — tuned for nominal 3.3V operation and desired panel brightness | 0603 | TBD | TBD | TBD | ⏳ value TBD |
-| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | TBD Ω — tuned for nominal 3.3V operation and desired panel brightness | 0603 | TBD | TBD | TBD | ⏳ value TBD |
-| R_LED_B (x12) | Per-switch blue LED debug links | 0Ω link; routes each blue cathode to an isolated debug node for prototype bodge / measurement work | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 | ✅ |
-| R_GATE1–R_GATE4 | MOSFET gate resistors (×4) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 | 🔒 |
+| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | 150Ω 1% — 5V operation @ 20mA nominal (Vf_red ≈ 2.0V) | 0603 | 667-ERJ-3EKF1500V | P150BYCT-ND | C22808 | 🔒 |
+| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_green ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C22775 | 🔒 |
+| R_LED_B1–R_LED_B12 | Per-switch blue LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_blue ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C22775 | 🔒 |
+| R_GATE1–R_GATE6 | MOSFET gate resistors (×6; 1 per MOSFET) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 | 🔒 |
 | C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 | C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x26) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
-| C_U_EXP_LED | VCC decoupling cap for U_EXP_LED (MCP23017 @ 0x27) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| C_U_LED_B1 | VCC decoupling cap for U_LED_B1 (MCP23017 @ 0x40) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| C_U_LED_B2 | VCC decoupling cap for U_LED_B2 (MCP23017 @ 0x41) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 
-U_EXP_SW_IN @ 0x26: reads all 12 switch states + CFG_APPLY. U_EXP_LED @ 0x27: drives per-bit LED
-anodes and per-bank green/red colour-rail MOSFET sinks. Both share the Stator I²C-1 bus via the
-J_I2C → J_CFG ribbon cable. Discrete LED brightness is balanced with separate red and green series
-resistors per switch under nominal 3.3V operation, while the blue die is retained behind a
-per-switch 0Ω debug link.
+U_EXP_SW_IN @ 0x26: reads all 12 switch states + CFG_APPLY. U_LED_B1 @ 0x40 and U_LED_B2 @ 0x41:
+drive per-bit LED anodes and per-bank RGB colour-rail MOSFET sinks. All three share the Stator
+I²C-1 bus via the J_I2C → J_CFG ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
+green/blue series resistors. 5V_LED power rail is routed from Controller 5V_MAIN via Link-Beta
+pins 18 and 23 (1.0A capacity) through Stator to Settings Board.
 
 ## 5. Controller Specifics
 

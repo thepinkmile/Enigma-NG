@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-XX
+**Last Updated:** 2026-04-17
 
 ---
 
@@ -17,11 +17,12 @@ for the Enigma-NG system. It replaces the DIP switches previously located on the
 side of the enclosure top face near the rotors. A momentary CFG_APPLY pushbutton triggers CPLD
 configuration re-latch via the CM5 firmware.
 
-The Settings Board communicates with the Stator Board exclusively via a 4-wire I²C ribbon cable
-(J_I2C → Stator J_CFG), sharing the Stator I²C-1 bus. It hosts two MCP23017 GPIO expanders:
+The Settings Board communicates with the Stator Board exclusively via a 6-wire I²C ribbon cable
+(J_I2C → Stator J_CFG), sharing the Stator I²C-1 bus. It hosts three MCP23017 GPIO expanders:
 
 * **U_EXP_SW_IN (@ 0x26):** Reads all 12 switch states and the CFG_APPLY momentary button.
-* **U_EXP_LED (@ 0x27):** Drives per-bit LED anodes and per-bank colour-rail low-side sinks.
+* **U_LED_B1 (@ 0x40):** Drives Bank 1 LED anodes (5 LEDs) and RGB color-rail low-side switches.
+* **U_LED_B2 (@ 0x41):** Drives Bank 2 LED anodes (6 LEDs) and RGB color-rail low-side switches.
 
 No JTAG chain is present on this board. All configuration logic is handled by the CM5 enigma
 daemon over I²C.
@@ -41,7 +42,7 @@ daemon over I²C.
 | FR-SBD-02 | Allow CM5 firmware to override hardware switch settings on a per-bank basis | Bank enable switch (SW_B1_EN / SW_B2_EN): HIGH = switch-defined active; LOW = CM5-defined override | §5 LED Control Logic; Stator/Design_Spec.md FR-STA-08/09 |
 | FR-SBD-03 | Provide visual feedback via RGB LED illumination showing configuration source and active bit state | Green = switch-defined active; Red = CM5-defined override; per-bank shared colour rails + per-bit individual LED anode drive with per-colour cathode-return resistors | §5 LED Control Logic |
 | FR-SBD-04 | Provide a momentary CFG_APPLY pushbutton that triggers CPLD configuration re-latch | CM5 daemon polls U_EXP_SW_IN GPB[7]; active-low; 10kΩ pull-up + 100nF X7R 0402 debounce cap | §6 CFG_APPLY Button |
-| FR-SBD-05 | Connect to the Stator Board via a 4-wire I²C ribbon cable (3V3_ENIG, GND, SDA, SCL) | J_I2C = 4-pin JST PH 2.0mm connector; shares Stator I²C-1 bus | §7 Interconnects; BOM J_I2C |
+| FR-SBD-05 | Connect to the Stator Board via a 6-wire I²C ribbon cable (3V3_ENIG, 5V_LED, 2× GND, SDA, SCL) | J_I2C = 6-pin JST PH 2.0mm connector; shares Stator I²C-1 bus; 5V_LED powers RGB LEDs at 20mA per die | §7 Interconnects; BOM J_I2C |
 
 #### Design Requirements
 
@@ -50,11 +51,12 @@ daemon over I²C.
 | DR-SBD-01 | PCB stackup | 4-layer, 2oz finished copper (JLCPCB JLC04161H-7628) | §8 PCB Fabrication |
 | DR-SBD-02 | Switch + indicator type | 12× E-Switch 200MSP1T2B4M2QE panel-mount SPDT latching toggle switches plus 12× Kingbright WP154A4SEJ3VBDZGW/CA common-anode RGB through-hole LEDs; one LED per switch position | §3 Switch Bank Descriptions; BOM SW_B1_EN, SW_B1[0:3], SW_B2_EN, SW_B2[0:5], LED_B1_EN, LED_B1[0:3], LED_B2_EN, LED_B2[0:5] |
 | DR-SBD-03 | Switch input expander | U_EXP_SW_IN = MCP23017T-E/SO @ 0x26; SOIC-28; A2=HIGH, A1=HIGH, A0=LOW | §4 I²C Devices — U_EXP_SW_IN; BOM U_EXP_SW_IN |
-| DR-SBD-04 | LED output expander | U_EXP_LED = MCP23017T-E/SO @ 0x27; SOIC-28; A2=HIGH, A1=HIGH, A0=HIGH | §4 I²C Devices — U_EXP_LED; BOM U_EXP_LED |
-| DR-SBD-05 | LED colour-rail transistors | 4× BSS138 SOT-23 N-channel MOSFETs (Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R); gate driven from U_EXP_LED GPIO via 1kΩ gate resistor; GPIO HIGH = transistor ON (low-side sink topology) | §5 LED Control Logic; BOM Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R |
-| DR-SBD-06 | CFG_APPLY button | SW_CFG_APPLY = SPST momentary pushbutton, active-low; 10kΩ pull-up to 3V3_ENIG (R_CA1) + 100nF X7R 0402 debounce cap to GND (C_CA1; RC τ = 1ms); connected to U_EXP_SW_IN GPB[7] | §6 CFG_APPLY Button; BOM SW_CFG_APPLY, R_CA1, C_CA1 |
-| DR-SBD-07 | I²C connector | J_I2C = 4-pin JST PH 2.0mm B4B-PH-K-S(LF)(SN); pins: 3V3_ENIG, GND, SDA, SCL; ribbon cable to Stator J_CFG | §7 Interconnects; BOM J_I2C |
-| DR-SBD-08 | Switch input pull-downs | 12× 10kΩ 0603 pull-down resistors on all switch signal inputs to U_EXP_SW_IN (GPA[0:4], GPB[0:6]); HIGH = switch-defined active when switch closed | §4 I²C Devices — U_EXP_SW_IN; BOM R_SW1–R_SW12 |
+| DR-SBD-04 | LED control expanders | U_LED_B1 = MCP23017T-E/SO @ 0x40 (Bank 1); U_LED_B2 = MCP23017T-E/SO @ 0x41 (Bank 2); SOIC-28; full RGB via 6× BSS138 MOSFETs | §4 I²C Devices — U_LED_B1, U_LED_B2; §5 LED Control Logic; BOM U_LED_B1, U_LED_B2 |
+| DR-SBD-05 | LED colour-rail transistors | 6× BSS138 SOT-23 N-channel MOSFETs (Q_BNK1_R/G/B, Q_BNK2_R/G/B); gate driven via 1kΩ resistor; GPIO HIGH = transistor ON | §5 LED Control Logic; BOM Q_BNK1_R, Q_BNK1_G, Q_BNK1_B, Q_BNK2_R, Q_BNK2_G, Q_BNK2_B |
+| DR-SBD-06 | LED power supply | 5V_LED from Stator via J_I2C pin 2; RGB LEDs at 20mA per die; 150Ω (red), 100Ω (green/blue) current-limiting resistors | §7 Interconnects — J_I2C; BOM R_LED_R/G/B |
+| DR-SBD-07 | CFG_APPLY button | SW_CFG_APPLY = SPST momentary, active-low; 10kΩ pull-up to 3V3_ENIG + 100nF debounce cap; U_EXP_SW_IN GPB[7] | §6 CFG_APPLY Button; BOM SW_CFG_APPLY, R_CA1, C_CA1 |
+| DR-SBD-08 | I²C connector | J_I2C = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: 3V3_ENIG, 5V_LED, 2× GND, SDA, SCL; ribbon to Stator J_CFG | §7 Interconnects; BOM J_I2C |
+| DR-SBD-09 | Switch input pull-downs | 12× 10kΩ 0603 pull-down resistors on all switch inputs to U_EXP_SW_IN (GPA[0:4], GPB[0:6]); HIGH when closed | §4 I²C Devices — U_EXP_SW_IN; BOM R_SW1–R_SW12 |
 
 ---
 
@@ -189,38 +191,50 @@ Reads all 12 switch states and the CFG_APPLY momentary button.
 > left unconnected in Rev A. Panel orientation shall make the lever-up / marked-ON position select
 > the `3V3_ENIG` throw so the asserted state always reads logic-1.
 
-### U_EXP_LED — MCP23017T-E/SO @ 0x27
+### U_LED_B1 — MCP23017T-E/SO @ 0x40
 
-Drives per-bit LED anodes and per-bank red / green low-side sink transistors. Each LED's blue
-cathode is also routed through a dedicated 0Ω debug-link footprint for prototype bring-up.
+Drives Bank 1 LED anodes (5 LEDs) and RGB color-rail low-side transistor gates.
 
-**Address:** 0x27 — A2=HIGH, A1=HIGH, A0=HIGH → 0x20 | 0b111 = 0x27
+**Address:** 0x40 — MCP23017 base 0x20; A2=HIGH, A1=LOW, A0=LOW → 0x20 | 0b100 = 0x40
 
 | Port | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| GPA | [0] | LED_B1_EN_A | Output | Bank 1 LED anode enable for SW_B1_EN; HIGH = LED source enabled |
-| GPA | [1] | LED_B1_0_A | Output | Bank 1 LED anode enable for SW_B1[0]; HIGH = LED source enabled |
-| GPA | [2] | LED_B1_1_A | Output | Bank 1 LED anode enable for SW_B1[1]; HIGH = LED source enabled |
-| GPA | [3] | LED_B1_2_A | Output | Bank 1 LED anode enable for SW_B1[2]; HIGH = LED source enabled |
-| GPA | [4] | LED_B1_3_A | Output | Bank 1 LED anode enable for SW_B1[3]; HIGH = LED source enabled |
-| GPA | [5] | BNK1_G | Output | Bank 1 green cathode rail; drives gate of Q_BNK1_G; HIGH = green rail active |
-| GPA | [6] | BNK1_R | Output | Bank 1 red cathode rail; drives gate of Q_BNK1_R; HIGH = red rail active |
-| GPA | [7] | BNK2_G | Output | Bank 2 green cathode rail; drives gate of Q_BNK2_G; HIGH = green rail active |
-| GPB | [0] | LED_B2_EN_A | Output | Bank 2 LED anode enable for SW_B2_EN; HIGH = LED source enabled |
-| GPB | [1] | LED_B2_0_A | Output | Bank 2 LED anode enable for SW_B2[0]; HIGH = LED source enabled |
-| GPB | [2] | LED_B2_1_A | Output | Bank 2 LED anode enable for SW_B2[1]; HIGH = LED source enabled |
-| GPB | [3] | LED_B2_2_A | Output | Bank 2 LED anode enable for SW_B2[2]; HIGH = LED source enabled |
-| GPB | [4] | LED_B2_3_A | Output | Bank 2 LED anode enable for SW_B2[3]; HIGH = LED source enabled |
-| GPB | [5] | LED_B2_4_A | Output | Bank 2 LED anode enable for SW_B2[4]; HIGH = LED source enabled |
-| GPB | [6] | LED_B2_5_A | Output | Bank 2 LED anode enable for SW_B2[5]; HIGH = LED source enabled |
-| GPB | [7] | BNK2_R | Output | Bank 2 red cathode rail; drives gate of Q_BNK2_R; HIGH = red rail active |
+| GPA | [0] | LED_B1_EN_A | Output | Bank 1 enable LED anode; HIGH = LED source enabled |
+| GPA | [1] | LED_B1_0_A | Output | Bank 1 bit 0 LED anode; HIGH = LED source enabled |
+| GPA | [2] | LED_B1_1_A | Output | Bank 1 bit 1 LED anode; HIGH = LED source enabled |
+| GPA | [3] | LED_B1_2_A | Output | Bank 1 bit 2 LED anode; HIGH = LED source enabled |
+| GPA | [4] | LED_B1_3_A | Output | Bank 1 bit 3 LED anode; HIGH = LED source enabled |
+| GPA | [5] | BNK1_R | Output | Bank 1 red cathode rail; drives gate of Q_BNK1_R; HIGH = red rail active |
+| GPA | [6] | BNK1_G | Output | Bank 1 green cathode rail; drives gate of Q_BNK1_G; HIGH = green rail active |
+| GPA | [7] | BNK1_B | Output | Bank 1 blue cathode rail; drives gate of Q_BNK1_B; HIGH = blue rail active |
+| GPB | [0:7] | — | — | Spare (reserved future use) |
 
 > Individual LED anode outputs drive HIGH only for the bits that should be illuminated. Each LED's
-> red and green cathodes return through separate per-colour resistors to the shared bank colour
-> rails. The blue cathode is routed through the per-switch 0Ω link footprint group (`R_LED_B (x12)`) to an
-> isolated debug node so prototype builds can bodge or instrument the blue die without cutting
-> traces. Only one colour rail is enabled at any time per bank, so all lit LEDs in that bank show
-> the same colour without consuming extra GPIOs.
+> red, green, and blue cathodes return through separate per-colour current-limiting resistors
+> (R_LED_R = 150Ω, R_LED_G = 100Ω, R_LED_B = 100Ω) to the shared bank colour rails. Only one
+> colour rail is enabled at any time per bank, so all lit LEDs in that bank show the same colour
+> without consuming extra GPIOs. LEDs are powered from the 5V_LED rail (derived from 5V_MAIN via
+> Link-Beta pins 18, 23 → Stator → J_CFG pin 2).
+
+### U_LED_B2 — MCP23017T-E/SO @ 0x41
+
+Drives Bank 2 LED anodes (6 LEDs) and RGB color-rail low-side transistor gates.
+
+**Address:** 0x41 — MCP23017 base 0x20; A2=HIGH, A1=LOW, A0=HIGH → 0x20 | 0b101 = 0x41
+
+| Port | Pin | Signal | Direction | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| GPA | [0] | LED_B2_EN_A | Output | Bank 2 enable LED anode; HIGH = LED source enabled |
+| GPA | [1] | LED_B2_0_A | Output | Bank 2 bit 0 LED anode; HIGH = LED source enabled |
+| GPA | [2] | LED_B2_1_A | Output | Bank 2 bit 1 LED anode; HIGH = LED source enabled |
+| GPA | [3] | LED_B2_2_A | Output | Bank 2 bit 2 LED anode; HIGH = LED source enabled |
+| GPA | [4] | LED_B2_3_A | Output | Bank 2 bit 3 LED anode; HIGH = LED source enabled |
+| GPA | [5] | LED_B2_4_A | Output | Bank 2 bit 4 LED anode; HIGH = LED source enabled |
+| GPA | [6] | LED_B2_5_A | Output | Bank 2 bit 5 LED anode; HIGH = LED source enabled |
+| GPA | [7] | BNK2_R | Output | Bank 2 red cathode rail; drives gate of Q_BNK2_R; HIGH = red rail active |
+| GPB | [0] | BNK2_G | Output | Bank 2 green cathode rail; drives gate of Q_BNK2_G; HIGH = green rail active |
+| GPB | [1] | BNK2_B | Output | Bank 2 blue cathode rail; drives gate of Q_BNK2_B; HIGH = blue rail active |
+| GPB | [2:7] | — | — | Spare (reserved future use) |
 
 ---
 
@@ -228,15 +242,21 @@ cathode is also routed through a dedicated 0Ω debug-link footprint for prototyp
 
 ### Colour Scheme
 
-| Bank Enable State | Colour Rail Active | Meaning |
+Full RGB capability with software-selectable colors per bank:
+
+| Bank Enable State | Primary Colour | Meaning |
 | :--- | :--- | :--- |
 | HIGH (switch-defined active) | Green (BNKx_G transistor ON) | Configuration source = physical switches |
 | LOW (CM5-defined override) | Red (BNKx_R transistor ON) | Configuration source = CM5 firmware |
+| Special modes | Blue (BNKx_B transistor ON) | Future use: diagnostic, bootloader, error states |
+
+> Software can select any RGB color by enabling the appropriate color-rail transistor. Only one
+> color is active per bank at any time to stay within the 240mA per-bank power budget.
 
 ### Per-Bit Illumination
 
-* Each switch in a bank has an individual LED anode output (LED_B1_EN_A / LED_B1_0_A... and
-  LED_B2_EN_A / LED_B2_0_A...).
+* Each switch in a bank has an individual LED anode output (U_LED_B1 drives Bank 1 anodes,
+  U_LED_B2 drives Bank 2 anodes).
 * CM5 daemon sets each anode HIGH to illuminate that bit's LED when the corresponding bit in the
   active configuration is set (= 1) and the correct bank colour rail is enabled.
 * Unset bits (= 0) have their anode held LOW (LED off); only active configuration bits are
@@ -250,11 +270,11 @@ indicator for the entire bank.
 
 ### Low-Side Colour-Rail Circuit
 
-Each colour rail (BNK1_G, BNK1_R, BNK2_G, BNK2_R) is driven by a BSS138 SOT-23 N-channel MOSFET:
+Each colour rail (BNK1_R, BNK1_G, BNK1_B, BNK2_R, BNK2_G, BNK2_B) is driven by a BSS138 SOT-23 N-channel MOSFET:
 
 * **Source:** tied to GND.
-* **Drain:** connects to the shared bank colour rail (green or red cathode return).
-* **Gate:** driven by U_EXP_LED GPIO output via 1kΩ gate resistor.
+* **Drain:** connects to the shared bank colour rail (red, green, or blue cathode return).
+* **Gate:** driven by U_LED_B1 or U_LED_B2 GPIO output via 1kΩ gate resistor.
 
 Each LED uses two dedicated series resistors: one in the red cathode path and one in the green
 cathode path. This allows the red and green dice to be balanced independently under nominal 3.3V
@@ -280,7 +300,7 @@ GPB[7].
   2. Evaluates bank enables for Bank 1 and Bank 2.
   3. Writes final configuration to U_EXP4 GPA[0:3] and GPB[0:5] on the Stator Board.
   4. Pulses STATOR_CFG_RDY (U_EXP4 GPA[4]) LOW then HIGH to trigger CPLD re-latch.
-  5. Updates U_EXP_LED outputs to reflect the new configuration state.
+  5. Updates U_LED_B1 and U_LED_B2 outputs to reflect the new configuration state.
 
 This button provides operator-initiated explicit configuration commit without relying solely on
 automatic polling intervals.
@@ -293,17 +313,24 @@ automatic polling intervals.
 
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | Power from Stator; powers Settings Board logic |
-| 2 | GND | Common ground; GND_CHASSIS bond point |
-| 3 | SDA | I²C data; shared Stator I²C-1 bus |
-| 4 | SCL | I²C clock; shared Stator I²C-1 bus |
+| 1 | 3V3_ENIG | Power from Stator; powers Settings Board logic (MCP23017 ICs) |
+| 2 | 5V_LED | LED power supply from Stator; derived from 5V_MAIN via Link-Beta; powers RGB LED anodes |
+| 3 | GND | Logic ground return; GND_CHASSIS bond point |
+| 4 | SDA | I²C data; shared Stator I²C-1 bus |
+| 5 | SCL | I²C clock; shared Stator I²C-1 bus |
+| 6 | GND | LED cathode ground return; high-current return path |
 
-**Connector:** JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm THT
-(Mouser: 474-B4B-PH-K-S(LF)(SN), DigiKey: 455-1721-ND, JLCPCB: TBD — C131342 is the 3-pin B3B-PH-K-S; 4-pin B4B JLCPCB PN unconfirmed)
+**Connector:** JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm THT
+(Mouser: 474-B6B-PH-K-S(LF)(SN), DigiKey: 455-1723-ND, JLCPCB: TBD)
 
-**Cable:** 4-wire ribbon cable (100mm recommended); matching JST PHR-4 crimp housing on both ends.
+**Cable:** 6-wire ribbon cable (100mm recommended); matching JST PHR-6 crimp housing on both ends. Use 28AWG for pins 2, 6 (power); 30AWG for pins 1, 3, 4, 5 (signals).
 
-**Mating connector on Stator:** J_CFG — same JST PH 2.0mm 4-pin part.
+**Mating connector on Stator:** J_CFG — same JST PH 2.0mm 6-pin part.
+
+**Why 2× GND pins?**
+- Pin 3 (GND): Low-current logic return for MCP23017s (~80mA total)
+- Pin 6 (GND): High-current LED return (up to 240mA max, ~120mA typical)
+- Separating logic and power grounds reduces noise coupling into I²C signals
 
 ---
 
@@ -327,21 +354,24 @@ automatic polling intervals.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x26) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C_U_EXP_LED | VCC decoupling cap for U_EXP_LED (MCP23017 @ 0x27) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm | THT | 474-B4B-PH-K-S(LF)(SN) | 455-1721-ND | TBD (C131342 is 3-pin B3B; 4-pin B4B JLCPCB PN unconfirmed) |
+| C_U_LED_B1 | VCC decoupling cap for U_LED_B1 (MCP23017 @ 0x40) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C_U_LED_B2 | VCC decoupling cap for U_LED_B2 (MCP23017 @ 0x41) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 474-B6B-PH-K-S(LF)(SN) | 455-1723-ND | TBD |
 | LED_B1_EN, LED_B1[0:3] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED; red/green used in normal operation, blue routed via 0Ω debug link | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | LED_B2_EN, LED_B2[0:5] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
-| Q_BNK1_G | Bank 1 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | Q_BNK1_R | Bank 1 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q_BNK2_G | Bank 2 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
+| Q_BNK1_G | Bank 1 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
+| Q_BNK1_B | Bank 1 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | Q_BNK2_R | Bank 2 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
+| Q_BNK2_G | Bank 2 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
+| Q_BNK2_B | Bank 2 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | R_CA1 | CFG_APPLY pull-up resistor | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_SW1–R_SW5 | Bank 1 switch input pull-downs (×5: SW_B1_EN + SW_B1[0:3]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R_SW6–R_SW12 | Bank 2 switch input pull-downs (×7: SW_B2_EN + SW_B2[0:5]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | Value tuned at schematic phase for nominal 3.3V operation and desired panel brightness | 0603 | TBD | TBD | TBD |
-| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | Value tuned at schematic phase for nominal 3.3V operation and desired panel brightness | 0603 | TBD | TBD | TBD |
-| R_LED_B (x12) | Per-switch blue LED debug links | 0Ω link; routes each blue cathode to an isolated debug node for prototype work | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
-| R_GATE1–R_GATE4 | MOSFET gate resistors (×4, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
+| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | 150Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1500V | P150BYCT-ND | C22808 |
+| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C22775 |
+| R_LED_B1–R_LED_B12 | Per-switch blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C22775 |
+| R_GATE1–R_GATE6 | MOSFET gate resistors (×6, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
 | SW_B1_EN | Bank 1 enable toggle switch | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW_B1[0] | Bank 1 routing config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW_B1[1] | Bank 1 routing config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
@@ -356,4 +386,87 @@ automatic polling intervals.
 | SW_B2[5] | Bank 2 reflector config bit 5 toggle switch (internal reflector enable) | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount (MPN TBD) | Panel-mount | TBD | TBD | — |
 | U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x26 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| U_EXP_LED | MCP23017 I²C GPIO Expander (LED anode + colour rail driver) | MCP23017T-E/SO @ 0x27 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_LED_B1 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x40 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U_LED_B2 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x41 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+
+---
+
+## 10. Power Budget
+
+### 3V3_ENIG (Logic Rail)
+
+| Component | Typical (mA) | Max (mA) | Notes |
+| :--- | :---: | :---: | :--- |
+| U_EXP_SW_IN (MCP23017 @ 0x26) | 25 | 50 | Switch input reader; 16 GPIO inputs |
+| U_LED_B1 (MCP23017 @ 0x40) | 25 | 50 | Bank 1 LED controller; low-side MOSFET drivers |
+| U_LED_B2 (MCP23017 @ 0x41) | 25 | 50 | Bank 2 LED controller; low-side MOSFET drivers |
+| **Total 3V3_ENIG** | **75 mA** | **150 mA** | Well within Stator J_CFG capacity |
+
+### 5V_LED (LED Power Rail)
+
+| Load | Typical (mA) | Max (mA) | Notes |
+| :--- | :---: | :---: | :--- |
+| Bank 1 LEDs (5× @ 20mA) | 60 | 100 | Software enforces 1 color active per bank |
+| Bank 2 LEDs (6× @ 20mA) | 60 | 120 | Software enforces 1 color active per bank |
+| **Total 5V_LED** | **120 mA** | **240 mA** | Worst-case: all 12 LEDs on, 1 color active per bank |
+
+**Link-Beta 5V_MAIN Allocation:**
+- Settings Board: 240mA max (LED load)
+- Stator J_SERVO: 500mA max (servo motor)
+- **Link-Beta capacity: 1.0A** (pins 18, 23 @ 0.5A each)
+- **Margin: 260mA** (36% headroom)
+
+---
+
+## 11. Component Count Summary
+
+| Category | Quantity | Notes |
+| :--- | :---: | :--- |
+| **Toggle Switches** | 12 | E-Switch 200MSP1T2B4M2QE — SPDT latching panel-mount |
+| **RGB LEDs** | 12 | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode THT |
+| **MCP23017 I²C Expanders** | 3 | U_EXP_SW_IN, U_LED_B1, U_LED_B2 |
+| **BSS138 MOSFETs** | 6 | Q_BNK1_R/G/B, Q_BNK2_R/G/B — low-side color-rail switches |
+| **0603 Resistors (LED current-limiting)** | 36 | 12× red (150Ω), 12× green (100Ω), 12× blue (100Ω) |
+| **0603 Resistors (switch pull-down)** | 12 | 10kΩ pull-downs on all switch inputs |
+| **0402 Resistors (gate)** | 6 | 1kΩ MOSFET gate resistors |
+| **0603 Resistors (misc)** | 1 | R_CA1: 10kΩ CFG_APPLY pull-up |
+| **0402 Capacitors (decoupling)** | 3 | 100nF X7R for 3× MCP23017s |
+| **0402 Capacitors (debounce)** | 1 | C_CA1: 100nF X7R CFG_APPLY debounce |
+| **JST PH Connectors** | 1 | J_I2C: 6-pin B6B-PH-K-S(LF)(SN) to Stator |
+| **Pushbutton Switch** | 1 | SW_CFG_APPLY — SPST NO momentary (MPN TBD) |
+
+**Total unique part numbers:** ~15  
+**Total component count:** ~93
+
+---
+
+## 12. Design Notes
+
+### LED Control Architecture
+
+The Settings Board uses a **shared color-rail topology** to minimize MOSFET count while providing
+full RGB capability:
+
+- Each LED has an **individual anode** controlled by U_LED_B1 or U_LED_B2 GPIO
+- All LEDs in a **bank share 3 cathode rails** (red, green, blue)
+- **6× BSS138 MOSFETs** (3 per bank) switch each color rail to GND
+- Only **1 color active per bank** at any time (software enforced)
+
+This design uses only 6 MOSFETs for 12 LEDs instead of 36 (1 per LED × 3 colors).
+
+### 5V Power Routing
+
+5V_LED power is sourced from the Controller Board's 5V_MAIN rail (TPS259804 eFuse output) and
+routed through Link-Beta pins 18 and 23 (2× pins for current sharing, 1.0A total capacity).
+The Stator Board acts as a **power pass-through hub**, forwarding 5V_MAIN to:
+- J_CFG pin 2 → Settings Board 5V_LED (240mA)
+- J_SERVO pin 1 → Servo motor 5V_MAIN (500mA max)
+
+This solves two design issues in one: LED brightness and the previously open J_SERVO power source.
+
+### I²C Address Selection
+
+U_LED_B1 and U_LED_B2 use addresses 0x40 and 0x41 (A2=HIGH, A1=LOW, A0=LOW/HIGH) to avoid
+conflicts with existing devices and reserve the 0x2x range for potential future Settings Board
+expansion without hardware rework.
+

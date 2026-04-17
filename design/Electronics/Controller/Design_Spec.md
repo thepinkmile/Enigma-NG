@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-17
 
 ---
 
@@ -102,7 +102,8 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
     * **Pins 1–9:** JTAG chain only, GND-shielded (5 internal GND pins).
     * **Pins 10–11:** GND isolation moat.
     * **Pins 12–13:** I2C1_SDA / I2C1_SCL extend the CM5 I²C-1 bus onto the Stator for U_EXP1/U_EXP2/U_EXP4, INA219, PCA9685, and the downstream Settings Board expanders.
-    * **Pins 14–24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now mostly spare (monitoring via I²C expander U_EXP1). Pins 14–17 and 19–24 are **SPARE**; no 5V_MAIN on LINK-BETA.
+    * **Pins 14–17, 19–22, 24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now mostly spare (monitoring via I²C expander U_EXP1). These pins remain **SPARE**.
+    * **Pins 18, 23:** 5V_MAIN power delivery (2× pins for current sharing, 0.5A per pin = 1.0A total capacity). Routed to Stator for Settings Board LEDs (5V_LED rail, 240mA) and J_SERVO servo motor power (5V_MAIN, up to 500mA).
     * **Pins 25–27:** GND / TTD_RETURN / GND shield cluster (TTD_RETURN on pin 26 only).
     * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity).
     * **Pins 36–40:** GND power return (5 pins).
@@ -178,7 +179,8 @@ All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through to th
 | 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control |
 | 0x22 | MCP23017 (U_EXP4) | Stator | CPLD config output driver (DEC-032) |
 | 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
-| 0x27 | MCP23017 (U_EXP_LED) | Settings Board | LED anode + colour-rail driver (current Settings Board implementation; see DEC-034) |
+| 0x40 | MCP23017 (U_LED_B1) | Settings Board | Bank 1 LED controller: 5× anodes + RGB color-rail drivers (DEC-034) |
+| 0x41 | MCP23017 (U_LED_B2) | Settings Board | Bank 2 LED controller: 6× anodes + RGB color-rail drivers (DEC-034) |
 | 0x60 | PCA9685 (U_EXP3) | Stator | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
 ## 5. RTC Backup Battery
@@ -220,7 +222,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45, MCP23017 U_EXP1 @ 0x20, MCP23017 U_EXP2 @ 0x21, MCP23017 U_EXP4 @ 0x22, MCP23017 U_EXP_SW_IN @ 0x26, MCP23017 U_EXP_LED @ 0x27, PCA9685 U_EXP3 @ 0x60. |
+| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45, MCP23017 U_EXP1 @ 0x20, MCP23017 U_EXP2 @ 0x21, MCP23017 U_EXP4 @ 0x22, MCP23017 U_EXP_SW_IN @ 0x26, MCP23017 U_LED_B1 @ 0x40, MCP23017 U_LED_B2 @ 0x41, PCA9685 U_EXP3 @ 0x60. |
 | **4–9** | *(freed)* | — | — | **Previously ENC_IN[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPA[0:5] @ 0x20 (Stator) via I²C. GPIO 4–9 are now available for future use. See DEC-031. |
 | **10–15** | *(freed)* | — | — | **Previously ENC_OUT[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPB[0:5] @ 0x20 (Stator) via I²C. GPIO 10–15 are now available for future use. See DEC-031. |
 | **16** | **ROTOR_EN** | Output | 3.3V | Enable signal to Power Module 3V3_ENIG LDO for sequenced rotor stack power-up. |
