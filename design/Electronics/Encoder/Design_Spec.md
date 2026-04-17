@@ -5,15 +5,15 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-17
 
 ## 1. Overview
 
 A multi-purpose Human Interface Device (HID) and plugboard interface board. Each board consists of
 **two completely independent halves** on the same PCB — a **Decode Half** (CPLD A: receives a 6-bit
-character code and asserts one of 64 output lines) and an **Encode Half** (CPLD B: reads one of 64
-input lines and produces a 6-bit character code). The two halves share no PCB copper other than the
-single J2 IDC header, which carries power, both 6-bit data buses, and the JTAG chain.
+character code and asserts one of 64 output lines) and an **Encode Half** (CPLD B: reads one of up
+to 64 input lines and produces a 6-bit character code). The two halves share no PCB copper other
+than the single J2 IDC header, which carries power, both 6-bit data buses, and the JTAG chain.
 
 ### Plugboard Use (2 boards required)
 
@@ -37,8 +37,8 @@ When used as the HID interface (Keyboard + Lightboard), both halves operate inde
 
 - **Decode Half (CPLD A):** Receives 6-bit ENC_IN from Stator → asserts one of 64 lamp-drive output
   lines (Lightboard). Connected to lamp assemblies via BT1–64 spade terminals.
-- **Encode Half (CPLD B):** Reads one of 64 key-press input lines (Keyboard) → encodes to 6-bit
-  ENC_OUT to Stator. Connected to keyboard switches via BT65–128 spade terminals.
+- **Encode Half (CPLD B):** Reads one of the populated HID key-press input lines (Keyboard) →
+  encodes to 6-bit ENC_OUT to Stator. Connected to keyboard switches via BT65–128 spade terminals.
 
 Regardless of use case (plugboard or HID), the physical PCB is identical — the functional role of
 each half is determined entirely by the mechanical assembly and Stator CPLD configuration.
@@ -49,7 +49,7 @@ each half is determined entirely by the mechanical assembly and Stator CPLD conf
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-ENC-01 | Sense and encode 64-key keyboard and plugboard jack states with sufficient resolution for per-character detection | Must detect individual keypresses and plugboard patch states without ghosting or chatter | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100I5N) |
+| FR-ENC-01 | Sense and encode the 64-character logical HID repertoire plus the 64-node plugboard jack states with sufficient resolution for per-character detection | HID keyboard mode uses a 40-position physical layout (`[a-z0-9+=]` plus Left/Right Shift) which the CPLD maps into the 64-character code space | §3 Dual-Role Architecture; §6 Key Mapping; BOM U1, U2 (EPM240T100I5N) |
 | FR-ENC-02 | Transmit encoded character (or 'base-64 binary' in the case of binary file encoding) data to the Stator Board via IDC ribbon cable | 26-pin IDC interface | §4 Interconnects; BOM J2 (26-pin shrouded header) |
 | FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain | §5 JTAG Chain Integrity; BOM U1, U2 (EPM240T100I5N) |
 | ~~FR-ENC-04~~ | ~~Moved to Mechanical/Plugboard/Design_Spec.md~~ | ~~—~~ | ~~—~~ |
@@ -74,14 +74,16 @@ each half is determined entirely by the mechanical assembly and Stator CPLD conf
 
 The board's two halves are electrically independent on the PCB. Each half contains one Intel MAX II
 EPM240T100I5N CPLD and one bank of 64 spade terminals. The J2 IDC header is the only physical
-connection between them (power, data buses, JTAG).
+connection between them (power, data buses, JTAG). In HID use, the board still exposes the full
+64-character code space, but only 40 physical keyboard positions are populated; the CPLD derives the
+uppercase alphabetic plane from the dedicated Shift inputs.
 
 ### Half Definitions
 
 | Half | CPLD | Spade bank | 6-bit bus | Function |
 | :--- | :--- | :--- | :--- | :--- |
 | **Decode Half** | U1 (CPLD A) | BT1–64 | ENC_IN[0:5] ← Stator | Decodes 6-bit input → asserts 1 of 64 output lines |
-| **Encode Half** | U2 (CPLD B) | BT65–128 | ENC_OUT[0:5] → Stator | Reads 1 of 64 input lines → encodes to 6-bit output |
+| **Encode Half** | U2 (CPLD B) | BT65–128 | ENC_OUT[0:5] → Stator | Reads 1 of up to 64 input lines → encodes to 6-bit output |
 
 ### Signal Flow — Plugboard Mode
 
@@ -103,7 +105,7 @@ ENC_IN[0:5] (from Stator J4/J5/J6, via J2 pin 2–7)
 
 ```text
 Decode Half (Lightboard):          Encode Half (Keyboard):
-ENC_IN[0:5] ← Stator               64 key-press lines ← Keyboard switches
+ENC_IN[0:5] ← Stator               40 populated HID key lines ← Keyboard switches
        ↓                                    ↓
   CPLD A (U1)                        CPLD B (U2)
        ↓                                    ↓
@@ -133,6 +135,9 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
   - **Bank 2 (BT65–BT128) — Encode Half inputs:** CPLD B (U2) encoder input lines. In plugboard mode:
     wired via harness to the Sleeve terminals of the 64 jack sockets. In HID keyboard mode: wired to
     keyboard switch output lines (active-low, 10kΩ pull-up + RC filter per line).
+    Only **40** of these inputs are populated in the HID assembly: 38 printable positions
+    (`[a-z0-9+=]`) plus Left Shift and Right Shift. Remaining input sites stay unpopulated for HID
+    use unless a future decision reassigns them.
   - The two banks are vertically stacked so that character N on Bank 1 (BT_N) aligns with character N
     on Bank 2 (BT_{N+64}), enabling correct plugboard harness assembly.
 - **Jack Socket Wiring (Plugboard Mode):**
@@ -182,12 +187,15 @@ leaving headroom for JTAG, status LEDs, power, and any future expansion.
   - **Cable Output (R8, 75Ω):** Series resistor placed within 2 mm of CPLD 2 TDO, before J2 pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
 - **Programming:** Supports "In-System Sources and Probes" debugging via the CM5 GUI.
 
-## 6. Key Mapping (64-Way QWERTY for Keyboard)
+## 6. Key Mapping (64-Character Code Space with 40-Position HID Layout)
 
-The Encoder CPLD maps 64 mechanical key inputs to the parallel 6-bit data bus. Key assignments
-follow a standard QWERTY layout extended with numbers, symbols, and modifier keys.
+The Encoder CPLD maps the HID assembly's 40 physical switch positions to the parallel 6-bit data
+bus while preserving the machine's 64-character logical repertoire.
 
-- **Layout:** Standard QWERTY + Numbers + Symbols + Shift (64 keys total).
+- **Layout:** QWERTY-derived 40-position HID panel consisting of 38 printable keys
+  (`[a-z0-9+=]`) plus Left Shift and Right Shift.
+- **Logical repertoire:** the system still exposes 64 unique character codes:
+  26 lowercase letters + 26 uppercase letters + 10 digits + `+` + `=`.
 - **Signal polarity:** Lines are **active-low**. The external 10 kΩ pull-up to 3V3_ENIG holds
   each CPLD input HIGH when the key is not pressed. Key press closes the switch contact to GND,
   pulling the CPLD input LOW; the CPLD detects the falling edge.
@@ -197,9 +205,13 @@ follow a standard QWERTY layout extended with numbers, symbols, and modifier key
   internal weak pull-up is 50 kΩ–100 kΩ. The external 10 kΩ pull-up dominates and sets a
   well-defined idle-high state. The 10 kΩ value is confirmed appropriate — no change required.
 - **Shift Logic:** The Left Shift and Right Shift keys act as logic-level triggers for the CPLD
-  state machine, toggling between the lower and upper character planes of the 64-way key map.
-- **LED Drive:** The Encoder CPLDs directly drive the **Shift Status LEDs** and the 64-character
-  lamp matrix output via MOSFET arrays.
+  state machine. When either Shift key is held, alphabetic key positions map to `A-Z` instead of
+  `a-z`. Digits and `+` / `=` remain the same in both planes.
+- **Lightboard mapping:** The HID lightboard mirrors the same QWERTY-derived printable positions.
+  Uppercase alphabetic outputs illuminate the corresponding alphabetic lamp position rather than a
+  separate uppercase-only physical position.
+- **LED Drive:** The Encoder CPLDs directly drive the **Shift Status LEDs** and the HID lightboard
+  lamp outputs via MOSFET arrays.
 
 > For keyboard switch mechanical specification and panel assembly, see
 > `design/Mechanical/HID_Assembly/Design_Spec.md`.
@@ -253,7 +265,7 @@ encryption matrix in real time.
 | D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-5015-1-ND | C2286 |
 | J2 | Data Link Connector | Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503) | 2.54mm | — | — | C3013501 |
 | J3 | Diagnostic probe pad bank (bare ENIG gold pads — logic analyser / ICT access) | 2×8 bare PCB pads | 2.54mm | N/A | N/A | N/A |
-| SW1-64 | Keyboard Switches | DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2: reserved (*Open item — lamp/redundancy function TBD*). **Already purchased.** | Panel-mount | — (eBay: gadgetkingdom, 2 per pack) | — | — |
+| SW1-40 | Keyboard Switches | uxcell-style DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2 pins retained for mechanical anchoring only. Custom marketplace part; see pseudo datasheet. **Already purchased.** | Panel-mount | — (eBay: gadgetskingdom item 365271584375, 2 per pack) | — | — |
 | U1, U2 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
 | R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LBCT-ND | C105872 |
 | R3 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |

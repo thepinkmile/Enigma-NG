@@ -29,10 +29,11 @@ pushbutton.
 | Toggle switch cutouts (Bank 2 — Reflector Mapping) | 7 | Right side, top face, near rotors | Bank 2 enable + SW_B2[0:5] — panel-mount SPDT toggle |
 | RGB LED apertures (Bank 1 indicators) | 5 | Adjacent to Bank 1 toggles | One 5mm indicator LED per switch position |
 | RGB LED apertures (Bank 2 indicators) | 7 | Adjacent to Bank 2 toggles | One 5mm indicator LED per switch position |
-| CFG_APPLY pushbutton cutout | 1 | Right side, top face | Momentary pushbutton; triggers CPLD config re-latch |
+| CFG_APPLY actuator cutout | 1 | Right side, top face | Opening for a mechanical actuator/plunger that presses the Settings Board's internal momentary tactile switch; triggers CPLD config re-latch |
 
-The Settings Board PCB mounts internally to the enclosure panel, with the toggles, LEDs, and the
-pushbutton protruding through their panel cutouts. The board connects to the Stator Board via a
+The Settings Board PCB mounts internally to the enclosure panel, with the toggles and LEDs
+protruding through their panel cutouts. CFG_APPLY may instead use an internal board-mounted tactile
+switch with a simple actuator/plunger through the panel opening. The board connects to the Stator Board via a
 4-wire I²C ribbon cable (SDA, SCL, 3V3_ENIG, GND). Final toggle-hole, LED-hole, and stand-off /
 spacer geometry are to be defined at detailed mechanical design phase based on the selected parts.
 

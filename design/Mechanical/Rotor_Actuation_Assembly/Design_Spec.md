@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-14
+**Last Updated:** 2026-04-17
 
 ---
 
@@ -35,12 +35,12 @@ point** for both human keypresses and CM5 servo actuation.
 
 ## 3. Keyboard Key Levers
 
-Each of the 64 keyboard keys has a mechanical lever that extends downward from the key body to
+Each of the 40 physical HID keys has a mechanical lever that extends downward from the key body to
 contact the depression bar.
 
 * A keypress causes the lever to push the depression bar downward by the actuation stroke
   distance.
-* All 64 levers are geometrically identical to ensure uniform actuation force and stroke across
+* All 40 levers are geometrically identical to ensure uniform actuation force and stroke across
   the keyboard panel.
 * Lever geometry must be designed so that the depression bar deflects by the same distance
   regardless of which key (and therefore which lever position) is pressed.

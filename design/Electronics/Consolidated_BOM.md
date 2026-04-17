@@ -131,10 +131,10 @@ the Rev A single-Extension configuration unless otherwise noted.
 | EMI Common-Mode Choke (Würth WE-CMBNC 7448031002) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | DM Filter Inductor 10 µH 15.5 A (Bourns SRP1265A-100M) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | Power Module RGB Metal Power Switch (Adafruit 4660) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| Power Module 2.8 mm PCB Male Spade Tabs (SW1 harness) | 6 | — | — | — | — | — | — | — | — | — | — | 6 |
+| Power Module Momentary RGB Metal Pushbutton (Adafruit 3350) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| Power Module 2.8 mm PCB Male Quick-Fit Tabs (Keystone 1211; SW1 + SW2 harnesses) | 12 | — | — | — | — | — | — | — | — | — | — | 12 |
 | Settings Board SPDT Toggle Switch (E-Switch 200MSP1T2B4M2QE) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
 | Settings Board Discrete RGB LED (Kingbright WP154A4SEJ3VBDZGW/CA) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
-| Tactile SMT Reset Switch (SKRPACE010) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | Green SMD LED 0402 (Würth 150060VS75000 / C2286) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
 | 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
 | DPDT 6-pin Momentary Keyboard Switch | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
@@ -212,7 +212,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | Ref | Component | Part / Description | Qty | Supplier | Supplier Ref / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip: ENC signal path; Switch (N/C): BT1–64 (same node as Tip; N/C contact shorts Switch→Sleeve when no plug present); Sleeve: BT65–128 (Encode Half / CPLD B input). **Already purchased.** | 64 | SaiBuy.Ltd (eBay) | eBay item 334364197440 — £1.66/unit (sold in packs of 3 for £4.99). [ebay.co.uk — SaiBuy.Ltd](https://www.ebay.co.uk/str/saibuyltd) |
-| SW1-64 | Keyboard switches | DPDT 6-pin momentary push button — Pole 1 electrically active: COM1+NO1 → key-press to CPLD. Pole 2 pins soldered for mechanical key anchoring only (no electrical connection). NC1 not connected. Keys connect to keyboard Encoder board only; no direct switch connection to Lightboard. **Already purchased.** | 64 | gadgetkingdom (eBay) | Sold in packs of 2. Listing title: "Mechanical Push Button Switch DPDT 2 Pole 6 Pin 1 Position 2pcs". |
+| SW1-40 | Keyboard switches | uxcell-style DPDT 6-pin momentary push button — Pole 1 electrically active: COM1+NO1 → key-press to CPLD. Pole 2 pins soldered for mechanical key anchoring only (no electrical connection). NC1 not connected. Keys connect to keyboard Encoder board only; no direct switch connection to Lightboard. **Already purchased.** | 40 | gadgetskingdom (eBay) | Sold in packs of 2. eBay item 365271584375. Listing title: "Momentary Push Button Switch DPDT 2 Pole 6 Pin 1 Position 2pcs". See pseudo datasheet in `design/Datasheets/`. |
 | BT1-64 | PCB blade terminals — ENC signal (Row 1) | Keystone 1285-ST — 6.35mm (0.250″) straight vertical PCB-mount male blade tab, through-hole. Accepts 6.35mm female crimp spade from jack Tip harness. | 64 | Mouser / DigiKey / JLCPCB | Mouser: 534-1285-ST · DigiKey: 36-1285-ST-ND · JLCPCB: C5370868 |
 | BT65-128 | PCB blade terminals — Encode Half inputs / CPLD B encoder inputs (Row 2) | Keystone 1285-ST — same part. Wired to jack Sleeve (plugboard mode) or keyboard switch outputs (HID mode). | 64 | Mouser / DigiKey / JLCPCB | Mouser: 534-1285-ST · DigiKey: 36-1285-ST-ND · JLCPCB: C5370868 |
 
@@ -221,9 +221,12 @@ the Rev A single-Extension configuration unless otherwise noted.
 * **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip → BT1–64;
   Sleeve → BT65–128 Encode Half). Switch (N/C) is on the same node as Tip (BT1–64); it shorts Switch→Sleeve when no
   plug is inserted. Rows 1–2 (BT1–128).
-* **Keyboard switches (SW1-64):** mount in the keyboard panel. In HID mode each switch output wires to BT65–128
-  (Row 2, Encode Half). Pole 2 pins are mechanically soldered for physical anchoring — no electrical connection.
-  Keys connect to the keyboard Encoder board only; no direct switch wiring to the Lightboard.
+* **Keyboard switches (SW1-40):** mount in the keyboard panel. The physical HID layout uses 40
+  switches total: 38 printable positions (`[a-z0-9+=]`) plus Left Shift and Right Shift. In HID
+  mode each switch output wires to BT65–128 (Row 2, Encode Half); only 40 of those 64 input sites
+  are populated in the keyboard harness. Pole 2 pins are mechanically soldered for physical
+  anchoring — no electrical connection. Keys connect to the keyboard Encoder board only; no direct
+  switch wiring to the Lightboard.
 * **Total PCB blade terminals: 128** — two rows of 64, all Keystone 1285-ST.
 * Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
 
@@ -275,7 +278,7 @@ specification.
 | SW_B2_EN, SW_B2[0:5] | Bank 2 configuration toggle switches (×7: bank enable + reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
 | LED_B1_EN, LED_B1[0:3] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED; red/green used in normal operation, blue routed via 0Ω debug link | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
 | LED_B2_EN, LED_B2[0:5] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
-| SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount — MPN TBD | Panel-mount | TBD | TBD | — | ⏳ MPN TBD |
+| SW_CFG_APPLY | CFG_APPLY momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | ✅ |
 | J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 474-B6B-PH-K-S(LF)(SN) | 455-1723-ND | TBD | ⏳ JLCPCB PN TBD |
 | Q_BNK1_R, Q_BNK1_G, Q_BNK1_B, Q_BNK2_R, Q_BNK2_G, Q_BNK2_B | Low-side colour-rail sink MOSFETs (×6 total; 3 per bank for RGB) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 | 🔒 |
 | R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 | 🔒 |
@@ -466,3 +469,4 @@ Product page links for all major components for design review and procurement ve
 | J_JDB_JTAG (CTL) | RS1-10-G — 1×10 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
 | H_SW3 Board A (ROT) | PH1-07-UA — 1×7 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
 | H_SW3 Board B (ROT) | RS1-07-G — 1×7 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
+| SW1-40 (ENC/HID) | uxcell-style DPDT 6-pin momentary push button switch | gadgetskingdom (eBay) | [Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md](../Datasheets/Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md) |

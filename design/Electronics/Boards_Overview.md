@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-04
+**Last Updated:** 2026-04-17
 
 ## 1. Overview
 
@@ -62,10 +62,13 @@ The logic heart of the machine, hosting the Raspberry Pi CM5.
 
 ## 7. Encoder Module (Dual-Use)
 
-Handles the 64-character QWERTY interface and reciprocal plugboard encoding.
+Handles the 64-character code-space interface and reciprocal plugboard encoding.
 
 * **Logic:** Dual Intel MAX II EPM240T100I5N CPLDs managing 64-node I/O.
-* **Keyboard Mode:** 64 DPDT mechanical push-button switches (6-pin, momentary) mounted in the keyboard panel; connected to the PCB via 6.35mm spade-terminal harness.
+* **Keyboard Mode:** 40 DPDT mechanical push-button switches (6-pin, momentary) mounted in the
+  keyboard panel; 38 printable positions are `[a-z0-9+=]` and the remaining 2 are Left/Right Shift.
+  The CPLD uses the Shift keys to access uppercase alphabetic codes while preserving the overall
+  64-character logical repertoire.
 * **Plugboard Mode:** 64 × 6.35mm (¼″) mono switched panel-mount jack sockets ("Stecker") connected via the same spade-terminal harness architecture.
 
 ## 8. JTAG Daughterboard (Hidden)

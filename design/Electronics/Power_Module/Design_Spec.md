@@ -347,11 +347,16 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
     path from the CM5 GPIO outputs to prevent back-driving.
 * **Supervisor IC:** [MCP121T-450E](https://www.microchip.com) (4.50V Threshold).
 * **Trigger:** The supervisor monitors the **5V_MAIN** rail. It holds the `PWR_GD` pin LOW until the rail is stable.
-* **Manual Power Button (SW2):** Momentary tactile button wired directly from `PWR_BUT` to GND.
+* **Manual Power Button (SW2):** Panel-mount momentary rugged metal pushbutton with RGB ring LED
+  (Adafruit 3350) wired directly from `PWR_BUT` to GND.
   * **Action:** A brief press (released within ~2 seconds) sends a power-button event to the CM5 PMIC.
     When the CM5 OS is halted but power is present, this wakes the CM5. When the OS is running, it
     triggers a graceful shutdown via Linux `systemd-logind` (equivalent to `sudo shutdown -h now`).
+  * **Mechanical / wiring:** Same 16mm panel family and 2.8mm terminal scheme as SW1. Use matching
+    PCB-mounted 0.110in male Quick-Fit tabs so SW2 is also a field-serviceable harnessed subassembly.
   * **Pull-up:** CM5 module integrates a 10kΩ pull-up on `PWR_BUT` — no external pull-up required.
+  * **LED use:** The RGB ring is optional for user feedback and may be used to indicate the 3-second
+    held `PWR_BUT` signal / shutdown event. Detailed colour policy is TBD.
   * **Note:** SW2 no longer drives `PWR_GD`. The MCP121T-450E supervisor drives `PWR_GD`
     exclusively; no manual override of that net is provided.
 
@@ -498,8 +503,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R30 | LTC3350 RT frequency-setting resistor (RT pin to GND — sets switching frequency to 400 kHz) | 33.2kΩ 1% E96 Thick-Film [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | 0402 | 667-ERA-2AEB3322X | P33.2KDCCT-ND | C2087909 |
 | SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
-| BT_SW1_1–BT_SW1_6 | PCB male spade tabs for SW1 harness | 2.8mm (0.110in) vertical PCB-mount male blade terminals; six total to mate with the Adafruit 4660 switch terminals (switch contact + RGB ring LED harness) | THT blade tab | TBD | TBD | TBD |
-| SW2 | CM5 Power Button | Tactile SMT pushbutton, momentary SPST, wired from `PWR_BUT` to GND. Brief press (<2s) sends a power-key event to CM5 PMIC — wakes CM5 from halted state when OS is shut down, or initiates graceful shutdown when OS is running. No pull-up required (CM5 integrates 10kΩ on PWR_BUT). | 6×6mm SMT tactile | 688-SKRPACE010 | CKN9085CT-ND | C318884 |
+| BT_SW1_1–BT_SW1_6, BT_SW2_1–BT_SW2_6 | PCB male spade tabs for SW1 / SW2 harnesses | Keystone 1211 — 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | THT Quick-Fit tab | 534-1211 | 36-1211-ND | C3029550 |
+| SW2 | CM5 Power Button | Adafruit 3350 — panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press; LED ring reserved for optional indication of the 3-second held `PWR_BUT` signal / shutdown event. | Panel-mount 16mm metal switch | 485-3350 | 1528-2546-ND | Global sourcing / consignment |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R24 | LMQ61460A FSET frequency-set resistor (U2A, R_FSET) | 86.6kΩ 1% Thick-Film (ERJ-3EKF8662V) | 0603 | 667-ERJ-3EKF8662V | P86.6KHCT-ND | C403381 |

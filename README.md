@@ -61,7 +61,9 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 * **LDO:** TPS75733KTTRG3 3V3_ENIG (8.8µVRMS noise, 72dB PSRR, 3A, 2.05 A typical load at 68.3% utilisation).
 * **UPS:** LTC3350 supercap manager + 8× Abracon ADCR-T02R7SA256MB (2S4P, 50 F) on 5V_MAIN bus. 50 F at 5.4V → ≥33.5 second hold-up for clean CM5 shutdown.
 * **Output Rails:** 5V_MAIN (12A) and 3V3_ENIG (3A — logic, CPLDs, and rotor stack) via 80-pin Samtec ERF8 BtB to Controller Board for distribution.
-* **Panel Controls:** SW1 rugged power toggle with RGB ring LED and SW2 CM5 power button are panel-mounted controls wired to the Power Module harness.
+* **Panel Controls:** SW1 is a rugged latching RGB power toggle (Adafruit 4660) and SW2 is a
+  matching 16mm momentary RGB CM5 power button (Adafruit 3350); both are panel-mounted controls
+  wired to the Power Module harness.
 
 ### 2. Controller Board (The Brain)
 

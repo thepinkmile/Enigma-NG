@@ -41,7 +41,7 @@ daemon over I²C.
 | FR-SBD-01 | Provide 12 user-accessible toggle switches with matching RGB status LEDs for hardware configuration without opening the enclosure | 5 switches for Bank 1 (plugboard routing); 7 for Bank 2 (reflector mapping); panel-mount through enclosure top face | §3 Switch Bank Descriptions; §4 I²C Devices |
 | FR-SBD-02 | Allow CM5 firmware to override hardware switch settings on a per-bank basis | Bank enable switch (SW_B1_EN / SW_B2_EN): HIGH = switch-defined active; LOW = CM5-defined override | §5 LED Control Logic; Stator/Design_Spec.md FR-STA-08/09 |
 | FR-SBD-03 | Provide visual feedback via RGB LED illumination showing configuration source and active bit state | Green = switch-defined active; Red = CM5-defined override; per-bank shared colour rails + per-bit individual LED anode drive with per-colour cathode-return resistors | §5 LED Control Logic |
-| FR-SBD-04 | Provide a momentary CFG_APPLY pushbutton that triggers CPLD configuration re-latch | CM5 daemon polls U_EXP_SW_IN GPB[7]; active-low; 10kΩ pull-up + 100nF X7R 0402 debounce cap | §6 CFG_APPLY Button |
+| FR-SBD-04 | Provide a momentary CFG_APPLY pushbutton that triggers CPLD configuration re-latch | CM5 daemon polls U_EXP_SW_IN GPB[7]; active-low; 10kΩ pull-up + 100nF X7R 0402 debounce cap. A board-mounted tactile switch actuated through the enclosure is acceptable; the switch itself need not be panel-mount. | §6 CFG_APPLY Button |
 | FR-SBD-05 | Connect to the Stator Board via a 6-wire I²C ribbon cable (3V3_ENIG, 5V_LED, 2× GND, SDA, SCL) | J_I2C = 6-pin JST PH 2.0mm connector; shares Stator I²C-1 bus; 5V_LED powers RGB LEDs at 20mA per die | §7 Interconnects; BOM J_I2C |
 
 #### Design Requirements
@@ -54,7 +54,7 @@ daemon over I²C.
 | DR-SBD-04 | LED control expanders | U_LED_B1 = MCP23017T-E/SO @ 0x40 (Bank 1); U_LED_B2 = MCP23017T-E/SO @ 0x41 (Bank 2); SOIC-28; full RGB via 6× BSS138 MOSFETs | §4 I²C Devices — U_LED_B1, U_LED_B2; §5 LED Control Logic; BOM U_LED_B1, U_LED_B2 |
 | DR-SBD-05 | LED colour-rail transistors | 6× BSS138 SOT-23 N-channel MOSFETs (Q_BNK1_R/G/B, Q_BNK2_R/G/B); gate driven via 1kΩ resistor; GPIO HIGH = transistor ON | §5 LED Control Logic; BOM Q_BNK1_R, Q_BNK1_G, Q_BNK1_B, Q_BNK2_R, Q_BNK2_G, Q_BNK2_B |
 | DR-SBD-06 | LED power supply | 5V_LED from Stator via J_I2C pin 2; RGB LEDs at 20mA per die; 150Ω (red), 100Ω (green/blue) current-limiting resistors | §7 Interconnects — J_I2C; BOM R_LED_R/G/B |
-| DR-SBD-07 | CFG_APPLY button | SW_CFG_APPLY = SPST momentary, active-low; 10kΩ pull-up to 3V3_ENIG + 100nF debounce cap; U_EXP_SW_IN GPB[7] | §6 CFG_APPLY Button; BOM SW_CFG_APPLY, R_CA1, C_CA1 |
+| DR-SBD-07 | CFG_APPLY button | SW_CFG_APPLY = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, active-low; mounted on the Settings Board and actuated through the enclosure by a mechanical plunger/cap; 10kΩ pull-up to 3V3_ENIG + 100nF debounce cap; U_EXP_SW_IN GPB[7] | §6 CFG_APPLY Button; BOM SW_CFG_APPLY, R_CA1, C_CA1 |
 | DR-SBD-08 | I²C connector | J_I2C = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: 3V3_ENIG, 5V_LED, 2× GND, SDA, SCL; ribbon to Stator J_CFG | §7 Interconnects; BOM J_I2C |
 | DR-SBD-09 | Switch input pull-downs | 12× 10kΩ 0603 pull-down resistors on all switch inputs to U_EXP_SW_IN (GPA[0:4], GPB[0:6]); HIGH when closed | §4 I²C Devices — U_EXP_SW_IN; BOM R_SW1–R_SW12 |
 
@@ -289,8 +289,9 @@ rail disabled.
 
 ## 6. CFG_APPLY Button
 
-SW_CFG_APPLY is a panel-mount momentary pushbutton (SPST, active-low) connected to U_EXP_SW_IN
-GPB[7].
+SW_CFG_APPLY is a board-mounted momentary tactile switch (SPST, active-low) connected to
+U_EXP_SW_IN GPB[7]. The switch itself does not need to be panel-mount; the enclosure may use a
+simple plunger or cap to mechanically actuate the switch through the panel opening.
 
 * **Pull-up:** 10kΩ to 3V3_ENIG (R_CA1) — idle state = logic HIGH.
 * **Debounce:** 100nF X7R 0402 capacitor to GND (C_CA1; RC τ = 1ms).
@@ -328,9 +329,10 @@ automatic polling intervals.
 **Mating connector on Stator:** J_CFG — same JST PH 2.0mm 6-pin part.
 
 **Why 2× GND pins?**
-- Pin 3 (GND): Low-current logic return for MCP23017s (~80mA total)
-- Pin 6 (GND): High-current LED return (up to 240mA max, ~120mA typical)
-- Separating logic and power grounds reduces noise coupling into I²C signals
+
+* Pin 3 (GND): Low-current logic return for MCP23017s (~80mA total)
+* Pin 6 (GND): High-current LED return (up to 240mA max, ~120mA typical)
+* Separating logic and power grounds reduces noise coupling into I²C signals
 
 ---
 
@@ -384,7 +386,7 @@ automatic polling intervals.
 | SW_B2[3] | Bank 2 reflector config bit 3 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW_B2[4] | Bank 2 reflector config bit 4 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW_B2[5] | Bank 2 reflector config bit 5 toggle switch (internal reflector enable) | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW_CFG_APPLY | CFG_APPLY momentary pushbutton | SPST NO momentary, panel-mount (MPN TBD) | Panel-mount | TBD | TBD | — |
+| SW_CFG_APPLY | CFG_APPLY momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
 | U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x26 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_LED_B1 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x40 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U_LED_B2 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x41 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
@@ -411,10 +413,11 @@ automatic polling intervals.
 | **Total 5V_LED** | **120 mA** | **240 mA** | Worst-case: all 12 LEDs on, 1 color active per bank |
 
 **Link-Beta 5V_MAIN Allocation:**
-- Settings Board: 240mA max (LED load)
-- Stator J_SERVO: 500mA max (servo motor)
-- **Link-Beta capacity: 1.0A** (pins 18, 23 @ 0.5A each)
-- **Margin: 260mA** (36% headroom)
+
+* Settings Board: 240mA max (LED load)
+* Stator J_SERVO: 500mA max (servo motor)
+* **Link-Beta capacity: 1.0A** (pins 18, 23 @ 0.5A each)
+* **Margin: 260mA** (36% headroom)
 
 ---
 
@@ -433,7 +436,7 @@ automatic polling intervals.
 | **0402 Capacitors (decoupling)** | 3 | 100nF X7R for 3× MCP23017s |
 | **0402 Capacitors (debounce)** | 1 | C_CA1: 100nF X7R CFG_APPLY debounce |
 | **JST PH Connectors** | 1 | J_I2C: 6-pin B6B-PH-K-S(LF)(SN) to Stator |
-| **Pushbutton Switch** | 1 | SW_CFG_APPLY — SPST NO momentary (MPN TBD) |
+| **Pushbutton Switch** | 1 | SW_CFG_APPLY — Omron B3F-1070 SPST NO through-hole tactile switch |
 
 **Total unique part numbers:** ~15  
 **Total component count:** ~93
@@ -447,10 +450,10 @@ automatic polling intervals.
 The Settings Board uses a **shared color-rail topology** to minimize MOSFET count while providing
 full RGB capability:
 
-- Each LED has an **individual anode** controlled by U_LED_B1 or U_LED_B2 GPIO
-- All LEDs in a **bank share 3 cathode rails** (red, green, blue)
-- **6× BSS138 MOSFETs** (3 per bank) switch each color rail to GND
-- Only **1 color active per bank** at any time (software enforced)
+* Each LED has an **individual anode** controlled by U_LED_B1 or U_LED_B2 GPIO
+* All LEDs in a **bank share 3 cathode rails** (red, green, blue)
+* **6× BSS138 MOSFETs** (3 per bank) switch each color rail to GND
+* Only **1 color active per bank** at any time (software enforced)
 
 This design uses only 6 MOSFETs for 12 LEDs instead of 36 (1 per LED × 3 colors).
 
@@ -459,8 +462,9 @@ This design uses only 6 MOSFETs for 12 LEDs instead of 36 (1 per LED × 3 colors
 5V_LED power is sourced from the Controller Board's 5V_MAIN rail (TPS259804 eFuse output) and
 routed through Link-Beta pins 18 and 23 (2× pins for current sharing, 1.0A total capacity).
 The Stator Board acts as a **power pass-through hub**, forwarding 5V_MAIN to:
-- J_CFG pin 2 → Settings Board 5V_LED (240mA)
-- J_SERVO pin 1 → Servo motor 5V_MAIN (500mA max)
+
+* J_CFG pin 2 → Settings Board 5V_LED (240mA)
+* J_SERVO pin 1 → Servo motor 5V_MAIN (500mA max)
 
 This solves two design issues in one: LED brightness and the previously open J_SERVO power source.
 
@@ -469,4 +473,3 @@ This solves two design issues in one: LED brightness and the previously open J_S
 U_LED_B1 and U_LED_B2 use addresses 0x40 and 0x41 (A2=HIGH, A1=LOW, A0=LOW/HIGH) to avoid
 conflicts with existing devices and reserve the 0x2x range for potential future Settings Board
 expansion without hardware rework.
-
