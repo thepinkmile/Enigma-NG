@@ -36,7 +36,10 @@ and to provide a short TDO return path for the JTAG chain.
 
 **Connector:** 2×8 2.54mm shrouded box header with polarisation key (e.g. Wurth 61201621621 or equiv).
 **Mating connector on Extension: J7 / Reflector: J4 — same 16-pin 2×8 shrouded box header.**
-**Power current capacity:** 1 pin × 1A = 1A maximum to Extension/Reflector. Estimated draw ≤200mA — adequate with >4× margin.
+**Power current requirement:** Reflector-only use remains low, but Extension use must budget the J7/J8
+3V3_ENIG path for up to **1.43A worst-case** downstream reinjection into the first Extension (see
+`Extension/Board_Layout.md`). Final connector/harness current rating remains tied to the BHR-16-VUA
+datasheet verification tracked in `.copilot/components-todo.md`.
 
 > **ENC_DATA bidirectionality:** ENC_IN[0:5] (pins 3–8) and ENC_OUT[0:5] (pins 9–14) carry
 > simultaneous bidirectional ENC_DATA on the same connector. See `Stator/Design_Spec.md §3 CPLD

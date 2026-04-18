@@ -1,6 +1,6 @@
 # Enigma-NG -- Component Re-Verification Table
 
-> Updated: 2026-04-17
+> Updated: 2026-04-18
 > Canonical single-table workspace for manual component re-verification.
 > Treat every populated candidate field as provisional until the row is explicitly marked `VERIFIED`.
 > Do not propagate data from this file back into design docs until re-verification is complete.
@@ -25,11 +25,15 @@
 | MCP23017T-E/SO | STA `U_EXP1`, `U_EXP2`, `U_EXP4`; SBD `U_EXP_SW_IN`, `U_LED_B1`, `U_LED_B2` | Core shared GPIO expander used across Stator and Settings Board. |
 | PCA9685BS/3 | STA `U_EXP3` | Servo PWM driver on the Stator. |
 | T821126A1S100CEU | ENC `J2`; STA `J4`-`J6` | 26-pin 2x13 IDC/shrouded header family. |
-| BHR-16-VUA | STA `J7`; EXT `J7`, `J8`; REF `J4` | 16-pin 2x8 shrouded box header family. |
 | JST PH series datasheet | STA `J_SERVO`, `J_CFG`; SBD `J_I2C` | Needed now that the old `B4B-PH` local PDF is being retired and the Settings link is 6-pin `B6B-PH`. |
 | Keystone 3034 | CTL `BT1` | CR2032 holder local datasheet not yet confirmed. |
 | Keystone 1285-ST | ENC `BT1`-`BT128` | Encoder blade-terminal local datasheet not yet confirmed. |
 | Omron SS-01GL13 | STA `SW3` | SERVO_HOME switch local datasheet not yet confirmed. |
+| POE600F-12LD | PM `T1` | PoE isolation transformer local datasheet not yet confirmed. |
+| WE-CMBNC 7448031002 | PM `L_DM1`, `L_DM2` | Würth common-mode choke local datasheet not yet confirmed. |
+| SRP1265A-100M | PM `L_SYNC` | SYNC buck power inductor local datasheet not yet confirmed. |
+| CSS2H-2512R-R010ELF | PM `R_RSENSE` | Bourns Kelvin shunt local datasheet not yet confirmed. |
+| 43650-0519 | PM `J3` | Molex Micro-Fit 3.0 battery connector local datasheet not yet confirmed. |
 
 ---
 
@@ -257,7 +261,7 @@
 | J013 | JDB | J2 male | 1x10; 2.54mm pitch; vertical THT male pin header | PH1-10-UA | 2057-PH1-10-UA-ND | 737-PH1-10-UA | C3330527 | RECHECK | JDB Design_Spec defines this as the hat JTAG output header. |
 | J014 | CTL | J_JDB_JTAG female | 1x10; 2.54mm pitch; vertical THT female socket | RS1-10-G | 2057-RS1-10-G-ND | 737-RS1-10-G | C3320525 | RECHECK | Controller Design_Spec defines this as the female mate to the JDB JTAG OUTPUT header. |
 | J015 | ENC, STA | J2 (Encoder) / J4-J6 (Stator) | 26-pin; 2x13; 2.54mm pitch; vertical shrouded box header with polarisation key | T821126A1S100CEU | TBD | TBD | C3013501 | RECHECK | IDC ribbon-cable interface. Existing docs call out RS-Online 832-3503. System total: 6 units. |
-| J016 | STA, EXT, REF | J7 / J7 IN / J8 OUT / J4 | 16-pin; 2x8; 2.54mm pitch; vertical shrouded box header | BHR-16-VUA | 2057-BHR-16-VUA-ND | 737-BHR-16-VUA | C17692295 | RECHECK | Used on Stator J7, Extension J7/J8, and Reflector J4. System total: 4 units. |
+| J016 | STA, EXT, REF | J7 / J7 IN / J8 OUT / J4 | 16-pin; 2x8; 2.54mm pitch; vertical shrouded box header | BHR-16-VUA | 2057-BHR-16-VUA-ND | 737-BHR-16-VUA | C17692295 | VERIFIED | Used on Stator J7, Extension J7/J8, and Reflector J4. System total: 4 units. Local datasheet now present at `design/Datasheets/bhr-xx-vua-data-sheet.pdf`; user confirmed supplier part numbers. |
 
 ---
 

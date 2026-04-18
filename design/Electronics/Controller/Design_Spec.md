@@ -54,7 +54,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 | DR-CTL-09 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 95, Hirose DF40 200-pin) | §5 RTC Backup Battery; BOM C6 |
 | DR-CTL-10 | RGB LED interface | Controller must provide PWM-capable GPIO outputs for SW1 RGB LED (3 channels: SW_LED_R, SW_LED_G, SW_LED_B) and a separate logic output (SW_LED_CTRL) to arbitrate firmware vs hardware LED control. Pin-level details in §6 GPIO matrix. | §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-11 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
-| DR-CTL-12 | DSI1 connector | J_DSI1 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C routed via I²C-1 bus (SDA/SCL on adjacent display power/control header) | §8 Connectivity; BOM J_DSI1 |
+| DR-CTL-12 | DSI1 connector | J_DSI1 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J_DSI1 |
 
 ## 2. Dual-Link Interface (Samtec ERx8)
 
@@ -390,7 +390,10 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Interface:** MIPI DSI1 — 4-lane differential (CLK+/−, D0+/−, D1+/−, D2+/−, D3+/−).
 * **Impedance:** 100 Ω differential; route on L3 (stripline) — same rule as HDMI/Ethernet.
 * **MPN:** Amphenol **F52Q-1A7H1-11015** (verified in `.copilot/components-todo.md` row `J024`).
-* **Power:** Display power (5V_MAIN backlight, **3V3_ENIG** panel logic) via a separate 4-pin power header adjacent to J_DSI1 (TBD at schematic phase).
+* **Power / deferred scope boundary:** `J_DSI1` is the only Controller-side display connector fixed in
+  the current design scope. No separate display power header is defined on the Controller at this
+  stage; any future display power and touch-side auxiliary wiring stays deferred with the display
+  add-on definition.
 
 ## 9. PCB Fabrication & Stackup
 

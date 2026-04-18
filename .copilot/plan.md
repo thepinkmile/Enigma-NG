@@ -142,9 +142,10 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Checkpoint 052 locks the DSI confirmation + topology cleanup batch** — the Controller DSI
-   connector is now confirmed in the active docs and the last cross-document topology inconsistencies
-   from the latest deep-design rerun are resolved in the working tree and synced into repo-local handoff.
+1. **Checkpoint 053 locks the BHR verification + latest review-fix batch** — the active docs now use
+   the 11-pin LINK-BETA `3V3_ENIG` capacity model, the deferred DSI scope no longer invents an
+   undefined extra Controller header, the Settings LED current math is explicit, and `BHR-16-VUA` is
+   now locally covered and verified in the repo-local component queue.
 2. **Link-Beta rail rebalance is now part of the active architecture state.**
    - Former spare block replaced by grouped power rails
    - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **14–17**
@@ -155,15 +156,17 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
    - high-level LINK-BETA summary now matches detailed grouped-power allocation
    - stale 8-pin `3V3_ENIG` pass-through wording corrected to 11 pins
 4. **Datasheet audit state is synced.**
-   - The current missing-datasheet list is unchanged and already tracked in `.copilot/components-todo.md`
-   - The two redundant local PDFs flagged by the audit have been removed from `design/Datasheets/`
-   - `J_DSI1` is no longer TBD: Controller docs and BOM now use Amphenol `F52Q-1A7H1-11015`
-   - stale `TPD4E05U06QDQARQ1` datasheet TBD wording has been replaced with the local PDF link
+    - The current missing-datasheet list is unchanged and already tracked in `.copilot/components-todo.md`
+    - The two redundant local PDFs flagged by the audit have been removed from `design/Datasheets/`
+    - `J_DSI1` is no longer TBD: Controller docs and BOM now use Amphenol `F52Q-1A7H1-11015`
+    - stale `TPD4E05U06QDQARQ1` datasheet TBD wording has been replaced with the local PDF link
+    - `BHR-16-VUA` is no longer missing: local PDF added, `J016` verified, and the supplier numbers are synced
 5. **High-level architecture docs are now aligned with the intended reflector / extension model.**
    - Reflector is mandatory and passive
    - Stator CPLD owns reflector-map selection/application
    - Extension boards sit between 5-rotor groups and reinject clean `3V3_ENIG` via `J7 -> J5`
    - Settings Board RGB indicators are powered from `5V_MAIN`; `3V3_ENIG` remains the logic/control rail
+   - `J_DSI1` is the only fixed Controller-side display connector in current scope
 6. **Grounding-rule cleanup remains open for later investigation.**
     - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
     - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
@@ -179,6 +182,13 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 9. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
       still need supplier confirmation.
 10. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
+11. **Datasheet-analysis workflow captured for later execution.**
+    - Finish component review so the active component set is stable
+    - Retrieve all missing local datasheet PDFs for that verified set
+    - Generate extremely thorough markdown analysis files for each datasheet, with the markdown
+      referencing the source PDF and organizing package, electrical, pinout, limits, variants, and
+      integration-relevant constraints for future review agents
+    - Run a fresh extremely detailed full-design review once the datasheet-analysis corpus exists
 
 ---
 

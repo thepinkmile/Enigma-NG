@@ -52,7 +52,7 @@ The following provisions must be made at detailed mechanical design phase:
 | Display aperture in lid | Sized for chosen display (TBD — up to 10"); flush-mount or recessed bezel |
 | Display mounting frame / bracket | Secures display panel against lid inner face |
 | FPC hinge routing | Clear path for DSI1 FPC cable from lid through hinge to Controller Board J_DSI1 |
-| Touch controller power | 5V_MAIN + **3V3_ENIG** routed alongside FPC via power cable through hinge |
+| Deferred display auxiliaries | No separate display power or touch harness is fixed yet; reserve hinge space beyond the `J_DSI1` FPC path only as future margin until the display add-on is defined |
 
 See `design/Electronics/Controller/Design_Spec.md` (J_DSI1) and `design/Electronics/Settings_Board/Design_Spec.md` for electrical context.
 

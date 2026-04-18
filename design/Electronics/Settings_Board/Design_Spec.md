@@ -247,7 +247,8 @@ Full RGB capability with software-selectable colors per bank:
 | Special modes | Blue (BNKx_B transistor ON) | Future use: diagnostic, bootloader, error states |
 
 > Software can select any RGB color by enabling the appropriate color-rail transistor. Only one
-> color is active per bank at any time to stay within the 240mA per-bank power budget.
+> color is active per bank at any time, so the definitive worst-case indicator-rail budget is
+> **240mA total**: Bank 1 = 5 LEDs × 20mA = 100mA max, Bank 2 = 7 LEDs × 20mA = 140mA max.
 
 ### Per-Bit Illumination
 
@@ -402,9 +403,9 @@ automatic polling intervals.
 
 | Load | Typical (mA) | Max (mA) | Notes |
 | :--- | :---: | :---: | :--- |
-| Bank 1 LEDs (5× @ 20mA) | 60 | 100 | Software enforces 1 color active per bank |
-| Bank 2 LEDs (7× @ 20mA) | 84 | 140 | Software enforces 1 color active per bank |
-| **Total indicator rail** | **144 mA** | **240 mA** | Worst-case: all 12 LEDs on, 1 color active per bank |
+| Bank 1 LEDs (5× @ 20mA) | 60 | 100 | Typical assumes ~12mA per LED average; max = 5 × 20mA = 100mA with one active colour rail |
+| Bank 2 LEDs (7× @ 20mA) | 84 | 140 | Typical assumes ~12mA per LED average; max = 7 × 20mA = 140mA with one active colour rail |
+| **Total indicator rail** | **144 mA** | **240 mA** | Definitive max = 100mA + 140mA; one active colour per bank, all 12 LEDs illuminated |
 
 **Link-Beta 5V_MAIN Allocation:**
 

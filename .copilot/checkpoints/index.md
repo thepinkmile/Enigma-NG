@@ -60,3 +60,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 50 | Post-audit architecture sync and Link-Beta rebalance locked | 050-post-audit-link-beta-lock-and-review-rerun.md |
 | 51 | Final review fixes locked and rerun prepared | 051-final-review-fixes-locked-and-rerun.md |
 | 52 | DSI confirmed and topology cleanup locked | 052-dsi-confirmed-and-topology-cleanup.md |
+| 53 | BHR verified and review fixes locked | 053-bhr-verified-and-review-fixes.md |

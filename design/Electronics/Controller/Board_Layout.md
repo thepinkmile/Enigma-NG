@@ -427,5 +427,5 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
   power pins via a 2.00 mm bus trace supplemented by an L3 inner pour (5V_MAIN plane).
 * **3V3_ENIG pass-through:** The Controller receives 3V3_ENIG from PM via Link-Alpha (6 pins, 3.0 A) and
   distributes locally to CM5 logic supply and CM5-adjacent decoupling. It also passes 3V3_ENIG downstream
-  to the Stator via Link-Beta (8 pins × 0.5 A = 4.0 A capacity — adequate for 2.05 A 30-rotor worst case).
+  to the Stator via Link-Beta (11 pins × 0.5 A = 5.5 A capacity — adequate for 2.05 A 30-rotor worst case).
   All 3V3_ENIG traces: 0.80 mm consistent with PM §9 and Global_Routing_Spec §1.1.
