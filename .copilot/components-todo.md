@@ -1,6 +1,6 @@
 # Enigma-NG -- Component Re-Verification Table
 
-> Updated: 2026-04-18
+> Updated: 2026-04-18 (evening review sync 2)
 > Canonical single-table workspace for manual component re-verification.
 > Treat every populated candidate field as provisional until the row is explicitly marked `VERIFIED`.
 > Do not propagate data from this file back into design docs until re-verification is complete.
@@ -34,6 +34,11 @@
 | SRP1265A-100M | PM `L_SYNC` | SYNC buck power inductor local datasheet not yet confirmed. |
 | CSS2H-2512R-R010ELF | PM `R_RSENSE` | Bourns Kelvin shunt local datasheet not yet confirmed. |
 | 43650-0519 | PM `J3` | Molex Micro-Fit 3.0 battery connector local datasheet not yet confirmed. |
+| SaiBuy.Ltd eBay item 334364197440 | ENC `J1` (x64) | Stecker jack socket listing / reference sheet not yet captured locally; no formal manufacturer MPN recorded. |
+| ABM8-12.000MHz-B2-T | JDB `Y1` | Abracon crystal local datasheet not yet confirmed. |
+| AC72ABD | PM `F1` | Bourns thermal cutoff local datasheet not yet confirmed. |
+| 150060VS75000 | ENC `D1`, `D2` | Würth LED local datasheet not yet confirmed. |
+| 9774040151R | CTL `MH1`-`MH4` | Würth SMT brass standoff local datasheet not yet confirmed. |
 
 ---
 

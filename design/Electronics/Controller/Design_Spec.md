@@ -389,7 +389,8 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
   Touch I²C routed on I²C-1 bus shared with other Stator/Controller peripherals.
 * **Interface:** MIPI DSI1 — 4-lane differential (CLK+/−, D0+/−, D1+/−, D2+/−, D3+/−).
 * **Impedance:** 100 Ω differential; route on L3 (stripline) — same rule as HDMI/Ethernet.
-* **MPN:** Amphenol **F52Q-1A7H1-11015** (verified in `.copilot/components-todo.md` row `J024`).
+* **MPN:** Amphenol **F52Q-1A7H1-11015**. See `Consolidated_BOM.md` and
+  `design/Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf`.
 * **Power / deferred scope boundary:** `J_DSI1` is the only Controller-side display connector fixed in
   the current design scope. No separate display power header is defined on the Controller at this
   stage; any future display power and touch-side auxiliary wiring stays deferred with the display

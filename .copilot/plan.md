@@ -142,10 +142,10 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Checkpoint 053 locks the BHR verification + latest review-fix batch** — the active docs now use
-   the 11-pin LINK-BETA `3V3_ENIG` capacity model, the deferred DSI scope no longer invents an
-   undefined extra Controller header, the Settings LED current math is explicit, and `BHR-16-VUA` is
-   now locally covered and verified in the repo-local component queue.
+1. **Checkpoint 054 locks the final propagation + datasheet-tracking sync batch** — the last active-doc
+   `.copilot` references are removed, the Stator telemetry path reflects all 11 LINK-BETA `3V3_ENIG`
+   pins, the top-level Reflector wording is passive-only, and the datasheet-tracking queue includes
+   the newest 5 missing local PDFs from the latest audit.
 2. **Link-Beta rail rebalance is now part of the active architecture state.**
    - Former spare block replaced by grouped power rails
    - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **14–17**
@@ -161,6 +161,8 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
     - `J_DSI1` is no longer TBD: Controller docs and BOM now use Amphenol `F52Q-1A7H1-11015`
     - stale `TPD4E05U06QDQARQ1` datasheet TBD wording has been replaced with the local PDF link
     - `BHR-16-VUA` is no longer missing: local PDF added, `J016` verified, and the supplier numbers are synced
+    - the missing-datasheet queue now also tracks `334364197440`, `ABM8-12.000MHz-B2-T`, `AC72ABD`,
+      `150060VS75000`, and `9774040151R`
 5. **High-level architecture docs are now aligned with the intended reflector / extension model.**
    - Reflector is mandatory and passive
    - Stator CPLD owns reflector-map selection/application

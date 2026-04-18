@@ -38,8 +38,8 @@ and to provide a short TDO return path for the JTAG chain.
 **Mating connector on Extension: J7 / Reflector: J4 — same 16-pin 2×8 shrouded box header.**
 **Power current requirement:** Reflector-only use remains low, but Extension use must budget the J7/J8
 3V3_ENIG path for up to **1.43A worst-case** downstream reinjection into the first Extension (see
-`Extension/Board_Layout.md`). Final connector/harness current rating remains tied to the BHR-16-VUA
-datasheet verification tracked in `.copilot/components-todo.md`.
+`Extension/Board_Layout.md`). Connector family: Adam Tech **BHR-16-VUA** with local datasheet at
+`design/Datasheets/bhr-xx-vua-data-sheet.pdf`.
 
 > **ENC_DATA bidirectionality:** ENC_IN[0:5] (pins 3–8) and ENC_OUT[0:5] (pins 9–14) carry
 > simultaneous bidirectional ENC_DATA on the same connector. See `Stator/Design_Spec.md §3 CPLD
@@ -66,9 +66,9 @@ expanded 5V_MAIN group provides headroom for the Settings Board indicator rail a
 **Power telemetry path:**
 
 ```text
-[ LINK-BETA (ERM8-020) ] --(3V3_ENIG, pins 28-35)--> [ CSS2H 10mΩ SHUNT ] --(CLEAN 3V3)--> [ ROTOR BUS ]
-              |                                            |
-              +------ (I2C-1) -------- [ INA219 ] --------+
+[ LINK-BETA (ERM8-020) ] --(3V3_ENIG, pins 19-21 + 28-35)--> [ CSS2H 10mΩ SHUNT ] --(CLEAN 3V3)--> [ ROTOR BUS ]
+                     |                                                       |
+                     +------------- (I2C-1) ------------- [ INA219 ] -------+
 ```
 
 ## J4–J6: ENCODER PORTS (26-Pin, 2×13, 2.54mm Shrouded Box Header)

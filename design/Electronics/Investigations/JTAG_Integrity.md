@@ -83,8 +83,9 @@ Stator CPLD (U1)
 
 **TDI/TDO** are serial-chained. For **ribbon cable segments** each cable-driving output needs a
 75 Ω series resistor. For the **BtB rotor stack**, TDI flows unbuffered board-to-board; the chain
-ends at the Reflector CPLD. TDO exits as TTD_RETURN via Reflector R1 (22 Ω end-of-chain damping)
-and returns to the Stator on the dedicated ribbon cable (Reflector J4 → Stator J7).
+ends at the passive Reflector turnaround. TDO exits as TTD_RETURN via Reflector R1 (22 Ω
+end-of-chain damping) and returns to the Stator on the dedicated ribbon cable (Reflector J4 →
+Stator J7).
 
 > ⚠️ **Do not confuse the Reflector J4 ribbon cable with the JTAG chain.** The ribbon carries
 > TTD_RETURN (JTAG TDO return, pin 15) AND ENC_IN/ENC_OUT (plugboard configuration, pins 3–14).

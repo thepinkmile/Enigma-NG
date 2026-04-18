@@ -97,10 +97,11 @@ The primary gateway for the system. Isolated in a **Vintage Silver Aluminium** e
 
 ## 10. Reflector Board (The "Turnaround")
 
-Located at the opposite end of the Stator from the Controller, this board manages the signal's return journey.
+Located at the opposite end of the Stator from the Controller, this mandatory passive board provides
+the electrical turnaround at the end of the rotor chain.
 
-* **Reflector Mode:** Pairs the output of the last rotor and sends it back into the stack return path.
-* **Extended Mode:** Routes the signal out to an external Plugboard encoder before returning it through the stack.
+* **Passive turnaround:** Pairs the output of the last rotor and sends it back into the stack return path.
+* **Mapping ownership:** Reflector-map selection and application remain on the Stator CPLD; this board has no local CPLD.
 
 ## 11. Rotor Module
 
