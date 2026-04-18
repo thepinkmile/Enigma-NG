@@ -57,8 +57,9 @@ so any rotor can mate at any position without re-wiring.
 > This board uses the mating ERM8-020-05.0-S-DV-K-TR (Male) connector. See BOM for part number.
 
 **Connector:** Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin). Mating ERF8-020 female on Controller Board J2.
-**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for 30-rotor worst case (2.05A typical;
-LDO hard limit 3.0A). Note: L1-L4 ferrite bead 3.5A rating is the component current rating, not the system load.
+**Power capacity:** 11 × 3V3_ENIG pins × 0.5A/pin = 5.5A connector capacity and 4 × 5V_MAIN pins ×
+0.5A/pin = 2.0A connector capacity. The practical 3V3_ENIG limit remains the upstream 3.0A LDO; the
+expanded 5V_MAIN group provides headroom for the Settings Board indicator rail and J_SERVO branch.
 **Power telemetry path:**
 
 ```text
@@ -160,7 +161,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | Logic supply to Settings Board expanders |
 | 2 | 5V_MAIN | Indicator power feed from Link-Beta pins 14–17 |
-| 3 | GND | Logic return / local chassis-reference tie point |
+| 3 | GND | Logic return only; no local GND_CHASSIS bond |
 | 4 | SDA | I²C-1 data — shared Stator I²C-1 bus |
 | 5 | SCL | I²C-1 clock — shared Stator I²C-1 bus |
 | 6 | GND | LED/current return paired with the 5V_MAIN feed |

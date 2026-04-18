@@ -1,7 +1,14 @@
-# Settings Board 5V RGB LED Upgrade — Design Document
+# Settings Board 5V RGB LED Upgrade — Historical Session Artifact
+
+> **Status:** Superseded / historical working note only.
+> Do **not** treat this file as active design truth.
+> The authoritative current state lives in the active docs under `design/` plus the synced repo-local
+> checkpoint and plan handoff. This file preserves an intermediate session design exploration that was
+> later superseded by the post-audit cleanup, DEC-036 Link-Beta rebalance, and the final
+> `0x23/0x24/0x25` Settings Board address map.
 
 **Date:** 2026-04-17  
-**Status:** Draft  
+**Status:** Superseded historical artifact  
 **Author:** Copilot + User  
 
 ## Summary

@@ -67,8 +67,8 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * Provides to PM: SW_LED_R, SW_LED_G, SW_LED_B (RGB LED channels), ETH_LED_LINK, ETH_LED_ACT (Ethernet status LEDs), ROTOR_EN (LDO enable), SW_LED_CTRL (LED arbitration).
   * **Cross-ref:** See `Power_Module/Design_Spec.md` and `Power_Module/Board_Layout.md` for the matching Link-Alpha
     pin allocation and power flow definitions.
-* **Link-Beta (Logic/Stator):** ERF8 Female Socket 40-pin Encryption/JTAG interface to Stator Board.
-  * Provides: JTAG and 3V3_ENIG to Stator.
+* **Link-Beta (Logic/Stator):** ERF8 Female Socket 40-pin logic/power interface to Stator Board.
+  * Provides: JTAG, I2C-1 extension, grouped 5V_MAIN, and 3V3_ENIG to Stator.
   * **Cross-ref:** See `Stator/Design_Spec.md` and `Stator/Board_Layout.md` for explicit pin mapping and connector
     compliance. See DEC-015 for 40-pin reduction rationale and poka-yoke safety note.
 * **3V3_ENIG:** The Controller is an active consumer of 3V3_ENIG — CM5 VDD_GPIO_REF and on-board peripherals are powered from this rail via the LINK-ALPHA tap node.

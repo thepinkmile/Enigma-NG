@@ -1,4 +1,10 @@
-# Settings Board 5V RGB Upgrade — Change Summary
+# Settings Board 5V RGB Upgrade — Historical Change Summary
+
+> **Status:** Superseded / historical working note only.
+> Do **not** treat this file as active design truth.
+> It records an intermediate change narrative from before the later address-map cleanup, net-name
+> normalization, and Link-Beta grouped-power rebalance. Use the active docs under `design/`,
+> `.copilot/plan.md`, and the later checkpoints as the current source of truth.
 
 **Date:** 2026-04-17  
 **Issue:** Settings Board RGB LEDs were underpowered at 3.3V and the older draft did not fully allocate the blue-drive path or enough GPIO for full RGB control

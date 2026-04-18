@@ -258,7 +258,7 @@ configuration tables.
 U_EXP1 @ 0x20: ENC_IN/ENC_OUT monitoring. U_EXP2 @ 0x21: virtual keypress injection, SOURCE_SEL,
 SYS_RESET_N, servo control. U_EXP4 @ 0x22: CPLD config output driver (SW1[0:3] + SW2[0:5] +
 STATOR_CFG_RDY). U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz). J_CFG (6-pin JST PH) connects to Settings
-Board J_I2C and carries 3V3_ENIG, 5V_LED (from Link-Beta 5V_MAIN), 2× GND, SDA, SCL.
+Board J_I2C and carries 3V3_ENIG, 5V_MAIN (used as the Settings indicator rail), 2× GND, SDA, SCL.
 
 > **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item (Amazon, already
 > purchased). It is not in the electronic BOM.

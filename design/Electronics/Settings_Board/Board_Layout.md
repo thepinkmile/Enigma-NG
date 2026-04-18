@@ -58,7 +58,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 | :--- | :--- | :--- |
 | 1 | `3V3_ENIG` | Logic supply for the three MCP23017 devices |
 | 2 | `5V_MAIN` | Indicator power feed from Link-Beta via Stator |
-| 3 | `GND` | Logic return / local chassis-reference tie point |
+| 3 | `GND` | Logic return only; no local GND_CHASSIS bond |
 | 4 | `SDA` | Shared I2C-1 data |
 | 5 | `SCL` | Shared I2C-1 clock |
 | 6 | `GND` | Indicator-current return paired with pin 2 |

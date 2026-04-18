@@ -14,7 +14,7 @@ propagated into the design docs only after the row is explicitly marked `VERIFIE
 
 Recent milestones now locked into the active docs:
 
-- **Settings Board 5V RGB upgrade** — dual-MCP23017 LED control, 5V LED rail, and updated resistor
+- **Settings Board 5V RGB upgrade** — dual-MCP23017 LED control, `5V_MAIN`-fed indicator rail, and updated resistor
   values
 - **First component verification batch complete** — `SW_CFG_APPLY`, Power Module `SW2`, Power
   Module blade tabs, rotor DIP switch, and the custom HID keyboard switch are now confirmed
@@ -142,29 +142,35 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Checkpoint 050 locked** — the post-audit architecture cleanup and LINK-BETA grouped-power
-   rebalance are now captured in repo-local handoff.
+1. **Checkpoint 051 locks the final review-fix cleanup** — the last active-doc inconsistencies from the
+   second deep-design rerun are now resolved in the working tree and synced into repo-local handoff.
 2. **Link-Beta rail rebalance is now part of the active architecture state.**
    - Former spare block replaced by grouped power rails
    - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **14–17**
    - Diagnostic Bank-Beta now probes grouped rails + I²C instead of dead spare pads
-3. **Deep-review reruns completed** and the returned active-doc findings have been fixed in the
-   current working state.
-4. **Grounding-rule cleanup remains open for later investigation.**
-   - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
-   - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
-     should normally carry `GND_CHASSIS`
-   - Keep the single galvanic GND ↔ `GND_CHASSIS` bond on the Power Module only
-5. **Continue component re-verification** from `.copilot/components-todo.md`.
-     - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
-     - **Total VERIFIED rows:** 13
-     - Treat every other populated MPN/distributor field as provisional until manually checked and
-       marked `VERIFIED`
-6. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
-     rows in the queue.
-7. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
-     still need supplier confirmation.
-8. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
+3. **Second deep-review rerun findings are now fully synced.**
+   - Harness pin-3 wording corrected to logic-return-only
+   - lingering `5V_LED` wording removed from active BOM prose
+   - high-level LINK-BETA summary now matches detailed grouped-power allocation
+   - stale 8-pin `3V3_ENIG` pass-through wording corrected to 11 pins
+4. **Datasheet audit state is synced.**
+   - The current missing-datasheet list is unchanged and already tracked in `.copilot/components-todo.md`
+   - The two redundant local PDFs flagged by the audit have been removed from `design/Datasheets/`
+5. **Grounding-rule cleanup remains open for later investigation.**
+    - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
+    - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
+      should normally carry `GND_CHASSIS`
+    - Keep the single galvanic GND ↔ `GND_CHASSIS` bond on the Power Module only
+6. **Continue component re-verification** from `.copilot/components-todo.md`.
+      - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
+      - **Total VERIFIED rows:** 13
+      - Treat every other populated MPN/distributor field as provisional until manually checked and
+        marked `VERIFIED`
+7. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
+      rows in the queue.
+8. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
+      still need supplier confirmation.
+9. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
 
 ---
 

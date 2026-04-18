@@ -413,7 +413,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 | Signal (CM5 GPIO, I2C-1, SPI, USB control, HDMI data, SW_LED_R/G/B) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | All 3.3 V logic signals to/from CM5 DF40 and peripheral ICs |
 | JTAG pass-through (TCK, TMS, TDI, TDO) via Link-Beta J2 to Stator | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L6 | 50 Ω controlled impedance over L5 GND plane; CI exception per DEC-016/DEC-024. See `JTAG_Integrity.md`. |
 | 5V_MAIN entry (Link-Alpha J1 → CM5 DF40 power pins) | 9.0 A | 1.35 mm | 2.00 mm | **2.00 mm + pour** | L1 + L3 inner | Very high current (> 5.5 A threshold); L1 traces **2.00 mm minimum**; L3 inner power pour mandatory |
-| 3V3_ENIG distribution (Link-Alpha input → CM5 + pass-through Link-Beta) | 3.0 A | 0.45 mm | 0.80 mm | **0.80 mm** | L1 | Canonical 3V3_ENIG width per Global_Routing_Spec §1.1; entry from PM LDO (3.0 A limit); passed to Stator via 8× Link-Beta pins |
+| 3V3_ENIG distribution (Link-Alpha input → CM5 + pass-through Link-Beta) | 3.0 A | 0.45 mm | 0.80 mm | **0.80 mm** | L1 | Canonical 3V3_ENIG width per Global_Routing_Spec §1.1; entry from PM LDO (3.0 A limit); passed to Stator via 11× Link-Beta pins |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Solid GND reference plane; must be uninterrupted under all CI (JTAG) traces on L6 |
 
 ### Notes
