@@ -53,10 +53,10 @@ steps are detailed in each referenced document; this section defines integration
 | 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Stator J_SERVO. Verify SERVO_HOME switch actuation. |
 | 6 | HID Assembly | Build keyboard panel + lightboard panel + HID Encoder PCB. Connect IDC ribbon to Stator J4. |
 | 7 | Plugboard Assembly | Build plugboard jack panel + Encoder PCBs. Connect IDC ribbons to Stator J5/J6. |
-| 8 | Reflector | Install Reflector sub-assembly. Connect 16-pin Molex cable to Stator J7. (Skip if using Stator CPLD internal reflector via Settings Board reflector-enable toggle `SW_B2[5]`.) |
+| 8 | Reflector | Install Reflector sub-assembly. Connect the 16-pin cable to Stator J7. The Reflector is mandatory and always terminates the final rotor/extension stack. |
 | 9 | Extension (if used) | Daisy-chain Extension boards between Rotor 30 and Reflector for multi-stack configurations. |
 | 10 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Connect LINK-ALPHA to Power Module (J1). Connect LINK-BETA to Stator (J2/J8). |
-| 11 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route 4-wire I²C ribbon cable (SDA, SCL, 3V3_ENIG, GND) to Stator J_CFG. Verify `U_EXP_SW_IN` / `U_EXP_LED` appear on the I²C bus, then run a functional check that reads switch-state changes and drives each bank's red/green indicator rails before final panel closure. |
+| 11 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J_CFG. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
 | 12 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
 
 > **Note on the JTAG Daughterboard (JDB):** The JDB is a PCB hat that mounts directly on the

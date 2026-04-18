@@ -29,8 +29,9 @@ The Enigma-NG system comprises the following boards:
   physical or architectural limit — the design is theoretically scalable beyond 30 rotors in groups
   of 5 with increased power supply capacity. Rev A prototype validates with 1 Extension board
   (10 rotors). Formula: Extensions = (Rotor groups) − 1; minimum 0, maximum 5 for current budget.
-- **Reflector** — End of the rotor chain (after Rotor 30); performs the cipher reversal redirect and
-  routes TTD_RETURN back to the Stator.
+- **Reflector** — Mandatory end-of-chain turnaround board after the final rotor; provides the physical
+  ENC return path and routes TTD_RETURN back to the Stator while the selected reflection map is
+  applied by the Stator CPLD.
 - **Encoder Boards (×3)** — 1 HID board (keyboard + lightboard), 2 Plugboard encoder boards. Connect to
   Stator J4–J6.
 - **JTAG Daughterboard** — USB Blaster II implementation for programming CPLDs.
@@ -256,7 +257,7 @@ Keypress
 | Connector | Type | Pins | Purpose |
 | :--- | :--- | :--- | :--- |
 | Link-Alpha (PM → Ctrl) | ERM8-040 male / ERF8-040 female | 80 | Power + Ethernet + Telemetry |
-| Link-Beta (Ctrl → Stator) | Controller J2 (ERF8-020 female) ↔ Stator J8 (ERM8-020 male) | 40 | 3V3_ENIG + JTAG + Control signals |
+| Link-Beta (Ctrl → Stator) | Controller J2 (ERF8-020 female) ↔ Stator J8 (ERM8-020 male) | 40 | 3V3_ENIG + 5V_MAIN + JTAG + I2C/control signals |
 | Stator J1–J3 | ERF8-005/010 female | 10/10/20 | Rotor 1 interface |
 | Stator J4–J6 | 26-pin THT | 26 | Encoder board connections |
 | Stator J7 | 16-pin (Molex 2.54mm) | 16 | Extension/Reflector port (carries TTD_RETURN on pin 15) |

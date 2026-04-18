@@ -30,12 +30,19 @@ The `design/Standards/Global_Routing_Spec.md` applies to all boards in the Enigm
 
 ## 4. I2C Bus Map
 
-* I2C1 (SCL/SDA): routed through Controller → Power Module → Stator → Rotor chain.
+* I2C1 (SCL/SDA): routed through Controller → Power Module → Stator → Settings Board only.
   * 0x09: LTC3350 Supercap Charger on Power Module (supercap health monitoring and charge management).
   * 0x0B: Smart Battery / SMBus monitoring.
+  * 0x20: MCP23017 U_EXP1 on Stator (ENC_IN/ENC_OUT monitoring).
+  * 0x21: MCP23017 U_EXP2 on Stator (virtual keypress, servo control, SYS_RESET_N).
+  * 0x22: MCP23017 U_EXP4 on Stator (CPLD config output driver).
+  * 0x23: MCP23017 U_EXP_SW_IN on Settings Board (switch input reader).
+  * 0x24: MCP23017 U_LED_B1 on Settings Board (Bank 1 indicator controller).
+  * 0x25: MCP23017 U_LED_B2 on Settings Board (Bank 2 indicator controller).
   * 0x28: STUSB4500 USB PD controller on Power Module.
   * 0x40: INA219 on Power Module (5V_MAIN current/power telemetry).
   * 0x45: INA219 on Stator (rotor stack draw telemetry on the 3V3_ENIG bus).
+  * 0x60: PCA9685 on Stator (servo PWM driver).
 
 ## 5. System Architecture & Status (Alphabetical)
 
@@ -43,10 +50,10 @@ The `design/Standards/Global_Routing_Spec.md` applies to all boards in the Enigm
 | :--- | :--- | :--- | :--- |
 | **Controller Board** | CM5 Brain, high-speed I/O, and UI management. | 6-Layer / 2oz | **Design Locked** |
 | **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100I5N CPLD. | 4-Layer / 2oz | **In Review** |
-| **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; bridges TTD_RETURN. Up to ×5 in full build; Rev A uses ×1. | 4-Layer / 2oz | **Design Locked** |
+| **Extension Board** | Re-buffers TCK/TMS JTAG signals between 5-rotor groups; forwards/reinjects clean power and bridges TTD_RETURN between stacks. Up to ×5 in full build; Rev A uses ×1. | 4-Layer / 2oz | **Design Locked** |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer. | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Input filtering, UPS reservoir, and eFuse protection. | 6-Layer / 2oz | **Design Locked** |
-| **Reflector Board** | Terminating board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
+| **Reflector Board** | Mandatory terminating turnaround board for the rotor stack return path. | 4-Layer / 2oz | **Design Locked** |
 | **Rotor Module** | Smart encryption units (30x) with MAX II EPM570T100I5N CPLDs. | 4-Layer / 2oz | **Architecture Set** |
 | **Settings Board** | Panel-mount switch and RGB LED configuration interface on the shared Stator I2C-1 bus. | 4-Layer / 2oz | **In Review** |
 | **Stator Board** | Mechanical backplane for the 30-rotor stack with CPLD for plugboard configuration mapping. | 4-Layer / 2oz | **Design Locked** |

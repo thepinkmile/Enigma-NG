@@ -21,6 +21,9 @@ Recent milestones now locked into the active docs:
 - **DEC-035** — the HID keyboard/lightboard is fixed as a **40-position physical layout**
   (`[a-z0-9+=]` plus Left/Right Shift) mapped into the machine's **64-character logical** code
   space
+- **DEC-036** — LINK-BETA keeps the 40-pin connector but reuses the former monitor block as grouped
+  `5V_MAIN` / `3V3_ENIG` / `GND` rails, with four contiguous 5V pins for future-safe Stator-side
+  loads
 
 Full-system review status is still clean from checkpoint 047. Component verification has progressed
 to **13 VERIFIED rows** in `.copilot/components-todo.md`, including connectors, switches, LEDs, and
@@ -115,10 +118,11 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 | Ref | Description | Constraint |
 | :--- | :--- | :--- |
 | R_LED_R ×12, R_LED_G ×12, R_LED_B ×12 (SBD) | 0603 LED current-limiting resistors for 5V RGB upgrade | Values selected in docs; supplier verification still required in the queue |
-| R_LED_R ×12, R_LED_G ×12 | 0603 per-switch red/green LED resistors | Value tuning still open |
-| J_I2C / J_CFG | JST B4B-PH-K-S 4-pin 2.0mm — JLCPCB PN | C131342 is 3-pin (wrong); 4-pin PN needed |
+| R_LED_R ×12, R_LED_G ×12, R_LED_B ×12 | 0603 per-switch RGB LED resistors | Value tuning still open |
+| J_I2C / J_CFG | JST B6B-PH-K-S 6-pin 2.0mm — JLCPCB PN | Active Settings/Stator link is now 6-pin (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`); JLCPCB PN still needs confirmation |
 | J_DSI1 | 15-pin 1.0mm ZIF/FPC (CM5 DSI1) | Verify CM5 DSI1 pinout at schematic phase |
 | IC001+ onward | Remaining BOM-wide component rows in `.copilot/components-todo.md` | Continue manual verification from the queue before further doc propagation |
+| Expander revisit | Stator + Settings expander partitioning / HID decoder-lightboard follow-up | Revisit after the current consistency pass is complete; user has a new Encoder-board idea to discuss |
 
 ---
 
@@ -138,18 +142,26 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Checkpoint 049 locked** — first manual component batch is now captured in repo-local handoff,
-   including the HID keyboard pseudo datasheet and DEC-035.
-2. **Continue component re-verification** from `.copilot/components-todo.md`.
-   - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
-   - **Total VERIFIED rows:** 13
-   - Treat every other populated MPN/distributor field as provisional until manually checked and
-     marked `VERIFIED`
-3. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
-   rows in the queue.
-4. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
-   still need supplier confirmation.
-5. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
+1. **Checkpoint 050 locked** — the post-audit architecture cleanup and LINK-BETA grouped-power
+   rebalance are now captured in repo-local handoff.
+2. **Link-Beta rail rebalance is now part of the active architecture state.**
+   - Former spare block replaced by grouped power rails
+   - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **14–17**
+   - Diagnostic Bank-Beta now probes grouped rails + I²C instead of dead spare pads
+3. **Deep-review reruns are the next gate.**
+   - Re-launch the full design consistency / connectivity review
+   - Re-launch the datasheet coverage / missing-URL review
+   - Do not start the next doc-fix batch until those rerun findings are reviewed
+4. **Continue component re-verification** from `.copilot/components-todo.md`.
+    - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
+    - **Total VERIFIED rows:** 13
+    - Treat every other populated MPN/distributor field as provisional until manually checked and
+      marked `VERIFIED`
+5. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
+    rows in the queue.
+6. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
+    still need supplier confirmation.
+7. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
 
 ---
 
@@ -289,13 +301,13 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - All boards 4-layer JLC04161H-7628 / 2oz copper except Controller (6-layer JLC06161H)
 - MCP23017 I²C addresses: 0x20 (U_EXP1 STA), 0x21 (U_EXP2 STA), 0x22 (U_EXP4 STA),
   0x26 (U_EXP_SW_IN SBD), 0x27 (U_EXP_LED SBD). All 8 addresses (0x20–0x27) now in use.
-- Settings Board LED: green = switch-defined, red = CM5-defined (per bank)
+- Settings Board LED: green = switch-defined, red = CM5-defined by default; full RGB remains available under CM5 control
 - Settings Board switches: E-Switch 200MSP1T2B4M2QE for all 12 panel toggles
-- Settings Board indicator LED: Kingbright WP154A4SEJ3VBDZGW/CA (common-anode, red/green used; blue retained behind 0Ω debug link)
+- Settings Board indicator LED: Kingbright WP154A4SEJ3VBDZGW/CA (common-anode, full RGB under CM5 control)
 - Power Module SW1: Adafruit 4660 rugged metal RGB latching switch
-- Settings Board topology: individual LED anode drive plus BSS138 low-side shared red/green colour rails;
-  separate red/green resistors per switch, plus per-switch 0Ω blue debug links; nominal 3.3V operation
-- Settings Board transistors: Q_BNK1_G, Q_BNK1_R, Q_BNK2_G, Q_BNK2_R (functional names)
+- Settings Board topology: individual LED anode drive plus BSS138 low-side shared RGB colour rails;
+  separate red / green / blue resistors per switch; 5V_MAIN-fed indicator rail
+- Settings Board transistors: Q_BNK1_R/G/B and Q_BNK2_R/G/B (functional names)
 - Settings Board I²C expanders: U_EXP_SW_IN @ 0x26 (reads switches), U_EXP_LED @ 0x27
   (drives LEDs + colour rails). U_EXP_SW_OUT @ 0x24 is a STALE ARTEFACT — never use.
 

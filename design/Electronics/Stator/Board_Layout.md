@@ -146,10 +146,10 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 
 ## J_CFG — Settings Board I²C Connector
 
-**Component:** JST B4B-PH-K-S(LF)(SN) — 4-pin JST PH 2.0mm THT (JLCPCB PN TBD; confirm 4-pin B4B variant).
+**Component:** JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm THT (JLCPCB PN TBD; confirm 6-pin B6B variant).
 **Placement:** Board edge facing the enclosure panel, accessible without rotor stack removal.
 **Silkscreen:** Label `EINSTELLUNGEN` / `SETTINGS` adjacent to connector.
-**Cable:** 4-wire ribbon cable to Settings Board J_I2C (100mm recommended).
+**Cable:** 6-wire harness to Settings Board J_I2C (100mm recommended).
 
 > SW1 and SW2 DIP switches have been removed. Configuration is now handled via
 > panel-mount toggle switches with discrete RGB indicators on the Settings Board (current implementation; see DEC-034).
@@ -158,10 +158,12 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 
 | Pin | Signal | Description |
 | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | Board power supply to Settings Board |
-| 2 | GND | Signal return / GND_CHASSIS bond |
-| 3 | SDA | I²C-1 data — shared Stator I²C-1 bus |
-| 4 | SCL | I²C-1 clock — shared Stator I²C-1 bus |
+| 1 | 3V3_ENIG | Logic supply to Settings Board expanders |
+| 2 | 5V_MAIN | Indicator power feed from Link-Beta pins 14–17 |
+| 3 | GND | Logic return / local chassis-reference tie point |
+| 4 | SDA | I²C-1 data — shared Stator I²C-1 bus |
+| 5 | SCL | I²C-1 clock — shared Stator I²C-1 bus |
+| 6 | GND | LED/current return paired with the 5V_MAIN feed |
 
 ---
 
@@ -189,7 +191,7 @@ CPLD re-latch.
 | GPB | [2] | SW2_OUT[2] | Output | CPLD reflector config bit 2 (via R23 pull-down) |
 | GPB | [3] | SW2_OUT[3] | Output | CPLD reflector config bit 3 (via R24 pull-down) |
 | GPB | [4] | SW2_OUT[4] | Output | CPLD reflector config bit 4 (via R25 pull-down) |
-| GPB | [5] | SW2_OUT[5] | Output | CPLD internal reflector enable (via R26 pull-down) |
+| GPB | [5] | SW2_OUT[5] | Output | CPLD reflector config bit 5 (via R26 pull-down) |
 | GPB | [6:7] | — | — | Spare |
 
 See `Settings_Board/Design_Spec.md` for the full CM5 firmware flow and LED control logic.

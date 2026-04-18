@@ -36,7 +36,8 @@ Signal Routing Matrix` for full details.
 When used as the HID interface (Keyboard + Lightboard), both halves operate independently:
 
 - **Decode Half (CPLD A):** Receives 6-bit ENC_IN from Stator → asserts one of 64 lamp-drive output
-  lines (Lightboard). Connected to lamp assemblies via BT1–64 spade terminals.
+  lines for the Lightboard. The HID lightboard is driven by this same Encoder board half and connects
+  to the lamp assemblies via BT1–64 spade terminals.
 - **Encode Half (CPLD B):** Reads one of the populated HID key-press input lines (Keyboard) →
   encodes to 6-bit ENC_OUT to Stator. Connected to keyboard switches via BT65–128 spade terminals.
 

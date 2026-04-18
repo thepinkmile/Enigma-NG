@@ -225,24 +225,24 @@ _______________________________________    _____________    ____________________
 | 4 | TMS | CTRL→Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
-| 7 | GND | — | TDI/SPARE inter-pin shield |
-| 8 | SPARE | — | Freed by DEC-031; SYS_RESET_N migrated to Stator U_EXP2 GPA[7] @ 0x21 |
+| 7 | GND | — | TDI/GND inter-pin shield |
+| 8 | GND | — | Extra JTAG trailing/guard ground; reassigned from former SYS_RESET_N spare in DEC-036 |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |
 | 12 | I2C1_SDA | Bidir | Stator/Settings I2C-1 data extension from CM5 GPIO 2 (mirrors Link-Alpha pin 35 onto LINK-BETA) |
 | 13 | I2C1_SCL | Bidir | Stator/Settings I2C-1 clock extension from CM5 GPIO 3 (mirrors Link-Alpha pin 36 onto LINK-BETA) |
-| 14 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
-| 15 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
-| 16 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
-| 17 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via Stator U_EXP1 @ 0x20 |
-| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
-| 19 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[0:5] @ 0x20 |
-| 20 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[1:5] @ 0x20 |
-| 21 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[2:5] @ 0x20 |
-| 22 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[3:5] @ 0x20 |
-| 23 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[4:5] @ 0x20 |
-| 24 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[5] @ 0x20 |
+| 14 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed for Settings indicators, servo rail, and future 5V margin |
+| 15 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed |
+| 16 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed |
+| 17 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed |
+| 18 | GND | — | 5V_MAIN return moat / inter-group shield |
+| 19 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed; former ENC monitor position repurposed in DEC-036 |
+| 20 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed; former ENC monitor position repurposed in DEC-036 |
+| 21 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed; former ENC monitor position repurposed in DEC-036 |
+| 22 | GND | — | Grouped return paired with the expanded power block |
+| 23 | GND | — | Grouped return paired with the expanded power block |
+| 24 | GND | — | Grouped return paired with the expanded power block |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |
 | 26 | TTD_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
 | 27 | GND | — | TTD_RETURN shield |
@@ -260,26 +260,29 @@ _______________________________________    _____________    ____________________
 | 39 | GND | — | Power return |
 | 40 | GND | — | Power return |
 
-**Power capacity:** 8 × 3V3_ENIG pins × 0.5A/pin = 4.0A total — adequate for the 30-rotor worst case (2.05 A per Power_Budgets.md).
+**Power capacity:** LINK-BETA now provides 11 × 3V3_ENIG pins × 0.5A/pin = 5.5A connector
+capacity and 4 × 5V_MAIN pins × 0.5A/pin = 2.0A connector capacity. The 3V3_ENIG path remains
+limited by the upstream 3.0A LDO, while the 5V_MAIN path now has comfortable headroom for the
+Stator servo, Settings Board indicators, and future 5V expansion.
 
 ### DIAGNOSTIC BANK-BETA (Top-Left)
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[0:5] @ 0x20 |
-| 2 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[1:5] @ 0x20 |
-| 3 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[2:5] @ 0x20 |
-| 4 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[3:5] @ 0x20 |
-| 5 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[4:5] @ 0x20 |
-| 6 | SPARE | — | Freed by DEC-031; ENC_IN[0:5] now on Stator U_EXP1 GPA[5] @ 0x20 |
-| 7 | SPARE | — | SYS_RESET_N now on Stator U_EXP2 GPA[7] @ 0x21 (DEC-031) |
+| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 14 |
+| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 15 |
+| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 16 |
+| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 17 |
+| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 19 |
+| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 20 |
+| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 21 |
 | 8 | GND | — | Ground reference |
-| 9 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[0:5] @ 0x20 |
-| 10 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[1:5] @ 0x20 |
-| 11 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[2:5] @ 0x20 |
-| 12 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[3:5] @ 0x20 |
-| 13 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[4:5] @ 0x20 |
-| 14 | SPARE | — | Freed by DEC-031; ENC_OUT[0:5] now on Stator U_EXP1 GPB[5] @ 0x20 |
+| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 12 / shared Stator-Settings I²C bus |
+| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 13 / shared Stator-Settings I²C bus |
+| 11 | GND_RET_A | — | Probe for grouped Link-Beta return cluster |
+| 12 | GND_RET_B | — | Probe for grouped Link-Beta return cluster |
+| 13 | GND_RET_C | — | Probe for grouped Link-Beta return cluster |
+| 14 | GND_RET_D | — | Probe for grouped Link-Beta return cluster |
 | 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
 | 16 | GND | — | TCK shield / clock return |
 | 17 | TMS | JDB → Stator | JTAG mode select |
@@ -296,8 +299,8 @@ _______________________________________    _____________    ____________________
 | (O) [  LINK-ALPHA (ERF8-040)  ] --(5V/GBE)--|----->| [ CM5 COMPUTE MODULE ]         |      | (O)                         |
 | (1)  (Female Socket / 80-pin)               |      |  (Wireless/8GB/32GB)           |      | (3)                         |
 |        |                 |                  |      |                                |      |                             |
-|  [ 3V3_ENIG  ]     [ SPARE               ] |<---->| [ SPARE       ]  [ 100Ω HDMI ] |      |                             |
-|  (2oz L3 BRIDGE)   (SPARE)              |      |                        |       |      |                             |
+|  [ 3V3_ENIG  ]     [ LINK-BETA POWER     ] |<---->| [ LINK-BETA    ]  [ 100Ω HDMI ] |      |                             |
+|  (2oz L3 BRIDGE)   (5V/3V3/GND GROUP)   |      | [ POWER GROUP ]   |       |      |                             |
 |       |                                     |      |                  [ AP2331W   ] |      |                             |
 |       |       [ JTAG DAUGHTERBOARD ]        |      |                  [ TPD4E05U06] |------|------> [ HDMI TYPE-A  ]     |
 |       |        (1x5 & 1x10 Headers)         |      |                                |      |        [   2007435-1  ]     |
@@ -320,14 +323,14 @@ _______________________________________    _____________    ____________________
 | (O) [R]    [ LINK-BETA (ERF8-020) ]  [ LINK-ALPHA (ERF8-040) ]   [R] (O) |
 |            (Stator / Logic Out)      (Power / Ethernet In)           |
 |                   |                          |                     |
-|            [ SPARE        ]        [ DIAG BANK-A      ]            |
-|            [ (SPARE)      ]        [ (POWER & STATUS) ]            |
+|            [ LINK-BETA    ]        [ DIAG BANK-A      ]            |
+|            [ POWER GROUP  ]        [ (POWER & STATUS) ]            |
 |               |      |                       |                (O)  |
 |          (JTAG Link) |                       |                     |
 |               |      |               [  CM5 MODULE  ]    [ USB3 ]  |
 |               |      |               [ (RIGHT-SIDE) ]    [STACK ]  |--- PROTRUDES
 |   [ JTAG DAUGHTER ]  |               [              ]----[ PORT ]  |
-|   [  MOUNT (2x10) ]  +--(SPARE)     -[ (SPARE)      ]              |
+|   [  MOUNT (2x10) ]  +--(PWR SENSE) -[ (PWR GROUP)  ]              |
 |               |                      [              ]              |
 |               +------(USB 2.0)-------[ (HDMI/USB3)  ]----[ HDMI ]  |
 |                                      |______________|    [ FULL ]  |--- PROTRUDES

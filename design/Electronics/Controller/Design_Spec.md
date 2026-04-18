@@ -99,13 +99,20 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
   * **Connector:** Samtec ERF8-020 (Female Socket, 40-pin, 0.8mm pitch). See DEC-015.
   * **Mating Style:** Board-to-Board vertical stack; SMT reflow. Mates with ERM8-020 (Male) on Stator.
   * **Pin Summary:**
-    * **Pins 1–9:** JTAG chain only, GND-shielded (5 internal GND pins).
+    * **Pins 1–9:** JTAG chain only, GND-shielded (6 internal GND pins; pin 8 now tied to GND).
     * **Pins 10–11:** GND isolation moat.
     * **Pins 12–13:** I2C1_SDA / I2C1_SCL extend the CM5 I²C-1 bus onto the Stator for U_EXP1/U_EXP2/U_EXP4, INA219, PCA9685, and the downstream Settings Board expanders.
-    * **Pins 14–17, 19–22, 24:** Previously ENC_IN[0:5] and ENC_OUT[0:5] — now mostly spare (monitoring via I²C expander U_EXP1). These pins remain **SPARE**.
-    * **Pins 18, 23:** 5V_MAIN power delivery (2× pins for current sharing, 0.5A per pin = 1.0A total capacity). Routed to Stator for Settings Board LEDs (5V_LED rail, 240mA) and J_SERVO servo motor power (5V_MAIN, up to 500mA).
+    * **Pins 14–17:** 5V_MAIN grouped power delivery (4× pins for current sharing,
+      0.5A per pin = 2.0A total capacity). Routed to the Stator for the Settings Board
+      indicator rail (`5V_MAIN`, 240mA max), J_SERVO servo motor power
+      (5V_MAIN, up to 500mA), and future 5V headroom.
+    * **Pin 18:** GND return moat for the grouped 5V_MAIN cluster.
+    * **Pins 19–21:** Additional 3V3_ENIG feed (3× pins) added after DEC-031 freed the
+      former ENC_OUT monitor block.
+    * **Pins 22–24:** Additional GND return cluster paired with the grouped power block.
     * **Pins 25–27:** GND / TTD_RETURN / GND shield cluster (TTD_RETURN on pin 26 only).
-    * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity).
+    * **Pins 28–35:** 3V3_ENIG power (8 pins × 0.5A = 4.0A capacity; combined with pins
+      19–21 this makes LINK-BETA 3V3_ENIG overprovisioned relative to the 3.0A LDO limit).
     * **Pins 36–40:** GND power return (5 pins).
   * **Full pin table:** See `Controller/Board_Layout.md` LINK-BETA section.
 * **Programming:** Internal USB 2.0 link to the JTAG Daughterboard.
@@ -178,9 +185,9 @@ All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed through to th
 | 0x20 | MCP23017 (U_EXP1) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
 | 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control |
 | 0x22 | MCP23017 (U_EXP4) | Stator | CPLD config output driver (DEC-032) |
-| 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
-| 0x40 | MCP23017 (U_LED_B1) | Settings Board | Bank 1 LED controller: 5× anodes + RGB color-rail drivers (DEC-034) |
-| 0x41 | MCP23017 (U_LED_B2) | Settings Board | Bank 2 LED controller: 6× anodes + RGB color-rail drivers (DEC-034) |
+| 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
+| 0x24 | MCP23017 (U_LED_B1) | Settings Board | Bank 1 LED controller: 5× anodes + RGB bank-rail drivers (DEC-034) |
+| 0x25 | MCP23017 (U_LED_B2) | Settings Board | Bank 2 LED controller: 7× anodes + RGB bank-rail drivers (DEC-034) |
 | 0x60 | PCA9685 (U_EXP3) | Stator | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
 ## 5. RTC Backup Battery
@@ -341,18 +348,19 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 4 | TMS | CTRL → Stator | JTAG mode select |
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL → Stator | JTAG data in |
-| 7 | GND | — | TDI/SPARE inter-pin shield |
-| 8 | spare | — | Previously SYS_RESET_N (CM5 GPIO 26); now via I²C expander U_EXP2 GPA[7]. See DEC-031. |
+| 7 | GND | — | TDI/GND inter-pin shield |
+| 8 | GND | — | Extra JTAG trailing/guard ground; reassigned from former SYS_RESET_N spare in DEC-036 |
 | 9–11 | GND | — | JTAG trailing shield + isolation moat |
 | 12 | I2C1_SDA | Bidir | I²C-1 data extension to Stator/Settings bus (mirrors Link-Alpha pin 35 / CM5 GPIO 2). |
 | 13 | I2C1_SCL | Bidir | I²C-1 clock extension to Stator/Settings bus (mirrors Link-Alpha pin 36 / CM5 GPIO 3). |
-| 14–17 | SPARE | — | Freed by DEC-031; ENC_IN monitoring now via I²C expander U_EXP1 GPA[0:5] @ 0x20. |
-| 18 | GND | — | ENC_IN / ENC_OUT inter-group shield |
-| 19–24 | spare | — | Previously ENC_OUT[0:5]; monitoring now via I²C expander U_EXP1 GPB[0:5]. See DEC-031. |
+| 14–17 | 5V_MAIN | PM → Stator | Grouped supplemental 5V feed; 4 pins = 2.0A total capacity for servo + Settings rail + future margin |
+| 18 | GND | — | 5V_MAIN return moat / inter-group shield |
+| 19–21 | 3V3_ENIG | PM → Stator | Additional 3V3_ENIG feed pins added after DEC-031 freed the former monitor block |
+| 22–24 | GND | — | Additional grouped return pins paired with the 5V_MAIN / 3V3_ENIG expansion cluster |
 | 25 | GND | — | ENC_OUT / TTD_RETURN shield |
 | 26 | TTD_RETURN | Stator → CTRL | JTAG TDO short-path return (bypasses rotor stack) |
 | 27 | GND | — | TTD_RETURN shield |
-| 28–35 | 3V3_ENIG | PM → Stator | Power pass-through (8 pins = 4.0A; 2oz copper highway) |
+| 28–35 | 3V3_ENIG | PM → Stator | Power pass-through (8 pins = 4.0A; combined LINK-BETA total = 11 pins = 5.5A connector capacity) |
 | 36–40 | GND | — | Power return |
 
 ### 8.4. Fan Connector (J_FAN)
@@ -474,24 +482,24 @@ Monitors 5V_MAIN, 3V3_ENIG, I²C Telemetry, Status LEDs, and BATT_PRES.
 
 #### Diagnostic Bank-Beta (Logic/Exit) — 2×10
 
-Monitors JTAG signals and spare pads (ENC_IN/ENC_OUT/SYS_RESET_N migrated to I²C expanders — see DEC-031).
+Monitors the grouped Link-Beta power rails, I²C extension, and JTAG return path after the DEC-036 rail rebalance.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | spare | — | Previously ENC_IN[0] (keyboard snoop). Monitoring via I²C expander U_EXP1. See DEC-031. |
-| 2 | spare | — | Previously ENC_IN[1]. See DEC-031. |
-| 3 | spare | — | Previously ENC_IN[2]. See DEC-031. |
-| 4 | spare | — | Previously ENC_IN[3]. See DEC-031. |
-| 5 | spare | — | Previously ENC_IN[4]. See DEC-031. |
-| 6 | spare | — | Previously ENC_IN[5]. See DEC-031. |
-| 7 | spare | — | Previously SYS_RESET_N (GPIO 26); now via I²C expander U_EXP2. See DEC-031. |
+| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 14 |
+| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 15 |
+| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 16 |
+| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 17 |
+| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 19 |
+| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 20 |
+| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 21 |
 | 8 | GND | — | Ground reference |
-| 9 | spare | — | Previously ENC_OUT[0]. Monitoring via I²C expander U_EXP1. See DEC-031. |
-| 10 | spare | — | Previously ENC_OUT[1]. See DEC-031. |
-| 11 | spare | — | Previously ENC_OUT[2]. See DEC-031. |
-| 12 | spare | — | Previously ENC_OUT[3]. See DEC-031. |
-| 13 | spare | — | Previously ENC_OUT[4]. See DEC-031. |
-| 14 | spare | — | Previously ENC_OUT[5]. See DEC-031. |
+| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 12 / shared Stator-Settings I²C bus |
+| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 13 / shared Stator-Settings I²C bus |
+| 11 | GND_RET_A | — | Probe for grouped Link-Beta return cluster |
+| 12 | GND_RET_B | — | Probe for grouped Link-Beta return cluster |
+| 13 | GND_RET_C | — | Probe for grouped Link-Beta return cluster |
+| 14 | GND_RET_D | — | Probe for grouped Link-Beta return cluster |
 | 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
 | 16 | GND | — | TCK shield / clock return |
 | 17 | TMS | JDB → Stator | JTAG mode select |

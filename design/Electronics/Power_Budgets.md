@@ -105,12 +105,19 @@ being an unachievable worst-case peak).
 | FT232H VCC (JTAG Daughterboard — via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
 | USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |
 | HDMI sink device | 0.05 A | System boundary: connected HDMI sink; AP2331W-limited |
-| **Total 5V_MAIN worst case (system boundary)** | **8.76 A** | |
-| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 73.0% utilisation (8.76/12.0) ✓ |
+| Settings Board indicator rail (via Link-Beta → Stator J_CFG) | 0.24 A | 12 indicators, one active colour per bank, 240mA max |
+| Stator servo rail (via Link-Beta → J_SERVO) | 0.50 A | Budgeted Stator-side servo allocation |
+| **Total 5V_MAIN worst case (system boundary)** | **9.50 A** | |
+| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 79.2% utilisation (9.50/12.0) ✓ |
 
 > **Scope note:** The 7.40 A board-level budget (internal consumers: CM5 + LDO + misc + FT232H) covers internal consumers only.
-> External device loads (USB 3.0 + HDMI) add 1.65 A, giving a system total of 8.76 A.
-> Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 8.76 A system total.
+> External device loads (USB 3.0 + HDMI) plus the Link-Beta-fed Settings Board + servo loads add 2.39 A, giving a system total of 9.50 A.
+> Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 9.50 A system total.
+>
+> **Link-Beta 5V margin:** The Stator-facing 5V_MAIN group now uses four dedicated LINK-BETA pins
+> (pins 14–17), giving **2.0 A connector capacity** for the Settings Board + servo branch. The
+> current downstream budget is **0.74 A**, leaving ~**1.26 A** connector headroom for future 5V
+> peripherals on the Stator side.
 
 ---
 

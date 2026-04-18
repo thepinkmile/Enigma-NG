@@ -1,7 +1,7 @@
 # Settings Board 5V RGB Upgrade — Change Summary
 
 **Date:** 2026-04-17  
-**Issue:** Settings Board RGB LEDs underpowered at 3.3V; no blue channel; insufficient GPIO for full RGB control
+**Issue:** Settings Board RGB LEDs were underpowered at 3.3V and the older draft did not fully allocate the blue-drive path or enough GPIO for full RGB control
 
 ## Summary of Changes
 

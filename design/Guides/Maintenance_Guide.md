@@ -59,25 +59,25 @@ Monitors power rails, I²C telemetry bus, LED control signals, and power status.
 
 ### Bank-Beta (Logic/Exit) — Top-Left of Controller
 
-Monitors the remaining Link-Beta bring-up signals: JTAG, TTD_RETURN, I2C extension lines, and the
-post-DEC-031 spare pads that replaced the former 12-bit encryption sniffer allocation.
+Monitors the grouped Link-Beta power rails, I2C extension lines, and the JTAG return path after the
+post-DEC-036 rail rebalance.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 2 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 3 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 4 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 5 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 6 | SPARE | — | ENC_IN[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 7 | SPARE | — | SYS_RESET_N freed by DEC-031; now Stator U_EXP2 GPA[7] @ 0x21 |
+| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 14 |
+| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 15 |
+| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 16 |
+| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 17 |
+| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 19 |
+| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 20 |
+| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 21 |
 | 8 | GND | — | Ground reference |
-| 9 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 10 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 11 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 12 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 13 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
-| 14 | SPARE | — | ENC_OUT[0:5] freed by DEC-031; monitoring now via Stator U_EXP1 MCP23017 @ 0x20 |
+| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 12 / shared Stator-Settings I²C bus |
+| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 13 / shared Stator-Settings I²C bus |
+| 11 | GND_RET_A | — | Probe for grouped Link-Beta return cluster |
+| 12 | GND_RET_B | — | Probe for grouped Link-Beta return cluster |
+| 13 | GND_RET_C | — | Probe for grouped Link-Beta return cluster |
+| 14 | GND_RET_D | — | Probe for grouped Link-Beta return cluster |
 | 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
 | 16 | GND | — | TCK shield / clock return |
 | 17 | TMS | JDB → Stator | JTAG mode select |

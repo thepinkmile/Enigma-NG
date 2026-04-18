@@ -46,7 +46,7 @@ This document provides a high-level overview of all 107 unique component types i
 | ID | Description | Board | Status |
 |----|-------------|-------|--------|
 | L001 | Settings Board RGB LEDs (×12) | SBD | ✅ VERIFIED |
-| L002 | LED resistors (red/green) | SBD | 🚫 BLOCKED |
+| L002 | LED resistors (RGB) | SBD | 🚫 BLOCKED |
 | L003 | Green status LED | PM | ⏳ RECHECK |
 | L004 | Ethernet LED resistors | PM | ⏳ RECHECK |
 
@@ -176,7 +176,7 @@ Major categories:
 - **LED current limit:** R007-R008, L002
 - **Precision analog:** R018, R021-R023 (thin-film ERA series)
 - **Power management:** R012-R020
-- **Jumpers:** R051 (0Ω debug links)
+- **LED current limit:** R051 (blue-channel resistor set)
 
 **Verification approach:** Batch verify ERJ vs ERA series, confirm 1% vs 0.1% tolerance requirements.
 

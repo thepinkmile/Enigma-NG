@@ -15,7 +15,7 @@ Upgrade Settings Board LED control from 3.3V single-color to 5V full RGB capabil
 Current design issues:
 1. **Insufficient voltage:** 3V3_ENIG supply marginal for green/blue LEDs (Vf ~3.0-3.3V)
 2. **Limited brightness:** MCP23017 GPIO limited to 16mA @ 3.3V; RGB LEDs need 20mA for full brightness
-3. **No blue channel:** Current design only uses red/green; no blue resistors/routing
+3. **Full RGB drive required:** Blue remains an active CM5-controlled channel, so all three colour rails and resistor paths must be retained
 4. **Pin shortage:** Original single-MCP23017 design has only 4 spare GPIO for 6 color rails (3 colors × 2 banks)
 
 ---

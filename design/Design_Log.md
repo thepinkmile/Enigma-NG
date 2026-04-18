@@ -421,11 +421,13 @@ significantly complicating assembly.
 - **Date:** 2026-04-04
 - **Category:** Electrical
 - **Area:** Controller Board (J2), Stator Board (J8), Consolidated BOM
+- **Amended by:** DEC-036 (2026-04-18)
 
 ### Decision
 
 The LINK-BETA Board-to-Board connector is reduced from 80-pin (ERF8-040 / ERM8-040) to **40-pin
-(ERF8-020-05.0-S-DV-K-TR / ERM8-020-05.0-S-DV-K-TR)**. The full 40-pin allocation is as follows:
+(ERF8-020-05.0-S-DV-K-TR / ERM8-020-05.0-S-DV-K-TR)**. The table below records the original
+post-reduction allocation; the current active grouped-power allocation is defined by **DEC-036**.
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
@@ -487,7 +489,9 @@ connector on the Stator increases stack height with no benefit.
 
 ### Cross-ref
 
-DEC-014 (gender assignment rationale remains valid; part numbers updated). DEC-031 (pins 8, 12–17, and 19–24 freed — SYS_RESET_N and ENC_IN/OUT migrated to I²C).
+DEC-014 (gender assignment rationale remains valid; part numbers updated). DEC-031
+(pins 8, 12–17, and 19–24 freed — SYS_RESET_N and ENC_IN/OUT migrated to I²C).
+DEC-036 (freed monitor block reallocated into grouped 5V_MAIN / 3V3_ENIG / GND rails).
 
 ---
 
@@ -1451,7 +1455,9 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 ### Net Effect on LINK-BETA
 
 - **Freed (13 pins):** ENC_IN[0:5] (×6), ENC_OUT[0:5] (×6), SYS_RESET_N (×1).
-- **Freed:** pins 8 (SYS_RESET_N), 12–17 (ENC_IN[0:5]), and 19–24 (ENC_OUT[0:5]) are all SPARE; no 5V_MAIN pins were added to LINK-BETA. Servo 5V_MAIN supplied from Stator local rail via J_SERVO.
+- **Freed:** pins 8 (SYS_RESET_N), 12–17 (ENC_IN[0:5]), and 19–24 (ENC_OUT[0:5]) were freed by this decision.
+- **Later reuse:** DEC-036 reallocated the former monitor block into grouped LINK-BETA power rails
+  (5V_MAIN, 3V3_ENIG, and GND) once the Stator-side 5V needs were formalised.
 - R6 pull-up (10kΩ to 3V3_ENIG) on Stator keeps SYS_RESET_N HIGH at power-up (CPLDs out of reset).
 
 ### Net Effect on CM5 GPIO
@@ -1647,12 +1653,12 @@ spade-terminal wiring.
    (`SW_B1_EN`, `SW_B1[0:3]`, `SW_B2_EN`, `SW_B2[0:5]`).
 2. **Settings Board LED selection:** Use `WP154A4SEJ3VBDZGW/CA` for all 12 switch indicators.
    - Kingbright 5mm common-anode RGB through-hole LED
-   - Red + green channels used in normal operation; blue retained behind a per-switch 0Ω debug link
-   - Separate red and green series resistors per switch allow colour balancing under nominal 3.3V operation
+   - Full RGB operation is available under CM5 control
+   - Separate red, green, and blue series resistors per switch allow colour balancing under nominal 5V operation
 3. **Settings Board LED topology update:** Change the indicator drive from the previous
    common-cathode / PNP sourcing concept to:
-   - individual LED anode drive from `U_EXP_LED`
-   - per-bank red / green shared cathode rails
+   - individual LED anode drive from `U_LED_B1` / `U_LED_B2`
+   - per-bank red / green / blue shared cathode rails
    - low-side BSS138 sink devices on each bank colour rail
 4. **Power Module switch selection:** Use Adafruit `4660` for `SW1`.
    - Latching rugged metal power switch
@@ -1740,6 +1746,86 @@ uppercase-only key positions that were never part of the intended user-facing la
 - **Rotor Actuation Assembly:** lever count reduced from 64 to 40
 - **Consolidated BOM / component tracking:** keyboard switch quantity updated to 40 and tied to the
   pseudo datasheet for the purchased marketplace part
+
+---
+
+## DEC-036 — LINK-BETA Former Monitor Pins Reallocated as Grouped Power Rails
+
+- **Status:** Decided
+- **Date:** 2026-04-18
+- **Category:** Electrical / Power distribution
+- **Area:** Controller Board J2 (LINK-BETA), Stator Board J8, Settings/Servo 5V branch
+- **Author:** Izzyonstage & GitHub Copilot
+
+### Summary
+
+Keep LINK-BETA as the 40-pin Samtec ERF8/ERM8 pair from DEC-015, but stop carrying a large legacy
+spare block. Reallocate the former ENC monitor positions into grouped power rails: **4 contiguous
+5V_MAIN pins**, **3 additional 3V3_ENIG pins**, and **3 additional GND return pins**.
+
+### Problem
+
+After DEC-031 migrated ENC_IN/ENC_OUT monitoring and SYS_RESET_N to Stator-side I²C expanders, a
+large section of LINK-BETA remained unused. That left the connector under-utilised while the
+Stator-side 5V branch had only 2 pins (1.0A connector capacity) available for the servo and the
+Settings Board indicator rail.
+
+### Decision
+
+Retain the 40-pin LINK-BETA connector and apply this active allocation:
+
+| Pin | Signal | Direction | Notes |
+| :--- | :--- | :--- | :--- |
+| 1 | GND | — | JTAG leading shield |
+| 2 | TCK | CTRL→Stator | JTAG clock |
+| 3 | GND | — | TCK/TMS inter-pin shield |
+| 4 | TMS | CTRL→Stator | JTAG mode select |
+| 5 | GND | — | TMS/TDI inter-pin shield |
+| 6 | TDI | CTRL→Stator | JTAG data in |
+| 7 | GND | — | TDI/GND inter-pin shield |
+| 8 | GND | — | Extra JTAG trailing/guard ground |
+| 9 | GND | — | JTAG trailing shield |
+| 10 | GND | — | Isolation moat pin 1 |
+| 11 | GND | — | Isolation moat pin 2 |
+| 12 | I2C1_SDA | Bidir | Shared Stator/Settings I²C-1 data extension |
+| 13 | I2C1_SCL | Bidir | Shared Stator/Settings I²C-1 clock extension |
+| 14 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 15 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 16 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 17 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 18 | GND | — | 5V_MAIN return moat |
+| 19 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed |
+| 20 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed |
+| 21 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed |
+| 22 | GND | — | Grouped return for the mixed-power block |
+| 23 | GND | — | Grouped return for the mixed-power block |
+| 24 | GND | — | Grouped return for the mixed-power block |
+| 25 | GND | — | TTD_RETURN leading shield |
+| 26 | TTD_RETURN | Stator→CTRL | JTAG TDO short-path return |
+| 27 | GND | — | TTD_RETURN trailing shield |
+| 28–35 | 3V3_ENIG | PM→Stator | Existing 3V3_ENIG pass-through block |
+| 36–40 | GND | — | Main power return block |
+
+### Rationale
+
+- The connector footprint, mating safety, and stack geometry from DEC-015 stay unchanged.
+- Grouping all four 5V_MAIN pins together simplifies routing and clearly separates the 5V branch
+  from the I²C and JTAG regions.
+- 4 × 5V_MAIN pins provide **2.0A connector capacity**, giving ample headroom above the current
+  0.74A downstream budget (Settings Board indicators + servo).
+- The extra 3V3_ENIG pins make LINK-BETA electrically overprovisioned, so the upstream 3.0A LDO
+  remains the only practical 3V3 limit.
+
+### Impact
+
+- Controller / Stator LINK-BETA tables updated to grouped 5V_MAIN, 3V3_ENIG, and GND allocations
+- Settings Board and Stator docs updated to source `5V_MAIN` from LINK-BETA pins **14–17**
+- Diagnostic Bank-Beta repurposed from unused spare pads to power/I²C bring-up probes
+
+### Cross-ref
+
+DEC-015 (40-pin connector retained). DEC-031 (freed the former monitor pins). DEC-034
+(Settings Board full-RGB 5V indicator branch creates a standing Stator-side 5V load).
 
 ---
 
@@ -1919,7 +2005,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J3 | USB 3.0 — Dual-stacked Type-A port | Molex 48406-0003 | 48406-0003 | 538-0484060003 | WM1394-ND | Dual-stack Type-A, 5.0mm protrusion through chassis |
 | J4 | HDMI — Full-size Type-A | TE Connectivity 2007435-1 | 2007435-1 | 571-2007435-1 | A125057-ND | Full-size HDMI Type-A, 5.0mm protrusion through chassis |
 | — | Diagnostic Bank-Alpha | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, placed behind BtB header. Not a separate connector; probed directly with logic analyser clips |
-| — | Diagnostic Bank-Beta | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, L1 layer. Monitors JTAG only (TCK, TMS, TDI, TDO + GND shields). Sniffer (ENC_IN/OUT) and SYS_RESET_N freed by DEC-031; pins 1–14 now SPARE — see Controller/Board_Layout.md Diagnostic Bank-Beta. |
+| — | Diagnostic Bank-Beta | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, L1 layer. Monitors LINK-BETA grouped power rails, I²C extension, and JTAG return path after DEC-036 — see Controller/Board_Layout.md Diagnostic Bank-Beta. |
 | — | JTAG Daughterboard link (to FT232H board) | 1×5 INPUT header + 1×10 JTAG header | — | — | — | 2.54mm ENIG male headers on Controller. JDB female headers mate here. USB 2.0 to CM5 internally |
 
 ### Stator Board

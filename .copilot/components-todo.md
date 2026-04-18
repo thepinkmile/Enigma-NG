@@ -11,6 +11,28 @@
 
 ---
 
+## CURRENT REVIEW FOLLOW-UPS
+
+| Item | Status | Notes |
+| --- | --- | --- |
+| Settings/Stator expander architecture revisit | TODO after current consistency pass | Revisit the Stator + Settings expander split, contiguous addressing, and HID decoder/lightboard ownership after the current review fixes are locked. User has a follow-on idea affecting the Encoder Boards. |
+| Reflector/Extension chain audit follow-up | In progress | Active docs are being updated so the physical Reflector remains mandatory, Extensions stay optional in 5-rotor blocks, and rotor-chain I2C references are removed. |
+
+### Missing local datasheets to fetch
+
+| Component | Active refs | Notes |
+| --- | --- | --- |
+| MCP23017T-E/SO | STA `U_EXP1`, `U_EXP2`, `U_EXP4`; SBD `U_EXP_SW_IN`, `U_LED_B1`, `U_LED_B2` | Core shared GPIO expander used across Stator and Settings Board. |
+| PCA9685BS/3 | STA `U_EXP3` | Servo PWM driver on the Stator. |
+| T821126A1S100CEU | ENC `J2`; STA `J4`-`J6` | 26-pin 2x13 IDC/shrouded header family. |
+| BHR-16-VUA | STA `J7`; EXT `J7`, `J8`; REF `J4` | 16-pin 2x8 shrouded box header family. |
+| JST PH series datasheet | STA `J_SERVO`, `J_CFG`; SBD `J_I2C` | Needed now that the old `B4B-PH` local PDF is being retired and the Settings link is 6-pin `B6B-PH`. |
+| Keystone 3034 | CTL `BT1` | CR2032 holder local datasheet not yet confirmed. |
+| Keystone 1285-ST | ENC `BT1`-`BT128` | Encoder blade-terminal local datasheet not yet confirmed. |
+| Omron SS-01GL13 | STA `SW3` | SERVO_HOME switch local datasheet not yet confirmed. |
+
+---
+
 ## SWITCHES & USER INPUT (8 items)
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
@@ -69,7 +91,7 @@
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | IC017 | PM, STA | U2 (PM), U5 (STA) | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | INA219AIDR | TBD | TBD | TBD | RECHECK | Current sense monitors. System total: 2 (PM + STA). |
-| IC018 | PM, STA, SBD | MCP23017T-E/SO (all) | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | MCP23017T-E/SO | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | RECHECK | 5V RGB upgrade (2026-04-17): Settings Board now uses 3× MCP23017s (U_EXP_SW_IN @ 0x26, U_LED_B1 @ 0x40, U_LED_B2 @ 0x41). I²C addresses: PM: 0x23 (U11), STA: 0x20–0x22 (U_EXP1-4), SBD: 0x26, 0x40, 0x41. System total: 7 units (1 PM + 3 STA + 3 SBD). U_EXP_SW_OUT @ 0x24 and U_EXP_LED @ 0x27 are STALE ARTEFACTS — never use. Candidate MPN needs full re-verification. |
+| IC018 | STA, SBD | MCP23017T-E/SO (all) | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | MCP23017T-E/SO | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | RECHECK | Current active map: Stator `U_EXP1` @ 0x20, `U_EXP2` @ 0x21, `U_EXP4` @ 0x22; Settings Board `U_EXP_SW_IN` @ 0x23, `U_LED_B1` @ 0x24, `U_LED_B2` @ 0x25. System total: 6 units. `U_EXP_SW_OUT`, `U_EXP_LED @ 0x27`, any PM-side MCP23017, and any `0x40/0x41` MCP23017 address claims are stale artefacts — never use. Candidate MPN still needs full re-verification, then revisit the wider expander partitioning once the current design-review pass is closed. |
 | IC019 | STA | U_PWM | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | PCA9685BS/3 | TBD | TBD | TBD | RECHECK | PWM driver @ 0x60 (A5=HIGH, A4–A0=GND). |
 
 ---
@@ -105,10 +127,10 @@
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| T001 | PM, SBD | Q_BNK1_R/G/B, Q_BNK2_R/G/B (SBD), Q4/Q5 (PM) | N-channel MOSFET; SOT-23; V_DS >= 30V; logic-level gate suitable for 3.3V drive | BSS138 | BSS138CT-ND | 512-BSS138 | C255592 | RECHECK | 5V RGB upgrade (2026-04-17): Settings Board now uses 6× BSS138s (Q_BNK1_R/G/B, Q_BNK2_R/G/B) for full RGB low-side colour-rail control. System total: 8 units (6 SBD + 2 PM). Candidate MPN needs full re-verification. |
+| T001 | PM, SBD | Q_BNK1_R/G/B, Q_BNK2_R/G/B (SBD), Q4/Q5 (PM) | N-channel MOSFET; SOT-23; V_DS >= 30V; logic-level gate suitable for 3.3V drive | BSS138 | BSS138CT-ND | 512-BSS138 | C255592 | RECHECK | Active Settings Board implementation uses 6× BSS138s (`Q_BNK1_R/G/B`, `Q_BNK2_R/G/B`) for shared full-RGB low-side colour rails under CM5 control. System total: 8 units (6 SBD + 2 PM). Candidate MPN needs full re-verification. |
 | T002 | PM | Q8, Q10, Q13 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | CSD17483F4T | TBD | TBD | TBD | RECHECK | OR-ing MOSFETs for redundant power paths. |
 | D001 | PM, CTL | D1, D2 (PM), D_USB (CTL) | BAT54 (Diotec) — Schottky Diode (SOD-323 / SOT-23) | BAT54 | TBD | TBD | TBD | RECHECK | Schottky diodes. System total: 3 units. |
-| T003 | SBD | R_GATE1–R_GATE6 | 1 kΩ; 1% thick-film; 0402 | ERJ-2RKF1001X | P1.00KLBCT-ND | 667-ERJ-2RKF1001X | C25705 | RECHECK | 5V RGB upgrade (2026-04-17): Qty increased from 4 to 6. Gate resistors for the Settings Board 6× BSS138 low-side colour-rail MOSFETs (Q_BNK1_R/G/B, Q_BNK2_R/G/B). Same entry as R027. Candidate MPN needs full re-verification. |
+| T003 | SBD | R_GATE1–R_GATE6 | 1 kΩ; 1% thick-film; 0402 | ERJ-2RKF1001X | P1.00KLBCT-ND | 667-ERJ-2RKF1001X | C25705 | RECHECK | Qty = 6. Gate resistors for the Settings Board full-RGB BSS138 low-side colour-rail MOSFETs (`Q_BNK1_R/G/B`, `Q_BNK2_R/G/B`). Same entry as R027. Candidate MPN needs full re-verification. |
 | T004 | PM | BT_SW1_1-6 blade tabs | (see S008 above) | (see S008 above) | (see S008 above) | (see S008 above) | (see S008 above) | (see S008 above) | (see S008 above) |
 
 ---
@@ -248,8 +270,8 @@
 | J019 | PM | J4 | USB Type-C power input only; 6-position right-angle SMT receptacle | USB4135-GF-A | 2073-USB4135-GF-ACT-ND | 640-USB4135-GF-A | C5438410 | RECHECK | Power-only USB-C on Power Module. Mechanical wall-flush fit is explicitly called out. |
 | J020 | PM | J2 | RJ45 MagJack for PoE 802.3bt Type 4 input; long-body THT; integrated magnetics | 7499111121A | 1297-1070-5-ND | 710-7499111121A | C5523983 | RECHECK | Power Module PoE input. |
 | J021 | PM | J3 | 5-circuit; 1-row; 3.0mm pitch; vertical THT Molex Micro-Fit 3.0; battery connector | 43650-0519 | WM14587-ND | 538-43650-0519 | C563849 | RECHECK | Existing design notes explicitly say battery suitability still needs confirmation. |
-| J022 | STA, SBD | J_CFG (STA), J_I2C (SBD) | 4-pin; 2.0mm pitch JST PH; THT vertical; keyed; >= 1A per contact | B4B-PH-K-S(LF)(SN) | 455-1706-ND | 306-B4BPHKSLFSNPP | C131334 | VERIFIED | Datasheet reviewed: JST PH series is 2.0mm pitch; through-hole top-entry version matches this connector family and the series is rated 2A / 100V, exceeding the >=1A/contact requirement. |
-| J023 | STA | J_SERVO | 3-pin; 2.0mm pitch JST PH; THT vertical; keyed | B3B-PH-K-S(LF)(SN) | 455-1705-ND | 306-B3BPHKSLFSNP | C131339 | VERIFIED | Shares the JST PH datasheet family used to verify B4B-PH-K-S(LF)(SN). |
+| J022 | STA, SBD | J_CFG (STA), J_I2C (SBD) | 6-pin; 2.0mm pitch JST PH; THT vertical; keyed; >= 1A per contact | B6B-PH-K-S(LF)(SN) | 455-1723-ND | 474-B6B-PH-K-S(LF)(SN) | TBD | RECHECK | Active Settings/Stator link is now the 6-pin JST PH variant carrying `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`. The old verified `B4B-PH` row is stale and its local datasheet can be retired once no active docs reference it. |
+| J023 | STA | J_SERVO | 3-pin; 2.0mm pitch JST PH; THT vertical; keyed | B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | 474-B3B-PH-K-S(LF)(SN) | C131342 | VERIFIED | JST PH family connector for the servo lead. Keep aligned with the same PH-family datasheet package that will also cover `B6B-PH`. |
 
 ---
 

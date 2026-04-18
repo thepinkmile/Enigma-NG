@@ -57,3 +57,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 47 | Repository review cleanup, two clean passes | 047-repository-review-cleanup-two-clean-passes.md |
 | 48 | Settings Board 5V RGB upgrade complete | 004-settings-board-5v-rgb-upgrade.md |
 | 49 | First component batch locked; HID layout and pseudo datasheet synced | 049-first-component-batch-hid-layout-lock.md |
+| 50 | Post-audit architecture sync and Link-Beta rebalance locked | 050-post-audit-link-beta-lock-and-review-rerun.md |

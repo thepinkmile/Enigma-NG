@@ -19,7 +19,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs | §3 JTAG & Logic Hub; BOM J1–J3 (ERM8) |
-| FR-REF-02 | Emulate the historical Enigma reflector (fixed symmetric substitution cipher) | Passive wiring — no CPLD required | §2 Architecture; BOM J1–J3 (passive loopback traces) |
+| FR-REF-02 | Provide the mandatory physical turnaround path at the end of the rotor/extension chain while the selected reflection map is applied by the Stator CPLD | Passive turnaround board — no local CPLD required | §2 Architecture; BOM J1–J4 |
 | FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J7 → Link-Beta pin 26 → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 
@@ -31,7 +31,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 | DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §4 Rotor Interface Connectors; BOM J1–J3 |
 | DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J7); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
 | DR-REF-04 | End-of-chain damping | R1 = 22 Ω, 0603, on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
-| DR-REF-05 | Active logic | None — passive reflector function only; fixed wiring emulated in hardware | §2 Architecture |
+| DR-REF-05 | Active logic | None — passive turnaround board only; reflector-map selection remains Stator-owned | §2 Architecture |
 
 ## 2. Architecture
 
@@ -40,13 +40,14 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 
 ### System Role: The "Turnaround"
 
-* **Logic Type:** Passive (Loopback).
+* **Logic Type:** Passive turnaround.
 * **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM570T100I5N CPLD**
-  located on the Stator Board. The active routing configuration is selected via the Settings Board
-  panel switches (Bank 1, SW_B1[0:3]) read by Settings Board U_EXP_SW_IN @ 0x26 and driven to the Stator
-  CPLD by U_EXP4 @ 0x22 — see DEC-032.
-* **CPLD support:** PCB passive routing (no discrete component).
-* **Signal Path:** Rotor 30 J4–J6 (ERF8 female) → Reflector J1–J3 (ERM8 male) → passive loopback traces → ENC cipher data reflected back; TTD_RETURN exits via J4 (16-pin Molex, pin 15) → Stator J7.
+  located on the Stator Board. The active reflection-map configuration is selected via the Settings
+  Board panel switches (Bank 2, SW_B2[5:0]) read by Settings Board `U_EXP_SW_IN` @ 0x23 and driven to
+  the Stator CPLD by `U_EXP4` @ 0x22 — see DEC-032.
+* **CPLD support:** None on this PCB; the board only provides the mandatory return path.
+* **Signal Path:** Final rotor/extension outputs → Reflector J1–J3 (ERM8 male) → passive turnaround traces
+  → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (16-pin header, pin 15) → Stator J7.
 
 ## 3. JTAG & Logic Hub
 
