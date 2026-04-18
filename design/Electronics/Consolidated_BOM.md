@@ -57,7 +57,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | BAT54 (Diotec) — Schottky Diode (SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | 1 | — | 3 | — | — | — | — | — | — | — | 3 | 7 |
 | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
-| J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (TBD MPN) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 9 | 80 | 240 | 8 | 240 | — | 1 | 4 | 3 | 513 |
 | 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | — | 185 |
@@ -325,7 +325,7 @@ pins 14–17 (2.0A capacity) through Stator to Settings Board.
 
 | Ref | Component | Description | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| J_DSI1 | DSI1 FPC connector (15-pin 1.0mm ZIF) | DSI1 4-lane FPC/ZIF connector for optional lid-mounted touchscreen; MPN TBD — confirm against CM5 DSI1 pin mapping at schematic phase; 100 Ω differential, route on L3 | TBD | TBD | TBD | ⏳ MPN TBD |
+| J_DSI1 | DSI1 FPC connector (15-pin 1.0mm ZIF) | Amphenol F52Q-1A7H1-11015 — DSI1 4-lane FPC/ZIF connector for optional lid-mounted touchscreen; connector is fixed even though the display add-on remains deferred; 100 Ω differential, route on L3 | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 | ✅ |
 | J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) — 5V PWM fan connector (Pin 1 = 5V_MAIN, Pin 2 = GND, Pin 3 = TACH, Pin 4 = PWM) | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 | 🔒 |
 
 ## 6. Backplane & Extension Components
@@ -435,7 +435,7 @@ Product page links for all major components for design review and procurement ve
 | U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter | Texas Instruments | [sn74lvc1g14-q1-datasheet.pdf](../Datasheets/sn74lvc1g14-q1-datasheet.pdf) |
 | U2 (CTL) | TPS2065CDBVR — USB Power Switch 1.6A | Texas Instruments | [tps2065c-datasheet.pdf](../Datasheets/tps2065c-datasheet.pdf) |
 | U3 (CTL) | AP2331W-7 — HDMI Current Limiter | Diodes Inc. | [AP2331-datasheet.pdf](../Datasheets/AP2331-datasheet.pdf) |
-| D3, D4, D5 (PM); U4 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | TBD — datasheet to be added |
+| D3, D4, D5 (PM); U4 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | [tpd4e05u06-q1-datasheet.pdf](../Datasheets/tpd4e05u06-q1-datasheet.pdf) |
 | D2 | TPD2E2U06DRLR — Dual 5.5V SMBus ESD | Texas Instruments | [tpd2e2u06-datasheet.pdf](../Datasheets/tpd2e2u06-datasheet.pdf) |
 | D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.pdf](../Datasheets/tpd1e10b06-q1-datasheet.pdf) |
 | U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.pdf](../Datasheets/sn74lvc2g125-datasheet.pdf) |
@@ -456,6 +456,7 @@ Product page links for all major components for design review and procurement ve
 | J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [usb4135-datasheet.pdf](../Datasheets/usb4135-datasheet.pdf) |
 | J3 (CTL) | 48406-0003 — USB 3.0 Type-A Dual-Stack | Molex | [Molex-48406-0003-datasheet.pdf](../Datasheets/Molex-48406-0003-datasheet.pdf) |
 | J4 (CTL) | 2007435-1 — HDMI Type-A Full-Size | TE Connectivity | [TE-2007435-1-datasheet.pdf](../Datasheets/TE-2007435-1-datasheet.pdf) |
+| J_DSI1 (CTL) | F52Q-1A7H1-11015 — 15-pin 1.0mm right-angle ZIF/FPC connector | Amphenol | [amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf](../Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf) |
 | J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
 | J1 (PM) + Rotor/Stator/Reflector/Extension ERM8 | ERM8-040/020/010/005 — 0.8mm-pitch BtB Male Headers | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |
 | J1/J2 (CTL) + Rotor/Stator/Reflector/Extension ERF8 | ERF8-040/020/010/005 — 0.8mm-pitch BtB Female Sockets | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf) |

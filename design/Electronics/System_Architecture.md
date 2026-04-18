@@ -133,7 +133,10 @@ The Power Module generates two rails from a ~12V input source:
 - **5V_MAIN** — Up to 12A; dual-phase interleaved **LMQ61460-Q1**. Powers the CM5 module. The CM5 requires up
   to 25W (5V @ 5A); the Linux kernel logs undervoltage warnings if supply capacity is below this.
 - **3V3_ENIG** — Clean 3.3V; **TPS75733KTTRG3** LDO post-regulator. Unified logic rail for all CPLDs, USB-JTAG
-  interface, I2C logic, status indicators, and the full rotor stack.
+  interface, I2C logic, control signals, and the full rotor stack.
+- **Settings RGB indicator load:** The Settings Board's discrete RGB indicators are powered from
+  **5V_MAIN** via the 6-pin Stator `J_CFG` / Settings `J_I2C` harness; `3V3_ENIG` powers only the
+  associated control logic.
 
 > **NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. **3V3_ENIG** is the single unified 3.3V
 > rail throughout the system.
@@ -144,10 +147,11 @@ The Power Module generates two rails from a ~12V input source:
 Power Module (TPS75733KTTRG3 LDO)
   → Controller Board (via Link-Alpha pins 39–44)
     → Stator (via Link-Beta)
-      → Rotor 1 J2 (PWR input)
-        → Rotor 1 J5 (PWR output) → Rotor 2 J2 (PWR input)
-          → ... [all 30 rotors chained via J2/J5]
-            → Rotor 30 J5 (mechanical mate to Reflector J2; power pins NC on Reflector)
+      → Rotor group 1: Rotor 1 J2 (PWR input) → ... → Rotor 5 J5 (PWR output)
+      → Extension J7 (power entry) → Extension J5 (reinjected 3V3_ENIG/GND to next group)
+        → Rotor group 2: Rotor 6 J2 → ... → Rotor 10 J5
+          → ... [repeat Extension J7 → J5 reinjection for each further 5-rotor group]
+            → Final rotor J5 (mechanical mate to Reflector J2; power pins NC on Reflector)
       → Reflector J4 (direct ribbon return from Stator J7; actual 3V3_ENIG/GND feed)
 ```
 
@@ -236,7 +240,7 @@ Keypress
   → Stator CPLD (ENC routing and plugboard mapping)
     → Rotor 1 ENC_IN → [CPLD wiring emulation] → Rotor 1 ENC_OUT
       → Rotor 2 … → Rotor 30
-        → Reflector (programmed redirect — cipher reversal)
+        → Reflector (passive electrical turnaround; selected reflection map owned by Stator CPLD)
           → Rotor 30 (return path) → … → Rotor 1
             → Stator CPLD
               → Lightboard

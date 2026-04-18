@@ -54,7 +54,7 @@ and hosts the JTAG Daughterboard hat connectors for debug access.
 | DR-CTL-09 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 95, Hirose DF40 200-pin) | §5 RTC Backup Battery; BOM C6 |
 | DR-CTL-10 | RGB LED interface | Controller must provide PWM-capable GPIO outputs for SW1 RGB LED (3 channels: SW_LED_R, SW_LED_G, SW_LED_B) and a separate logic output (SW_LED_CTRL) to arbitrate firmware vs hardware LED control. Pin-level details in §6 GPIO matrix. | §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-11 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
-| DR-CTL-12 | DSI1 connector | J_DSI1 = 15-pin 1.0mm pitch ZIF/FPC (TBD MPN — confirm against CM5 DSI1 pin mapping at schematic phase); DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C routed via I²C-1 bus (SDA/SCL on J_DSI1 power connector) | §8 Connectivity; BOM J_DSI1 |
+| DR-CTL-12 | DSI1 connector | J_DSI1 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C routed via I²C-1 bus (SDA/SCL on adjacent display power/control header) | §8 Connectivity; BOM J_DSI1 |
 
 ## 2. Dual-Link Interface (Samtec ERx8)
 
@@ -382,13 +382,14 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 ### 8.5. DSI1 Display Connector (J_DSI1)
 
-* **DSI1 Display (J_DSI1):** 15-pin 1.0mm pitch ZIF/FPC connector (TBD MPN). Breaks out DSI1
+* **DSI1 Display (J_DSI1):** Amphenol **F52Q-1A7H1-11015** 15-pin 1.0mm pitch ZIF/FPC connector.
+  Breaks out DSI1
   4-lane interface from CM5 for optional lid-mounted touchscreen add-on. Display add-on board
   design is deferred (see DEC-033). Connector placed near CM5 mezzanine socket on L1.
   Touch I²C routed on I²C-1 bus shared with other Stator/Controller peripherals.
 * **Interface:** MIPI DSI1 — 4-lane differential (CLK+/−, D0+/−, D1+/−, D2+/−, D3+/−).
 * **Impedance:** 100 Ω differential; route on L3 (stripline) — same rule as HDMI/Ethernet.
-* **MPN:** TBD — confirm against CM5 DSI1 pin mapping at schematic phase.
+* **MPN:** Amphenol **F52Q-1A7H1-11015** (verified in `.copilot/components-todo.md` row `J024`).
 * **Power:** Display power (5V_MAIN backlight, **3V3_ENIG** panel logic) via a separate 4-pin power header adjacent to J_DSI1 (TBD at schematic phase).
 
 ## 9. PCB Fabrication & Stackup
@@ -519,7 +520,7 @@ Monitors the grouped Link-Beta power rails, I²C extension, and JTAG return path
 | J2 | Link-Beta 40-pin Socket | ERF8-020-05.0-S-DV-K-TR (female) | Samtec | 200-ERF8020050SDVKTR | SAM8619CT-ND (CT) / SAM8619TR-ND (T&R) / SAM8619DKR-ND (DKR) | C6034565 |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-48406-0003 | WM10420-ND | C565298 |
 | J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A141617-ND | C195051 |
-| J_DSI1 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | TBD — confirm against CM5 DSI1 pinout at schematic phase | 15-pin ZIF, 1.0mm pitch | TBD | TBD | TBD |
+| J_DSI1 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | Amphenol F52Q-1A7H1-11015 | 15-pin ZIF, 1.0mm pitch | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 |
 | J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
 | J_JDB_PWR | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | J_JDB_JTAG | JDB hat JTAG header (female socket) | Adam Tech RS1-10-G — 1×10 2.54mm female | THT | 737-RS1-10-G | 2057-RS1-10-G-ND | C3320525 |

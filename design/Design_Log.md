@@ -302,7 +302,9 @@ has been removed.
 - Centralising all power generation on the Power Module simplifies thermal management (all heat dissipation in one shielded enclosure with dedicated thermal zone).
 - Reduces the risk of ground loops and cross-domain sequencing issues.
 - The Controller Board as a routing layer keeps its design cleaner and easier to revise independently.
-- 3V3_ENIG (3A) covers all 3.3V consumers: CPLDs, USB-JTAG, I2C logic, status indicators, and the rotor stack.
+- 3V3_ENIG (3A) covers all 3.3V consumers: CPLDs, USB-JTAG, I2C logic, control signals, and the rotor stack.
+- Settings Board RGB indicators are powered from 5V_MAIN via the Stator/Settings 6-pin harness; only
+  their control logic remains on 3V3_ENIG.
 - ROTOR_EN (CM5 GPIO 16) enables/disables the 3V3_ENIG LDO for sequenced rotor power-up — a control signal only.
 
 ### Architectural Rule (permanent)
@@ -1596,7 +1598,7 @@ and mouse for system administration tasks.
 
 ### Decision
 
-1. Add J_DSI1 (15-pin 1.0mm pitch ZIF/FPC connector, TBD MPN) to the Controller Board to expose
+1. Add J_DSI1 (Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch ZIF/FPC connector) to the Controller Board to expose
    the CM5 DSI1 4-lane interface (CLK +/−, D0–D3 +/−).
 2. Route DSI1 differential pairs on L3 (100 Ω differential stripline — same rule as HDMI/USB).
    Traces run from CM5 mezzanine connector pins to J_DSI1 near the CM5 socket.
@@ -1612,7 +1614,7 @@ and mouse for system administration tasks.
 
 - **Interface:** MIPI DSI1 (4-lane)
 - **Differential impedance:** 100 Ω (same as HDMI — no new routing rules)
-- **Connector:** 15-pin 1.0mm pitch ZIF/FPC (exact MPN TBD — verify CM5 DSI1 pin mapping at schematic phase)
+- **Connector:** Amphenol F52Q-1A7H1-11015 — 15-pin 1.0mm pitch right-angle ZIF/FPC
 - **Cable:** Thin FPC routed through lid hinge area (far superior to HDMI cable for hinge flexing)
 - **Touch input:** Capacitive touch controller I²C on I²C-1 bus (existing bus, no new wires required)
 - **Supported sizes:** DSI1 4-lane supports displays up to 10" at full resolution (e.g., RPi official 10" touchscreen)

@@ -120,7 +120,7 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 | R_LED_R ×12, R_LED_G ×12, R_LED_B ×12 (SBD) | 0603 LED current-limiting resistors for 5V RGB upgrade | Values selected in docs; supplier verification still required in the queue |
 | R_LED_R ×12, R_LED_G ×12, R_LED_B ×12 | 0603 per-switch RGB LED resistors | Value tuning still open |
 | J_I2C / J_CFG | JST B6B-PH-K-S 6-pin 2.0mm — JLCPCB PN | Active Settings/Stator link is now 6-pin (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`); JLCPCB PN still needs confirmation |
-| J_DSI1 | 15-pin 1.0mm ZIF/FPC (CM5 DSI1) | Verify CM5 DSI1 pinout at schematic phase |
+| J_DSI1 | Amphenol F52Q-1A7H1-11015 15-pin 1.0mm ZIF/FPC (CM5 DSI1) | Connector confirmed; display add-on board still deferred |
 | IC001+ onward | Remaining BOM-wide component rows in `.copilot/components-todo.md` | Continue manual verification from the queue before further doc propagation |
 | Expander revisit | Stator + Settings expander partitioning / HID decoder-lightboard follow-up | Revisit after the current consistency pass is complete; user has a new Encoder-board idea to discuss |
 
@@ -142,8 +142,9 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Checkpoint 051 locks the final review-fix cleanup** — the last active-doc inconsistencies from the
-   second deep-design rerun are now resolved in the working tree and synced into repo-local handoff.
+1. **Checkpoint 052 locks the DSI confirmation + topology cleanup batch** — the Controller DSI
+   connector is now confirmed in the active docs and the last cross-document topology inconsistencies
+   from the latest deep-design rerun are resolved in the working tree and synced into repo-local handoff.
 2. **Link-Beta rail rebalance is now part of the active architecture state.**
    - Former spare block replaced by grouped power rails
    - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **14–17**
@@ -156,21 +157,28 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 4. **Datasheet audit state is synced.**
    - The current missing-datasheet list is unchanged and already tracked in `.copilot/components-todo.md`
    - The two redundant local PDFs flagged by the audit have been removed from `design/Datasheets/`
-5. **Grounding-rule cleanup remains open for later investigation.**
+   - `J_DSI1` is no longer TBD: Controller docs and BOM now use Amphenol `F52Q-1A7H1-11015`
+   - stale `TPD4E05U06QDQARQ1` datasheet TBD wording has been replaced with the local PDF link
+5. **High-level architecture docs are now aligned with the intended reflector / extension model.**
+   - Reflector is mandatory and passive
+   - Stator CPLD owns reflector-map selection/application
+   - Extension boards sit between 5-rotor groups and reinject clean `3V3_ENIG` via `J7 -> J5`
+   - Settings Board RGB indicators are powered from `5V_MAIN`; `3V3_ENIG` remains the logic/control rail
+6. **Grounding-rule cleanup remains open for later investigation.**
     - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
     - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
       should normally carry `GND_CHASSIS`
     - Keep the single galvanic GND ↔ `GND_CHASSIS` bond on the Power Module only
-6. **Continue component re-verification** from `.copilot/components-todo.md`.
+7. **Continue component re-verification** from `.copilot/components-todo.md`.
       - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
       - **Total VERIFIED rows:** 13
       - Treat every other populated MPN/distributor field as provisional until manually checked and
         marked `VERIFIED`
-7. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
+8. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
       rows in the queue.
-8. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
+9. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
       still need supplier confirmation.
-9. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
+10. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
 
 ---
 

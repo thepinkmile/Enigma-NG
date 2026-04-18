@@ -28,7 +28,7 @@ The following table lists every component category present in the assembled mach
 | Rotor Actuation Assembly | 1 | Depression bar, pivot lever, actuation arm, sprung retention bar, servo motor | `Rotor_Actuation_Assembly/Design_Spec.md` |
 | HID Assembly | 1 | Keyboard panel, lightboard panel, HID Encoder PCB | `HID_Assembly/Design_Spec.md` |
 | Plugboard Assembly | 1 | Plugboard jack panel, Encoder PCBs (×2), patch cables | `Plugboard_Assembly/Design_Spec.md` |
-| Reflector | 1 | Reflector sub-assembly (or internal Stator CPLD reflector map — see SW2) | `Reflector/Design_Spec.md` |
+| Reflector | 1 | Mandatory passive turnaround sub-assembly; reflection mapping is owned by the Stator CPLD | `Reflector/Design_Spec.md` |
 | Extension (optional) | 0–N | Extension board for multi-stack rotor configurations | `Extension/Design_Spec.md` |
 | Power Module | 1 | Standalone power supply sub-assembly (LTC3350, eFuse, INA219, supercaps) | `Power_Module/Design_Spec.md` |
 | Controller Board | 1 | CM5 carrier board (CM5 module, JDB hat, Link-Alpha/Beta connectors) | `Controller/Design_Spec.md` (Electronics) |
@@ -49,12 +49,12 @@ steps are detailed in each referenced document; this section defines integration
 | 1 | Power Module | Standalone build; test on bench before integration. Delivers 5V_MAIN and 3V3_ENIG. |
 | 2 | Stator Board | Install ICs (CPLD, MCP23017 ×3, PCA9685, INA219), passives, connectors. Mount servo + SERVO_HOME switch. Bench-test I²C expanders before stack assembly. |
 | 3 | Rotors (×30) | Build all 30 rotor modules. Verify ERM8 header alignment and encoder slot clearance before stacking. |
-| 4 | Rotor stack onto Stator | Press Rotor 1 ERM8 headers into Stator ERF8 sockets. Add Rotors 2–30 in sequence. Verify JTAG daisy-chain continuity. |
+| 4 | Rotor groups onto Stator | Press Rotor 1 ERM8 headers into Stator ERF8 sockets. Build the first 5-rotor group, then insert an Extension before each further 5-rotor group as required. Verify JTAG daisy-chain continuity at each group boundary. |
 | 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Stator J_SERVO. Verify SERVO_HOME switch actuation. |
 | 6 | HID Assembly | Build keyboard panel + lightboard panel + HID Encoder PCB. Connect IDC ribbon to Stator J4. |
 | 7 | Plugboard Assembly | Build plugboard jack panel + Encoder PCBs. Connect IDC ribbons to Stator J5/J6. |
-| 8 | Reflector | Install Reflector sub-assembly. Connect the 16-pin cable to Stator J7. The Reflector is mandatory and always terminates the final rotor/extension stack. |
-| 9 | Extension (if used) | Daisy-chain Extension boards between Rotor 30 and Reflector for multi-stack configurations. |
+| 8 | Reflector | Install the mandatory passive Reflector sub-assembly at the far end of the final rotor group. Connect the 16-pin cable to Stator J7. Reflection-map selection remains Stator-CPLD-owned. |
+| 9 | Extension (if used) | Insert each Extension between 5-rotor groups: `Stator -> 5 rotors -> [Extension -> 5 rotors]* -> Reflector`. Each Extension reinjects clean 3V3_ENIG/GND to the next rotor group via J7 -> J5. |
 | 10 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Connect LINK-ALPHA to Power Module (J1). Connect LINK-BETA to Stator (J2/J8). |
 | 11 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J_CFG. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
 | 12 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |

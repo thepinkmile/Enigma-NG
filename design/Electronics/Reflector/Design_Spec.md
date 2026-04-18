@@ -9,8 +9,11 @@
 
 ## 1. Overview
 
-The Reflector Board sits at the far end of the 30-rotor stack. Its primary role is to receive the signals from the final rotor and return them back through the stack via a different electrical path.
-It also acts as the JTAG termination hub and returns the TTD_RETURN directly back to the Stator to reduce required Pin count in the Rotor Interconnects.
+The Reflector Board sits at the far end of the rotor stack. Its primary role is to receive the signals
+from the final rotor and return them back through the stack via a different electrical path.
+It also acts as the passive JTAG end-of-chain turnaround and returns `TTD_RETURN` directly back to the
+Stator so the Stator CPLD can keep all reflector-mapping ownership in one place without requiring a
+second CPLD on the Reflector itself.
 
 ### Functional & Design Requirements
 
@@ -65,8 +68,9 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
   re-enters the Stator via the J4 return ribbon cable.
 
 > ⚠️ **JTAG chain END — important for future reviewers:** The JTAG daisy-chain terminates at this
-> board. TCK, TMS, and TDI arrive via BtB connectors (J1–J3, ERM8 plugging into Rotor 30 J4–J6)
-> and are consumed by the Reflector's logic. They do NOT continue past this board.
+> passive board. TCK, TMS, and TDI arrive via BtB connectors (J1–J3, ERM8 plugging into Rotor 30
+> J4–J6) and stop here as end-of-chain signals. They do NOT continue past this board, and they are
+> not consumed by any local CPLD because the Reflector has no active logic.
 >
 > The J4 ribbon cable (Reflector J4 → Stator J7) carries:
 >
@@ -75,7 +79,7 @@ It also acts as the JTAG termination hub and returns the TTD_RETURN directly bac
 > * **Pins 3–14 — ENC_IN[0:5] / ENC_OUT[0:5]:** Bidirectional Stator CPLD interface (simultaneous).
 >   ENC_IN[0:5] (pins 3–8): return-pass signal driven by Stator CPLD to Reflector chain after optional
 >   plugboard insertion (Step 2 drive). ENC_OUT[0:5] (pins 9–14): reflected signal returned from
->   Reflector chain to Stator CPLD (Step 2 receive). **These are NOT JTAG signals.**
+>   passive Reflector turnaround to the Stator CPLD (Step 2 receive). **These are NOT JTAG signals.**
 >   See `Stator/Design_Spec.md §3 CPLD Signal Routing Matrix` for full signal flow details.
 > * **Pin 2 — SYS_RESET_N**, **Pin 1 — 3V3_ENIG**, **Pin 16 — GND.**
 >
