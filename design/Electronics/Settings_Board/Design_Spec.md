@@ -80,10 +80,10 @@ daemon over I²C.
 
 ### GND_CHASSIS Single-Point Bond
 
-Per `design/Standards/Global_Routing_Spec.md §5`, the Settings Board GND_CHASSIS bond point is at
-J_I2C pin 2 (GND entry). A single 0 Ω bond resistor (or direct via) connects the signal GND plane
-to the chassis copper pour at this entry point. No additional chassis bonds are made on this board
-to avoid ground loops.
+Per `design/Standards/Global_Routing_Spec.md §5`, the Settings Board does **not** implement a local
+GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is defined on the Power
+Module at the main power-entry boundary. J_I2C pin 3 is therefore **logic GND return only**, and
+must not be repurposed as a local chassis-bond point.
 
 ---
 
@@ -310,7 +310,7 @@ automatic polling intervals.
 | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | Power from Stator; powers Settings Board logic (MCP23017 ICs) |
 | 2 | 5V_MAIN | Indicator power supply from Stator; derived from Link-Beta; powers LED anodes |
-| 3 | GND | Logic ground return; GND_CHASSIS bond point |
+| 3 | GND | Logic ground return only; no local GND_CHASSIS bond on Settings Board |
 | 4 | SDA | I²C data; shared Stator I²C-1 bus |
 | 5 | SCL | I²C clock; shared Stator I²C-1 bus |
 | 6 | GND | LED cathode ground return; high-current return path |

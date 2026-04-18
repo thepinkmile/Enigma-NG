@@ -33,9 +33,10 @@ pushbutton.
 
 The Settings Board PCB mounts internally to the enclosure panel, with the toggles and LEDs
 protruding through their panel cutouts. CFG_APPLY may instead use an internal board-mounted tactile
-switch with a simple actuator/plunger through the panel opening. The board connects to the Stator Board via a
-4-wire I²C ribbon cable (SDA, SCL, 3V3_ENIG, GND). Final toggle-hole, LED-hole, and stand-off /
-spacer geometry are to be defined at detailed mechanical design phase based on the selected parts.
+switch with a simple actuator/plunger through the panel opening. The board connects to the Stator
+Board via a 6-wire JST PH harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`), with
+`5V_MAIN` feeding the Settings Board RGB indicator rail. Final toggle-hole, LED-hole, and stand-off
+/ spacer geometry are to be defined at detailed mechanical design phase based on the selected parts.
 
 See `design/Electronics/Settings_Board/Design_Spec.md` for the electrical specification of the
 Settings Board.

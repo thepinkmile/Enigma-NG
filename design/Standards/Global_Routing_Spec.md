@@ -50,7 +50,9 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 * **Thermal:** Type VII (Filled/Capped) Hexagonal Thermal Via Matrix for all high-heat zones.
 * **Thermal Mesh:** Large exposed copper zones must use a 45-degree cross-hatch (10-mil trace / 10-mil gap) to prevent board warping during reflow.
 * **Mask Clearance:** Global Solder Mask Expansion set to 3mil; Minimum Mask Bridge set to 4mil.
-* **Mounting:** M3 PTH holes must be gold-plated (ENIG) and tied to GND_CHASSIS for Faraday cage continuity.
+* **Mounting:** M3 PTH holes must be gold-plated (ENIG). Only boards that implement
+  `GND_CHASSIS` for external-connector / ESD shunting shall tie those mounting points to
+  `GND_CHASSIS`; internal-only boards shall follow their local board grounding rule instead.
 
 ### 2.1. Advanced Manufacturing
 
@@ -62,7 +64,8 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 ### 2.2. Prototype Standards (Spec-B)
 
 * **Component Placement:** All active and passive components (CPLDs, ICs, SMT Passives) MUST be placed on the Top Layer (L1) for the V1.0 prototype.
-* **Bottom Layer (L_MAX):** Reserved strictly for Diagnostic Banks, Data Plates, and global GND_CHASSIS pours.
+* **Bottom Layer (L_MAX):** Reserved strictly for Diagnostic Banks, Data Plates, and
+  `GND_CHASSIS` pours where a board explicitly implements `GND_CHASSIS`.
 
 ## 3. Power Decoupling
 
@@ -77,22 +80,36 @@ These rules apply to all boards in the Enigma-NG system unless a board's design 
 * **Mounting Holes:** 3.2mm PTH for M3 screws.
 * **Pattern:** Star-Burst (Radial) copper relief (8 spokes, 20-mil width) for mechanical flex.
 * **Plating:** 6.0mm Exposed ENIG Gold annular ring on Top and Bottom.
-* **Bonding:** Electrically tied to GND_CHASSIS for Faraday Cage continuity.
-* **EMI Landing Zones:** 10mm unmasked ENIG gold landing strips required on board edges for compression-fit cable shielding (Stator, Extension & Reflector).
-* **Structural Ground:** Combine PCB mounting points with EMI zones using M3 PTH bonded to GND_CHASSIS.
+* **Bonding:** On boards that implement `GND_CHASSIS`, mechanical grounding features are tied to
+  `GND_CHASSIS` for Faraday-cage continuity. Internal-only boards shall not introduce
+  `GND_CHASSIS` solely to satisfy this rule.
+* **EMI Landing Zones:** 10mm unmasked ENIG gold landing strips are only required on boards that
+  expose shielded external connectors and intentionally shunt connector ESD to `GND_CHASSIS`.
+* **Structural Ground:** Only boards that implement `GND_CHASSIS` shall combine PCB mounting points
+  with EMI zones using M3 PTH bonded to `GND_CHASSIS`.
 
 ## 5. Single-Point GND_CHASSIS Bond (Global Rule)
 
-**Every board must connect its signal/power reference ground (GND) to GND_CHASSIS at exactly one point.**
+**The Enigma-NG system must connect signal/power GND to GND_CHASSIS at exactly one galvanic point,
+defined on the Power Module only.**
 
-* **Rule:** One and only one galvanic bridge between the GND reference plane and GND_CHASSIS per board.
-  Multiple bond points create ground loops, which are a leading cause of common-mode radiated emissions and conducted susceptibility failures.
-* **Placement:** The bond point must be located as close as possible to the incoming power rails
-  — at the boundary between the "dirty" (external/input) side and the "clean" (internal signal) side of the board.
-* **Implementation:** A dedicated 0Ω link, copper bridge, or direct via connection at the defined bond point. Mark clearly on silkscreen and schematic.
-* **Per-board guidance:**
-  * **Power Module:** Bond point between OR-ing diode network output and eFuse input (the clean/dirty boundary). See `Certification_Evidence.md §2.2`.
-  * **All other boards:** Bond point at the power entry connector (BtB or power header), on the GND pin side, before any local decoupling.
+* **Rule:** One and only one galvanic bridge exists between the system GND reference and
+  GND_CHASSIS. Multiple bond points create ground loops, which are a leading cause of common-mode
+  radiated emissions and conducted susceptibility failures.
+* **Placement:** The single bond point must be located as close as possible to the incoming power
+  rails — at the boundary between the "dirty" (external/input) side and the "clean" (internal
+  signal) side of the system.
+* **Implementation:** A dedicated 0Ω link, copper bridge, or direct via connection at the defined
+  bond point. Mark clearly on silkscreen and schematic.
+* **Board guidance:**
+  * **Power Module:** Hosts the only permitted GND ↔ GND_CHASSIS bond, between the OR-ing diode
+    network output and eFuse input (the clean/dirty boundary). See
+    `Certification_Evidence.md §2.2`.
+  * **Boards with external connectors and local ESD shunting:** May implement a `GND_CHASSIS` net
+    for connector-shell / TVS return management, but must keep that net isolated from signal/power
+    GND everywhere except the single Power Module bond point.
+  * **Internal-only boards:** Should not implement `GND_CHASSIS` at all unless a later decision
+    explicitly justifies it.
 * **Reference:** MIL-STD-461G §3.6; documented rationale in `Standards/Certification_Evidence.md §2.2`.
 
 ## 6. Branding & Identity (The "Data Plate")

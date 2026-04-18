@@ -119,11 +119,10 @@ The ERM8 header pitch (0.8mm) is physically incompatible with 2.54mm connectors 
 > contact concept and is superseded by the ERM8 connector approach defined here. The 40 active contacts
 > (10 + 10 + 20) on J1–J3 provide the Reflector rotor interface; the friction pad concept is retired.
 
-Per `design/Standards/Global_Routing_Spec.md §5`, each PCB must have a single-point GND_CHASSIS bond at its power entry connector.
-
-**Reflector GND_CHASSIS bond point:** The GND_CHASSIS connection is made at J4 (Stator/Extension link connector, pin 16 GND).
-A single 0 Ω bond resistor (or direct via) connects the signal GND plane to the chassis copper pour at this point.
-No additional bonds are made on this board to avoid ground loops.
+Per `design/Standards/Global_Routing_Spec.md §5`, the Reflector does **not** implement a local
+GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is defined on the Power
+Module, so J4 pin 16 is treated as signal/power return only and must not be bridged locally to
+chassis on the Reflector.
 
 ### 4.1 Prototype Bench-Testing Provision (Break-Off Coupons)
 

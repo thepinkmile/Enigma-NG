@@ -148,20 +148,23 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
    - Former spare block replaced by grouped power rails
    - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **14–17**
    - Diagnostic Bank-Beta now probes grouped rails + I²C instead of dead spare pads
-3. **Deep-review reruns are the next gate.**
-   - Re-launch the full design consistency / connectivity review
-   - Re-launch the datasheet coverage / missing-URL review
-   - Do not start the next doc-fix batch until those rerun findings are reviewed
-4. **Continue component re-verification** from `.copilot/components-todo.md`.
-    - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
-    - **Total VERIFIED rows:** 13
-    - Treat every other populated MPN/distributor field as provisional until manually checked and
-      marked `VERIFIED`
-5. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
-    rows in the queue.
-6. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
-    still need supplier confirmation.
-7. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
+3. **Deep-review reruns completed** and the returned active-doc findings have been fixed in the
+   current working state.
+4. **Grounding-rule cleanup remains open for later investigation.**
+   - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
+   - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
+     should normally carry `GND_CHASSIS`
+   - Keep the single galvanic GND ↔ `GND_CHASSIS` bond on the Power Module only
+5. **Continue component re-verification** from `.copilot/components-todo.md`.
+     - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
+     - **Total VERIFIED rows:** 13
+     - Treat every other populated MPN/distributor field as provisional until manually checked and
+       marked `VERIFIED`
+6. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
+     rows in the queue.
+7. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
+     still need supplier confirmation.
+8. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
 
 ---
 
@@ -269,7 +272,8 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - "Extension board: NO U1 buffer" — WRONG; Extension U1 IS correct and present
 - ERJ-3EKF2100V for R3 R_ILIM (wrong, 1% thick-film) → ERA-3ARB2100V (correct, 0.1% thin-film)
 - "PNP MMBT3906 sourcing rails" for the Settings Board discrete-LED design — superseded by BSS138 low-side colour-rail sinks in DEC-034
-- U_EXP_SW_OUT @ 0x24 (stale artefact — never existed; use U_EXP_SW_IN @ 0x26)
+- U_EXP_SW_OUT @ 0x24 (stale artefact — never existed; use U_EXP_SW_IN @ 0x23, U_LED_B1 @ 0x24,
+  and U_LED_B2 @ 0x25)
 - "Q1"/"Q2"/"Q3"/"Q4" as transistor names on Settings Board → Q_BNK1_G/R, Q_BNK2_G/R
 - SYS_RESET_N in JTAG CI (0.127mm) row — it routes at 0.20mm (DEC-031, I²C-sourced)
 - TTD_RETURN in 0.20mm signal row — it is a JTAG CI signal (0.127mm)
@@ -300,7 +304,7 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - TPS259804ONRGER = silicon-fixed 16.9V OVLO eFuse (no external OVLO pin; R3 = R_ILIM = 210Ω)
 - All boards 4-layer JLC04161H-7628 / 2oz copper except Controller (6-layer JLC06161H)
 - MCP23017 I²C addresses: 0x20 (U_EXP1 STA), 0x21 (U_EXP2 STA), 0x22 (U_EXP4 STA),
-  0x26 (U_EXP_SW_IN SBD), 0x27 (U_EXP_LED SBD). All 8 addresses (0x20–0x27) now in use.
+  0x23 (U_EXP_SW_IN SBD), 0x24 (U_LED_B1 SBD), 0x25 (U_LED_B2 SBD)
 - Settings Board LED: green = switch-defined, red = CM5-defined by default; full RGB remains available under CM5 control
 - Settings Board switches: E-Switch 200MSP1T2B4M2QE for all 12 panel toggles
 - Settings Board indicator LED: Kingbright WP154A4SEJ3VBDZGW/CA (common-anode, full RGB under CM5 control)
@@ -308,8 +312,9 @@ Every checkpoint MUST include ALL of the following steps (in order):
 - Settings Board topology: individual LED anode drive plus BSS138 low-side shared RGB colour rails;
   separate red / green / blue resistors per switch; 5V_MAIN-fed indicator rail
 - Settings Board transistors: Q_BNK1_R/G/B and Q_BNK2_R/G/B (functional names)
-- Settings Board I²C expanders: U_EXP_SW_IN @ 0x26 (reads switches), U_EXP_LED @ 0x27
-  (drives LEDs + colour rails). U_EXP_SW_OUT @ 0x24 is a STALE ARTEFACT — never use.
+- Settings Board I²C expanders: U_EXP_SW_IN @ 0x23 (reads switches), U_LED_B1 @ 0x24
+  and U_LED_B2 @ 0x25 (drive LEDs + colour rails). U_EXP_SW_OUT and any older 0x26/0x27 naming are
+  stale artefacts — never use.
 
 ### Open Work Items (OWI)
 

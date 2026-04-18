@@ -93,9 +93,10 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
     buffer interval is sufficient: 5 rotors × EPM570T100I5N input capacitance (≈6pF) + connector capacitance
     ≈ 30–40pF total load; well within the 50ns half-period at 10MHz TCK.
 
-* **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §5`, a single
-  0Ω bond resistor (R2) or direct via connects signal GND to chassis copper pour at J7 pin 16 (GND).
-  No additional bonds on this board to prevent ground loops.
+* **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §5`, the
+  Extension board does **not** implement a local GND-to-GND_CHASSIS bond. J7/J8 pin 16 remains
+  signal/power return only; the system's only galvanic GND ↔ GND_CHASSIS bond is on the Power
+  Module.
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **JTAG TTD_RETURN / TDI:** TTD_RETURN (TDO chain return) is carried passively via Extension Port
@@ -174,5 +175,4 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J8 | Extension Port OUT header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded box | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
 | J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
 | R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
-| R2 | GND_CHASSIS single-point bond | 0Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |

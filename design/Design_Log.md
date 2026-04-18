@@ -1474,8 +1474,9 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 | 0x20 | MCP23017 (U_EXP1) | Stator |
 | 0x21 | MCP23017 (U_EXP2) | Stator |
 | 0x22 | MCP23017 (U_EXP4) | Stator |
-| 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board |
-| 0x27 | MCP23017 (U_EXP_LED) | Settings Board |
+| 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board |
+| 0x24 | MCP23017 (U_LED_B1) | Settings Board |
+| 0x25 | MCP23017 (U_LED_B2) | Settings Board |
 | 0x28 | STUSB4500 | Power Module |
 | 0x40 | INA219 (U12) | Power Module |
 | 0x45 | INA219 (U2) | Stator |
@@ -1510,8 +1511,9 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 2. Add a new Settings Board PCB (panel-mount, right side of enclosure top face near rotors) with:
    - 12 panel toggle switches plus 12 discrete RGB indicators (5 for Bank 1 routing, 7 for Bank 2 reflector mapping)
    - 1 momentary CFG_APPLY input; a board-mounted tactile switch actuated through the enclosure is acceptable
-   - U_EXP_SW_IN (MCP23017 @ 0x26): reads switch states
-   - U_EXP_LED (MCP23017 @ 0x27): drives per-bit LED anodes + per-bank colour rails
+   - U_EXP_SW_IN (MCP23017 @ 0x23): reads switch states
+   - U_LED_B1 (MCP23017 @ 0x24): drives Bank 1 LED anodes + Bank 1 colour rails
+   - U_LED_B2 (MCP23017 @ 0x25): drives Bank 2 LED anodes + Bank 2 colour rails
 3. Add U_EXP4 (MCP23017 @ 0x22) to the Stator Board. Its outputs drive the CPLD configuration
    input pins directly (SW1[0:3] and SW2[0:5]). Pull-downs R16–R26 are retained on the CPLD
    input pins to hold safe defaults (all-zero) at power-up before CM5 initialises U_EXP4.
@@ -1537,14 +1539,16 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 | Address | Device | Location |
 | :--- | :--- | :--- |
 | 0x22 | MCP23017 (U_EXP4) | Stator — CPLD config output driver |
-| 0x26 | MCP23017 (U_EXP_SW_IN) | Settings Board — switch input reader |
-| 0x27 | MCP23017 (U_EXP_LED) | Settings Board — LED anode + colour rail driver |
+| 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board — switch input reader |
+| 0x24 | MCP23017 (U_LED_B1) | Settings Board — Bank 1 LED anode + colour rail driver |
+| 0x25 | MCP23017 (U_LED_B2) | Settings Board — Bank 2 LED anode + colour rail driver |
 
 ### Rationale
 
 - Replacing DIP switches with panel toggles makes configuration user-accessible without opening the enclosure.
-- I²C-only wiring between Settings Board and Stator (4 wires: SDA, SCL, 3V3_ENIG, GND) keeps the
-  cable harness minimal vs 10+ parallel signal wires.
+- I²C-centric wiring between Settings Board and Stator keeps the cable harness minimal vs 10+
+  parallel signal wires; the active harness is now a 6-wire JST PH link carrying `3V3_ENIG`,
+  `5V_MAIN`, `GND`, `SDA`, `SCL`, and a dedicated LED return GND.
 - Retaining R16–R26 pull-downs ensures the CPLD receives a safe all-zero default at power-up
   (no plugboard insertion, physical reflector pass-through) before the CM5 writes the desired config.
 - Per-bank enable switches give the operator independent control of whether the physical switches or
@@ -1552,12 +1556,17 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 - RGB illumination (green/red) provides immediate visual feedback on configuration source with no
   additional UI required.
 
+> **Supersession note:** This decision records the original Settings Board migration intent. The
+> active address map and harness definition were later refined by the post-audit cleanup:
+> `U_EXP_SW_IN @ 0x23`, `U_LED_B1 @ 0x24`, `U_LED_B2 @ 0x25`, and a 6-wire JST PH harness carrying
+> `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`.
+
 ### Impact
 
 - **Stator Board:** SW1 and SW2 removed; U_EXP4 and J_CFG added; STATOR_CFG_RDY signal added to CPLD
 - **New Board:** Settings Board added to system BOM
 - **Firmware:** enigma daemon startup sequence must: read U_EXP_SW_IN, evaluate bank enables, write
-  U_EXP4, pulse STATOR_CFG_RDY, update U_EXP_LED
+  U_EXP4, pulse STATOR_CFG_RDY, update U_LED_B1 / U_LED_B2
 - **CPLD:** STATOR_CFG_RDY is a new input pin; CPLD must re-latch SW1/SW2 values on rising edge
   (replaces power-up-only latch)
 

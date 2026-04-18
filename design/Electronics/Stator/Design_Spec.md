@@ -28,7 +28,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables; route 6-bit data bus to plugboard passes at configurable signal chain positions | J4 = HID; J5 = Plugboard Pass A (configurable); J6 = Plugboard Pass B (configurable) | §3 Plugboard Routing; §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM570 (570 LEs required for startup-loaded reflector map registers + routing matrix) | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via the Link-Beta BtB connector | J8 = ERM8-020 male | §4 Interconnects; BOM J8 (ERM8-020-05.0-S-DV-K-TR) |
-| FR-STA-08 | Select the active plugboard routing configuration via panel-mount toggle switches on the Settings Board via I²C; CM5 can override routing configuration when Bank 1 enable is inactive | Bank 1 (SW_B1_EN + SW_B1[0:3]) on Settings Board provides 16 routing configurations; CM5 reads U_EXP_SW_IN @ 0x26, evaluates bank enable, writes final config to U_EXP4 GPA[0:3] @ 0x22; CPLD re-latches on STATOR_CFG_RDY rising edge | §3 Panel Switch Configuration (Bank 1); §4.2 I²C Devices; BOM U_EXP4, R16–R19 |
+| FR-STA-08 | Select the active plugboard routing configuration via panel-mount toggle switches on the Settings Board via I²C; CM5 can override routing configuration when Bank 1 enable is inactive | Bank 1 (SW_B1_EN + SW_B1[0:3]) on Settings Board provides 16 routing configurations; CM5 reads U_EXP_SW_IN @ 0x23, evaluates bank enable, writes final config to U_EXP4 GPA[0:3] @ 0x22; CPLD re-latches on STATOR_CFG_RDY rising edge | §3 Panel Switch Configuration (Bank 1); §4.2 I²C Devices; BOM U_EXP4, R16–R19 |
 | FR-STA-09 | Select and apply a stored reflector substitution map at the reflection boundary while retaining the mandatory physical Reflector board as the electrical turnaround | Bank 2 (SW_B2_EN + SW_B2[0:5]) on Settings Board provides a 6-bit reflector-map selection; CM5 can override when Bank 2 enable is inactive; final config driven to CPLD by U_EXP4 GPB[0:5] @ 0x22 | §3 Panel Switch Configuration (Bank 2); §4.2 I²C Devices; BOM U_EXP4, R21–R26 |
 | FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, ENC bus monitoring, servo control, SYS_RESET_N management, and CPLD configuration driving | Via three MCP23017 expanders: U_EXP1 @ 0x20, U_EXP2 @ 0x21, U_EXP4 @ 0x22 on shared I²C-1 bus | §4 I²C Devices; BOM U_EXP1, U_EXP2, U_EXP4 |
 | FR-STA-11 | Provide I²C PWM output for servo motor control | Via PCA9685 (U_EXP3 @ 0x60) on shared I²C-1 bus; Ch0 = 50Hz SERVO_PWM | §4 I²C Devices; BOM U_EXP3 |
@@ -67,12 +67,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ### GND_CHASSIS Single-Point Bond
 
-Per `design/Standards/Global_Routing_Spec.md §5`, each PCB in the Enigma-NG system must have a documented single-point GND_CHASSIS bond at its power entry connector.
-
-**Stator GND_CHASSIS bond point:** The GND_CHASSIS connection is made at the LINK-BETA connector
-(J8, ERM8-020, power input from Controller Board).
-A single 0 Ω bond resistor (or direct via) in a dedicated keepout zone connects the signal/power GND plane
-to the chassis copper pour at this entry point. No additional chassis bonds are made on this board to avoid ground loops.
+Per `design/Standards/Global_Routing_Spec.md §5`, the Stator does **not** implement a local
+GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is defined on the Power
+Module at the main power-entry boundary, so LINK-BETA entry GND is treated as signal/power return
+only and must not be bridged locally to chassis on the Stator.
 
 ## 3. Encryption & JTAG Hub
 
@@ -264,9 +262,9 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 
 ### 4.2 I²C Devices on Stator
 
-All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via LINK-BETA. LINK-BETA pins 18 and
-23 now also carry `5V_MAIN`, which the Stator fans out to J_SERVO and to Settings Board connector
-J_CFG.
+All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via LINK-BETA pins 12 and 13.
+LINK-BETA pins 14–17 now carry grouped `5V_MAIN`, with grouped returns on pin 18 and pins 22–24.
+The Stator fans that `5V_MAIN` branch out to J_SERVO and to Settings Board connector J_CFG.
 
 | Address | Device | Ref | Function |
 | :--- | :--- | :--- | :--- |
@@ -308,7 +306,9 @@ snapped off.
 
 ## 6. EMI & Mechanical
 
-* **Shield Mount:** 10mm ENIG Gold landing strip on L1 edge bonded to GND_CHASSIS.
+* **Shield Mount:** No local `GND_CHASSIS` landing strip is implemented on the Stator; any internal
+  cable clamping or shielding features remain within the signal/power GND domain unless a later
+  EMC-focused decision explicitly introduces a justified exception.
 * **Clamping:** Dual 3.2mm PTH anchors per cable for Galvanised Steel Bar compression.
 * **Diagnostics:** 2x10 ENIG Gold Looped Probe Pad Bank mirrored to Controller's Bank-Beta pinout for A-B signal verification.
 
