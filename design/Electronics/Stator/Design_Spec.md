@@ -53,10 +53,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-11 | Reflector map selection | SW2[0:5] reflector config inputs now driven by U_EXP4 GPB[0:5]; 6× 10kΩ pull-down resistors R21–R26 retained on CPLD inputs as power-up safe defaults; physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 2); BOM U_EXP4, R21–R26 |
 | DR-STA-12 | I²C GPIO expanders | U_EXP1 = MCP23017T-E/SO @ 0x20; U_EXP2 = MCP23017T-E/SO @ 0x21; U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28 package; on shared I²C-1 bus | BOM U_EXP1, U_EXP2, U_EXP4 |
 | DR-STA-13 | I²C PWM driver | U_EXP3 = PCA9685BS/3 @ 0x60; SSOP-28 package; Ch0 = SERVO_PWM at 50Hz; A5→3V3_ENIG, A4–A0→GND; all-call disabled in daemon init | BOM U_EXP3 |
-| DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM. 5V_MAIN is routed from Controller Board via Link-Beta pins 14–17 (2.0A capacity). | BOM J_SERVO |
+| DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM. 5V_MAIN is routed from Controller Board via Link-Beta pins 3, 4, 37, and 38 (2.0A capacity). | BOM J_SERVO |
 | DR-STA-15 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to 3V3_ENIG + 100nF X7R cap to GND (RC τ=1ms); connected to U_EXP2 GPB[1] | BOM SW3, R_SH1, C_SH1 |
 | DR-STA-16 | U_EXP4 specification | U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28; A2=LOW, A1=HIGH, A0=LOW; GPA[0:3] = SW1[0:3] CPLD config outputs; GPA[4] = STATOR_CFG_RDY strobe output; GPB[0:5] = SW2[0:5] CPLD config outputs | BOM U_EXP4 |
-| DR-STA-17 | J_CFG connector | J_CFG = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`; connects to Settings Board J_I2C via 6-wire harness. `5V_MAIN` is derived from Link-Beta pins 14–17. | BOM J_CFG |
+| DR-STA-17 | J_CFG connector | J_CFG = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`; connects to Settings Board J_I2C via 6-wire harness. `5V_MAIN` is derived from Link-Beta pins 3, 4, 37, and 38. | BOM J_CFG |
 | DR-STA-18 | STATOR_CFG_RDY signal | STATOR_CFG_RDY = new CPLD input pin from U_EXP4 GPA[4]; 10kΩ pull-down to GND (default LOW); CPLD re-latches SW1[0:3] and SW2[0:5] config values on rising edge | BOM U_EXP4; §3 Panel Switch Configuration (Bank 1) |
 
 ## 2. Core Features
@@ -263,7 +263,7 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 ### 4.2 I²C Devices on Stator
 
 All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via LINK-BETA pins 12 and 13.
-LINK-BETA pins 14–17 now carry grouped `5V_MAIN`, with grouped returns on pin 18 and pins 22–24.
+LINK-BETA carries grouped `5V_MAIN` on pins 3, 4, 37, and 38, and grouped `3V3_ENIG` on pins 6–12 and 29–35.
 The Stator fans that `5V_MAIN` branch out to J_SERVO and to Settings Board connector J_CFG.
 
 | Address | Device | Ref | Function |

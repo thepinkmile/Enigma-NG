@@ -219,48 +219,48 @@ _______________________________________    _____________    ____________________
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
-| 1 | GND | — | JTAG leading shield |
-| 2 | TCK | CTRL→Stator | JTAG clock |
-| 3 | GND | — | TCK/TMS inter-pin shield |
-| 4 | TMS | CTRL→Stator | JTAG mode select |
-| 5 | GND | — | TMS/TDI inter-pin shield |
-| 6 | TDI | CTRL→Stator | JTAG data in |
-| 7 | GND | — | TDI/GND inter-pin shield |
-| 8 | GND | — | Extra JTAG trailing/guard ground; reassigned from former SYS_RESET_N spare in DEC-036 |
-| 9 | GND | — | JTAG trailing shield |
-| 10 | GND | — | Isolation moat pin 1 |
-| 11 | GND | — | Isolation moat pin 2 |
-| 12 | I2C1_SDA | Bidir | Stator/Settings I2C-1 data extension from CM5 GPIO 2 (mirrors Link-Alpha pin 35 onto LINK-BETA) |
-| 13 | I2C1_SCL | Bidir | Stator/Settings I2C-1 clock extension from CM5 GPIO 3 (mirrors Link-Alpha pin 36 onto LINK-BETA) |
-| 14 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed for Settings indicators, servo rail, and future 5V margin |
-| 15 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed |
-| 16 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed |
-| 17 | 5V_MAIN | PM→Stator | Grouped supplemental 5V feed |
-| 18 | GND | — | 5V_MAIN return moat / inter-group shield |
-| 19 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed; former ENC monitor position repurposed in DEC-036 |
-| 20 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed; former ENC monitor position repurposed in DEC-036 |
-| 21 | 3V3_ENIG | PM→Stator | Additional 3V3_ENIG feed; former ENC monitor position repurposed in DEC-036 |
-| 22 | GND | — | Grouped return paired with the expanded power block |
-| 23 | GND | — | Grouped return paired with the expanded power block |
-| 24 | GND | — | Grouped return paired with the expanded power block |
-| 25 | GND | — | ENC_OUT / TTD_RETURN shield |
-| 26 | TTD_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
-| 27 | GND | — | TTD_RETURN shield |
-| 28 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 29 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 30 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 31 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 32 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 33 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 34 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 35 | 3V3_ENIG | PM→Stator | Power pass-through from Link-Alpha (2oz copper) |
-| 36 | GND | — | Power return |
-| 37 | GND | — | Power return |
-| 38 | GND | — | Power return |
-| 39 | GND | — | Power return |
-| 40 | GND | — | Power return |
+| 1 | GND | — | Front power return / guard |
+| 2 | GND | — | Front power return / guard |
+| 3 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 4 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 5 | GND | — | Front power return / guard |
+| 6 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 7 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 8 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 9 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 10 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 11 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 12 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 13 | GND | — | Front 3V3 return / guard |
+| 14 | GND | — | Front 3V3 return / guard |
+| 15 | TCK | CTRL→Stator | JTAG clock |
+| 16 | GND | — | TCK/TMS guard |
+| 17 | TMS | CTRL→Stator | JTAG mode select |
+| 18 | GND | — | TMS/TDI guard |
+| 19 | TDI | CTRL→Stator | JTAG data in |
+| 20 | GND | — | TDI/TTD_RETURN guard |
+| 21 | TTD_RETURN | Stator→CTRL | JTAG TDO short-path return (bypasses rotor stack) |
+| 22 | GND | — | TTD_RETURN trailing guard |
+| 23 | GND | — | JTAG/I2C isolation ground |
+| 24 | I2C1_SDA | Bidir | Stator/Settings I2C-1 data extension from CM5 GPIO 2 (mirrors Link-Alpha pin 35 onto LINK-BETA) |
+| 25 | GND | — | SDA/SCL guard |
+| 26 | I2C1_SCL | Bidir | Stator/Settings I2C-1 clock extension from CM5 GPIO 3 (mirrors Link-Alpha pin 36 onto LINK-BETA) |
+| 27 | GND | — | I2C/rear-power isolation ground |
+| 28 | GND | — | Rear power guard |
+| 29 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 30 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 31 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 32 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 33 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 34 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 35 | 3V3_ENIG | PM→Stator | Grouped 3V3_ENIG feed |
+| 36 | GND | — | Rear 3V3 return / guard |
+| 37 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 38 | 5V_MAIN | PM→Stator | Grouped 5V_MAIN feed |
+| 39 | GND | — | Rear power return / guard |
+| 40 | GND | — | Rear power return / guard |
 
-**Power capacity:** LINK-BETA now provides 11 × 3V3_ENIG pins × 0.5A/pin = 5.5A connector
+**Power capacity:** LINK-BETA now provides 14 × 3V3_ENIG pins × 0.5A/pin = 7.0A connector
 capacity and 4 × 5V_MAIN pins × 0.5A/pin = 2.0A connector capacity. The 3V3_ENIG path remains
 limited by the upstream 3.0A LDO, while the 5V_MAIN path now has comfortable headroom for the
 Stator servo, Settings Board indicators, and future 5V expansion.
@@ -269,26 +269,26 @@ Stator servo, Settings Board indicators, and future 5V expansion.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 14 |
-| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 15 |
-| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 16 |
-| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 17 |
-| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 19 |
-| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 20 |
-| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 21 |
-| 8 | GND | — | Ground reference |
-| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 12 / shared Stator-Settings I²C bus |
-| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 13 / shared Stator-Settings I²C bus |
-| 11 | GND_RET_A | — | Probe for grouped Link-Beta return cluster |
-| 12 | GND_RET_B | — | Probe for grouped Link-Beta return cluster |
-| 13 | GND_RET_C | — | Probe for grouped Link-Beta return cluster |
-| 14 | GND_RET_D | — | Probe for grouped Link-Beta return cluster |
-| 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
-| 16 | GND | — | TCK shield / clock return |
-| 17 | TMS | JDB → Stator | JTAG mode select |
-| 18 | TDI | JDB → Stator | JTAG data in |
-| 19 | TDO | Stator → JDB | JTAG data out (TTD_RETURN) |
-| 20 | GND | — | JTAG trailing shield |
+| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 3 |
+| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 4 |
+| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 37 |
+| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 38 |
+| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 6 |
+| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 12 |
+| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 29 |
+| 8 | 3V3_ENIG_D | PM → Stator | Probe for Link-Beta pin 35 |
+| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 24 / shared Stator-Settings I²C bus |
+| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 26 / shared Stator-Settings I²C bus |
+| 11 | GND_RET_A | — | Probe for Link-Beta pin 13 |
+| 12 | GND_RET_B | — | Probe for Link-Beta pin 14 |
+| 13 | GND_RET_C | — | Probe for Link-Beta pin 36 |
+| 14 | GND_RET_D | — | Probe for Link-Beta pin 39 |
+| 15 | JTAG_TCK | JDB → Stator | Probe for Link-Beta pin 15 |
+| 16 | GND | — | Probe for Link-Beta pin 16 |
+| 17 | TMS | JDB → Stator | Probe for Link-Beta pin 17 |
+| 18 | TDI | JDB → Stator | Probe for Link-Beta pin 19 |
+| 19 | TDO | Stator → JDB | Probe for Link-Beta pin 21 (TTD_RETURN) |
+| 20 | GND | — | Probe for Link-Beta pin 22 |
 
 ### BtB Connectivity Routing
 

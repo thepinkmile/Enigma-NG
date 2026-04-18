@@ -21,9 +21,9 @@ Recent milestones now locked into the active docs:
 - **DEC-035** — the HID keyboard/lightboard is fixed as a **40-position physical layout**
   (`[a-z0-9+=]` plus Left/Right Shift) mapped into the machine's **64-character logical** code
   space
-- **DEC-036** — LINK-BETA keeps the 40-pin connector but reuses the former monitor block as grouped
-  `5V_MAIN` / `3V3_ENIG` / `GND` rails, with four contiguous 5V pins for future-safe Stator-side
-  loads
+- **DEC-037** — LINK-BETA keeps the 40-pin connector but now uses the new guarded pin map:
+  front power cluster, front `3V3_ENIG` cluster, dedicated JTAG block with `TTD_RETURN`, guarded
+  I2C pair, and rear power cluster
 
 Full-system review status is still clean from checkpoint 047. Component verification has progressed
 to **13 VERIFIED rows** in `.copilot/components-todo.md`, including connectors, switches, LEDs, and
@@ -142,53 +142,51 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Checkpoint 054 locks the final propagation + datasheet-tracking sync batch** — the last active-doc
-   `.copilot` references are removed, the Stator telemetry path reflects all 11 LINK-BETA `3V3_ENIG`
-   pins, the top-level Reflector wording is passive-only, and the datasheet-tracking queue includes
-   the newest 5 missing local PDFs from the latest audit.
-2. **Link-Beta rail rebalance is now part of the active architecture state.**
-   - Former spare block replaced by grouped power rails
-   - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **14–17**
-   - Diagnostic Bank-Beta now probes grouped rails + I²C instead of dead spare pads
-3. **Second deep-review rerun findings are now fully synced.**
+1. **Checkpoint 055 locks DEC-037 and the active LINK-BETA remap.**
+   - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **3, 4, 37, and 38**
+   - `3V3_ENIG` now uses LINK-BETA pins **6–12 plus 29–35**
+   - JTAG is preserved as a guarded block with `TTD_RETURN` on **pin 21**
+   - Diagnostic Bank-Beta now probes the new DEC-037 pin positions
+2. **Second deep-review rerun findings are now fully synced.**
    - Harness pin-3 wording corrected to logic-return-only
    - lingering `5V_LED` wording removed from active BOM prose
-   - high-level LINK-BETA summary now matches detailed grouped-power allocation
-   - stale 8-pin `3V3_ENIG` pass-through wording corrected to 11 pins
-4. **Datasheet audit state is synced.**
-    - The current missing-datasheet list is unchanged and already tracked in `.copilot/components-todo.md`
-    - The two redundant local PDFs flagged by the audit have been removed from `design/Datasheets/`
-    - `J_DSI1` is no longer TBD: Controller docs and BOM now use Amphenol `F52Q-1A7H1-11015`
-    - stale `TPD4E05U06QDQARQ1` datasheet TBD wording has been replaced with the local PDF link
-    - `BHR-16-VUA` is no longer missing: local PDF added, `J016` verified, and the supplier numbers are synced
-    - the missing-datasheet queue now also tracks `334364197440`, `ABM8-12.000MHz-B2-T`, `AC72ABD`,
-      `150060VS75000`, and `9774040151R`
-5. **High-level architecture docs are now aligned with the intended reflector / extension model.**
+   - high-level LINK-BETA summary now matches the DEC-037 guarded pin allocation
+3. **Datasheet audit state is synced.**
+     - The current missing-datasheet list is unchanged and already tracked in `.copilot/components-todo.md`
+     - The two redundant local PDFs flagged by the audit have been removed from `design/Datasheets/`
+     - `J_DSI1` is no longer TBD: Controller docs and BOM now use Amphenol `F52Q-1A7H1-11015`
+     - stale `TPD4E05U06QDQARQ1` datasheet TBD wording has been replaced with the local PDF link
+     - `BHR-16-VUA` is no longer missing: local PDF added, `J016` verified, and the supplier numbers are synced
+     - the missing-datasheet queue now also tracks `334364197440`, `ABM8-12.000MHz-B2-T`, `AC72ABD`,
+       `150060VS75000`, and `9774040151R`
+4. **High-level architecture docs are now aligned with the intended reflector / extension model.**
    - Reflector is mandatory and passive
    - Stator CPLD owns reflector-map selection/application
    - Extension boards sit between 5-rotor groups and reinject clean `3V3_ENIG` via `J7 -> J5`
    - Settings Board RGB indicators are powered from `5V_MAIN`; `3V3_ENIG` remains the logic/control rail
    - `J_DSI1` is the only fixed Controller-side display connector in current scope
-6. **Grounding-rule cleanup remains open for later investigation.**
-    - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
-    - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
-      should normally carry `GND_CHASSIS`
-    - Keep the single galvanic GND ↔ `GND_CHASSIS` bond on the Power Module only
-7. **Continue component re-verification** from `.copilot/components-todo.md`.
-      - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
-      - **Total VERIFIED rows:** 13
-      - Treat every other populated MPN/distributor field as provisional until manually checked and
-        marked `VERIFIED`
-8. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
-      rows in the queue.
-9. **Next likely queue targets:** power ICs and the remaining Settings Board/JST/resistor rows that
-      still need supplier confirmation.
+5. **Grounding-rule cleanup remains open for later investigation.**
+     - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
+     - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
+       should normally carry `GND_CHASSIS`
+     - Keep the single galvanic GND ↔ `GND_CHASSIS` bond on the Power Module only
+6. **Continue component re-verification** from `.copilot/components-todo.md`.
+       - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
+       - **Total VERIFIED rows:** 13
+       - Treat every other populated MPN/distributor field as provisional until manually checked and
+         marked `VERIFIED`
+7. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
+       rows in the queue.
+8. **Immediate pending component targets:** `MCP23017T-E/SO`, `PCA9685PW,118`, and
+       `T821126A1S100CEU`.
+9. **Next issue pending from user:** partly mechanical follow-up to be investigated from the new
+      DEC-037 baseline.
 10. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
 11. **Datasheet-analysis workflow captured for later execution.**
-    - Finish component review so the active component set is stable
-    - Retrieve all missing local datasheet PDFs for that verified set
-    - Generate extremely thorough markdown analysis files for each datasheet, with the markdown
-      referencing the source PDF and organizing package, electrical, pinout, limits, variants, and
+     - Finish component review so the active component set is stable
+     - Retrieve all missing local datasheet PDFs for that verified set
+     - Generate extremely thorough markdown analysis files for each datasheet, with the markdown
+       referencing the source PDF and organizing package, electrical, pinout, limits, variants, and
       integration-relevant constraints for future review agents
     - Run a fresh extremely detailed full-design review once the datasheet-analysis corpus exists
 

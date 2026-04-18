@@ -210,7 +210,7 @@ Drives Bank 1 LED anodes (5 LEDs) and RGB color-rail low-side transistor gates.
 > Individual LED anode outputs drive HIGH only for the bits that should be illuminated. Each LED's
 > red, green, and blue cathodes return through separate current-limiting resistors
 > (`R_LED_R` = 150Ω, `R_LED_G` = 100Ω, `R_LED_B` = 100Ω) to the shared bank colour rails. LEDs are
-> powered from the `5V_MAIN` feed derived from Link-Beta pins 14–17 via the Stator J_CFG connector.
+> powered from the `5V_MAIN` feed derived from Link-Beta pins 3, 4, 37, and 38 via the Stator J_CFG connector.
 
 ### U_LED_B2 — MCP23017T-E/SO @ 0x25
 
@@ -411,7 +411,7 @@ automatic polling intervals.
 
 * Settings Board: 240mA max (LED load)
 * Stator J_SERVO: 500mA max (servo motor)
-* **Link-Beta capacity: 2.0A** (pins 14–17 @ 0.5A each)
+* **Link-Beta capacity: 2.0A** (pins 3, 4, 37, and 38 @ 0.5A each)
 * **Margin: 1.26A** (~170% headroom)
 
 ---
@@ -455,7 +455,7 @@ This design uses only 6 MOSFETs for 12 RGB indicators instead of a per-LED trans
 ### 5V Power Routing
 
 Indicator power is sourced from the Controller Board's 5V_MAIN rail (TPS259804 eFuse output) and
-routed through Link-Beta pins 14–17 (4× pins for current sharing, 2.0A total capacity).
+routed through Link-Beta pins 3, 4, 37, and 38 (4× pins for current sharing, 2.0A total capacity).
 The Stator Board acts as a **power pass-through hub**, forwarding 5V_MAIN to:
 
 * J_CFG pin 2 → Settings Board indicator rail (240mA max)

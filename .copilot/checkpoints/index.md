@@ -62,3 +62,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 52 | DSI confirmed and topology cleanup locked | 052-dsi-confirmed-and-topology-cleanup.md |
 | 53 | BHR verified and review fixes locked | 053-bhr-verified-and-review-fixes.md |
 | 54 | Final propagation and datasheet tracking sync | 054-final-propagation-and-datasheet-tracking.md |
+| 55 | LINK-BETA DEC-037 pin remap | 055-link-beta-dec037-pin-remap.md |

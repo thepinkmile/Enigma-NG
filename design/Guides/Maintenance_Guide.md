@@ -60,27 +60,27 @@ Monitors power rails, I²C telemetry bus, LED control signals, and power status.
 ### Bank-Beta (Logic/Exit) — Top-Left of Controller
 
 Monitors the grouped Link-Beta power rails, I2C extension lines, and the JTAG return path after the
-post-DEC-036 rail rebalance.
+DEC-037 pin-map update.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 14 |
-| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 15 |
-| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 16 |
-| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 17 |
-| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 19 |
-| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 20 |
-| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 21 |
-| 8 | GND | — | Ground reference |
-| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 12 / shared Stator-Settings I²C bus |
-| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 13 / shared Stator-Settings I²C bus |
-| 11 | GND_RET_A | — | Probe for grouped Link-Beta return cluster |
-| 12 | GND_RET_B | — | Probe for grouped Link-Beta return cluster |
-| 13 | GND_RET_C | — | Probe for grouped Link-Beta return cluster |
-| 14 | GND_RET_D | — | Probe for grouped Link-Beta return cluster |
-| 15 | JTAG_TCK | JDB → Stator | JTAG clock (isolated from TDI/TMS) |
-| 16 | GND | — | TCK shield / clock return |
-| 17 | TMS | JDB → Stator | JTAG mode select |
-| 18 | TDI | JDB → Stator | JTAG data in |
-| 19 | TDO | Stator → JDB | JTAG data out (TTD_RETURN) |
-| 20 | GND | — | JTAG trailing shield |
+| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 3 |
+| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 4 |
+| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 37 |
+| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 38 |
+| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 6 |
+| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 12 |
+| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 29 |
+| 8 | 3V3_ENIG_D | PM → Stator | Probe for Link-Beta pin 35 |
+| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 24 / shared Stator-Settings I²C bus |
+| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 26 / shared Stator-Settings I²C bus |
+| 11 | GND_RET_A | — | Probe for Link-Beta pin 13 |
+| 12 | GND_RET_B | — | Probe for Link-Beta pin 14 |
+| 13 | GND_RET_C | — | Probe for Link-Beta pin 36 |
+| 14 | GND_RET_D | — | Probe for Link-Beta pin 39 |
+| 15 | JTAG_TCK | JDB → Stator | Probe for Link-Beta pin 15 |
+| 16 | GND | — | Probe for Link-Beta pin 16 |
+| 17 | TMS | JDB → Stator | Probe for Link-Beta pin 17 |
+| 18 | TDI | JDB → Stator | Probe for Link-Beta pin 19 |
+| 19 | TDO | Stator → JDB | Probe for Link-Beta pin 21 (TTD_RETURN) |
+| 20 | GND | — | Probe for Link-Beta pin 22 |

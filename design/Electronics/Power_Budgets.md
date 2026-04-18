@@ -11,7 +11,7 @@
 
 1. **TPS75733KTTRG3 LDO** (Power Module U7): **3.0A maximum output** — hard limit, component not to be changed.
 2. **LINK-ALPHA 3V3_ENIG pins** (pins 39–44): 6 pins × 0.5A = 3.0A capacity — matches LDO limit.
-3. **LINK-BETA 3V3_ENIG pins** (pins 19–21 plus 28–35): 11 pins × 0.5A = 5.5A capacity — above LDO
+3. **LINK-BETA 3V3_ENIG pins** (pins 6–12 plus 29–35): 14 pins × 0.5A = 7.0A capacity — above LDO
    limit; connector is not the bottleneck, the LDO is.
 4. **Available to Stator + Rotor stack:** LDO output minus Controller-local consumption (RJ45 LEDs, pull-ups)
    ≈ 2.95A (Controller overhead ≤ 50mA).
@@ -63,7 +63,7 @@ being an unachievable worst-case peak).
 | :--- | :--- | :--- |
 | LDO hard limit | 3.00 A | — |
 | Typical worst-case load | 2.05 A | **+0.95 A (32%)** |
-| LINK-BETA connector capacity | 5.50 A | Not the constraint |
+| LINK-BETA connector capacity | 7.00 A | Not the constraint |
 
 > ✅ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides ~32% headroom above the worst-case typical load.
 > No LDO upgrade is required for the current 30-rotor design.
@@ -77,7 +77,7 @@ being an unachievable worst-case peak).
 | Document | Old figure | Resolved value | Action |
 | :--- | :--- | :--- | :--- |
 | Stator §2 "5A peak" | 5.0 A | **2.05 A** worst-case typical | ✅ Complete — Stator §2 updated to 2.05A worst-case typical; 5A figure retired |
-| LINK-BETA capacity | 5.5 A | 5.5 A (11 pins total after DEC-036 — still not the bottleneck) | ✅ Complete — updated to grouped-rail model |
+| LINK-BETA capacity | 5.5 A | 7.0 A (14 pins total after DEC-037 — still not the bottleneck) | ✅ Complete — updated to regrouped rail model |
 | Rotor ×30 claim "4.5A" | 4.5 A | **1.65 A** (30 × 55 mA budget; 1.63 A typ) | ✅ Complete — Rotor DR-ROT-06 and §3.1 now use the 54.2 mA typical / 55 mA budget figure; 150 mA figure retired |
 | Shunt resistor | Stator: 20 mΩ, Controller: 10 mΩ | **10 mΩ CSS2H** (Stator R1 = CSS2H-2512R-R010ELF; Controller has no shunt) | ✅ Complete — Stator R1 updated to CSS2H-2512R-R010ELF (10mΩ, 2512 Kelvin) |
 
@@ -115,7 +115,7 @@ being an unachievable worst-case peak).
 > Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 9.50 A system total.
 >
 > **Link-Beta 5V margin:** The Stator-facing 5V_MAIN group now uses four dedicated LINK-BETA pins
-> (pins 14–17), giving **2.0 A connector capacity** for the Settings Board + servo branch. The
+> (pins 3, 4, 37, and 38), giving **2.0 A connector capacity** for the Settings Board + servo branch. The
 > current downstream budget is **0.74 A**, leaving ~**1.26 A** connector headroom for future 5V
 > peripherals on the Stator side.
 

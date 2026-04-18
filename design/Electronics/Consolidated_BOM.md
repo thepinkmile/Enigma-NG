@@ -296,7 +296,7 @@ U_EXP_SW_IN @ 0x23: reads all 12 switch states + CFG_APPLY. U_LED_B1 @ 0x24 and 
 drive per-bit LED anodes and per-bank RGB colour-rail MOSFET sinks. All three share the Stator
 I²C-1 bus via the J_I2C → J_CFG ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
 green/blue series resistors. `5V_MAIN` is routed from Controller via Link-Beta
-pins 14–17 (2.0A capacity) through Stator to Settings Board.
+pins 3, 4, 37, and 38 (2.0A capacity) through Stator to Settings Board.
 
 ## 5. Controller Specifics
 
