@@ -268,12 +268,12 @@ encryption matrix in real time.
 | J3 | Diagnostic probe pad bank (bare ENIG gold pads — logic analyser / ICT access) | 2×8 bare PCB pads | 2.54mm | N/A | N/A | N/A |
 | SW1-40 | Keyboard Switches | uxcell-style DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2 pins retained for mechanical anchoring only. Custom marketplace part; see pseudo datasheet. **Already purchased.** | Panel-mount | — (eBay: gadgetskingdom item 365271584375, 2 per pack) | — | — |
 | U1, U2 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
-| R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LBCT-ND | C105872 |
-| R3 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LBCT-ND | C25808 |
+| R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
+| R3 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
 | R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R9–R72 | CPLD B Encode Half input pull-up resistors — 64× total (one per BT65–BT128 input line). Pull-up to 3V3_ENIG; active-low logic; external 10kΩ dominates CPLD internal 50kΩ–100kΩ weak pull. Decode Half outputs (BT1–64) are CPLD A driven — no pull-ups required on that bank. | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R9–R72 | CPLD B Encode Half input pull-up resistors — 64× total (one per BT65–BT128 input line). Pull-up to 3V3_ENIG; active-low logic; external 10kΩ dominates CPLD internal 50kΩ–100kΩ weak pull. Decode Half outputs (BT1–64) are CPLD A driven — no pull-ups required on that bank. | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | C22–C85 | CPLD B Encode Half input RC noise filter caps — 64× total, paired 1:1 with R9–R72 (one cap to GND per Encode Half input line). RC τ = 1 ms; sufficient for noise immunity on harness; negligible for slow mechanical events. Decode Half outputs (BT1–64) are CPLD A driven — no RC filters required on that bank. | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |

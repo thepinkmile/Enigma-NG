@@ -177,15 +177,15 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C4 | Decoupling | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R | 0402 | — | — | C19666 |
+| C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
 | J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | Adam Tech PH1-05-UA — 1×5 male pin header, 2.54mm | 2.54mm | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | J2 | JTAG OUTPUT header (10-pin interleaved GND) | Adam Tech PH1-10-UA — 1×10 male pin header, 2.54mm | 2.54mm | 737-PH1-10-UA | 2057-PH1-10-UA-ND | C3330527 |
-| R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
-| R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
-| R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0ACCT-ND | C25744 |
-| R6 | TCK series damping after U5 buffer output, before J2 pin 1 (TCK) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
-| R7 | TMS series damping after U5 buffer output, before J2 pin 7 (TMS) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
-| R8 | TDI series damping before J2 pin 3 (TDI) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0ACCT-ND | C25808 |
+| R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
+| R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R6 | TCK series damping after U5 buffer output, before J2 pin 1 (TCK) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
+| R7 | TMS series damping after U5 buffer output, before J2 pin 7 (TMS) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
+| R8 | TDI series damping before J2 pin 3 (TDI) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
 | U1 | FT232HL-REEL | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1101-1-ND | C51997 |
 | U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-024 | Dual 3-state buffer | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |
 | C10, C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 80-C0402C330J5GAUTO | 399-12979-1-ND | C2169327 |

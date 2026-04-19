@@ -512,10 +512,10 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | H_PWR | Board A↔B internal interconnect, inner face, power distribution — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | H_JTAG | Board A↔B internal interconnect, inner face, JTAG pass-through — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
-| R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; STGC bits[3:0] N=26); I²C addr 0x2A | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | U4 | FDC2114RGHR, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |

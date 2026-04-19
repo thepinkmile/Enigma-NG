@@ -56,7 +56,7 @@ Controller Board via dock connector `J1A`.
 | DR-PM-03 | 3V3_ENIG rail | 3.3 V ±3%, ≤3.0 A maximum (TPS75733 LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460AFSQRJRRQ1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
-| DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERA-3ARB2100V, 210 Ω, 0.1% thin-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
+| DR-PM-06 | eFuse | TPS259804ONRGER, 7 A trip current (R_ILIM = ERA-3VEB2100V, 210 Ω, 0.1% thin-film), OVLO = 16.9 V (silicon-fixed) | §5 Protection & Logic; BOM U1 (TPS259804ONRGER), R1 (232kΩ), R2 (28.7kΩ), R3 (210Ω) |
 | DR-PM-07 | Supercapacitor bank | 8× 25 F / 2.7 V in 2S4P configuration = 50 F effective at 5.4 V | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–8 |
 | DR-PM-08 | Backup activation threshold | 4.812 V (R14 = 30.1 kΩ, E96 0.1% thin-film — see DEC-030) — fires 312 mV before MCP121T 4.50 V threshold, providing ≥4 LTC3350 cycles at 400 kHz for backup switchover | §5 Protection & Logic; BOM R14 (30.1kΩ), R15 (10.0kΩ) |
 | DR-PM-09 | Holdup duration | ≥33.5 s at 15 W load (CM5 typical 5V × 3A) | §2 Power & UPS Hub; BOM C_SC1–8 (25F/2.7V), U3 (LTC3350) |
@@ -227,7 +227,7 @@ GND ──────┴──────────────────�
   PoE state is enforced on the Controller before `VIN_POE_12V` is exported to the PM dock.
 
 * **eFuse:** TPS259804ONRGER (16.9V OVLO silicon-fixed, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
-  * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 1% Thick-Film 0603. ILIM: 210Ω R_ILIM (R3) — **0.1% Thin-Film (ERA-3ARB2100V)**.
+  * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 1% Thick-Film 0603. ILIM: 210Ω R_ILIM (R3) — **0.1% Thin-Film (ERA-3VEB2100V)**.
     Note: OVLO is silicon-fixed on TPS259804ONRGER — no external OVLO resistor required or present.
   * **Latch-off Recovery:** TPS25980 latches off on OVLO, UVLO, or sustained overcurrent. Recovery requires pulling the EN pin LOW (>1ms) then HIGH.
     **SW1 (power toggle switch) achieves this** — flip SW1 to OFF (EN pulled to GND via SW1 → eFuse latch reset), fix the fault condition,
@@ -454,68 +454,68 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C_SC1–8 | Supercaps (8× cells, 2S4P) | Abracon ADCR-T02R7SA256MB / 25F 2.7V | THT Radial Can 16.0mm×25.0mm | 815-ADCRT02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | Global sourcing |
 | D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
-| D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
+| D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | C1972959 |
 | D3 | USB-C ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C28 | SYNC delay chain SW-ringing low-pass filter (C_F1) | 100pF X7R 25V (C0402C101K3RACAUTO) | 0402 | 80-C0402C101K3RAUTO | 399-C0402C101K3RACAUTOCT-ND | C5272912 |
 | C29 | SYNC 180° phase delay capacitor (C_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 22nF X7R 25V (CL10B223KB8WPNC) | 0603 | 187-CL10B223KB8WPNC | 1276-6534-1-ND | C346197 |
 | C30, C31 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C32 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R | 0603 | 187-CL10B106KA8NNNC | 1276-1204-1-ND | C19702 |
+| C32 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R (CC1206KKX7R8BB106) | 1206 | 603-CC126KKX7R8BB106 | 311-1959-1-ND | C70462 |
 | C33 | VCC bypass for U15 (MIC1555 monostable) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C34 | VCC bypass for U16 (`PCA9534APWR`) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C35 | 5V_MAIN backup switchover bulk cap (2× in parallel — see DEC-030) | 2× Samsung CL32B226KAJNNNE, 22µF 25V X7R 1210 | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
+| F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | C17468669 |
 | J1A-J1C | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 |
 | J3 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
 | J4 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must penetrate Power Module enclosure wall and sit flush with outer machine enclosure — verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 |
 | L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |
-| L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND (CT) / SRP1265A-100MTR-ND (T&R) / SRP1265A-100MDKR-ND (DKR) | C840531 |
+| L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded. Replaces Würth 7447789100 (not in public catalog). ⚠️ Package 13.5×12.5×6.2mm — footprint differs from 7447789100 (12.5×12.5×6mm); update PCB land pattern accordingly | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND | C840531 |
 | Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 |
 | R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 1% Thick-Film (ERJ-3EKF2323V) | 0603 | 667-ERJ-3EKF2323V | P232KHCT-ND | C403086 |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 1% Thick-Film (ERJ-3EKF2872V) | 0603 | 667-ERJ-3EKF2872V | P28.7KHCT-ND | C403135 |
-| R3 | eFuse ILIM set resistor | 210Ω 0.1% Thin-Film | 0603 | 667-ERA-3ARB2100V | TBD | — |
-| R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
-| R9 | `PM_IO_INT_N` pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R10 | ROTOR_EN Pull-down (EN to GND) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
+| R3 | eFuse ILIM set resistor | 210Ω 0.1% Thin-Film | 0603 | 667-ERA-3VEB2100V | 10-ERA-3VEB2100VCT-ND | C1861624 |
+| R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.70KHCT-ND | C192166 |
+| R9 | `PM_IO_INT_N` pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R10 | ROTOR_EN Pull-down (EN to GND) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | C403144 |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R14 | LTC3350 BACKUP divider upper (R_TOP) — **REVISED (DEC-030): threshold raised to 4.812V for 312mV gap** | 30.1kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.812V → R_TOP/R_BOT=(4.812/1.2)−1=3.01 → R_BOT=10kΩ → R_TOP=30.1kΩ → E96=30.1kΩ → actual trigger: 4.812V, 312mV above MCP121T 4.50V threshold — see DEC-030] | 0603 | 667-ERA-3ARB3012V | 10-ERA-3ARB3012VCT-ND | C1728516 |
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB103V | P10KBDCT-ND | C465746 |
-| R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KBYCT-ND | — |
-| R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KBYCT-ND | — |
-| R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KHCT-ND | C403339 |
+| R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KHCT-ND | C403126 |
+| R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R30 | LTC3350 RT frequency-setting resistor (RT pin to GND — sets switching frequency to 400 kHz) | 33.2kΩ 1% E96 Thick-Film [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | 0402 | 667-ERA-2AEB3322X | P33.2KDCCT-ND | C2087909 |
 | R31-R33 | Runtime RGB gate resistors for Q6/Q7/Q8 | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
-| R34-R36 | Runtime RGB gate pull-down resistors for Q6/Q7/Q8 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R34-R36 | Runtime RGB gate pull-down resistors for Q6/Q7/Q8 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
 | BT_SW1_1–BT_SW1_6, BT_SW2_1–BT_SW2_6 | PCB male spade tabs for SW1 / SW2 harnesses | Keystone 1211 — 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | THT Quick-Fit tab | 534-1211 | 36-1211-ND | C3029550 |
 | SW2 | CM5 Power Button | Adafruit 3350 — panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press; LED ring reserved for optional indication of the 3-second held `PWR_BUT` signal / shutdown event. | Panel-mount 16mm metal switch | 485-3350 | 1528-2546-ND | Global sourcing / consignment |
-| R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R24 | LMQ61460A FSET frequency-set resistor (U2A, R_FSET) | 86.6kΩ 1% Thick-Film (ERJ-3EKF8662V) | 0603 | 667-ERJ-3EKF8662V | P86.6KHCT-ND | C403381 |
 | R25 | SYNC delay chain SW-ringing isolation resistor (R_SW) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R26 | SYNC 180° phase delay resistor (R_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 82.0kΩ 1% Thick-Film (ERJ-2RKF8202X) | 0402 | 667-ERJ-2RKF8202X | P82.0KLCT-ND | C400641 |
 | R27 | U2B SYNC pull-down to AGND (R_PD) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
-| D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
-| Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q6, Q7, Q8 | Runtime RGB low-side sink stages for SW1 Red / Green / Blue cathodes | BSS138 N-channel MOSFET — reused Settings Board sink-stage pattern; gates driven from U16 through `R31-R33`, held OFF by `R34-R36` | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
+| D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
+| D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
+| Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q6, Q7, Q8 | Runtime RGB low-side sink stages for SW1 Red / Green / Blue cathodes | BSS138 N-channel MOSFET — reused Settings Board sink-stage pattern; gates driven from U16 through `R31-R33`, held OFF by `R34-R36` | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | U1 | eFuse | TPS259804ONRGER (16.9V silicon-fixed OVLO) | VQFN-24 4×4mm | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |
-| U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
+| U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | 505-LTC3350EUHF#PBF-ND | C580711 |
 | U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. Package: WQFN-38 6×4mm (differs from TPS25750 QFN-28). | WQFN-38 6×4mm | 595-TPS25751DREFR | 296-TPS25751DREFRCT-ND | C30169739 |
 | U5 | USB-C Sink Controller | STUSB4500LQTR | QFN-24 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 |
 | U6a, U6b, U6c | OR-ing Controllers (×3, one per power input: PoE, USB-C, Battery) | LM74700QDBVRQ1 | SOT-23-6 | 595-LM74700QDBVRQ1; alt T&R: 595-LM74700QDBVTQ1 | 296-LM74700QDBVRQ1CT-ND | C2941042 |
 | U7 | 3V3_ENIG LDO | TPS75733KTTRG3 (fixed 3.3V, active-LOW EN) | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 |
-| U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | C52146050 |
-| U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
+| U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | C625189 |
+| U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 |
 | U12 | 5V_MAIN Current Monitor | INA219AIDR — Zero-Drift Current/Power Monitor (I²C 0x40) | SOIC-8 | 595-INA219AIDR | 296-23978-1-ND | C138706 |
-| U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | SN74LVC1G14DBVRQ1 (AEC-Q100 single-gate Schmitt inverter) | SOT-23-5 | 595-SN74LVC1G14DBVRQ1 | 296-SN74LVC1G14DBVRQ1CT-ND | C49303123 |
-| U15 | PWR_BUT shutdown one-shot timer | MIC1555YM5-TR — CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C32 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C33 (100nF). | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
+| U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | SN74LVC1G14DBVRQ1 (AEC-Q100 single-gate Schmitt inverter) | SOT-23-5 | 595-N74LVC1G14DBVRQ1 | 296-SN74LVC1G14DBVRQ1CT-ND | C49303123 |
+| U15 | PWR_BUT shutdown one-shot timer | MIC1555YM5-TR — CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C32 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C33 (100nF). | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 |
 | U16 | PM-local GPIO expander | PCA9534APWR — 8-bit I²C GPIO expander @ 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`. `INT` exported as `PM_IO_INT_N`. | TSSOP-16 | 595-PCA9534APWR | 296-21760-1-ND | C2871127 |
 
 > **BOM Notes:**
@@ -536,7 +536,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > > matches the battery charge ceiling (4S, 4.1V/cell max = 16.4V), providing a 0.5V margin. Any
 > > proposed MPN change to this component requires explicit justification against this criterion.
 >
-> * **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey T&R: `LTC3350EUHF#TRPBFCT-ND`; also
+> * **U3 LTC3350EUHF#PBF** — Package is **QFN-38 (5×7mm)**, not QFN-28. Footprint and courtyard
+>   on PCB must use the 38-lead 5×7mm QFN (UHF package code). DigiKey:
+>   `505-LTC3350EUHF#PBF-ND`; JLCPCB: `C580711`; also
 > available Farnell 4029939.
 >
 > > ⚠️ **Supercap cell lock — do NOT change MPN or count:**
@@ -564,9 +566,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > Thermal dissipation greatly improved: ~0.33W typical (1.85A, Vdo≈0.18V) vs 3.1W with the previous part — ≥200mm² copper pour requirement removed.
 > Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`.
 > * **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
-> 579-MCP121T-450ETTDITR) instead. JLCPCB C52146050 confirmed; note JLCPCB lists this device with a TP prefix on the MPN but is the same device.
+> 579-MCP121T-450ETTDITR) instead. JLCPCB `C625189` confirmed.
 > * **U11 MIC1555YM5-TR** — CMOS timer (Microchip). Timing components: R16=10.0kΩ (R_A), R17=715kΩ (R_B), C23=1µF (C_OSC) → 1Hz, ~50% duty cycle via formula f=1.44/((R_A+2R_B)×C). VCC bypass: C22
-> (100nF). Note: the 715kΩ E96 resistor (R17) is not common at all distributors — confirm stock at Mouser (667-ERJ-3EKF7153V) before BOM freeze.
+> (100nF). R17 verified as ERJ-3EKF7153V with Mouser 667-ERJ-3EKF7153V / DigiKey P715KHCT-ND / JLCPCB C403339.
 > * **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery).
 > Three LM74700-Q1 instances (U6a, U6b, U6c) are required — one IC per MOSFET for correct per-channel ideal-diode gate drive
 > (+7V above source via internal charge pump). Confirm U6a/U6b/U6c footprints at schematic capture.
@@ -623,4 +625,4 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > pre-compliance testing. Available from: Würth direct, Mouser (710-7448031002), DigiKey (732-5584-ND), and JLCPCB (C1519839).
 > * **L3 SRP1265A-100M** — Replaces Würth 7447789100 (not available in public catalog). Bourns SRP1265A-100M: 10µH, **15.5A Isat** (21% headroom over 12A DC), 16.5mΩ DCR (better than original 20mΩ
 > spec), 13.5×12.5×6.2mm SMD. ⚠️ Package is 13.5×12.5mm vs 7447789100's 12.5×12.5mm — update PCB land pattern. Farnell stock confirmed ~2,741 pcs; Mouser: `652-SRP1265A-100M`; DigiKey:
-> `SRP1265A-100MCT-ND`.
+> `SRP1265A-100MCT-ND`; JLCPCB: `C840531`.

@@ -63,3 +63,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 53 | BHR verified and review fixes locked | 053-bhr-verified-and-review-fixes.md |
 | 54 | Final propagation and datasheet tracking sync | 054-final-propagation-and-datasheet-tracking.md |
 | 55 | LINK-BETA DEC-037 pin remap | 055-link-beta-dec037-pin-remap.md |
+| 56 | Component closeout and handoff consolidation | 056-component-closeout-and-handoff-consolidation.md |

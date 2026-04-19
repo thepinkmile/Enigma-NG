@@ -174,4 +174,4 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 | J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
 | J4 | Interconnect header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
 | J5 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
-| R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P22.0BYCT-ND | — |
+| R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P220HCT-ND | C403073 |

@@ -350,26 +350,26 @@ automatic polling intervals.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-CL05B104KB5NNNCCT-ND | C960916 |
 | C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_LED_B1 | VCC decoupling cap for U_LED_B1 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_LED_B2 | VCC decoupling cap for U_LED_B2 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J_I2C | I²C harness connector to Stator J_CFG | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
 | LED_B1_EN, LED_B1[0:3] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | LED_B2_EN, LED_B2[0:5] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
-| Q_BNK1_R | Bank 1 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q_BNK1_G | Bank 1 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q_BNK1_B | Bank 1 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q_BNK2_R | Bank 2 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q_BNK2_G | Bank 2 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| Q_BNK2_B | Bank 2 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| R_CA1 | CFG_APPLY pull-up resistor | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R_SW1–R_SW5 | Bank 1 switch input pull-downs (×5: SW_B1_EN + SW_B1[0:3]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R_SW6–R_SW12 | Bank 2 switch input pull-downs (×7: SW_B2_EN + SW_B2[0:5]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | 150Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1500V | P150BYCT-ND | C22808 |
-| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C22775 |
-| R_LED_B1–R_LED_B12 | Per-switch blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C22775 |
-| R_GATE1–R_GATE6 | MOSFET gate resistors (×6, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
+| Q_BNK1_R | Bank 1 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q_BNK1_G | Bank 1 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q_BNK1_B | Bank 1 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q_BNK2_R | Bank 2 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q_BNK2_G | Bank 2 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q_BNK2_B | Bank 2 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| R_CA1 | CFG_APPLY pull-up resistor | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R_SW1–R_SW5 | Bank 1 switch input pull-downs (×5: SW_B1_EN + SW_B1[0:3]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R_SW6–R_SW12 | Bank 2 switch input pull-downs (×7: SW_B2_EN + SW_B2[0:5]) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | 150Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 |
+| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
+| R_LED_B1–R_LED_B12 | Per-switch blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
+| R_GATE1–R_GATE6 | MOSFET gate resistors (×6, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 |
 | SW_B1_EN | Bank 1 enable toggle switch | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW_B1[0] | Bank 1 routing config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW_B1[1] | Bank 1 routing config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW_B1_EN | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |

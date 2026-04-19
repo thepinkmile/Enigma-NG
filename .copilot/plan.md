@@ -2,72 +2,79 @@
 
 > Canonical state: `.copilot/plan.md` in the repository root (tracked in git).
 > Update this file at the end of each session or at meaningful milestones.
-> At the start of a new session, read this file plus relevant checkpoints in `.copilot/checkpoints/`.
+> At the start of a new session, read this file plus `.copilot/handoff.md` and the latest relevant
+> checkpoints in `.copilot/checkpoints/`.
 
 ---
 
 ## Overview
 
-The active workstream is now the **Controller / Power Module / Stator dock redesign** and the
-associated ownership move that makes the Controller the enclosure-edge I/O carrier.
+The repository is now in a **clean repo-local handoff state** after closing the manual component
+verification sweep and removing redundant Copilot working notes.
 
 Recent milestones now applied in the working tree:
 
-- **DEC-038** added to lock the new architecture
-- **Controller ↔ PM dock** changed to three TE `1-1674231-1` / `1123684-7` connectors (`J1A/J1B/J1C`)
-- **Controller ↔ Stator dock** changed to two Molex `2195630015` / `2195620015` hybrid connectors (`J2A/J2B` / `J8A/J8B`)
-- **PM-local status / LED control** moved onto `PCA9534APWR @ 0x3F`
-- **Controller-owned RJ45 / PoE entry** propagated into the active architecture docs
+- the final stale component-tracker bucket rows were removed
+- the old `.copilot/components-todo.md` and `.copilot/component-types-summary.md` files were retired
+- the old `.copilot/files/*.md` historical session notes were audited and removed
+- `.copilot/handoff.md` now serves as the single generic repo-local handoff note
+- the active `design/` documents already carry the important design facts from those retired notes
 
-Current goal: finish the consistency pass so the touched design docs, shared BOM authority, and
-repo-local handoff all reflect the same dock architecture before the next formal review cycle.
+Current goal: leave the tree **commit-ready** tonight so the next session can begin from the
+repo-local state directly, without repeating component-tracker or handoff-note cleanup.
 
 ### Immediate remaining work
 
-1. Run markdownlint on the touched design / handoff docs.
-2. Review any lint fallout and make only consistency fixes tied to the dock redesign.
-3. Leave the tree uncommitted for manual human review before formal review cycles restart.
+1. Create the commit for the current design and `.copilot/` sync.
+2. Start the next session from `.copilot/plan.md`, `.copilot/handoff.md`, and checkpoint 056.
+3. Resume only the genuine open design-review and mechanical follow-up items.
 
 ---
 
-## Review Cycle Process
+## Repo-Local Handoff Layout
 
-**Standard Review Cycle:** All design document changes must pass through this review process.
+Use the following files as the persistent repo-local session state:
 
-### Tools
-1. **markdownlint** — syntax/formatting check
-2. **Electronics review engineer agent** — hardware-focused technical review
+| File | Purpose |
+|------|---------|
+| `.copilot/plan.md` | Current project/session state, open workstreams, and next steps |
+| `.copilot/handoff.md` | Generic handoff note for non-design workflow context that is still worth carrying |
+| `.copilot/checkpoints/index.md` | Chronological checkpoint history |
+| `.copilot/checkpoints/NNN-*.md` | Individual checkpoint snapshots |
 
-### Review Cycle Rules
-1. **2 consecutive clean passes required** — both lint AND electronics review must be clean
-2. **Material technical issues count as findings** — any issue flagged by the electronics review 
-   agent (CRITICAL, SIGNIFICANT, or CLARITY issues) requires investigation and resolution
-3. **Fixes trigger new review** — any fix applied to resolve findings resets the clean-pass 
-   counter to zero; must achieve 2 clean consecutive runs after all fixes
-4. **Agent invocation**: Use the "Electronics review engineer" custom agent with specific files 
-   and clear scope (e.g., "Review Settings Board Design_Spec and Board_Layout for technical 
-   consistency, sourcing feasibility, and manufacturing realism")
-5. **Review scope**: Focus on component specifications, I²C/electrical topology, BOM accuracy, 
-   datasheet alignment, and sourcing/manufacturing risks — not software or style issues
+Historical one-off working notes are no longer kept under `.copilot/files/`; if a future session
+needs a persistent repo-local note, prefer folding it into `handoff.md` unless a separate artifact
+is genuinely required.
 
-### Review Workflow
-```
-Round N: Run lint + electronics review
-  ↓
-  Clean? 
-    YES → Increment clean-pass counter (0→1 or 1→2)
-      ↓
-      Counter = 2? → ✅ REVIEW CYCLE COMPLETE
-      Counter = 1? → Run Round N+1
-    NO → Apply fixes
-      ↓
-      Reset clean-pass counter to 0
-      ↓
-      Run Round N+1
-```
+---
 
-**Current Status:** Repository-scoped active-doc cleanup complete; two consecutive clean review
-passes achieved and synced in checkpoint 047.
+## Current Open Workstreams
+
+| ID | Status | Scope |
+|----|--------|-------|
+| `grounding-rules-cleanup` | in_progress | Revisit whether `GND_CHASSIS` should remain a broadly global rule or become more board-specific while preserving the single galvanic bond on the Power Module only |
+| `rerun-deep-reviews` | in_progress | Rerun the deep review agents only after the next material design-doc change set |
+| `extension-mechanical-usage` | pending | Review how Extensions should be used mechanically, including whether interconnect choices for the Stator / Reflector / Extension chain should change |
+| `encoder-board-split-review` | pending | Review whether the Encoder Board should split into separate Keyboard and Lightboard physical assemblies |
+| `extension-notch-pass-through` | pending | Review whether Extensions need additional servo circuitry to pass through notch rotations |
+
+All component-review and handoff-cleanup tasks are complete for this phase.
+
+---
+
+## Component Verification Status
+
+The manual component verification sweep is **closed** for the current repo-local state.
+
+- No remaining `RECHECK` rows remain in the retired tracker.
+- Verified supplier / MPN data has already been propagated into the active design docs where needed.
+- The old tracker files were removed because they no longer carried unique design information.
+
+For future part work, treat the active design docs as the source of truth:
+
+- `design/Electronics/Consolidated_BOM.md`
+- board-level `design/Electronics/*/Design_Spec.md`
+- `design/Datasheets/` for local datasheet evidence
 
 ---
 
@@ -76,269 +83,78 @@ passes achieved and synced in checkpoint 047.
 | Board | Status |
 |-------|--------|
 | Power Module | ✅ Complete |
-| Stator | ✅ Complete (DIP switches removed; J_CFG to Settings Board DEC-032) |
+| Stator | ✅ Complete |
 | Reflector | ✅ Complete |
 | Extension | ✅ Complete |
 | JDB | ✅ Complete |
-| Controller | ✅ Complete (DSI1 provision added DEC-033) |
+| Controller | ✅ Complete |
 | Encoder | ✅ Complete |
 | Rotor | ✅ Complete |
 | Settings Board | ✅ Complete |
 
 ---
 
-## Full System Review Cycle Status
+## Next Session Start Point
 
-A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive clean passes.
+Start the next clean session by reading:
 
-| Round | Result | Notes |
-|-------|--------|-------|
-| R1 | 21 findings | NPN/PNP, 3V3_ENIG, ERA R_ILIM, LINK-BETA cleanup |
-| R2 | 19 findings | NPN→PNP propagation, 5V_MAIN ghost, R3 ERA/ERJ |
-| R3 | 8 findings | ERA R_ILIM in CertEvidence, R20/R26 Stator, DEC-033 |
-| R4 | 9 findings | R20/R26 prose propagation across 4 files |
-| R5 | 10 findings | SYS_RESET_N stale, SERVO_HOME duplicates, attribution |
-| R6 | 1 finding | SYS_RESET_N in CI row of Rotor/Board_Layout.md |
-| R7 | 2 findings | DEC-015 pin table, DEC-031 Net Effect, Bank-Beta inventory |
-| R8 | ✅ CLEAN | Pass 1 — reset by R10–R12 fixes |
-| R9 | 3 false positives | No fixes — known-correct list corrected |
-| R10 | 1 finding | Q_BNK transistor names in Settings_Board/Board_Layout.md |
-| R11 | 2 findings | SERVO_HOME R_SH1/C_SH1 missing from BOM passive counts |
-| R12 | 1 finding | TTD_RETURN in wrong trace-width row in Stator/Board_Layout.md |
-| R13 | ✅ CLEAN | **Pass 1 of 2** (post-R10/R11/R12) |
-| **R14** | 1 low-value clarity issue | Generic TPS25980 wording in Boards_Overview; corrected |
-| **R15** | ✅ CLEAN | **Pass 2 of 2** — review cycle complete |
+1. `.copilot/plan.md`
+2. `.copilot/handoff.md`
+3. `.copilot/checkpoints/056-component-closeout-and-handoff-consolidation.md`
+4. any earlier checkpoints directly relevant to the next task
 
----
-
-## Open Part Work
-
-| Ref | Description | Constraint |
-| :--- | :--- | :--- |
-| R_LED_R ×12, R_LED_G ×12, R_LED_B ×12 (SBD) | 0603 LED current-limiting resistors for 5V RGB upgrade | Values selected in docs; supplier verification still required in the queue |
-| R_LED_R ×12, R_LED_G ×12, R_LED_B ×12 | 0603 per-switch RGB LED resistors | Value tuning still open |
-| J_I2C / J_CFG | JST B6B-PH-K-S 6-pin 2.0mm — JLCPCB PN | Active Settings/Stator link is now 6-pin (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`); JLCPCB PN still needs confirmation |
-| J_DSI1 | Amphenol F52Q-1A7H1-11015 15-pin 1.0mm ZIF/FPC (CM5 DSI1) | Connector confirmed; display add-on board still deferred |
-| IC001+ onward | Remaining BOM-wide component rows in `.copilot/components-todo.md` | Continue manual verification from the queue before further doc propagation |
-| Expander revisit | Stator + Settings expander partitioning / HID decoder-lightboard follow-up | Revisit after the current consistency pass is complete; user has a new Encoder-board idea to discuss |
-
----
-
-## Todos
-
-| ID | Title | Status |
-|----|-------|--------|
-| `review-r14` | Review cycle completion after R14/R15 reruns | **done** |
-| `repo-review-cleanup` | Repository-scoped active-doc cleanup and two-clean-pass review gate | **done** |
-| `electronics-review-agent` | Create first-cut hardware/electronics review agent from generic review pattern | **done** |
-| `component-batch-1` | Lock first switch/component verification batch into active docs | **done** |
-| `keyboard-layout-lock` | Restore and formalize the 40-position HID keyboard/lightboard rule with a new DEC entry | **done** |
-| `components-sourcing` | Work through `.copilot/components-todo.md` detailed verification rows plus BOM coverage checklist and confirm valid candidate parts | pending |
-| `kicad-setup-docs` | KiCad setup documentation | pending (low priority) |
-
----
-
-## Immediate Next Steps
-
-1. **DEC-038 is now the active dock architecture baseline.**
-   - Controller ↔ PM uses TE `1-1674231-1` / `1123684-7` across `J1A/J1B/J1C`
-   - Controller ↔ Stator uses Molex `2195630015` / `2195620015` across `J2A/J2B` ↔ `J8A/J8B`
-   - PM status / SW1 runtime RGB now live on `PCA9534APWR @ 0x3F`
-2. **Current review-cycle focus is consistency, not new architecture changes.**
-   - finish propagating Controller-owned Ethernet / PoE front-end ownership everywhere
-   - keep legacy `Link-Alpha` / `Link-Beta` references historical-only
-   - hold all changes uncommitted until the user reviews the final clean document set
-3. **Connector source documents are now part of the active review set.**
-   - TE dock datasheets, Molex dock datasheets / drawings / family specification, and `pca9534a-datasheet.pdf` must remain explicitly referenced
-   - remove only truly redundant local PDFs after confirming no active or historical doc still depends on them
-     - `BHR-16-VUA` is no longer missing: local PDF added, `J016` verified, and the supplier numbers are synced
-     - the missing-datasheet queue now also tracks `334364197440`, `ABM8-12.000MHz-B2-T`, `AC72ABD`,
-       `150060VS75000`, and `9774040151R`
-4. **High-level architecture docs are now aligned with the intended reflector / extension model.**
-   - Reflector is mandatory and passive
-   - Stator CPLD owns reflector-map selection/application
-   - Extension boards sit between 5-rotor groups and reinject clean `3V3_ENIG` via `J7 -> J5`
-   - Settings Board RGB indicators are powered from `5V_MAIN`; `3V3_ENIG` remains the logic/control rail
-   - `J_DSI1` is the only fixed Controller-side display connector in current scope
-5. **Grounding-rule cleanup remains open for later investigation.**
-     - Revisit whether `GND_CHASSIS` should become a board-specific rule rather than a broad global one
-     - Preserve the user-confirmed intent that only boards with external connectors + ESD shunting
-       should normally carry `GND_CHASSIS`
-     - Keep the single galvanic GND ↔ `GND_CHASSIS` bond on the Power Module only
-6. **Continue component re-verification** from `.copilot/components-todo.md`.
-       - **Recently locked:** `S003`, `S005`, `S006`, `S007`, `S008`
-       - **Total VERIFIED rows:** 13
-       - Treat every other populated MPN/distributor field as provisional until manually checked and
-         marked `VERIFIED`
-7. **Apply confirmed parts only after re-verification** — update design docs only from `VERIFIED`
-       rows in the queue.
-8. **Immediate pending component targets:** `MCP23017T-E/SO`, `PCA9685PW,118`, and
-       `T821126A1S100CEU`.
-9. **Next issue pending from user:** partly mechanical follow-up to be investigated from the new
-      DEC-037 baseline.
-10. **KiCad project setup** — start only after the remaining critical TBD parts are locked.
-11. **Datasheet-analysis workflow captured for later execution.**
-     - Finish component review so the active component set is stable
-     - Retrieve all missing local datasheet PDFs for that verified set
-     - Generate extremely thorough markdown analysis files for each datasheet, with the markdown
-       referencing the source PDF and organizing package, electrical, pinout, limits, variants, and
-      integration-relevant constraints for future review agents
-    - Run a fresh extremely detailed full-design review once the datasheet-analysis corpus exists
+Then proceed straight into the next real design task rather than reconstructing old component
+verification state.
 
 ---
 
 ## Checkpoint Procedure
 
-Every checkpoint MUST include ALL of the following steps (in order):
+Every checkpoint MUST include ALL of the following steps:
 
-1. **Write checkpoint file** to `.copilot/checkpoints/NNN-short-title.md` in the **repository**.
-   Include: overview, work done, commits, technical decisions, corrected known-correct list,
-   open questions, and next steps.
-2. **Update checkpoint index** at `.copilot/checkpoints/index.md` in the **repository** with the
-   new entry.
-3. **Update `.copilot/plan.md`** in the **repository** to reflect current state, todos, and
-   immediate next steps. Ensure stale values list and JTAG topology notes are current.
-4. **Copy any new agent-prompt files** (`.copilot/agent-prompts/*.txt`) to the **repository**
-   if they were created in the session-state folder instead.
-5. **Sanitize the synced handoff** so it is safe for version control:
-   - Use repo-relative paths or `%USERPROFILE%` placeholders instead of machine-specific absolute paths
-   - Do not store raw usernames or Copilot session IDs in committed `.copilot\` content
-6. **Verify** all checkpoint artifacts are present in repo-local `.copilot\`
-   before declaring the checkpoint complete.
-
-> ⚠️ The session-state folder (`%USERPROFILE%\.copilot\session-state\<id>\`) is ephemeral and
-> tied to a single session ID. The repository `.copilot\` folder is the canonical persistent
-> store. Always write to (or sync to) the repository folder.
+1. Write the checkpoint file to `.copilot/checkpoints/NNN-short-title.md`.
+2. Update `.copilot/checkpoints/index.md`.
+3. Update `.copilot/plan.md`.
+4. Sync any related repo-local handoff artifacts into `.copilot/`.
+5. Sanitize all repo-local handoff content for version control:
+   - use repo-relative paths or `%USERPROFILE%` placeholders instead of machine-specific absolute paths
+   - do not store raw usernames, credentials, or Copilot session IDs
+6. Verify the repo-local checkpoint artifacts exist before declaring the checkpoint complete.
 
 ---
 
 ## Critical Notes
 
-### Lint Process
+### Component / MPN discipline
 
-- PATH refresh: `$env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine")+";"+[System.Environment]::GetEnvironmentVariable("PATH","User")`
-- Run: `.\node_modules\.bin\markdownlint.cmd --fix "design/**/*.md"` then without `--fix` to confirm clean.
-- Pre-existing MD013 lint errors (acceptable — cannot auto-fix): Consolidated_BOM lines 195-196,
-  PM Design_Spec line 489, User_Manual line 134, Power_Management line 215, Global_Routing_Spec line 72.
+- Never change a component MPN without a matching local datasheet review in `design/Datasheets/`.
+- The correct eFuse is **TPS259804ONRGER**; **TPS259807ONRGER is wrong** for this design.
+- Use **ERA** parts where the design explicitly needs thin-film / 0.1% accuracy; do not silently
+  substitute them with **ERJ** thick-film parts.
 
-### ⚠️ Part Number Change Rule (MANDATORY — review agents must follow this)
+### Settings Board final state
 
-**Before proposing or applying ANY component MPN change during a review cycle:**
+- `U_EXP_SW_IN @ 0x23`
+- `U_LED_B1 @ 0x24`
+- `U_LED_B2 @ 0x25`
+- `J_I2C` / `J_CFG` is the 6-wire harness carrying `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`
+- RGB LED operation is the final 5V design: 150 ohm red, 100 ohm green, 100 ohm blue
 
-1. A datasheet for the proposed new MPN MUST exist in `design/Datasheets/`.
-2. The agent MUST read that datasheet and verify ALL of the following match the design requirement:
-   - Package / footprint (e.g. VQFN-24, VSSOP-8, SOT-23-5)
-   - Key electrical parameters (voltage rating, current rating, logic levels, OVLO/UVLO thresholds)
-   - Variant identifier (e.g. the `04` in TPS259804 vs `07` in TPS259807)
-3. If no datasheet is present for the proposed part → **do NOT make the change**.
-   Flag it as: "Proposed MPN change — no datasheet available; requires human verification."
-4. If the datasheet exists but any parameter does not match → **do NOT make the change**.
-   Flag it with the specific mismatch.
+### HID / keyboard final state
 
-### JTAG Topology (CRITICAL — agents have repeatedly got this wrong)
+- Physical HID layout is **40 positions**
+- Printable positions are `[a-z0-9+=]`
+- The two modifier positions are **Left Shift** and **Right Shift**
+- The logical repertoire remains the full **64-character** code space
 
-- TCK/TMS/TDI travel via **BtB connectors** (ERM8/ERF8 Samtec 0.8mm pitch) through entire rotor stack.
-  NO ribbon cables used for JTAG within the rotor stack.
-- JTAG chain terminates at the **Reflector**. Reflector R1 (22Ω) = end-of-chain TDO damping.
-- Reflector J4 → Stator J7 ribbon carries: pin 15=TTD_RETURN (JTAG), pins 3-14=ENC_IN/OUT (plugboard
-  config for Stator CPLD — NOT JTAG). The ribbon does NOT extend the JTAG chain.
-- Extension U1 (SN74LVC2G125DCUR) re-buffers TCK/TMS every 5-rotor group — CORRECT, INTENTIONAL.
-- Stator R7-R15 (75Ω) and Encoder R7-R8 are for encoder RIBBON CABLE ports (J4/J5/J6) ONLY.
+### JTAG topology reminders
 
-### Extension U1 Buffer (NEVER REMOVE)
+- JTAG travels through the rotor stack on the ERM8/ERF8 board-to-board connectors, not ribbon cable
+- The Reflector remains the end of the chain; Reflector `R1` is the 22 ohm TDO damping resistor
+- Extension `U1` (`SN74LVC2G125DCUR`) is intentional and must not be removed
 
-- Extension board has U1 (SN74LVC2G125DCUR) + C6 (0.1µF bypass), FR-EXT-01/02, DR-EXT-04/05/06.
-- Consolidated BOM: SN74LVC2G125DCUR EXT=1 Total=2; 0.1µF X7R 0402 EXT=1 Total=509.
-- R43 wrongly removed this. R49-retry tried to remove it again. Both were wrong.
-- Design_Spec is authoritative; BOM must match it (not the other way around).
+### Repo-local state rules
 
-### Connector Conventions
-
-- Male headers on sub/daughterboards (JDB J1/J2, Rotor Board A H_SW3/H_SENS, Rotor Board B H_PWR/H_JTAG)
-- Female sockets on main/receiving boards (Controller J_JDB_PWR/JTAG, Rotor Board A H_PWR/H_JTAG, Board B H_SW3/H_SENS)
-- Adam Tech PH1-xx-UA = male; RS1-xx-G = female. Same footprint per pin count — confirmed mating pairs.
-- RS-Online PNs go in description field, NOT Mouser column.
-- Net names NEVER use + prefix: `3V3_ENIG` not `+3V3_ENIG`.
-- Controller J1 + J2 = ERF8 female (both) for slide-in assembly.
-
-### Rotor J_INT (4-Header Arrangement — confirmed correct)
-
-- H_SW3 (1×7): Board A=PH1-07-UA male, Board B=RS1-07-G female | SW3[0:5], GND
-- H_PWR (1×5): Board A=RS1-05-G female, Board B=PH1-05-UA male | 3V3_ENIG×4, GND
-- H_JTAG (1×5): Board A=RS1-05-G female, Board B=PH1-05-UA male | TCK, GND, TMS, GND, TDO
-- H_SENS (1×5): Board A=PH1-05-UA male, Board B=RS1-05-G female | SDA, SCL, POS_B[0:2]
-- POS_B[0:2] = Track B position bits from FDC2114 U3 on Board B (N=64 only)
-- All SMT on outer (top) face; headers on inner (bottom) face manually post-SMT
-- Boards mate bottom-to-bottom; tops face outward into shroud
-
-### Stale Values (must NEVER reappear)
-
-- TPS7A8333PRMWR / TPS7A8333P, LMQ61460ARUMR, WSON-8 2×2mm / WSON-12
-- C21397, 1276-1935-1-ND, WM7843-ND, C841785, TPS25980RPWR, TPS259807ONRGER
-- ERA-3ARB2323V, ERA-3ARB2872V, "0.1% Thin-Film" for R1/R2/R3 on PM
-- "adjustable OVLO" for DEC-005, SOT-23-6 for SN74LVC2G125DCUR
-- C15281 / C2688 for SN74LVC2G125DCUR, ERJ-2RKF8200X for R26
-- "100kΩ" / "18nF" for SYNC RC delay, "0.1%" for R_FSET or R_DLY in Cert_Evidence §3.3.3
-- "SN74LVC1G14" without DBVRQ1 suffix, SOIC-8 for TPS2065C, VQFN for TPD4E05U06
-- 0402 for Reflector R1 22Ω, JLC04161H-7628 in Controller/Board_Layout, TPD12S016 anywhere
-- "RST" as signal/net name (incl. "TDI/RST"), "Binary input from Keyboard CPLD" for ENC_IN
-- SOT-23 (3-pin) for AP2331W, SOT-25 for AP2331W (use SOT-23-5)
-- "L4 / L6" for Logic/I2C in CTL Design_Spec §9.3, TPD4E1U06DBVR in Design_Log INC-22
-- L1–L4 enclosure rib clearway in PM Design_Spec §1, L4 (Bottom) for PM Data Plate
-- [L1/L4 2oz Copper] in PM Board_Layout, L6 = Diagnostic/Data Plate (short) in CTL Board_Layout §9
-- 9.05A peak load, 2.20A LDO load, 75.4% LMQ utilisation, 76.2% PoE cold-start (all corrected)
-- "accepted exception" for LMQ or PoE cold-start (zero exceptions remain in the system)
-- "Extension board: NO U1 buffer" — WRONG; Extension U1 IS correct and present
-- ERJ-3EKF2100V for R3 R_ILIM (wrong, 1% thick-film) → ERA-3ARB2100V (correct, 0.1% thin-film)
-- "PNP MMBT3906 sourcing rails" for the Settings Board discrete-LED design — superseded by BSS138 low-side colour-rail sinks in DEC-034
-- U_EXP_SW_OUT @ 0x24 (stale artefact — never existed; use U_EXP_SW_IN @ 0x23, U_LED_B1 @ 0x24,
-  and U_LED_B2 @ 0x25)
-- "Q1"/"Q2"/"Q3"/"Q4" as transistor names on Settings Board → Q_BNK1_G/R, Q_BNK2_G/R
-- SYS_RESET_N in JTAG CI (0.127mm) row — it routes at 0.20mm (DEC-031, I²C-sourced)
-- TTD_RETURN in 0.20mm signal row — it is a JTAG CI signal (0.127mm)
-- R_SH2, C_SH2 (SERVO_HOME) — erroneous duplicates, permanently removed; only R_SH1, C_SH1 exist
-- STATOR_CFG_RDY on R26 — correct is R20=STATOR_CFG_RDY; R26=SW2[5] (post-R3/R4)
-- Molex 22-23-2261 (→ Amphenol T821126A1S100CEU), Molex 22-23-2161 (→ BHR-16-VUA)
-- Würth 61300511021 / 61301011021 (→ RS1-05-G / RS1-10-G), C50950 / C2337 (JDB headers)
-- 22F cells, 33F bank, 21.7 s hold-up — stale pre-Abracon values; correct = 25F cells / 50F bank / ≥33.5 s
-- 2S3P, 37.5F bank (3P), 6 cells, 24.8s — stale pre-2S4P; correct = 2S4P, 50F bank, 8 cells
-- R14=28.7kΩ, threshold 4.644V — stale pre-transient-fix; correct R14 per DEC-030
-- Old mechanical paths: design/Mechanical/Keyboard/, design/Mechanical/Plugboard/
-- CM5 GPIO 4–15 and 26 driving ENC_IN/OUT/SYS_RESET_N directly — stale; all migrated to MCP23017
-- SYS_RESET_N on CM5 GPIO 26 — stale; now U_EXP2 GPA[7] on Stator MCP23017
-- PCA9685 @ 0x40 or any address other than 0x60 — correct address is 0x60 (A5=HIGH, A4–A0=GND)
-- SW1 / SW2 DIP switches on Stator — REMOVED (replaced by Settings Board DEC-032)
-- 2-layer stackup for Settings Board — WRONG; all boards use 4-layer JLC04161H-7628 (Controller = 6-layer)
-- unified Marquardt rocker assumption across PM + Settings Board — WRONG; superseded by DEC-034 split selections
-
-### Key Design Decisions
-
-- All capacitors: X7R dielectric
-- JTAG CI traces: 0.127mm (5 mil) targeting 50Ω on JLC04161H-7628
-- CPLD: EPM240T100I5N (industrial, −40°C to +100°C) for Encoder; EPM570T100I5N for Stator/Rotor
-- Net names NEVER use + prefix: `5V_MAIN` not `+5V_MAIN`
-- Controller J1 + J2 = ERF8 female (both) for slide-in assembly
-- U7 EN is active-LOW (EN LOW = on); pull-down to GND
-- Extension board U1 buffers TCK/TMS every 5 rotors (NOT per-rotor buffering)
-- TPS259804ONRGER = silicon-fixed 16.9V OVLO eFuse (no external OVLO pin; R3 = R_ILIM = 210Ω)
-- All boards 4-layer JLC04161H-7628 / 2oz copper except Controller (6-layer JLC06161H)
-- MCP23017 I²C addresses: 0x20 (U_EXP1 STA), 0x21 (U_EXP2 STA), 0x22 (U_EXP4 STA),
-  0x23 (U_EXP_SW_IN SBD), 0x24 (U_LED_B1 SBD), 0x25 (U_LED_B2 SBD)
-- Settings Board LED: green = switch-defined, red = CM5-defined by default; full RGB remains available under CM5 control
-- Settings Board switches: E-Switch 200MSP1T2B4M2QE for all 12 panel toggles
-- Settings Board indicator LED: Kingbright WP154A4SEJ3VBDZGW/CA (common-anode, full RGB under CM5 control)
-- Power Module SW1: Adafruit 4660 rugged metal RGB latching switch
-- Settings Board topology: individual LED anode drive plus BSS138 low-side shared RGB colour rails;
-  separate red / green / blue resistors per switch; 5V_MAIN-fed indicator rail
-- Settings Board transistors: Q_BNK1_R/G/B and Q_BNK2_R/G/B (functional names)
-- Settings Board I²C expanders: U_EXP_SW_IN @ 0x23 (reads switches), U_LED_B1 @ 0x24
-  and U_LED_B2 @ 0x25 (drive LEDs + colour rails). U_EXP_SW_OUT and any older 0x26/0x27 naming are
-  stale artefacts — never use.
-
-### Open Work Items (OWI)
-
-- OWI-001: Test coupons per board
-- OWI-002: PAS definitions per board
-- OWI-003: VHDL pseudo-code and CPLD config plans
-- OWI-018: ENIG rib clearway bonding pad
-- Deferred: ERA-3ARB2672V / ERA-3ARB1002V MOQ issue (R14/R15 LTC3350)
+- `.copilot/` is tracked in git and must be kept in sync with meaningful design-state changes
+- `handoff.md` is the generic persistent note; avoid recreating ad hoc historical note files unless a
+  separate artifact is truly needed

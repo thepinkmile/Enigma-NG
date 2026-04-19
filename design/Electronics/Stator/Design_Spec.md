@@ -349,26 +349,26 @@ snapped off.
 | J8A, J8B | Controller dock hybrid plugs (5V-biased + 3V3/JTAG/I2C) | Molex 2195620015 | 5 power + 15 signal hybrid plug | 538-219562-0015 | 900-2195620015-ND | Global sourcing / consignment |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ω @100 MHz, 4.0A | 1206 | 875-HI1206P121R-10 | 240-2410-1-ND | C2442103 |
 | R1 | Rotor-Stack Shunt Resistor (CSS2H — Stator R1; PM R12 LTC3350 RSENSE and PM R23 INA219 U12 are first and second system instances, total build qty: 3) | CSS2H-2512R-R010ELF (10mΩ ±1% 5A) | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
-| R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R3 | TMS pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R5 | TCK pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R7 | TCK series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R8 | TCK series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R9 | TCK series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R10 | TMS series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R11 | TMS series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R12 | TMS series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R13 | TDI chain: Stator CPLD TDO → J4 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R14 | TDI chain: J4 TDO return → J5 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R15 | TDI chain: J5 TDO return → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0BYCT-ND | C105905 |
-| R16 | SW1[0] (switch 1) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R17 | SW1[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R18 | SW1[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R19 | SW1[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R20 | STATOR_CFG_RDY input pull-down (×1) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R21–R26 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R3 | TMS pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R5 | TCK pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R7 | TCK series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R8 | TCK series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R9 | TCK series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R10 | TMS series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R11 | TMS series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R12 | TMS series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R13 | TDI chain: Stator CPLD TDO → J4 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R14 | TDI chain: J4 TDO return → J5 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R15 | TDI chain: J5 TDO return → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R16 | SW1[0] (switch 1) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R17 | SW1[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R18 | SW1[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R19 | SW1[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R20 | STATOR_CFG_RDY input pull-down (×1) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R21–R26 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | SW2 | Reflector map selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | U1 | Stator Management CPLD (routing matrix + reflector map application) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
@@ -380,7 +380,7 @@ snapped off.
 | J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 |
 | J_CFG | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SW865-ND | C3822088 |
-| R_SH1 | SERVO_HOME pull-up resistor (10kΩ) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
+| R_SH1 | SERVO_HOME pull-up resistor (10kΩ) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | C_SH1 | SERVO_HOME RC debounce capacitor (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 
 > **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item — see

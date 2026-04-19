@@ -45,13 +45,13 @@ Controller, and all enclosure-edge I/O is grouped on the Controller side.
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-CTL-01 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §9 PCB Fabrication & Stackup |
-| DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor). Minimum spec: 8 GB RAM, 4 GB eMMC. CM5 Lite (no onboard wireless, no onboard flash) is NOT permitted. BOM reference: various (e.g. CM5008032). | BOM U1 |
+| DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor). Multiple current CM5 variants are acceptable. Minimum spec: 4 GB RAM and 8 GB eMMC; on-board Wi-Fi may be fitted or omitted. CM5 Lite (no onboard eMMC) is NOT permitted. BOM reference: various CM5 SKUs. | BOM U1 |
 | DR-CTL-03 | Controller-to-Power-Module dock connectors | `J1A/J1B/J1C` = TE `1-1674231-1` 10-position 2.5mm receptacles | BOM J1A–J1C |
 | DR-CTL-04 | Controller-to-Stator dock connectors | `J2A/J2B` = Molex `2195630015` hybrid receptacles (5 power + 15 signal) | BOM J2A, J2B |
 | ~~DR-CTL-05~~ | ~~Reserved / deleted~~ | ~~—~~ | ~~—~~ |
 | DR-CTL-06 | USB current limit | 1.6 A via TPS2065C; fault output to GPIO 22 (USB_FAULT) | BOM U2 (TPS2065C); §6 GPIO Mapping (GPIO 22) |
 | DR-CTL-07 | RTC battery holder | BT1 = Keystone 3034TR (THT horizontal CR2032 holder; `TR` = tape-reel packaging) | §5 RTC Backup Battery; BOM BT1 (Keystone 3034TR) |
-| DR-CTL-08 | RTC protection | D1 = Nexperia BAT54 Schottky diode (blocks PMIC VBAT charge path) | §5 RTC Backup Battery; BOM D1 (BAT54) |
+| DR-CTL-08 | RTC protection | D1 = BAT54 Schottky diode (blocks PMIC VBAT charge path) | §5 RTC Backup Battery; BOM D1 (BAT54) |
 | DR-CTL-09 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 95, Hirose DF40 200-pin) | §5 RTC Backup Battery; BOM C6 |
 | DR-CTL-10 | PM status / SW1 LED interface | Controller must expose the shared `I2C-1` bus plus one optional interrupt input (`PM_IO_INT_N`) to the PM-local `PCA9534A @ 0x3F`, which virtualises `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, `SYS_FAULT`, and runtime `SW_LED_R/G/B + SW_LED_CTRL`. | §4.1 I²C Bus Topology; §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-11 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
@@ -191,7 +191,7 @@ a 3V coin cell is required on the CM5's VBAT pin (**Pin 95** on the CM5 Hirose D
 
 * **Battery (BT1):** Keystone 3034TR CR2032 THT horizontal click-in holder (`TR` = tape-reel packaging). CR2032 = 3.0V, 220mAh.
   Estimated service life >25 years at <1µA RTC quiescent draw.
-* **Protection Diode (D1):** Nexperia BAT54 Schottky diode (SOT-23, 30V, 200mA).
+* **Protection Diode (D1):** BAT54 Schottky diode (SOT-23, 30V, 200mA).
   Connected in series: BT1(+) → D1(anode), D1(cathode) → CM5 VBAT (Pin 95). Vf ≈ 0.3V @ 100µA; delivers
   ~2.7V to VBAT pin (within MXL7704 VBAT operating range). **This diode is mandatory with a CR2032 —
   it physically prevents the PMIC charging circuit from reaching the battery.**
@@ -461,7 +461,7 @@ Monitors the Controller ↔ Stator dock cluster.
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
-| D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 (Diotec) | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
+| D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
 | J1A-J1C | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
 | J2A, J2B | Stator dock hybrid receptacles (×2) | Molex 2195630015 | 5 power + 15 signal press-fit receptacle | 538-219563-0015 | 900-2195630015-ND | Global sourcing / consignment |
 | J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-48406-0003 | WM10420-ND | C565298 |
@@ -474,12 +474,12 @@ Monitors the Controller ↔ Stator dock cluster.
 | J_CM5_A | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | J_CM5_B | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | MH1–MH4 | CM5 brass standoff M2.5 × 4.0mm SMT (Würth 9774040151R) × 4 | M2.5 × 4.0mm | SMT | 710-9774040151R | 732-7089-1-ND | C5182034 |
-| R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100BYCT-ND | C25806 |
-| R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
-| U1 | Raspberry Pi Compute Module 5 (CM5) — 8GB RAM / 4GB eMMC minimum; CM5 Lite NOT permitted | N/A | CM5 (SO-DIMM) | various (e.g. CM5008032) | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
-| U2 | USB power switch | TPS2065C | SOT-23-5 | 595-TPS2065CDBVR | 296-TPS2065CDBVRCT-ND | C123460 |
-| U3 | HDMI power switch | AP2331W | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C123461 |
+| R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
+| R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| U1 | Raspberry Pi Compute Module 5 (CM5) — multiple acceptable non-Lite variants; minimum 4GB RAM / 8GB eMMC; Wi-Fi optional | N/A | CM5 (SO-DIMM) | various CM5 SKUs | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
+| U2 | USB power switch | TPS2065CDBVR | SOT-23-5 | 595-TPS2065CDBVR | 296-39353-1-ND | C353882 |
+| U3 | HDMI power switch | AP2331W-7 | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C460346 |
 | U4 | USB/HDMI ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 
 ### BOM Notes
@@ -489,7 +489,7 @@ decoupling capacitor placement rules are detailed in §7. Dock-connector ownersh
 specifications are in §8. The matching PM dock plugs are `TE 1123684-7`; the matching Stator dock plugs
 are `Molex 2195620015`.
 
-The Controller also owns the Ethernet / PoE front-end (`TPS2372-4`, `TPS23730`, `POE600F-12L`, and
+The Controller also owns the Ethernet / PoE front-end (`TPS2372-4RGWR`, `TPS23730RMTR`, `POE600F-12L`, and
 the Ethernet-entry ESD arrays). Those parts are tracked as Controller-owned in
 `design/Electronics/Consolidated_BOM.md`; only the externally visible connector and generic local ESD
 rows are repeated here until the Controller schematic refdes are frozen.
