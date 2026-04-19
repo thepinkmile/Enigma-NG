@@ -20,10 +20,11 @@ The TPS23730 supports two operating modes:
 | **ACF (Active Clamp Flyback)** | Zero Voltage Switching (ZVS) | Active MOSFET + capacitor — energy recycled | 88–92% | Lower |
 | **Flyback PSR** | Hard switching | RCD clamp — energy dissipated | 85–90% | Higher |
 
-The original design specifies a **Coilcraft POE600F-12LD** — an off-the-shelf ACF transformer
+The original design specifies a **Coilcraft POE600F-12L** — an off-the-shelf ACF transformer
 co-developed with TI for the TPS23730 reference design (12V out, 60W, 200kHz, ≥1500Vrms isolation,
-SMT package). This part is only available order-direct from Coilcraft; it is not stocked by DigiKey,
-Mouser, or JLCPCB.
+SMT package). The `D` suffix seen in some references is packaging-only for pick-and-place handling.
+This part is only available order-direct from Coilcraft; it is not stocked by DigiKey, Mouser, or
+JLCPCB.
 
 This investigation was opened to evaluate whether a standard-distributor alternative existed, and to
 fully compare the EMI/EMC characteristics of both topologies to inform the decision.
@@ -34,7 +35,7 @@ fully compare the EMI/EMC characteristics of both topologies to inform the decis
 
 ### 2.1 Coilcraft POE600F family
 
-All 16 variants in the POE600F product family (12LD, 24LD, 33LD, 50LD, etc.) were confirmed via
+All relevant variants in the POE600F product family (12L, 24L, 33L, 50L, etc.) were confirmed via
 Octopart to be stocked exclusively at Coilcraft Direct or Worldway Electronics (grey market). No
 authorised mainstream distributor (DigiKey, Mouser, Farnell, Arrow) stocks any member of this family.
 
@@ -60,13 +61,13 @@ authorised distributor. This is a structural market reality, not a search gap.
 
 ---
 
-## 3. Option A — ACF Flyback (Coilcraft POE600F-12LD, TPS23730 ACF mode)
+## 3. Option A — ACF Flyback (Coilcraft POE600F-12L, TPS23730 ACF mode)
 
 ### 3.1 Procurement
 
 | Attribute | Value |
 | :--- | :--- |
-| Part number | Coilcraft POE600F-12LD |
+| Part number | Coilcraft POE600F-12L (`D` suffix = packaging only) |
 | Availability | Coilcraft Direct only — `coilcraft.com` |
 | Price (qty-1) | ~£3.54 |
 | Price (volume) | ~£1.86 |
@@ -286,7 +287,7 @@ this, it requires more careful design of output filtering stages.
 
 ## 6. Decision
 
-**Option A — ACF Flyback with Coilcraft POE600F-12LD — selected.**
+**Option A — ACF Flyback with Coilcraft POE600F-12L — selected.**
 
 See `design/Design_Log.md — DEC-019` for the formal decision record.
 

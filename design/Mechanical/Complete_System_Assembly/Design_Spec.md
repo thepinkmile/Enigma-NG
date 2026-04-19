@@ -31,13 +31,13 @@ The following table lists every component category present in the assembled mach
 | Reflector | 1 | Mandatory passive turnaround sub-assembly; reflection mapping is owned by the Stator CPLD | `Reflector/Design_Spec.md` |
 | Extension (optional) | 0–N | Extension board for multi-stack rotor configurations | `Extension/Design_Spec.md` |
 | Power Module | 1 | Standalone power supply sub-assembly (LTC3350, eFuse, INA219, supercaps) | `Power_Module/Design_Spec.md` |
-| Controller Board | 1 | CM5 carrier board (CM5 module, JDB hat, Link-Alpha/Beta connectors) | `Controller/Design_Spec.md` (Electronics) |
+| Controller Board | 1 | CM5 carrier board (CM5 module, JDB hat, PM dock, Stator dock, Ethernet / PoE entry) | `Controller/Design_Spec.md` (Electronics) |
 | Main Enclosure | 1 | Chassis, panels, cable routing, EMI bonding, fan | `Main_Enclosure/Design_Spec.md` |
 | Servo Motor | 1 | Miuzei Metal Gearbox 90 (5V, 3-pin, PCB-mount on Stator) | `Rotor_Actuation_Assembly/Design_Spec.md` |
 | SERVO_HOME Switch | 1 | SPST NO momentary (Omron SS-01GL13), PCB-mount on Stator | `Stator/Design_Spec.md` (Electronics) |
 | Settings Board | 1 | Panel-mount configuration switch PCB (12× SPDT toggles, 12× discrete RGB indicators, + CFG_APPLY button); mounts to right side top face of Main Enclosure; connects to Stator via I²C ribbon | `Settings_Board/Design_Spec.md` (Electronics) |
-| Cable Harnesses | TBD | LINK-ALPHA, LINK-BETA, encoder IDC ribbons, reflector cable, fan cable, Settings Board I²C ribbon | Each sub-assembly doc |
-| Connectors | TBD | ERF8/ERM8 BtB, JST PH servo, JST SH fan, Molex IDC encoder, etc. | Per sub-assembly BOM |
+| Cable Harnesses | TBD | Encoder IDC ribbons, reflector cable, fan cable, Settings Board I²C ribbon, switch / battery harnesses | Each sub-assembly doc |
+| Connectors | TBD | TE PM dock, Molex Stator dock, ERF8/ERM8 rotor-family BtB, JST PH servo, JST SH fan, Molex IDC encoder, etc. | Per sub-assembly BOM |
 
 ## Assembly Sequence Overview
 
@@ -55,7 +55,7 @@ steps are detailed in each referenced document; this section defines integration
 | 7 | Plugboard Assembly | Build plugboard jack panel + Encoder PCBs. Connect IDC ribbons to Stator J5/J6. |
 | 8 | Reflector | Install the mandatory passive Reflector sub-assembly at the far end of the final rotor group. Connect the 16-pin cable to Stator J7. Reflection-map selection remains Stator-CPLD-owned. |
 | 9 | Extension (if used) | Insert each Extension between 5-rotor groups: `Stator -> 5 rotors -> [Extension -> 5 rotors]* -> Reflector`. Each Extension reinjects clean 3V3_ENIG/GND to the next rotor group via J7 -> J5. |
-| 10 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Connect LINK-ALPHA to Power Module (J1). Connect LINK-BETA to Stator (J2/J8). |
+| 10 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Engage the TE PM dock cluster (`J1A/J1B/J1C`) to the Power Module, then mate the Molex Stator dock pair (`J2A/J2B` ↔ `J8A/J8B`). |
 | 11 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J_CFG. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
 | 12 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
 

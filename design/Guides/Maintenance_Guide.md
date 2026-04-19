@@ -24,32 +24,32 @@ The Controller board contains an RTC backup battery (ML2032/CR2032 coin cell).
 
 ## 2. Internal Indicators
 
-* **LOGIK-BEREIT (Green):** Located on the Power Module near the Samtec link. Indicates stable internal logic rails.
+* **LOGIK-BEREIT (Green):** Located on the Power Module near the Controller dock edge. Indicates stable internal logic rails.
 
 ## 3. Diagnostic Probe Banks
 
 The Controller board features two 2×10 ENIG Gold diagnostic probe pad banks for real-time bus monitoring during bring-up and fault diagnosis. Connect a logic analyser via a 2×10 ribbon cable.
 
-### Bank-Alpha (Power/Entry) — Top-Right of Controller
+### Bank-Alpha (PM Dock) — Top-Right of Controller
 
-Monitors power rails, I²C telemetry bus, LED control signals, and power status.
+Monitors the Controller ↔ Power Module dock cluster.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN | PM → CTRL | 5V power rail probe point |
-| 2 | 5V_MAIN | PM → CTRL | 5V power rail (redundant) |
-| 3 | 3V3_ENIG | PM → CTRL | 3.3V logic rail probe point |
-| 4 | 3V3_ENIG | PM → CTRL | 3.3V logic rail (redundant) |
-| 5 | I2C1_SDA | Bidir | I²C Telemetry bus data |
-| 6 | I2C1_SCL | Bidir | I²C Telemetry bus clock |
-| 7 | ETH_LED_LINK | CTRL → PM | Ethernet link status LED |
-| 8 | ETH_LED_ACT | CTRL → PM | Ethernet activity LED |
-| 9 | SW_LED_G | CTRL → PM | RGB LED green channel (GPIO 18) |
-| 10 | SW_LED_R | CTRL → PM | RGB LED red channel (GPIO 17) |
-| 11 | SW_LED_B | CTRL → PM | RGB LED blue channel (GPIO 19) |
-| 12 | PWR_GD | PM → CTRL | Power-good signal (GPIO 27) |
-| 13 | BATT_PRES_N | PM → CTRL | Battery presence active-low (GPIO 23) |
-| 14 | SW_LED_CTRL | CTRL → PM | LED arbitration HIGH = CM5 in control (GPIO 20) |
+| 1 | 5V_MAIN_A | PM → CTRL | J1A regulated 5V sample |
+| 2 | 5V_MAIN_B | PM → CTRL | J1A regulated 5V sample |
+| 3 | 3V3_ENIG_A | PM → CTRL | J1A logic-rail sample |
+| 4 | 3V3_ENIG_B | PM → CTRL | J1A logic-rail sample |
+| 5 | VIN_POE_12V | CTRL → PM | J1B PoE auxiliary feed sample |
+| 6 | I2C1_SDA | Bidir | PM telemetry bus |
+| 7 | I2C1_SCL | Bidir | PM telemetry bus |
+| 8 | PM_IO_INT_N | PM → CTRL | PM expander interrupt |
+| 9 | PWR_GD | PM → CTRL | PM rail-health signal |
+| 10 | ROTOR_EN | CTRL → PM | PM LDO enable |
+| 11 | PWR_BUT | PM → CTRL | CM5 power-button path |
+| 12 | GND | — | Signal ground |
+| 13 | GND | — | Signal ground |
+| 14 | GND | — | Signal ground |
 | 15 | SPARE | — | Reserved for future use |
 | 16 | SPARE | — | Reserved for future use |
 | 17 | SPARE | — | Reserved for future use |
@@ -57,30 +57,29 @@ Monitors power rails, I²C telemetry bus, LED control signals, and power status.
 | 19 | GND_CHASSIS | — | Chassis ground reference |
 | 20 | GND | — | Signal/power ground return |
 
-### Bank-Beta (Logic/Exit) — Top-Left of Controller
+### Bank-Beta (Stator Dock) — Top-Left of Controller
 
-Monitors the grouped Link-Beta power rails, I2C extension lines, and the JTAG return path after the
-DEC-037 pin-map update.
+Monitors the Controller ↔ Stator dock cluster.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_A | PM → Stator | Probe for Link-Beta pin 3 |
-| 2 | 5V_MAIN_B | PM → Stator | Probe for Link-Beta pin 4 |
-| 3 | 5V_MAIN_C | PM → Stator | Probe for Link-Beta pin 37 |
-| 4 | 5V_MAIN_D | PM → Stator | Probe for Link-Beta pin 38 |
-| 5 | 3V3_ENIG_A | PM → Stator | Probe for Link-Beta pin 6 |
-| 6 | 3V3_ENIG_B | PM → Stator | Probe for Link-Beta pin 12 |
-| 7 | 3V3_ENIG_C | PM → Stator | Probe for Link-Beta pin 29 |
-| 8 | 3V3_ENIG_D | PM → Stator | Probe for Link-Beta pin 35 |
-| 9 | I2C1_SDA | Bidir | Probe for Link-Beta pin 24 / shared Stator-Settings I²C bus |
-| 10 | I2C1_SCL | Bidir | Probe for Link-Beta pin 26 / shared Stator-Settings I²C bus |
-| 11 | GND_RET_A | — | Probe for Link-Beta pin 13 |
-| 12 | GND_RET_B | — | Probe for Link-Beta pin 14 |
-| 13 | GND_RET_C | — | Probe for Link-Beta pin 36 |
-| 14 | GND_RET_D | — | Probe for Link-Beta pin 39 |
-| 15 | JTAG_TCK | JDB → Stator | Probe for Link-Beta pin 15 |
-| 16 | GND | — | Probe for Link-Beta pin 16 |
-| 17 | TMS | JDB → Stator | Probe for Link-Beta pin 17 |
-| 18 | TDI | JDB → Stator | Probe for Link-Beta pin 19 |
-| 19 | TDO | Stator → JDB | Probe for Link-Beta pin 21 (TTD_RETURN) |
-| 20 | GND | — | Probe for Link-Beta pin 22 |
+| 1 | 5V_MAIN_J2A_1 | CTRL → Stator | J2A 5V blade sample |
+| 2 | 5V_MAIN_J2A_2 | CTRL → Stator | J2A 5V blade sample |
+| 3 | 3V3_ENIG_J2B_1 | CTRL → Stator | J2B 3V3 blade sample |
+| 4 | 3V3_ENIG_J2B_2 | CTRL → Stator | J2B 3V3 blade sample |
+| 5 | I2C1_SDA | Bidir | Shared Stator / Settings I²C bus |
+| 6 | I2C1_SCL | Bidir | Shared Stator / Settings I²C bus |
+| 7 | JTAG_TCK | JDB → Stator | JTAG clock |
+| 8 | TMS | JDB → Stator | JTAG mode select |
+| 9 | TDI | JDB → Stator | JTAG data in |
+| 10 | TTD_RETURN | Stator → JDB | JTAG return from rotor / reflector chain |
+| 11 | GND_RET_A | — | Dock return / guard |
+| 12 | GND_RET_B | — | Dock return / guard |
+| 13 | GND_RET_C | — | Dock return / guard |
+| 14 | GND_RET_D | — | Dock return / guard |
+| 15 | SPARE | — | Reserved for future use |
+| 16 | SPARE | — | Reserved for future use |
+| 17 | SPARE | — | Reserved for future use |
+| 18 | SPARE | — | Reserved for future use |
+| 19 | GND_CHASSIS | — | Chassis ground reference |
+| 20 | GND | — | Signal/power ground return |

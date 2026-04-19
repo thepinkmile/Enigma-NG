@@ -70,8 +70,11 @@ The Controller board contains an RTC backup battery (CR2032 coin cell) to mainta
 
 ## 3. The Power Module — System Power Overview
 
-The Power Module is a dedicated, independently shielded circuit board housed within the aluminium enclosure. Its job is to accept raw, potentially noisy power from any of three input sources and
-convert it into two clean, regulated power rails for the rest of the system.
+The Power Module is a dedicated, independently shielded circuit board housed within the aluminium
+enclosure. Its job is to condition the system's three power sources and convert them into two clean,
+regulated power rails for the rest of the system. USB-C and Battery enter the Power Module directly;
+PoE enters the machine through the Controller Ethernet connector and is forwarded to the Power Module
+as a regulated auxiliary feed.
 
 ### 3.1 Input Sources and Priority
 
@@ -81,7 +84,7 @@ selects the best available source without interrupting the system. The documente
 
 | Priority | Source | Typical Voltage | Notes |
 | :---: | --- | --- | --- |
-| 1st | **PoE+ (Power over Ethernet)** | ~12V | Explicitly prioritised over USB-C by the documented LM74700/TPS2372-4 gating; recommended for fixed installations |
+| 1st | **PoE+ (Power over Ethernet)** | ~12V | Accepted at the Controller Ethernet / PoE entry, then forwarded to the Power Module as `VIN_POE_12V`; explicitly prioritised over USB-C by the documented LM74700/TPS2372-4 gating |
 | 2nd / 3rd | **USB-C (PD adapter)** | 15V | Shares the OR-ing network with Battery; precedence vs Battery depends on the active source voltages unless additional gating is added |
 | 2nd / 3rd | **Battery** | 11–16.4V | Shares the OR-ing network with USB-C; used as a fallback/off-grid source |
 
@@ -207,8 +210,10 @@ warning messages.
 
 ### 3.8 PoE+ (Power over Ethernet) Input
 
-The Enigma-NG accepts **IEEE 802.3bt Type 4 (4-pair PoE++)** power delivery over the Ethernet connection. This is the highest-power PoE standard currently available, supporting up to 72W delivered to
-the device — sufficient to run the Enigma-NG at full load without any additional power source.
+The Enigma-NG accepts **IEEE 802.3bt Type 4 (4-pair PoE++)** power delivery over the Controller's
+Ethernet connection. This is the highest-power PoE standard currently available, supporting up to
+72W delivered to the device — sufficient to run the Enigma-NG at full load without any additional
+power source.
 
 Standard PoE (802.3af, 12.95W) and PoE+ (802.3at, 25.5W) are **not sufficient** to power the Enigma-NG at full load. If a lower-power PoE source is connected, the system will fall back to the USB-C
 or battery input if available, or operate at reduced load.

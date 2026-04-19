@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-19
 
 ## Overview
 
@@ -24,7 +24,9 @@ PMIC power-button input (`PWR_BUT`). No firmware polling is required for the pri
 
 - **PWR_GD (GPIO 27):** Active-HIGH rail-health signal from MCP121T-450E (4.50V threshold). Stays HIGH
   throughout the hold-up window (LTC3350 keeps 5V_MAIN above 4.50V). Deasserts only if supercaps are
-  depleted — by which time OS should already be halted. Can be used for status monitoring only.
+  depleted — by which time OS should already be halted.
+- **PM-local status expander (`PCA9534A @ 0x3F`):** Provides `POE_STAT`, `USB_STAT`, `BATT_PRES_N`,
+  `SYS_FAULT`, and the runtime SW1 RGB handoff outputs.
 - **LTC3350 I²C BACKUP bit** (0x09, STATUS reg bit 3): Readable via I²C for supercap state-of-charge
   monitoring, LED state control, and post-mortem logging (see DEC-025).
 
@@ -36,8 +38,9 @@ PMIC power-button input (`PWR_BUT`). No firmware polling is required for the pri
 
 | Signal | Connection | Pull-up | Source | Role |
 | --- | --- | --- | --- | --- |
-| PWR_BUT | CM5 PMIC pin (via Link-Alpha pin 48) | CM5 module internal 10kΩ | MIC1555 U15 one-shot / SW2 tactile | **Primary shutdown trigger** — 3 s LOW pulse from U15 on backup-mode entry; or manual press of SW2 |
+| PWR_BUT | CM5 PMIC pin (via PM dock `J1C`) | CM5 module internal 10kΩ | MIC1555 U15 one-shot / SW2 tactile | **Primary shutdown trigger** — 3 s LOW pulse from U15 on backup-mode entry; or manual press of SW2 |
 | PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | **Rail-health telemetry only** — HIGH while 5V_MAIN ≥ 4.50V; stays HIGH throughout hold-up; deasserts only on supercap depletion |
+| PM_IO_INT_N | GPIO 21 (BCM) | Open-drain on PM; controller-side pull-up as required | PCA9534A U16 | Optional interrupt line for PM status / SW1 LED expander updates |
 | LTC3350 /INTB | GPIO (TBD — assign at schematic capture) | R29 10kΩ to 3V3_ENIG (Power Module) | LTC3350 U3 | **Backup-mode indicator** — active-LOW when LTC3350 in backup mode (5V_MAIN < 4.812V, R14=30.1kΩ; see DR-PM-08, DEC-030); also triggers MIC1555 U15 one-shot directly in hardware |
 
 ## Option C: Recommended Implementation
@@ -110,77 +113,86 @@ The driver will:
 
 ## SW1 RGB LED State Machine
 
-The CM5 controls the SW1 RGB LED via four GPIOs once firmware initialises. The hardware handoff
-sequence and colour states are defined below.
+The CM5 controls the SW1 RGB LED through the PM-local `PCA9534A @ 0x3F` once firmware initialises. The
+hardware handoff sequence and colour states are defined below.
 
 ### Boot Handoff Sequence
 
-1. **Power on (CM5 not yet booted):** `SW_LED_CTRL` (GPIO 20) is floating/low (CM5 GPIO in input mode).
-   Hardware path active: MIC1555 (U11) oscillator drives Q_HW → BAT54 diodes → SW_LED_R + SW_LED_G
-   simultaneously → 1Hz orange flash on SW1. Identical orange heartbeat to the Controller status LED.
+1. **Power on (CM5 not yet booted):** `PCA9534A` powers up with all pins as inputs, so the PM hardware
+   path dominates. MIC1555 (U11) drives Q4 → BAT54 diodes → **Red + Green only** → 1Hz orange flash on SW1.
 
 2. **CM5 kernel boots, systemd target reached:** Power monitor service starts.
-   Before asserting `SW_LED_CTRL`, pre-set SW_LED_R/G/B GPIOs to desired initial state (orange solid:
-   GPIO 17 HIGH, GPIO 18 HIGH, GPIO 19 LOW).
+   Before asserting `SW_LED_CTRL`, program the PM expander outputs so `SW_LED_R=1`, `SW_LED_G=1`,
+   `SW_LED_B=0` (solid orange).
 
-3. **CM5 drives `SW_LED_CTRL` HIGH (GPIO 20):** Hardware Q_HW gate disabled → MIC1555 path cut.
-   CM5 now has exclusive control of SW_LED_R/G/B.
+3. **CM5 writes `SW_LED_CTRL=1` via `PCA9534A`:** Hardware Q4 gate disabled → MIC1555 path cut.
+   Firmware now has exclusive control of the runtime RGB sink stages.
 
-4. **Power source detection:** Read POE_STAT (GPIO 24), USB_STAT (GPIO 21), BATT_PRES_N (GPIO 23)
-   and set LED colour per table below.
+4. **Power source detection:** Read `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, and `SYS_FAULT` from the
+   PM expander and set LED colour per table below.
 
 ### LED Colour Table
 
-| State | GPIO 17 (R) | GPIO 18 (G) | GPIO 19 (B) | Colour | Control |
+| State | SW_LED_R | SW_LED_G | SW_LED_B | Colour | Control |
 | --- | --- | --- | --- | --- | --- |
-| Booting (pre-CM5) | 1Hz PWM | 1Hz PWM | Off | 🟠 Orange flash | Hardware (MIC1555) |
-| CM5 ready, USB-C active | Off | On | Off | 🟢 Solid green | CM5 GPIO |
-| CM5 ready, PoE active | Off | Off | On | 🔵 Solid blue | CM5 GPIO |
-| CM5 ready, Battery active | On | On | Off | 🟠 Solid orange | CM5 GPIO |
-| Supercap hold-up (mains fail) | PWM 2Hz | PWM 2Hz | Off | 🟠 Fast orange flash | CM5 GPIO |
-| Fault / eFuse latched | On | Off | Off | 🔴 Solid red | CM5 GPIO |
-| Graceful shutdown in progress | PWM 1Hz | Off | Off | 🔴 Slow red flash | CM5 GPIO |
+| Booting (pre-CM5) | 1Hz PWM | 1Hz PWM | Off | 🟠 Orange flash | Hardware (MIC1555 + Q4 + D6/D7) |
+| CM5 ready, USB-C active | Off | On | Off | 🟢 Solid green | PM expander + RGB sink stages |
+| CM5 ready, PoE active | Off | Off | On | 🔵 Solid blue | PM expander + RGB sink stages |
+| CM5 ready, Battery active | On | On | Off | 🟠 Solid orange | PM expander + RGB sink stages |
+| Supercap hold-up (mains fail) | PWM 2Hz | PWM 2Hz | Off | 🟠 Fast orange flash | PM expander + RGB sink stages |
+| Fault / eFuse latched | On | Off | Off | 🔴 Solid red | PM expander + RGB sink stages |
+| Graceful shutdown in progress | PWM 1Hz | Off | Off | 🔴 Slow red flash | PM expander + RGB sink stages |
 
-### SW_LED_CTRL GPIO Initialisation (Device Tree / Python)
+### PM Expander Initialisation (Python)
 
 Add to the power monitor daemon startup sequence:
 
 ```python
-import RPi.GPIO as GPIO
+from smbus2 import SMBus
 
-SW_LED_R    = 17
-SW_LED_G    = 18
-SW_LED_B    = 19
-SW_LED_CTRL = 20
+PM_IO_ADDR = 0x3F
+REG_INPUT = 0x00
+REG_OUTPUT = 0x01
+REG_CONFIG = 0x03
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setup([SW_LED_R, SW_LED_G, SW_LED_B, SW_LED_CTRL], GPIO.OUT, initial=GPIO.LOW)
+BIT_POE_STAT = 0
+BIT_SYS_FAULT = 1
+BIT_BATT_PRES_N = 2
+BIT_USB_STAT = 3
+BIT_SW_LED_R = 4
+BIT_SW_LED_G = 5
+BIT_SW_LED_B = 6
+BIT_SW_LED_CTRL = 7
 
-# Pre-set orange before taking control
-GPIO.output(SW_LED_R, GPIO.HIGH)
-GPIO.output(SW_LED_G, GPIO.HIGH)
 
-# Take control from hardware oscillator
-GPIO.output(SW_LED_CTRL, GPIO.HIGH)
+def set_led(bus: SMBus, r: int, g: int, b: int) -> None:
+    value = (r << BIT_SW_LED_R) | (g << BIT_SW_LED_G) | (b << BIT_SW_LED_B) | (1 << BIT_SW_LED_CTRL)
+    bus.write_byte_data(PM_IO_ADDR, REG_OUTPUT, value)
 
-# Now detect power source and set correct colour
-def set_led(r, g, b):
-    GPIO.output(SW_LED_R, r)
-    GPIO.output(SW_LED_G, g)
-    GPIO.output(SW_LED_B, b)
 
-poe_active  = not GPIO.input(24)  # Active-low: LOW = PoE live
-usb_active  = not GPIO.input(21)  # USB_STAT active low
-batt_active = not GPIO.input(23)  # BATT_PRES_N active low
+with SMBus(1) as bus:
+    # P0..P3 inputs, P4..P7 outputs
+    bus.write_byte_data(PM_IO_ADDR, REG_CONFIG, 0x0F)
 
-if usb_active:
-    set_led(0, 1, 0)   # Green — USB-C
-elif poe_active:
-    set_led(0, 0, 1)   # Blue — PoE
-elif batt_active:
-    set_led(1, 1, 0)   # Orange — Battery
-else:
-    set_led(1, 0, 0)   # Red — No known source (fault)
+    # Pre-set orange, then take control from the hardware path
+    set_led(bus, 1, 1, 0)
+
+    status = bus.read_byte_data(PM_IO_ADDR, REG_INPUT)
+    poe_active = not bool(status & (1 << BIT_POE_STAT))
+    usb_active = not bool(status & (1 << BIT_USB_STAT))
+    batt_active = not bool(status & (1 << BIT_BATT_PRES_N))
+    fault_active = not bool(status & (1 << BIT_SYS_FAULT))
+
+    if fault_active:
+        set_led(bus, 1, 0, 0)
+    elif usb_active:
+        set_led(bus, 0, 1, 0)
+    elif poe_active:
+        set_led(bus, 0, 0, 1)
+    elif batt_active:
+        set_led(bus, 1, 1, 0)
+    else:
+        set_led(bus, 1, 0, 0)
 ```
 
 ## INA219 Rotor Stack Current Monitor
@@ -328,7 +340,7 @@ sudo hwclock --show
 - [ ] Consider adding LTC3350 charge status polling (SOC readout) for optional status LED control from software
 - [x] Power Module SW1 selected: Adafruit 4660 rugged metal RGB latching switch with 16mm panel cutout and 2.8mm pin terminals
 - [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
-- [x] SW_LED_CTRL (GPIO 20) added to Link-Alpha pin 47 wiring — completed; see Controller/Board_Layout.md LINK-ALPHA table.
+- [x] PM-local `PCA9534APWR @ 0x3F` selected for SW1 RGB runtime control and PM status inputs
 - [ ] Verify CM5 VBAT (Pin 95) is correctly identified in the CM5 Hirose DF40 200-pin connector datasheet before PCB layout.
 
 ## PCA9685 Servo PWM Driver

@@ -210,7 +210,8 @@ Drives Bank 1 LED anodes (5 LEDs) and RGB color-rail low-side transistor gates.
 > Individual LED anode outputs drive HIGH only for the bits that should be illuminated. Each LED's
 > red, green, and blue cathodes return through separate current-limiting resistors
 > (`R_LED_R` = 150Ω, `R_LED_G` = 100Ω, `R_LED_B` = 100Ω) to the shared bank colour rails. LEDs are
-> powered from the `5V_MAIN` feed derived from Link-Beta pins 3, 4, 37, and 38 via the Stator J_CFG connector.
+> powered from the `5V_MAIN` feed delivered from the Controller through the Stator `J2A` / `J_CFG`
+> path.
 
 ### U_LED_B2 — MCP23017T-E/SO @ 0x25
 
@@ -310,14 +311,14 @@ automatic polling intervals.
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | Power from Stator; powers Settings Board logic (MCP23017 ICs) |
-| 2 | 5V_MAIN | Indicator power supply from Stator; derived from Link-Beta; powers LED anodes |
+| 2 | 5V_MAIN | Indicator power supply from Stator; sourced from the Controller `J2A` dock; powers LED anodes |
 | 3 | GND | Logic ground return only; no local GND_CHASSIS bond on Settings Board |
 | 4 | SDA | I²C data; shared Stator I²C-1 bus |
 | 5 | SCL | I²C clock; shared Stator I²C-1 bus |
 | 6 | GND | LED cathode ground return; high-current return path |
 
 **Connector:** JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm THT
-(Mouser: 474-B6B-PH-K-S(LF)(SN), DigiKey: 455-1723-ND, JLCPCB: TBD)
+(Mouser: 306-B6B-PH-K-SLFSN, DigiKey: 455-1708-ND, JLCPCB: C131342)
 
 **Cable:** 6-wire harness (100mm recommended); matching JST PHR-6 crimp housing on both ends. Use 28AWG for pins 2 and 6 (power path) and 30AWG for pins 1, 3, 4, 5 (logic/signals).
 
@@ -353,7 +354,7 @@ automatic polling intervals.
 | C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_LED_B1 | VCC decoupling cap for U_LED_B1 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_U_LED_B2 | VCC decoupling cap for U_LED_B2 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| J_I2C | I²C harness connector to Stator J_CFG | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 474-B6B-PH-K-S(LF)(SN) | 455-1723-ND | TBD |
+| J_I2C | I²C harness connector to Stator J_CFG | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
 | LED_B1_EN, LED_B1[0:3] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | LED_B2_EN, LED_B2[0:5] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | Q_BNK1_R | Bank 1 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
@@ -407,12 +408,13 @@ automatic polling intervals.
 | Bank 2 LEDs (7× @ 20mA) | 84 | 140 | Typical assumes ~12mA per LED average; max = 7 × 20mA = 140mA with one active colour rail |
 | **Total indicator rail** | **144 mA** | **240 mA** | Definitive max = 100mA + 140mA; one active colour per bank, all 12 LEDs illuminated |
 
-**Link-Beta 5V_MAIN Allocation:**
+**Controller↔Stator 5V_MAIN Allocation:**
 
 * Settings Board: 240mA max (LED load)
 * Stator J_SERVO: 500mA max (servo motor)
-* **Link-Beta capacity: 2.0A** (pins 3, 4, 37, and 38 @ 0.5A each)
-* **Margin: 1.26A** (~170% headroom)
+* Combined branch load: **740mA max**
+* The active Molex hybrid Stator dock remains comfortably above this branch load; the grouped `5V_MAIN`
+  path is no longer constrained by the retired 40-pin Samtec contact-count limit.
 
 ---
 
@@ -455,7 +457,7 @@ This design uses only 6 MOSFETs for 12 RGB indicators instead of a per-LED trans
 ### 5V Power Routing
 
 Indicator power is sourced from the Controller Board's 5V_MAIN rail (TPS259804 eFuse output) and
-routed through Link-Beta pins 3, 4, 37, and 38 (4× pins for current sharing, 2.0A total capacity).
+routed from the Controller through the hybrid Stator dock and the Stator `J_CFG` harness.
 The Stator Board acts as a **power pass-through hub**, forwarding 5V_MAIN to:
 
 * J_CFG pin 2 → Settings Board indicator rail (240mA max)

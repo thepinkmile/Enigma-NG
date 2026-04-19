@@ -19,7 +19,8 @@
 
 ## 2. Live Input Verification
 
-* [ ] **PoE+ Entry:** Apply 48V to RJ45; verify 12V at the eFuse input.
+* [ ] **PoE Auxiliary Feed:** Apply 48V to the Controller Ethernet / PoE entry; verify regulated
+  `VIN_POE_12V` is present at Power Module dock `J1B` and reaches the PM OR-ing / eFuse input path.
 * [ ] **USB-C PD:** Connect 15V PD source; verify negotiated voltage and stable rail.
 * [ ] **Battery:** Connect 14.4V battery; verify SMBus pull-ups are active.
 
@@ -28,18 +29,20 @@
 * [ ] **Safety Glow:** Confirm Amber LED illuminates at >5.1V and extinguishes at ~5.0V.
 * [ ] **Discharge:** Ensure < 2V at Safety Probes before handling board.
 * [ ] **Logic Ready:** Confirm Green "LOGIK-BEREIT" LED illuminates only when 5V/3.3V rails are stable.
-* [ ] **Handshake:** Verify PWR_GD signal (Samtec Pin 34) goes HIGH (>3.0V).
-* [ ] **UPS Hold-time:** Load 5W; pull power; verify ≥14.5s uptime before dropout.
+* [ ] **Handshake:** Verify `PWR_GD` on PM dock `J1C` goes HIGH (>3.0V).
+* [ ] **UPS Hold-time:** Load 15W; pull power; verify ≥33.5s uptime before dropout.
 
 ## 4. Header & Coupon Verification
 
-* [ ] **Polarization:** Confirm the Shrouded 40-pin Header notch faces INWARD toward the V-Score.
-* [ ] **Straight Alignment:** Verify verticality of ENIG pins to prevent ribbon cable binding.
+* [ ] **Dock Orientation:** Confirm `J1A/J1B/J1C` are fitted in the correct keyed orientation and align
+  cleanly with the Controller receptacles.
+* [ ] **Straight Alignment:** Verify dock headers are vertical and coplanar to prevent blind-mate
+  binding during PM insertion.
 * [ ] **Adhesive Zone:** Confirm RTV Silicone 'KLEBER-ZONE' is free of solder mask for maximum bond.
 
 ## 5. Pi-Proxy Validation
 
-* [ ] **Handshake:** Connect Pi 5 via Shrouded ENIG Header and USB-C Client port.
+* [ ] **Handshake:** Connect the Controller / CM5 assembly via the PM dock and USB-C service power path.
 * [ ] **PD Check:** Verify 5V/5A negotiation via `vcgencmd get_throttled`.
 * [ ] **Telemetry:** Verify I2C communication with TPS25751 PD Emulator.
 

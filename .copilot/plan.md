@@ -8,27 +8,25 @@
 
 ## Overview
 
-All board detailed designs remain complete. The current active workstream is **manual component
-re-verification** using `.copilot/components-todo.md` as the canonical queue, with confirmed parts
-propagated into the design docs only after the row is explicitly marked `VERIFIED`.
+The active workstream is now the **Controller / Power Module / Stator dock redesign** and the
+associated ownership move that makes the Controller the enclosure-edge I/O carrier.
 
-Recent milestones now locked into the active docs:
+Recent milestones now applied in the working tree:
 
-- **Settings Board 5V RGB upgrade** — dual-MCP23017 LED control, `5V_MAIN`-fed indicator rail, and updated resistor
-  values
-- **First component verification batch complete** — `SW_CFG_APPLY`, Power Module `SW2`, Power
-  Module blade tabs, rotor DIP switch, and the custom HID keyboard switch are now confirmed
-- **DEC-035** — the HID keyboard/lightboard is fixed as a **40-position physical layout**
-  (`[a-z0-9+=]` plus Left/Right Shift) mapped into the machine's **64-character logical** code
-  space
-- **DEC-037** — LINK-BETA keeps the 40-pin connector but now uses the new guarded pin map:
-  front power cluster, front `3V3_ENIG` cluster, dedicated JTAG block with `TTD_RETURN`, guarded
-  I2C pair, and rear power cluster
+- **DEC-038** added to lock the new architecture
+- **Controller ↔ PM dock** changed to three TE `1-1674231-1` / `1123684-7` connectors (`J1A/J1B/J1C`)
+- **Controller ↔ Stator dock** changed to two Molex `2195630015` / `2195620015` hybrid connectors (`J2A/J2B` / `J8A/J8B`)
+- **PM-local status / LED control** moved onto `PCA9534APWR @ 0x3F`
+- **Controller-owned RJ45 / PoE entry** propagated into the active architecture docs
 
-Full-system review status is still clean from checkpoint 047. Component verification has progressed
-to **13 VERIFIED rows** in `.copilot/components-todo.md`, including connectors, switches, LEDs, and
-the newly locked HID custom switch. Custom **Electronics review engineer** agent remains available
-under `.github/agents/` for hardware-document reviews.
+Current goal: finish the consistency pass so the touched design docs, shared BOM authority, and
+repo-local handoff all reflect the same dock architecture before the next formal review cycle.
+
+### Immediate remaining work
+
+1. Run markdownlint on the touched design / handoff docs.
+2. Review any lint fallout and make only consistency fixes tied to the dock redesign.
+3. Leave the tree uncommitted for manual human review before formal review cycles restart.
 
 ---
 
@@ -142,20 +140,17 @@ A full system deep-dive review cycle was run (R1–R13+). Target: 2 consecutive 
 
 ## Immediate Next Steps
 
-1. **Checkpoint 055 locks DEC-037 and the active LINK-BETA remap.**
-   - `5V_MAIN` to Stator/Settings/servo now uses LINK-BETA pins **3, 4, 37, and 38**
-   - `3V3_ENIG` now uses LINK-BETA pins **6–12 plus 29–35**
-   - JTAG is preserved as a guarded block with `TTD_RETURN` on **pin 21**
-   - Diagnostic Bank-Beta now probes the new DEC-037 pin positions
-2. **Second deep-review rerun findings are now fully synced.**
-   - Harness pin-3 wording corrected to logic-return-only
-   - lingering `5V_LED` wording removed from active BOM prose
-   - high-level LINK-BETA summary now matches the DEC-037 guarded pin allocation
-3. **Datasheet audit state is synced.**
-     - The current missing-datasheet list is unchanged and already tracked in `.copilot/components-todo.md`
-     - The two redundant local PDFs flagged by the audit have been removed from `design/Datasheets/`
-     - `J_DSI1` is no longer TBD: Controller docs and BOM now use Amphenol `F52Q-1A7H1-11015`
-     - stale `TPD4E05U06QDQARQ1` datasheet TBD wording has been replaced with the local PDF link
+1. **DEC-038 is now the active dock architecture baseline.**
+   - Controller ↔ PM uses TE `1-1674231-1` / `1123684-7` across `J1A/J1B/J1C`
+   - Controller ↔ Stator uses Molex `2195630015` / `2195620015` across `J2A/J2B` ↔ `J8A/J8B`
+   - PM status / SW1 runtime RGB now live on `PCA9534APWR @ 0x3F`
+2. **Current review-cycle focus is consistency, not new architecture changes.**
+   - finish propagating Controller-owned Ethernet / PoE front-end ownership everywhere
+   - keep legacy `Link-Alpha` / `Link-Beta` references historical-only
+   - hold all changes uncommitted until the user reviews the final clean document set
+3. **Connector source documents are now part of the active review set.**
+   - TE dock datasheets, Molex dock datasheets / drawings / family specification, and `pca9534a-datasheet.pdf` must remain explicitly referenced
+   - remove only truly redundant local PDFs after confirming no active or historical doc still depends on them
      - `BHR-16-VUA` is no longer missing: local PDF added, `J016` verified, and the supplier numbers are synced
      - the missing-datasheet queue now also tracks `334364197440`, `ABM8-12.000MHz-B2-T`, `AC72ABD`,
        `150060VS75000`, and `9774040151R`

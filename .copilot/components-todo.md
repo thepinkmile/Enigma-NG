@@ -22,27 +22,10 @@
 
 | Component | Active refs | Notes |
 | --- | --- | --- |
-| MCP23017T-E/SO | STA `U_EXP1`, `U_EXP2`, `U_EXP4`; SBD `U_EXP_SW_IN`, `U_LED_B1`, `U_LED_B2` | Core shared GPIO expander used across Stator and Settings Board. |
-| PCA9685BS/3 | STA `U_EXP3` | Servo PWM driver on the Stator. |
-| T821126A1S100CEU | ENC `J2`; STA `J4`-`J6` | 26-pin 2x13 IDC/shrouded header family. |
-| JST PH series datasheet | STA `J_SERVO`, `J_CFG`; SBD `J_I2C` | Needed now that the old `B4B-PH` local PDF is being retired and the Settings link is 6-pin `B6B-PH`. |
-| Keystone 3034 | CTL `BT1` | CR2032 holder local datasheet not yet confirmed. |
-| Keystone 1285-ST | ENC `BT1`-`BT128` | Encoder blade-terminal local datasheet not yet confirmed. |
-| Omron SS-01GL13 | STA `SW3` | SERVO_HOME switch local datasheet not yet confirmed. |
-| POE600F-12LD | PM `T1` | PoE isolation transformer local datasheet not yet confirmed. |
-| WE-CMBNC 7448031002 | PM `L_DM1`, `L_DM2` | Würth common-mode choke local datasheet not yet confirmed. |
-| SRP1265A-100M | PM `L_SYNC` | SYNC buck power inductor local datasheet not yet confirmed. |
-| CSS2H-2512R-R010ELF | PM `R_RSENSE` | Bourns Kelvin shunt local datasheet not yet confirmed. |
-| 43650-0519 | PM `J3` | Molex Micro-Fit 3.0 battery connector local datasheet not yet confirmed. |
-| SaiBuy.Ltd eBay item 334364197440 | ENC `J1` (x64) | Stecker jack socket listing / reference sheet not yet captured locally; no formal manufacturer MPN recorded. |
-| ABM8-12.000MHz-B2-T | JDB `Y1` | Abracon crystal local datasheet not yet confirmed. |
-| AC72ABD | PM `F1` | Bourns thermal cutoff local datasheet not yet confirmed. |
-| 150060VS75000 | ENC `D1`, `D2` | Würth LED local datasheet not yet confirmed. |
-| 9774040151R | CTL `MH1`-`MH4` | Würth SMT brass standoff local datasheet not yet confirmed. |
 
 ---
 
-## SWITCHES & USER INPUT (8 items)
+## SWITCHES & USER INPUT (9 items)
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -51,17 +34,19 @@
 | S003 | SBD | SW_CFG_APPLY | SPST NO momentary; board-mounted tactile switch is acceptable if mechanically actuated through the enclosure; positive tactile click; V >= 3.3V; I >= 50mA | B3F-1070 | SW406-ND | 653-B3F-1070 | C726011 | VERIFIED | User accepted the relaxed Settings Board requirement: a through-hole tactile switch behind a mechanical actuator is acceptable, so Omron B3F-1070 is now approved. Datasheet reviewed at `design/Datasheets/omron-en-b3f-switch-datasheet.pdf`. |
 | S004 | PM | SW1 | Rugged metal latching power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; serviceable harness to PCB spade tabs | Adafruit 4660 | 1528-4660-ND | 485-4660 | Global sourcing / consignment | VERIFIED | Power Module front-panel power switch with integrated RGB ring LED. Datasheet reviewed and MPN confirmed. |
 | S005 | PM | SW2 | Momentary panel switch for `PWR_BUT`; 16mm panel cutout; NO contact; low-voltage logic only; RGB illumination acceptable for hold-signal indication | Adafruit 3350 | 1528-2546-ND | 485-3350 | Global sourcing / consignment | VERIFIED | User approved Adafruit 3350 as the SW2 part. Same 16mm rugged metal family as SW1, but momentary. LED ring may be used to indicate the 3-second held `PWR_BUT` signal / shutdown event. |
-| S006 | ENC/Kbd | SW1-SW40 | Custom DPDT 6-pin momentary keyboard switch; 40 physical HID positions total (38 printable `[a-z0-9+=]` + Left/Right Shift); straight THT; 6 pins; 4 mm pin pitch; 42 x 9.7 x 18 mm nominal overall | uxcell-style seller part (MPN unspecified) | Global sourcing / consignment | Global sourcing / consignment | eBay item 365271584375 | VERIFIED | User confirmed the custom marketplace switch from eBay seller `gadgetskingdom`. Raw listing metadata was captured into `design/Datasheets/Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md`, and the HID/Encoder docs were updated to the intended 40-position QWERTY-derived layout. |
+| S006 | ENC/Kbd | SW1-SW40 | Custom DPDT 6-pin momentary keyboard switch; 40 physical HID positions total (38 printable `[a-z0-9+=]` + Left/Right Shift); straight THT; 6 pins; 4 mm pin pitch; 42 x 9.7 x 18 mm nominal overall | uxcell-style seller part (MPN unspecified) | Global sourcing / consignment | Global sourcing / consignment | eBay item 365271584375 | VERIFIED | User confirmed the custom marketplace switch from eBay seller `gadgetskingdom`. Raw listing metadata was captured into `design/Datasheets/Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md`. Treat as a consignment part installed during mechanical/final assembly rather than PCB assembly. |
 | S007 | ROT | SW_CFG | CTS 219-6LPSTR — 6-pos DIP switch, 2.54mm THT | 219-6LPSTR | 119-219-6LPSTRCT-ND | 774-2196LPSTR | C2842671 | VERIFIED | Datasheet already present at `design/Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf`, and the current Rotor Design_Spec already uses this exact MPN and distributor references. |
 | S008 | PM | BT_SW1_1-BT_SW1_6, BT_SW2_1-BT_SW2_6 | 2.8mm (0.110in) vertical PCB-mount male blade terminal; mates with Adafruit 4660 / 3350 switch terminals for switch + RGB ring harnesses | Keystone 1211 | 36-1211-ND | 534-1211 | C3029550 | VERIFIED | User approved Keystone 1211 as the preferred THT/soldered Quick-Fit male PCB terminal. Use for both SW1 and SW2 harness tabs (12 total if both panel switches use full contact + LED wiring). |
+| S009 | STA | SW3 | SPST NO momentary PCB-mount homing switch for SERVO_HOME | SS-01GL13 | SW865-ND | 653-SS-01GL13 | C3822088 | VERIFIED | Omron SS series homing switch for the Stator SERVO_HOME input. Local datasheet present at `design/Datasheets/omron-en-ss-switch-datasheet.pdf`. |
 
 ---
 
-## LEDS & INDICATORS (1 item)
+## LEDS & INDICATORS (2 items)
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | L001 | SBD | LED_B1_EN, LED_B1[0:3], LED_B2_EN, LED_B2[0:5] | 5mm common-anode RGB through-hole LED; full RGB operation @ 5V (red 150Ω, green/blue 100Ω resistors); white diffused lens | WP154A4SEJ3VBDZGW/CA | 754-2029-ND | 604-WP154A43VBDZGWCA | C7151795 | VERIFIED | Settings Board RGB panel LEDs. Datasheet reviewed and MPN confirmed. Updated for 5V RGB upgrade (2026-04-17). System total: 12 units. |
+| L002 | ENC | D1, D2 | 0402 green status LED; active-low CPLD indicators | 150060VS75000 | 732-4980-1-ND | 710-150060VS75000 | C6848499 | VERIFIED | Würth 0402 status LED for Encoder CPLD indicators. Local datasheet present at `design/Datasheets/150060VS75000-datasheet.pdf`. Mouser product resources include KiCad footprint and 3D model links. |
 
 ---
 
@@ -85,23 +70,24 @@
 | IC007 | PM | U6 | TPS25751DREFR — USB PD 3.1 DRP Controller (WQFN-38) | TPS25751DREFR | TBD | TBD | TBD | RECHECK | USB-C PD negotiation controller. |
 | IC008 | PM | U14 | STUSB4500LQTR — USB-C Sink Controller (QFN-24) | STUSB4500LQTR | TBD | TBD | TBD | RECHECK | USB-C sink-only controller. |
 | IC009 | PM | U8, U10, U13 | LM74700QDBVRQ1 — Ideal-Diode OR-ing Controller (SOT-23-6) | LM74700QDBVRQ1 | TBD | TBD | TBD | RECHECK | OR-ing controllers for redundant power paths. |
-| IC010 | PM | U16 | MCP121T-450E/LB — 4.5 V Voltage Supervisor (SC70-3) | MCP121T-450E/LB | TBD | TBD | TBD | RECHECK | Voltage supervisor for 5V_MAIN rail. |
-| IC011 | PM | U9 | TPS2372-4 — PoE PD Interface Type 4 (VQFN-20) | TPS2372-4 | TBD | TBD | TBD | RECHECK | PoE 802.3bt Type 4 PD controller. |
-| IC012 | PM | U11 | TPS23730RMTR — PoE ACF DC-DC Controller (WQFN-20) | TPS23730RMTR | TBD | TBD | TBD | RECHECK | PoE active-clamp-forward DC-DC controller. |
-| IC013 | PM | U15, U17 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | MIC1555YM5-TR | TBD | TBD | TBD | RECHECK | Timer ICs for LED oscillator and monostable circuits. |
+| IC010 | PM | U8 | MCP121T-450E/LB — 4.5 V Voltage Supervisor (SC70-3) | MCP121T-450E/LB | TBD | TBD | TBD | RECHECK | Voltage supervisor for 5V_MAIN rail. |
+| IC011 | CTL | U9 | TPS2372-4 — PoE PD Interface Type 4 (VQFN-20) | TPS2372-4 | TBD | TBD | TBD | RECHECK | Controller-owned PoE 802.3bt Type 4 PD controller. |
+| IC012 | CTL | U10 | TPS23730RMTR — PoE ACF DC-DC Controller (WQFN-20) | TPS23730RMTR | TBD | TBD | TBD | RECHECK | Controller-owned PoE active-clamp-forward DC-DC controller. |
+| IC013 | PM | U11, U15 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | MIC1555YM5-TR | TBD | TBD | TBD | RECHECK | Timer ICs for LED oscillator and monostable circuits. |
 | IC014 | CTL | U_USB | TPS2065C — USB Power Distribution Switch (SOT-23-5) | TPS2065C | TBD | TBD | TBD | RECHECK | USB port current limiter. |
 | IC015 | CTL | U_HDMI | AP2331W — HDMI Current Limiter (SOT-23-5) | AP2331W | TBD | TBD | TBD | RECHECK | HDMI port current limiter. Package is SOT-23-5 (not SOT-23 3-pin or SOT-25). |
 | IC016 | PM | U18, U19 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | SN74LVC1G14DBVRQ1 | TBD | TBD | TBD | RECHECK | Schmitt trigger inverters. Always use full MPN with DBVRQ1 suffix. |
 
 ---
 
-## IC: INTERFACE & BRIDGE (3 items)
+## IC: INTERFACE & BRIDGE (4 items)
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | IC017 | PM, STA | U2 (PM), U5 (STA) | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | INA219AIDR | TBD | TBD | TBD | RECHECK | Current sense monitors. System total: 2 (PM + STA). |
-| IC018 | STA, SBD | MCP23017T-E/SO (all) | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | MCP23017T-E/SO | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | RECHECK | Current active map: Stator `U_EXP1` @ 0x20, `U_EXP2` @ 0x21, `U_EXP4` @ 0x22; Settings Board `U_EXP_SW_IN` @ 0x23, `U_LED_B1` @ 0x24, `U_LED_B2` @ 0x25. System total: 6 units. `U_EXP_SW_OUT`, `U_EXP_LED @ 0x27`, any PM-side MCP23017, and any `0x40/0x41` MCP23017 address claims are stale artefacts — never use. Candidate MPN still needs full re-verification, then revisit the wider expander partitioning once the current design-review pass is closed. |
-| IC019 | STA | U_PWM | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | PCA9685BS/3 | TBD | TBD | TBD | RECHECK | PWM driver @ 0x60 (A5=HIGH, A4–A0=GND). |
+| IC018 | STA, SBD | MCP23017T-E/SO (all) | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | MCP23017T-E/SO | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | VERIFIED | Current active map: Stator `U_EXP1` @ 0x20, `U_EXP2` @ 0x21, `U_EXP4` @ 0x22; Settings Board `U_EXP_SW_IN` @ 0x23, `U_LED_B1` @ 0x24, `U_LED_B2` @ 0x25. System total: 6 units. `U_EXP_SW_OUT`, `U_EXP_LED @ 0x27`, any PM-side MCP23017, and any `0x40/0x41` MCP23017 address claims are stale artefacts — never use. Local datasheet present at `design/Datasheets/MCP23017-Datasheet.pdf`. |
+| IC019 | STA | U_PWM | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | PCA9685BS/3 | TBD | TBD | TBD | VERIFIED | PWM driver @ 0x60 (A5=HIGH, A4–A0=GND). Local datasheet present at `design/Datasheets/PCA9685-datasheet.pdf`. |
+| IC020 | PM | U16 | PCA9534APWR — 8-bit I²C GPIO expander (TSSOP-16) @ 0x3F | PCA9534APWR | 296-21760-1-ND | 595-PCA9534APWR | C2871127 | VERIFIED | PM-local expander for `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`, `SW_LED_R/G/B`, and `SW_LED_CTRL`. No spare GPIOs by design. |
 
 ---
 
@@ -148,7 +134,7 @@
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ESD001 | PM, CTL | U_ESD1-3 (PM), U_ESD_USB (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | TPD4E05U06QDQARQ1 | TBD | TBD | TBD | RECHECK | ESD protection for USB and power ports. System total: 4 units. |
+| ESD001 | PM, CTL | D3 (PM), U4-U6 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | TPD4E05U06QDQARQ1 | TBD | TBD | TBD | RECHECK | One PM-side array remains on USB-C. The Controller owns three arrays for USB/HDMI plus Ethernet / PoE entry protection. System total: 4 units. |
 | ESD002 | PM | U_ESD_PD | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | TPD1E10B06DYARQ1 | TBD | TBD | TBD | RECHECK | USB PD ESD protection. |
 | ESD003 | PM | U_ESD_SMB | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | TPD2E2U06DRLR | TBD | TBD | TBD | RECHECK | SMBus ESD protection. |
 
@@ -172,7 +158,7 @@
 | C012 | PM | C_SC1-8 (x8) | 25 F / 2.7 V Supercapacitor | ADCR-T02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | 815-ADCRT02R7SA256MB | Global sourcing only | RECHECK | Current design target is 2S4P with 8 cells total. Order 12 (8 required + 4 spare). |
 | C013 | PM | C35 (x2) | 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap | CL32B226KAJNNNE | TBD | TBD | TBD | RECHECK | Two in parallel for C35 per DEC-030. |
 | C014 | SBD | C_debounce (x9) | 100nF; X7R; 0402; V_rated >= 10V | CL05B104KB5NNNC | 1276-1009-1-ND | 187-CL05B104KB5NNNC | C1525 | RECHECK | Switch debounce capacitors: SW_CFG_APPLY x1 plus SW_B1/B2 x8. |
-| C015 | PM | C_PoE | (PoE-specific caps) | TBD | TBD | TBD | TBD | RECHECK | PoE circuitry capacitors. |
+| C015 | CTL | C_PoE | (PoE-specific caps) | TBD | TBD | TBD | TBD | RECHECK | Controller PoE circuitry capacitors. |
 
 ---
 
@@ -190,9 +176,9 @@
 | R008 | PM | N/A | REMOVED — RGB ring resistors are integrated into S004 (Adafruit 4660) | N/A | N/A | N/A | N/A | N/A | REMOVED: The Adafruit 4660 switch includes integrated current-limiting for its RGB ring LED. |
 | R009 | PM | R_I2C (x2) | 4.7 kΩ 1% 0603 I²C pull-up | ERJ-3EKF4701V | TBD | 667-ERJ-3EKF4701V | TBD | RECHECK | I²C pull-ups on Power Module. |
 | R010 | CTL | R_DIFF | 100 Ω 1% 0603 differential termination | ERJ-3EKF1000V | TBD | TBD | C25806 | RECHECK | Differential pair termination. |
-| R011 | PM, STA | R_RSENSE (x2) | 10 mΩ ±1% 5 A 2512 Kelvin shunt | CSS2H-2512R-R010ELF | TBD | 652-CSS2H-2512R-R010ELF | TBD | RECHECK | Shared part family across LTC3350 charge current sense and Stator current monitor. System total: 3 units. |
-| R012 | PM | R13 | 121 kΩ 1% 0603 PoE MPS current set | ERJ-3EKF1213V | TBD | 667-ERJ-3EKF1213V | TBD | RECHECK | TPS2372-4 RMPS current-set resistor. |
-| R013 | PM | R11 | 301 Ω 1% 0603 charge current set | ERJ-3EKF3010V | TBD | 667-ERJ-3EKF3010V | TBD | RECHECK | TPS2372-4 gate drive resistor. |
+| R011 | PM, STA | R_RSENSE (x2) | 10 mΩ ±1% 5 A 2512 Kelvin shunt | WSK2512R0100FEA | 541-WSK2512R0100FEACT-ND | 71-WSK2512R0100FEA | C3985410 | VERIFIED | Local Vishay WSK2512 datasheet now present and the part matches the required 2512 / 4-terminal / 10 mΩ / ±1% shunt characteristics. User confirmed this as the accepted replacement candidate for the stale CSS2H placeholder. System total: 3 units; footprint finalization is deferred until PCB layout. Mouser product resources include KiCad footprint and 3D model links. |
+| R012 | CTL | R13 | 121 kΩ 1% 0603 PoE MPS current set | ERJ-3EKF1213V | TBD | 667-ERJ-3EKF1213V | TBD | RECHECK | TPS2372-4 RMPS current-set resistor on the Controller PoE front-end. |
+| R013 | CTL | R11 | 301 Ω 1% 0603 charge current set | ERJ-3EKF3010V | TBD | 667-ERJ-3EKF3010V | TBD | RECHECK | TPS2372-4 gate-drive resistor on the Controller PoE front-end. |
 | R014 | PM | R28 | 274 kΩ 1% 0603 MIC1555 U15 monostable | ERJ-3EKF2743V | TBD | 667-ERJ-3EKF2743V | TBD | RECHECK | MIC1555 U15 monostable timing resistor; target hold time 3.01 s. |
 | R015 | PM | R17 (MIC1555 R_B) | 715 kΩ 1% 0603 MIC1555 timer R_B | ERJ-3EKF7153V | TBD | 667-ERJ-3EKF7153V | TBD | RECHECK | 1 Hz LED oscillator timing resistor. |
 | R016 | PM | R_UVLO_TOP | 232 kΩ 1% 0603 thick-film eFuse UVLO | ERJ-3EKF2323V | TBD | 667-ERJ-3EKF2323V | TBD | RECHECK | LMQ61460 UVLO upper divider. |
@@ -213,7 +199,7 @@
 | R031 | ENC | LED resistors (x2 per board) | (see R007 above) | (see R007 above) | (see R007 above) | (see R007 above) | (see R007 above) | (see R007 above) | (see R007 above) |
 | R032 | Multiple | 75Ω JTAG | (see R004 above) | (see R004 above) | (see R004 above) | (see R004 above) | (see R004 above) | (see R004 above) | (see R004 above) |
 | R033 | PM | I2C/SPI 4.7k | (see R009 above) | (see R009 above) | (see R009 above) | (see R009 above) | (see R009 above) | (see R009 above) | (see R009 above) |
-| R034 | PM | Various PoE | (TBD: organize PoE-specific resistors) | TBD | TBD | TBD | TBD | RECHECK | Additional PoE circuit resistors. |
+| R034 | CTL | Various PoE | (TBD: organize PoE-specific resistors) | TBD | TBD | TBD | TBD | RECHECK | Additional Controller PoE circuit resistors. |
 | R035 | PM | Various USB-C | (TBD: organize USB-C-specific resistors) | TBD | TBD | TBD | TBD | RECHECK | USB-C configuration resistors. |
 | R036 | PM | Various LTC3350 | (TBD: organize remaining LTC3350 resistors) | TBD | TBD | TBD | TBD | RECHECK | Additional LTC3350 circuit resistors not already covered. |
 | R037 | PM | Various eFuse | (TBD: organize remaining eFuse resistors) | TBD | TBD | TBD | TBD | RECHECK | Additional eFuse circuit resistors not already covered. |
@@ -227,7 +213,7 @@
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | IND001 | PM | FB1-FB4 | Ferrite bead 120 Ω @100 MHz 4.0 A 1206 | HI1206P121R-10 | TBD | TBD | TBD | RECHECK | Laird ferrite beads. System total: 4 units. |
-| IND002 | PM | T1 | PoE ACF Isolation Transformer | POE600F-12LD | TBD | TBD | TBD | RECHECK | Coilcraft PoE isolation transformer. |
+| IND002 | CTL | T2 | PoE ACF Isolation Transformer | POE600F-12LD | TBD | TBD | TBD | RECHECK | Controller-owned Coilcraft PoE isolation transformer. |
 | IND003 | PM | L_DM1, L_DM2 | EMI Common-Mode Choke | WE-CMBNC 7448031002 | TBD | TBD | TBD | RECHECK | Würth EMI choke. System total: 2 units. |
 
 ---
@@ -244,10 +230,10 @@
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| J001 | PM | J1 (Link-Alpha) | 80-pin; 2x40; 0.8mm pitch; Samtec ERM8 male header; 5.0mm stack height | ERM8-040-05.0-S-DV-K-TR | SAM8613CT-ND | 200-ERM8040050SDVKTR | C5358550 | RECHECK | Power Module uses the male side of the Link-Alpha BtB pair. May need consigned or hand assembly. |
-| J002 | CTL | J1 (Link-Alpha) | 80-pin; 2x40; 0.8mm pitch; Samtec ERF8 female socket | ERF8-040-05.0-S-DV-K-TR | SAM8621CT-ND | 200-ERF8040050SDVKTR | C3640808 | RECHECK | Controller uses the female side of the Link-Alpha BtB pair. |
-| J003 | STA | J8 (Link-Beta) | 40-pin; 2x20; 0.8mm pitch; Samtec ERM8 male header; 5.0mm stack height | ERM8-020-05.0-S-DV-K-TR | SAM8611CT-ND | 200-ERM8020050SDVKTR | C138400 | RECHECK | Stator uses the male side of the Link-Beta BtB pair. |
-| J004 | CTL | J2 (Link-Beta) | 40-pin; 2x20; 0.8mm pitch; Samtec ERF8 female socket | ERF8-020-05.0-S-DV-K-TR | SAM8619CT-ND | 200-ERF8020050SDVKTR | C6034565 | RECHECK | Controller uses the female side of the Link-Beta BtB pair. |
+| J001 | PM | J1A/J1B/J1C (PM side) | 10-position; 2.5mm pitch; board-to-board plug; 6A/contact | 1123684-7 | A114780-ND | 571-1123684-7 | C3683043 | VERIFIED | PM-side plug for all three Controller↔PM dock connectors (`J1A` main rails, `J1B` PoE auxiliary, `J1C` low-speed control). |
+| J002 | CTL | J1A/J1B/J1C (Controller side) | 10-position; 2.5mm pitch; board-to-board receptacle; 6A/contact | 1-1674231-1 | A119250-ND | 571-1-1674231-1 | C3683260 | VERIFIED | Controller-side receptacle for the three-way PM dock. |
+| J003 | STA | J8A/J8B (Stator side) | Hybrid blind-mate plug; 5 power blades + 15 signal contacts | 2195620015 | 900-2195620015-ND | 538-219562-0015 | Global sourcing / consignment | VERIFIED | Stator-side plug for both hybrid Controller↔Stator docks. Prefer DigiKey metadata; Mouser details for this part family may be less reliable. |
+| J004 | CTL | J2A/J2B (Controller side) | Hybrid blind-mate receptacle; 5 power blades + 15 signal contacts | 2195630015 | 900-2195630015-ND | 538-219563-0015 | Global sourcing / consignment | VERIFIED | Controller-side receptacle for both hybrid Stator docks. |
 | J005 | ROT, REF | J1/J2 (10-pin male) | 10-pin; 2x5; 0.8mm pitch; Samtec ERM8 male header | ERM8-005-05.0-S-DV-K-TR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | RECHECK | Used for Rotor J1/J2 and Reflector J1/J2. System total: 64 units. |
 | J006 | STA, EXT, ROT | J1/J2/J4/J5 (10-pin female) | 10-pin; 2x5; 0.8mm pitch; Samtec ERF8 female socket | ERF8-005-05.0-S-DV-K-TR | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | RECHECK | Used across Stator rotor-slot sockets, Extension outputs, and Rotor Board B outputs. System total: 64 units. |
 | J007 | ROT, REF | J3 (20-pin male) | 20-pin; 2x10; 0.8mm pitch; Samtec ERM8 male header | ERM8-010-05.0-S-DV-K-TR | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | RECHECK | Used for Rotor J3 and Reflector J3. System total: 32 units. |
@@ -265,7 +251,7 @@
 | J012 | ROT, CTL | H_PWR / H_JTAG / H_SENS / J_JDB_PWR female | 1x5; 2.54mm pitch; vertical THT female socket | RS1-05-G | 2057-RS1-05-G-ND | 737-RS1-05-G | C3321119 | RECHECK | Shared across Rotor Board A H_PWR/H_JTAG, Rotor Board B H_SENS, and Controller J_JDB_PWR. System total: 91 units. |
 | J013 | JDB | J2 male | 1x10; 2.54mm pitch; vertical THT male pin header | PH1-10-UA | 2057-PH1-10-UA-ND | 737-PH1-10-UA | C3330527 | RECHECK | JDB Design_Spec defines this as the hat JTAG output header. |
 | J014 | CTL | J_JDB_JTAG female | 1x10; 2.54mm pitch; vertical THT female socket | RS1-10-G | 2057-RS1-10-G-ND | 737-RS1-10-G | C3320525 | RECHECK | Controller Design_Spec defines this as the female mate to the JDB JTAG OUTPUT header. |
-| J015 | ENC, STA | J2 (Encoder) / J4-J6 (Stator) | 26-pin; 2x13; 2.54mm pitch; vertical shrouded box header with polarisation key | T821126A1S100CEU | TBD | TBD | C3013501 | RECHECK | IDC ribbon-cable interface. Existing docs call out RS-Online 832-3503. System total: 6 units. |
+| J015 | ENC, STA | J2 (Encoder) / J4-J6 (Stator) | 26-pin; 2x13; 2.54mm pitch; vertical shrouded box header with polarisation key | T821126A1S100CEU | TBD | TBD | C3013501 | VERIFIED | IDC ribbon-cable interface. Existing docs call out RS-Online 832-3503. System total: 6 units. Local datasheet present at `design/Datasheets/T821126A1S100CEU-C3013501-datasheet.pdf`. |
 | J016 | STA, EXT, REF | J7 / J7 IN / J8 OUT / J4 | 16-pin; 2x8; 2.54mm pitch; vertical shrouded box header | BHR-16-VUA | 2057-BHR-16-VUA-ND | 737-BHR-16-VUA | C17692295 | VERIFIED | Used on Stator J7, Extension J7/J8, and Reflector J4. System total: 4 units. Local datasheet now present at `design/Datasheets/bhr-xx-vua-data-sheet.pdf`; user confirmed supplier part numbers. |
 
 ---
@@ -277,10 +263,10 @@
 | J017 | CTL | J3 | Dual-stacked USB 3.0 Type-A receptacle; right-edge external I/O; 5.0mm overhang | 48406-0003 | WM10420-ND | 538-48406-0003 | C565298 | RECHECK | Controller right-edge external I/O. |
 | J018 | CTL | J4 | Full-size HDMI Type-A receptacle; right-edge external I/O; 5.0mm overhang | 2007435-1 | A141617-ND | 571-2007435-1 | C195051 | RECHECK | Controller right-edge external I/O. |
 | J019 | PM | J4 | USB Type-C power input only; 6-position right-angle SMT receptacle | USB4135-GF-A | 2073-USB4135-GF-ACT-ND | 640-USB4135-GF-A | C5438410 | RECHECK | Power-only USB-C on Power Module. Mechanical wall-flush fit is explicitly called out. |
-| J020 | PM | J2 | RJ45 MagJack for PoE 802.3bt Type 4 input; long-body THT; integrated magnetics | 7499111121A | 1297-1070-5-ND | 710-7499111121A | C5523983 | RECHECK | Power Module PoE input. |
+| J020 | CTL | J5 | RJ45 MagJack for PoE 802.3bt Type 4 input; long-body THT; integrated magnetics | 7499111121A | 1297-1070-5-ND | 710-7499111121A | C5523983 | RECHECK | Controller now owns the PoE / Ethernet entry point. |
 | J021 | PM | J3 | 5-circuit; 1-row; 3.0mm pitch; vertical THT Molex Micro-Fit 3.0; battery connector | 43650-0519 | WM14587-ND | 538-43650-0519 | C563849 | RECHECK | Existing design notes explicitly say battery suitability still needs confirmation. |
-| J022 | STA, SBD | J_CFG (STA), J_I2C (SBD) | 6-pin; 2.0mm pitch JST PH; THT vertical; keyed; >= 1A per contact | B6B-PH-K-S(LF)(SN) | 455-1723-ND | 474-B6B-PH-K-S(LF)(SN) | TBD | RECHECK | Active Settings/Stator link is now the 6-pin JST PH variant carrying `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`. The old verified `B4B-PH` row is stale and its local datasheet can be retired once no active docs reference it. |
-| J023 | STA | J_SERVO | 3-pin; 2.0mm pitch JST PH; THT vertical; keyed | B3B-PH-K-S(LF)(SN) | 455-B3B-PH-K-S-ND | 474-B3B-PH-K-S(LF)(SN) | C131342 | VERIFIED | JST PH family connector for the servo lead. Keep aligned with the same PH-family datasheet package that will also cover `B6B-PH`. |
+| J022 | STA, SBD | J_CFG (STA), J_I2C (SBD) | 6-pin; 2.0mm pitch JST PH; THT vertical; keyed; >= 1A per contact | B6B-PH-K-S(LF)(SN) | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | VERIFIED | Active Settings/Stator link is now the 6-pin JST PH variant carrying `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`. Local family datasheet now present at `design/Datasheets/JST-PH-Connector.datasheet.pdf`. |
+| J023 | STA | J_SERVO | 3-pin; 2.0mm pitch JST PH; THT vertical; keyed | B3B-PH-K-S(LF)(SN) | 455-1705-ND | 306-B3BPHKSLFSNP | C131339 | VERIFIED | JST PH family connector for the servo lead. Keep aligned with the same PH-family datasheet package that also covers `B6B-PH`. |
 
 ---
 
@@ -297,8 +283,8 @@
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| J026 | ENC | J1 (x64) | 6.35mm (1/4in) mono switched panel-mount jack; 3 terminals (Tip / Switch / Sleeve) | SaiBuy.Ltd eBay item 334364197440 | TBD | TBD | TBD | RECHECK | Already purchased; no formal manufacturer MPN captured yet. System total: 192 units. |
-| J027 | ENC | BT1-BT128 | 6.35mm (0.250in) straight vertical PCB-mount male blade tab | 1285-ST | 36-1285-ST-ND | 534-1285-ST | C5370868 | RECHECK | Used as two rows of 64 blade terminals on Encoder boards. System total: 384 units. |
+| J026 | ENC | J1 (x64) | 6.35mm (1/4in) mono switched panel-mount jack; 3 terminals (Tip / Switch / Sleeve) | SaiBuy.Ltd eBay item 334364197440 | Global sourcing / consignment | Global sourcing / consignment | eBay item 334364197440 | VERIFIED | Already purchased. Pseudo datasheet captured at `design/Datasheets/SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md`. Treat as a consignment part installed during mechanical/final assembly rather than PCB assembly. System total: 192 units. |
+| J027 | ENC | BT1-BT128 | 6.35mm (0.250in) straight vertical PCB-mount male blade tab | 1285-ST | 36-1285-ST-ND | 534-1285-ST | C5370868 | VERIFIED | Used as two rows of 64 blade terminals on Encoder boards. System total: 384 units. Covered by local `design/Datasheets/keystone-1211-datasheet.pdf`. Mouser product resources include KiCad footprint and 3D model links. |
 
 ---
 
@@ -306,19 +292,19 @@
 
 | # | Board | Ref | Specification to Verify | Candidate MPN | Candidate DigiKey | Candidate Mouser | Candidate JLCPCB | Verification | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| M001 | PM | X1 | 12 MHz Crystal SMD | ABM8-12.000MHz-B2-T | TBD | TBD | C9002 | RECHECK | Abracon crystal oscillator. |
+| M001 | JDB | Y1 | 12 MHz Crystal SMD | ABM8-12.000MHz-B2-T | 535-9826-1-ND | 815-ABM8-12-B2-T | C596894 | VERIFIED | Abracon crystal for the JTAG Daughterboard FT232H reference clock. Local datasheet present at `design/Datasheets/ABM8-Datasheet.pdf`. |
 | M002 | PM | TC1 | 72°C SMD Thermal Cutoff | AC72ABD | TBD | TBD | TBD | RECHECK | Bourns thermal cutoff. |
-| M003 | ENC | BAT1 | CR2032 Coin Cell Holder | 3034 | TBD | TBD | TBD | RECHECK | Keystone coin cell holder. |
-| M004 | CTL | Standoffs (x4) | Würth 9774040151R M2.5 × 4.0mm SMT Brass Standoff (CM5 mount) | 9774040151R | TBD | TBD | TBD | RECHECK | CM5 mounting standoffs. |
+| M003 | CTL | BT1 | CR2032 Coin Cell Holder | 3034TR | 36-3034CT-ND | 534-3034TR | C5213768 | VERIFIED | Keystone coin cell holder. `TR` is the tape-and-reel packaging suffix. Local datasheet present at `design/Datasheets/Keystone-CoinCellRetainers-datasheet.pdf`. |
+| M004 | CTL | Standoffs (x4) | Würth 9774040151R M2.5 × 4.0mm SMT Brass Standoff (CM5 mount) | 9774040151R | 732-7089-1-ND | 710-9774040151R | C5182034 | VERIFIED | CM5 mounting standoffs. Local datasheet present at `design/Datasheets/9774040151R-standoff-datasheet.pdf`. Mouser product resources include a 3D model. |
 | M005 | STA | C_SH1 | (SERVO_HOME cap) | TBD | TBD | TBD | TBD | RECHECK | SERVO_HOME RC network capacitor. R_SH2/C_SH2 are erroneous duplicates — permanently removed. |
 
 ---
 
 ## Summary by Verification Status
 
-- **VERIFIED:** 8 items (S001 superseded, S002, S004, L001, J022, J023, J024, J025)
-- **RECHECK:** 98 items (all others awaiting manual re-verification)
-- **BLOCKED:** 1 item (L002 — LED resistor tuning blocked on architecture finalization)
+- **VERIFIED:** 18 items (S001 superseded, S002, S004, S009, L001, L002, IC018, IC019, R011, J015, J022, J023, J024, J025, J027, M001, M003, M004)
+- **RECHECK:** 90 items (all others awaiting manual re-verification)
+- **BLOCKED:** 0 items
 
 ---
 

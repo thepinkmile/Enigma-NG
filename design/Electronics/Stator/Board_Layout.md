@@ -54,21 +54,22 @@ The connector set (ENC-IN, ENC-OUT, and PWR/JTAG — one of each per rotor posit
 The positional requirement stands: J1–J3 must be **positionally identical** across Stator, Extension, and Reflector
 so any rotor can mate at any position without re-wiring.
 
-## J8 — LINK-BETA (40-Pin ERM8 — To Controller Board)
+## J8A / J8B — Controller Dock (Hybrid Molex — To Controller Board)
 
-> **Connector Definition Owner:** `Controller/Board_Layout.md — LINK-BETA`.
-> This board uses the mating ERM8-020-05.0-S-DV-K-TR (Male) connector. See BOM for part number.
+> **Connector Definition Owner:** `Controller/Board_Layout.md — Controller ↔ Stator Dock`.
+> This board uses the Molex `2195620015` hybrid plugs. See BOM for part numbers.
 
-**Connector:** Samtec ERM8-020-05.0-S-DV-K-TR (Male, 40-pin). Mating ERF8-020 female on Controller Board J2.
-**Power capacity:** 14 × 3V3_ENIG pins × 0.5A/pin = 7.0A connector capacity and 4 × 5V_MAIN pins ×
-0.5A/pin = 2.0A connector capacity. The practical 3V3_ENIG limit remains the upstream 3.0A LDO; the
-expanded 5V_MAIN group provides headroom for the Settings Board indicator rail and J_SERVO branch.
+**Connector:** Molex `2195620015` hybrid blind-mate plug pair (`J8A` / `J8B`). Mating Controller
+receptacles are Molex `2195630015` on `J2A` / `J2B`.
+**Power capacity:** `J8B` groups `3V3_ENIG` across four power blades and `J8A` groups `5V_MAIN`
+across four power blades. The practical `3V3_ENIG` limit remains the upstream 3.0A LDO; the grouped
+`5V_MAIN` dock easily supports the Settings Board indicator rail and the `J_SERVO` branch.
 **Power telemetry path:**
 
 ```text
-[ LINK-BETA (ERM8-020) ] --(3V3_ENIG, pins 6-12 + 29-35)--> [ CSS2H 10mΩ SHUNT ] --(CLEAN 3V3)--> [ ROTOR BUS ]
-                     |                                                       |
-                     +------------- (I2C-1) ------------- [ INA219 ] -------+
+[ J8B logic / 3V3 dock ] --(3V3_ENIG blades)--> [ CSS2H 10mΩ SHUNT ] --(CLEAN 3V3)--> [ ROTOR BUS ]
+                      |                                                 |
+                      +----------- (I2C-1) ----------- [ INA219 ] ------+
 ```
 
 ## J4–J6: ENCODER PORTS (26-Pin, 2×13, 2.54mm Shrouded Box Header)
@@ -103,7 +104,7 @@ Left group:              Right group (stacked vertically):
 TCK and TMS are broadcast to all three encoder ports and the rotor stack. SYS_RESET_N is broadcast
 to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 
-1. LINK-BETA TDI → **Stator CPLD** TDI
+1. Controller `J2B` / Stator `J8B` TDI → **Stator CPLD** TDI
 2. Stator CPLD TDO → **J4 (HID Encoder)** TDI *(internal Stator trace)*
 3. J4 TDO → **J5 (Plugboard Encoder #1)** TDI *(internal Stator trace)*
 4. J5 TDO → **J6 (Plugboard Encoder #2)** TDI *(internal Stator trace)*
@@ -150,7 +151,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 
 ## J_CFG — Settings Board I²C Connector
 
-**Component:** JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm THT (JLCPCB PN TBD; confirm 6-pin B6B variant).
+**Component:** JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm THT (JLCPCB: C131342).
 **Placement:** Board edge facing the enclosure panel, accessible without rotor stack removal.
 **Silkscreen:** Label `EINSTELLUNGEN` / `SETTINGS` adjacent to connector.
 **Cable:** 6-wire harness to Settings Board J_I2C (100mm recommended).
@@ -163,7 +164,7 @@ to all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 | Pin | Signal | Description |
 | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | Logic supply to Settings Board expanders |
-| 2 | 5V_MAIN | Indicator power feed from Link-Beta pins 3, 4, 37, and 38 |
+| 2 | 5V_MAIN | Indicator power feed from the Controller via the `J8A` 5V dock |
 | 3 | GND | Logic return only; no local GND_CHASSIS bond |
 | 4 | SDA | I²C-1 data — shared Stator I²C-1 bus |
 | 5 | SCL | I²C-1 clock — shared Stator I²C-1 bus |
@@ -219,7 +220,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 | Signal (ENC_IN/OUT, SYS_RESET_N, I2C) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; all CPLD I/O and encoder data lines |
 | JTAG signals: TCK, TMS, TDI, TDO, TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
 | JTAG fan-out to encoder ports (L1, cable-drive side) | signal | — | 0.20 mm | **0.20 mm** | L1 | Traces from series resistors R7–R15 to J4/J5/J6 connector pads (post-termination section) |
-| 3V3_ENIG entry trace (LINK-BETA → shunt R1) | 2.05 A | 0.31 mm | 0.80 mm | **0.80 mm** | L1 | Carries full rotor-stack + encoder load; series path through CSS2H 10 mΩ Kelvin shunt; consistent with PM §9 and Global_Routing_Spec §1.1 |
+| 3V3_ENIG entry trace (`J8B` dock → shunt R1) | 2.05 A | 0.31 mm | 0.80 mm | **0.80 mm** | L1 | Carries full rotor-stack + encoder load; series path through CSS2H 10 mΩ Kelvin shunt; consistent with PM §9 and Global_Routing_Spec §1.1 |
 | 3V3_ENIG fan-out (post-shunt → L3 pour via-down) | 2.05 A | 0.31 mm | 0.80 mm | **0.80 mm** | L1 | Entry to inner power pour via thermal via cluster |
 | 3V3_ENIG per-slot feed (L1 → each rotor ERF8-005 socket) | 55 mA | 0.008 mm | 0.80 mm | **0.80 mm** | L1 | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); one trace per 30 rotor slots |
 | 3V3_ENIG distribution (inner power pour) | 2.05 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary 3V3_ENIG distribution |

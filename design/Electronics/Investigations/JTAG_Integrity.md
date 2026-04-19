@@ -28,13 +28,12 @@ design decision adopted.
 
 ```text
 FT232H (JDB)
-    │  R1/R3 33Ω series R at TCK/TMS FT232H outputs → U5 buffer input
     │  U5 SN74LVC2G125DCUR buffer (TCK, TMS)
     │  R6/R7 33Ω after U5 output (TCK/TMS); R2 33Ω at FT232H TDI; R8 33Ω before J2 (TDI)
     ▼
 J2 JTAG header → Controller hat-header (pass-through: no active components)
     ▼
-LINK-BETA (BtB, no cable)
+Controller J2B ↔ Stator J8B logic dock (BtB, no cable)
     │
     ▼
 Stator CPLD (U1)
@@ -70,7 +69,7 @@ Stator CPLD (U1)
             └─▶ TTD_RETURN ribbon: Reflector J4 pin 15 ──▶ Stator J7 pin 15
                 (J4 also carries ENC_IN[0:5] / ENC_OUT[0:5] pins 3–14 for Stator CPLD
                  plugboard-pass configuration — these are NOT part of the JTAG chain)
-                Stator J7 → LINK-BETA pin 26 → FT232H
+                Stator J7 → Controller-facing `J2B/J8B` `TTD_RETURN` path → FT232H
 ```
 
 **TCK and TMS** are broadcast to all devices. On the Stator they fan out to:
@@ -78,8 +77,8 @@ Stator CPLD (U1)
 * J4, J5, J6 (encoder ribbon cable ports) — each requires its own 75 Ω series resistor before
   the ribbon cable.
 * J1–J3 (rotor BtB interface) — TCK/TMS are re-buffered by U1 (SN74LVC2G125DCUR) on each
-  Extension board at every 5-rotor group boundary. Stator rotor interface outputs (J1–J3) use
-  33 Ω series resistors (BtB, matched to 50 Ω PCB).
+  Extension board at every 5-rotor group boundary. The direct BtB rotor-stack path does **not**
+  add extra series resistors at each hop.
 
 **TDI/TDO** are serial-chained. For **ribbon cable segments** each cable-driving output needs a
 75 Ω series resistor. For the **BtB rotor stack**, TDI flows unbuffered board-to-board; the chain
@@ -420,7 +419,7 @@ cable lengths of 200–500 mm the 75 Ω resistors are functionally necessary.
 | --- | --- | --- |
 | Driving a ribbon cable (~100 Ω IDC) | **75 Ω** | Source Z = 95 Ω ≈ cable Zo |
 | Intra-board (CPLD output → same-board CPLD input) | **33 Ω** | Source Z = 53 Ω ≈ PCB Zo |
-| JDB U5 output → LINK-BETA (BtB, no cable) | **33 Ω** | Short BtB trace; match 50 Ω PCB; U5 out Z (15Ω) + 33Ω ≈ 48Ω |
+| JDB U5 output → Controller `J2B` / Stator `J8B` logic dock (BtB, no cable) | **33 Ω** | Short BtB trace; match 50 Ω PCB; U5 out Z (15Ω) + 33Ω ≈ 48Ω |
 | Rotor stack TDO end-of-chain (Reflector R1) | **22 Ω** | Final TDO output — lower R sufficient; verified by Reflector DR-REF-04 |
 
 ### 7.2 Placement Rule
@@ -471,7 +470,8 @@ distance on the trace.
 
 > **Controller JTAG pass-through:** The Controller board carries no active JTAG components. All
 > buffering (U5 SN74LVC2G125DCUR) and series damping (R6–R8, 33 Ω 0402) are located on the JDB.
-> LINK-BETA is a direct BtB connector (no cable), so 33 Ω applies (not 75 Ω). See DEC-024.
+> The Controller `J2B` ↔ Stator `J8B` logic dock is a direct BtB connection (no cable), so 33 Ω
+> applies there (not the 75 Ω cable-driving rule). See DEC-024.
 >
 > **Reflector and Extension:** Upgraded to 4-layer JLC04161H-7628 per DEC-017. Both boards now
 > have a solid L2 GND plane. JTAG traces route on L1 at 0.127 mm (50 Ω controlled impedance),

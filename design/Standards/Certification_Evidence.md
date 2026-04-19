@@ -93,7 +93,9 @@ for CE/UKCA EMC compliance.
 **Full power chain (input to output):**
 
 ```text
-[PoE 802.3bt Type 4: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12LD, 60W, 12V) / USB-C 15V PD (STUSB4500) / Battery 11–16.4V]
+[Controller PoE front-end: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12L, 60W, 12V; `D` suffix = packaging only)]
+  → PM dock `J1B` as regulated `VIN_POE_12V`
+[USB-C 15V PD (STUSB4500) / Battery 11–16.4V / VIN_POE_12V from Controller]
   → LM74700-Q1 OR-ing controller + CSD17483F4T ideal-diode FETs (×3)
   → [L1 CMC → L2 CMC] (common-mode attenuation, 1 kHz–30 MHz)
   → [L3 + C Pi-filter] (differential-mode HF bypass)
@@ -266,7 +268,7 @@ consistent with military component derating standards.
 | 2× LMQ61460-Q1 | 5V Buck (combined) | 12A | 8.76A | **73.0%** ✓ |
 | TPS75733KTTRG3 | 3V3_ENIG LDO | 3A | 2.05A | **68.3%** ✓ |
 | TPS25980 (16.9V OVLO) | eFuse (programmed ILIM) | 7A | 4.67A* | **66.7%** ✓ |
-| TPS2372-4 + TPS23730 + T2 POE600F-12LD (PoE discrete DC-DC) | PoE PD capacity | 72W | 50.3W (steady) | **69.9%** ✓ |
+| TPS2372-4 + TPS23730 + T2 POE600F-12L (PoE discrete DC-DC) | PoE PD capacity | 72W | 50.3W (steady) | **69.9%** ✓ |
 | STUSB4500 | USB-C PD negotiation | 15V/5A (75W) | 42.5W | **56.7%** ✓ |
 
 > *eFuse load (worst case — PoE 12V bus): Supercap bank is on 5V_MAIN (LTC3350 managed). eFuse sees: total system 5V draw 8.76A + LTC3350 supercap charge 1A (5V side) = 9.76A at 5V = 48.8W. Buck
@@ -343,8 +345,9 @@ GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
 | Battery SMBus (SDA/SCL) | TPD2E2U06 (D2) | SOT-553 (DRL) | SMBus differential pair protection |
 | Battery Presence (BATT_PRES_N) | TPD1E10B06DYARQ1 (D1) | SOD-523 | Single-line presence detect |
 
-**Internal connections (Board-to-Board links):** Internal BtB connectors (Link-Alpha, Link-Beta) are not individually ESD-protected in the standard configuration, as they are considered internal
-interfaces not subject to user contact during normal operation.
+**Internal connections (Board-to-Board links):** Internal BtB connectors (the PM dock cluster and the
+Stator dock pair) are not individually ESD-protected in the standard configuration, as they are
+considered internal interfaces not subject to user contact during normal operation.
 
 **Diagnostic test banks:** ESD protection on diagnostic banks is deferred to the post-prototype stage (see §8, deferred item DA-01).
 
@@ -365,7 +368,7 @@ stated. The thermal enclosure is sized to handle 70°C ambient at 100% utilisati
 | Resistors (power) | Power | ≤50% of rated | Long-term stability; 50% derating is standard for resistors |
 | Resistors (precision, 0.1%) | Power | ≤25% of rated | Maintains temperature coefficient specification |
 | PCB traces (power) | Current | Per IPC-2221B at 70°C | 2oz copper; trace width calculated per IPC standard |
-| BtB connector (power pins) | Current | ≤0.5A per contact | ≤0.5A per contact (Samtec ERM8/ERF8 design limit, consistent with 18 pins × 0.5A = 9.0A Link-Alpha capacity; 2oz copper thermal margin confirmed by trace width calculations in Power_Module/Design_Spec.md §5 and Controller/Board_Layout.md) |
+| BtB connector (power pins) | Current | Per selected connector family | TE PM dock and Molex Stator dock are now sized by their own per-contact / per-blade ratings; verify against the active connector datasheets rather than the retired Samtec 0.5A/contact rule |
 
 ---
 
@@ -393,14 +396,16 @@ The following table documents the IEEE 802.3 PoE standard capabilities and the r
 > System must be powered for ≥9 minutes before full hold-up protection (≥33.5 seconds) is available.
 > Normal minimum operational session is 30+ minutes; this constraint is not operationally significant.
 
-**PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 / Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design
-using:
+**PoE PD implementation — Discrete design (TPS2372-4 + TPS23730 + T2):** The Silvertel Ag5300 /
+Ag53000 module (802.3at, 25.5W) previously considered is replaced by a fully discrete PoE PD design
+on the Controller using:
 
 - **TPS2372-4** (TI, VQFN-20): 802.3bt Type 4 PD interface, classification, and external hotswap controller (supports up to 90W PD)
 - **TPS23730** (TI, WQFN-20): Active Clamp Flyback (ACF) DC-DC controller, 200kHz, 12V output (R_VFB feedback resistors configured for 12V), PSR mode
-- **T2**: **Coilcraft POE600F-12LD** — off-the-shelf 60W ACF PoE isolation transformer; 12V output, 36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. Catalogue stock part ordered direct from
-
-  Coilcraft (coilcraft.com). No custom winding required.
+- **T2**: **Coilcraft POE600F-12L** — off-the-shelf 60W ACF PoE isolation transformer; 12V output,
+  36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. `D` suffix is packaging-only for
+  pick-and-place. This is a Coilcraft-direct consignment part ordered from Coilcraft
+  (coilcraft.com). No custom winding required.
 
   - **OR-ing priority note:** PoE at 12V is lower than USB-C at 15V. The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal to enforce PoE priority when PoE is live. Battery
 
@@ -491,12 +496,12 @@ Any replacement CPLD must be verified for:
 | --- | --- | --- | --- |
 | OA-01 | **[CLOSED]** eFuse variant confirmed as **TPS259804ONRGER** (16.9V silicon-fixed OVLO, VQFN-24). UVLO confirmed: V_UVLO_R = 1.20V typ; R1=232kΩ, R2=28.7kΩ → 10.90V typ (range 10.72–11.17V). OVLO: silicon-fixed 16.9V typ (16.32V min / 17.31V max rising) — no external R; worst-case min 16.32V gives 0.32V margin above BMS 16.4V max — documented in §3.2 battery note. ILIM: R3 = 210 Ω ERA-3ARB2100V (Mouser 667-ERA-3ARB2100V, 0.1% thin-film) — DigiKey and JLCPCB PNs TBD, programs 7.062A typ via R = 1460/(I−0.11). All PNs confirmed. | Hardware Designer | **CLOSED** |
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~9 min charge from cold: 53.2W / 72W = 73.9% ✓ — within 75% design rule. Steady-state: 50.3W / 72W = 69.9% ✓. |
-| ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12LD ACF transformer. Capacity 72W. See §6 for full rationale. |
+| ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12L ACF transformer (`D` suffix = packaging only). Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
-| OA-05 | Thermal simulation of BtB connector zone to verify 0.5A/contact derating on Samtec ERF8 power pins with 2oz copper. Document as evidence for §5. | Hardware Designer | Medium |
+| OA-05 | Thermal / current-capacity verification of the active PM and Stator dock connectors using the TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015` datasheets. Document the final derating rule for §5. | Hardware Designer | Medium |
 | ~~OA-06~~ | ~~Verify TPS25751DREFR CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W).~~ | ~~Hardware Designer~~ | **CLOSED** — CC1/CC2 pins of TPS25751DREFR routed to CM5 via Link-Alpha connector. PDO programmed to 5V/5A (25W) to prevent Linux OS power-throttling during initial boot and full-load operation. Verified in Controller Board_Layout §4 Link-Alpha pin map. |
 | ~~OA-07~~ | ~~Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md.~~ | ~~Hardware Designer~~ | **CLOSED** — DEC-001 confirmed: pins 21-22 = 5V_MAIN, pins 23-24 = GND. Formally documented in Controller/Board_Layout.md BtB Link-Alpha table (all 80 pins assigned). |
-| ~~OA-08~~ | ~~Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** — Superseded by selection of Coilcraft POE600F-12LD (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, catalogue stock). No custom winding required. |
+| ~~OA-08~~ | ~~Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** — Superseded by selection of Coilcraft POE600F-12L (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, Coilcraft-direct consignment part; `D` suffix = packaging only). No custom winding required. |
 
 ### Deferred Items (Post-Prototype Stage)
 
@@ -504,7 +509,7 @@ Any replacement CPLD must be verified for:
 | --- | --- | --- |
 | DA-01 | ESD protection on Diagnostic Bank-A and Diagnostic Bank-B exposed ENIG pads. TVS arrays (TPD4E05U06 or equivalent) to GND_CHASSIS required before production release and any classroom deployment. | Post-prototype validation |
 | DA-02 | ESD policy for classroom deployment variant — define which internal BtB-accessible connections require additional ESD protection when the device is used in an educational/student-access configuration. | Pre-production (classroom variant) |
-| DA-03 | Full consistency documentation pass — INC-01 through INC-20 applied in current session. Remaining actions: Consolidated BOM update, Controller Board Board_Layout.md Link-Alpha pin map (80-pin allocation), TPS25980 suffix verification (OA-01). | Post-eFuse suffix confirmation |
+| DA-03 | Full consistency documentation pass — legacy Link-Alpha / Link-Beta references must remain historical-only after DEC-038. If further active docs are added, ensure they use the TE PM dock and Molex Stator dock naming from the start. | Ongoing document maintenance |
 | DA-04 | Update Consolidated BOM with all locked Power Module components. Format: component description, specification, boards requiring, quantity, notes (no reference designators — these are per-board). | Post-eFuse part lock (OA-01) |
 
 ---

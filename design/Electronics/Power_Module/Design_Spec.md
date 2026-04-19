@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-19
 
 ## 1. Overview
 
@@ -19,14 +19,17 @@ It produces 2 power rails from a common ~12V input source. These power rails are
 
 **NOTE (DEC-001):** The **3V3_SYSTEM** rail name is retired. The **3V3_ENIG** rail
 (generated on this Power Module by the TPS75733 LDO) is the unified 3.3V rail supplying
-CPLDs, USB-JTAG logic/VCCIO, and low-voltage control/telemetry domains. 3V3_ENIG power
-crosses to the Controller Board via BtB Link-Alpha pins 39–44.
+CPLDs, USB-JTAG logic/VCCIO, and low-voltage control/telemetry domains. `3V3_ENIG` crosses to the
+Controller Board via dock connector `J1A`.
 
-* **Controller Link (Link-Alpha):** 80-pin ERM8 connector for power/ethernet/telemetry handshake with the Controller Board.
-  * **Provided to Controller:** 5V_MAIN, 3V3_ENIG, GBE signals, and PWR_GD.
-  * **Returned by Controller (CTRL→PM via LINK-ALPHA):** Status LED drive signals (SW_LED_R, SW_LED_G, SW_LED_B / SW_LED_CTRL), Ethernet LED signals (ETH_LED_LINK, ETH_LED_ACT), and ROTOR_EN.
-  * **Cross-ref:** For the exact Link-Alpha mapping and signal naming conventions, See:
-    * `Controller/Design_Spec.md`
+* **Controller Dock:** The Power Module docks into the Controller through three TE 10-position
+  connectors: `J1A` (regulated rails), `J1B` (regulated PoE-derived auxiliary feed), and `J1C`
+  (low-speed control / telemetry).
+  * **Provided to Controller:** `5V_MAIN`, `3V3_ENIG`, PM telemetry, `PWR_GD`, and `PWR_BUT`.
+  * **Received from Controller:** `VIN_POE_12V`, `I2C-1`, `PM_IO_INT_N` return path, and `ROTOR_EN`.
+  * **Cross-ref:** See `Controller/Design_Spec.md` and `Controller/Board_Layout.md` for the active dock allocation.
+  * **Reference PDFs:** [`TE-1123684-7-datasheet.pdf`](../../Datasheets/TE-1123684-7-datasheet.pdf),
+    [`TE-1-1674231-1-datasheet.pdf`](../../Datasheets/TE-1-1674231-1-datasheet.pdf)
 
 ### Functional & Design Requirements
 
@@ -34,21 +37,22 @@ crosses to the Controller Board via BtB Link-Alpha pins 39–44.
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-PM-01 | Convert PoE (802.3bt Type 4) input to regulated 5V and 3.3V system power rails | Primary power source for the entire system | §2 Power & UPS Hub; BOM U9 (TPS2372-4), U10 (TPS23730), U2A/U2B (LMQ61460AFSQRJRRQ1), U7 (TPS75733) |
+| FR-PM-01 | Accept a regulated PoE-derived auxiliary feed from the Controller plus local USB-C and battery inputs, then generate regulated 5V and 3.3V system rails | PM is now the system power-conditioning / UPS cartridge rather than the PoE edge-entry board | §2 Power & UPS Hub; BOM J1B, J3, J4, U2A/U2B, U7 |
 | FR-PM-02 | Maintain system power for ≥33.5 s after mains/PoE loss | Provides controlled-shutdown window for the CM5 OS | §2 Power & UPS Hub; BOM U3 (LTC3350), C_SC1–8 (supercaps) |
 | FR-PM-03 | Assert PWR_GD (active-HIGH) to CM5 while 5V_MAIN ≥ 4.5V; deassert LOW when 5V_MAIN drops below threshold | Rail-health telemetry to CM5 GPIO 27; does not initiate shutdown directly | §5 Protection & Logic; BOM U8 (MCP121T-450E) |
 | FR-PM-07 | Automatically pulse CM5 PWR_BUT LOW for 3 seconds when LTC3350 enters backup mode (primary power lost), initiating a hardware-guaranteed graceful OS shutdown without firmware polling | Ensures graceful shutdown within the 33.5 s hold-up window regardless of OS state | §3 Power Sequencing; §5 Protection & Logic; BOM U15 (MIC1555 monostable), Q5, R28, R29, C32, C33 |
 | FR-PM-08 | Provide manual CM5 power button (SW2) wired to PWR_BUT, enabling graceful power-on after OS shutdown while system power remains available | Allows CM5 restart without a full power cycle; replaces incorrect GLOBAL_EN hard-reset approach | §3 Power Sequencing; BOM SW2, R29 |
-| FR-PM-04 | Distribute 5V_MAIN and 3V3_ENIG to the Controller Board via the Link-Alpha BtB connector | Single connector for all power and telemetry | §2 Power & UPS Hub; BOM J1 (ERM8-040) |
+| FR-PM-04 | Distribute `5V_MAIN` and `3V3_ENIG` to the Controller Board and expose the retained direct PM handshakes | Via `J1A` (rails) and `J1C` (low-speed control / telemetry) | §2 Power & UPS Hub; BOM J1A–J1C |
 | FR-PM-05 | Monitor 5V_MAIN output voltage and current and report via I2C | Runtime health telemetry for the primary CM5 supply rail; downstream rails are monitored elsewhere in the system where specified | §3 Telemetry & Power Management; BOM R7, R8 (I2C pull-ups), U12 (INA219 at 0x40), R23 (10mΩ shunt) |
+| FR-PM-09 | Virtualise non-critical PM status lines and runtime SW1 RGB control through a PM-local I²C expander | Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`; Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL` | §3 Telemetry & Power Management; BOM U16 (`PCA9534APWR`) |
 | FR-PM-06 | Protect downstream circuitry from overcurrent, overvoltage, and inrush | Hardware protection independent of software | §5 Protection & Logic; BOM U1 (TPS25980 eFuse), R1–R3 |
 
 #### Design Requirements
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-PM-01 | Input supply | PoE 802.3bt Type 4 (Class 8), 44–57 V, ≤72 W | §5 Protection & Logic; BOM U9 (TPS2372-4), J2 (RJ45) |
-| DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; 9.0 A capacity via Link-Alpha (18 pins × 0.5 A/pin) | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
+| DR-PM-01 | Input supply | `VIN_POE_12V` regulated auxiliary feed from Controller PoE front-end, local USB-C PD input, and local smart-battery input | §5 Protection & Logic; BOM J1B, J3, J4 |
+| DR-PM-02 | 5V_MAIN rail | 5.0 V ±2%, ≥5 A continuous; exported to Controller via grouped `J1A` contacts | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
 | DR-PM-03 | 3V3_ENIG rail | 3.3 V ±3%, ≤3.0 A maximum (TPS75733 LDO hard limit) | §5 Protection & Logic; BOM U7 (TPS75733) |
 | DR-PM-04 | Buck converter | Dual-phase interleaved LMQ61460AFSQRJRRQ1 pair | §2 Power & UPS Hub; BOM U2A/U2B (LMQ61460AFSQRJRRQ1) |
 | DR-PM-05 | LDO | TPS75733 (3.3 V, 3.0 A, TO-263 (KTT) 5-pin 10.16×15.24 mm) | §5 Protection & Logic; BOM U7 (TPS75733) |
@@ -58,7 +62,7 @@ crosses to the Controller Board via BtB Link-Alpha pins 39–44.
 | DR-PM-09 | Holdup duration | ≥33.5 s at 15 W load (CM5 typical 5V × 3A) | §2 Power & UPS Hub; BOM C_SC1–8 (25F/2.7V), U3 (LTC3350) |
 | DR-PM-10 | 5V_MAIN backup bulk capacitor | C35: 2× Samsung CL32B226KAJNNNE in parallel = 44µF at 25V X7R 1210 — holds 5V_MAIN above backup threshold (4.812V) for ≥4 LTC3350 cycles at 400 kHz during backup switchover at 3A load | §5 Protection & Logic; BOM C35 (2× CL32B226KAJNNNE) — see DEC-030 |
 | DR-PM-11 | LTC3350 RT frequency-setting resistor | R30: 33.2 kΩ (E96) to GND — sets LTC3350 switching frequency to 400 kHz (vs default 200 kHz with RT=INTVCC); required to achieve ≥4 cycles within 10.2µs backup switchover window | §5 Protection & Logic; BOM R30 (33.2kΩ) — see DEC-030 |
-| DR-PM-12 | Link-Alpha connector | ERM8-040-05.0-S-DV-K-TR (80-pin male, 0.8 mm pitch, 5.0 mm stack height) | BOM J1 (ERM8-040-05.0-S-DV-K-TR) |
+| DR-PM-12 | Controller dock connectors | `J1A/J1B/J1C` = TE `1123684-7` 10-position 2.5mm plugs mating with Controller `1-1674231-1` receptacles | BOM J1A–J1C |
 | DR-PM-13 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
 
 ## 2. Design
@@ -96,6 +100,9 @@ crosses to the Controller Board via BtB Link-Alpha pins 39–44.
 
   energy: 503J (≥33.5 seconds at 15W CM5 shutdown load). Supercap manager: LTC3350 (QFN-38, 5×7mm), handles charging, cell balancing, and hold-up switchover.
 
+* **PoE Auxiliary Interface:** `J1B` receives the regulated PoE-derived auxiliary feed
+  (`VIN_POE_12V` + `GND`) from the Controller. The Power Module deliberately no longer carries the
+  RJ45, Ethernet ESD, or PoE PD / ACF front-end.
 * **Battery Interface:** 5-pin Locking Micro-Fit (Molex 43650-0519 — vertical THT, gold contacts, board lock).
   * Pins 1-2: VBATT (14.4V Nominal).
   * Pins 3-4: SMBus (SDA/SCL) with local ESD protection.
@@ -117,17 +124,24 @@ crosses to the Controller Board via BtB Link-Alpha pins 39–44.
 ### 3. Telemetry & Power Management
 
 * **I2C Telemetry:** 4.7kΩ (1%) pull-up resistors (**R7, R8**) on SDA/SCL lines, tied to **3V3_ENIG**.
+* **PM-local GPIO Expander:** `PCA9534APWR` (U16) at I²C address **0x3F**.
+  * **Inputs:** `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`
+  * **Outputs:** `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`
+  * **Interrupt:** Open-drain `PM_IO_INT_N` exported to the Controller on `J1C`.
+  * **Power-up state:** All pins default to inputs, so the pre-boot hardware orange flash path remains dominant until firmware reconfigures the expander.
+  * **Reference PDF:** [`pca9534a-datasheet.pdf`](../../Datasheets/pca9534a-datasheet.pdf)
 * **5V_MAIN Current Monitor:**
   * **Purpose:** Provides real-time current/voltage telemetry for the 5V_MAIN rail to the CM5.
   * **Sensor:** TI INA219AIDR (U12) zero-drift power monitor at I²C address **0x40**.
   * **Placement:** Inserted in the 5V_MAIN supply path on L1, downstream of the eFuse (TPS25980).
   * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) — PM R23 instance.
     (Stator R1 is the third system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
-  * **Interface:** I2C-1 Telemetry Bus, directly accessible via LINK-ALPHA to the Controller.
+  * **Interface:** I2C-1 Telemetry Bus, directly accessible via `J1C` to the Controller.
   * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for supply noise suppression.
   * Satisfies FR-PM-05.
-* **Reset Logic:** 10kΩ (1%) pull-up (**R9**) on SYS_RESET_N to prevent floating states.
-* **Battery Detection:** Dedicated BATT_PRES_N signal routed to CM5 GPIO 23.
+* **Interrupt Bias:** 10kΩ (1%) pull-up (**R9**) on `PM_IO_INT_N` so the PM-local expander interrupt
+  idles HIGH when U16 is quiescent.
+* **Battery Detection:** `BATT_PRES_N` is now reported through U16 (`PCA9534A @ 0x3F`) rather than a dedicated CM5 GPIO.
 
 ### 4. EMI & Filtering (The "Iron Curtain")
 
@@ -186,7 +200,7 @@ GND ──────┴──────────────────�
 * Effective capacitance per Pi leg: C₁‖C₂‖C₃ = 22µF + 1µF + 100nF ≈ **23.1µF** (capacitors in parallel).
 * Pi-filter −3dB corner frequency: `f_c = 1/(2π√(L3 × C)) = 1/(2π × √(10µH × 23.1µF))` = **10.5kHz**.
 * DM attenuation at 150kHz (EN 55032 Class B lower limit): 40dBdec × log(150k/10.5k) ≈ **−46dB** ✓
-* DM attenuation at 200kHz (TPS23730 ACF switching): ≈ **−51dB** ✓
+* DM attenuation at 200kHz (representative upstream switcher / auxiliary-converter noise): ≈ **−51dB** ✓
 * DM attenuation at 400kHz (LMQ61460AFSQRJRRQ1 buck switching): ≈ **−63dB** ✓
 * Combined with dual CMC stages: total insertion loss well exceeds EN 55032 Class B limits across 150kHz–10MHz.
 
@@ -208,12 +222,9 @@ GND ──────┴──────────────────�
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.
 * **Internal Handshake:** TPS25751 PD Emulator (U4) provides **5V/5A** "Clean PD" profile to CM5.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
-* **OR-ing Priority:** In a purely passive ideal-diode OR-ing network, PoE's 12V rail would lose to
-  the higher-voltage USB-C 15V rail. The implemented design prevents that: the LM74700-Q1 USB-C path
-  enable pin is driven by the TPS2372-4 `/PG` signal, so when PoE is live the USB-C path is actively
-  disabled. The Battery path
-  is the third ideal-diode input; its precedence relative to USB-C follows the active source
-  voltages at the OR-ing stage unless additional gating is added at schematic capture.
+* **OR-ing Priority:** The PM OR-ing stage now sees three local source classes: Controller-fed
+  `VIN_POE_12V`, local USB-C, and local Battery. Any source-priority policy that depends on upstream
+  PoE state is enforced on the Controller before `VIN_POE_12V` is exported to the PM dock.
 
 * **eFuse:** TPS259804ONRGER (16.9V OVLO silicon-fixed, VQFN 4×4mm) — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON (typ.).
   * UVLO R-Ladder: 232kΩ R_UVLO_HI (R1), 28.7kΩ R_UVLO_LO (R2) — 1% Thick-Film 0603. ILIM: 210Ω R_ILIM (R3) — **0.1% Thin-Film (ERA-3ARB2100V)**.
@@ -245,24 +256,11 @@ GND ──────┴──────────────────�
       `PWR_BUT`, so the threshold must be *above* 4.50V to guarantee PWR_GD stability throughout hold-up.
     * Hold-up duration from fully-charged bank: ≥33.5 seconds at 15W CM5 graceful-shutdown load.
 
-* **PoE Subsystem:**
-  * **PD Interface:** TPS2372-4 (U9, VQFN-20) — IEEE 802.3bt Type 4 PD interface, Autoclass enabled. Autoclass handles the 4-event multi-power-level classification internally; no external RCLASS
-
-    resistor is required.
-
-  * **MPS Programming (RMPS):** An external resistor from the TPS2372-4 IMPS pin to GND programs the MPS (Maintain Power Signature) pulsed current amplitude required to keep the PSE port active.
-
-    Formula: `RMPS = VIMPS / IMPS` where `VIMPS = 1.205V`. For target `IMPS = 10mA` (providing margin above the 7mA IEEE 802.3bt Type 4 minimum): `RMPS = 1.205 / 0.010 = 120.5kΩ → use 121kΩ (E96,
-1%, 0603)`.
-
-    * ⚠️ Confirm IMPS target (7–15mA range acceptable) against TPS2372-4 datasheet before schematic freeze.
-  * **DC-DC Controller:** TPS23730 (U10, WQFN-20) — ACF (Active Clamp Flyback) controller.
-    * Configured for **Primary-Side Regulation (PSR)** using the VS pin and the POE600F-12LD auxiliary winding. PSR eliminates the need for an external TL431 shunt regulator and optocoupler on the
-
-      secondary side.
-
-    * Output voltage (12V nominal) is set by the POE600F-12LD transformer turns ratio, which Coilcraft has designed for 12V output in TPS23730 PSR mode.
-    * Soft-start capacitor on SS pin: 10nF (5ms ramp-up, **C24**).
+* **Controller-fed PoE Auxiliary Path:**
+  * The IEEE 802.3bt PD / ACF front-end now resides on the Controller.
+  * The Power Module receives only the regulated auxiliary feed `VIN_POE_12V` on `J1B`.
+  * `VIN_POE_12V` is treated as the third OR-ing source alongside USB-C and Battery.
+  * `POE_STAT` is still available to software, but now arrives through the PM-local `PCA9534A`.
 * **LDO Enable (ROTOR_EN):**
   * CM5 GPIO 16 (ROTOR_EN, 3.3V drive) drives the TPS75733 (U7) EN pin. The TPS75733 has an **active-LOW enable** (EN LOW = enabled, EN HIGH = shutdown) — no level-shifting required.
   * A 10kΩ pull-**down** resistor from the EN pin to **GND** ensures the LDO is ON by default during power-up (EN=LOW=enabled).
@@ -291,8 +289,8 @@ GND ──────┴──────────────────�
   seconds**, driving Q5 (BSS138 N-FET) which pulls the `PWR_BUT` line LOW. The CM5 internal 10kΩ
   pull-up holds `PWR_BUT` HIGH at all other times. The 3-second pulse is centred in the 1–5 second PMIC
   power-key window — long enough to guarantee a graceful shutdown event, short enough to never trigger
-  the PMIC hard power-off (>5–8 seconds). `PWR_BUT` is routed to the Controller Board via Link-Alpha
-  pin 48 and connects to the CM5 PMIC power-button input.
+  the PMIC hard power-off (>5–8 seconds). `PWR_BUT` is routed to the Controller Board via dock
+  connector `J1C` and connects to the CM5 PMIC power-button input.
 
 ### 6. Traceability & Manufacturing
 
@@ -303,19 +301,17 @@ GND ──────┴──────────────────�
 
 ### 7. Signal Integrity & Safety
 
-* **Ethernet (GbE):** 100Ω Differential Pairs (Layer 1); critical for link-layer signal integrity at 1 Gbps.
-
-> **Note:** The USB-C port (J4) is power-delivery only (PD negotiation via U4 TPS25751DREFR). No USB data lines are routed on this board. HDMI is not present on the Power Module.
+> **Note:** The USB-C port (J4) is power-delivery only. No USB data lines, HDMI, RJ45, or GbE MDI routing are present on the Power Module.
 
 * **ESD Protection:**
-  * 2× TPD4E05U06 (D4, D5) at the RJ45 entry — one per two GbE differential pairs.
   * TPD4E05U06 (D3) at the USB-C entry.
   * TPD2E2U06 (D2) on the Battery SMBus lines (SDA/SCL).
   * TPD1E10B06DYARQ1 (D1) on the BATT_PRES_N Presence Detect line.
 * **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching around the board perimeter.
 * **Single-Point GND Bond:** Signal/power reference GND connects to GND_CHASSIS at one point only — located between the OR-ing diode network output
   and the eFuse input (the clean/dirty power boundary). See `Standards/Global_Routing_Spec.md §5` and `Standards/Certification_Evidence.md §2.2` for full rationale.
-* **Galvanic Isolation:** 1500V isolation via T2 ACF transformer (Coilcraft POE600F-12LD, ≥1500Vrms rated) between the PoE PD input and the 12V secondary bus.
+* **Galvanic Isolation:** Any PoE galvanic-isolation requirement is now satisfied on the Controller PoE
+  front-end before `VIN_POE_12V` reaches the PM dock.
 
 ---
 
@@ -336,15 +332,14 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
   * **Mechanical / wiring:** Use the switch's 2.8mm pin terminals via six matching PCB-mounted
     2.8mm male spade tabs on the Power Module so the panel switch can be wired as a
     field-serviceable harnessed subassembly.
-  * **RGB LED circuit:** SW1 integrates an RGB LED status indicator ring. The LED is driven by a hardware
-    handoff circuit: before CM5 boot, the MIC1555 oscillator (U11) drives the Red and Green channels
-    via Q4 (BSS138 NMOSFET gate) to produce a 1Hz orange flash (R+G simultaneously). Once CM5
-    firmware asserts SW_LED_CTRL (BtB pin 47, CM5 GPIO 20) HIGH, Q4 is disabled and CM5 drives
-    SW_LED_R/G/B (BtB pins 31/32/33, CM5 GPIOs 17/18/19) directly.
+  * **RGB LED circuit:** SW1 integrates an RGB LED status indicator ring. Before CM5 boot, the MIC1555
+    oscillator (U11) drives the **Red and Green** hardware path via Q4 to produce a 1Hz orange flash.
+    After boot, the PM-local expander U16 (`PCA9534APWR @ 0x3F`) asserts `SW_LED_CTRL` and drives
+    `SW_LED_R/G/B` through dedicated low-side sink stages `Q6/Q7/Q8`.
   * **LED colour scheme:** Orange flash = booting; Solid green = USB-C active; Solid blue = PoE active;
     Solid orange = Battery active; Red = fault or graceful shutdown in progress.
   * **Hardware path isolation:** BAT54 Schottky diodes (D6, D7) isolate the MIC1555/Q4 hardware
-    path from the CM5 GPIO outputs to prevent back-driving.
+    path on the **Red and Green channels only**. Blue is runtime-only and is not part of the hardware flash path.
 * **Supervisor IC:** [MCP121T-450E](https://www.microchip.com) (4.50V Threshold).
 * **Trigger:** The supervisor monitors the **5V_MAIN** rail. It holds the `PWR_GD` pin LOW until the rail is stable.
 * **Manual Power Button (SW2):** Panel-mount momentary rugged metal pushbutton with RGB ring LED
@@ -362,7 +357,7 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
 
 ### 2. Startup Timeline
 
-1. **Input:** 11–16.9V enters via PoE (TPS2372-4/TPS23730 + Coilcraft POE600F-12LD, regulated 12V), USB-C (STUSB4500 negotiated 15V), or Battery (11–16.4V). All three sources are within the TPS25980
+1. **Input:** 11–16.9V enters via Controller-fed `VIN_POE_12V`, USB-C (STUSB4500 negotiated 15V), or Battery (11–16.4V). All three sources are within the TPS25980
 
    eFuse window (UVLO 11V / OVLO 16.9V).
 
@@ -429,11 +424,9 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | U1 TPS25980 eFuse | 0.56W | 0.65W (7A) | 3mΩ Ron (typ.) + ~0.5W quiescent |
 | U2A + U2B LMQ61460-Q1 (×2) | 5.2W total | 6.7W (15V USB-C, 90% η) | 2.6W per device at 92% η; exposed pads to GND vias |
 | U7 TPS75733 LDO | 0.33W (1.85A load) | 0.45W (2.05A load, Vdo≈0.22V) | Vdo≈0.18V at 1.85A; TO-263 (KTT) 5-pin — standard thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
-| T2 POE600F-12LD | 5.1W | 5.7W | At 90–88% efficiency, 51–57W load |
+| U16 PCA9534A | ~0.02W | ~0.05W | PM-local GPIO expander; negligible thermal load |
 | U3 LTC3350 | 0.3W | 0.5W | Charge path only (0.5A); low concern |
-| U9 TPS2372-4 | ~0.2W | ~0.3W | VQFN-20 thermal pad to GND pour |
-| U10 TPS23730 | ~0.3W | ~0.5W | WQFN thermal pad to GND pour |
-| **Total** | **~14.8W** | **~19.5W** | Dissipated into 30mm Al 'Power Can' enclosure via bottom thermal pad |
+| **Total** | **~9.2W** | **~13.0W** | Controller-resident PoE front-end dissipation excluded from PM enclosure thermal budget |
 
 **Thermal Notes:**
 
@@ -459,25 +452,20 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | C15–C21 | IC VCC bypass (one per: U3, U4, U5, U6a, U8, U9, U10) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C22 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C24 | TPS23730 soft-start cap (C_SS, SS pin) | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1005-1-ND | C57112 |
 | C_SC1–8 | Supercaps (8× cells, 2S4P) | Abracon ADCR-T02R7SA256MB / 25F 2.7V | THT Radial Can 16.0mm×25.0mm | 815-ADCRT02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | Global sourcing |
 | D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | — |
 | D3 | USB-C ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| D4 | RJ45 ESD (MDI0/MDI1) | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| D5 | RJ45 ESD (MDI2/MDI3) | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| R18–R21 | RJ45 Bob Smith termination resistors (×4) | 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| C25 | RJ45 Bob Smith termination capacitor (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 10nF 100V X7R 0402 | 0402 | 80-C0402C103J1RAUTO | 399-C0402C103J1RACAUTOCT-ND | C19862706 |
 | C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C28 | SYNC delay chain SW-ringing low-pass filter (C_F1) | 100pF X7R 25V (C0402C101K3RACAUTO) | 0402 | 80-C0402C101K3RAUTO | 399-C0402C101K3RACAUTOCT-ND | C5272912 |
 | C29 | SYNC 180° phase delay capacitor (C_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 22nF X7R 25V (CL10B223KB8WPNC) | 0603 | 187-CL10B223KB8WPNC | 1276-6534-1-ND | C346197 |
 | C30, C31 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C32 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R | 0603 | 187-CL10B106KA8NNNC | 1276-1204-1-ND | C19702 |
 | C33 | VCC bypass for U15 (MIC1555 monostable) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C34 | VCC bypass for U16 (`PCA9534APWR`) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C35 | 5V_MAIN backup switchover bulk cap (2× in parallel — see DEC-030) | 2× Samsung CL32B226KAJNNNE, 22µF 25V X7R 1210 | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | — |
-| J1 | BtB Link (MALE header — mates with ERF8-040 female socket on Controller) | Samtec ERM8-040-05.0-S-DV-K-TR | 80-pin Gold ERM8 | 200-ERM8040050SDVKTR | SAM8613CT-ND | C5358550 |
-| J2 | PoE+ Port | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
+| J1A-J1C | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 |
 | J3 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
 | J4 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must penetrate Power Module enclosure wall and sit flush with outer machine enclosure — verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 |
 | L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
@@ -487,14 +475,12 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 1% Thick-Film (ERJ-3EKF2323V) | 0603 | 667-ERJ-3EKF2323V | P232KHCT-ND | C403086 |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 1% Thick-Film (ERJ-3EKF2872V) | 0603 | 667-ERJ-3EKF2872V | P28.7KHCT-ND | C403135 |
 | R3 | eFuse ILIM set resistor | 210Ω 0.1% Thin-Film | 0603 | 667-ERA-3ARB2100V | TBD | — |
-| R4, R5 | ETH Activity LEDs | 330Ω 1% Thick-Film | 0603 | 667-ERJ-3EKF3300V | P330BYCT-ND | C25803 |
 | R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.7KBYCT-ND | — |
-| R9 | SYS_RESET_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
+| R9 | `PM_IO_INT_N` pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R10 | ROTOR_EN Pull-down (EN to GND) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | — |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
-| R13 | TPS2372-4 RMPS (MPS current set) | 121kΩ 1% [calc: IMPS=10mA, VIMPS=1.205V → R=120.5kΩ → E96=121kΩ] | 0603 | 667-ERJ-3EKF1213V | P121KBYCT-ND | — |
 | R14 | LTC3350 BACKUP divider upper (R_TOP) — **REVISED (DEC-030): threshold raised to 4.812V for 312mV gap** | 30.1kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.812V → R_TOP/R_BOT=(4.812/1.2)−1=3.01 → R_BOT=10kΩ → R_TOP=30.1kΩ → E96=30.1kΩ → actual trigger: 4.812V, 312mV above MCP121T 4.50V threshold — see DEC-030] | 0603 | 667-ERA-3ARB3012V | 10-ERA-3ARB3012VCT-ND | C1728516 |
 | R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB103V | P10KBDCT-ND | C465746 |
 | R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
@@ -502,6 +488,8 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KBYCT-ND | — |
 | R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KBYCT-ND | C25804 |
 | R30 | LTC3350 RT frequency-setting resistor (RT pin to GND — sets switching frequency to 400 kHz) | 33.2kΩ 1% E96 Thick-Film [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | 0402 | 667-ERA-2AEB3322X | P33.2KDCCT-ND | C2087909 |
+| R31-R33 | Runtime RGB gate resistors for Q6/Q7/Q8 | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
+| R34-R36 | Runtime RGB gate pull-down resistors for Q6/Q7/Q8 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
 | BT_SW1_1–BT_SW1_6, BT_SW2_1–BT_SW2_6 | PCB male spade tabs for SW1 / SW2 harnesses | Keystone 1211 — 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | THT Quick-Fit tab | 534-1211 | 36-1211-ND | C3029550 |
 | SW2 | CM5 Power Button | Adafruit 3350 — panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press; LED ring reserved for optional indication of the 3-second held `PWR_BUT` signal / shutdown event. | Panel-mount 16mm metal switch | 485-3350 | 1528-2546-ND | Global sourcing / consignment |
@@ -515,7 +503,7 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C25835522 |
 | Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
-| T2 | PoE ACF Isolation Transformer | Coilcraft POE600F-12LD / 60W / 12V out / 36–72V in / 200kHz / ACF topology / ≥1500Vrms / SMT / RoHS | SMT | — (order direct: coilcraft.com) | — | — |
+| Q6, Q7, Q8 | Runtime RGB low-side sink stages for SW1 Red / Green / Blue cathodes | BSS138 N-channel MOSFET — reused Settings Board sink-stage pattern; gates driven from U16 through `R31-R33`, held OFF by `R34-R36` | SOT-23 | 512-BSS138 | BSS138CT-ND | C255592 |
 | U1 | eFuse | TPS259804ONRGER (16.9V silicon-fixed OVLO) | VQFN-24 4×4mm | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 |
 | U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |
 | U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | LTC3350EUHF#TRPBFCT-ND | — |
@@ -524,12 +512,11 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 | U6a, U6b, U6c | OR-ing Controllers (×3, one per power input: PoE, USB-C, Battery) | LM74700QDBVRQ1 | SOT-23-6 | 595-LM74700QDBVRQ1; alt T&R: 595-LM74700QDBVTQ1 | 296-LM74700QDBVRQ1CT-ND | C2941042 |
 | U7 | 3V3_ENIG LDO | TPS75733KTTRG3 (fixed 3.3V, active-LOW EN) | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 |
 | U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | C52146050 |
-| U9 | PoE PD Interface (Type 4) | TPS2372-4 | VQFN-20 | 595-TPS2372-4RGWR | 296-52795-1-ND | — |
-| U10 | PoE DC-DC Controller (ACF) | TPS23730RMTR — PSR mode; 12V output set by POE600F-12LD transformer turns ratio; VS pin to aux winding; no external feedback divider required. | WQFN-20 | 595-TPS23730RMTR | 296-TPS23730RMCT-ND | — |
 | U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
 | U12 | 5V_MAIN Current Monitor | INA219AIDR — Zero-Drift Current/Power Monitor (I²C 0x40) | SOIC-8 | 595-INA219AIDR | 296-23978-1-ND | C138706 |
 | U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | SN74LVC1G14DBVRQ1 (AEC-Q100 single-gate Schmitt inverter) | SOT-23-5 | 595-SN74LVC1G14DBVRQ1 | 296-SN74LVC1G14DBVRQ1CT-ND | C49303123 |
 | U15 | PWR_BUT shutdown one-shot timer | MIC1555YM5-TR — CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C32 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C33 (100nF). | SOT-23-5 | 579-MIC1555YM5TR | MIC1555YM5-TRCT-ND | C431119 |
+| U16 | PM-local GPIO expander | PCA9534APWR — 8-bit I²C GPIO expander @ 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`. `INT` exported as `PM_IO_INT_N`. | TSSOP-16 | 595-PCA9534APWR | 296-21760-1-ND | C2871127 |
 
 > **BOM Notes:**
 >
@@ -578,20 +565,15 @@ Estimated power dissipation at system peak load (PoE input, all rails at full ut
 > Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`.
 > * **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
 > 579-MCP121T-450ETTDITR) instead. JLCPCB C52146050 confirmed; note JLCPCB lists this device with a TP prefix on the MPN but is the same device.
-> * **U10 TPS23730RMTR** — `PWPR` suffix (HTSSOP-20) was previously in error; correct WQFN-20 manufacturer PN is `TPS23730RMTR`. DigiKey catalogues as `296-TPS23730RMCT-ND`. Verify against TI's
-> product page before ordering.
 > * **U11 MIC1555YM5-TR** — CMOS timer (Microchip). Timing components: R16=10.0kΩ (R_A), R17=715kΩ (R_B), C23=1µF (C_OSC) → 1Hz, ~50% duty cycle via formula f=1.44/((R_A+2R_B)×C). VCC bypass: C22
 > (100nF). Note: the 715kΩ E96 resistor (R17) is not common at all distributors — confirm stock at Mouser (667-ERJ-3EKF7153V) before BOM freeze.
 > * **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery).
 > Three LM74700-Q1 instances (U6a, U6b, U6c) are required — one IC per MOSFET for correct per-channel ideal-diode gate drive
 > (+7V above source via internal charge pump). Confirm U6a/U6b/U6c footprints at schematic capture.
-> * **J1 ERM8-040-05.0-S-DV-K-TR (Power Module) + ERF8-040-05.0-S-DV-K-TR (Controller)** — Samtec BtB connector pair.
->   **ERM8 = MALE header (pins pointing up)** on Power Module; **ERF8 = FEMALE socket** on Controller. Both are Samtec proprietary parts, NOT in JLCPCB/LCSC catalog.
->   Assembly paths: (a) JLCPCB customer-supplied component service — procure from Mouser and select "consigned components" option; (b) Hand-solder after PCB assembly.
->   Current rating: **0.5A per pin** continuous (design derating per Certification_Evidence.md §5; 2oz copper applied —
->   18 power pins × 0.5A = 9.0A total capacity) — ensure adequate VBUS/GND pin count per Power_Module/Board_Layout.md LINK-ALPHA table.
->   Stack height "05.0" in PN refers to individual header height; total PCB-to-PCB gap ≈ 7mm mated (ERM8 5mm + ERF8 2mm).
->   ⚠️ Verify exact ERF8 mating height at schematic capture to confirm enclosure fit.
+> * **J1A/J1B/J1C = TE 1123684-7 (PM) mating with Controller 1-1674231-1** — three 10-position 2.5 mm board-to-board dock connectors.
+>   The PM uses the blade header half (`1123684-7`); the Controller carries the mating receptacle (`1-1674231-1`).
+>   `J1A` carries grouped `5V_MAIN` + `3V3_ENIG`, `J1B` carries `VIN_POE_12V` + `GND`, and `J1C` carries control / telemetry + guarded returns.
+>   These are not standard JLC stocked parts; plan on global sourcing, consignment, or post-assembly install.
 > * **J4 USB4135-GF-A** — GCT **6-position, right-angle SMT** USB-C receptacle (confirmed via Octopart; JLCPCB C5438410 verified by user).
 >   The 6 positions cover VBUS(×2), GND(×2), CC1, CC2 — exactly what STUSB4500 needs for PD negotiation.
 >   **Right-angle (R/A) mounting**: connector sits on the board edge with the USB-C port facing outward — correct for the Power Module's panel-mount power input.

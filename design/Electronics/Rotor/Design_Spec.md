@@ -240,7 +240,9 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
 
 ### 3.1 Power Management
 
-* **Input:** 3.3V/**~54.2mA typical per rotor** (design budget: **55mA/rotor**) sourced from the **Power Module** 3V3_ENIG rail, routed through Controller Board → Stator Board → Rotor stack via Link-Beta.
+* **Input:** 3.3V/**~54.2mA typical per rotor** (design budget: **55mA/rotor**) sourced from the
+  **Power Module** `3V3_ENIG` rail, routed through Controller Board → Stator Board → Rotor stack via
+  the active Stator logic dock.
   See `design/Electronics/Power_Budgets.md` for full budget — 30 rotors draw **1.63A typical / 1.65A budget**; the 150mA/rotor figure previously used was a conservative overestimate.
 * **Filtering:** Local **10uF X7R** bulk entry bank on each rotor; upstream rail filtering uses the **Stator ferrite bead bank** to suppress stack switching noise.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
@@ -258,8 +260,9 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
   * All connectors carry 6 bits (ENC[0:5]) regardless of variant to maintain a common pinout
     across mixed stacks. The 26-character variant leaves ENC[5] as NC.
   * This path is entirely separate from the JTAG TTD\_RETURN signal.
-* **JTAG TTD\_RETURN Path:** After the Reflector processes the cipher reversal, TTD\_RETURN travels
-  separately: Reflector J4 → Stator J7 → Link-Beta pin 26 → FT232H on JDB (JTAG chain closure only).
+* **JTAG TTD\_RETURN Path:** After the Reflector processes the cipher reversal, `TTD_RETURN` travels
+  separately: Reflector J4 → Stator J7 → Controller-facing `J2B` logic dock → FT232H on JDB (JTAG
+  chain closure only).
 * **Control:** Each rotor has a local I²C bus for position sensing (FDC2114 U2/U3 for N=64; U2/U4 for N=26). The CPLD acts as I²C master; no I²C signals are exposed on J1–J6.
 * **JTAG:** Pass-through lines allow the **USB Blaster** on the Controller Board to program the
   entire 30-rotor stack in one daisy-chain operation. Under normal operation JTAG is idle; cipher
@@ -277,9 +280,10 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
   width over the L2 GND plane, targeting **50 Ω controlled impedance** per the JLC04161H-7628
   stackup (h=0.087mm, t=0.035mm, Eᵣ=4.4). See `design/Electronics/Investigations/JTAG_Integrity.md §3.1`
   for the copper-weight note (2oz finished uses 1oz base copper t=0.035mm in the IPC-2141A formula) and DEC-016.
-* **Series Termination — TDO Output (R1, 75Ω):** Placed within 2 mm of CPLD TDO pin, on the
-  trace to J4 pin 6 (TTD output side). Source impedance ≈ 95 Ω, targeting the ~100 Ω inter-rotor segment on the
-  Stator PCB. Consistent with Encoder R8 (DEC-016). One resistor per rotor board.
+* **TTD path policy:** The rotor-stack `TTD` path is a direct board-to-board chain. No series resistor is
+  placed at each rotor hop; `TTD` exits the CPLD and continues straight to J4 pin 6. Cable-driving
+  damping is reserved for the ribbon-port interfaces on the Stator / Encoder boards, while the
+  Reflector retains the single 22 Ω end-of-chain damping resistor on `TTD_RETURN`.
 * **Pull Resistors (R2–R5, 10kΩ, per CPLD):**
   * **TMS (R2):** 10kΩ pull-up to 3V3_ENIG — ensures JTAG TAP resets to Test-Logic-Reset on power-up.
   * **TDI (R3):** 10kΩ pull-up to 3V3_ENIG — holds TDI at logic-1 (BYPASS) when not actively driven.
@@ -508,7 +512,6 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | H_PWR | Board A↔B internal interconnect, inner face, power distribution — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | H_JTAG | Board A↔B internal interconnect, inner face, JTAG pass-through — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| R1 | JTAG TDO output series termination (CPLD TDO → J4 pin 6, TTD output) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 | R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLBCT-ND | C25744 |
