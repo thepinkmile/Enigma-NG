@@ -54,6 +54,7 @@ is genuinely required.
 |----|--------|-------|
 | `grounding-rules-cleanup` | done | Global rule locked: enclosure-connected boards use `GND_CHASSIS`; non-chassis-connected daughterboards are exempt; the only galvanic `GND` ↔ `GND_CHASSIS` bond remains on the Power Module before the eFuse |
 | `rerun-deep-reviews` | in_progress | Rerun the deep review agents only after the next material design-doc change set |
+| `coupon-testing-review` | pending | Add and review board-level coupons for PAS and manual testing across the design set |
 | `extension-mechanical-usage` | pending | Review how Extensions should be used mechanically, including whether interconnect choices for the Stator / Reflector / Extension chain should change |
 | `encoder-board-split-review` | pending | Review whether the Encoder Board should split into separate Keyboard and Lightboard physical assemblies |
 | `extension-notch-pass-through` | pending | Review whether Extensions need additional servo circuitry to pass through notch rotations |
