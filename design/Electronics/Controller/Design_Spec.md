@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 ---
 
@@ -24,6 +24,15 @@ Controller, and all enclosure-edge I/O is grouped on the Controller side.
 * **RJ45 / PoE:** Ethernet entry, magnetics, ESD, and the PoE front-end are hosted locally on the Controller.
 * **USB-C:** High-power USB-C input remains on the Power Module; the Controller receives the regulated system rails from the PM dock.
 * **Status LED:** The SW1 RGB hardware boot flash still originates on the Power Module, but runtime colour control is now virtualised through the PM-local I2C expander.
+
+### GND_CHASSIS Single-Point Bond
+
+Per `design/Standards/Global_Routing_Spec.md §5`, the Controller implements a local
+`GND_CHASSIS` net tied to its mounting hardware, connector-shield / EMI landing features, and any
+other deliberate enclosure-contact points, but it does **not** implement a local
+GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond remains on the Power
+Module at the common power-entry point immediately before the eFuse, regardless of which input
+source is active.
 
 ### Functional & Design Requirements
 

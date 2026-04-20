@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-20
 
 ## 1. Overview
 
@@ -94,9 +94,11 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
     ≈ 30–40pF total load; well within the 50ns half-period at 10MHz TCK.
 
 * **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §5`, the
-  Extension board does **not** implement a local GND-to-GND_CHASSIS bond. J7/J8 pin 16 remains
-  signal/power return only; the system's only galvanic GND ↔ GND_CHASSIS bond is on the Power
-  Module.
+  Extension board implements a local `GND_CHASSIS` net tied to its mounting holes and any
+  deliberate enclosure-contact features, but it does **not** implement a local GND-to-GND_CHASSIS
+  bond. J7/J8 pin 16 remains signal/power return only; the system's only galvanic GND ↔
+  GND_CHASSIS bond is on the Power Module at the common power-entry point immediately before the
+  eFuse.
 * **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **JTAG TTD_RETURN / TDI:** TTD_RETURN (TDO chain return) is carried passively via Extension Port

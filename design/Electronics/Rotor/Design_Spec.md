@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-20
 
 ## 1. Overview
 
@@ -48,6 +48,15 @@ mixed stack. Variant-specific details are in
 
 For mechanical dimensions, tolerances, shroud specification, and encoder slot geometry, see
 `design/Mechanical/Rotor/Design_Spec.md`.
+
+### GND_CHASSIS Single-Point Bond
+
+Per `design/Standards/Global_Routing_Spec.md §5`, each rotor PCB implements a local
+`GND_CHASSIS` net tied to its M2.5 alignment holes and any stationary mechanical chassis-contact
+features, but it does **not** implement a local GND-to-GND_CHASSIS bond. The system's only
+galvanic GND ↔ GND_CHASSIS bond remains on the Power Module at the common power-entry point
+immediately before the eFuse. The rotating aluminium shroud remains electrically floating and must
+not be used as a local chassis-bond point.
 
 ### Functional & Design Requirements
 

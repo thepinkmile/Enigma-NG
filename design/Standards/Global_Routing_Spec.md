@@ -3,7 +3,7 @@
 **Status:** Draft
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-20
 
 ## 1. Trace & Via Geometry
 
@@ -50,9 +50,9 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 * **Thermal:** Type VII (Filled/Capped) Hexagonal Thermal Via Matrix for all high-heat zones.
 * **Thermal Mesh:** Large exposed copper zones must use a 45-degree cross-hatch (10-mil trace / 10-mil gap) to prevent board warping during reflow.
 * **Mask Clearance:** Global Solder Mask Expansion set to 3mil; Minimum Mask Bridge set to 4mil.
-* **Mounting:** M3 PTH holes must be gold-plated (ENIG). Only boards that implement
-  `GND_CHASSIS` for external-connector / ESD shunting shall tie those mounting points to
-  `GND_CHASSIS`; internal-only boards shall follow their local board grounding rule instead.
+* **Mounting:** M3 PTH holes must be gold-plated (ENIG). Every enclosure-connected board shall
+  implement a local `GND_CHASSIS` net and tie its mounting points (or equivalent defined
+  mechanical grounding features) to `GND_CHASSIS`.
 
 ### 2.1. Advanced Manufacturing
 
@@ -65,7 +65,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 
 * **Component Placement:** All active and passive components (CPLDs, ICs, SMT Passives) MUST be placed on the Top Layer (L1) for the V1.0 prototype.
 * **Bottom Layer (L_MAX):** Reserved strictly for Diagnostic Banks, Data Plates, and
-  `GND_CHASSIS` pours where a board explicitly implements `GND_CHASSIS`.
+  `GND_CHASSIS` pours / shield features where the board layout requires them.
 
 ## 3. Power Decoupling
 
@@ -80,19 +80,31 @@ These rules apply to all boards in the Enigma-NG system unless a board's design 
 * **Mounting Holes:** 3.2mm PTH for M3 screws.
 * **Pattern:** Star-Burst (Radial) copper relief (8 spokes, 20-mil width) for mechanical flex.
 * **Plating:** 6.0mm Exposed ENIG Gold annular ring on Top and Bottom.
-* **Bonding:** On boards that implement `GND_CHASSIS`, mechanical grounding features are tied to
-  `GND_CHASSIS` for Faraday-cage continuity. Internal-only boards shall not introduce
-  `GND_CHASSIS` solely to satisfy this rule.
-* **EMI Landing Zones:** 10mm unmasked ENIG gold landing strips are only required on boards that
-  expose shielded external connectors and intentionally shunt connector ESD to `GND_CHASSIS`.
-* **Structural Ground:** Only boards that implement `GND_CHASSIS` shall combine PCB mounting points
-  with EMI zones using M3 PTH bonded to `GND_CHASSIS`.
+* **Bonding:** On enclosure-connected boards, mechanical grounding features are tied to
+  `GND_CHASSIS` for Faraday-cage continuity. This includes mounting holes and any deliberate
+  enclosure-contact pads or shield-landing zones.
+* **EMI Landing Zones:** 10mm unmasked ENIG gold landing strips are required where a board exposes
+  shielded external connectors or otherwise needs a deliberate enclosure-contact pad tied to
+  `GND_CHASSIS`.
+* **Structural Ground:** Enclosure-connected boards shall keep their mechanical grounding features in
+  the `GND_CHASSIS` domain. These features may be extended with local shield islands or EMI landing
+  zones, but they must not create a local galvanic bond to signal/power `GND`.
 
-## 5. Single-Point GND_CHASSIS Bond (Global Rule)
+## 5. Single-Point GND ↔ GND_CHASSIS Bond (Global Rule)
 
 **The Enigma-NG system must connect signal/power GND to GND_CHASSIS at exactly one galvanic point,
 defined on the Power Module only.**
 
+* **Universal enclosure rule:** Every enclosure-connected board shall implement a local
+  `GND_CHASSIS` net. Tie all mounting holes and any defined enclosure-contact / shield-contact
+  mechanical features to that net so the metal enclosure forms one continuous chassis domain across
+  the machine.
+* **Daughterboard exception:** Board-mounted daughterboards that do **not** connect directly to the
+  enclosure are exempt from the local `GND_CHASSIS` requirement. Treat them as electrical /
+  mechanical extensions of their host board rather than as independent chassis-bonded boards.
+* **Transient path intent:** The distributed `GND_CHASSIS` domain exists so enclosure-coupled
+  transients and shield currents can return through the metalwork toward the single galvanic bond
+  without being forced directly into local logic/power `GND` on intermediate boards.
 * **Rule:** One and only one galvanic bridge exists between the system GND reference and
   GND_CHASSIS. Multiple bond points create ground loops, which are a leading cause of common-mode
   radiated emissions and conducted susceptibility failures.
@@ -102,14 +114,16 @@ defined on the Power Module only.**
 * **Implementation:** A dedicated 0Ω link, copper bridge, or direct via connection at the defined
   bond point. Mark clearly on silkscreen and schematic.
 * **Board guidance:**
-  * **Power Module:** Hosts the only permitted GND ↔ GND_CHASSIS bond, between the OR-ing diode
-    network output and eFuse input (the clean/dirty boundary). See
+  * **Power Module:** Hosts the only permitted GND ↔ GND_CHASSIS bond at the common power-entry
+    point, immediately before the eFuse input. This location is downstream of the source-selection /
+    OR-ing stage so the bond remains correct regardless of whether PoE, USB-C, or battery input is
+    active. See
     `Certification_Evidence.md §2.2`.
-  * **Boards with external connectors and local ESD shunting:** May implement a `GND_CHASSIS` net
-    for connector-shell / TVS return management, but must keep that net isolated from signal/power
-    GND everywhere except the single Power Module bond point.
-  * **Internal-only boards:** Should not implement `GND_CHASSIS` at all unless a later decision
-    explicitly justifies it.
+  * **All other enclosure-connected boards:** Implement `GND_CHASSIS` on mounting holes and any
+    local shield / enclosure contact features, but keep that chassis domain isolated from
+    signal/power `GND` everywhere except the single Power Module bond point.
+  * **Non-chassis-connected daughterboards:** Do not create a standalone `GND_CHASSIS` net unless a
+    later design explicitly gives that daughterboard a direct enclosure bond path.
 * **Reference:** MIL-STD-461G §3.6; documented rationale in `Standards/Certification_Evidence.md §2.2`.
 
 ## 6. Branding & Identity (The "Data Plate")

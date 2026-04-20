@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-04-20
 
 ---
 
@@ -80,10 +80,12 @@ daemon over I²C.
 
 ### GND_CHASSIS Single-Point Bond
 
-Per `design/Standards/Global_Routing_Spec.md §5`, the Settings Board does **not** implement a local
-GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is defined on the Power
-Module at the main power-entry boundary. J_I2C pin 3 is therefore **logic GND return only**, and
-must not be repurposed as a local chassis-bond point.
+Per `design/Standards/Global_Routing_Spec.md §5`, the Settings Board implements a local
+`GND_CHASSIS` net tied to its mounting holes and any panel-contact mechanical features, but it does
+**not** implement a local GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS
+bond is defined on the Power Module at the common power-entry point immediately before the eFuse.
+J_I2C pin 3 is therefore **logic GND return only**, and must not be repurposed as a local
+chassis-bond point.
 
 ---
 

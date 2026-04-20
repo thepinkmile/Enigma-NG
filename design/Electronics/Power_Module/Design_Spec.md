@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 ## 1. Overview
 
@@ -307,9 +307,14 @@ GND ──────┴──────────────────�
   * TPD4E05U06 (D3) at the USB-C entry.
   * TPD2E2U06 (D2) on the Battery SMBus lines (SDA/SCL).
   * TPD1E10B06DYARQ1 (D1) on the BATT_PRES_N Presence Detect line.
-* **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching around the board perimeter.
-* **Single-Point GND Bond:** Signal/power reference GND connects to GND_CHASSIS at one point only — located between the OR-ing diode network output
-  and the eFuse input (the clean/dirty power boundary). See `Standards/Global_Routing_Spec.md §5` and `Standards/Certification_Evidence.md §2.2` for full rationale.
+* **Grounding:** 4-layer GND_CHASSIS ring with 2.5mm staggered via-stitching around the board
+  perimeter, tied to the board mounting holes and enclosure-contact features so the Power Module
+  remains part of the global chassis domain.
+* **Single-Point GND Bond:** Signal/power reference GND connects to GND_CHASSIS at one point only —
+  at the common power-entry point immediately before the eFuse input (the clean/dirty power
+  boundary), downstream of the source-selection / OR-ing stage so the bond location remains correct
+  regardless of which input supply is active. See `Standards/Global_Routing_Spec.md §5` and
+  `Standards/Certification_Evidence.md §2.2` for full rationale.
 * **Galvanic Isolation:** Any PoE galvanic-isolation requirement is now satisfied on the Controller PoE
   front-end before `VIN_POE_12V` reaches the PM dock.
 

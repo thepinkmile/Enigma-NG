@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 The Stator Board is the mechanical and electrical backbone of the rotor stack. It provides the high-current distribution and signal routing for the 30 modular rotors.
 
@@ -67,10 +67,12 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 
 ### GND_CHASSIS Single-Point Bond
 
-Per `design/Standards/Global_Routing_Spec.md §5`, the Stator does **not** implement a local
-GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is defined on the Power
-Module at the main power-entry boundary, so `J2A/J2B` dock-entry GND is treated as signal/power return
-only and must not be bridged locally to chassis on the Stator.
+Per `design/Standards/Global_Routing_Spec.md §5`, the Stator implements a local `GND_CHASSIS` net
+tied to its mounting holes and any deliberate enclosure-contact features, but it does **not**
+implement a local GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is
+defined on the Power Module at the common power-entry point immediately before the eFuse, so
+`J2A/J2B` dock-entry GND remains signal/power return only and must not be bridged locally to
+chassis on the Stator.
 
 ## 3. Encryption & JTAG Hub
 

@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-20
 
 ## 1. Overview
 
@@ -33,7 +33,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port; D+/D− route via hat-header J1 | §3 Interface & Wiring; BOM J1 (5-pin INPUT header), Y1 (12MHz crystal) |
 | DR-JDB-08 | Power source | 5V_USB and 3V3_ENIG from Controller Board via hat-header J1; FT232H self-powered USB mode | §6 Electrical Requirements |
 | DR-JDB-09 | Hat-style connectors | J1 = 1×5 2.54mm male pin header (INPUT); J2 = 1×10 2.54mm male pin header (JTAG OUTPUT) | §3 Interface & Wiring; BOM J1, J2 |
-| DR-JDB-10 | GND_CHASSIS not implemented | JDB is internal daughterboard; mounting holes tied to GND per DEC-023 | §3 Interface & Wiring |
+| DR-JDB-10 | GND_CHASSIS exemption | JDB is exempt from the local `GND_CHASSIS` net rule because it is a non-chassis-connected daughterboard; mounting holes tie to GND only | §3 Interface & Wiring |
 | DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4 per-IC decoupling + C5 4.7µF entry filter | §6 Electrical Requirements; BOM C1–C5 |
 | DR-JDB-12 | JTAG buffer | U5 = SN74LVC2G125DCUR (VSSOP-8) dual-channel buffer for TCK and TMS; placed between FT232H and J2 header | §6 Electrical Requirements; BOM U5; DEC-024 |
 | DR-JDB-13 | TCK series damping after buffer | R6 = 33 Ω 0402 after U5 TCK output, before J2 pin 1 (TCK) | §6 Electrical Requirements; BOM R6; DEC-024 |
@@ -97,16 +97,19 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 3.3V logic level (VCCIO = 3V3_ENIG). FT232H VCC = 5V_USB. 5V-tolerant I/O.
 
-### GND_CHASSIS Not Implemented
+### GND_CHASSIS Single-Point Bond
 
-GND_CHASSIS is not implemented on the JDB — see DEC-023. The JDB is an internal daughterboard
-with no chassis surface to bond to. Mounting holes connect to GND (circuit return), not GND_CHASSIS.
+Per `design/Standards/Global_Routing_Spec.md §5`, the JDB is exempt from the local
+`GND_CHASSIS` requirement because it is a board-mounted daughterboard that does **not** connect
+directly to the enclosure. Its mounting holes / conductive standoffs therefore tie to **GND**
+only, not to a standalone `GND_CHASSIS` net. The system's only galvanic GND ↔ GND_CHASSIS bond
+remains on the Power Module at the common power-entry point immediately before the eFuse.
 
 ## 4. Aesthetics & Mounting
 
 * **Visibility:** Completely hidden internally.
 * **Mounting:** Small **4-layer** PCB (DEC-017) mounted as a hat on the Controller Board via conductive
-  standoffs. Mounting holes tie to GND per DEC-023.
+  standoffs. As a non-chassis-connected daughterboard, its mounting holes tie to **GND** only.
 
 ## 5. PCB Fabrication & Stackup
 

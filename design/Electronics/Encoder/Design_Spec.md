@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-04-20
 
 ## 1. Overview
 
@@ -70,6 +70,14 @@ each half is determined entirely by the mechanical assembly and Stator CPLD conf
 
 - **Core:** The Encoder Board receives its 3V3_ENIG power rail from the IDC cable connection from the Stator (pin 1 & 26). This could be connected to any of J4–J6 of the Stator Board.
 - Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
+
+### GND_CHASSIS Single-Point Bond
+
+Per `design/Standards/Global_Routing_Spec.md §5`, the Encoder board implements a local
+`GND_CHASSIS` net tied to its mounting holes and any deliberate enclosure-contact or shield-contact
+features, but it does **not** implement a local GND-to-GND_CHASSIS bond. The system's only
+galvanic GND ↔ GND_CHASSIS bond remains on the Power Module at the common power-entry point
+immediately before the eFuse.
 
 ## 3. Dual-Role Architecture
 
