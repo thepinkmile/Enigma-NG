@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-18
+**Last Updated:** 2026-04-20
 
 ---
 
@@ -57,7 +57,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
 | 1 | `3V3_ENIG` | Logic supply for the three MCP23017 devices |
-| 2 | `5V_MAIN` | Indicator power feed from the Controller via Stator `J_CFG` / `J2A` |
+| 2 | `5V_MAIN` | Indicator power feed from the Controller via Stator `J_CFG` / `J4` |
 | 3 | `GND` | Logic return only; no local GND_CHASSIS bond |
 | 4 | `SDA` | Shared I2C-1 data |
 | 5 | `SCL` | Shared I2C-1 clock |

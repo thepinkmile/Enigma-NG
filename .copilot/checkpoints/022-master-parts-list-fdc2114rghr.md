@@ -8,9 +8,7 @@ The session completed the full Enigma-NG system design review cycle (R1–R9), c
 
 <history>
 1. **Session context**: Full system review cycle (R1–R9) completed, yielding 2 clean passes. Checkpoint 020 created. User identified two errors: eFuse MPN (TPS259807 should be TPS259804) and Reflector R1 0603 package wrongly removed. Agent `revert-efuse-r1-fixes` completed these corrections (commit `7e165cb`).
-
 2. **User requested all components in a single master list** — compiled and printed covering all 100 component types across 10 boards with Mouser/DigiKey/JLCPCB PNs and online datasheet links.
-
 3. **User verified #1–#27 and provided corrections:**
    - LTC3350: DigiKey→505-LTC3350EUHF#PBF-ND, JLCPCB→C580711
    - TPS25751DREFR: DigiKey→296-TPS25751DREFRCT-ND, JLCPCB→C30169739
@@ -26,7 +24,6 @@ The session completed the full Enigma-NG system design review cycle (R1–R9), c
    - BSS138 (onsemi): DigiKey→BSS138CT-ND, Mouser→512-BSS138, JLCPCB→C255592
    - BAT54 (Diotec): DigiKey→4878-BAT54CT-ND, Mouser→637-BAT54, JLCPCB→C25835522
    - User downloaded datasheets #1–#27; asked for datasheet links to point to local PDFs in `design/Datasheets/`
-
 4. **All corrections applied** (commit `70689cf`):
    - Global `FDC2114RGER→FDC2114RGHR` rename across 9 files
    - All PN corrections applied in Consolidated_BOM.md, Power_Module/Design_Spec.md, JTAG_Daughterboard/Design_Spec.md, Controller/Design_Spec.md, Stator/Design_Spec.md, Rotor/Design_Spec.md
@@ -103,23 +100,18 @@ Commit trail:
   - Lines 29–31: FDC2114RGHR component usage summary rows
   - Line ~285: U1 eFuse TPS259804ONRGER (confirmed correct)
   - Section 11 (~line 335): complete datasheet reference table with local PDF paths
-
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Contains eFuse, LDO, buck, supercap, ESD circuits
   - D1: now TPD1E10B06DYARQ1 SOD-523; D3/D4/D5: TBD invalid MPN
   - U1 eFuse: TPS259804ONRGER confirmed correct
-
 - `design/Electronics/Rotor/Design_Spec.md`
   - FDC2114RGHR U2/U3/U4 BOM rows updated with correct PNs and MOQ warnings
   - U1 EPM570T100I5N: DigiKey 544-2281-ND, JLCPCB C27319
-
 - `design/Datasheets/`
   - 23 PDF datasheets now tracked in git and linked from Consolidated_BOM.md §11
   - Key files: TPS25980, ltc3350, fdc2112 (covers FDC2114RGHR), Intel_max2_cpld-handbook
-
 - `design/Electronics/Controller/Design_Spec.md`
   - U4 ESD: TBD (TPD4E05U06DRYR invalid)
-
 - `design/Design_Log.md`
   - FDC2114RGHR rename in DEC-027 description
 </important_files>
@@ -149,16 +141,12 @@ Commit trail:
 - Checkpoint to be created after user completes parts verification
 </next_steps>
 
-
-
 ---
 
 Now here is the list reprinted from **#28 onwards** with corrected #1–#27 datasheet links for reference at the top, then continuing from Passive Components:
 
 ---
-
 ### Updated #1–#27 ICs & Active Devices (datasheet links now local PDFs)
-
 | # | MPN | Description | Board(s) | Mouser | DigiKey | JLCPCB | Datasheet |
 |---|-----|-------------|----------|--------|---------|--------|-----------|
 | 1 | TPS259804ONRGER | eFuse 16.9V silicon-fixed OVLO, VQFN-24 | PM U1 | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 | [TPS25980-datasheet.pdf](design/Datasheets/TPS25980-datasheet.pdf) |
@@ -190,9 +178,7 @@ Now here is the list reprinted from **#28 onwards** with corrected #1–#27 data
 | 27 | BAT54 (Diotec) | Schottky Diode, SOT-23 | PM ×2; CTL D1 (3 total) | 637-BAT54 | 4878-BAT54CT-ND | C25835522 | [bat54-diotec-datasheet.pdf](design/Datasheets/bat54-diotec-datasheet.pdf) |
 
 ---
-
 ### Passive Components (continuing from #28)
-
 | # | MPN | Description | Board(s) | Mouser | DigiKey | JLCPCB |
 |---|-----|-------------|----------|--------|---------|--------|
 | 28 | Tecate SCMT32C156PRBA0 | 22F / 2.7V Supercap SMD (×6 in 2S3P) | PM C_SC1–6 | **TBD** | **TBD** | **TBD** |
@@ -236,9 +222,7 @@ Now here is the list reprinted from **#28 onwards** with corrected #1–#27 data
 | 66 | Kemet C0402C330J5GAUTO | 33pF C0G/NP0 0402 crystal load (**sole C0G exception in design**) | JDB C10/C11 | 80-C0402C330J5GAUTO | 399-12979-1-ND | C2169327 |
 
 ---
-
 ### Connectors (continuing)
-
 | # | MPN | Description | Board(s) | Mouser | DigiKey | JLCPCB |
 |---|-----|-------------|----------|--------|---------|--------|
 | 67 | ERM8-040-05.0-S-DV-K-TR | 80-pin BtB Male 0.8mm (Link-Alpha) | PM J1 | 200-ERM8040050SDVKTR | SAM8621CT-ND | — |
@@ -263,9 +247,7 @@ Now here is the list reprinted from **#28 onwards** with corrected #1–#27 data
 | 86 | 1×10 2.54mm Female IDC | JDB JTAG OUTPUT header | JDB J2 | — | — | C2337 |
 
 ---
-
 ### Electromechanical & Hardware
-
 | # | MPN | Description | Board(s) | Mouser | DigiKey | JLCPCB |
 |---|-----|-------------|----------|--------|---------|--------|
 | 87 | Würth WE-CMBNC 7448031002 | 2mH 10A Nanocrystalline EMI CMC THT | PM L1/L2 | 710-7448031002 | 732-5584-ND | C1519839 |
@@ -283,9 +265,7 @@ Now here is the list reprinted from **#28 onwards** with corrected #1–#27 data
 | 99 | DPDT 6-pin Keyboard Switch | Momentary keyboard switch (already purchased) | ENC SW1–64 (192 total) | — (eBay: gadgetkingdom) | — | — |
 
 ---
-
 ### ⚠️ Outstanding Items — Action Required
-
 | # | Item | Status | Action |
 |---|------|--------|--------|
 | A | **~~TPD4E05U06DRYR~~** (4×ESD positions: PM D3/D4/D5, CTL U4) | **INVALID MPN** | Select replacement 4-ch ESD array (e.g. TI TPD4E004DRYR, Nexperia PRTR5V0U4T) |

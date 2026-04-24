@@ -7,19 +7,16 @@ The session is a master parts list verification for the Enigma-NG hardware proje
 1. **Supercap evaluation — Vishay MAL222551017E3 (already selected in prior segment)**
    - Prior segment had replaced Tecate with Vishay and updated all mechanical specs
    - Vishay was the baseline entering this segment
-
 2. **User proposed KYOCERA AVX SCCT35B226SRB as alternative**
    - Agent fetched FindChips and datasheet, confirmed: 22F, 3.0V rated, 12.5mm×35mm body, 5.5mm lead pitch
    - DigiKey: 480 in stock; Mouser: 581-SCCT35B226SRB; JLCPCB: not available
    - Key specs: derated above 65°C at 3.0V (≤2.5V at 85°C); KiCAD model available via Mouser
    - Compared vs Vishay: KYOCERA shorter (37mm vs 42.5mm max), 3.0V rated = 10% voltage margin at 2.7V charge
-
 3. **User proposed Abracon ADCR-T02R7SA256MB as third alternative**
    - Described as 25F (not 22F) — user asked if the difference matters
    - Agent confirmed via FindChips and Farnell: 25F, 2.7V, THT radial, 16mm dia × 25mm height, 7.5mm lead pitch, ESR 30mΩ
    - Agent read the datasheet (ADCR-T02R7S-datasheet.pdf): confirmed D=16.0±0.5mm, L=25.0±2.0mm, P=7.5±0.5mm, d=0.8mm, operating temp −40°C to +85°C (no derating mentioned), ±20% tolerance
    - 25F vs 22F: strictly better — bank becomes 37.5F, energy 123.8J, hold-up 24.8s (vs 21.7s)
-
 4. **Three-way comparison and decision**
    - User noted KYOCERA also has KiCAD model via Mouser (neutralising that Abracon advantage)
    - User questioned the ⚠️ warning on 2.7V-rated parts — correctly pointing out the design was always for 2.7V
@@ -27,17 +24,14 @@ The session is a master parts list verification for the Enigma-NG hardware proje
    - User noted longevity comparison is not straightforward without explicit hours figures for Abracon
    - Agent pointed out KYOCERA is derated above 65°C at 3.0V — at 2.7V charge, safe max temp is unspecified between 65–85°C, while Abracon is explicitly confirmed at 2.7V + 85°C
    - **User decided: Abracon ADCR-T02R7SA256MB**
-
 5. **User confirmed to switch to Abracon and remove redundant datasheets**
    - Agent applied all changes across 5 files (see Work Done)
    - Deleted Vishay-MAL222551017E3-datasheet.pdf (was committed); deleted Kyocera-AVX-SCCT35B226SRB-datasheet.pdf (was untracked, removed from disk)
    - Added ADCR-T02R7S-datasheet.pdf
    - Ran markdownlint — one new lint error on BOM line 133 (line too long), fixed by wrapping
    - Committed as `d74eeea`
-
 6. **User asked what other items remain for review**
    - Agent reviewed session history and listed items C–J plus passives from #28 onwards
-
 7. **Item C — CTS DIP switch confirmed**
    - User confirmed: MPN 219-6LPSTR (note: R suffix = tape-and-reel variant of 219-6LPST)
    - Supplier PNs: DigiKey=119-219-6LPSTRCT-ND, Mouser=774-2196LPSTR, JLCPCB=C2842671
@@ -59,20 +53,16 @@ Files modified this segment (all committed in `d74eeea`):
   - THT pad: 5.0mm pitch → 7.5mm pitch (1.0mm drill unchanged)
   - Bank: 33F → 37.5F; energy: 108.6J → 123.8J; hold-up: ≥21.7s → ≥24.8s (all instances)
   - BOM row C_SC1–6: Mouser=815-ADCRT02R7SA256MB, DigiKey=535-ADCR-T02R7SA256MB-ND, JLCPCB=Global sourcing
-
 - `design/Electronics/Consolidated_BOM.md`
   - Component count row: Vishay MAL222551017E3 → Abracon ADCR-T02R7SA256MB, 22F → 25F
   - Critical spares §1: updated source/PNs, noted JLCPCB global sourcing only
   - S11 supplier: Vishay → Abracon with new URL and notes
   - §11 datasheet row: Vishay PDF → ADCR-T02R7S-datasheet.pdf
-
 - `design/Electronics/Power_Module/Board_Layout.md`
   - Power chain: Vishay → Abracon ADCR-T02R7SA256MB
   - Rib clearway note: 16mm pitch / 13.0mm max → 20mm pitch / 16.5mm max
-
 - `design/Standards/Certification_Evidence.md`
   - Power chain block: Vishay → Abracon ADCR-T02R7SA256MB, 33F → 37.5F
-
 - `design/Datasheets/Vishay-MAL222551017E3-datasheet.pdf` — deleted (git rm)
 - `design/Datasheets/Kyocera-AVX-SCCT35B226SRB-datasheet.pdf` — deleted (was untracked)
 - `design/Datasheets/ADCR-T02R7S-datasheet.pdf` — added (git add)
@@ -141,28 +131,22 @@ Files modified this segment (all committed in `d74eeea`):
   - Primary PM specification — supercap bank, BOM, Z-height, enclosure clearance, rib clearway, keep-out
   - All supercap specs updated to Abracon this segment
   - Key sections: §1 PCB Spec (~lines 71–86), §2 Power & UPS Hub (~lines 90–92, 108–109), §5 Supercap Manager (~lines 218, 238), BOM C_SC1–6 (~line 445)
-
 - `design/Electronics/Consolidated_BOM.md`
   - Master BOM — primary reference for all supplier PNs across all boards
   - Supercap row, critical spares, S11 supplier, datasheet link all updated
   - Key lines: ~67 (component count), ~133–134 (critical spares), ~325 (S11), ~376 (datasheet row)
-
 - `design/Electronics/Power_Module/Board_Layout.md`
   - Power chain and rib clearway note updated
   - Key lines: ~166 (power chain), ~172 (rib clearway)
-
 - `design/Datasheets/ADCR-T02R7S-datasheet.pdf`
   - Abracon supercap series datasheet — source of mechanical specs
   - Added this segment; linked in Consolidated_BOM §11
-
 - `design/Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf`
   - DIP switch datasheet for 219-6LPSTR (and 219-4LPST)
   - Present but not yet linked in docs
-
 - `design/Electronics/Stator/Design_Spec.md`
   - SW2 (219-6LPST→219-6LPSTR) BOM row needs updating (~line 315)
   - SW1 (219-4LPST) is a separate part — not under review
-
 - `design/Electronics/Rotor/Design_Spec.md`
   - SW1/SW2/SW3 all reference 6-position DIP switch with TBD PNs (~line 480) — needs updating
 

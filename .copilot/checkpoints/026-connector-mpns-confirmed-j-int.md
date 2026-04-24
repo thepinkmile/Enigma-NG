@@ -25,20 +25,16 @@ This session is a master parts list verification for the Enigma-NG hardware proj
    - User_Manual.md: Stale Laird CM5022 reference removed entirely (no "original" part exists at this design stage)
    - Global_Routing_Spec.md: Bulk Entry Bank Rule exception split into indented sub-bullet
    - Committed `0ec9d90` — zero lint warnings now across all docs
-
 2. **CTS 219-series DIP switch datasheet committed**
    - Datasheet `CTS-Switches-DIP-219-Series-Datasheet.pdf` had been omitted from the previous commit (`d95f07d`) that applied the DIP switch PNs — committed separately as `15d8bb3`
-
 3. **Item E: Amphenol T821126A1S100CEU — 26-pin 2×13 2.54mm shrouded box header**
    - Used on: Stator J4/J5/J6, Encoder J2
    - JLCPCB: C3013501; RS-Online: 832-3503 (noted in description field, not Mouser column)
    - No DigiKey or Mouser PN available; JLCPCB direct stock
-
 4. **Item F: Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded box header**
    - Used on: Stator J7, Reflector J4, Extension J7/J8
    - Mouser 737-BHR-16-VUA, DigiKey 2057-BHR-16-VUA-ND, JLCPCB C17692295
    - Committed `7495a8d` (items E and F together)
-
 5. **Items G/H: JDB hat-headers — orientation correction + Adam Tech parts**
    - Previous spec had male headers on Controller and female on JDB — user confirmed this was wrong
    - Correct orientation: **male on JDB** (plugs into Controller), **female on Controller**
@@ -48,7 +44,6 @@ This session is a master parts list verification for the Enigma-NG hardware proj
    - Controller J_JDB_JTAG (female): Adam Tech RS1-10-G — Mouser 737-RS1-10-G, DigiKey 2057-RS1-10-G-ND, JLCPCB C3320525
    - Datasheets `ph1-xx-ua-data-sheet.pdf` and `rs1-xx-g-datasheet.pdf` added
    - Committed `373a93e`
-
 6. **Item D: Rotor J_INT redesign — in progress**
    - Original spec: single 2×11 (22-pin) keyed IDC box header — Würth 61201221721 (MPN does not exist)
    - User proposed redesign: 4 separate single-row headers totalling 22 pins
@@ -147,19 +142,15 @@ Files modified (all committed):
   - J_INT spec at §3.4 (~lines 393–432): full 22-pin pinout, assembly notes, ⚠️ warning — **all needs replacing** with 4-header redesign
   - Board A BOM (~line 471) and Board B BOM (~line 490): J_INT rows — both need updating
   - SW1/SW2/SW3 (lines 480–492): already updated with 219-6LPSTR PNs
-
 - `design/Electronics/Rotor/Board_Layout.md`
   - Lines 18, 49, 66, 78, 109, 121: all reference "J_INT: keyed IDC 2×11" — need updating to 4-header arrangement
-
 - `design/Electronics/Consolidated_BOM.md`
   - Line 104: Würth 61201221721 ⚠️ row — needs replacing with 4 new Adam Tech rows
   - §11 datasheet section: needs PH1-07-UA / RS1-07-G entries added
   - Component count table: needs rows for PH1-07-UA (ROT=4, total=120) and RS1-07-G (ROT=4, total=120)
-
 - `design/Electronics/JTAG_Daughterboard/Design_Spec.md`
   - Already updated this segment — J1/J2 now correctly male PH1 headers
   - BOM rows lines 180–181: already correct
-
 - `design/Electronics/Controller/Design_Spec.md`
   - J_JDB_PWR/JTAG sections (~lines 282–302): already updated to RS1 female sockets
   - BOM J_JDB_PWR/JTAG rows: already added after J_FAN

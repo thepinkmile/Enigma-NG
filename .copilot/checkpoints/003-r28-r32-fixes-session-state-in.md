@@ -6,38 +6,31 @@ This session continued the Enigma-NG electronics design documentation review cyc
 1. **Session resumed** — user approved the plan to fix R27 findings and run R28+R29 clean passes.
    - R27 fix agent (`r27-fixes`) launched: 16 findings (DEC renumber cascade + TPD4E05U06 DBVR/DQNR→DRYR). Committed `2ffb8f1`.
    - `encoder-stator-fix` agent completed: §1/§3/§4/§9 + BOM rewrites for Encoder, J4/J5/J6 plugboard context for Stator. Committed `b1487ec`.
-
 2. **User requested canonical `.copilot/` session state in repo root** — so session state persists across sessions without UUID path issues.
    - Created repo-local `.copilot\` with `README.md`, `plan.md`, `checkpoints/index.md`, and both checkpoint files copied from the user-profile session folder.
    - Added `.copilot/` to `.gitignore`. Committed `b35b43d`.
    - Stored memory: canonical session state lives at `.copilot/` in repo root; instruct with "Please read `.copilot/plan.md` and all files in `.copilot/checkpoints/` to align yourself..."
-
 3. **User went to bed; requested fully autonomous continuation.**
-
 4. **R28 launched and completed** — 10 genuine findings:
    - Consolidated_BOM §4a: jack Sleeve→GND (wrong), BT65–128 described as INT detect, BT129–256 rows still present, notes still described 4-row architecture
    - Consolidated_BOM usage summary: ENC cap count 144→80, pull-up count 132→68, blade terminal count 256→128
    - Power_Management.md: CSS2H total build qty 2→3
    - Cert_Evidence §4.4: TPD2E2U06 package SON-6→SOT-553 (DRL)
    - Fixed by `r28-fixes` agent. Committed.
-
 5. **R29 launched and completed** — 10 claimed findings, 8 were FALSE POSITIVES:
    - Findings 2–10: Agent claimed R_ILIM should be ERA-3ARB2100V (0.1% thin-film). Verified against actual docs — ERJ-3EKF2100V (1% thick-film) is confirmed correct per closed OA-01 in Cert_Evidence §8. FALSE POSITIVES discarded.
    - 2 genuine findings: Design_Log DEC-016 table `DEC-023`→`DEC-024`; Consolidated_BOM §4a `Keystone 1285`→`1285-ST` with corrected P/Ns (534-1285-ST, 36-1285-ST-ND, C5370868).
    - Applied directly. Committed `6107d50`.
-
 6. **R30 launched and completed** — 2 genuine findings:
    - Stator Design_Spec BOM R1: CSS2H ordinal "second and third" → "first and second" (PM R12=1st, PM R23=2nd, Stator R1=3rd)
    - User_Manual §2: ML2032 listed as interchangeable RTC battery with CR2032 — safety error; ML2032 requires D1 removal. Removed ML2032 reference.
    - Applied directly. Committed `62ce9fa`.
-
 7. **R31 launched and completed** — 4 genuine findings:
    - User_Manual §3.1 Battery row: 11–16.8V → 11–16.4V (prohibited 4.2V/cell)
    - Cert_Evidence §3.1 code block: Battery 11–16.8V → 11–16.4V
    - Controller Design_Spec §2 + §7: `(DEC-024 candidate)` × 2 → `(DEC-TBD — new decision required)`
    - Encoder Design_Spec §8: removed stale ESD bullet (TPD4E001 not in BOM; Micro-Fit doesn't exist on Encoder)
    - Applied directly. Committed `7d885db`.
-
 8. **R32 launched and completed** — 5 genuine findings:
    - PM Design_Spec §3.2: Battery (11–16.8V) → (11–16.4V)
    - PM Design_Spec §1 rib clearway: strip width 1.0mm → 1.5mm (DEC-020 specifies 1.5mm)
@@ -45,7 +38,6 @@ This session continued the Enigma-NG electronics design documentation review cyc
    - User_Manual §3.5: eFuse window `11–17V` → `11–16.9V`
    - Power_Management.md shutdown timing: `~50ms` → `≤510ms` (POLL_HZ=2 = 500ms period)
    - Applied directly. Committed `2b9a33a`. **R32 had findings — clean counter resets.**
-
 9. **R33 not yet launched** — need two consecutive clean passes; R32 had 5 findings so must continue.
 </history>
 
@@ -170,38 +162,28 @@ Tasks:
 - `design/Design_Log.md`
   - Master log of DEC/INC/QUE entries; cross-reference source of truth
   - DEC-016 table footnote updated: DEC-023→DEC-024
-
 - `design/Electronics/Consolidated_BOM.md`
   - System-wide BOM and component usage summary
   - §4a Encoder jack/terminal table fully corrected; Keystone 1285→1285-ST throughout; usage summary ENC counts updated
-
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Core PM spec; supercap, eFuse, DEC-020 details
   - Rib clearway width 1.0mm→1.5mm; battery voltage 16.8V→16.4V in startup sequence
-
 - `design/Electronics/Encoder/Design_Spec.md`
   - Fully rewritten this session (two-half architecture, §1/§3/§4/§9, BOM)
   - Stale ESD bullet removed in §8
-
 - `design/Electronics/Stator/Design_Spec.md`
   - FR-STA-05 expanded; J4/J5/J6 plugboard routing section added; CSS2H ordinal fixed
-
 - `design/Electronics/Controller/Design_Spec.md`
   - `(DEC-024 candidate)` → `(DEC-TBD)` ×2 in §2 and §7
-
 - `design/Guides/User_Manual.md`
   - ML2032 removed; battery 16.8V→16.4V; OVLO threshold 17V→16.9V ×2
-
 - `design/Software/Linux_OS/Power_Management.md`
   - CSS2H total 2→3; shutdown latency ~50ms→≤510ms
-
 - `design/Standards/Certification_Evidence.md`
   - TPD2E2U06 package SON-6→SOT-553; battery 16.8V→16.4V in §3.1
-
 - `.copilot/plan.md`
   - Canonical session plan (in repo root, gitignored)
   - Needs updating after R33/R34 clean and checkpoint save
-
 - `.copilot/checkpoints/` (index + 001 + 002)
   - Checkpoint history; needs `003-encoder-complete.md` added after clean passes
 </important_files>

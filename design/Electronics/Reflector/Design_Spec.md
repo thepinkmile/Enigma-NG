@@ -23,7 +23,7 @@ second CPLD on the Reflector itself.
 | :--- | :--- | :--- | :--- |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs | §3 JTAG & Logic Hub; BOM J1–J3 (ERM8) |
 | FR-REF-02 | Provide the mandatory physical turnaround path at the end of the rotor/extension chain while the selected reflection map is applied by the Stator CPLD | Passive turnaround board — no local CPLD required | §2 Architecture; BOM J1–J4 |
-| FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J7 → Controller-facing `J2B` logic dock → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
+| FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 
 #### Design Requirements
@@ -32,7 +32,7 @@ second CPLD on the Reflector itself.
 | :--- | :--- | :--- | :--- |
 | DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §6 PCB Fabrication & Stackup |
 | DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §4 Rotor Interface Connectors; BOM J1–J3 |
-| DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J7); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
+| DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J10); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
 | DR-REF-04 | End-of-chain damping | R1 = 22 Ω, 0603, on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive turnaround board only; reflector-map selection remains Stator-owned | §2 Architecture |
 
@@ -50,17 +50,17 @@ second CPLD on the Reflector itself.
   the Stator CPLD by `U_EXP4` @ 0x22 — see DEC-032.
 * **CPLD support:** None on this PCB; the board only provides the mandatory return path.
 * **Signal Path:** Final rotor/extension outputs → Reflector J1–J3 (ERM8 male) → passive turnaround traces
-  → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (16-pin header, pin 15) → Stator J7.
+  → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (16-pin header, pin 15) → Stator J10.
 
 ## 3. JTAG & Logic Hub
 
 * **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical).
-  > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
+  > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
   > This board uses the mating connector as J4 (Adam Tech BHR-16-VUA — see BOM). The authoritative
   > 16-pin pinout is defined on the Stator; Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
   > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
 
-> **Compatibility note:** J4 pin allocation matches Stator J7 (16-pin 2×8). The Stator J7 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
+> **Compatibility note:** J4 pin allocation matches Stator J10 (16-pin 2×8). The Stator J10 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
 
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Termination:**R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
@@ -72,7 +72,7 @@ second CPLD on the Reflector itself.
 > J4–J6) and stop here as end-of-chain signals. They do NOT continue past this board, and they are
 > not consumed by any local CPLD because the Reflector has no active logic.
 >
-> The J4 ribbon cable (Reflector J4 → Stator J7) carries:
+> The J4 ribbon cable (Reflector J4 → Stator J10) carries:
 >
 > * **Pin 15 — TTD_RETURN:** JTAG TDO return only — completes the chain back to the FT232H. This is
 >   the ONLY JTAG signal on J4.
@@ -119,9 +119,8 @@ on each Rotor's output side (J4/J5/J6). One set of three connectors per the Roto
 **Orientation:** Facing the rotor output side (Rotor 30 top face), perpendicular to the rotor stack axis.
 The ERM8 header pitch (0.8mm) is physically incompatible with 2.54mm connectors — label accordingly on silkscreen.
 
-> **Note on §5 "26x Gold-plated friction pads":** This earlier notation referred to a draft mechanical
-> contact concept and is superseded by the ERM8 connector approach defined here. The 40 active contacts
-> (10 + 10 + 20) on J1–J3 provide the Reflector rotor interface; the friction pad concept is retired.
+> **Rotor interface note:** The Reflector rotor interface uses the 40 active contacts
+> (10 + 10 + 20) on J1–J3.
 
 Per `design/Standards/Global_Routing_Spec.md §5`, the Reflector implements a local `GND_CHASSIS`
 net tied to its mounting holes and any deliberate enclosure-contact features, but it does **not**

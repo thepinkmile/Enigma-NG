@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-04-21
 
 ## Overview
 
@@ -15,18 +15,20 @@ individual `Design_Spec.md` file.
 
 > **Review Policy:** Parts marked 🔒 have been confirmed by the project owner.
 > Do not modify 🔒-marked items without owner approval.
-
+>
 ## Component Usage Summary
 
 This table shows the component count per board instance and system-wide totals, accounting for
-×3 Encoder boards and ×30 Rotor boards in the complete system. The EXT column shows per-board
+×6 Encoder Modules and ×30 Rotor boards in the complete system. The EXT column shows per-board
 quantities for one Extension board; Rev A uses ×1 Extension board, while the full 30-rotor build
 requires ×5 Extension boards (one between each pair of 5-rotor groups). System Total reflects
-the Rev A single-Extension configuration unless otherwise noted.
+the Rev A single-Extension configuration unless otherwise noted. Role-specific Encoder Module
+populations are broken out as dedicated static rows rather than range-valued quantity cells.
+Assembly-level plugboard jacks and keyboard switches are listed in §4a instead of this board matrix.
 
-| MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×3) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | SBD | System Total |
+| MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×6) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | SBD | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
+| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | — | 1 | 6 | — | — | — | — | — | — | 6 |
 | EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; drop-in for EPM240; used on Stator and Rotor boards) | — | — | 1 | — | — | 1 | 30 | — | — | — | — | 31 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | — | 2 |
 | PCA9534APWR — I²C GPIO Expander 8-bit (TSSOP-16) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -54,15 +56,20 @@ the Rev A single-Extension configuration unless otherwise noted.
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
-| BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 5 | — | — | — | — | — | — | — | — | — | 6 | 11 |
+| BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 7 | — | — | — | — | — | — | — | — | — | 6 | 13 |
+| TBD — Dual Schmitt inverter / buffer, 1.65-5.5V, 3.3V logic compatible (SW2 `LED_nPWR` / `PWR_BUT` conditioning) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| TBD — Single D-type flip-flop with async clear, 1.65-5.5V, 3.3V logic compatible (SW2 shutdown latch) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| TBD — Single 2-input AND gate, 1.65-5.5V, 3.3V logic compatible (SW2 red blink gate) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | BAT54 — Schottky Diode (SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 3 | 6 |
 | PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
-| 0.1 µF X7R 0402 decoupling cap | 15 | 1 | 9 | 80 | 240 | 8 | 240 | — | 1 | 4 | 4 | 514 |
-| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 15 | 5 | 150 | 5 | 5 | — | — | 185 |
-| 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 15 | — | — | — | — | — | — | — | — | — | — | 15 |
+| 0.1 µF X7R 0402 decoupling cap — common fitted population | 15 | 1 | 9 | 8 | 48 | 8 | 240 | — | 1 | 4 | 4 | 322 |
+| 0.1 µF X7R 0402 encoder input RC filter cap — encode-role population only | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
+| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 5 | — | — | 200 |
+| 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 13 | — | — | — | — | — | — | — | — | — | — | 13 |
+| 47 µF X7R 25 V 2220 buck output bulk cap (TDK CGA9N3X7R1E476M230KB) | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
 | 4.7 µF X7R 1210 entry filter (CGA6P3X7R1H475K250AD) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
 | 10 µF 16 V X7R 1206 monostable timing cap (CC1206KKX7R8BB106) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
@@ -72,16 +79,17 @@ the Rev A single-Extension configuration unless otherwise noted.
 | 100 pF X7R 25 V 0402 SYNC SW-ringing LP filter (C0402C101K3RACAUTO) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 22 nF X7R 25 V 0603 SYNC phase-delay cap (CL10B223KB8WPNC) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 8 | — | — | — | — | — | — | — | — | — | — | 8 |
-| 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C35 (Samsung CL32B226KAJNNNE, 2× in parallel) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C14/C15 (Samsung CL32B226KAJNNNE) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | | | | | | | | | | | | | |
 | 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C191124) | 6 | 2 | 16 | — | — | — | — | — | — | — | 13 | 37 |
-| 10 kΩ 1% 0402 pull resistor (ERJ-2RKF1002X / C191123) | 2 | — | 1 | 68 | 204 | 4 | 120 | — | — | 2 | — | 329 |
+| 10 kΩ 1% 0402 pull resistor — common fitted population (ERJ-2RKF1002X / C191123) | 2 | — | 1 | 4 | 24 | 4 | 120 | — | — | 2 | — | 149 |
+| 10 kΩ 1% 0402 encoder input pull-up — encode-role population only (ERJ-2RKF1002X / C191123) | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | — | 9 |
-| 75 Ω 1% 0402 resistor (ERJ-2RKF75R0X / C413061) | — | 4 | — | 1 | 3 | — | — | — | — | — | — | 7 |
+| 75 Ω 1% 0402 resistor (ERJ-2RKF75R0X / C413061) | — | 4 | — | 1 | 6 | — | — | — | — | — | — | 10 |
 | 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | — | — | — | — | — | — | — | — | — | — | — |
-| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | 1 | 3 | — | — | — | — | 4 | — | 7 |
+| 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | — | — | — | — | — | — | 4 | — | 4 |
 | 22 Ω 0603 1% JTAG end-of-chain damping (ERJ-3EKF2200V) | — | — | — | — | — | — | — | 1 | — | — | — | 1 |
-| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
+| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 1 | 6 | — | — | — | — | — | — | 6 |
 | 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | — | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V / C192166) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C193336) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -112,7 +120,7 @@ the Rev A single-Extension configuration unless otherwise noted.
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | — | 32 |
 | Adam Tech PH1-07-UA — 1×7 2.54mm male pin header, Rotor Board A H\_SW3 (Mouser 737-PH1-07-UA; DigiKey 2057-PH1-07-UA-ND; JLCPCB C3331618) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
 | Adam Tech RS1-07-G — 1×7 2.54mm female socket, Rotor Board B H\_SW3 (Mouser 737-RS1-07-G; DigiKey 2057-RS1-07-G-ND; JLCPCB C3321543) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
-| Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 3 | 1 | 3 | — | — | — | — | — | — | 6 |
+| Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 6 | 1 | 6 | — | — | — | — | — | — | 12 |
 | Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | — | 4 |
 | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1/Rotor H\_PWR+H\_JTAG(BrdB)+H\_SENS(BrdA) (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | 3 | 90 | — | — | 1 | — | 91 |
 | Adam Tech RS1-05-G — 1×5 2.54mm female socket, CTL J\_JDB\_PWR/Rotor H\_PWR+H\_JTAG(BrdA)+H\_SENS(BrdB) (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | 3 | 90 | — | — | — | — | 91 |
@@ -136,12 +144,14 @@ the Rev A single-Extension configuration unless otherwise noted.
 | Power Module 2.8 mm PCB Male Quick-Fit Tabs (Keystone 1211; SW1 + SW2 harnesses) | 12 | — | — | — | — | — | — | — | — | — | — | 12 |
 | Settings Board SPDT Toggle Switch (E-Switch 200MSP1T2B4M2QE) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
 | Settings Board Discrete RGB LED (Kingbright WP154A4SEJ3VBDZGW/CA) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
-| Green SMD LED 0402 (Würth 150060VS75000 / C6848499) | — | — | — | 2 | 6 | — | — | — | — | — | — | 6 |
-| 6.35 mm Mono Switched Panel-Mount Jack Socket (Stecker) | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
-| DPDT 6-pin Momentary Keyboard Switch | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
-| 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 128 | 384 | — | — | — | — | — | — | 384 |
+| Green SMD LED 0402 (Würth 150060VS75000 / C6848499) | — | — | — | 1 | 6 | — | — | — | — | — | — | 6 |
+| 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 64 | 384 | — | — | — | — | — | — | 384 |
 | CTS 219-4LPST — 4-pos DIP switch, 2.54mm THT | — | — | — | — | — | — | — | — | — | — | — | 0 |
 | CTS 219-6LPSTR — 6-pos DIP switch, 2.54mm THT | — | — | — | — | — | 3 | 90 | — | — | — | — | 90 |
+
+Off-board plugboard jack sockets and keyboard switches are assembly-level items rather than PCB-fitted
+board BOM lines. See §4a for their static counts: **64 jacks per plugboard pass (128 system total)**
+and **40 switches per Keyboard Assembly (40 system total)**.
 
 ## 1. Critical Spares (MOQ Recommendations)
 
@@ -150,7 +160,9 @@ the Rev A single-Extension configuration unless otherwise noted.
   Source via DigiKey (535-ADCR-T02R7SA256MB-ND) or Mouser (815-ADCRT02R7SA256MB). JLCPCB global sourcing only.
 * **TE 1123684-7 / 1-1674231-1 PM dock set:** Order 8 total — 3 PM headers + 3 Controller receptacles + 2 spares / fit-check samples.
 * **Molex 2195620015 / 2195630015 Stator dock set:** Order 6 total — 2 Stator plugs + 2 Controller receptacles + 2 spares / fit-check samples.
-* **Samtec ERM8 / ERF8 rotor-family connectors:** Order per Rotor / Reflector / Extension quantities only. The Controller ↔ PM and Controller ↔ Stator docks are no longer Samtec ERM8 / ERF8 parts.
+* **Samtec ERM8 / ERF8 rotor-family connectors:** Order per Rotor / Reflector / Extension quantities
+  only. The Controller ↔ Power Module dock uses TE parts and the Controller ↔ Stator dock uses Molex
+  hybrid parts.
 * **0.1% Thin-Film Resistors:** Order 50 (MOQ) - (High attrition risk).
 
 ## 2. Common Passives
@@ -174,61 +186,53 @@ the Rev A single-Extension configuration unless otherwise noted.
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | L1 | EMI Primary CMC (broadband CM) | Würth WE-CMBNC 7448031002 | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 (**replaces discontinued Laird CM5022**) | 2mH, 10A, nanocrystalline | THT 24×17×25mm | 710-7448031002 |
-| L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M (replaces Würth 7447789100 — not in public catalog) | 10µH, 15.5A Isat, DCR 16.5mΩ | 13.5×12.5×6.2mm SMT ⚠️ footprint change | 652-SRP1265A-100M; alt: Farnell ~2741 in stock |
-| C1, C4 | Pi-filter bulk cap (2× each) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
-| C2, C5 | Pi-filter mid-freq bypass (2× each) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
-| C3, C6 | Pi-filter HF bypass (2× each) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
-| C7–C12 | Power IC bulk caps (U1 in/out, U2A in/out, U2B in/out) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
-| C13 | LDO input cap (U7 VIN) | Kemet C1206C106K3RACTU | 10µF 25V X7R | 1206 | 80-C1206C106K3R |
-| C14 | LDO output cap (U7 VOUT) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
-| C15–C22 | IC VCC bypass (U3–U6, U8–U11) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
-| C26, C27 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
-| C28 | SYNC SW-ringing low-pass filter (C_F1) | Kemet C0402C101K3RACAUTO | 100pF X7R 25V | 0402 | 80-C0402C101K3RAUTO |
-| C29 | SYNC 180° phase delay capacitor (C_DLY) | Samsung CL10B223KB8WPNC | 22nF X7R 25V | 0603 | 187-CL10B223KB8WPNC |
-| C30, C31 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
-| C23 | MIC1555 timing cap (C_OSC) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
-| C24 | Controller PoE front-end TPS23730 soft-start cap (U10 C_SS) | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
+| L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M | 10µH, 15.5A Isat, DCR 16.5mΩ | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M; alt: Farnell ~2741 in stock |
+| C1-C4 | Pi-filter bulk cap bank (C1/C2 at filter input, C3/C4 at filter output) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
+| C5-C8, C9-C12, C13-C15 | Power-stage 22µF bulk caps (buck inputs, eFuse input/output, LDO output, backup bank) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
+| C16-C19 | LMQ61460-Q1 buck output bulk caps | TDK CGA9N3X7R1E476M230KB | 4× 47µF 25V X7R MLCC total (2 fitted at U2A OUT, 2 fitted at U2B OUT) | 810-A9N3X7476M23KB | 445-174773-1-ND |
+| C20 | LDO input cap (U7 VIN) | Kemet C1206C106K3RACTU | 10µF 25V X7R | 1206 | 80-C1206C106K3R |
+| C21-C23 | 1µF caps (Pi-filter mid-frequency legs and U11 timer) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
+| C24-C39 | 100nF caps (Pi-filter HF legs and IC VCC bypass network) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
+| C40 | SYNC SW-ringing low-pass filter (C_F1) | Kemet C0402C101K3RACAUTO | 100pF X7R 25V | 0402 | 80-C0402C101K3RAUTO |
+| C41 | SYNC 180° phase delay capacitor (C_DLY) | Samsung CL10B223KB8WPNC | 22nF X7R 25V | 0603 | 187-CL10B223KB8WPNC |
+| C42 | U15 MIC1555 one-shot timing cap | Yageo CC1206KKX7R8BB106 | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 |
+| CTL C24 | Controller PoE front-end TPS23730 soft-start cap (U10 C_SS) | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
 
-**Pi-filter performance summary (f_c = 10.5kHz):**
+**Pi-filter performance summary (f_c = 7.5kHz):**
 
-* −46dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
-* −51dB at 200kHz (TPS23730 ACF switching frequency) ✓
-* −63dB at 400kHz (LMQ61460AFSQRJRRQ1 buck switching frequency) ✓
+* −52dB DM attenuation at 150kHz (EN 55032 Class B lower edge) ✓
+* −57dB at 200kHz (TPS23730 ACF switching frequency) ✓
+* −69dB at 400kHz (LMQ61460AFSQRJRRQ1 buck switching frequency) ✓
 
 ## 4. Board-to-Board Interconnects
 
-* **TE 1123684-7:** Power Module dock header (`J1A/J1B/J1C` on PM side).
-* **TE 1-1674231-1:** Controller-side mating receptacle for the PM dock (`J1A/J1B/J1C`).
-* **Molex 2195620015:** Stator-side hybrid dock plug (`J8A/J8B`).
-* **Molex 2195630015:** Controller-side mating receptacle for the Stator hybrid dock (`J2A/J2B`).
+* **TE 1123684-7:** Power Module dock header (`J1/J2/J3` on PM side).
+* **TE 1-1674231-1:** Controller-side mating receptacle for the PM dock (`J1/J2/J3`).
+* **Molex 2195620015:** Stator-side hybrid dock plug (`J11/J12`).
+* **Molex 2195630015:** Controller-side mating receptacle for the Stator hybrid dock (`J4/J5`).
 * **Samtec ERM8-010-05.0-S-DV-K-TR (Male, 20-pin):** Rotor J3, Reflector J3, Extension J3. JLCPCB: C374877
-* **Intel EPM240T100I5N:** 6 units (Encoder ×2 per board ×3 boards = 6).
+* **Intel EPM240T100I5N:** 6 units (Encoder Module ×1 per board ×6 boards = 6).
   DigiKey: 544-2276-ND · Mouser: 989-EPM240T100I5N · JLCPCB: C40067.
 * **Intel EPM570T100I5N:** 31 units (Stator ×1, Rotor ×1 per board ×30 boards = 30; total 31).
   Same TQFP-100 footprint as EPM240; 570 LEs required for startup-loaded cipher/reflector map registers.
   DigiKey: 544-2281-ND · Mouser: 989-EPM570T100I5N · JLCPCB: C27319.
 
-## 4a. Encoder Board — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
+## 4a. Encoder Module — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
 
 | Ref | Component | Part / Description | Qty | Supplier | Supplier Ref / Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip: ENC signal path; Switch (N/C): BT1–64 (same node as Tip; N/C contact shorts Switch→Sleeve when no plug present); Sleeve: BT65–128 (Encode Half / CPLD B input). **Already purchased.** | 64 | SaiBuy.Ltd (eBay) | eBay item 334364197440 — £1.66/unit (sold in packs of 3 for £4.99). [ebay.co.uk — SaiBuy.Ltd](https://www.ebay.co.uk/str/saibuyltd). See pseudo datasheet in `design/Datasheets/SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md`. |
-| SW1-40 | Keyboard switches | uxcell-style DPDT 6-pin momentary push button — Pole 1 electrically active: COM1+NO1 → key-press to CPLD. Pole 2 pins soldered for mechanical key anchoring only (no electrical connection). NC1 not connected. Keys connect to keyboard Encoder board only; no direct switch connection to Lightboard. **Already purchased.** | 40 | gadgetskingdom (eBay) | Sold in packs of 2. eBay item 365271584375. Listing title: "Momentary Push Button Switch DPDT 2 Pole 6 Pin 1 Position 2pcs". See pseudo datasheet in `design/Datasheets/`. |
-| BT1-64 | PCB blade terminals — ENC signal (Row 1) | Keystone 1285-ST — 6.35mm (0.250″) straight vertical PCB-mount male blade tab, through-hole. Accepts 6.35mm female crimp spade from jack Tip harness. | 64 | Mouser / DigiKey / JLCPCB | Mouser: 534-1285-ST · DigiKey: 36-1285-ST-ND · JLCPCB: C5370868 |
-| BT65-128 | PCB blade terminals — Encode Half inputs / CPLD B encoder inputs (Row 2) | Keystone 1285-ST — same part. Wired to jack Sleeve (plugboard mode) or keyboard switch outputs (HID mode). | 64 | Mouser / DigiKey / JLCPCB | Mouser: 534-1285-ST · DigiKey: 36-1285-ST-ND · JLCPCB: C5370868 |
+| J1 (×64 per plugboard pass) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip + Switch: decode-role Encoder Module line; Sleeve: paired encode-role Encoder Module line. **Already purchased.** | 64 per pass | SaiBuy.Ltd (eBay) | eBay item 334364197440 — £1.66/unit (sold in packs of 3 for £4.99). [ebay.co.uk — SaiBuy.Ltd](https://www.ebay.co.uk/str/saibuyltd). See pseudo datasheet in `design/Datasheets/SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md`. |
+| SW1-40 | Keyboard switches | uxcell-style DPDT 6-pin momentary push button — Pole 1 electrically active: COM1+NO1 → key-press to CPLD. Pole 2 pins soldered for mechanical key anchoring only (no electrical connection). NC1 not connected. Keys connect to the `KBD_ENC` module only. **Already purchased.** | 40 total | gadgetskingdom (eBay) | Sold in packs of 2. eBay item 365271584375. Listing title: "Momentary Push Button Switch DPDT 2 Pole 6 Pin 1 Position 2pcs". See pseudo datasheet in `design/Datasheets/`. |
+| BT1-64 | PCB blade terminals — generic 64-line Encoder Module I/O bank | Keystone 1285-ST — 6.35mm (0.250″) straight vertical PCB-mount male blade tab, through-hole. Used as either decode-role outputs or encode-role inputs depending on module role. | 64 per module | Mouser / DigiKey / JLCPCB | Mouser: 534-1285-ST · DigiKey: 36-1285-ST-ND · JLCPCB: C5370868 |
 
 **Notes:**
 
-* **Plugboard jacks (J1 ×64):** mount in the plugboard panel. Each jack connects via a 2-wire harness (Tip → BT1–64;
-  Sleeve → BT65–128 Encode Half). Switch (N/C) is on the same node as Tip (BT1–64); it shorts Switch→Sleeve when no
-  plug is inserted. Rows 1–2 (BT1–128).
+* **Plugboard jacks (J1 ×64 per pass):** mount in the plugboard panel. Each jack connects between one
+  decode-role Encoder Module and one paired encode-role Encoder Module within the same pass.
 * **Keyboard switches (SW1-40):** mount in the keyboard panel. The physical HID layout uses 40
-  switches total: 38 printable positions (`[a-z0-9+=]`) plus Left Shift and Right Shift. In HID
-  mode each switch output wires to BT65–128 (Row 2, Encode Half); only 40 of those 64 input sites
-  are populated in the keyboard harness. Pole 2 pins are mechanically soldered for physical
-  anchoring — no electrical connection. Keys connect to the keyboard Encoder board only; no direct
-  switch wiring to the Lightboard.
-* **Total PCB blade terminals: 128** — two rows of 64, all Keystone 1285-ST.
+  switches total: 38 printable positions (`[a-z0-9+=]`) plus Left Shift and Right Shift. These wire
+  only to the `KBD_ENC` module.
+* **Total PCB blade terminals: 64 per Encoder Module, 384 system-wide** — all Keystone 1285-ST.
 * Stecker patch cables (plugboard) use 6.35mm mono jack plugs (TS) — not included in BOM; customer-supplied.
 
 ## 4b. Stator Board — Panel Switch Configuration Components
@@ -263,7 +267,7 @@ Board J_I2C and carries 3V3_ENIG, 5V_MAIN (used as the Settings indicator rail),
 
 > **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item (Amazon, already
 > purchased). It is not in the electronic BOM.
-
+>
 ## 4d. Settings Board
 
 The Settings Board replaces the Stator DIP switches with user-accessible panel-mount toggle
@@ -296,7 +300,7 @@ specification.
 U_EXP_SW_IN @ 0x23: reads all 12 switch states + CFG_APPLY. U_LED_B1 @ 0x24 and U_LED_B2 @ 0x25:
 drive per-bit LED anodes and per-bank RGB colour-rail MOSFET sinks. All three share the Stator
 I²C-1 bus via the J_I2C → J_CFG ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
-green/blue series resistors. `5V_MAIN` is routed from the Controller via the `J2A`
+green/blue series resistors. `5V_MAIN` is routed from the Controller via the `J4`
 high-current dock through the Stator to the Settings Board.
 
 ## 5. Controller Specifics
@@ -311,15 +315,25 @@ high-current dock through the Stator to the Settings Board.
 * **AP2331W-7:** HDMI Current Limiter (SOT-23-5) (50mA Limit).
 * **TPD4E05U06QDQARQ1:** 4-channel ESD array, U-DFN-10. DigiKey: `296-40696-1-ND`; Mouser: `595-PD4E05U06QDQARQ1`; JLCPCB: `C81353`.
 
-### Controller Board — RTC Battery Circuit
+### Controller Board — Power Entry Decoupling
+>
+> **Note:** C1-C5 and C7-C11 use the common 10uF 1206 bulk capacitor defined in
+> §2 Common Passives — not duplicated by supplier row here.
 
+| Ref | Description | Qty | Placement rule |
+| :--- | :--- | :--- | :--- |
+| C1-C5 | `5V_MAIN` bulk entry decoupling bank | 5 | Symmetrical star/spoke entry bank at `J1` `5V_MAIN` |
+| C7-C11 | `3V3_ENIG` bulk entry decoupling bank | 5 | Symmetrical star/spoke entry bank at `J1` `3V3_ENIG` |
+
+### Controller Board — RTC Battery Circuit
+>
 > **Note:** C6 (100nF X7R 0402, Samsung CL05B104KB5NNNC) uses the common 100nF 0402 passive from
 > §2 Common Passives — not duplicated here.
 
 | Ref | Component | Description | Qty | Supplier | Part Number |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | BT1 | Keystone 3034TR | CR2032 THT horizontal coin cell holder — RTC backup battery for CM5 MXL7704 PMIC (`TR` = tape-reel packaging) | 1 | Mouser: 534-3034TR / DigiKey: 36-3034CT-ND / JLCPCB: C5213768 | Keystone 3034TR |
-| D1 (CTRL) | BAT54 | SOT-23 Schottky — VBAT (Pin 95) charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 637-BAT54 / DigiKey: 4878-BAT54CT-ND / JLCPCB: C49435667 | BAT54 |
+| D1 (CTRL) | BAT54 | SOT-23 Schottky — VBAT (Pin 76) charge blocking diode (prevents PMIC from charging CR2032) | 1 | Mouser: 637-BAT54 / DigiKey: 4878-BAT54CT-ND / JLCPCB: C49435667 | BAT54 |
 | — | Renata CR2032 | CR2032 3V coin cell (not fitted at PCB assembly — installed at commissioning) | 1 | Mouser: 614-CR2032 / DigiKey: P189-ND | Renata CR2032 |
 
 ### Controller Board — Connectors & Headers
@@ -331,7 +345,7 @@ high-current dock through the Stator to the Settings Board.
 
 ## 6. Backplane & Extension Components
 
-* **16-pin Inter-Board Link (Adam Tech BHR-16-VUA, 2×8, 2.54mm):** Used for J7 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TTD_RETURN path.
+* **16-pin Inter-Board Link (Adam Tech BHR-16-VUA, 2×8, 2.54mm):** Used for J10 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TTD_RETURN path.
 * See individual board BOMs: Rotor/Board_Layout.md, Stator/Board_Layout.md, Extension/Board_Layout.md, Reflector/Board_Layout.md for authoritative connector part numbers.
 * **Copper Shielding Tape:** 50mm (2.0") Conductive Adhesive (Manual cable wrap).
 
@@ -339,6 +353,9 @@ high-current dock through the Stator to the Settings Board.
 
 * **INA219AIDR:** 2 units — PM U12 @ I²C 0x40 (5V\_MAIN current monitoring); Stator U2 @ I²C 0x45 (rotor telemetry).
 * **PCA9534APWR:** 1 unit — PM U16 @ I²C 0x3F (status / SW1 RGB expander).
+* **SW2 hardware indicator logic:** add 1× dual Schmitt inverter / buffer, 1× single D-type flip-flop
+  with async clear, and 1× single 2-input AND gate. All must run from 3.3V logic and fit
+  small-outline assembly packages.
 * **20mΩ 1206 Shunt (ERJ-6ENF20R0V):** 0 units — retired from Stator; replaced by CSS2H-2512R-R010ELF.
 * **10mΩ 2512 Kelvin Shunt (CSS2H-2512R-R010ELF):** 3 build + 3 spares — PM R12 (LTC3350 RSENSE) + PM R23 (INA219 U12, 0x40) + Stator R1 (INA219 U2, 0x45).
 
@@ -359,7 +376,7 @@ high-current dock through the Stator to the Settings Board.
 * OR-ing priority: TPS2372-4 `/PG` signal drives LM74700-Q1 enable on the USB-C path to enforce PoE source priority.
 
 ## 9. Power / Dock IC & Connector BOM (Multi-Distributor)
-
+>
 > **Legend:** ✓ = confirmed from distributor search · ~ = derived from manufacturer prefix convention
 > · ⚠️ = part number issue flagged · — = not stocked / THT not assembled · 🔒 = owner-confirmed; do not change without owner approval
 
@@ -374,6 +391,9 @@ high-current dock through the Stator to the Settings Board.
 | U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | 296-TPS25751DREFRCT-ND | C30169739 | 🔒 ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). Package: WQFN-38 6×4mm (note: different from TPS25750 QFN-28). |
 | U7 | TPS75733KTTRG3 | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 | 🔒 Fixed 3.3V, TO-263 KTT 5-pin. Active-LOW EN (EN LOW = enabled). ✓ |
 | U16 | PCA9534APWR | TSSOP-16 | 595-PCA9534APWR | 296-21760-1-ND | C2871127 | 🔒 PM-local 8-bit I²C GPIO expander at 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R/G/B`, `SW_LED_CTRL`. |
+| U17 | SN74LVC2G14DBVR | SOT-23-6 | 595-SN74LVC2G14DBVR | 296-13010-1-ND | C12401 | PM SW2 hardware signal conditioner. Dual Schmitt-trigger inverter, 1.65–5.5V supply, push-pull outputs, 5.5V-tolerant inputs. |
+| U18 | SN74LVC1G175DBVR | SOT-23-6 | 595-SN74LVC1G175DBVR | 296-17617-1-ND | C128412 | PM SW2 shutdown latch. Single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. |
+| U19 | SN74LVC1G08DBVR | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 | PM SW2 red blink gate. Single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. |
 | U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | C470955 | 🔒 DigiKey stock verified. $3.09/1. VQFN-20 per TI. |
 | U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | C3189530 | 🔒 ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | C1972959 | 🔒 DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
@@ -383,10 +403,10 @@ high-current dock through the Stator to the Settings Board.
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 | 🔒 N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 controllers **U6a/U6b/U6c** for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One controller + one MOSFET per input path. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | 🔒 R14 (ERA-3ARB3012V, Mouser 667-ERA-3ARB3012V, DigiKey 10-ERA-3ARB3012VCT-ND, JLCPCB C1728516). R15 (ERA-3ARB103V, Mouser 667-ERA-3ARB103V, DigiKey P10KBDCT-ND, JLCPCB C465746). BACKUP pin voltage divider for LTC3350 (U3). R14=30.1kΩ, R15=10.0kΩ. Sets BACKUP trigger at 4.812V (312mV above MCP121T 4.50V — see DEC-030). |
 | R30 | ERA-2AEB3322X 33.2kΩ 1% 0402 | 0402 1% Thick-Film | 667-ERA-2AEB3322X | P33.2KDCCT-ND | C2087909 | 🔒 LTC3350 RT frequency-setting resistor — sets 400 kHz switching frequency (vs default 200 kHz with RT=INTVCC). Required for ≥4-cycle backup switchover window. See DEC-030. |
-| U11 | MIC1555YM5-TR | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 | 🔒 CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERJ-3EKF series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C2/C5). |
-| U15 | MIC1555YM5-TR | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 | 🔒 CMOS timer IC (Microchip). Monostable one-shot for hardware PWR_BUT shutdown. t=1.1×R28×C32=3.01s. R28=274kΩ (ERJ-3EKF2743V), C32=10µF 16V X7R (CC1206KKX7R8BB106), C33=100nF bypass cap. |
+| U11 | MIC1555YM5-TR | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 | 🔒 CMOS timer IC (Microchip). 1Hz hardware status LED oscillator. R16=10kΩ (ERJ-3EKF series), R17=715kΩ (ERJ-3EKF7153V, Mouser 667-ERJ-3EKF7153V), C23=1µF (same Kemet C0805C105K5RACTU as C21/C22). |
+| U15 | MIC1555YM5-TR | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 | 🔒 CMOS timer IC (Microchip). Monostable one-shot for hardware PWR_BUT shutdown. t=1.1×R28×C42=3.01s. R28=274kΩ (ERJ-3EKF2743V), C42=10µF 16V X7R (CC1206KKX7R8BB106), C38=100nF bypass cap. |
 | R18–R21 | RJ45 Bob Smith termination resistors (×4) — 75Ω ±1% 0402 | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 | 🔒 |
-| C25 | RJ45 Bob Smith termination capacitor — 10nF 100V X7R 0402 (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 0402 | 80-C0402C103K1RAUTO | 399-C0402C103K1RACAUTOCT-ND | C19862710 | 🔒 |
+| CTL C25 | RJ45 Bob Smith termination capacitor — 10nF 100V X7R 0402 (⚠️ Y1-class 0402 is rare; 100V X7R acceptable proxy for EMC transient margin — Ethernet ESD discharge path to chassis) | 0402 | 80-C0402C103K1RAUTO | 399-C0402C103K1RACAUTOCT-ND | C19862710 | 🔒 |
 
 ### 9.0. Part Number Issues Requiring Action
 
@@ -442,7 +462,7 @@ Product page links for all major components for design review and procurement ve
 | D3 (PM); U4-U6 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | [tpd4e05u06-q1-datasheet.pdf](../Datasheets/tpd4e05u06-q1-datasheet.pdf) |
 | D2 | TPD2E2U06DRLR — Dual 5.5V SMBus ESD | Texas Instruments | [tpd2e2u06-datasheet.pdf](../Datasheets/tpd2e2u06-datasheet.pdf) |
 | D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.pdf](../Datasheets/tpd1e10b06-q1-datasheet.pdf) |
-| C25, C28 (PM) | C0402C103K1RACAUTO / C0402C101K3RACAUTO — KEMET automotive X7R MLCC family | KEMET | [KEM_C1023_X7R_AUTO_SMD-datasheet.pdf](../Datasheets/KEM_C1023_X7R_AUTO_SMD-datasheet.pdf) |
+| C25 (CTL), C40 (PM) | C0402C103K1RACAUTO / C0402C101K3RACAUTO — KEMET automotive X7R MLCC family | KEMET | [KEM_C1023_X7R_AUTO_SMD-datasheet.pdf](../Datasheets/KEM_C1023_X7R_AUTO_SMD-datasheet.pdf) |
 | U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.pdf](../Datasheets/sn74lvc2g125-datasheet.pdf) |
 | U1 (JDB) | FT232HL-REEL — USB 2.0 MPSSE Bridge | FTDI | [FT232H-datasheet.pdf](../Datasheets/FT232H-datasheet.pdf) |
 | U1 (ENC) | EPM240T100I5N — Intel MAX II CPLD 240 LE | Intel (Altera) | [Intel_max2_cpld-handbook.pdf](../Datasheets/Intel_max2_cpld-handbook.pdf) |
@@ -457,22 +477,22 @@ Product page links for all major components for design review and procurement ve
 | L3 | SRP1265A-100M — 10µH 14A Power Inductor | Bourns | [srp1265a-datasheet.pdf](../Datasheets/srp1265a-datasheet.pdf) |
 | R12 / R_SENSE | CSS2H-2512R-R010ELF — 10mΩ Kelvin Shunt | Bourns | [bourns.com/CSS2H](https://www.bourns.com/products/resistors/current-sense-resistors/product/CSS2H) |
 | F1 | AC72ABD — 72C SMD Thermal Cutoff | Bourns | [Bourns-AC72ABD-datasheet.pdf](../Datasheets/Bourns-AC72ABD-datasheet.pdf) |
-| J1A/J1B/J1C (PM) | 1123684-7 — 10-pin 2.5mm board-to-board dock header | TE Connectivity | [TE-1123684-7-datasheet.pdf](../Datasheets/TE-1123684-7-datasheet.pdf) |
+| J1/J2/J3 (PM) | 1123684-7 — 10-pin 2.5mm board-to-board dock header | TE Connectivity | [TE-1123684-7-datasheet.pdf](../Datasheets/TE-1123684-7-datasheet.pdf) |
 | J3 (PM) | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [Molex-PS-43650-datasheet.pdf](../Datasheets/Molex-PS-43650-datasheet.pdf) |
 | J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [usb4135-datasheet.pdf](../Datasheets/usb4135-datasheet.pdf) |
-| J3 (CTL) | 48406-0003 — USB 3.0 Type-A Dual-Stack | Molex | [Molex-48406-0003-datasheet.pdf](../Datasheets/Molex-48406-0003-datasheet.pdf) |
-| J4 (CTL) | 2007435-1 — HDMI Type-A Full-Size | TE Connectivity | [TE-2007435-1-datasheet.pdf](../Datasheets/TE-2007435-1-datasheet.pdf) |
+| J6 (CTL) | 48406-0003 — USB 3.0 Type-A Dual-Stack | Molex | [Molex-48406-0003-datasheet.pdf](../Datasheets/Molex-48406-0003-datasheet.pdf) |
+| J7 (CTL) | 2007435-1 — HDMI Type-A Full-Size | TE Connectivity | [TE-2007435-1-datasheet.pdf](../Datasheets/TE-2007435-1-datasheet.pdf) |
 | J_DSI1 (CTL) | F52Q-1A7H1-11015 — 15-pin 1.0mm right-angle ZIF/FPC connector | Amphenol | [amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf](../Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf) |
 | J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
-| J1A/J1B/J1C (CTL) | 1-1674231-1 — 10-pin 2.5mm board-to-board dock receptacle | TE Connectivity | [TE-1-1674231-1-datasheet.pdf](../Datasheets/TE-1-1674231-1-datasheet.pdf) |
-| J2A/J2B (CTL) / J8A/J8B (STA) | 2195630015 / 2195620015 — EXTreme Guardian HD hybrid dock pair | Molex | [Molex-2195630015-datasheet.pdf](../Datasheets/Molex-2195630015-datasheet.pdf) |
-| J2A/J2B (CTL) | 2195630015 — EXTreme Guardian HD receptacle mechanical drawing | Molex | [Molex-2195630015-drawings.pdf](../Datasheets/Molex-2195630015-drawings.pdf) |
-| J8A/J8B (STA) | 2195620015 — EXTreme Guardian HD plug mechanical drawing | Molex | [Molex-2195620015-drawings.pdf](../Datasheets/Molex-2195620015-drawings.pdf) |
-| J2A/J2B / J8A/J8B family | EXTreme Guardian HD product family specification | Molex | [Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf](../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf) |
+| J1/J2/J3 (CTL) | 1-1674231-1 — 10-pin 2.5mm board-to-board dock receptacle | TE Connectivity | [TE-1-1674231-1-datasheet.pdf](../Datasheets/TE-1-1674231-1-datasheet.pdf) |
+| J4/J5 (CTL) / J11/J12 (STA) | 2195630015 / 2195620015 — EXTreme Guardian HD hybrid dock pair | Molex | [Molex-2195630015-datasheet.pdf](../Datasheets/Molex-2195630015-datasheet.pdf) |
+| J4/J5 (CTL) | 2195630015 — EXTreme Guardian HD receptacle mechanical drawing | Molex | [Molex-2195630015-drawings.pdf](../Datasheets/Molex-2195630015-drawings.pdf) |
+| J11/J12 (STA) | 2195620015 — EXTreme Guardian HD plug mechanical drawing | Molex | [Molex-2195620015-drawings.pdf](../Datasheets/Molex-2195620015-drawings.pdf) |
+| J4/J5 / J11/J12 family | EXTreme Guardian HD product family specification | Molex | [Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf](../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf) |
 | C_SC1–8 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
 | SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
-| J4–J6 (STA), J2 (ENC) | T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm | Amphenol | TBD — datasheet to be added |
-| J7 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.pdf](../Datasheets/bhr-xx-vua-data-sheet.pdf) |
+| J4–J9 (STA), J2 (ENC) | T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm | Amphenol | TBD — datasheet to be added |
+| J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.pdf](../Datasheets/bhr-xx-vua-data-sheet.pdf) |
 | J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
 | J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
 | J_JDB_PWR (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |

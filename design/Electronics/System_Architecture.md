@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 ---
 
@@ -33,8 +33,9 @@ The Enigma-NG system comprises the following boards:
 - **Reflector** — Mandatory end-of-chain turnaround board after the final rotor; provides the physical
   `ENC` return path and routes `TTD_RETURN` back to the Stator while the selected reflection map is
   applied by the Stator CPLD.
-- **Encoder Boards (×3)** — 1 HID board (keyboard + lightboard), 2 Plugboard encoder boards. Connect to
-  Stator J4–J6.
+- **Encoder Modules (×6)** — 1 `KBD_ENC`, 1 `LBD_DEC`, and 4 plugboard modules
+  (`PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`). Connect to the Stator in
+  three banks of two identical 26-pin IDC ports.
 - **JTAG Daughterboard** — USB Blaster II implementation for programming CPLDs.
 
 ### Physical Chain
@@ -44,7 +45,7 @@ The Enigma-NG system comprises the following boards:
                      |
                 Controller Board
                  /             \
-        J1A/J1B/J1C         J2A/J2B
+        J1/J2/J3         J4/J5
                |                |
           Power Module       Stator
                                 |
@@ -60,10 +61,10 @@ The Enigma-NG system comprises the following boards:
                                 |
                             Reflector
                                 |
-                    TTD_RETURN -> Stator J7
+                    TTD_RETURN -> Stator J10
 ```
 
-The Power Module and Stator are now both removable daughtercards. The Controller is the fixed
+The Power Module and Stator are both removable daughtercards. The Controller is the fixed
 mechanical reference that mates to both boards and owns all enclosure-edge I/O.
 
 ---
@@ -72,40 +73,38 @@ mechanical reference that mates to both boards and owns all enclosure-edge I/O.
 
 ### 2.1 Controller ↔ Power Module
 
-The legacy 80-pin Link-Alpha Samtec interface is retired. The active Controller ↔ Power Module dock
-uses three 10-position TE 2.5 mm board-to-board connectors:
+The Controller ↔ Power Module dock uses three 10-position TE 2.5 mm board-to-board connectors:
 
 | Link | Function | Controller side | Power Module side |
 | :--- | :--- | :--- | :--- |
-| J1A | Main regulated rails (`5V_MAIN`, `3V3_ENIG`, `GND`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
-| J1B | Regulated PoE-derived auxiliary input (`VIN_POE_12V` + `GND`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
-| J1C | Low-speed control / telemetry (`I2C-1`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
+| J1 | Main regulated rails (`5V_MAIN`, `3V3_ENIG`, `GND`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
+| J2 | Regulated PoE-derived auxiliary input (`VIN_POE_12V` + `GND`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
+| J3 | Low-speed control / telemetry (`I2C-1`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
 
 Functional allocation:
 
-- **J1A:** `3 × 5V_MAIN`, `2 × 3V3_ENIG`, `5 × GND`
-- **J1B:** `3 × VIN_POE_12V`, `7 × GND`
-- **J1C:** `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `4 × GND`
+- **J1:** `3 × 5V_MAIN`, `2 × 3V3_ENIG`, `5 × GND`
+- **J2:** `3 × VIN_POE_12V`, `7 × GND`
+- **J3:** `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `4 × GND`
 
 **Reference PDFs:** [`TE-1-1674231-1-datasheet.pdf`](../Datasheets/TE-1-1674231-1-datasheet.pdf),
 [`TE-1123684-7-datasheet.pdf`](../Datasheets/TE-1123684-7-datasheet.pdf)
 
 ### 2.2 Controller ↔ Stator
 
-The legacy 40-pin Link-Beta Samtec interface is retired. The active Controller ↔ Stator dock uses two
-Molex EXTreme Guardian HD hybrid connectors:
+The Controller ↔ Stator dock uses two Molex EXTreme Guardian HD hybrid connectors:
 
 | Link | Function | Controller side | Stator side |
 | :--- | :--- | :--- | :--- |
-| J2A | 5V-biased power dock | Molex `2195630015` receptacle | Molex `2195620015` plug |
-| J2B | 3V3/JTAG/I2C dock | Molex `2195630015` receptacle | Molex `2195620015` plug |
+| J4 | 5V-biased power dock | Molex `2195630015` receptacle | Molex `2195620015` plug |
+| J5 | 3V3/JTAG/I2C dock | Molex `2195630015` receptacle | Molex `2195620015` plug |
 
 Functional allocation:
 
-- **J2A power blades:** `4 × 5V_MAIN`, `1 × GND`
-- **J2A signal field:** additional `GND` returns / guards
-- **J2B power blades:** `4 × 3V3_ENIG`, `1 × GND`
-- **J2B signal field:** guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, `I2C1_SCL`, with all
+- **J4 power blades:** `4 × 5V_MAIN`, `1 × GND`
+- **J4 signal field:** additional `GND` returns / guards
+- **J5 power blades:** `4 × 3V3_ENIG`, `1 × GND`
+- **J5 signal field:** guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, `I2C1_SCL`, with all
   remaining signal contacts tied to `GND`
 
 The small signal contacts are valid current-carrying return paths as well as guards; the family
@@ -124,8 +123,7 @@ All rotor-stack interconnects remain on the Samtec Edge-Rate series 0.8 mm board
 - **ERM8** — male header (originating / input side of a connection)
 - **ERF8** — female socket (receiving / output side of a connection)
 
-These connectors remain valid only for the rotor / extension / reflector chain and are no longer used
-for the Controller ↔ Power Module or Controller ↔ Stator interfaces.
+These connectors are used only for the rotor / extension / reflector chain.
 
 ---
 
@@ -153,8 +151,8 @@ main power-entry boundary before the eFuse. No second bond is permitted on the C
 
 ```text
 Power Module (TPS75733KTTRG3 LDO)
-  -> Controller Board (via J1A)
-    -> Stator (via J2B power blades)
+  -> Controller Board (via J1)
+    -> Stator (via J5 power blades)
       -> Rotor group 1
       -> Extension reinjection points
       -> final reflector return harness
@@ -175,19 +173,19 @@ rotor-stack JTAG connectors. This unified name avoids TDI/TDO direction confusio
 ### Serial Chain Path (Controller -> Reflector -> TTD_RETURN)
 
 ```text
-Controller J2B
+Controller J5
   -> Stator CPLD
   -> Stator J1 pin 6 (TTD out)
   -> Rotor 1 ... Rotor 30
   -> Reflector J1 pin 6 (TTD in)
   -> Reflector J4 pin 15 (TTD_RETURN)
-  -> Stator J7 pin 15
-  -> Controller J2B
+  -> Stator J10 pin 15
+  -> Controller J5
 ```
 
 ### TCK and TMS — Broadcast Signals
 
-**TCK** and **TMS** are broadcast signals. They leave the Controller via the Stator `J2B` logic dock
+**TCK** and **TMS** are broadcast signals. They leave the Controller via the Stator `J5` logic dock
 and then propagate through the rotor chain in parallel.
 
 ### Extension Board Signal Buffering

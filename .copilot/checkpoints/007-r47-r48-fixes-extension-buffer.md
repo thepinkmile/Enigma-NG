@@ -8,32 +8,26 @@ This session continued the Enigma-NG electronics design documentation review cyc
    - Applied all §3.5 fixes: LDO row, total, LMQ utilisation (75.4%→73.0%), eFuse (4.82A/68.9%→4.67A/66.7%), PoE cold-start (54.9W/76.2%→53.2W/73.9%), OA-02 resolution note.
    - Key outcome: correcting the arithmetic **eliminated both "accepted exceptions"** (LMQ and PoE cold-start now within the ≤75% policy — no exceptions anywhere in the system).
    - Committed `06a4097`. Launched R48.
-
 2. **R48 completed — 12 findings (all downstream propagation of 8.76A correction)**
    - Findings across Design_Log (DEC-003, DEC-004), Cert_Evidence (§3.2 ILIM row, §3.2 soft-start row, §3.3.1 Buck), PM Board_Layout (12V_POE row, 5V_MAIN ×2, battery row, heading), Controller Design_Spec (§9.3), User_Manual (§3.3).
    - Battery row corrected from 4.82A (wrong — was using 12V PoE denominator) to 3.89A (correct — (8.76+1)×5/(0.87×14.4V)).
    - All 12 fixes applied and committed `75d9d2e`. Launched R49.
-
 3. **R49 hit rate limit — re-launched as R49-retry**
    - First attempt rate-limited before completing.
    - Re-launched; still running when user returned.
-
 4. **User returned and identified a critical error: Extension buffer was wrongly removed in R43**
    - R43 had flagged the Extension U1 (SN74LVC2G125DCUR) as stale because the Consolidated_BOM had EXT=— (dash). The reviewer used the BOM as authority and deleted the buffer from the Design_Spec. This was wrong — the BOM was stale, not the Design_Spec.
    - User explained the design rationale: 30-rotor chain needs TCK/TMS re-buffering every 5 rotors; buffer was originally planned per-rotor but moved to Extension board to reduce rotor BOM complexity.
    - User also clarified: TCK/TMS/TDI travel via **BtB connectors** (ERM8/ERF8), NOT ribbon cables. Only power and TTD_RETURN (JTAG TDO) use ribbon cables.
-
 5. **Extension buffer restoration**
    - Used `git checkout 1155015^ -- Extension/Design_Spec.md Extension/Board_Layout.md` to restore pre-R43 state.
    - Fixed Consolidated_BOM: SN74LVC2G125DCUR EXT=1, Total=2; 0.1µF X7R 0402 EXT=1, Total=508.
    - Added U1 re-buffer note to JTAG_Integrity §8 trace table (was missing, unlike JDB row which names U5).
    - Committed `962d765` (Extension restore) and `379949c` (JTAG_Integrity note).
    - Stored memory facts to prevent future agents from repeating this error.
-
 6. **R49-retry is still running with stale known-correct list**
    - The running agent's known-correct list says "Extension: no U1 buffer" — this is now wrong.
    - Results must be discarded; a new review pass needed with corrected known-correct list.
-
 7. **Current §2 state check**
    - Viewed Extension Design_Spec §2 after restoration — confirmed JTAG Signal Buffering section is present (lines 78–88) with full buffer description, signal integrity analysis (30pF load, τ=2.85ns at 10MHz).
    - Lines 95–99 also have a redundant "passive pass-through" JTAG note that conflicts with the buffering section — this is a pre-existing inconsistency in the pre-R43 file that should be corrected.
@@ -126,27 +120,20 @@ The running R49-retry has a known-correct list stating "Extension: no U1 buffer"
 - `design/Standards/Certification_Evidence.md`
   - Central certification document; extensively modified this session across §3.2, §3.3.1, §3.5, OA-02.
   - All load budget figures now consistent: LDO=2.11A, total peak=8.76A/73.0%, zero exceptions.
-
 - `design/Electronics/Extension/Design_Spec.md`
   - Wrongly modified by R43 (U1 buffer removed); restored to pre-R43 state via `git checkout 1155015^`.
   - **Known issue:** Lines 95–99 have a conflicting "passive pass-through" JTAG note that contradicts the correct buffering description at lines 78–88 — needs fixing in the next review pass.
-
 - `design/Electronics/Extension/Board_Layout.md`
   - Restored to pre-R43 state; U1 JTAG BUFFER present in ASCII art and trace table.
-
 - `design/Electronics/Consolidated_BOM.md`
   - SN74LVC2G125DCUR: EXT=1, Total=2 (line 29).
   - 0.1µF X7R 0402: EXT=1, Total=508 (line 53).
-
 - `design/Electronics/Investigations/JTAG_Integrity.md`
   - §8 trace table Extension row (line 445): added "U1 (SN74LVC2G125DCUR) re-buffers TCK/TMS at rotor group boundary".
-
 - `design/Design_Log.md`
   - DEC-003 (line 115), DEC-004 (lines 129, 140): all figures updated to 8.76A base.
-
 - `design/Electronics/Power_Module/Board_Layout.md`
   - §9 trace table: 12V_POE=4.43A/53.2W, 5V_MAIN=8.76A (×2), battery=3.89A, heading updated.
-
 - `.copilot/agent-prompts/r49-review-prompt.txt`
   - STALE — contains wrong known-correct items (Extension no buffer, BOM EXT=—).
   - Must be replaced with a corrected prompt before launching the next review pass.

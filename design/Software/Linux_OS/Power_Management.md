@@ -4,11 +4,11 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 ## Overview
 
-The CM5 (Raspberry Pi Compute Module 5) graceful shutdown is now **hardware-initiated** via the CM5
+The CM5 (Raspberry Pi Compute Module 5) graceful shutdown is **hardware-initiated** via the CM5
 PMIC power-button input (`PWR_BUT`). No firmware polling is required for the primary shutdown path.
 
 **Primary shutdown path (hardware-automatic):**
@@ -22,25 +22,25 @@ PMIC power-button input (`PWR_BUT`). No firmware polling is required for the pri
 
 **Secondary telemetry signals (software-visible, not shutdown triggers):**
 
-- **PWR_GD (GPIO 27):** Active-HIGH rail-health signal from MCP121T-450E (4.50V threshold). Stays HIGH
+- **PWR_GD (GPIO 7):** Active-HIGH rail-health signal from MCP121T-450E (4.50V threshold). Stays HIGH
   throughout the hold-up window (LTC3350 keeps 5V_MAIN above 4.50V). Deasserts only if supercaps are
   depleted — by which time OS should already be halted.
 - **PM-local status expander (`PCA9534A @ 0x3F`):** Provides `POE_STAT`, `USB_STAT`, `BATT_PRES_N`,
   `SYS_FAULT`, and the runtime SW1 RGB handoff outputs.
-- **LTC3350 I²C BACKUP bit** (0x09, STATUS reg bit 3): Readable via I²C for supercap state-of-charge
-  monitoring, LED state control, and post-mortem logging (see DEC-025).
+- **LTC3350 I²C telemetry** (0x09): Readable via I²C for backup-state detection, supercap charge / health
+  monitoring, LED fault-state control, and post-mortem logging (see DEC-025).
 
 > **Implementation note:** The custom LTC3350 interrupt driver (DEC-025) remains useful for telemetry
-> and LED state control but is **no longer required** for shutdown safety. The hardware `PWR_BUT`
+> and LED state control but is **not required** for shutdown safety. The hardware `PWR_BUT`
 > one-shot circuit provides a guaranteed shutdown trigger independent of OS state.
-
+>
 ## Hardware Signals
 
 | Signal | Connection | Pull-up | Source | Role |
 | --- | --- | --- | --- | --- |
-| PWR_BUT | CM5 PMIC pin (via PM dock `J1C`) | CM5 module internal 10kΩ | MIC1555 U15 one-shot / SW2 tactile | **Primary shutdown trigger** — 3 s LOW pulse from U15 on backup-mode entry; or manual press of SW2 |
-| PWR_GD | GPIO 27 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | **Rail-health telemetry only** — HIGH while 5V_MAIN ≥ 4.50V; stays HIGH throughout hold-up; deasserts only on supercap depletion |
-| PM_IO_INT_N | GPIO 21 (BCM) | Open-drain on PM; controller-side pull-up as required | PCA9534A U16 | Optional interrupt line for PM status / SW1 LED expander updates |
+| PWR_BUT | CM5 PMIC pin (via PM dock `J3`) | CM5 module internal 10kΩ | MIC1555 U15 one-shot / SW2 tactile | **Primary shutdown trigger** — 3 s LOW pulse from U15 on backup-mode entry; or manual press of SW2 |
+| PWR_GD | GPIO 7 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | **Rail-health telemetry only** — HIGH while 5V_MAIN ≥ 4.50V; stays HIGH throughout hold-up; deasserts only on supercap depletion |
+| PM_IO_INT_N | GPIO 5 (BCM) | Open-drain on PM; controller-side pull-up as required | PCA9534A U16 | Optional interrupt line for PM status / SW1 LED expander updates |
 | LTC3350 /INTB | GPIO (TBD — assign at schematic capture) | R29 10kΩ to 3V3_ENIG (Power Module) | LTC3350 U3 | **Backup-mode indicator** — active-LOW when LTC3350 in backup mode (5V_MAIN < 4.812V, R14=30.1kΩ; see DR-PM-08, DEC-030); also triggers MIC1555 U15 one-shot directly in hardware |
 
 ## Option C: Recommended Implementation
@@ -61,10 +61,10 @@ This is sufficient for production use. No polling, no daemon, no I²C read requi
 path itself.
 
 ### Phase 2 — LTC3350 I²C Telemetry Driver (Deferred — DEC-025)
-
+>
 > **Deferred to Software PoC Stage.** The custom Linux driver is useful for telemetry, LED state
-> control (supercap SOC → 2 Hz orange flash), and post-mortem logging, but is **not required** for
-> shutdown safety. Development is deferred until hardware is available. See **DEC-025**.
+> control, and post-mortem logging, but is **not required** for shutdown safety. Development is
+> deferred until hardware is available. See **DEC-025**.
 
 **Intended behaviour (reference only):**
 
@@ -72,9 +72,13 @@ The driver will:
 
 1. Register an interrupt handler on the LTC3350 `/INTB` pin.
 2. On interrupt, read LTC3350 STATUS register (I2C 0x09, register 0x01) to confirm BACKUP bit (bit 3).
-3. Set SW1 LED to 2 Hz orange flash (backup-mode visual indicator).
-4. Log the event to the kernel ring buffer for post-mortem analysis.
-5. Optionally read VCAP register for remaining supercap SOC estimate.
+3. Read LTC3350 charge / monitor status to determine whether the supercap bank is healthy and charged
+   enough to provide the guaranteed hold-up window.
+4. Set SW1 LED to **solid red** whenever the LTC3350 reports a PM fault or the supercap bank is not
+   hold-up ready, even if a normal input source is still present.
+5. Set SW1 LED to **2 Hz orange flash** during valid backup-mode operation when the bank remains healthy.
+6. Log the event to the kernel ring buffer for post-mortem analysis.
+7. Optionally read VCAP / charge telemetry for remaining supercap SOC estimation.
 
 **I2C parameters (for driver development reference):**
 
@@ -86,12 +90,12 @@ The driver will:
 | /INTB pin | Active-low open-drain; R29 10kΩ pull-up on Power Module |
 
 ### Phase 3 — PWR_GD GPIO Backstop (Not Applicable)
-
-> **Not applicable:** PWR_GD (GPIO 27) is rail-health telemetry only (HIGH while
+>
+> **Not applicable:** PWR_GD (GPIO 7) is rail-health telemetry only (HIGH while
 > 5V\_MAIN ≥ 4.50 V). It must NOT be configured as a shutdown trigger.
 > The active hardware shutdown backstop is the LTC3350 /INTB → MIC1555 U15 → Q5 BSS138
 > → PWR\_BUT one-shot circuit (3.01 s LOW pulse), which requires no software driver.
-
+>
 ## Shutdown Timing Budget
 
 | Event | Time from power loss | Action |
@@ -120,16 +124,13 @@ hardware handoff sequence and colour states are defined below.
 
 1. **Power on (CM5 not yet booted):** `PCA9534A` powers up with all pins as inputs, so the PM hardware
    path dominates. MIC1555 (U11) drives Q4 → BAT54 diodes → **Red + Green only** → 1Hz orange flash on SW1.
-
 2. **CM5 kernel boots, systemd target reached:** Power monitor service starts.
    Before asserting `SW_LED_CTRL`, program the PM expander outputs so `SW_LED_R=1`, `SW_LED_G=1`,
    `SW_LED_B=0` (solid orange).
-
 3. **CM5 writes `SW_LED_CTRL=1` via `PCA9534A`:** Hardware Q4 gate disabled → MIC1555 path cut.
-   Firmware now has exclusive control of the runtime RGB sink stages.
-
-4. **Power source detection:** Read `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, and `SYS_FAULT` from the
-   PM expander and set LED colour per table below.
+   Firmware has exclusive control of the runtime RGB sink stages.
+4. **Power source detection / PM health:** Read `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, and `SYS_FAULT`
+   from the PM expander, plus LTC3350 backup / charge telemetry, and set LED colour per table below.
 
 ### LED Colour Table
 
@@ -139,9 +140,8 @@ hardware handoff sequence and colour states are defined below.
 | CM5 ready, USB-C active | Off | On | Off | 🟢 Solid green | PM expander + RGB sink stages |
 | CM5 ready, PoE active | Off | Off | On | 🔵 Solid blue | PM expander + RGB sink stages |
 | CM5 ready, Battery active | On | On | Off | 🟠 Solid orange | PM expander + RGB sink stages |
-| Supercap hold-up (mains fail) | PWM 2Hz | PWM 2Hz | Off | 🟠 Fast orange flash | PM expander + RGB sink stages |
-| Fault / eFuse latched | On | Off | Off | 🔴 Solid red | PM expander + RGB sink stages |
-| Graceful shutdown in progress | PWM 1Hz | Off | Off | 🔴 Slow red flash | PM expander + RGB sink stages |
+| Supercap hold-up (mains fail, bank healthy) | PWM 2Hz | PWM 2Hz | Off | 🟠 Fast orange flash | PM expander + RGB sink stages |
+| PM fault / hold-up unavailable | On | Off | Off | 🔴 Solid red | PM expander + RGB sink stages |
 
 ### PM Expander Initialisation (Python)
 
@@ -212,7 +212,7 @@ The Stator board carries an INA219 (U2, I2C address **0x45**) monitoring the 3V3
 | Calibration register | **0x0400** (1024 decimal) | CAL = 0.04096 / (Current_LSB × R_SHUNT) = 0.04096 / (0.004 × 0.010) |
 
 ### Firmware Note
-
+>
 > ⚠️ The INA219 calibration register must be written on every power-up before any current readings are taken.
 > Write smbus2 value **0x0004** (byte-swapped from logical 0x0400 = 1024; smbus2 transmits LSB first so INA219 receives
 > 0x0400 = 1024 as intended). If this is skipped, the `Current_Register` will read zero regardless of actual current.
@@ -286,13 +286,13 @@ def read_5v_main_current_mA():
 ```
 
 > **Cross-ref:** See `Stator/Design_Spec.md §5. Power Telemetry` for the Rotor-stack INA219 (0x45) hardware spec.
-
+>
 ## RTC Battery Configuration
 
 The CM5 MXL7704 PMIC includes a battery charging circuit for the RTC backup battery. When a
 **non-rechargeable CR2032** is fitted (as specified in `Controller/Design_Spec.md §5`), the
 charging circuit must be disabled in software as a belt-and-suspenders measure alongside the
-hardware Schottky diode (D1) that physically blocks the charge path at CM5 VBAT (Pin 95).
+hardware Schottky diode (D1) that physically blocks the charge path at CM5 VBAT (Pin 76).
 
 ### config.txt Setting
 
@@ -313,7 +313,7 @@ Ensure the `rtc_bbat_vchg` parameter is absent from `/boot/firmware/config.txt` 
 > PMIC from charging the CR2032 regardless of this software setting. The config.txt setting is
 > a secondary safeguard. If the battery is ever changed to a rechargeable ML2032, remove D1
 > from the PCB AND set `dtparam=rtc_bbat_vchg=3000000` to enable correct charging.
-
+>
 ### RTC Time Synchronisation
 
 The CM5 will use `systemd-timesyncd` (NTP) to synchronise the RTC on boot when network
@@ -334,14 +334,7 @@ sudo hwclock --show
 
 ## Open Items
 
-- [x] PWR_GD assigned to CM5 GPIO 27 (BCM) — see Controller/Design_Spec.md §6
-- [ ] Verify LTC3350 I²C address (0x09 is default; may change based on ADDR pin strapping — check schematic)
 - [ ] Test hold-up timing under actual CM5 load profile (5W assumed; measure at first prototype)
-- [ ] Consider adding LTC3350 charge status polling (SOC readout) for optional status LED control from software
-- [x] Power Module SW1 selected: Adafruit 4660 rugged metal RGB latching switch with 16mm panel cutout and 2.8mm pin terminals
-- [ ] Verify BSS138 (Q_HW) gate threshold vs MIC1555 output voltage — MIC1555 output ~3V into NMOS gate; BSS138 Vgs(th) = 0.8–1.5V → fully on. Confirm at schematic capture.
-- [x] PM-local `PCA9534APWR @ 0x3F` selected for SW1 RGB runtime control and PM status inputs
-- [ ] Verify CM5 VBAT (Pin 95) is correctly identified in the CM5 Hirose DF40 200-pin connector datasheet before PCB layout.
 
 ## PCA9685 Servo PWM Driver
 
@@ -400,7 +393,6 @@ any cipher commands:
    - Poll SERVO_HOME (U_EXP2 GPB[1]) — wait for LOW within 3-second timeout.
    - If timeout expires, log error and halt init (servo not homed — mechanical fault).
    - On SERVO_HOME LOW confirmed: servo is at 0° reference position.
-
 3. **MCP23017 port direction init:**
    - U_EXP1 (0x20): GPA = 0xFF (all inputs), GPB = 0xFF (all inputs).
    - U_EXP2 (0x21): GPA = 0x00 (all outputs), GPB[0] = output, GPB[1] = input, GPB[2:7] = output.

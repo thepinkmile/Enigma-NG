@@ -1,10 +1,7 @@
 # Enigma-NG Handoff
-
 This file is the generic repo-local handoff note for session-to-session context that is useful to
 keep near the design docs but is **not** itself a source of design truth.
-
 ## Canonical design sources
-
 Use the active `design/` documents as the authoritative record:
 
 - `design/Design_Log.md`
@@ -12,9 +9,7 @@ Use the active `design/` documents as the authoritative record:
 - board-level `design/Electronics/*/Design_Spec.md`
 - relevant mechanical and software `Design_Spec.md` files
 - `design/Datasheets/` for preserved vendor and project-side reference material
-
 ## 2026-04-19 audit result
-
 The old component re-verification and session working notes were audited and removed because their
 design-bearing content is already captured in the live docs above.
 
@@ -31,9 +26,7 @@ including:
 - 5V_MAIN-fed Settings Board RGB architecture, resistor values, and current budget
 - 40-position HID keyboard layout and shift-key behavior
 - finalized verified component selections and supplier references in the live BOM/specs
-
 ## Remaining follow-up work
-
 These are still open design review items, but they are not yet committed design decisions:
 
 1. Review how Extensions should be used mechanically, including whether interconnect choices for the

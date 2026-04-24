@@ -1,19 +1,22 @@
-# HID Assembly — Mechanical Design Specification
+# Keyboard Assembly — Mechanical Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
-**Version:** v0.1.0 (migrated from Keyboard/Design_Spec.md)
+**Version:** v0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-04-20
 
 ---
 
 ## 1. Overview
 
-A mechanical keyboard and lightboard assembly using a QWERTY-derived 40-position HID layout to
-access the system's 64-character code space. Each keyboard switch is wired to one spade terminal on
-the Encoder Board. The Encoder PCB is co-located with the keyboard panel within this assembly.
+A standalone operator keyboard assembly using the QWERTY-derived 40-position HID layout to access
+the machine's 64-character code space. This assembly contains the keyboard panel, the key-switch
+harness, and one Encoder Module populated/programmed in the **`KBD_ENC`** role.
+
+The keyboard assembly is electrically independent of the lightboard assembly. It connects to the
+Stator through its own 26-pin IDC ribbon on the dedicated `KBD_ENC` port.
 
 ---
 
@@ -21,15 +24,13 @@ the Encoder Board. The Encoder PCB is co-located with the keyboard panel within 
 
 * **Keyboard Switches (×40):** DPDT 6-pin momentary push-button switches, one per physical HID key
   position.
-  * Mounted in the keyboard panel (mechanical chassis); connect to the Encoder PCB via a
-    field-installable spade-terminal harness.
-  * **Pole 1 — COM1 + NO1** provides the active-low key path: COM1 → assigned Encoder input
-    **BT65–BT128**, NO1 → local **GND** return. Pressing the key pulls the Encoder input LOW.
+  * Mounted in the keyboard panel (mechanical chassis); connect to the `KBD_ENC` Encoder Module via
+    a field-installable spade-terminal harness.
+  * **Pole 1 — COM1 + NO1** provides the active-low key path: COM1 -> assigned Encoder input
+    terminal, NO1 -> local **GND** return. Pressing the key pulls the Encoder input LOW.
   * **Pole 2 pins (3×)** are unused electrically and may be retained only for mechanical anchoring;
     **no connection to the Encoder electrical netlist**.
-  * **NC1** → not connected.
-  * Keys connect only to the keyboard side of the Encoder board; there is no direct switch
-    connection to the Lightboard.
+  * **NC1** -> not connected.
   * Part: uxcell-style DPDT 2-pole 6-pin push button switch — purchased from seller
     `gadgetskingdom` (eBay item `365271584375`, 2 per pack). See
     `design/Datasheets/Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md`.
@@ -38,7 +39,7 @@ the Encoder Board. The Encoder PCB is co-located with the keyboard panel within 
 
 ## 3. Key Panel Layout
 
-The HID assembly uses a **40-position physical layout** that preserves a conventional
+The keyboard assembly uses a **40-position physical layout** that preserves a conventional
 QWERTY-inspired operator experience while still exposing the machine's full 64-character logical
 alphabet.
 
@@ -48,11 +49,9 @@ alphabet.
   uppercase alphabetic plane.
 * **Uppercase behaviour:** there are **no separate uppercase-only key positions**. Holding either
   Shift key while pressing an alphabetic key yields the corresponding uppercase code (`A-Z`).
-* **Lightboard mirroring:** the visible character layout on the lightboard mirrors the same
-  QWERTY-derived printable positions instead of adding dedicated uppercase-only legends.
 
-> For signal polarity, RC debounce circuit, Schmitt trigger configuration, Shift key state-machine
-> logic, and LED drive specification, see `design/Electronics/Encoder/Design_Spec.md §6 Key Mapping`.
+> For signal polarity, RC debounce circuit, Schmitt trigger configuration, and Shift key state
+> machine logic, see `design/Electronics/Encoder/Design_Spec.md §6 Key Mapping`.
 
 ---
 
@@ -70,5 +69,6 @@ of the Rotor Actuation Assembly.
 
 | Document | Description |
 | :--- | :--- |
-| `design/Electronics/Encoder/Design_Spec.md` | Encoder PCB spade terminal pinout, CPLD I/O allocation, key mapping electrical spec |
+| `design/Electronics/Encoder/Design_Spec.md` | Generic Encoder Module pinout, CPLD role definition, key mapping |
+| `design/Mechanical/Lightboard_Assembly/Design_Spec.md` | Separate but layout-matched lightboard assembly |
 | `design/Mechanical/Rotor_Actuation_Assembly/Design_Spec.md` | Depression bar, pivot lever, and rotor stepping mechanism |

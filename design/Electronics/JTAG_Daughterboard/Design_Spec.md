@@ -70,7 +70,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 
 > **No external connectors:** The JDB has no external connectors. USB is entirely internal via J1.
 > No USB-C connector exists on the JDB. CC pins are irrelevant (USB 2.0 only).
-
+>
 ### J2 JTAG Pinout (10-Pin, Interleaved GND)
 
 | Pin | Signal | Description |
@@ -163,11 +163,11 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 
 > **Signal Integrity note (JDB as complete JTAG master):** The JDB hosts all JTAG buffering and
 > termination for the system. U5 buffers TCK and TMS for the 37-device chain load. Series damping
-> (R6–R8) at 33 Ω matches the BtB trace impedance (50 Ω) per DEC-016. The Controller `J2B` ↔ Stator
-> `J8B` logic dock is a direct board-to-board connection (no cable) — 33 Ω applies throughout (not
+> (R6–R8) at 33 Ω matches the BtB trace impedance (50 Ω) per DEC-016. The Controller `J5` ↔ Stator
+> `J12` logic dock is a direct board-to-board connection (no cable) — 33 Ω applies throughout (not
 > the 75 Ω cable-driving rule).
 > The Controller board routes JTAG lines as pass-through without active components. See DEC-024.
-
+>
 ## 7. Thermal & ESD
 
 * **Thermal:** Low-power debug board; no thermal management required.

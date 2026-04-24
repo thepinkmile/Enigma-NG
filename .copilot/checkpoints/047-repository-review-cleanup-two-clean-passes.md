@@ -1,10 +1,7 @@
 # Checkpoint 047 — Repository review cleanup, two clean passes
-
 ## Date
 2026-04-16
-
 ## Overview
-
 This checkpoint records the repository-scoped active-document cleanup that followed the earlier
 Settings Board / Power Module work. The objective was to bring `README.md` and `design/**/*.md`
 back into internal agreement, then hold the checkpoint until the repo passed two consecutive clean
@@ -12,11 +9,8 @@ review cycles.
 
 That gate is now satisfied: markdown lint is clean, the repository review findings were worked down
 to zero, and two consecutive clean repository-scoped review passes were completed.
-
 ## Work Done
-
 ### Active-doc consistency cleanup completed
-
 - Corrected stale top-level architecture and board-inventory summaries so active docs now include
   the Settings Board and reflect the current board set
 - Normalized power-path wording across README, Power Module, User Manual, and Certification
@@ -36,22 +30,15 @@ to zero, and two consecutive clean repository-scoped review passes were complete
   FDC2114
 - Fixed stale mechanical / user-facing summaries that still referenced retired switch layouts,
   impossible source-priority claims, or outdated board responsibilities
-
 ### Review cycle completion
-
 - Repeatedly ran repo-scoped markdown lint over `design/**/*.md` and `README.md`
 - Repeatedly ran repository-scoped active-doc review passes until all high-signal findings were
   resolved
 - Achieved **two consecutive clean passes** after the final fix set
-
 ## Commits
-
 None. This checkpoint syncs repo-local `.copilot\` handoff state only.
-
 ## Key Technical Notes
-
 ### Current power-path truth in active docs
-
 The active design now documents the following consistently:
 
 1. **PoE is explicitly prioritised over USB-C** by the implemented gating on the USB-C path.
@@ -59,23 +46,17 @@ The active design now documents the following consistently:
    active source voltages unless extra gating is added.
 3. **Reflector power enters via the direct Stator J7 ↔ Reflector J4 ribbon**, not via the
    Reflector J2 power pins, which are present only for the Rotor 30 mechanical mate.
-
 ### Remaining open items requiring future work or user input
-
 - Continue manual component verification from `.copilot/components-todo.md`
 - Finalise Settings Board red/green LED resistor values after brightness tuning
 - Select and confirm the Settings Board `CFG_APPLY` pushbutton
 - Confirm the JLCPCB part number for `J_CFG` / `J_I2C` (JST B4B-PH-K-S)
-
 ## Next Steps
-
 1. Resume component re-verification from `.copilot/components-todo.md`
 2. Propagate only explicitly verified parts into active BOM/design docs
 3. Continue Settings Board part-lock work (LED resistor tuning, `CFG_APPLY`, `J_CFG` JLCPCB PN)
 4. Start KiCad setup only after remaining TBD parts are locked
-
 ## Files Updated
-
 - `README.md`
 - `design/Electronics/Boards_Overview.md`
 - `design/Electronics/Consolidated_BOM.md`

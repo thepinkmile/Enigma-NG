@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-20
 
 > **Document Status:** Draft — Power Module design rationale complete; additional sections to be added as design review progresses.
 >
@@ -94,7 +94,7 @@ for CE/UKCA EMC compliance.
 
 ```text
 [Controller PoE front-end: TPS2372-4 + TPS23730 + T2 ACF Transformer (Coilcraft POE600F-12L, 60W, 12V; `D` suffix = packaging only)]
-  → PM dock `J1B` as regulated `VIN_POE_12V`
+  → PM dock `J2` as regulated `VIN_POE_12V`
 [USB-C 15V PD (STUSB4500) / Battery 11–16.4V / VIN_POE_12V from Controller]
   → LM74700-Q1 OR-ing controller + CSD17483F4T ideal-diode FETs (×3)
   → [L1 CMC → L2 CMC] (common-mode attenuation, 1 kHz–30 MHz)
@@ -145,7 +145,7 @@ The eFuse (**TPS259804ONRGER**, 16.9V silicon-fixed OVLO, VQFN 4×4mm) is progra
 > **Part Selection — RON Advantage:** The TPS25980's RON of 3mΩ (typ.) was a decisive factor. At 7A, the power dissipation in the eFuse is only 0.15W (I²R = 49 × 0.003) vs 0.60W for the alternative
 > TPS25948 (12.2mΩ). The 4× reduction in eFuse heat and the 4× reduction in voltage drop (21mV vs 85mV) directly reduces thermal noise injection into the 5V bus, supporting EN 55032 Class B conducted
 > emissions compliance.
-
+>
 ### 3.3 5V Buck Converters — Dual-Phase Interleaving Design Rationale
 
 #### 3.3.1 Part Selection
@@ -279,7 +279,7 @@ consistent with military component derating standards.
 > (LTC3350 supercap charge) = 9.26A. Buck input at 87% efficiency = 9.26A × 5V / 0.87 = 53.2W drawn from PoE source (independent of bus voltage). PoE utilisation during charge phase = 53.2W / 72W =
 > **73.9%** ✓ (within 75% design rule).
 > Steady-state utilisation (fully charged): 8.76A × 5V / 0.87 = 50.3W / 72W = **69.9%** ✓. OA-02 resolved — see Open Actions.
-
+>
 ### 3.6 Thermal Management Design Intent
 
 The Power Module is housed in a 42mm aluminium "Power Can" enclosure with internal compression ribs. The thermal design provides a continuous heat path from component junctions to the enclosure:
@@ -287,7 +287,6 @@ The Power Module is housed in a 42mm aluminium "Power Can" enclosure with intern
 - **Switching regulator thermal pads** → type VII epoxy-filled VIPPO via matrix (hexagonal pattern) → L4 copper plane → exposed ENIG thermal pad on PCB bottom → Gelid GP-Ultimate thermal interface
 
   material (15 W/mK) → aluminium enclosure wall
-
 - **LDO thermal pad** → same via matrix → shared thermal zone with supercapacitor area
 - **Enclosure** → ambient via natural convection; no forced cooling required for rated load
 
@@ -406,7 +405,6 @@ on the Controller using:
   36–72V input, 200kHz, ≥1500Vrms isolation, SMT, RoHS. `D` suffix is packaging-only for
   pick-and-place. This is a Coilcraft-direct consignment part ordered from Coilcraft
   (coilcraft.com). No custom winding required.
-
   - **OR-ing priority note:** PoE at 12V is lower than USB-C at 15V. The LM74700-Q1 USB-C path enable pin is driven by the TPS2372-4 `/PG` signal to enforce PoE priority when PoE is live. Battery
 
     is the third ideal-diode input; its precedence relative to USB-C follows the active source
@@ -443,12 +441,10 @@ The MAX II EPM240T100I5N is accepted for use in the prototype design for the fol
 1. **Cost effectiveness:** These devices are significantly lower in cost than their recommended successors (MAX 10, Cyclone 10 LP), making them well-suited for prototype-stage development where
 
    design changes are expected.
-
 2. **Developer tooling:** The designer holds a MAX II FPGA/CPLD development board, enabling direct verification of programming chains and JTAG connectivity prior to committing to PCB fabrication.
 3. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6–12 months) is considered acceptable,
 
    particularly given the availability of remaining stock from reputable distributors.
-
 4. **Pin and feature compatibility:** The MAX II EPM240T100I5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising
 
    development risk.
@@ -500,7 +496,7 @@ Any replacement CPLD must be verified for:
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
 | OA-05 | Thermal / current-capacity verification of the active PM and Stator dock connectors using the TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015` datasheets. Document the final derating rule for §5. | Hardware Designer | Medium |
 | ~~OA-06~~ | ~~Verify TPS25751DREFR CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W).~~ | ~~Hardware Designer~~ | **CLOSED** — CC1/CC2 pins of TPS25751DREFR routed to CM5 via Link-Alpha connector. PDO programmed to 5V/5A (25W) to prevent Linux OS power-throttling during initial boot and full-load operation. Verified in Controller Board_Layout §4 Link-Alpha pin map. |
-| ~~OA-07~~ | ~~Resolve Link-Alpha pins 21-24 reallocation (currently freed from 3V3_SYSTEM removal). Confirm new assignment and update Board_Layout.md.~~ | ~~Hardware Designer~~ | **CLOSED** — DEC-001 confirmed: pins 21-22 = 5V_MAIN, pins 23-24 = GND. Formally documented in Controller/Board_Layout.md BtB Link-Alpha table (all 80 pins assigned). |
+| ~~OA-07~~ | ~~Resolve Link-Alpha pins 21-24 reallocation (currently freed from `CM5 3V3` removal). Confirm new assignment and update Board_Layout.md.~~ | ~~Hardware Designer~~ | **CLOSED** — DEC-001 confirmed: pins 21-22 = 5V_MAIN, pins 23-24 = GND. Formally documented in Controller/Board_Layout.md BtB Link-Alpha table (all 80 pins assigned). |
 | ~~OA-08~~ | ~~Engage Würth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150–200µH, ≥1500Vrms, 51W/250kHz, −40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** — Superseded by selection of Coilcraft POE600F-12L (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, Coilcraft-direct consignment part; `D` suffix = packaging only). No custom winding required. |
 
 ### Deferred Items (Post-Prototype Stage)
@@ -520,7 +516,7 @@ The following table records alignment of the current Enigma-NG Power Module desi
 **No design changes are required at this stage.** This section is for reporting purposes and to support future MOD (UK Ministry of Defence) or equivalent certification submissions.
 
 > **Status key:** ✅ Aligned — design meets intent; ⚠️ Partial — some requirements met, gaps identified; ❌ Not addressed; 🔵 Reference only — voltage/platform class mismatch, philosophy only
-
+>
 ### 9.1 EMC Standards
 
 | Standard | Relevance | Status | Aligned Features | Key Gaps / Future Actions |

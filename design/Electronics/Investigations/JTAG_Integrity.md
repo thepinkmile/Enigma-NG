@@ -13,8 +13,9 @@
 
 The Enigma-NG JTAG chain spans multiple PCBs using two distinct interconnect types:
 
-* **Ribbon cable (IDC 2.54mm, ~100 Ω):** Stator → Encoder boards (J4, J5, J6) — separate
-  HID Encoder and Plugboard Encoder A/B sub-chains, each with its own TDI/TDO return.
+* **Ribbon cable (IDC 2.54mm, ~100 Ω):** Stator → Encoder boards (J4–J9) — six fixed-role
+  Encoder Modules in one serial chain: `KBD_ENC`, `LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS1_ENC`,
+  `PLG_PASS2_DEC`, and `PLG_PASS2_ENC`.
 * **BtB connectors (ERM8/ERF8, Samtec 0.8mm pitch):** Stator rotor interface (J1–J3) → Rotor 1
   → … → Rotor 30 → Reflector. All rotor-to-rotor, rotor-to-Extension, and rotor-to-Reflector
   connections are BtB. **No ribbon cables are used within the rotor stack for JTAG signals.**
@@ -33,27 +34,27 @@ FT232H (JDB)
     ▼
 J2 JTAG header → Controller hat-header (pass-through: no active components)
     ▼
-Controller J2B ↔ Stator J8B logic dock (BtB, no cable)
+Controller J5 ↔ Stator J12 logic dock (BtB, no cable)
     │
     ▼
 Stator CPLD (U1)
     │
-    ├─ 75Ω ─▶ J4 ribbon cable (~100Ω IDC) ─▶ HID Encoder CPLD1
-    │                                             33Ω (inter-CPLD)
-    │                                         HID Encoder CPLD2
-    │              75Ω ◀─ J4 TDO return ◀───────────────────────
-    │
-    ├─ 75Ω ─▶ J5 ribbon cable (~100Ω IDC) ─▶ Plugboard Encoder A CPLD1
-    │                                             33Ω
-    │                                         Plugboard Encoder A CPLD2
-    │              75Ω ◀─ J5 TDO return ◀───────────────────────
-    │
-    ├─ 75Ω ─▶ J6 ribbon cable (~100Ω IDC) ─▶ Plugboard Encoder B CPLD1
-    │                                             33Ω
-    │                                         Plugboard Encoder B CPLD2
-    │              75Ω ◀─ J6 TDO return ◀───────────────────────
-    │
-    └─▶ Rotor Stack — ALL via BtB (ERM8/ERF8 0.8mm pitch, no ribbon cable)
+    │  TCK/TMS broadcast via R7–R12 / R33–R38 to J4–J9
+    │  TDI serial chain via R27–R32 and one CPLD per Encoder Module:
+    ▼
+    J4 KBD_ENC (1 CPLD, local R6 = 75Ω on TDO cable output)
+    ▼
+    J5 LBD_DEC (1 CPLD, local R6 = 75Ω on TDO cable output)
+    ▼
+    J6 PLG_PASS1_DEC (1 CPLD, local R6 = 75Ω on TDO cable output)
+    ▼
+    J7 PLG_PASS1_ENC (1 CPLD, local R6 = 75Ω on TDO cable output)
+    ▼
+    J8 PLG_PASS2_DEC (1 CPLD, local R6 = 75Ω on TDO cable output)
+    ▼
+    J9 PLG_PASS2_ENC (1 CPLD, local R6 = 75Ω on TDO cable output)
+    ▼
+    Rotor Stack — ALL via BtB (ERM8/ERF8 0.8mm pitch, no ribbon cable)
             │  Stator J1–J3 (ERM8 male) ──▶ Rotor 1–5 CPLDs (ERF8→ERM8 BtB chain)
             │                                     │
             │                               Extension board
@@ -66,15 +67,16 @@ Stator CPLD (U1)
             │                               *** JTAG CHAIN END ***
             │                               R1 22Ω — end-of-chain TDO series damping
             │
-            └─▶ TTD_RETURN ribbon: Reflector J4 pin 15 ──▶ Stator J7 pin 15
+            └─▶ TTD_RETURN ribbon: Reflector J4 pin 15 ──▶ Stator J10 pin 15
                 (J4 also carries ENC_IN[0:5] / ENC_OUT[0:5] pins 3–14 for Stator CPLD
                  plugboard-pass configuration — these are NOT part of the JTAG chain)
-                Stator J7 → Controller-facing `J2B/J8B` `TTD_RETURN` path → FT232H
+                Stator J10 → Controller-facing `J5/J12` `TTD_RETURN` path → FT232H
 ```
 
 **TCK and TMS** are broadcast to all devices. On the Stator they fan out to:
 
-* J4, J5, J6 (encoder ribbon cable ports) — each requires its own 75 Ω series resistor before
+* J4, J5, J6, J7, J8, J9 (encoder ribbon cable ports) — each requires its own 75 Ω series
+  resistor before
   the ribbon cable.
 * J1–J3 (rotor BtB interface) — TCK/TMS are re-buffered by U1 (SN74LVC2G125DCUR) on each
   Extension board at every 5-rotor group boundary. The direct BtB rotor-stack path does **not**
@@ -84,7 +86,7 @@ Stator CPLD (U1)
 75 Ω series resistor. For the **BtB rotor stack**, TDI flows unbuffered board-to-board; the chain
 ends at the passive Reflector turnaround. TDO exits as TTD_RETURN via Reflector R1 (22 Ω
 end-of-chain damping) and returns to the Stator on the dedicated ribbon cable (Reflector J4 →
-Stator J7).
+Stator J10).
 
 > ⚠️ **Do not confuse the Reflector J4 ribbon cable with the JTAG chain.** The ribbon carries
 > TTD_RETURN (JTAG TDO return, pin 15) AND ENC_IN/ENC_OUT (plugboard configuration, pins 3–14).
@@ -132,7 +134,7 @@ Transmission line effects are negligible; no series resistor required.
 > L3=Power, L4=GND) to orient SMT components toward the Controller Board when mounted as a hat.
 > On the JDB, JTAG signals are routed on L2 over the L1 GND reference plane. See
 > `JTAG_Daughterboard/Design_Spec.md §4` and DEC-017.
-
+>
 ### 3.2 JLCPCB JLC06161H-2116 — 6-Layer 1.6mm (Controller)
 
 | Parameter | Value | Source |
@@ -145,7 +147,7 @@ Transmission line effects are negligible; no series resistor required.
 | Manufacturing minimum | 0.127 mm (5 mil) | JLCPCB standard process |
 
 ### 3.3 2-Layer 1.6mm FR4 — Historical Reference (Superseded by DEC-017)
-
+>
 > **Note:** The Reflector and Extension boards originally used a 2-layer stackup. DEC-017 upgrades
 > all non-Controller boards to 4-layer JLC04161H-7628. The calculations in §4 below for 2-layer
 > boards are retained for historical reference only. These boards now use the §3.1 parameters.
@@ -197,7 +199,7 @@ w = 0.119 mm → rounded to 0.127 mm (5 mil) for design rule consistency
 > 2oz plating build-up is approximately 40–50Ω depending on plating thickness. At JTAG operating
 > frequencies of 1–10MHz, this variance is functionally tolerable; the 33Ω series resistors
 > provide additional mismatch absorption.
-
+>
 ### Solving for 100Ω (w = ?)
 
 ```text
@@ -255,7 +257,7 @@ Standard 2.54 mm pitch IDC flat ribbon cable has the following impedance charact
 | Shielded ribbon (overall foil) | ~100 Ω | Foil improves EMI; minimal Zo change |
 
 The Enigma-NG 26-pin encoder port connector already specifies **alternating GND pins between all JTAG
-signals** (J4–J6 pin table in `Stator/Board_Layout.md`). This places the cable Zo at approximately
+signals** (J4–J9 pin table in `Stator/Board_Layout.md`). This places the cable Zo at approximately
 **100 Ω**.
 
 > **Key implication:** The PCB-to-cable impedance discontinuity is from 50 Ω (PCB trace) to 100 Ω
@@ -380,10 +382,11 @@ V_at_destination = 2 × V_launched = 2 × 1.69 = 3.38 V ≈ 3.3 V  ✓  (full lo
 The open-circuit reflection at the CPLD input doubles the wave back to full logic swing. The
 destination always sees full voltage — the series resistor does not weaken the received signal.
 
-**Intra-board traces (inter-CPLD, CPLD→connector on same PCB):**
+**Short same-board / BtB traces (no ribbon cable):**
 
-For traces that do NOT drive a ribbon cable (e.g., CPLD1 TDO → CPLD2 TDI on the Encoder board),
-the system is 50 Ω PCB throughout. Use **33 Ω series R** (source Z = 53 Ω ≈ 50 Ω, matched to PCB).
+For traces that do NOT drive a ribbon cable (e.g., JDB U5 output → Controller `J5` / Stator `J12`
+logic dock), the system is 50 Ω PCB throughout. Use **33 Ω series R** (source Z = 53 Ω ≈ 50 Ω,
+matched to PCB). The Encoder Module now has **one CPLD only**, so it has no inter-CPLD JTAG segment.
 
 **Critical length check (do these traces actually need termination?):**
 
@@ -418,8 +421,8 @@ cable lengths of 200–500 mm the 75 Ω resistors are functionally necessary.
 | Placement | R value | Rationale |
 | --- | --- | --- |
 | Driving a ribbon cable (~100 Ω IDC) | **75 Ω** | Source Z = 95 Ω ≈ cable Zo |
-| Intra-board (CPLD output → same-board CPLD input) | **33 Ω** | Source Z = 53 Ω ≈ PCB Zo |
-| JDB U5 output → Controller `J2B` / Stator `J8B` logic dock (BtB, no cable) | **33 Ω** | Short BtB trace; match 50 Ω PCB; U5 out Z (15Ω) + 33Ω ≈ 48Ω |
+| Short same-board / BtB 50 Ω trace | **33 Ω** | Source Z = 53 Ω ≈ PCB Zo |
+| JDB U5 output → Controller `J5` / Stator `J12` logic dock (BtB, no cable) | **33 Ω** | Short BtB trace; match 50 Ω PCB; U5 out Z (15Ω) + 33Ω ≈ 48Ω |
 | Rotor stack TDO end-of-chain (Reflector R1) | **22 Ω** | Final TDO output — lower R sufficient; verified by Reflector DR-REF-04 |
 
 ### 7.2 Placement Rule
@@ -432,10 +435,10 @@ distance on the trace.
 
 | Signal | Ribbon cable segment | Intra-board / BtB | Notes |
 | --- | --- | --- | --- |
-| TCK | 75 Ω (at each Stator encoder port output, J4–J6) | Re-buffered by Extension U1 every 5-rotor group | Clock — most critical |
-| TMS | 75 Ω (at each Stator encoder port output, J4–J6) | Re-buffered by Extension U1 every 5-rotor group | State machine control |
-| TDI | 75 Ω (at each Stator→encoder cable drive) | 33 Ω (inter-CPLD on Encoder); passes unbuffered via BtB in rotor stack | Chained data |
-| TDO | 75 Ω (at each Encoder CPLD2 → cable output) | 22 Ω (Reflector R1, end-of-chain) | Return chain data |
+| TCK | 75 Ω (at each Stator encoder port output, J4–J9) | Re-buffered by Extension U1 every 5-rotor group | Clock — most critical |
+| TMS | 75 Ω (at each Stator encoder port output, J4–J9) | Re-buffered by Extension U1 every 5-rotor group | State machine control |
+| TDI | 75 Ω (at each Stator-driven encoder cable segment) | Passes unbuffered via BtB in rotor stack | Chained data |
+| TDO | 75 Ω (at each Encoder U1 → cable output) | 22 Ω (Reflector R1, end-of-chain) | Return chain data |
 | SYS_RESET_N | None required | None required | Quasi-DC signal |
 
 > **Rotor stack BtB path:** TCK and TMS are re-buffered by U1 (SN74LVC2G125DCUR) on each Extension
@@ -443,11 +446,11 @@ distance on the trace.
 > board-to-board via BtB. The JTAG chain terminates at the Reflector; Reflector R1 (22 Ω) provides
 > end-of-chain TDO damping. TTD_RETURN then returns to the Stator via the Reflector J4 ribbon cable.
 >
-> **Encoder sub-chains (ribbon cable):** Each of the three encoder ports (J4/J5/J6) on the Stator
-> drives its own independent TDI chain via ribbon cable. 75 Ω series resistors (R7–R15 on Stator,
-> R7–R8 on each Encoder board) apply ONLY to these ribbon cable segments. They are NOT present on
-> or applicable to the rotor BtB stack.
-
+> **Encoder chain (ribbon cable):** The six encoder ports (J4/J5/J6/J7/J8/J9) on the Stator form one
+> serial six-module JTAG chain ahead of the rotor stack. 75 Ω series resistors (R7–R12, R27–R32,
+> and R33–R38 on Stator; R6 on each Encoder board) apply ONLY to these ribbon cable segments. They
+> are NOT present on or applicable to the rotor BtB stack.
+>
 ### 7.4 Per-Board Implementation
 
 | Board | New refs | Value | Qty | Location |
@@ -455,22 +458,15 @@ distance on the trace.
 | JDB | R6 | 33 Ω | 1 | TCK after U5 buffer, before J2 JTAG header pin 1 (TCK) |
 | JDB | R7 | 33 Ω | 1 | TMS after U5 buffer, before J2 JTAG header pin 7 (TMS) |
 | JDB | R8 | 33 Ω | 1 | TDI series damping (not buffered — from FT232H), before J2 JTAG header pin 3 (TDI) |
-| Stator | R7 | 75 Ω | 1 | TCK → J4 encoder ribbon port output |
-| Stator | R8 | 75 Ω | 1 | TCK → J5 encoder ribbon port output |
-| Stator | R9 | 75 Ω | 1 | TCK → J6 encoder ribbon port output |
-| Stator | R10 | 75 Ω | 1 | TMS → J4 encoder ribbon port output |
-| Stator | R11 | 75 Ω | 1 | TMS → J5 encoder ribbon port output |
-| Stator | R12 | 75 Ω | 1 | TMS → J6 encoder ribbon port output |
-| Stator | R13 | 75 Ω | 1 | Stator CPLD TDO → J4 TDI (ribbon drive) |
-| Stator | R14 | 75 Ω | 1 | J4 TDO return → J5 TDI (ribbon drive) |
-| Stator | R15 | 75 Ω | 1 | J5 TDO return → J6 TDI (ribbon drive) |
-| Encoder | R7 | 33 Ω | 1 | CPLD1 TDO → CPLD2 TDI (intra-board 50 Ω trace) |
-| Encoder | R8 | 75 Ω | 1 | CPLD2 TDO → J2 connector pin 13 (ribbon drive back to Stator) |
+| Stator | R7–R12 | 75 Ω | 6 | TCK → J4/J5/J6/J7/J8/J9 encoder ribbon port outputs |
+| Stator | R33–R38 | 75 Ω | 6 | TMS → J4/J5/J6/J7/J8/J9 encoder ribbon port outputs |
+| Stator | R27–R32 | 75 Ω | 6 | TDI chain drive: Stator CPLD TDO → J4; J4 return → J5; J5 return → J6; J6 return → J7; J7 return → J8; J8 return → J9 |
+| Encoder | R6 | 75 Ω | 1 per board | U1 TDO → J2 connector pin 13 (ribbon drive back to Stator) |
 | Reflector | R1 (existing) | 22 Ω | 1 | TDO end-of-chain series damping — JTAG chain END |
 
 > **Controller JTAG pass-through:** The Controller board carries no active JTAG components. All
 > buffering (U5 SN74LVC2G125DCUR) and series damping (R6–R8, 33 Ω 0402) are located on the JDB.
-> The Controller `J2B` ↔ Stator `J8B` logic dock is a direct BtB connection (no cable), so 33 Ω
+> The Controller `J5` ↔ Stator `J12` logic dock is a direct BtB connection (no cable), so 33 Ω
 > applies there (not the 75 Ω cable-driving rule). See DEC-024.
 >
 > **Reflector and Extension:** Upgraded to 4-layer JLC04161H-7628 per DEC-017. Both boards now
@@ -497,9 +493,8 @@ distance on the trace.
 
 | Item | Unit cost | Qty (full system) | Total |
 | --- | --- | --- | --- |
-| 75 Ω 1% 0603 (Stator R7–R15) | ~£0.002 | 9 | <£0.02 |
-| 75 Ω 1% 0402 (Encoder R8, ×3 boards) | ~£0.001 | 3 | <£0.01 |
-| 33 Ω 1% 0402 (Encoder R7, ×3 boards) | ~£0.001 | 3 | <£0.01 |
+| 75 Ω 1% 0603 (Stator R7–R12, R27–R38) | ~£0.002 | 18 | <£0.04 |
+| 75 Ω 1% 0402 (Encoder R6, ×6 boards) | ~£0.001 | 6 | <£0.01 |
 | 33 Ω 1% 0402 (JDB R6–R8) | ~£0.002 | 3 | <£0.01 |
 | Controlled impedance JLCPCB certification (optional) | ~£40/order | Per board type | ~£120 total if verified |
 | **Controlled impedance design only (self-calc, no cert)** | **£0** | — | **£0** |
@@ -509,7 +504,7 @@ distance on the trace.
 > target, which is well within the functional margin for 1–10 MHz JTAG signals. Impedance
 > certification adds value only for production runs where consistency must be guaranteed.
 >
-> **Total additional BOM cost per full system: < £0.05** (a few tens of passive resistors).
+> **Total additional BOM cost per full system: < £0.06** (a few tens of passive resistors).
 
 ---
 

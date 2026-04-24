@@ -37,9 +37,9 @@ At its core, the Enigma-NG is powered by a Raspberry Pi Compute Module 5 (CM5) r
 ---
 
 ## 2. Safety Instructions
-
+>
 > ⚠️ **Read these instructions before operating the Enigma-NG.**
-
+>
 ### Supercapacitor Discharge Warning
 
 The Power Module contains a bank of supercapacitors that store enough energy to power the system for ≥33.5 seconds after the input power is removed. This is by design — it provides a
@@ -105,7 +105,7 @@ The Power Module produces two regulated output rails:
 | **3V3_ENIG** | 3.3V | 3A (rated) | All CPLD logic chips, FT232H VCCIO domain, and low-voltage control/telemetry logic |
 
 > **Note:** The CM5 module internally generates additional supply voltages (1.8V, 1.1V) for its own processors; these are not produced by the Power Module.
-
+>
 ### 3.3 How the Power System Stays Quiet
 
 The Enigma-NG must meet some of the strictest electromagnetic compatibility (EMC) standards available — both civilian and military. Keeping the power supply electrically "quiet" is therefore a
@@ -137,7 +137,6 @@ Before any switching occurs, the raw input power passes through a two-stage filt
 
 - A **nanocrystalline common-mode choke** (wideband, from Würth Elektronik) blocks high-frequency noise arriving from the source.
 - A **high-frequency nanocrystalline CMC** (Würth WE-CMBNC 7448031002, same as L1) provides supplementary **common-mode** attenuation above ~10 MHz.
-
 - A Pi-filter (L3 + capacitors) on the combined post-OR-ing VIN_RAW bus provides additional differential-mode attenuation.
 
 Together, these three techniques — phase interleaving, spread spectrum, and input filtering — are designed to comfortably meet EN 55032 Class B conducted and radiated emission limits under CE/UKCA

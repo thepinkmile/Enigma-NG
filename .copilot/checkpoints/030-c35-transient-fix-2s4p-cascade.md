@@ -9,30 +9,24 @@ This session segment focused on resolving three root causes of recurring design 
    - TPS259807 = no OVLO (wrong), TPS259803 = no OVLO (wrong)
    - Added `⚠️ eFuse variant lock` block to PM/Design_Spec.md BOM notes and DEC-005
    - Added Part Number Change Rule: datasheet must exist in `design/Datasheets/` before any MPN change
-
 2. **User asked about supercap stale values and Extension U1 removal root causes**
    - **Extension root cause:** §5 said "Passive components only." — review agents read this as no active components and removed U1 (SN74LVC2G125DCUR). Fixed: explicit "U1 is the only active IC" + NEVER REMOVE warning
    - **Supercap root cause:** PM/Design_Spec.md had correct Abracon 25F values but 6 other docs still had stale 22F/33F/21.7s — review agents "corrected" PM back to match the majority. Fixed: swept all files to 25F/37.5F/24.8s
-
 3. **User asked to create DEC-029 as authoritative supercap spec, obsolete DEC-004 and DEC-021**
    - DEC-004 marked Superseded by DEC-029 (0.5A charge current retained)
    - DEC-021 marked Superseded by DEC-029 (2S3P arrangement retained)
    - DEC-029 created with 2S3P, 5W load — later discovered this was wrong
-
 4. **User corrected load: CM5 draws 3A at 5V = 15W, not 5W**
    - Recalculated: 2S3P (37.5F) at 15W → realistic hold-up = 25.2s (only 26% margin — too thin)
    - 2S4P (50F) at 15W → 33.5s (68% margin) — user approved upgrade to 2S4P
    - DEC-029 completely rewritten: 2S4P, 8 cells, 50F, 15W load, ≥33.5s, ≥20s rule
    - DEC-029 includes sensitivity table, correct load warning block, footprint (41×81mm)
-
 5. **User asked about DEC-021 typo ("DEC-0293")** — confirmed should reference DEC-029, not DEC-0293
-
 6. **User asked to verify hold-time calculations**
    - Confirmed at 15W (5V × 3A): boost model (V_lo=2.0V, η=80%) → 629J × 0.80 = 503J → 33.5s ✓
    - Pure-buck model (V_lo=4.75V): 164.9J → 11.0s ❌ — confirms boost converter essential
    - Minimum efficiency to pass 20s: ~48% (far below any credible operating point)
    - User asked to add CM5 load clarification to DEC-029 — done in DEC-029 text
-
 7. **User asked whether R14, eFuse, or LDO need changes at 15W load**
    - Analysis: 5V_MAIN bulk capacitance = C9(22µF) + C10(22µF) + C13(10µF) = **54µF total**
    - Backup threshold (R14=28.7kΩ) = 4.644V; PWR_GD deassert = 4.50V; gap = 144mV
@@ -42,20 +36,17 @@ This session segment focused on resolving three root causes of recurring design 
    - LDO (TPS75733): no change needed (stays in regulation)
    - MIC1555/R28/C32: no change needed (3.01s timing correct)
    - **R14 must be raised** and **bulk capacitance added** OR frequency increased
-
 8. **User asked about C35 capacitor type and spec**
    - Discussed ceramic vs aluminium polymer vs tantalum — ceramic X7R recommended (project standard, lowest ESR)
    - User noted Murata parts are banned from BOM
    - Confirmed no 100µF cap exists anywhere in design (largest is 22µF)
    - User found TDK CKG57NX7R1E107M500JJ (100µF 25V X7R 2220) — confirmed technically suitable
    - User rejected it (looks like stacked caps, ~£9 each)
-
 9. **Revised solution proposed: no exotic 100µF cap needed**
    - Use R30 (new LTC3350 RT resistor ~33.2kΩ) to set LTC3350 to 400kHz
    - Change R14 to 30.1kΩ (threshold 4.812V, gap = 312mV)
    - C35: 2× Samsung CL32B226KAJNNNE (22µF 25V X7R 1210, already in BOM) in parallel = 44µF
    - Combined result: t = 98µF × 312mV / 3A = 10.2µs = 4.1 cycles at 400kHz ✓
-
 10. **User suggested HZA107M025X16T-F** — datasheet downloaded but PDF binary, unable to extract text. Session compacted before resolution.
 
 </history>
@@ -148,37 +139,28 @@ Work completed:
   - Contains DEC-004 (Superseded), DEC-021 (Superseded), DEC-029 (authoritative supercap spec, 2S4P/15W/50F/33.5s)
   - DEC-029 already updated to 2S4P — this is the reference; all other files must match it
   - DEC-030 (backup transient fix: R14/R30/C35) still needs to be created here
-
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Primary PM spec — still shows 2S3P/37.5F/24.8s/5W/6-cell throughout; ALL must cascade to 2S4P/50F/33.5s/15W/8-cell
   - DR-PM-08 (R14): still shows 28.7kΩ/4.644V — must update to 30.1kΩ/4.812V
   - DR-PM-10 (new): C35 dedicated 5V_MAIN bulk cap needs adding
   - BOM: R14 MPN change, R30 new entry (33.2kΩ RT resistor), C35 new entry (2× 22µF in parallel)
   - BOM Notes supercap lock block: must update from 2S3P to 2S4P
-
 - `design/Electronics/Power_Module/Board_Layout.md`
   - ASCII supercap grid still shows 2×3 (6 cells) — needs 2×4 (8 cells), shadow zone 41×61→41×81
   - Power chain still shows 37.5F — needs 50F
-
 - `design/Guides/User_Manual.md`
   - §3.6: 6 cells/37.5F/24.8s/3 min → 8 cells/50F/33.5s/9 min
-
 - `design/Software/Linux_OS/Power_Management.md`
   - Timeline table: ≥24.8s → ≥33.5s (×2)
-
 - `design/Electronics/Boards_Overview.md`
   - PM description: 37.5F/6×/2S3P/24.8s → 50F/8×/2S4P/33.5s
-
 - `design/Standards/Certification_Evidence.md`
   - ≥24.8 seconds → ≥33.5 seconds
-
 - `design/Electronics/Consolidated_BOM.md`
   - C_SC row: Qty 6 → 8; add C35, R30 as new line items
-
 - `design/Datasheets/HZA-datasheet.pdf`
   - User-provided datasheet for HZA107M025X16T-F capacitor (proposed C35 alternative)
   - PDF is binary-encoded — cannot be read with text tools; needs proper PDF reader or user to provide specs
-
 - `.copilot/agent-prompts/r52-review-prompt.txt`
   - Stale values list needs updating: add 37.5F/24.8s/2S3P/6-cell/5W/C_SC1–6/3-min-charge as stale; add correct values
 

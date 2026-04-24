@@ -270,7 +270,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
     across mixed stacks. The 26-character variant leaves ENC[5] as NC.
   * This path is entirely separate from the JTAG TTD\_RETURN signal.
 * **JTAG TTD\_RETURN Path:** After the Reflector processes the cipher reversal, `TTD_RETURN` travels
-  separately: Reflector J4 → Stator J7 → Controller-facing `J2B` logic dock → FT232H on JDB (JTAG
+  separately: Reflector J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H on JDB (JTAG
   chain closure only).
 * **Control:** Each rotor has a local I²C bus for position sensing (FDC2114 U2/U3 for N=64; U2/U4 for N=26). The CPLD acts as I²C master; no I²C signals are exposed on J1–J6.
 * **JTAG:** Pass-through lines allow the **USB Blaster** on the Controller Board to program the
@@ -303,10 +303,10 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
 * **Shielding:** 4-layer PCB with solid GND plane (L2) to isolate digital switching from the high-accuracy capacitive encoder.
 
 ### 3.4 Connector Pinouts (Rotor Interface — Authority Document)
-
+>
 > This section is the **authoritative pinout definition** for all Rotor-to-Stator connectors.
 > All other boards (Stator) cross-reference this section. See DEC-018 for ownership rationale.
-
+>
 #### J1 — JTAG Interface (ERM8-005, 10-pin 2×5, 0.8mm pitch)
 
 | Pin | Row A | Pin | Row B |
@@ -322,7 +322,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
 > TTD carries outgoing TDO to the next rotor's TDI. This unified net name avoids the TDI/TDO direction
 > confusion when viewing connector pinouts in isolation. Consistent with the T-prefix JTAG signal naming
 > convention (TCK, TMS, TDI, TDO → TTD).
-
+>
 #### J2 — Power Interface (ERM8-005, 10-pin 2×5, 0.8mm pitch)
 
 | Pin | Row A | Pin | Row B |
@@ -335,7 +335,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
 
 > 5 pins × 0.5 A/pin = **2.5 A capacity** — far exceeds the 50 mA/rotor requirement.
 > 5 power + 5 GND ensures fully balanced current return paths.
-
+>
 #### J3 — Encoder Data Interface (ERM8-010, 20-pin 2×10, 0.8mm pitch)
 
 | Pin | Row A | Pin | Row B |
@@ -355,7 +355,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
 > and signal return paths around the encoder data bus. Both ENC_IN and ENC_OUT on J3 are active simultaneously:
 > ENC_IN receives forward-pass data from upstream; ENC_OUT carries the CPLD SW3-map return-pass result back upstream.
 > The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
-
+>
 #### J4 — JTAG Interface Output (ERF8-005, 10-pin 2×5, 0.8mm pitch, FEMALE socket)
 
 Mates with the next rotor's J1 (ERM8-005 male header) or Reflector J1.
@@ -368,8 +368,8 @@ Mates with the next rotor's J1 (ERM8-005 male header) or Reflector J1.
 | 7 | GND | 8 | SYS\_RESET\_N |
 | 9 | GND | 10 | spare/GND |
 
-> Pin 6 = TTD (CPLD TDO output — feeds next stage's J1 pin 6 TTD input). Pin 10 = spare/GND (no TTD_RETURN path here; return travels via Reflector → Extension Port → Stator J7).
-
+> Pin 6 = TTD (CPLD TDO output — feeds next stage's J1 pin 6 TTD input). Pin 10 = spare/GND (no TTD_RETURN path here; return travels via Reflector → Extension Port → Stator J10).
+>
 #### J5 — Power Interface Output (ERF8-005, 10-pin 2×5, 0.8mm pitch, FEMALE socket)
 
 Mates with the next rotor's J2 (ERM8-005 male header) or Reflector J2.
@@ -383,7 +383,7 @@ Mates with the next rotor's J2 (ERM8-005 male header) or Reflector J2.
 | 9 | 3V3\_ENIG | 10 | GND |
 
 > Power pass-through from J2 input side. 3V3_ENIG and GND rails continue to the next rotor in the stack.
-
+>
 #### J6 — Encoder Data Interface Output (ERF8-010, 20-pin 2×10, 0.8mm pitch, FEMALE socket)
 
 Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
@@ -403,7 +403,7 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 
 > ENC_OUT carries the CPLD SW2-map forward-pass substitution result downstream; ENC_IN receives return-pass data from downstream for SW3-map processing.
 > Both directions are applied by the CPLD — this is NOT a pass-through. The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
-
+>
 #### J_INT — Board A ↔ Board B Internal Interconnect (4× single-row 2.54mm THT headers, 22 pins total)
 
 Fitted on the **inner (facing) surface** of both Board A and Board B. Physical keying is achieved
@@ -417,7 +417,7 @@ connectors and the PCB edge, to maximise mechanical rigidity of the two-board as
 
 > **Assembly note:** Four connectors per rotor assembly (30 rotors × 4 = 120 total connectors
 > across the full stack; 60 on Board A, 60 on Board B).
-
+>
 ##### H_SW3 — Return Map Select (1×7, 7-pin)
 
 Board A: **PH1-07-UA** (male) · Board B: **RS1-07-G** (female)
@@ -434,7 +434,7 @@ Board A: **PH1-07-UA** (male) · Board B: **RS1-07-G** (female)
 
 > **SW3 bit coverage note:** All 6 SW3 DIP switch bits reach the CPLD on Board A via H_SW3:
 > pins 1–4 carry SW3[0:3]; pins 5–6 carry SW3[4:5].
-
+>
 ##### H_PWR — Power Distribution (1×5, 5-pin)
 
 Board A: **RS1-05-G** (female) · Board B: **PH1-05-UA** (male)
@@ -479,7 +479,7 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 
 > **Variant note:** N=64 builds populate U3 on Board B and use only SDA/SCL on this header. N=26
 > builds do not populate U3; pins 3–5 remain reserved/unused in both variants.
-
+>
 ### 3.5 Prototype Bench-Testing Provision (Break-Off Coupons)
 
 Each board panel includes **6 break-off PCB coupons** (one per ERx8 connector), attached by mousebite

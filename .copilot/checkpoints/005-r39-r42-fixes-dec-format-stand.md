@@ -7,7 +7,6 @@ This session continued the Enigma-NG electronics design documentation review cyc
    - User asked all DEC entries to have a Category field; all existing ones = "Electrical", new DEC-025 = "Software"
    - User also requested all DEC formats be made consistent for future readers
    - User confirmed they were going out for a few days and wanted fully autonomous completion
-
 2. **R39 results read (agent had been running since prior session)**
    - Three genuine findings identified:
      - Cert_Evidence.md §3.1: Iron Curtain filter stages missing from power chain code block
@@ -15,7 +14,6 @@ This session continued the Enigma-NG electronics design documentation review cyc
      - Power_Management.md: Phase 1/Phase 2 labels described as reversed (PWR_GD fires first at 4.5V, BACKUP second at 4.40V)
    - User clarified Finding #1: the timing discrepancy is intentional/acceptable — system runs 15-30 min before outage, shutdown is best-effort only; document this in User Manual and don't fix Phase labels
    - Fixes applied and committed (`6fa56c5`): Cert_Evidence iron curtain chain, User_Manual Pi-filter wording, User_Manual §3.6 expanded supercap/shutdown note
-
 3. **DEC standardisation + DEC-025 + Power_Management.md update**
    - First attempt to save agent prompt via PowerShell failed (directory not created)
    - Created `.copilot/agent-prompts/` directory, saved prompt as `dec-standardise-prompt.txt`
@@ -31,14 +29,12 @@ This session continued the Enigma-NG electronics design documentation review cyc
    - One finding: Controller/Board_Layout.md LINK-ALPHA ASCII diagram pins 25-26 labelled `[2oz POWER]` (bleed from GND block above); should be `[3.3V LOGIC]`
    - Fixed and committed (`fe0d2b5`)
    - R41 launched immediately
-
 5. **R41 review — second clean pass attempt**
    - Three findings:
      - Consolidated_BOM.md: SN74LVC2G125DCUR had EXT=1 (wrong column; should be JDB=1)
      - JTAG_Integrity.md §9: referenced "33 Ω 0603 Controller R4-R6" (stale; should be "33 Ω 0402 JDB R6-R8")
      - Design_Log.md DEC-016: strikethrough text said "74LVC1G125" (single-channel); correct is "74LVC2G125" (dual-channel)
    - All three fixed and committed (`01c9913`)
-
 6. **R42 review — new first clean pass attempt**
    - Two findings:
      - Consolidated_BOM.md: R41 fix had placed the SN74LVC2G125DCUR count in the EXT column rather than the JDB column (positional error in the edit)
@@ -150,31 +146,24 @@ Resume phrase: "Please read `.copilot/plan.md` and all files in `.copilot/checkp
   - Master decision log; source of truth for all DEC entries
   - All DEC-001–DEC-024 reformatted; Category field added; DEC-025 added; DEC-016 strikethrough fixed
   - DEC-025 is at the end before ## Open Questions section
-
 - `design/Software/Linux_OS/Power_Management.md`
   - CM5 shutdown mechanism documentation
   - Phase 1 now a deferred-decision note (no polling code); Overview corrected; Timing Budget updated
   - All Python daemon code removed from Phase 1 — this is correct and intentional
-
 - `design/Electronics/Consolidated_BOM.md`
   - System-wide component usage table
   - SN74LVC2G125DCUR: now correctly shows JDB=1, EXT=—, Total=1
-
 - `design/Electronics/Investigations/JTAG_Integrity.md`
   - Full JTAG signal integrity investigation
   - §9 cost table: 33 Ω now references 0402 JDB R6-R8 (not 0603 CTL R4-R6)
   - §7.4 and trace table: DEC-023 → DEC-024 for Controller pass-through cross-refs
-
 - `design/Electronics/Controller/Board_Layout.md`
   - Controller board layout including LINK-ALPHA ASCII diagram
   - Pins 25-26 signal type fixed to [3.3V LOGIC]
-
 - `design/Standards/Certification_Evidence.md`
   - §3.1 power chain now correctly includes L1 CMC → L2 CMC → L3+C Pi-filter stages
-
 - `design/Guides/User_Manual.md`
   - §3.3: Pi-filter topology corrected; §3.6: supercap/shutdown intent documented
-
 - `.copilot/agent-prompts/r43-review-prompt.txt`
   - R43 review prompt — already passed to the running r43-review agent
   - Contains full KNOWN CORRECT list updated through R42 fixes

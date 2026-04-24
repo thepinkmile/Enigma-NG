@@ -3,46 +3,49 @@
 **Status:** Draft
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
-**Version:** v1.0.0
+**Version:** v1.1.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-20
 
 ## 1. Overview
 
-A multi-purpose Human Interface Device (HID) and plugboard interface board. Each board consists of
-**two completely independent halves** on the same PCB — a **Decode Half** (CPLD A: receives a 6-bit
-character code and asserts one of 64 output lines) and an **Encode Half** (CPLD B: reads one of up
-to 64 input lines and produces a 6-bit character code). The two halves share no PCB copper other
-than the single J2 IDC header, which carries power, both 6-bit data buses, and the JTAG chain.
+The Encoder Module is a **single-sided generic 64-line interface board**. Each PCB contains one
+Intel MAX II CPLD, one bank of 64 spade terminals, one 26-pin IDC data-link connector, and a local
+JTAG / debug interface. The same PCB is reused in six system roles:
 
-### Plugboard Use (2 boards required)
+- `KBD_ENC` — keyboard encode module
+- `LBD_DEC` — lightboard decode module
+- `PLG_PASS1_DEC` — plugboard pass 1 decode module
+- `PLG_PASS1_ENC` — plugboard pass 1 encode module
+- `PLG_PASS2_DEC` — plugboard pass 2 decode module
+- `PLG_PASS2_ENC` — plugboard pass 2 encode module
 
-When used as a plugboard, two Encoder boards are required — one per pass through the substitution
-network. Each board provides one full pass: CPLD A decodes the incoming 6-bit character to one of 64
-lines; those lines connect via wiring harness to 64 panel-mount jack sockets; a crossover cable between
-any two jacks routes the signal to a different character's Sleeve terminal; CPLD B encodes the resulting
-line back to a 6-bit output.
+The **26-pin ribbon pinout does not change**. Role is determined by CPLD image and assembly
+population, not by connector rewiring.
 
-With no cable in a jack, the socket's normally-closed (N/C) switch contact shorts the Switch terminal
-to the Sleeve terminal, passing the signal through unsubstituted (identity mapping). Up to 32 crossover
-cables may be installed simultaneously (64 jacks ÷ 2 per cable).
+### Plugboard Use (4 modules required)
 
-The Stator CPLD may apply a plugboard transformation to signals on J4/J5/J6 before they reach the
-Encoder's Keyboard and Lightboard ports. See `design/Electronics/Stator/Design_Spec.md §3 CPLD
-Signal Routing Matrix` for full details.
+Each plugboard pass is implemented as a paired decode / encode module set:
 
-### HID Use (1 board, both halves independent)
+```text
+Stator ENC_IN[0:5]
+       ↓
+PLG_PASSx_DEC  ->  64 passive jack lines  ->  PLG_PASSx_ENC
+                                              ↓
+                                         Stator ENC_OUT[0:5]
+```
 
-When used as the HID interface (Keyboard + Lightboard), both halves operate independently:
+With no patch cable inserted, the jack's normally-closed contact preserves identity mapping. The
+full Plugboard Assembly contains two such passes.
 
-- **Decode Half (CPLD A):** Receives 6-bit ENC_IN from Stator → asserts one of 64 lamp-drive output
-  lines for the Lightboard. The HID lightboard is driven by this same Encoder board half and connects
-  to the lamp assemblies via BT1–64 spade terminals.
-- **Encode Half (CPLD B):** Reads one of the populated HID key-press input lines (Keyboard) →
-  encodes to 6-bit ENC_OUT to Stator. Connected to keyboard switches via BT65–128 spade terminals.
+### HID Use (2 modules required)
 
-Regardless of use case (plugboard or HID), the physical PCB is identical — the functional role of
-each half is determined entirely by the mechanical assembly and Stator CPLD configuration.
+The HID path is split mechanically and electrically:
+
+- **`KBD_ENC`:** reads the keyboard switch matrix subset and returns 6-bit `ENC_OUT[0:5]` to the
+  Stator.
+- **`LBD_DEC`:** receives 6-bit `ENC_IN[0:5]` from the Stator and asserts one of up to 64 output
+  lines for the lightboard.
 
 ### Functional & Design Requirements
 
@@ -50,26 +53,26 @@ each half is determined entirely by the mechanical assembly and Stator CPLD conf
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-ENC-01 | Sense and encode the 64-character logical HID repertoire plus the 64-node plugboard jack states with sufficient resolution for per-character detection | HID keyboard mode uses a 40-position physical layout (`[a-z0-9+=]` plus Left/Right Shift) which the CPLD maps into the 64-character code space | §3 Dual-Role Architecture; §6 Key Mapping; BOM U1, U2 (EPM240T100I5N) |
-| FR-ENC-02 | Transmit encoded character (or 'base-64 binary' in the case of binary file encoding) data to the Stator Board via IDC ribbon cable | 26-pin IDC interface | §4 Interconnects; BOM J2 (26-pin shrouded header) |
-| FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | Encoder CPLDs are devices 2–7 in the chain | §5 JTAG Chain Integrity; BOM U1, U2 (EPM240T100I5N) |
-| ~~FR-ENC-04~~ | ~~Moved to Mechanical/Plugboard/Design_Spec.md~~ | ~~—~~ | ~~—~~ |
-| FR-ENC-05 | Operate from 3V3_ENIG power supplied via the Stator ribbon cable | No local voltage regulation (LDO/switcher) required; local bulk and decoupling capacitor network per Global_Routing_Spec. | §2 Power Requirements; BOM J2 (pin 1/pin 26 = 3V3_ENIG) |
+| FR-ENC-01 | Sense and encode the 64-character logical HID repertoire plus the 64-node plugboard interface with sufficient resolution for per-character detection | HID keyboard mode uses a 40-position physical layout (`[a-z0-9+=]` plus Left/Right Shift), while plugboard roles retain the full 64-line capacity | §3 Single-Module Architecture; §6 Key Mapping; BOM U1 (EPM240T100I5N) |
+| FR-ENC-02 | Transmit encoded character (or base-64 binary) data to the Stator Board via IDC ribbon cable | 26-pin IDC interface; `ENC_OUT[0:5]` used only by encode-role populations | §4 Interconnects; BOM J2 |
+| FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | One CPLD per module; six modules occupy six chain positions ahead of the rotor stack | §5 JTAG Chain Integrity; BOM U1 |
+| FR-ENC-04 | Operate from 3V3_ENIG power supplied via the Stator ribbon cable | No local voltage regulation required; local bulk and decoupling capacitor network per Global_Routing_Spec. | §2 Power Requirements; BOM J2 |
 
 #### Design Requirements
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-ENC-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §9 PCB Fabrication & Stackup |
-| DR-ENC-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Dual-Role Architecture; BOM U1, U2 (EPM240T100I5N) |
-| DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with Stator J4, J5, or J6) | §4 Interconnects; BOM J2 (26-pin 2×13 shrouded) |
-| ~~DR-ENC-04~~ | ~~Moved to Mechanical/Plugboard/Design_Spec.md~~ | ~~—~~ | ~~—~~ |
-| DR-ENC-05 | Supply voltage | 3.3V via the 3V3_ENIG power rail | §2 Power Requirements; BOM J2 (Data Link) |
+| DR-ENC-02 | CPLD | Intel MAX II EPM240T100I5N (TQFP-100) | §3 Single-Module Architecture; BOM U1 |
+| DR-ENC-03 | Stator interface connector | 26-pin Molex IDC (mates with one Stator encoder port) | §4 Interconnects; BOM J2 |
+| DR-ENC-04 | Supply voltage | 3.3V via the 3V3_ENIG power rail | §2 Power Requirements; BOM J2 |
 
 ## 2. Power Requirements
 
-- **Core:** The Encoder Board receives its 3V3_ENIG power rail from the IDC cable connection from the Stator (pin 1 & 26). This could be connected to any of J4–J6 of the Stator Board.
-- Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
+- **Core:** The Encoder Module receives its 3V3_ENIG power rail from the IDC cable connection from
+  the Stator (pin 1 and pin 26). This may connect to any of the six Stator encoder ports.
+- Decoupling and bulk entry capacitor requirements per
+  `design/Standards/Global_Routing_Spec.md §3`.
 
 ### GND_CHASSIS Single-Point Bond
 
@@ -79,187 +82,133 @@ features, but it does **not** implement a local GND-to-GND_CHASSIS bond. The sys
 galvanic GND ↔ GND_CHASSIS bond remains on the Power Module at the common power-entry point
 immediately before the eFuse.
 
-## 3. Dual-Role Architecture
+## 3. Single-Module Architecture
 
-The board's two halves are electrically independent on the PCB. Each half contains one Intel MAX II
-EPM240T100I5N CPLD and one bank of 64 spade terminals. The J2 IDC header is the only physical
-connection between them (power, data buses, JTAG). In HID use, the board still exposes the full
-64-character code space, but only 40 physical keyboard positions are populated; the CPLD derives the
-uppercase alphabetic plane from the dedicated Shift inputs.
+Each Encoder Module contains one Intel MAX II EPM240T100I5N CPLD and one bank of 64 spade terminals.
+The board is intentionally generic so the same PCB may be populated and programmed as either a
+decoder or an encoder.
 
-### Half Definitions
+### Role Definitions
 
-| Half | CPLD | Spade bank | 6-bit bus | Function |
-| :--- | :--- | :--- | :--- | :--- |
-| **Decode Half** | U1 (CPLD A) | BT1–64 | ENC_IN[0:5] ← Stator | Decodes 6-bit input → asserts 1 of 64 output lines |
-| **Encode Half** | U2 (CPLD B) | BT65–128 | ENC_OUT[0:5] → Stator | Reads 1 of up to 64 input lines → encodes to 6-bit output |
+| Role | 6-bit bus used | 64-line bank use | Function |
+| :--- | :--- | :--- | :--- |
+| **Decode role** (`LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS2_DEC`) | `ENC_IN[0:5]` from Stator | Board drives one of 64 lines | Decodes 6-bit input into a one-of-64 asserted output |
+| **Encode role** (`KBD_ENC`, `PLG_PASS1_ENC`, `PLG_PASS2_ENC`) | `ENC_OUT[0:5]` to Stator | Board reads one of 64 lines | Encodes one asserted line into a 6-bit output |
 
-### Signal Flow — Plugboard Mode
+### Signal Flow — Plugboard Pass
 
 ```text
-ENC_IN[0:5] (from Stator J4/J5/J6, via J2 pin 2–7)
+Stator ENC_IN[0:5]
        ↓
-  CPLD A (U1) — Decode: 6-bit → 1-of-64 lines asserted HIGH
-       ↓ ↓ ↓ ↓ ↓ ↓ ... × 64 lines (BT1–64 → jack Tip+Switch via harness)
-  [ 64 panel-mount jack sockets ]
-  — No cable: N/C Switch→Sleeve shorts line straight through (identity) —
-  — Cable A↔B: crossover cable routes line A to Sleeve B and vice versa —
-       ↓ ↓ ↓ ↓ ↓ ↓ ... × 64 lines (jack Sleeve via harness → BT65–128)
-  CPLD B (U2) — Encode: 1-of-64 lines → 6-bit output
+  Decode-role Encoder Module
        ↓
-  ENC_OUT[0:5] (to Stator J4/J5/J6, via J2 pin 19–24)
+  64-line jack field
+       ↓
+  Encode-role Encoder Module
+       ↓
+Stator ENC_OUT[0:5]
 ```
 
-### Signal Flow — HID Mode
+### Signal Flow — HID
 
 ```text
-Decode Half (Lightboard):          Encode Half (Keyboard):
-ENC_IN[0:5] ← Stator               40 populated HID key lines ← Keyboard switches
-       ↓                                    ↓
-  CPLD A (U1)                        CPLD B (U2)
-       ↓                                    ↓
-64 lamp-drive lines → BT1–64       BT65–128 ← key signals
-       ↓                                    ↓
-  Lightboard lamps                   ENC_OUT[0:5] → Stator
+Keyboard Assembly:                    Lightboard Assembly:
+40 populated switch lines             Stator ENC_IN[0:5]
+            ↓                                  ↓
+       KBD_ENC                             LBD_DEC
+            ↓                                  ↓
+      Stator ENC_OUT[0:5]               one-of-64 light output
 ```
 
 ### I/O Capacity
 
-Each CPLD provides 80 user I/O pins (TQFP-100). 64 pins are used for the spade terminal bank,
-leaving headroom for JTAG, status LEDs, power, and any future expansion.
+Each CPLD provides enough user I/O for one 64-line interface bank plus JTAG, status LED, power, and
+the 6-bit ribbon interface.
 
 ## 4. Interconnects
 
-- **Data Link (J2):** 26-pin (2×13) 2.54mm shrouded box header with polarisation key.
-  > **Connector Definition Owner:** `Stator/Board_Layout.md — J4–J6`.
-  > See `design/Electronics/Stator/Board_Layout.md` — J4–J6 for the full pin table.
-- **Status LEDs (×2):** One active-low debug LED per CPLD. CPLD output LOW = LED ON.
-  330Ω current-limiting resistor per LED; ~4mA drive current at 3.3V.
-- **Plugboard Jack Sockets:** See `design/Mechanical/Plugboard_Assembly/Design_Spec.md`.
-- **Keyboard Switches:** See `design/Mechanical/HID_Assembly/Design_Spec.md`.
-- **PCB Spade Terminal Banks (2× banks of 64, 128 total):** 6.35mm (¼″) straight vertical PCB-mount male blade tabs.
-  - **Bank 1 (BT1–BT64) — Decode Half outputs:** CPLD A (U1) decoder output lines. In plugboard mode:
-    wired via harness to the Tip and Switch terminals of the 64 jack sockets. In HID lightboard mode:
-    wired to lamp-drive lines. CPLD A drives these lines; no pull-up resistors required on this bank.
-  - **Bank 2 (BT65–BT128) — Encode Half inputs:** CPLD B (U2) encoder input lines. In plugboard mode:
-    wired via harness to the Sleeve terminals of the 64 jack sockets. In HID keyboard mode: wired to
-    keyboard switch output lines (active-low, 10kΩ pull-up + RC filter per line).
-    Only **40** of these inputs are populated in the HID assembly: 38 printable positions
-    (`[a-z0-9+=]`) plus Left Shift and Right Shift. Remaining input sites stay unpopulated for HID
-    use unless a future decision reassigns them.
-  - The two banks are vertically stacked so that character N on Bank 1 (BT_N) aligns with character N
-    on Bank 2 (BT_{N+64}), enabling correct plugboard harness assembly.
-- **Jack Socket Wiring (Plugboard Mode):**
-  Each of the 64 panel-mount jack sockets has three terminals. The wiring harness connects them as follows:
-
-  | Jack terminal | Wired to | Notes |
-  | :--- | :--- | :--- |
-  | Tip | BT1–64 (Decode Half / CPLD A output) | Both Tip and Switch carry the same CPLD A signal |
-  | Switch (N/C) | BT1–64 (same node as Tip) | N/C contact: shorts Switch→Sleeve when no plug present |
-  | Sleeve | BT65–128 (Encode Half / CPLD B input) | CPLD B reads this line |
-
-  **Identity mapping (no cable):** The jack's N/C contact shorts Switch to Sleeve, passing CPLD A's
-  signal directly to CPLD B for the same character — no substitution occurs.
-
-  **Substitution (crossover cable A↔B):** The cable is wired Tip-at-end-A → Sleeve-at-end-B. This
-  routes CPLD A's character-A signal to CPLD B's character-B input (A→B), and simultaneously routes
-  CPLD A's character-B signal to CPLD B's character-A input (B→A). Substitution is therefore
-  **reciprocal and passive** — no CPLD logic is required for the routing itself.
-
-  **Maximum 32 cables** may be installed simultaneously (64 jacks ÷ 2 jacks per cable).
-
-  > **Note:** Physical harness assembly, jack panel layout, and cable construction are mechanical design
-  > items. See `design/Mechanical/Plugboard_Assembly/Design_Spec.md` for full harness specification.
-  > Insertion detection (Switch contact opens when plug inserted) monitoring path is an **open item**
-  > — to be defined in Mechanical/Plugboard_Assembly/Design_Spec.md.
-- **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54mm pitch.
-  Not a separate connector — bare gold pads probed directly with logic analyser clips or ICT fixtures.
-  Mirrors the Data Link signals: Row 1 = 3V3_ENIG, GND, ENC_IN[0:5]; Row 2 = 3V3_ENIG, GND, ENC_OUT[0:5].
-  See `Encoder/Board_Layout.md` Diagnostic Bank section for full pad map.
-  Part number: N/A (PCB footprint only — no mating connector required).
+- **Data Link (J2):** 26-pin (2×13) 2.54 mm shrouded box header with polarisation key.
+  > **Connector Definition Owner:** `Stator/Board_Layout.md — J4/J5/J6/J7/J8/J9`.
+  > See `design/Electronics/Stator/Board_Layout.md` for the authoritative pin table.
+- **Status LED (D1):** one active-low debug LED per CPLD. CPLD output LOW = LED ON.
+  330 Ω current-limiting resistor; ~4 mA drive current at 3.3 V.
+- **Keyboard Switches:** see `design/Mechanical/Keyboard_Assembly/Design_Spec.md`.
+- **Lightboard Harness:** see `design/Mechanical/Lightboard_Assembly/Design_Spec.md`.
+- **Plugboard Jack Sockets:** see `design/Mechanical/Plugboard_Assembly/Design_Spec.md`.
+- **PCB Spade Terminal Bank (BT1–BT64):** 6.35 mm (1/4") straight vertical PCB-mount male blade
+  tabs.
+  - **Decode role:** wired to lightboard lamps or to plugboard jack Tip + Switch terminals.
+  - **Encode role:** wired to keyboard switch outputs or to plugboard jack Sleeve terminals.
+  - Initial Rev A HID assemblies may populate only **26** or **40** positions, but the PCB retains
+    all 64 terminals for future custom layouts.
+- **Diagnostic Probe Bank (J3):** 2×8 ENIG-finished bare PCB test pad array at 2.54 mm pitch.
+  Mirrors the Data Link signals: Row 1 = 3V3_ENIG, GND, ENC_IN[0:5]; Row 2 = 3V3_ENIG, GND,
+  ENC_OUT[0:5].
 
 ## 5. JTAG Chain Integrity
 
-- **Entry/Exit:** JTAG chain enters and exits via the IDC ribbon cable connection (J2) to the Stator Board.
-- **Local Chain:** The Encoder Board contains 2 devices in its JTAG chain: CPLD 1 (U1) and CPLD 2 (U2). CPLD 1 TDO feeds CPLD 2 TDI.
-- **Trace Width:** All JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over the L2 GND plane, targeting **50 Ω controlled impedance** per DEC-016. See `design/Electronics/Investigations/JTAG_Integrity.md`.
-- **Pull Resistors (×4, placed near CPLDs):**
-  - **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up.
-  - **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS) when not driven.
-  - **TCK:** 10kΩ pull-down to GND (R5) — prevents spurious clocking when TCK is floating.
-  - **SYS_RESET_N:** 10kΩ pull-up to 3V3_ENIG (R6) — active-low; pull-up ensures CPLDs remain out of reset by default.
-  - TCK, TMS, and SYS_RESET_N are broadcast nets shared between both CPLDs.
+- **Entry/Exit:** JTAG enters and exits via the IDC ribbon cable connection (J2) to the Stator.
+- **Local Chain:** one JTAG device per Encoder Module: U1 only.
+- **Trace Width:** all JTAG signal traces on L1 shall be routed at **0.127 mm (5 mil)** over the L2
+  GND plane, targeting **50 Ω controlled impedance** per DEC-016. See
+  `design/Electronics/Investigations/JTAG_Integrity.md`.
+- **Pull Resistors (×4, placed near U1):**
+  - **TMS:** 10 kΩ pull-up to 3V3_ENIG (R2)
+  - **TDI:** 10 kΩ pull-up to 3V3_ENIG (R3)
+  - **TCK:** 10 kΩ pull-down to GND (R4)
+  - **SYS_RESET_N:** 10 kΩ pull-up to 3V3_ENIG (R5)
 - **Termination:**
-  - **Inter-CPLD (R7, 33Ω):** Series resistor placed within 2 mm of CPLD 1 TDO, on the trace to CPLD 2 TDI.
-    Source impedance ≈ 53 Ω, matched to the 50 Ω intra-board PCB trace.
-    See `design/Electronics/Investigations/JTAG_Integrity.md` Option D.
-  - **Cable Output (R8, 75Ω):** Series resistor placed within 2 mm of CPLD 2 TDO, before J2 pin 13. Source impedance ≈ 95 Ω, targeting the ~100 Ω IDC ribbon cable impedance.
+  - **Cable Output (R6, 75 Ω):** series resistor placed within 2 mm of U1 TDO, before J2 pin 13.
 - **Programming:** Supports "In-System Sources and Probes" debugging via the CM5 GUI.
 
 ## 6. Key Mapping (64-Character Code Space with 40-Position HID Layout)
 
-The Encoder CPLD maps the HID assembly's 40 physical switch positions to the parallel 6-bit data
-bus while preserving the machine's 64-character logical repertoire.
+The encode-role Encoder Module maps the HID assembly's physical switch positions to the parallel
+6-bit data bus while preserving the machine's 64-character logical repertoire.
 
 - **Layout:** QWERTY-derived 40-position HID panel consisting of 38 printable keys
   (`[a-z0-9+=]`) plus Left Shift and Right Shift.
 - **Logical repertoire:** the system still exposes 64 unique character codes:
   26 lowercase letters + 26 uppercase letters + 10 digits + `+` + `=`.
-- **Signal polarity:** Lines are **active-low**. The external 10 kΩ pull-up to 3V3_ENIG holds
-  each CPLD input HIGH when the key is not pressed. Key press closes the switch contact to GND,
-  pulling the CPLD input LOW; the CPLD detects the falling edge.
-- **Debouncing:** Hardware RC de-bounce circuit per input line: 10 kΩ pull-up resistor to
-  3V3_ENIG + 100 nF X7R capacitor to GND on each key input line (RC time constant τ = 1 ms).
-  The EPM240T100I5N inputs are configurable as **3.3 V Schmitt trigger inputs** (confirmed);
-  internal weak pull-up is 50 kΩ–100 kΩ. The external 10 kΩ pull-up dominates and sets a
-  well-defined idle-high state. The 10 kΩ value is confirmed appropriate — no change required.
-- **Shift Logic:** The Left Shift and Right Shift keys act as logic-level triggers for the CPLD
-  state machine. When either Shift key is held, alphabetic key positions map to `A-Z` instead of
-  `a-z`. Digits and `+` / `=` remain the same in both planes.
-- **Lightboard mapping:** The HID lightboard mirrors the same QWERTY-derived printable positions.
-  Uppercase alphabetic outputs illuminate the corresponding alphabetic lamp position rather than a
-  separate uppercase-only physical position.
-- **LED Drive:** The Encoder CPLDs directly drive the **Shift Status LEDs** and the HID lightboard
-  lamp outputs via MOSFET arrays.
+- **Signal polarity:** encode-role lines are **active-low**. The external 10 kΩ pull-up to
+  3V3_ENIG holds each CPLD input HIGH when a key is not pressed. Key press closes the switch
+  contact to GND, pulling the CPLD input LOW.
+- **Debouncing:** the encode-role population uses a hardware RC debounce circuit per input line:
+  10 kΩ pull-up resistor to 3V3_ENIG + 100 nF X7R capacitor to GND on each used input line
+  (RC time constant τ = 1 ms).
+- **Shift Logic:** Left Shift and Right Shift act as logic-level triggers for the CPLD state
+  machine. When either Shift key is held, alphabetic key positions map to `A-Z` instead of `a-z`.
+  Digits and `+` / `=` remain unchanged.
+- **Lightboard mapping:** the decode-role lightboard module mirrors the same QWERTY-derived
+  printable positions. Uppercase alphabetic outputs illuminate the corresponding alphabetic lamp
+  position rather than a separate uppercase-only physical position.
 
 > For keyboard switch mechanical specification and panel assembly, see
-> `design/Mechanical/HID_Assembly/Design_Spec.md`.
-
+> `design/Mechanical/Keyboard_Assembly/Design_Spec.md`.
+>
 ## 7. Plugboard Jack-Sensing
 
-The Encoder CPLD monitors the 64 Stecker jack sockets for plug insertion state and updates the
-encryption matrix in real time.
+The board split does **not** remove the requirement for plugboard insertion-state awareness, but it
+does move the implementation decision to the per-pass harness / schematic phase. Any sensing scheme
+must preserve the generic one-CPLD module footprint and the unchanged 26-pin IDC pinout.
 
-- **Logic:** The CPLD monitors 64 insertion-detect lines (spade bank BT65–BT128, Switch contacts)
-  sourced from the 6.35 mm mono switched jack sockets.
-- **Signal:** Lines are **active-low**. An external **10 kΩ pull-up to 3V3_ENIG** (R9–R72 on the
-  Encoder PCB) holds each CPLD input HIGH when no plug is inserted; this dominates the CPLD
-  internal weak pull-up (50 kΩ–100 kΩ), providing a well-defined idle-high state and improved
-  harness noise immunity. A **100 nF RC filter capacitor** (C22–C85) is paired with each pull-up
-  (RC τ = 1 ms), further attenuating harness-coupled noise. On plug insertion the switch contact
-  closes to GND, pulling the CPLD input LOW. Inputs are configured as **3.3 V Schmitt trigger
-  inputs** (confirmed); cable insertion is a slow mechanical event well within the Schmitt
-  hysteresis window. The CPLD detects the falling edge and marks the corresponding channel as
-  patched.
-- **Latency:** Sub-microsecond detection of Stecker cable insertion; the internal encryption
-  matrix is updated within one CPLD clock cycle.
-
-> For jack panel layout, harness assembly, and cable construction, see
+> For jack panel layout and harness assembly, see
 > `design/Mechanical/Plugboard_Assembly/Design_Spec.md`.
-
+>
 ## 8. Thermal & ESD
 
-- **Thermal:** Vias under the Intel MAX II EPM240T100I5N CPLD "PowerPad" (if applicable) for heat dissipation.
+- **Thermal:** vias under the Intel MAX II EPM240T100I5N CPLD power pins / thermal area as required
+  by layout review.
 
 ## 9. PCB Fabrication & Stackup
 
-- **Layers:** 4-Layer (JLC04161H-7628).
-- **Finish:** ENIG (Gold) for TQFP-100 pads.
-- **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
-- **Chip Placement:** CPLD #1 (Left-side 32 keys) and CPLD #2 (Right-side 32 keys) placed on the rear of the board to allow keys/lamps/sockets on the front.
-- **Half Labelling (Silkscreen):** The two board halves shall be clearly labelled in silkscreen:
-  **"DECODE"** (U1 side, BT1–64) and **"ENCODE"** (U2 side, BT65–128). This prevents assembly
-  errors, particularly since the board is physically symmetrical.
+- **Layers:** 4-layer (JLC04161H-7628).
+- **Finish:** ENIG.
+- **Aesthetics:** dark green solder mask; typewriter font (all-caps German where applicable).
+- **Placement:** one CPLD centred behind the 64-line terminal bank; J2 and J3 kept on the service
+  edge for direct ribbon / probe access.
+- **Role Labelling (Silkscreen):** the PCB must identify the allowed service roles:
+  `ENCODER MODULE`, `ENCODE USE`, and `DECODE USE`.
 
 ---
 
@@ -267,21 +216,29 @@ encryption matrix in real time.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C16 | Decoupling (8 per CPLD, 2x CPLDs) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C17-C21 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
-| BT1–128 | PCB spade blade terminals — 2 rows × 64 (128 total) | Keystone 1285-ST — 6.35mm (¼″) straight vertical PCB-mount male blade tab. Row 1 (BT1–64): Decode Half — CPLD A decoder outputs; wired to jack Tip+Switch terminals (plugboard) or lamp-drive lines (HID). Row 2 (BT65–128): Encode Half — CPLD B encoder inputs; wired to jack Sleeve terminals (plugboard) or keyboard switch lines (HID). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
-| J1 (×64) | Stecker jack sockets | 6.35mm (¼″) mono switched panel-mount jack — Tip+Switch → CPLD A Decode Half output (BT1–64 harness); Sleeve → CPLD B Encode Half input (BT65–128 harness); N/C contact (Switch→Sleeve) provides identity passthrough when no plug inserted. **Already purchased.** | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
-| D1, D2 | Status LED (one per CPLD, active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
-| J2 | Data Link Connector | Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503) | 2.54mm | — | — | C3013501 |
+| C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| BT1-BT64 | PCB spade blade terminals — one row × 64 | Keystone 1285-ST — 6.35 mm (1/4") straight vertical PCB-mount male blade tab. Used as either 64 driven outputs (decode role) or 64 sensed inputs (encode role). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
+| J1 (x64 per plugboard pass) | Stecker jack sockets | 6.35 mm (1/4") mono switched panel-mount jack — off-board mechanical part used only by plugboard assemblies | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
+| D1 | Status LED (active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
+| J2 | Data Link Connector | Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54 mm (RS-Online 832-3503) | 2.54mm | — | — | C3013501 |
 | J3 | Diagnostic probe pad bank (bare ENIG gold pads — logic analyser / ICT access) | 2×8 bare PCB pads | 2.54mm | N/A | N/A | N/A |
-| SW1-40 | Keyboard Switches | uxcell-style DPDT 6-pin momentary push button — Pole 1: COM1+NO1 → key-press to CPLD; Pole 2 pins retained for mechanical anchoring only. Custom marketplace part; see pseudo datasheet. **Already purchased.** | Panel-mount | — (eBay: gadgetskingdom item 365271584375, 2 per pack) | — | — |
-| U1, U2 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
-| R1, R2 | LED current limiting resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
-| R3 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R4 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R5 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R7 | Inter-CPLD series termination (CPLD1 TDO → CPLD2 TDI) | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
-| R8 | TDO output series R (CPLD2 TDO → J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R9–R72 | CPLD B Encode Half input pull-up resistors — 64× total (one per BT65–BT128 input line). Pull-up to 3V3_ENIG; active-low logic; external 10kΩ dominates CPLD internal 50kΩ–100kΩ weak pull. Decode Half outputs (BT1–64) are CPLD A driven — no pull-ups required on that bank. | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| C22–C85 | CPLD B Encode Half input RC noise filter caps — 64× total, paired 1:1 with R9–R72 (one cap to GND per Encode Half input line). RC τ = 1 ms; sufficient for noise immunity on harness; negligible for slow mechanical events. Decode Half outputs (BT1–64) are CPLD A driven — no RC filters required on that bank. | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| SW1-SW40 | Keyboard switches | uxcell-style DPDT 6-pin momentary push button — assembly-level part used only by the Keyboard Assembly | Panel-mount | — (eBay: gadgetskingdom item 365271584375, 2 per pack) | — | — |
+| U1 | Intel MAX II CPLD | EPM240T100I5N | TQFP-100 | 989-EPM240T100I5N | 544-2276-ND | C40067 |
+| R1 | LED current limiting resistor | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
+| R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R6 | TDO output series R (U1 TDO -> J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| R7-R70 (encode-role only) | Input pull-up resistors — 64× total, one per BT1-BT64 input line | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| C14-C77 (encode-role only) | Input RC noise filter caps — 64× total, paired 1:1 with R7-R70 | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+
+**Quantity notes:**
+
+- **Common fitted PCB population:** C1-C13, BT1-BT64, D1, J2, J3, U1, and R1-R6 are fitted on every
+  Encoder Module (**6 boards total**).
+- **Encode-role-only population:** R7-R70 and C14-C77 are fitted on `KBD_ENC`, `PLG_PASS1_ENC`, and
+  `PLG_PASS2_ENC` only (**3 boards total = 192 resistors + 192 capacitors system-wide**).
+- **Assembly-level off-board parts:** J1 plugboard jacks are **64 per plugboard pass (128 system
+  total)**. SW1-SW40 keyboard switches are **40 per Keyboard Assembly (40 system total)**.

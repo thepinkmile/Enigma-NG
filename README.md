@@ -76,9 +76,7 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
   * **USB-C PD:** 15V USB-C PD negotiated input.
 * **Protection:** Over-voltage and over-current protection provided by Power Module eFuse upstream; local reverse-polarity and ESD protection on BtB interface.
 * **Rotor Rail:** The rotor stack is powered by the **3V3_ENIG** rail (TPS75733KTTRG3 LDO, 3A) generated on the Power Module; routed to rotor stack via Controller Board → Link-Beta. CM5 GPIO 16
-
   (ROTOR_EN) gates the LDO enable for sequenced power-up.
-
 * **JTAG Master:** Embedded FT232H (Permanent USB Blaster) on internal USB 2.0.
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
 

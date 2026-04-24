@@ -14,11 +14,9 @@ The session ran a full system-wide design review cycle across all 35 active Enig
    - STGC adder logic confirmed to live entirely in CPLD VHDL; result available via ALTERA_VIRTUAL_JTAG USER0 UDR (DEC-027, FR-ROT-09)
    - Design_Log updated with DEC-028 (split two-board rotor decision)
    - Checkpoint 019 created (commit `4f38141`)
-
 2. **User confirmed ready for review cycles, then requested full system review (not just Rotor)**
    - All boards complete — appropriate time for cross-system sign-off
    - Launched full system review across 35 files
-
 3. **Full system review R1 — 27 issues found, fixed (commit `5fd19a8`)**
    - EPM570 (not EPM240) for Stator/Rotor in Power_Budgets and Cert_Evidence
    - FDC2114RGER (not AS5600) in Power_Budgets and Cert_Evidence
@@ -30,42 +28,33 @@ The session ran a full system-wide design review cycle across all 35 active Enig
    - GUI_App JTAG: EPM240 ×6 + EPM570 ×31
    - Controller Mechanical: ERF8 connector (was FTSH)
    - Controller Design_Spec §9.3: L6 removed from 3V3_ENIG power layer
-
 4. **Full system review R2 — 7 issues, fixed (commit `318bf85`)**
    - PMIC_EN residuals (5 more occurrences)
    - Power_Management Phase 3: gpio-shutdown removed (PWR_GD NOT a shutdown trigger)
    - Cert_Evidence §7.1: qty=6 Encoder only; §7.2 added for EPM570 (31 devices)
-
 5. **Full system review R3 — 8 issues, fixed (commit `464a1fa`)**
    - Cert_Evidence §7.2 family: MAX II (was incorrectly written as MAX V)
    - PM Board_Layout LINK-ALPHA pin 48: PWR_BUT (was GND) in table + ASCII diagram
    - ENC_IN[0:5] direction: Stator→CTRL corrected in Controller/Board_Layout (LINK-BETA), Maintenance_Guide, Design_Log DEC-015
-
 6. **Full system review R4 — completed overnight, result lost to compaction; re-read next morning**
    - 7 issues: DIAGNOSTIC BANK-BETA ENC_IN miss, pin 48 GND count footers (×2), Controller §2.1 pin summary, README (LDO MPN, supercap config, LDO load figures)
    - Fixed (commit `20e6ba0`)
-
 7. **Full system review R5 — 28 issues, fixed (commit `066b2b5`)**
    - **eFuse MPN: TPS259804ONRGER → TPS259807ONRGER** — **THIS WAS AN ERROR** (see corrections)
    - Supercap: TPLH-2R7/22WR12X31 (THT) → SCMT32C156PRBA0 (SMD) across 3 files
    - J_INT: 2×12 24-pin → 2×11 22-pin across 15 locations
    - README comprehensive overhaul (PoE util, layer count, ideal-diode, CPLD, dims, sensor)
-
 8. **Full system review R6 — 9 issues, fixed (commit `5e1baa1`)**
    - README: battery max 16.8V→16.4V; OR-FET SISS22DN→CSD17483F4T; JTAG buffer correction; 37-key→64-key; 3.5mm→6.35mm jacks
    - Mechanical/Rotor/Design_Spec: J_INT 2×12→2×11 (missed by R5)
    - Design_Log DEC-028: J_INT 2×12→2×11 (body + impact)
    - Boards_Overview §12 Stator: ~2.2A → ~2.11A
-
 9. **Full system review R7 — 4 issues, fixed (commit `eb260d5`)**
    - README: eFuse range 17V→16.9V; Roadmap items 2 and 4 stale; GUI_App 2.2A→2.11A
-
 10. **Full system review R8 — CLEAN ✅ (first consecutive clean pass)**
-
 11. **Full system review R9 — CLEAN ✅ (second consecutive clean pass)**
     - Review cycle closed
     - Checkpoint 020 created and committed (`b6ad5ca`)
-
 12. **User reviewed changes and identified two errors introduced by the review cycle**
     - **Error 1**: TPS259807ONRGER is the NO-OVLO variant. TPS259804ONRGER is the silicon-fixed 16.9V OVLO variant. The R5 "fix" was wrong — revert to TPS259804ONRGER.
     - **Error 2**: Reflector R1 0603 package designation was valid (standing rule allows 0402 or 0603; 0603 was a deliberate specification). R1 removal was wrong — restore 0603.
@@ -172,37 +161,28 @@ Current commit trail:
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Primary board spec for PM; contains eFuse MPN (pending revert to TPS259804), 4.644V threshold, shutdown path, PWR_GD
   - Modified: eFuse MPN (revert in progress), PMIC_EN→PWR_GD, 4.644V
-
 - `design/Electronics/Consolidated_BOM.md`
   - Master BOM for all 35 files; eFuse row pending revert; R1 row pending 0603 restore; supercap updated to SCMT32C156PRBA0
   - Key rows: line 37 (eFuse), line 75 (22Ω R1), line 67 (supercap), line 104 (J_INT)
-
 - `design/Standards/Certification_Evidence.md`
   - Compliance evidence; §7.1 EPM240 qty=6, §7.2 EPM570 qty=31 (both MAX II); eFuse MPN pending revert; OA-01 entry
   - Key sections: §3.2 eFuse, §7.1/§7.2 CPLD, OA-01
-
 - `design/Electronics/Reflector/Design_Spec.md`
   - Reflector board spec; R1 0603 package pending restore in DR-REF-04 and BOM row
   - Key lines: ~24 (FR-REF-04), ~33 (DR-REF-04), ~173 (BOM R1 row)
-
 - `design/Design_Log.md`
   - All design decisions; eFuse MPN pending revert in DEC-005 rationale; DEC-028 J_INT corrected
   - Key entries: DEC-005 (eFuse), DEC-015 (ENC_IN), DEC-025 (PWR_GD), DEC-027 (Virtual JTAG), DEC-028 (split rotor)
-
 - `design/Electronics/Rotor/Design_Spec.md`
   - Split two-board rotor; J_INT 2×11 22-pin; FDC2114RGER U2/U3/U4; EPM570 CPLD; STGC/RBGC patterns
   - Key sections: §1 overview, DR-ROT-11, §3.4 J_INT signal allocation
-
 - `design/Mechanical/Rotor/Design_Spec.md`
   - Rotor mechanical spec (created this session); Ø92mm PCB, Ø100mm shroud, 1.5cm total thickness, bearing mechanism, aluminium shroud
   - §6 J_INT: 2×11 22-pin now correct
-
 - `README.md`
   - Project overview; comprehensively updated: LDO TPS75733KTTRG3, CSD17483F4T OR-FETs, SN74LVC2G125DCUR on Extension Boards, Ø92mm/Ø100mm, FDC2114RGER sensing, 64-key, 6.35mm jacks, eFuse 16.9V range
-
 - `.copilot/checkpoints/020-full-system-review-complete-r8.md`
   - Checkpoint for completed review cycle; full round-by-round summary
-
 - `.copilot/plan.md`
   - Canonical session state; updated with review complete status; J_INT corrected to 2×11
 

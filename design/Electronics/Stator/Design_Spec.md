@@ -24,16 +24,16 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-01 | Serve as the removable mechanical and electrical backplane for the 30-rotor stack | Provides all power, JTAG, and data connectivity to rotors | §2 Core Features; BOM J1–J3 (ERF8 rotor sockets) |
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 | §2 Core Features; §3 Encryption & JTAG Hub; BOM L1–L4 (ferrite beads) |
 | FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
-| FR-STA-04 | Receive TTD_RETURN from the Reflector and forward to the Controller Board | Via J7 (Adam Tech `BHR-16-VUA` 16-pin reflector / extension port) into the `J2B` logic dock return path | §3 Encryption & JTAG Hub; BOM J7, R2 (10kΩ pull-up) |
-| FR-STA-05 | Interface with up to 3 Encoder boards (1 HID + 2 Plugboard) via IDC ribbon cables; route 6-bit data bus to plugboard passes at configurable signal chain positions | J4 = HID; J5 = Plugboard Pass A (configurable); J6 = Plugboard Pass B (configurable) | §3 Plugboard Routing; §4 Interconnects; BOM J4–J6 (26-pin Molex IDC) |
+| FR-STA-04 | Receive TTD_RETURN from the Reflector and forward to the Controller Board | Via J10 (Adam Tech `BHR-16-VUA` 16-pin reflector / extension port) into the `J5` logic dock return path | §3 Encryption & JTAG Hub; BOM J10, R2 (10kΩ pull-up) |
+| FR-STA-05 | Interface with up to 6 Encoder Modules via IDC ribbon cables; route 6-bit data bus through one HID encode path, one HID decode path, and two configurable plugboard passes | Bank 1 = `KBD_ENC` + `LBD_DEC`; Bank 2 = `PLG_PASS1_DEC` + `PLG_PASS1_ENC`; Bank 3 = `PLG_PASS2_DEC` + `PLG_PASS2_ENC` | §3 Plugboard Routing; §4 Interconnects; BOM J4–J9 (26-pin Molex IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM570 (570 LEs required for startup-loaded reflector map registers + routing matrix) | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
-| FR-STA-07 | Connect to the Controller Board via two hybrid blind-mate dock connectors | `J8A` = 5V-biased power dock; `J8B` = 3V3/JTAG/I2C dock | §4 Interconnects; BOM J8A, J8B |
+| FR-STA-07 | Connect to the Controller Board via two hybrid blind-mate dock connectors | `J11` = 5V-biased power dock; `J12` = 3V3/JTAG/I2C dock | §4 Interconnects; BOM J11, J12 |
 | FR-STA-08 | Select the active plugboard routing configuration via panel-mount toggle switches on the Settings Board via I²C; CM5 can override routing configuration when Bank 1 enable is inactive | Bank 1 (SW_B1_EN + SW_B1[0:3]) on Settings Board provides 16 routing configurations; CM5 reads U_EXP_SW_IN @ 0x23, evaluates bank enable, writes final config to U_EXP4 GPA[0:3] @ 0x22; CPLD re-latches on STATOR_CFG_RDY rising edge | §3 Panel Switch Configuration (Bank 1); §4.2 I²C Devices; BOM U_EXP4, R16–R19 |
 | FR-STA-09 | Select and apply a stored reflector substitution map at the reflection boundary while retaining the mandatory physical Reflector board as the electrical turnaround | Bank 2 (SW_B2_EN + SW_B2[0:5]) on Settings Board provides a 6-bit reflector-map selection; CM5 can override when Bank 2 enable is inactive; final config driven to CPLD by U_EXP4 GPB[0:5] @ 0x22 | §3 Panel Switch Configuration (Bank 2); §4.2 I²C Devices; BOM U_EXP4, R21–R26 |
 | FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, ENC bus monitoring, servo control, SYS_RESET_N management, and CPLD configuration driving | Via three MCP23017 expanders: U_EXP1 @ 0x20, U_EXP2 @ 0x21, U_EXP4 @ 0x22 on shared I²C-1 bus | §4 I²C Devices; BOM U_EXP1, U_EXP2, U_EXP4 |
 | FR-STA-11 | Provide I²C PWM output for servo motor control | Via PCA9685 (U_EXP3 @ 0x60) on shared I²C-1 bus; Ch0 = 50Hz SERVO_PWM | §4 I²C Devices; BOM U_EXP3 |
 | FR-STA-12 | Provide servo homing detection via SERVO_HOME switch | SPST NO momentary (active-low); 10kΩ pull-up to 3V3_ENIG + 100nF X7R debounce cap; connected to U_EXP2 GPB[1] | §4 I²C Devices; BOM SW3, R_SH1, C_SH1 |
-| FR-STA-13 | Implement SOURCE_SEL MUX in Stator CPLD to select between keyboard and CM5 virtual keypress | MUX at J4 ENC_OUT[0:5] entry point; SOURCE_SEL driven by U_EXP2 GPA[6]; 0=keyboard, 1=CM5 virtual | §3 CPLD SOURCE_SEL MUX |
+| FR-STA-13 | Implement SOURCE_SEL MUX in Stator CPLD to select between keyboard and CM5 virtual keypress | MUX at `KBD_ENC` (`J4`) `ENC_OUT[0:5]` entry point; SOURCE_SEL driven by U_EXP2 GPA[6]; 0=keyboard, 1=CM5 virtual | §3 CPLD SOURCE_SEL MUX |
 | FR-STA-14 | Connect to Settings Board via I²C-1 bus for panel toggle-switch configuration and LED status output | J_CFG = 6-pin JST PH 2.0mm connector (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`); Settings Board expanders 0x23 (switch input), 0x24 (Bank 1 LED), and 0x25 (Bank 2 LED) share the Stator I²C-1 bus | §4.2 I²C Devices; BOM J_CFG |
 
 #### Design Requirements
@@ -43,9 +43,9 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §7 PCB Fabrication & Stackup |
 | DR-STA-02 | Layer mapping | L1 = Signal (JTAG/routing), L2 = GND, L3 = 3V3_ENIG, L4 = ENC Data | §1 Overview |
 | DR-STA-03 | Rotor interface (per slot) | J1 = ERF8-005 (JTAG), J2 = ERF8-005 (Power), J3 = ERF8-010 (ENC); 1 slot set | §4 Interconnects; BOM J1–J3 (ERF8-005/ERF8-010) |
-| DR-STA-04 | Encoder interface | J4/J5/J6 = 26-pin Molex IDC (HID encoder ports, one per encoder board) | §4 Interconnects; BOM J4–J6 (Molex 26-pin) |
-| DR-STA-05 | TTD_RETURN input | J7 = Adam Tech `BHR-16-VUA` 16-pin 2×8 shrouded header; `TTD_RETURN` on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J7 |
-| DR-STA-06 | Controller dock connectors | `J8A/J8B` = Molex `2195620015` hybrid plugs mating with Controller `2195630015` receptacles | §4 Interconnects; BOM J8A, J8B |
+| DR-STA-04 | Encoder interface | J4/J5/J6/J7/J8/J9 = 26-pin Molex IDC (6 fixed-role encoder ports in 3 banks of 2) | §4 Interconnects; BOM J4–J9 (Molex 26-pin) |
+| DR-STA-05 | TTD_RETURN input | J10 = Adam Tech `BHR-16-VUA` 16-pin 2×8 shrouded header; `TTD_RETURN` on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J10 |
+| DR-STA-06 | Controller dock connectors | `J11/J12` = Molex `2195620015` hybrid plugs mating with Controller `2195630015` receptacles | §4 Interconnects; BOM J11, J12 |
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240 (drop-in); 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), sized for the 2.05 A worst-case typical stack load | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.05 A worst-case typical (30 rotors + Stator CPLD + all encoders) | §2 Core Features; §5 Power Telemetry |
@@ -53,10 +53,10 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-11 | Reflector map selection | SW2[0:5] reflector config inputs now driven by U_EXP4 GPB[0:5]; 6× 10kΩ pull-down resistors R21–R26 retained on CPLD inputs as power-up safe defaults; physical switches relocated to Settings Board | §3 Panel Switch Configuration (Bank 2); BOM U_EXP4, R21–R26 |
 | DR-STA-12 | I²C GPIO expanders | U_EXP1 = MCP23017T-E/SO @ 0x20; U_EXP2 = MCP23017T-E/SO @ 0x21; U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28 package; on shared I²C-1 bus | BOM U_EXP1, U_EXP2, U_EXP4 |
 | DR-STA-13 | I²C PWM driver | U_EXP3 = PCA9685BS/3 @ 0x60; SSOP-28 package; Ch0 = SERVO_PWM at 50Hz; A5→3V3_ENIG, A4–A0→GND; all-call disabled in daemon init | BOM U_EXP3 |
-| DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM. 5V_MAIN is routed from the Controller Board via the `J2A` high-current dock. | BOM J_SERVO |
+| DR-STA-14 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: 5V_MAIN, GND, SERVO_PWM. 5V_MAIN is routed from the Controller Board via the `J4` high-current dock. | BOM J_SERVO |
 | DR-STA-15 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to 3V3_ENIG + 100nF X7R cap to GND (RC τ=1ms); connected to U_EXP2 GPB[1] | BOM SW3, R_SH1, C_SH1 |
 | DR-STA-16 | U_EXP4 specification | U_EXP4 = MCP23017T-E/SO @ 0x22; SOIC-28; A2=LOW, A1=HIGH, A0=LOW; GPA[0:3] = SW1[0:3] CPLD config outputs; GPA[4] = STATOR_CFG_RDY strobe output; GPB[0:5] = SW2[0:5] CPLD config outputs | BOM U_EXP4 |
-| DR-STA-17 | J_CFG connector | J_CFG = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`; connects to Settings Board J_I2C via 6-wire harness. `5V_MAIN` is derived from the Controller-fed `J2A` dock. | BOM J_CFG |
+| DR-STA-17 | J_CFG connector | J_CFG = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`; connects to Settings Board J_I2C via 6-wire harness. `5V_MAIN` is derived from the Controller-fed `J4` dock. | BOM J_CFG |
 | DR-STA-18 | STATOR_CFG_RDY signal | STATOR_CFG_RDY = new CPLD input pin from U_EXP4 GPA[4]; 10kΩ pull-down to GND (default LOW); CPLD re-latches SW1[0:3] and SW2[0:5] config values on rising edge | BOM U_EXP4; §3 Panel Switch Configuration (Bank 1) |
 
 ## 2. Core Features
@@ -71,7 +71,7 @@ Per `design/Standards/Global_Routing_Spec.md §5`, the Stator implements a local
 tied to its mounting holes and any deliberate enclosure-contact features, but it does **not**
 implement a local GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is
 defined on the Power Module at the common power-entry point immediately before the eFuse, so
-`J2A/J2B` dock-entry GND remains signal/power return only and must not be bridged locally to
+`J4/J5` dock-entry GND remains signal/power return only and must not be bridged locally to
 chassis on the Stator.
 
 ## 3. Encryption & JTAG Hub
@@ -81,36 +81,47 @@ chassis on the Stator.
 ### CPLD Signal Routing Matrix
 
 The Stator CPLD (U1) is the bidirectional ENC_DATA routing hub for the full encryption cycle.
-It has three bidirectional ENC_DATA connector interfaces — J4 (HID), J3 (Rotor 1), and J7
-(Reflector/Extension) — plus two configurable plugboard pass interfaces (J5 Plugboard A, J6
-Plugboard B).
+It has four fixed external ENC_DATA service interfaces:
+
+* `J4` = `KBD_ENC` (keyboard encode source)
+* `J5` = `LBD_DEC` (lightboard decode destination)
+* `J3` = Rotor 1 ENC connector
+* `J10` = Reflector / Extension return connector
+
+It also owns two configurable plugboard passes, each implemented as a paired decode/encode module:
+
+* `J6` + `J7` = Plugboard Pass 1
+* `J8` + `J9` = Plugboard Pass 2
 
 The encryption signal passes through the CPLD at three defined interception points:
 
 | Step | CPLD receives from | Optional plugboard insertion | CPLD drives to |
 | :--- | :--- | :--- | :--- |
-| **1 — Forward entry** | J4 ENC_OUT[0:5] — Keyboard keystroke | Pre-Rotor 1 position — J5 or J6 | J3 ENC_IN[0:5] → Rotor 1 (starts forward pass through rotor stack) |
-| **2 — Reflector return** | J7 ENC_OUT[0:5] — reflected signal returned from Reflector chain | At Reflector boundary — J5 or J6 | J7 ENC_IN[0:5] → Reflector chain → Rotor 30 (starts return pass back through rotor stack) |
-| **3 — Final exit** | J3 ENC_OUT[0:5] — Rotor 1 return-pass output | Post-Rotor 1 return position — J5 or J6 | J4 ENC_IN[0:5] → Lightboard |
+| **1 — Forward entry** | `J4 ENC_OUT[0:5]` — keyboard keystroke | Pre-Rotor 1 position — Pass 1 and/or Pass 2 | `J3 ENC_IN[0:5]` → Rotor 1 (starts forward pass through rotor stack) |
+| **2 — Reflector return** | `J10 ENC_OUT[0:5]` — reflected signal returned from Reflector chain | At Reflector boundary — Pass 1 and/or Pass 2 | `J10 ENC_IN[0:5]` → Reflector chain → Rotor 30 (starts return pass back through rotor stack) |
+| **3 — Final exit** | `J3 ENC_OUT[0:5]` — Rotor 1 return-pass output | Post-Rotor 1 return position — Pass 1 and/or Pass 2 | `J5 ENC_IN[0:5]` → Lightboard |
 
 At each step the CPLD either passes the signal transparently (no plugboard) or routes it through
-Plugboard Pass A (J5) or B (J6) before forwarding. The active insertion positions are determined by
-the VHDL routing case statement selected by U_EXP4 GPA[0:3] written by the CM5 daemon (see §3 Panel Switch Configuration and DEC-032).
+Plugboard Pass 1 (`J6` decode -> passive jackfield -> `J7` encode) and/or Plugboard Pass 2
+(`J8` decode -> passive jackfield -> `J9` encode) before forwarding. The active insertion
+positions are determined by the VHDL routing case statement selected by U_EXP4 GPA[0:3] written by
+the CM5 daemon (see §3 Panel Switch Configuration and DEC-032).
 
 #### Panel Switch Configuration (Bank 1 — Plugboard Routing)
 
 Bank 1 panel switches on the Settings Board provide a 4-bit binary index (SW_B1[3:0], 0–15)
 selecting the active routing case from 16 configurations synthesised into the CPLD fabric.
 No JTAG reprogramming is required to change configuration — only a single JTAG flash at initial
-programming. SW_B1[1:0] encode J5 position; SW_B1[3:2] encode J6 position.
+programming. SW_B1[1:0] encode **Plugboard Pass 1** position; SW_B1[3:2] encode **Plugboard Pass 2**
+position.
 
-The active configuration is now driven to the CPLD by U_EXP4 GPA[0:3] via I²C. When Bank 1
+The active configuration is driven to the CPLD by U_EXP4 GPA[0:3] via I²C. When Bank 1
 enable (SW_B1_EN) is HIGH, the CM5 daemon forwards the physical switch reading to U_EXP4; when
 LOW, the CM5 writes its own configuration. A STATOR_CFG_RDY strobe (U_EXP4 GPA[4]) triggers
 re-latch. Pull-down resistors R16–R19 hold each CPLD input at logic-0 when U_EXP4 is
 uninitialised (power-up safe default).
 
-| SW1 Index (SW_B1[3]:SW_B1[2]:SW_B1[1]:SW_B1[0]) | J5 (Plugboard A) insertion point | J6 (Plugboard B) insertion point | Historical reference |
+| SW1 Index (SW_B1[3]:SW_B1[2]:SW_B1[1]:SW_B1[0]) | Plugboard Pass 1 (`J6/J7`) insertion point | Plugboard Pass 2 (`J8/J9`) insertion point | Historical reference |
 | :--- | :--- | :--- | :--- |
 | 0 (0000) | None | None | No plugboard — straight through |
 | 1 (0001) | Pre-Rotor 1 | None | Single pre-Rotor 1 pass |
@@ -150,7 +161,7 @@ is uninitialised (default map index = 0).
 When Bank 2 is latched, the CPLD serially reads the indexed map from UFM into internal flip-flop
 registers (~40 µs). At the reflection boundary (Step 2 in the routing matrix), the CPLD applies the
 loaded map combinationally while the mandatory Reflector board provides the physical return path on
-J7. J7 ENC_IN/OUT therefore remain part of the active signal path in all supported configurations.
+J10. J10 ENC_IN/OUT therefore remain part of the active signal path in all supported configurations.
 
 Bank 1 (routing matrix) and Bank 2 (reflector mode) are fully independent; all 16 Bank 1
 configurations are valid regardless of the Bank 2 setting.
@@ -168,11 +179,11 @@ symmetry. Pre-loaded indices:
 | 3–20 | Custom | Available for user-defined involutory maps via JTAG programming |
 
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
-* **Ferrite Bead Rule:**Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between the `J2B` dock entry and rotor power distribution to isolate switching transients from Controller logic.
+* **Ferrite Bead Rule:** Use **4x ferrite beads** (one per 3V3_ENIG rotor feed) between the `J12` dock entry and rotor power distribution to isolate switching transients from Controller logic.
 * **Current Margin Check:** Rotor rail is budgeted at **1.65A** (30 rotors × 55mA budget — see `design/Electronics/Power_Budgets.md`);
   with 4 parallel feeds this is ~**413mA per bead** nominal sharing,
   well within the **3.5A** bead rating. Total 3V3_ENIG worst case including all CPLDs and encoders: 2.05A (~32% headroom vs 3.0A LDO).
-* **JTAG Return:** Includes 10kΩ pull-up on TTD_RETURN at the `J2B` logic-dock entry/exit boundary (R2).
+* **JTAG Return:** Includes 10kΩ pull-up on TTD_RETURN at the `J12` logic-dock entry/exit boundary (R2).
 * **JTAG Pull Resistors (×4, placed near Stator CPLD U1):**
   * **TMS:** 10kΩ pull-up to 3V3_ENIG (R3) — ensures JTAG TAP resets to Test-Logic-Reset on power-up and when controller is idle.
   * **TDI:** 10kΩ pull-up to 3V3_ENIG (R4) — holds TDI at logic-1 (BYPASS) when not actively driven by the Controller.
@@ -182,27 +193,30 @@ symmetry. Pre-loaded indices:
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TCK, TMS, TDI, TDO) shall
   be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting **50 Ω controlled
   impedance**. See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
-* **JTAG Series Termination at Encoder Port Outputs (R7–R15):** 75 Ω series resistors placed within
-  2 mm of each J4/J5/J6 connector pad **on the Stator PCB**, targeting 95 Ω source impedance to match the ~100 Ω IDC
-  ribbon cable:
-  * **R7, R8, R9:** TCK → J4, J5, J6 respectively.
-  * **R10, R11, R12:** TMS → J4, J5, J6 respectively.
-  * **R13:** Stator CPLD TDO → J4 TDI (HID encoder cable drive). Placed on Stator within 2 mm of J4 pin 13.
-  * **R14:** J4 TDO return → J5 TDI (Plugboard A cable drive). Placed on Stator within 2 mm of J5 pin 13, on the
-    trace carrying J4's TDO return signal.
-  * **R15:** J5 TDO return → J6 TDI (Plugboard B cable drive). Placed on Stator within 2 mm of J6 pin 13, on the
-    trace carrying J5's TDO return signal.
-  * All R13–R15 are **Stator-side** resistors — no series resistors are required at the Encoder cable inputs.
+* **JTAG Series Termination at Encoder Port Outputs:** 75 Ω series resistors placed within 2 mm of
+  each encoder-port connector pad **on the Stator PCB**, targeting 95 Ω source impedance to match
+  the ~100 Ω IDC ribbon cable:
+  * **R7-R12:** TCK -> J4, J5, J6, J7, J8, J9 respectively.
+  * **R33-R38:** TMS -> J4, J5, J6, J7, J8, J9 respectively.
+  * **R27:** Stator CPLD TDO -> J4 TDI.
+  * **R28:** J4 TDO return -> J5 TDI.
+  * **R29:** J5 TDO return -> J6 TDI.
+  * **R30:** J6 TDO return -> J7 TDI.
+  * **R31:** J7 TDO return -> J8 TDI.
+  * **R32:** J8 TDO return -> J9 TDI.
+  * All TDI-chain resistors are **Stator-side** resistors — no series resistors are required at the
+    Encoder cable inputs.
 * **Reset:** Pin 100 (DEV_CLRN) tied to the global SYS_RESET_N rail. SYS_RESET_N is driven by
   MCP23017 U_EXP2 GPA[7] (@ 0x21) via I²C; R6 (10kΩ pull-up to 3V3_ENIG) ensures CPLDs remain
   out of reset at power-up (see DEC-031).
 
 #### CPLD SOURCE_SEL MUX
 
-The Stator CPLD VHDL must implement a SOURCE_SEL MUX at the J4 ENC_OUT[0:5] entry point (Step 1 —
-Forward entry in the routing matrix). The SOURCE_SEL signal is driven by U_EXP2 GPA[6] via I²C:
+The Stator CPLD VHDL must implement a SOURCE_SEL MUX at the `J4 ENC_OUT[0:5]` entry point
+(Step 1 — Forward entry in the routing matrix). The SOURCE_SEL signal is driven by U_EXP2 GPA[6]
+via I²C:
 
-* **SOURCE_SEL=0 (default):** Keyboard ENC_OUT[0:5] from J4 is forwarded to the encryption
+* **SOURCE_SEL=0 (default):** Keyboard `ENC_OUT[0:5]` from `J4` is forwarded to the encryption
   pipeline. Normal operator keyboard use.
 * **SOURCE_SEL=1:** KEY_ADDR[0:4] + KEY_EN from U_EXP2 GPA[0:5] synthesises a virtual ENC_OUT
   signal in CPLD fabric, replacing the J4 keyboard input. CM5 autonomous / virtual keypress mode.
@@ -213,8 +227,8 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 ## 4. Interconnects
 
 * **Controller Dock:** The Stator plugs into the Controller through two Molex EXTreme Guardian HD hybrid connectors.
-  * **J8A (5V-biased dock):** `4 × 5V_MAIN` blades, `1 × GND` blade, signal field allocated to extra `GND` returns / guards.
-  * **J8B (3V3 / logic dock):** `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, and `I2C1_SCL`; all remaining signal contacts tied to `GND`.
+  * **J11 (5V-biased dock):** `4 × 5V_MAIN` blades, `1 × GND` blade, signal field allocated to extra `GND` returns / guards.
+  * **J12 (3V3 / logic dock):** `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, and `I2C1_SCL`; all remaining signal contacts tied to `GND`.
   * **Controller mating part:** Molex `2195630015` receptacle. **Stator plug:** Molex `2195620015`.
   * **Cross-ref:** See `Controller/Design_Spec.md` §2 and `Controller/Board_Layout.md` for the active dock allocation.
   * **Reference PDFs:** [`Molex-2195630015-datasheet.pdf`](../../Datasheets/Molex-2195630015-datasheet.pdf),
@@ -222,20 +236,21 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
     [`Molex-2195620015-datasheet.pdf`](../../Datasheets/Molex-2195620015-datasheet.pdf),
     [`Molex-2195620015-drawings.pdf`](../../Datasheets/Molex-2195620015-drawings.pdf),
     [`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf)
-* **Encoder Interconnects:** 26-pin (2×13) 2.54mm Shrouded Box Headers (Power, ENC_DATA, JTAG).
+* **Encoder Interconnects:** 26-pin (2×13) 2.54mm shrouded box headers (power, ENC_DATA, JTAG).
 * **Plugboard Routing — Configurable Signal Chain Positions:**
   The Stator CPLD implements a configurable routing matrix (see §3 CPLD Signal Routing Matrix) with
   three plugboard insertion positions in the full encryption cycle. The active configuration is
   selected via Bank 1 panel switches on the Settings Board (SW_B1[0:3] + SW_B1_EN), read by CM5
   and driven to the CPLD by U_EXP4 GPA[0:3] (16 pre-defined configurations — no JTAG
-  reprogramming required for configuration changes). Each of the three Encoder ports plays a fixed
-  or configurable role:
+  reprogramming required for configuration changes). The six encoder ports are arranged as three
+  banks of two, with one fixed HID bank and two configurable plugboard-pass banks:
 
   | Port | Default role | Plugboard signal chain position |
   | :--- | :--- | :--- |
-  | **J4** | HID — Keyboard & Lightboard | Fixed: HID interface (not used for plugboard passes) |
-  | **J5** | Plugboard Pass A | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW_B1[1:0]) |
-  | **J6** | Plugboard Pass B | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW_B1[3:2]) |
+  | **J4** | `KBD_ENC` | Fixed: keyboard source (not used as a plugboard pass) |
+  | **J5** | `LBD_DEC` | Fixed: lightboard destination (not used as a plugboard pass) |
+  | **J6 / J7** | Plugboard Pass 1 (`DEC` / `ENC`) | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW_B1[1:0]) |
+  | **J8 / J9** | Plugboard Pass 2 (`DEC` / `ENC`) | Configurable: pre-Rotor 1 / At Reflector / post-Rotor 1 return (set by SW_B1[3:2]) |
 
   The Stator CPLD implements all 16 configurations as synthesised VHDL case logic. See
   `design/Electronics/Stator/Board_Layout.md` and `design/Electronics/Encoder/Design_Spec.md §1`
@@ -248,7 +263,7 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
     ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
     * `Extension/Design_Spec.md`
     * `Reflector/Design_Spec.md`
-  * **ENC_DATA (bidirectional — simultaneous):** J7 carries ENC_DATA on two separate pin groups
+  * **ENC_DATA (bidirectional — simultaneous):** J10 carries ENC_DATA on two separate pin groups
     simultaneously. ENC_OUT[0:5] (pins 9–14): returns the reflected signal from the Reflector chain
     to the Stator CPLD (Step 2 receive in the routing matrix). ENC_IN[0:5] (pins 3–8): carries the
     return-pass signal driven by the Stator CPLD back to the Reflector chain after optional plugboard
@@ -256,7 +271,7 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 * **Rotor Interconnect:** The Stator provides 1 rotor slot (Rotor 1 input side) using 3 ERF8 female sockets.
   * **JTAG:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — TCK, TMS, TTD (TDI function on input side),
     SYS\_RESET\_N with interleaved GND. **J1 pin 6 = TTD** (outgoing TDI to Rotor 1).
-    Pin 10 = spare/GND (TDO does NOT return via this connector — it returns via J7 pin 15).
+    Pin 10 = spare/GND (TDO does NOT return via this connector — it returns via J10 pin 15).
   * **Power:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — 5× 3V3\_ENIG, 5× GND. Same part as JTAG socket.
   * **ENC DATA (bidirectional):** ERF8-010-05.0-S-DV-K-TR (20-pin 2×10, 0.8mm pitch) —
     ENC_IN\[0:5\] (CPLD drives to Rotor 1, forward pass — Step 1 drive);
@@ -269,8 +284,8 @@ physical keyboard is electrically disconnected from the cipher pipeline when SOU
 
 ### 4.2 I²C Devices on Stator
 
-All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via the guarded signal field on `J8B`.
-`J8A` carries the grouped `5V_MAIN` feed, while `J8B` carries the grouped `3V3_ENIG` feed plus JTAG and
+All devices share the I²C-1 bus (SDA/SCL) routed from the CM5 via the guarded signal field on `J12`.
+`J11` carries the grouped `5V_MAIN` feed, while `J12` carries the grouped `3V3_ENIG` feed plus JTAG and
 I²C. The Stator fans the incoming `5V_MAIN` branch out to `J_SERVO` and to Settings Board connector
 `J_CFG`.
 
@@ -294,15 +309,15 @@ snapped off.
 
 | Coupon | Connector | IDC Header | Signal |
 | :--- | :--- | :--- | :--- |
-| 1 | J8A — 5V dock | coarse-pitch power breakout | Controller 5V / GND dock |
-| 2 | J8B — 3V3 / logic dock | coarse-pitch mixed-signal breakout | Controller 3V3 / JTAG / I2C dock |
+| 1 | J11 — 5V dock | coarse-pitch power breakout | Controller 5V / GND dock |
+| 2 | J12 — 3V3 / logic dock | coarse-pitch mixed-signal breakout | Controller 3V3 / JTAG / I2C dock |
 | 3 | J1 Slot 1 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | Rotor 1 JTAG out |
 | 4 | J2 Slot 1 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | Rotor 1 power out |
 | 5 | J3 Slot 1 — ERF8-010 (20-pin female) | 2×10 IDC box header, 2.54mm | Rotor 1 ENC data out |
 
 > Coupons 2–4 cover Rotor Slot 1 only (J1–J3 first instance); sufficient for single-rotor bench
 > integration testing. IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layout phase.
-
+>
 ## 5. Power Telemetry (The "Encryption Load")
 
 * **Purpose:** Provides real-time current/voltage data for the 30-rotor stack to the CM5 GUI.
@@ -310,7 +325,7 @@ snapped off.
 * **Placement:** Inserted on L1 (Top Layer) connected to the 3V3_ENIG rail immediately before the rotor stack.
   * Minimum 15mm isolation from Intel MAX II EPM570T100I5N CPLD logic core.
 * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) rotor-stack shunt resistor. Stator R1 instance. (PM R12 + PM R23 are the first and second system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
-* **Interface:** I2C-1 Telemetry Bus (via `J2B`, shared with the Power Module and Settings Board).
+* **Interface:** I2C-1 Telemetry Bus (via `J5`, shared with the Power Module and Settings Board).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
 
 ## 6. EMI & Mechanical
@@ -346,9 +361,9 @@ snapped off.
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | SMT 0.8mm pitch | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) |
-| J4-J6 | Encoder port connectors (×3 positions: HID J4 + Plugboard A J5 + Plugboard B J6) | Amphenol T821126A1S100CEU — 26-pin 2×13 2.54mm shrouded (RS-Online 832-3503) | through-hole | — | — | C3013501 |
-| J7 | 16-pin Reflector/Extension port | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded | through-hole | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
-| J8A, J8B | Controller dock hybrid plugs (5V-biased + 3V3/JTAG/I2C) | Molex 2195620015 | 5 power + 15 signal hybrid plug | 538-219562-0015 | 900-2195620015-ND | Global sourcing / consignment |
+| J4-J9 | Encoder port connectors (×6 positions: `KBD_ENC`, `LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`) | Amphenol T821126A1S100CEU — 26-pin 2×13 2.54mm shrouded (RS-Online 832-3503) | through-hole | — | — | C3013501 |
+| J10 | 16-pin Reflector/Extension port | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded | through-hole | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
+| J11, J12 | Controller dock hybrid plugs (5V-biased + 3V3/JTAG/I2C) | Molex 2195620015 | 5 power + 15 signal hybrid plug | 538-219562-0015 | 900-2195620015-ND | Global sourcing / consignment |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ω @100 MHz, 4.0A | 1206 | 875-HI1206P121R-10 | 240-2410-1-ND | C2442103 |
 | R1 | Rotor-Stack Shunt Resistor (CSS2H — Stator R1; PM R12 LTC3350 RSENSE and PM R23 INA219 U12 are first and second system instances, total build qty: 3) | CSS2H-2512R-R010ELF (10mΩ ±1% 5A) | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
@@ -356,21 +371,15 @@ snapped off.
 | R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R5 | TCK pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R7 | TCK series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R8 | TCK series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R9 | TCK series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R10 | TMS series R → J4 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R11 | TMS series R → J5 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R12 | TMS series R → J6 encoder port | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R13 | TDI chain: Stator CPLD TDO → J4 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R14 | TDI chain: J4 TDO return → J5 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R15 | TDI chain: J5 TDO return → J6 TDI | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R7-R12 | TCK series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R33-R38 | TMS series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
 | R16 | SW1[0] (switch 1) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R17 | SW1[1] (switch 2) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R18 | SW1[2] (switch 3) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R19 | SW1[3] (switch 4) pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R20 | STATOR_CFG_RDY input pull-down (×1) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R21–R26 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R21-R26 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R27-R32 | TDI chain series resistors: CPLD->J4->J5->J6->J7->J8->J9 (×6 driven segments) | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
 | SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | SW2 | Reflector map selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | U1 | Stator Management CPLD (routing matrix + reflector map application) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |

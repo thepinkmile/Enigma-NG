@@ -94,8 +94,9 @@ chassis-bond point.
 ### Bank 1 — Plugboard Routing (SW_B1_EN + SW_B1[0:3])
 
 Bank 1 provides a 4-bit binary index (SW_B1[3:0], 0–15) selecting the active routing case from 16
-configurations synthesised into the Stator CPLD fabric. SW_B1[1:0] encode J5 (Plugboard A)
-insertion position; SW_B1[3:2] encode J6 (Plugboard B) insertion position.
+configurations synthesised into the Stator CPLD fabric. SW_B1[1:0] encode **Plugboard Pass 1**
+(`J6/J7`) insertion position; SW_B1[3:2] encode **Plugboard Pass 2** (`J8/J9`) insertion
+position.
 
 SW_B1_EN is the bank enable switch: HIGH = Bank 1 is switch-defined (CM5 forwards physical switch
 readings to U_EXP4 on the Stator). LOW = Bank 1 is CM5-defined (CM5 writes its own configuration
@@ -109,7 +110,7 @@ The active configuration is driven to the CPLD by U_EXP4 GPA[0:3] on the Stator 
 A STATOR_CFG_RDY strobe (U_EXP4 GPA[4]) triggers CPLD re-latch after CM5 writes the final
 configuration.
 
-| SW_B1 Index (SW_B1[3]:SW_B1[2]:SW_B1[1]:SW_B1[0]) | J5 (Plugboard A) insertion point | J6 (Plugboard B) insertion point | Historical reference |
+| SW_B1 Index (SW_B1[3]:SW_B1[2]:SW_B1[1]:SW_B1[0]) | Plugboard Pass 1 (`J6/J7`) insertion point | Plugboard Pass 2 (`J8/J9`) insertion point | Historical reference |
 | :--- | :--- | :--- | :--- |
 | 0 (0000) | None | None | No plugboard — straight through |
 | 1 (0001) | Pre-Rotor 1 | None | Single pre-Rotor 1 pass |
@@ -190,7 +191,7 @@ Reads all 12 switch states and the CFG_APPLY momentary button.
 > to the named `SW_B*` signal net, the asserted throw goes to `3V3_ENIG`, and the opposite throw is
 > left unconnected in Rev A. Panel orientation shall make the lever-up / marked-ON position select
 > the `3V3_ENIG` throw so the asserted state always reads logic-1.
-
+>
 ### U_LED_B1 — MCP23017T-E/SO @ 0x24
 
 Drives Bank 1 LED anodes (5 LEDs) and RGB color-rail low-side transistor gates.
@@ -212,9 +213,9 @@ Drives Bank 1 LED anodes (5 LEDs) and RGB color-rail low-side transistor gates.
 > Individual LED anode outputs drive HIGH only for the bits that should be illuminated. Each LED's
 > red, green, and blue cathodes return through separate current-limiting resistors
 > (`R_LED_R` = 150Ω, `R_LED_G` = 100Ω, `R_LED_B` = 100Ω) to the shared bank colour rails. LEDs are
-> powered from the `5V_MAIN` feed delivered from the Controller through the Stator `J2A` / `J_CFG`
+> powered from the `5V_MAIN` feed delivered from the Controller through the Stator `J4` / `J_CFG`
 > path.
-
+>
 ### U_LED_B2 — MCP23017T-E/SO @ 0x25
 
 Drives Bank 2 LED anodes (7 LEDs) and RGB color-rail low-side transistor gates.
@@ -252,7 +253,7 @@ Full RGB capability with software-selectable colors per bank:
 > Software can select any RGB color by enabling the appropriate color-rail transistor. Only one
 > color is active per bank at any time, so the definitive worst-case indicator-rail budget is
 > **240mA total**: Bank 1 = 5 LEDs × 20mA = 100mA max, Bank 2 = 7 LEDs × 20mA = 140mA max.
-
+>
 ### Per-Bit Illumination
 
 * Each switch in a bank has an individual LED anode output (U_LED_B1 drives Bank 1 anodes,
@@ -270,11 +271,11 @@ indicator for the entire bank.
 
 ### Low-Side Colour-Rail Circuit
 
-Each colour rail (BNK1_R, BNK1_G, BNK1_B, BNK2_R, BNK2_G, BNK2_B) is driven by a BSS138 SOT-23 N-channel MOSFET:
+The six colour-rail sink stages on this board (`BNK1_R/G/B`, `BNK2_R/G/B`) follow the common RGB
+sink-stage rule defined in `design/Standards/Global_Routing_Spec.md §3.1`.
 
-* **Source:** tied to GND.
-* **Drain:** connects to the shared bank colour rail (red, green, or blue cathode return).
-* **Gate:** driven by U_LED_B1 or U_LED_B2 GPIO output via 1kΩ gate resistor.
+On the Settings Board this pattern is applied as one `BSS138` low-side sink per bank colour rail,
+with gates driven by `U_LED_B1` / `U_LED_B2`.
 
 Each LED uses three dedicated series resistors: one in each red, green, and blue cathode path.
 This allows the three dice to be balanced independently under nominal 5V operation.
@@ -313,7 +314,7 @@ automatic polling intervals.
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | Power from Stator; powers Settings Board logic (MCP23017 ICs) |
-| 2 | 5V_MAIN | Indicator power supply from Stator; sourced from the Controller `J2A` dock; powers LED anodes |
+| 2 | 5V_MAIN | Indicator power supply from Stator; sourced from the Controller `J4` dock; powers LED anodes |
 | 3 | GND | Logic ground return only; no local GND_CHASSIS bond on Settings Board |
 | 4 | SDA | I²C data; shared Stator I²C-1 bus |
 | 5 | SCL | I²C clock; shared Stator I²C-1 bus |
@@ -416,7 +417,7 @@ automatic polling intervals.
 * Stator J_SERVO: 500mA max (servo motor)
 * Combined branch load: **740mA max**
 * The active Molex hybrid Stator dock remains comfortably above this branch load; the grouped `5V_MAIN`
-  path is no longer constrained by the retired 40-pin Samtec contact-count limit.
+  path fits comfortably within the available branch capacity.
 
 ---
 

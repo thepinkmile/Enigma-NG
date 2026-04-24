@@ -3,9 +3,9 @@
 **Status:** Draft
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
-**Version:** v0.2.0
+**Version:** v0.3.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-14
+**Last Updated:** 2026-04-20
 
 ## Overview
 
@@ -26,8 +26,9 @@ The following table lists every component category present in the assembled mach
 | Rotors | 30 | Individual rotor modules (shroud, bearings, encoder slots, ERM8 male headers) | `Rotor/Design_Spec.md` |
 | Stator Board | 1 | PCB backplane: rotor stack, JTAG hub, encryption routing, I²C expanders, servo | `Stator/Design_Spec.md` (Electronics) |
 | Rotor Actuation Assembly | 1 | Depression bar, pivot lever, actuation arm, sprung retention bar, servo motor | `Rotor_Actuation_Assembly/Design_Spec.md` |
-| HID Assembly | 1 | Keyboard panel, lightboard panel, HID Encoder PCB | `HID_Assembly/Design_Spec.md` |
-| Plugboard Assembly | 1 | Plugboard jack panel, Encoder PCBs (×2), patch cables | `Plugboard_Assembly/Design_Spec.md` |
+| Keyboard Assembly | 1 | Keyboard panel, key-switch harness, Encoder Module (`KBD_ENC`) | `Keyboard_Assembly/Design_Spec.md` |
+| Lightboard Assembly | 1 | Lightboard panel, indicator harness, Encoder Module (`LBD_DEC`) | `Lightboard_Assembly/Design_Spec.md` |
+| Plugboard Assembly | 1 | Two plugboard passes, four Encoder Modules, patch cables | `Plugboard_Assembly/Design_Spec.md` |
 | Reflector | 1 | Mandatory passive turnaround sub-assembly; reflection mapping is owned by the Stator CPLD | `Reflector/Design_Spec.md` |
 | Extension (optional) | 0–N | Extension board for multi-stack rotor configurations | `Extension/Design_Spec.md` |
 | Power Module | 1 | Standalone power supply sub-assembly (LTC3350, eFuse, INA219, supercaps) | `Power_Module/Design_Spec.md` |
@@ -51,19 +52,20 @@ steps are detailed in each referenced document; this section defines integration
 | 3 | Rotors (×30) | Build all 30 rotor modules. Verify ERM8 header alignment and encoder slot clearance before stacking. |
 | 4 | Rotor groups onto Stator | Press Rotor 1 ERM8 headers into Stator ERF8 sockets. Build the first 5-rotor group, then insert an Extension before each further 5-rotor group as required. Verify JTAG daisy-chain continuity at each group boundary. |
 | 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Stator J_SERVO. Verify SERVO_HOME switch actuation. |
-| 6 | HID Assembly | Build keyboard panel + lightboard panel + HID Encoder PCB. Connect IDC ribbon to Stator J4. |
-| 7 | Plugboard Assembly | Build plugboard jack panel + Encoder PCBs. Connect IDC ribbons to Stator J5/J6. |
-| 8 | Reflector | Install the mandatory passive Reflector sub-assembly at the far end of the final rotor group. Connect the 16-pin cable to Stator J7. Reflection-map selection remains Stator-CPLD-owned. |
-| 9 | Extension (if used) | Insert each Extension between 5-rotor groups: `Stator -> 5 rotors -> [Extension -> 5 rotors]* -> Reflector`. Each Extension reinjects clean 3V3_ENIG/GND to the next rotor group via J7 -> J5. |
-| 10 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Engage the TE PM dock cluster (`J1A/J1B/J1C`) to the Power Module, then mate the Molex Stator dock pair (`J2A/J2B` ↔ `J8A/J8B`). |
-| 11 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J_CFG. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
-| 12 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
+| 6 | Keyboard Assembly | Build keyboard panel + `KBD_ENC` Encoder Module. Connect IDC ribbon to the Stator keyboard encoder port. |
+| 7 | Lightboard Assembly | Build lightboard panel + `LBD_DEC` Encoder Module. Connect IDC ribbon to the Stator lightboard decoder port. |
+| 8 | Plugboard Assembly | Build both plugboard passes. Connect IDC ribbons to the four Stator plugboard ports (`PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`). |
+| 9 | Reflector | Install the mandatory passive Reflector sub-assembly at the far end of the final rotor group. Connect the 16-pin cable to Stator J10. Reflection-map selection remains Stator-CPLD-owned. |
+| 10 | Extension (if used) | Insert each Extension between 5-rotor groups: `Stator -> 5 rotors -> [Extension -> 5 rotors]* -> Reflector`. Each Extension reinjects clean 3V3_ENIG/GND to the next rotor group via J7 -> J5. |
+| 11 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Engage the TE PM dock cluster (`J1/J2/J3`) to the Power Module, then mate the Molex Stator dock pair (`J4/J5` ↔ `J11/J12`). |
+| 12 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J_CFG. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
+| 13 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
 
 > **Note on the JTAG Daughterboard (JDB):** The JDB is a PCB hat that mounts directly on the
 > Controller Board. It has no independent mechanical assembly step — it is installed as part of
 > Step 10 (Controller Board install) before the Controller is fitted in the Main Enclosure.
 > See `design/Electronics/JTAG_Daughterboard/Design_Spec.md` for electrical details.
-
+>
 ## Sub-Assembly Reference Table
 
 | Sub-Assembly | Document | Status |
@@ -71,7 +73,8 @@ steps are detailed in each referenced document; this section defines integration
 | Main Enclosure | `Main_Enclosure/Design_Spec.md` | Draft |
 | Rotor Actuation Assembly | `Rotor_Actuation_Assembly/Design_Spec.md` | Draft |
 | Rotor | `Rotor/Design_Spec.md` | Draft |
-| HID Assembly | `HID_Assembly/Design_Spec.md` | Draft |
+| Keyboard Assembly | `Keyboard_Assembly/Design_Spec.md` | Draft |
+| Lightboard Assembly | `Lightboard_Assembly/Design_Spec.md` | Draft |
 | Plugboard Assembly | `Plugboard_Assembly/Design_Spec.md` | Draft |
 | Power Module | `Power_Module/Design_Spec.md` | Draft |
 | Extension | `Extension/Design_Spec.md` | Draft |

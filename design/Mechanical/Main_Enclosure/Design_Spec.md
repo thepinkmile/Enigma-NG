@@ -3,15 +3,16 @@
 **Status:** Stub — pending detailed mechanical design
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
-**Version:** v0.1.0
+**Version:** v0.2.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-14
+**Last Updated:** 2026-04-20
 
 ## Overview
 
 Mechanical design specification for the main Enigma-NG enclosure. This encompasses the physical
-housing of the Controller Board, Stator Board, rotor stack, keyboard panel, lightboard panel, and
-the user-accessible Settings Board panel switches.
+housing of the Controller Board, Stator Board, rotor stack, the **Keyboard
+Assembly**, the **Lightboard Assembly**, and the user-accessible Settings Board
+panel switches.
 
 Content to be populated during detailed mechanical design phase.
 
@@ -64,4 +65,6 @@ See `design/Electronics/Controller/Design_Spec.md` (J_DSI1) and `design/Electron
 | `design/Electronics/Controller/Design_Spec.md` | Controller Board — DSI1 connector J_DSI1 for lid display |
 | `design/Electronics/Stator/Design_Spec.md` | Stator Board electrical specification — includes I²C interface to Settings Board |
 | `design/Electronics/Settings_Board/Design_Spec.md` | Settings Board electrical specification — panel switch and LED expanders |
+| `design/Mechanical/Keyboard_Assembly/Design_Spec.md` | Independent keyboard sub-assembly mounted into the enclosure |
+| `design/Mechanical/Lightboard_Assembly/Design_Spec.md` | Independent lightboard sub-assembly mounted into the enclosure |
 | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` | Complete system assembly including all sub-assemblies |

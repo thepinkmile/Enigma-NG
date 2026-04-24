@@ -38,7 +38,7 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 > * All power rails > 3 A: dedicated inner-layer copper pour mandatory in addition to surface traces.
 > * All GND returns: copper pour on dedicated inner layer(s); no GND path via single narrow trace.
 > * Widths above are minimums — wider is always preferred where board space allows.
-
+>
 ## 2. Manufacturing & Mask
 
 * **PCB Stackup:** System-wide 2oz Finished Copper (ensures zero voltage drop across links).
@@ -75,6 +75,20 @@ These rules apply to all boards in the Enigma-NG system unless a board's design 
 * **Bulk Entry Bank Rule:** All boards must place **5× 10µF X7R 50V** bulk decoupling capacitors at each power-entry connector in a **Symmetrical Star/Spoke pattern**.
   * Exception: The JTAG Daughterboard is exempt from this rule — see `JTAG_Daughterboard/Design_Spec.md` DR-JDB-11.
 
+### 3.1. Common RGB Sink-Stage Pattern
+
+Use this rule whenever an Enigma-NG board implements firmware-controlled RGB indicator cathode switching
+with discrete low-side devices.
+
+* **Device:** One `BSS138` N-channel MOSFET per switched colour rail.
+* **Source:** Tie directly to `GND`.
+* **Drain:** Connect to the switched colour cathode rail or equivalent shared LED return node.
+* **Gate drive:** Drive from the controlling logic output through a **1kΩ** series gate resistor.
+* **Gate bias:** Add a local gate pull-down resistor so the MOSFET defaults OFF during reset / startup.
+* **Logic behaviour:** GPIO HIGH = MOSFET ON = colour rail sinks to GND. GPIO LOW = MOSFET OFF = colour rail open.
+* **Board-local scope:** LED anode routing, series-resistor values, bank grouping, and any parallel
+  hardware override path remain board-specific and must be documented in the owning board design.
+
 ## 4. Mechanical Grounding
 
 * **Mounting Holes:** 3.2mm PTH for M3 screws.
@@ -89,6 +103,19 @@ These rules apply to all boards in the Enigma-NG system unless a board's design 
 * **Structural Ground:** Enclosure-connected boards shall keep their mechanical grounding features in
   the `GND_CHASSIS` domain. These features may be extended with local shield islands or EMI landing
   zones, but they must not create a local galvanic bond to signal/power `GND`.
+
+## 4.1. External Connector Face Alignment
+
+* **Global external-face rule:** Board-mounted external connectors that protrude through an enclosure
+  wall should target **2.0mm nominal overhang beyond the finished external face** unless a
+  board-specific design decision explicitly overrides that value.
+* **Intent:** This rule provides a common mechanical target for enclosure-accessible connectors now that
+  the Power Module enclosure rear face is itself part of the machine exterior, so legacy deeper
+  protrusion assumptions are no longer required.
+* **Tolerance / fit-check:** Final wall thickness, bezel geometry, gasket stack, and connector body
+  tolerances must still be verified during mechanical prototype fit-check.
+* **Exceptions:** Panel-mounted switches, LEDs, buttons, and any connector family whose datasheet
+  mechanically prevents a 2.0mm nominal overhang must be handled by explicit board-level documentation.
 
 ## 5. Single-Point GND ↔ GND_CHASSIS Bond (Global Rule)
 

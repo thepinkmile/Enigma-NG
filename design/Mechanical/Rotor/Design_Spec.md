@@ -108,7 +108,7 @@ components).
 
 > **Cross-reference:** `design/Electronics/Rotor/Rotor_64_Char_Design.md §7` for full bit
 > patterns.
-
+>
 ### 5.2 N=26 Rotor (single-track, Board A only)
 
 * **Track A** (5-bit STGC): milled into inner face of shroud **dish** (Board A side flange)

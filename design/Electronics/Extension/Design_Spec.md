@@ -48,7 +48,7 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 ## 2. Connectivity
 
 * **Extension Port (J7 IN / J8 OUT):** 16-pin 2×8 shrouded box header.
-  > **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
+  > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
   > This board uses the mating connector on both J7 and J8 (Adam Tech BHR-16-VUA — see BOM).
   > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
   > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
@@ -92,7 +92,6 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   * At 5 rotors per group connected via BtB (ERM8/ERF8), signal integrity analysis confirms this
     buffer interval is sufficient: 5 rotors × EPM570T100I5N input capacitance (≈6pF) + connector capacitance
     ≈ 30–40pF total load; well within the 50ns half-period at 10MHz TCK.
-
 * **GND_CHASSIS Single-Point Bond:** Per `design/Standards/Global_Routing_Spec.md §5`, the
   Extension board implements a local `GND_CHASSIS` net tied to its mounting holes and any
   deliberate enclosure-contact features, but it does **not** implement a local GND-to-GND_CHASSIS
@@ -105,8 +104,9 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   pin 15. TDI passes unbuffered board-to-board via BtB throughout the rotor stack — no series
   resistors are placed at each BtB hop. The JTAG chain terminates at the Reflector (R1 22 Ω
   end-of-chain damping). TTD_RETURN then returns from the Reflector to the Stator via the
-  dedicated Reflector J4 → Stator J7 ribbon cable. The 75 Ω series resistors on the Stator
-  (R7–R15) and Encoder boards (R7, R8) are for the **encoder ribbon cable ports** (J4–J6) only —
+  dedicated Reflector J4 → Stator J10 ribbon cable. The 75 Ω series resistors on the Stator
+  (R7–R12, R27–R32, R33–R38) and Encoder boards (R6) are for the **encoder ribbon cable ports**
+  (J4–J9) only —
   they are NOT placed on the BtB rotor stack interface. See
   `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
   TCK and TMS are actively re-buffered by U1 (see JTAG Signal Buffering above).

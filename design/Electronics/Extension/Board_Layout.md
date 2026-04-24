@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-20
 
 ---
 
@@ -35,8 +35,8 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 ---
 
 ## J7 — Extension Port IN (16-Pin 2×8)
-
-> **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
+>
+> **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J7. See BOM for part number.
 > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
 > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
@@ -44,15 +44,15 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 ---
 
 ## J8 — Extension Port OUT (16-Pin 2×8)
-
-> **Connector Definition Owner:** `Stator/Board_Layout.md — J7`.
+>
+> **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J8. Carries the same signals as J7, passed through.
 > See BOM for part number.
 
 ---
 
 ## J1–J6 — Rotor Interface Connectors (ERM8/ERF8 Family, 0.8mm Pitch)
-
+>
 > **Connector Definition Owner:** `Rotor/Design_Spec.md §3.4`.
 > J1–J3 are ERM8 male headers (input side — plug into previous rotor group's last rotor J4–J6 ERF8 outputs).
 > J4–J6 are ERF8 female sockets (output side — receive next rotor group's first rotor J1–J3 ERM8 male headers).

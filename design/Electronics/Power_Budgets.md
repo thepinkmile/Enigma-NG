@@ -3,15 +3,15 @@
 **Status:** Draft
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 ---
 
 ## Design Constraint Hierarchy
 
 1. **TPS75733KTTRG3 LDO** (Power Module U7): **3.0A maximum output** — hard limit, component not to be changed.
-2. **PM dock `J1A` 3V3_ENIG allocation:** `2 × 3V3_ENIG` contacts at 6A/contact — comfortably above the LDO limit.
-3. **Stator dock `J2B` 3V3_ENIG allocation:** `4 × 3V3_ENIG` large blades plus additional guarded-return capacity — connector is not the bottleneck, the LDO is.
+2. **PM dock `J1` 3V3_ENIG allocation:** `2 × 3V3_ENIG` contacts at 6A/contact — comfortably above the LDO limit.
+3. **Stator dock `J5` 3V3_ENIG allocation:** `4 × 3V3_ENIG` large blades plus additional guarded-return capacity — connector is not the bottleneck, the LDO is.
 4. **Available to Stator + Rotor stack:** LDO output minus Controller-local consumption (CM5 GPIO reference, pull-ups, and local housekeeping) ≈ 2.95A (Controller overhead ≤ 50mA).
 
 ---
@@ -120,8 +120,8 @@ being an unachievable worst-case peak).
 > External device loads (USB 3.0 + HDMI) plus the Stator-fed Settings Board + servo loads add 2.39 A, giving a system total of 9.50 A.
 > Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 9.50 A system total.
 >
-> **Stator dock 5V margin:** The Stator-facing 5V branch now uses four large `5V_MAIN` blades on the
-> dedicated Molex `J2A` dock, with additional return capacity in the companion ground blades / guards.
+> **Stator dock 5V margin:** The Stator-facing 5V branch uses four large `5V_MAIN` blades on the
+> dedicated Molex `J4` dock, with additional return capacity in the companion ground blades / guards.
 > The current downstream budget remains **0.74 A**, so the dock is not the limiting factor for
 > Stator-side 5V peripherals.
 

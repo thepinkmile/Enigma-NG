@@ -6,19 +6,14 @@ Stator FR/DR updates, Controller GPIO/LINK-BETA/I²C updates, Consolidated BOM a
 Power_Management software specification. Both streams were committed cleanly with zero markdownlint
 warnings. The Complete_System_Assembly was also expanded into a proper General Assembly reference.
 </overview>
-
 ## Commits This Session
-
 - `b4fdd9e` — `refactor(mechanical): restructure design/Mechanical/ to assembly-based folders`
 - `436e16a` — `Virtual Keyboard Feature + Basic Mechanical Design Refinements`
 
 ---
-
 ## History
-
 1. **User requested mechanical folder restructure** — current PCB-named structure (Stator/, Controller/, Encoder/ etc.)
    was misleading. Requested assembly-based structure matching how the machine is actually built.
-
 2. **Audit of all existing mechanical files:**
    - `Controller/Mechanical_Design.md` — real content (but actually describes Power Module, not Controller)
    - `Keyboard/Design_Spec.md` — real content (DPDT switches, key mapping); electrical detail to be restored to
@@ -26,7 +21,6 @@ warnings. The Complete_System_Assembly was also expanded into a proper General A
    - `Plugboard/Design_Spec.md` — real content (¼" jack sockets, harness); same strip/restore treatment
    - `Rotor/Design_Spec.md` — real content (rotor module: shroud, bearings, encoder slots); stays as-is
    - All others: pure stubs → deleted or replaced
-
 3. **Final mechanical structure agreed:**
    - `Rotor/` — rotor module mechanical spec (unchanged)
    - `Rotor_Actuation_Assembly/` — NEW: depression bar, keyboard levers, pivot lever & actuation arm,
@@ -40,11 +34,9 @@ warnings. The Complete_System_Assembly was also expanded into a proper General A
    - `Extension/`, `Reflector/` — kept as-is (stubs)
    - Deleted: `Controller/`, `Keyboard/`, `Plugboard/`, `Encoder/`, `Stator/`, `JTAG_Daughterboard/`
    - JDB: no separate mechanical spec; mentioned in Complete_System_Assembly as Controller hat
-
 4. **Electronics/Encoder/Design_Spec.md** — §6 key mapping and §7 jack-sensing electrical detail restored
    (had previously been incorrectly migrated out to the mechanical specs). Cross-references updated to
    new paths (HID_Assembly/, Plugboard_Assembly/).
-
 5. **CM5 key injection feature documentation** — DEC-031 and all 5 file updates applied:
    - Stator: FR-STA-10–13, DR-STA-12–15, I²C device table, SOURCE_SEL MUX note, servo connector, SERVO_HOME,
      5V_MAIN on LINK-BETA
@@ -56,11 +48,8 @@ warnings. The Complete_System_Assembly was also expanded into a proper General A
    - Complete_System_Assembly: expanded from stub to full General Assembly document
 
 ---
-
 ## Work Done
-
 ### Commits
-
 **b4fdd9e — Mechanical restructure:**
 - `design/Electronics/Encoder/Design_Spec.md` — §6/§7 electrical detail restored; cross-refs updated
 - `design/Mechanical/Rotor_Actuation_Assembly/Design_Spec.md` — new file (full mechanism spec)
@@ -80,11 +69,8 @@ warnings. The Complete_System_Assembly was also expanded into a proper General A
 - `design/Mechanical/Complete_System_Assembly/Design_Spec.md` — expanded to General Assembly
 
 ---
-
 ## Technical Decisions
-
 ### Mechanical Restructure
-
 - `Rotor/Design_Spec.md` stays separate (rotor module = most complex mechanical part)
 - `Rotor_Actuation_Assembly/` covers the full stepping mechanism:
   - Keyboard key levers (dangling lever on each of 64 keys)
@@ -95,9 +81,7 @@ warnings. The Complete_System_Assembly was also expanded into a proper General A
 - Controller/Mechanical_Design.md content moved to Power_Module/ (user confirmed it described PM)
 - JTAG Daughterboard: no separate mechanical assembly; noted as Controller hat in
   Complete_System_Assembly
-
 ### CM5 Key Injection Feature (DEC-031)
-
 | Component | Address | Location | Function |
 |:---|:---|:---|:---|
 | MCP23017 U_EXP1 | 0x20 | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
@@ -114,9 +98,7 @@ warnings. The Complete_System_Assembly was also expanded into a proper General A
 - I²C bus: 0x09, 0x0B, 0x20, 0x21, 0x28, 0x40, 0x45, 0x60 (no conflicts)
 
 ---
-
 ## Known Correct (do not re-flag)
-
 All items from checkpoint 032 remain correct, plus:
 
 - `design/Mechanical/` folder structure is now assembly-based (NOT PCB-named)
@@ -127,9 +109,7 @@ All items from checkpoint 032 remain correct, plus:
 - PCA9685 @ 0x60: A5=HIGH, A4–A0=GND (correct address wiring)
 
 ---
-
 ## Open Items
-
 - `kicad-setup-docs` (pending) — KiCad setup documentation (not started)
 - `rotor-single-side` (pending) — JLCPCB single-side placement constraint resolution
 - `rotor-detailed-design` (pending, blocked on rotor-single-side) — Rotor detailed design review
@@ -139,9 +119,7 @@ All items from checkpoint 032 remain correct, plus:
 - OWI-018: ENIG rib clearway bonding pad
 
 ---
-
 ## Next Steps
-
 1. **Discuss JLCPCB single-side constraint** — user has a resolution plan; agree approach, update
    Board_Layout.md and Design_Spec accordingly.
 2. **Relocate STGC_Generator.py** — move to `Rotor/`, update algorithm (relaxed unique-only).

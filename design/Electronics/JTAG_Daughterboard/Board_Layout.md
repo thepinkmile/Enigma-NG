@@ -42,7 +42,7 @@ _____________________________________________________________________________
 ```
 
 > **Connector Definition Owner:** This board. All other boards connecting to the JTAG Daughterboard cross-reference here.
-
+>
 ## JTAG Header Pinout (J2 — 10-Pin, Interleaved GND)
 
 ```text

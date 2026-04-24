@@ -1,22 +1,16 @@
 # Checkpoint 028 — DEC-029 supercap hold-up spec; eFuse & Extension U1 root causes fixed
-
 **Date:** 2026-04-14
 **Commit:** acae80d (and prior: c8b0bd4, cb0901c, f188851)
 **Session:** <sanitized-session-label>
 
 ---
-
 ## What Was Done
-
 ### Root cause analysis and permanent fixes for three recurring regressions
-
 Three bugs that had survived multiple review cycles were traced to root causes in the design
 documentation itself and fixed at source.
 
 ---
-
 ### 1. eFuse MPN regression (TPS259804ONRGER ↔ TPS259807)
-
 **Root cause:** Stored session memories contained TPS259807 as the "correct" part. The live
 design docs were already correct (TPS259804ONRGER throughout), but the conflicting memory
 caused future review agents to revert to TPS259807.
@@ -32,9 +26,7 @@ caused future review agents to revert to TPS259807.
 - `r52-review-prompt.txt`: Part Number Change Rule added as instruction #8.
 
 ---
-
 ### 2. Extension U1 buffer removal (SN74LVC2G125DCUR kept being flagged/removed)
-
 **Root cause:** `Extension/Design_Spec.md` §5 Thermal contained the phrase
 `"Passive components only."` — this caused review agents to conclude the Extension board had
 no active components and flag U1 as anomalous, leading to its removal in review fixes.
@@ -47,9 +39,7 @@ no active components and flag U1 as anomalous, leading to its removal in review 
 - `r52-review-prompt.txt` Stale Values: added same prohibition.
 
 ---
-
 ### 3. Supercap stale values (22F / 33F / 21.7 s)
-
 **Root cause:** When checkpoint 025 upgraded PM Design_Spec to Abracon 25F cells, six other
 files were not updated and continued to show the pre-Abracon 22F/33F/21.7s values. Review
 agents found the majority of docs saying 22F/33F and reverted PM Design_Spec to match.
@@ -72,9 +62,7 @@ agents found the majority of docs saying 22F/33F and reverted PM Design_Spec to 
 - `plan.md` and `r52-review-prompt.txt`: 22F/33F/21.7s added to Stale Values list.
 
 ---
-
 ### 4. DEC-029 — New authoritative supercap hold-up specification
-
 **Added to `Design_Log.md`:**
 
 - **DEC-004** status changed: `Decided` → `Superseded by DEC-029`
@@ -92,9 +80,7 @@ agents found the majority of docs saying 22F/33F and reverted PM Design_Spec to 
   - LTC3350 CELLS register = 0x01 (2 series cells) documented
 
 ---
-
 ## Files Modified
-
 - `design/Design_Log.md` — DEC-004/021 superseded; DEC-029 added; DEC-021 post-note added; DEC-004 cell ref updated
 - `design/Electronics/Extension/Design_Spec.md` — §5 "Passive components only" root cause fixed
 - `design/Electronics/Power_Module/Design_Spec.md` — Supercap cell lock block added to BOM Notes
@@ -105,8 +91,6 @@ agents found the majority of docs saying 22F/33F and reverted PM Design_Spec to 
 - `design/Standards/Certification_Evidence.md` — ≥21.7s → ≥24.8s
 - `.copilot/plan.md` — Stale Values list updated; Part Number Change Rule added
 - `.copilot/agent-prompts/r52-review-prompt.txt` — Stale Values updated; Part Number Change Rule added
-
 ## State
-
 markdownlint: **CLEAN** (0 warnings)
 Committed: `acae80d`

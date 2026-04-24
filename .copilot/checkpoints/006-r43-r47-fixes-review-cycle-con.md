@@ -11,25 +11,21 @@ This session continued the Enigma-NG electronics design documentation review cyc
    - Ran markdownlint --fix (auto-fixed MD004/MD032 in Encoder/Design_Spec.md and others)
    - Committed `1155015`
    - Launched R44
-
 2. **R44 completed — 1 finding**
    - Finding: Encoder/Design_Spec.md §3 signal flow code block referenced "Stator J2" (which is the Power connector, not ENC data). Should be "Stator J4/J5/J6, via J2 pin 2–7" / "Stator J4/J5/J6, via J2 pin 19–24"
    - Fixed and committed `c6daedb`
    - Launched R45
-
 3. **R45 completed — 3 findings**
    - Finding 1: Design_Log OWI-003 listed "Reflector (×1)" as a CPLD-owning board — Reflector is fully passive (no CPLD)
    - Finding 2: Design_Log DEC-017 stated Controller Board is the "sole exception" to the 4-layer rule — Power Module also uses JLC06161H-2116 (6-layer)
    - Finding 3: Cert_Evidence §3.4 load budget still had stale "Extension buffers (10mA)" row item (Extension board is passive); sum wrong (2,117mA → should be 2,107mA / 2.11A / 70.4%)
    - All three fixed and committed `fb8e3b9`
    - Launched R46
-
 4. **R46 completed — 1 finding**
    - Finding: Consolidated_BOM 0.1µF X7R 0402 decoupling cap row: EXT=1, Total=508 — stale from before C6 (U1 bypass) was deleted from Extension board
    - Fixed: EXT=—, Total=507
    - Committed `a68d373`
    - Launched R47
-
 5. **R47 completed — 2 findings** (session is mid-fix at compaction)
    - Finding 1: Cert_Evidence §3.5 peak load budget arithmetic error — rows sum to 8.76A (with corrected LDO) but total stated as 9.05A
    - Finding 2: Cert_Evidence §3.5 component utilisation table LDO row shows 2.20A/73.3% — stale; §3.4 (known-correct) gives 2.11A/70.4%
@@ -114,27 +110,20 @@ Correct recalculated values (using 2.11A LDO, rows sum properly):
   - Central certification evidence document; §3.3.3, §3.4, §3.5 all modified this session
   - **NEEDS FURTHER EDIT (R47 fix):** §3.5 lines 249–278: update LDO row (2.20A→2.11A), total (9.05A→8.76A), LMQ utilisation (75.4%→73.0%), eFuse row (4.82A/68.9%→4.67A/66.7%), remove † exceedance note, recalculate * eFuse footnote with 8.76A base, recalculate PoE supercap charge note
   - Lines 249–278 are the focus of R47 fixes
-
 - `design/Electronics/Extension/Design_Spec.md`
   - Extension board specification; fully cleaned of U1 buffer references this session
   - All stale FR/DR/BOM/§2/§4 U1 content removed; board correctly documented as passive pass-through
-
 - `design/Electronics/Extension/Board_Layout.md`
   - U1 JTAG BUFFER removed from ASCII art and trace width table
-
 - `design/Design_Log.md`
   - Master decision log; DEC-001–DEC-025 all use canonical format
   - OWI-003 corrected (no Reflector); DEC-017 updated (PM added as 6-layer exception)
-
 - `design/Electronics/Consolidated_BOM.md`
   - System-wide component count table; 0.1µF row corrected to EXT=—, Total=507
-
 - `design/Electronics/Encoder/Design_Spec.md`
   - §3 signal flow code block fixed; markdownlint style fixes applied (asterisks→dashes)
-
 - `.copilot/agent-prompts/r47-review-prompt.txt`
   - Contains full KNOWN CORRECT list through R46 fixes; base for R48 prompt
-
 - `.copilot/plan.md`
   - Session plan (may need update after cycle closes)
 </important_files>

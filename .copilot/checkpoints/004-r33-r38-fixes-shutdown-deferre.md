@@ -7,17 +7,13 @@ This session continued the Enigma-NG electronics design documentation review cyc
    - User_Manual L2 "differential" → "common-mode"
    - Cert_Evidence L2 row: "differential/common-mode 1kHz–30MHz" → "supplementary CM attenuation >10MHz; L1+L2 pair covers 1kHz–30MHz"
    - PM Board_Layout: removed L2 from USB-C per-input path; added L1→L2→L3 filter stage post-OR-ing in Power Flow ASCII
-
 2. **R39 launched** (still running when compaction triggered) — clean pass attempt 1
-
 3. **User asked about "shutdown daemon latency"** — explained the POLL_HZ=2 / ≤510ms change made autonomously overnight
-
 4. **User clarified software intent:**
    - The shutdown will NOT use polling — a custom Linux driver will use the BACKUP signal as a hardware interrupt
    - Explicitly stated: do not get hung up on software or mechanical specifics; these will be defined during the PoC stage
    - Requested that the polling implementation be replaced with a note that this is deferred to the software PoC stage
    - Requested a DEC entry in Design_Log.md marking this as a deferred design decision
-
 5. **Summary/compaction requested** — capture full state before context window clears
 </history>
 
@@ -29,25 +25,20 @@ Commits this session (since prior checkpoint `003`):
   - Board_Layout §Power Flow: ENIG strip 1.0mm → 1.5mm
   - Design_Spec §4 Iron Curtain: 17V → 16.9V voltage margin
   - Design_Spec §3.2 Startup Timeline: 11–17V → 11–16.9V
-
 - `b9acd79` — R34 fixes: INA219 rotor code corrections
   - CONFIG_VALUE: 0x219F (PGA/1 ±40mV wrong) → 0x9F29 (byte-swapped 0x299F = PGA/2 ±80mV)
   - CAL write: 0x0400 → 0x0004 (big-endian swap for smbus2)
   - Current read: added byte-swap consistent with PM INA219 code
-
 - `942e8d0` — R35 fixes: Design_Log DEC-014/015 narrative + INA219 Firmware Note
   - DEC-014 body: J2 corrected ERF8-040→ERF8-020; Stator J1→J8; ERM8-040→ERM8-020
   - DEC-015 Affects: Stator Board J1→J8
   - Power_Management Firmware Note: CAL prose updated to cite 0x0004 (not 0x0400)
-
 - `6e60ebc` — R36 fixes: DEC cross-ref, supercap per-cell F, PM INA219 CONFIG write
   - Controller Design_Spec §2.1: DEC-007→DEC-014
   - PM Board_Layout ASCII: 33F×6 cells → 22F×6 cells (22F/cell; 33F is total bank)
   - Power_Management PM INA219: added missing CONFIG write (0x9F31 = PGA/4 ±160mV)
-
 - `b3ec41b` — R37 fix: Rotor J2 ERM8 pin current 2.2A/pin → 0.5A/pin
   - Rotor Design_Spec §3.4: 5 pins × 0.5A/pin = 2.5A (system-wide Samtec derating)
-
 - `a5fa1b5` — R38 fixes: L1/L2 CMC topology, CM vs differential labels
   - User_Manual §3.3: L2 "differential" → "common-mode"
   - Cert_Evidence §4.1: L2 row corrected
@@ -146,42 +137,32 @@ Commits this session (since prior checkpoint `003`):
   - Master log of DEC/INC/QUE entries; cross-reference source of truth
   - DEC-014/015 narrative fixed (connector designators and part numbers)
   - Needs new DEC-025 entry for deferred shutdown mechanism decision
-
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Core PM spec; eFuse, supercap, filter topology
   - Fixed: 17V → 16.9V in §4 and §3.2; rib clearway 1.0mm → 1.5mm
-
 - `design/Electronics/Power_Module/Board_Layout.md`
   - PM board layout including Power Flow and input source ASCII diagrams
   - Fixed: pre-reg label 7-17V → 11–16.9V; 33F×6 → 22F×6; L1/L2 moved post-OR-ing; L2 removed from USB-C path
-
 - `design/Electronics/Encoder/Design_Spec.md`
   - Fully rewritten earlier in session (two-half architecture)
   - Stale ESD bullet removed in §8
-
 - `design/Electronics/Rotor/Design_Spec.md`
   - J2 pin current fixed: 2.2A/pin → 0.5A/pin = 2.5A capacity
-
 - `design/Electronics/Controller/Design_Spec.md`
   - §2.1 DEC cross-ref: DEC-007 → DEC-014
   - (DEC-TBD) correctly annotated for 3V3_ENIG tap
-
 - `design/Software/Linux_OS/Power_Management.md`
   - Contains placeholder Python daemon code (NOT final implementation)
   - INA219 rotor code fixed: CONFIG 0x9F29, CAL 0x0004, byte-swap on read
   - PM INA219 code fixed: CONFIG write 0x9F31 added; Firmware Note updated
   - NEEDS UPDATE: replace polling daemon section with interrupt-driven placeholder + DEC-025 reference
-
 - `design/Guides/User_Manual.md`
   - L2 description fixed: "differential" → "common-mode"
-
 - `design/Standards/Certification_Evidence.md`
   - L2 row in §4.1 fixed: correct CM-only description
-
 - `.copilot/plan.md`
   - Canonical session plan (in repo root, gitignored)
   - Needs updating after clean passes and checkpoint save
-
 - `.copilot/checkpoints/index.md`
   - Needs checkpoint `004` entry after clean passes complete
 </important_files>

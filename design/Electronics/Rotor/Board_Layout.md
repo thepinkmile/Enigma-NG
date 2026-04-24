@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-14
+**Last Updated:** 2026-04-20
 
 For mechanical tolerances and shroud assembly details, see
 `design/Mechanical/Rotor/Design_Spec.md`.
@@ -152,7 +152,7 @@ Board B faces the output (downstream) side of the rotor stack.
 ---
 
 ## Rotor Interface Connectors
-
+>
 > **Connector Definition Owner:** This board. All other boards hosting rotor interface connectors
 > (Stator J1–J3, Extension J1–J6, Reflector J1–J3) cross-reference here.
 
@@ -163,7 +163,7 @@ These three connectors must be **positionally identical** across every board tha
 > **⚠️ Note:** The earlier draft signal maps (ENC-IN, ENC-OUT, PWR/JTAG with 8-pin and 14-pin tables)
 > have been removed. All connector definitions now live exclusively in `Rotor/Design_Spec.md §3.4`.
 > Use the Design_Spec §3.4 tables for all schematic and PCB layout work.
-
+>
 ### Connector Summary
 
 Each rotor carries **six connectors** — three male ERM8 headers on the input side (J1–J3) and three female
@@ -182,7 +182,7 @@ ERF8 sockets on the output side (J4–J6). See `Rotor/Design_Spec.md §3.4` for 
 
 TTD (JTAG Transmission Data) does not chain back through the Extension Port individually per rotor. Each
 rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Rotor J1 pin 6. Only **Rotor 30**
-(last in chain) routes its TDO via the Reflector back to Stator J7 pin 15 as TTD_RETURN.
+(last in chain) routes its TDO via the Reflector back to Stator J10 pin 15 as TTD_RETURN.
 
 ---
 

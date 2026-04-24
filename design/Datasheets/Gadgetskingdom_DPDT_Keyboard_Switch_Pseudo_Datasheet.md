@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v0.1.0
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-04-20
 **Source Listing:** eBay item `365271584375`
 **Seller:** `gadgetskingdom`
 **Brand Shown on Listing:** `uxcell`
@@ -26,7 +26,7 @@ component qualification trail is not available.
 
 ## 2. Intended Enigma-NG Use
 
-- **Assembly:** `design/Mechanical/HID_Assembly/Design_Spec.md`
+- **Assembly:** `design/Mechanical/Keyboard_Assembly/Design_Spec.md`
 - **Board interface:** `design/Electronics/Encoder/Design_Spec.md`
 - **Function:** HID keyboard switch for the QWERTY-derived 40-position operator panel
 - **System quantity:** 40 switches total

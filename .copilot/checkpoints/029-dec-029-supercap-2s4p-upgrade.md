@@ -6,16 +6,13 @@ This session focused on diagnosing and permanently fixing three recurring regres
 
 1. **User asked for a summary of the session reviews before continuing**
    - Agent confirmed clean state from prior session (commit `77ea120`), J_INT 4-header redesign and POS_B naming complete, all connector MPNs confirmed
-
 2. **User asked why the eFuse MPN keeps changing (TPS259804 ↔ TPS259807)**
    - Agent found live docs already correctly show TPS259804ONRGER; the confusion was in stale session memories
    - Added `⚠️ eFuse variant lock` block to PM/Design_Spec.md BOM notes and Design_Log DEC-005 with comparison table (04=correct 16.9V OVLO, 07=wrong no OVLO, 03=wrong no OVLO)
    - Added "Part Number Change Rule" to plan.md and r52-review-prompt.txt: datasheet must exist in `design/Datasheets/` before any MPN change
-
 3. **User confirmed eFuse MPN is TPS259804ONRGER (cut-tape, with R suffix)**
    - Session had briefly changed to ONRGE (without R), then user confirmed ONRGER is correct
    - Reverted and confirmed ONRGER throughout all files; variant lock notes retained
-
 4. **User asked to investigate supercap stale values and Extension U1 removal root causes**
 
    **Extension U1 root cause found:**
@@ -26,24 +23,20 @@ This session focused on diagnosing and permanently fixing three recurring regres
    - Checkpoint 025 (Abracon selection) updated PM/Design_Spec.md but left stale 22F/33F/21.7s in 6 other files
    - Review agents found the majority of docs saying 22F/33F and "corrected" PM/Design_Spec back to match
    - Stale value sweep: updated User_Manual, Power_Management, Boards_Overview, Certification_Evidence, PM/Board_Layout, Design_Log DEC-004
-
 5. **User confirmed 2S3P configuration and asked to add supercap lock notes**
    - Added `⚠️ Supercap cell lock` block to PM/Design_Spec.md BOM notes (25F/37.5F/24.8s)
    - Added post-decision note to DEC-021 recording the Abracon upgrade from 22F to 25F
    - Added 22F/33F/21.7s to Stale Values in plan.md and r52-review-prompt.txt
    - Added "Passive components only" Extension §5 to Stale Values list
-
 6. **User asked to create DEC-029 as the authoritative supercap hold-up spec, obsolete DEC-004 and DEC-021**
    - DEC-004 marked: `Superseded by DEC-029` (0.5A charge current constraint retained)
    - DEC-021 marked: `Superseded by DEC-029` (2S3P arrangement retained; cell cap upgraded)
    - DEC-029 created with 2S3P, 5W load, conservative and realistic hold-up models
    - Committed `acae80d`, checkpoint 028 created
-
 7. **User pointed out 5W load is wrong — CM5 draws 3A minimum at 5V = 15W**
    - Agent recalculated: at 15W, 2S3P (37.5F) conservative (pure-buck) = 8.2s ❌ FAILS
    - Realistic (boost to 2.0V, 80% eff): 25.2s ✅ — passes but only 26% margin
    - 2S4P (50F) at 15W: 33.5s ✅ — 68% margin; user selected upgrade to 2S4P
-
 8. **User asked to update DEC-029 with the 15W load clarification and 2S4P configuration**
    - DEC-029 completely rewritten with: 2S4P (8 cells, 50F), 15W load, explicit "correct load figure" warning block, full sensitivity table (48% min efficiency still passes), updated footprint (41×81mm shadow zone), charge time ~9 min
    - **This edit is committed to Design_Log.md only — cascade to all other docs is IN PROGRESS, not yet done**
@@ -161,41 +154,31 @@ After all edits: run markdownlint, commit, create checkpoint 029.
   - DEC-029 is the most recently edited section (~line 1210+); **already updated to 2S4P/15W**
   - DEC-029 includes: configuration table, correct load explanation, conservative + realistic models, sensitivity table, rationale, constraints
   - DEC-005 eFuse variant lock block also present
-
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Primary PM spec; contains FR-PM-02/07, DR-PM-07/09, §1 supercap block, §2 storage, §3 sequencing, BOM lock block, BOM table
   - **Still shows 2S3P/37.5F/24.8s/5W/6-cell throughout — ALL must be updated to 2S4P/50F/33.5s/15W/8-cell**
   - BOM Notes lock block (near line 531+) also needs 2S4P update
   - BOM table row `C_SC1–6` needs renaming to `C_SC1–8`
-
 - `design/Electronics/Power_Module/Board_Layout.md`
   - ASCII supercap block still shows 2×3 (6 cells); needs 2×4 (8 cells) row added
   - Power chain line still shows 37.5F; needs 50F
   - Shadow zone 41×61mm needs updating to 41×81mm
-
 - `design/Electronics/Extension/Design_Spec.md`
   - §5 Thermal root cause fixed (U1 active IC note + NEVER REMOVE warning)
   - No further changes needed
-
 - `design/Electronics/Consolidated_BOM.md`
   - C_SC row shows 6 cells (Qty=6); needs updating to 8 cells
-
 - `design/Guides/User_Manual.md`
   - §3.6: shows 37.5F/24.8s/6 cells — needs 50F/33.5s/8 cells; "3 min" charge → "9 min"
-
 - `design/Software/Linux_OS/Power_Management.md`
   - Timeline table: ≥24.8s (×2) → ≥33.5s
-
 - `design/Electronics/Boards_Overview.md`
   - PM description: "37.5F (6×... 2S3P), ≥24.8s" → "50F (8×... 2S4P), ≥33.5s"
-
 - `design/Standards/Certification_Evidence.md`
   - "≥24.8 seconds" → "≥33.5 seconds"
-
 - `.copilot/plan.md`
   - Stale Values needs: 37.5F, 24.8s, 2S3P, 6-cell, C_SC1–6, 5W load, 3-min charge → stale
   - Correct values: 50F, 33.5s, 2S4P, 8-cell, C_SC1–8, 15W load, 9-min charge
-
 - `.copilot/agent-prompts/r52-review-prompt.txt`
   - Same stale values update needed
 
@@ -217,23 +200,14 @@ After all edits: run markdownlint, commit, create checkpoint 029.
    - §3 Sequencing step 5: ≥24.8s → ≥33.5s
    - BOM Notes supercap lock block: 2S3P/6 cells/37.5F/24.8s → 2S4P/8 cells/50F/33.5s/15W
    - BOM table: C_SC1–6/2S3P/6× → C_SC1–8/2S4P/8×
-
 2. **`PM/Board_Layout.md`**: ASCII 2×3 → 2×4; labels 37.5F/6 cells → 50F/8 cells; shadow zone 41×61→41×81; power chain 37.5F→50F
-
 3. **`User_Manual.md`**: 6 cells/25F×6/37.5F/24.8s/3 min → 8 cells/25F×8/50F/33.5s/9 min
-
 4. **`Power_Management.md`**: ≥24.8s → ≥33.5s (×2 in timeline table)
-
 5. **`Boards_Overview.md`**: 37.5F/6×/2S3P/24.8s → 50F/8×/2S4P/33.5s
-
 6. **`Certification_Evidence.md`**: ≥24.8 seconds → ≥33.5 seconds
-
 7. **`Consolidated_BOM.md`**: C_SC Qty 6 → 8
-
 8. **`plan.md`**: add 37.5F/24.8s/2S3P/6-cell/5W/C_SC1–6/3-min-charge to Stale Values; update correct values
-
 9. **`r52-review-prompt.txt`**: same stale values update
-
 10. **Run markdownlint** (fix then clean check), **commit all**, **create checkpoint 029**
 
 </next_steps>

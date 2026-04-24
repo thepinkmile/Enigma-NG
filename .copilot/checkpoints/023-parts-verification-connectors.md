@@ -4,7 +4,6 @@ The session is focused on completing a master parts list verification for the En
 
 <history>
 1. **Session resumed from checkpoint 022** — user completed parts verification #1–#27 (ICs/active devices) in the prior session. All corrections were applied in commit `70689cf`: FDC2114RGER→FDC2114RGHR globally, TPD1E10B06→TPD1E10B06DYARQ1 SOD-523, TPD4E05U06DRYR marked invalid, LTC3350/TPS25751/FT232H/EPM570 PNs corrected, Consolidated_BOM §11 datasheet links updated to local PDFs. Reprinted list from #28 onward was provided.
-
 2. **User provided connector PN corrections (#67–#86):**
    - ERM8-040: DigiKey SAM8613CT-ND (was wrongly SAM8621CT-ND), JLCPCB C5358550
    - ERF8-040: confirmed SAM8621CT-ND, C3640808
@@ -18,27 +17,22 @@ The session is focused on completing a master parts list verification for the En
    - 1×5 and 1×10 2.54mm Female IDC (JDB J1/J2): **no suitable part found** — flagged for redesign
    - User also added new datasheets: ERM8 series, ERF8 series, Amphenol CM5 socket, Molex 48406, TE 2007435-1, GCT USB4135, Würth 7499111121A
    - Agent applied all changes across 9 files (commit `75402d4`), §11 expanded with 7 new datasheet links
-
 3. **TPS25751DREFR package confirmed WQFN-38 (review item I):**
    - User confirmed package is WQFN-38 — already correct in docs
    - Agent fixed stale DigiKey PN `TPS25751DREFR-ND` → `296-TPS25751DREFRCT-ND` in PM/Design_Spec.md and Design_Log.md
    - Lint error introduced and fixed (line too long); commit `953e033`
-
 4. **Footprint warning language removed (review item I clarified):**
    - User clarified KiCad projects not started yet — footprint warnings premature
    - All ⚠️ "schematic symbol and PCB footprint update required" language removed from 4 locations
    - Package retained as informational note only; commit `b3e1800`
-
 5. **FDC2114RGHR MOQ (review item K) closed:**
    - User confirmed JLCPCB assembly will be used — MOQ 4500 at Mouser/DigiKey is irrelevant
    - No doc changes needed; item closed
-
 6. **TPD4E05U06 variant selected (review item A):**
    - User provided: MPN = **TPD4E05U06QDQARQ1**, DigiKey = 296-40696-1-ND, Mouser = 595-PD4E05U06QDQARQ1, JLCPCB = C81353
    - Updated PM D3/D4/D5 and CTL U4 BOM rows, Consolidated_BOM summary row, §11 datasheet row, Design_Log INC-22
    - Agent noted Mouser PN appeared to be missing leading "T"; user confirmed it is correct as-is (copied directly from Mouser)
    - Commit `1d5e969`
-
 7. **Supercap replacement research (review item B):**
    - Tecate SCMT32C156PRBA0 confirmed as non-existent/unavailable
    - Required specs established from design docs: **22F, 2.7V per cell, SMD, 6 cells in 2S3P**, LTC3350-managed, ESR as low as possible, −40°C to +65°C operating range, footprint ~32mm diameter can SMD
@@ -120,19 +114,15 @@ Currently in progress:
   - §1 Component summary table: TPD4E05U06QDQARQ1 and all corrected MPNs
   - Line ~67: supercap row (still TBD PNs for replacement part)
   - Line ~133: Critical Spares section references supercap
-
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Contains supercap bank spec (lines ~87–89): 22F/2.7V, 2S3P, 33F/5.4V, 108.6J hold-up
   - Line ~441: C_SC1–6 BOM row — PNs still TBD pending supercap selection
   - Lines ~444–446: D3/D4/D5 now TPD4E05U06QDQARQ1 ✅
-
 - `design/Electronics/Controller/Design_Spec.md`
   - Line ~503: U4 now TPD4E05U06QDQARQ1 ✅
-
 - `design/Design_Log.md`
   - INC-22: TPD4E05U06QDQARQ1 confirmed ✅
   - DEC-012: TPS25751DREFR WQFN-38 note cleaned up
-
 - `design/Datasheets/`
   - 33 PDFs now tracked in git
   - Still missing: supercap datasheet (pending part selection), TPD4E05U06QDQARQ1 datasheet

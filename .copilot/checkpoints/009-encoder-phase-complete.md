@@ -9,26 +9,18 @@ Next phase: Rotor detailed design review.
 1. **R50 — 18 findings (commit 91a5d7a)**
    - GPIO 20/24 swap (SW_LED_CTRL/POE_STAT) not fully propagated — fixed in 9 files.
    - Stale LDO load 2.20A→2.11A missed in 8 further files during R47-R48.
-
 2. **R51 — 3 findings (commit 9b59cf7)**
    - Stale 2.20A LDO stragglers in CTL Board_Layout, PM Board_Layout, Power_Management.
-
 3. **R52 — CLEAN**
-
 4. **R53 — 7 findings (commit 75ef11b)**
    - Power_Budgets.md: stale 2.20A LDO across 6 locations.
    - Power_Budgets.md: CSS2H INA219 shunt resistor build quantity 2→3 (PM R12 was missing).
-
 5. **R54 — 1 lint fix (commit 4f85402)**
    - MD013 line too long in Power_Budgets.md introduced by R53 edit. Wrapped.
-
 6. **R55 — 1 finding (commit 71e594e)**
    - GPIO 20/24 swap in design/Guides/Maintenance_Guide.md (not in R50 sweep).
-
 7. **R56 — CLEAN**
-
 8. **R57 — CLEAN** — second consecutive clean pass. Encoder phase formally complete.
-
 9. **INC-24 added to Design_Log (commit 5bb3d79)**
    - Encoder detailed design review phase marked complete.
 </history>

@@ -1,5 +1,4 @@
 # Checkpoint History
-
 Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, higher numbers are more recent.
 
 > Note: checkpoint files `034-settings-board-panel-switch-re.md` and

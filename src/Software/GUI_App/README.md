@@ -36,11 +36,13 @@ dotnet run
 To create a self-contained executable for Raspberry Pi CM5:
 
 ### Using Publish Profile (Recommended)
+
 ```bash
 dotnet publish /p:PublishProfile=Properties\PublishProfiles\linux-arm64.pubxml
 ```
 
 ### Using Command Line
+
 ```bash
 dotnet publish -c Release -r linux-arm64 --self-contained --single-file --trimmed --ready-to-run
 ```

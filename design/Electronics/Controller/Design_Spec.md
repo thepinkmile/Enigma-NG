@@ -12,7 +12,7 @@
 ## 1. Overview
 
 The Controller Board is a custom carrier board for the Raspberry Pi Compute Module 5 (CM5), providing the
-central processing and supervisory function for the Enigma-NG system. It is now the fixed mechanical
+central processing and supervisory function for the Enigma-NG system. It is the fixed mechanical
 motherboard of the enclosure: the removable Power Module and Stator daughtercards both dock into the
 Controller, and all enclosure-edge I/O is grouped on the Controller side.
 
@@ -22,8 +22,9 @@ Controller, and all enclosure-edge I/O is grouped on the Controller side.
 * **Shielding:** High-speed signals (Ethernet, USB 3.0, HDMI) routed as Striplines on L3, shielded by L2/L5 GND planes
   and L4 (Internal) for High-Current Power Plane (5V_MAIN / 3V3_ENIG).
 * **RJ45 / PoE:** Ethernet entry, magnetics, ESD, and the PoE front-end are hosted locally on the Controller.
-* **USB-C:** High-power USB-C input remains on the Power Module; the Controller receives the regulated system rails from the PM dock.
-* **Status LED:** The SW1 RGB hardware boot flash still originates on the Power Module, but runtime colour control is now virtualised through the PM-local I2C expander.
+  The PoE front-end delivers its regulated auxiliary output to the Power Module over `J2`.
+* **Power from PM:** The Controller receives `5V_MAIN` and `3V3_ENIG` from the Power Module over `J1`.
+* **Status LED:** The Controller can override the PM status LED with full-colour control via the I2C connection over `J3`.
 
 ### GND_CHASSIS Single-Point Bond
 
@@ -41,12 +42,12 @@ source is active.
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-CTL-01 | Host the Raspberry Pi Compute Module 5 as the system master processor | CM5 runs the Linux OS and all application logic | BOM U1 (CM5) |
-| FR-CTL-02 | Receive regulated rails from the Power Module and distribute them to the CM5, Stator, and local peripherals | Via PM dock `J1A` and Stator docks `J2A/J2B` | §2 Dock Interfaces; BOM J1A–J1C, J2A/J2B |
-| FR-CTL-03 | Provide the system's enclosure-edge external I/O interfaces | GbE / PoE entry, HDMI, USB 3.0 | §8 Connectivity; BOM J3, J4, J5 |
-| FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and the `J2B` Stator logic dock | §3 JTAG Programming Subsystem; BOM J2A, J2B |
-| FR-CTL-05 | Monitor system power and PM status via I²C, with only essential direct PM handshakes kept as dedicated pins | Telemetry: LTC3350 @ 0x09, STUSB4500 @ 0x28, PCA9534A @ 0x3F, INA219 ×2 (PM U12 @ 0x40; Stator U2 @ 0x45); Direct handshakes: `PWR_GD`, `ROTOR_EN`, `PWR_BUT` | §4 Telemetry & Logic; §6 CM5 GPIO Mapping Matrix |
+| FR-CTL-02 | Receive regulated rails from the Power Module and distribute them to the CM5, Stator, and local peripherals | Via PM dock `J1` and Stator docks `J4/J5` | §2 Dock Interfaces; BOM J1–J3, J4/J5 |
+| FR-CTL-03 | Provide the system's enclosure-edge external I/O interfaces | GbE / PoE entry, HDMI, USB 3.0 | §8 Connectivity; BOM J6, J7, J8 |
+| FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and the `J5` Stator logic dock | §3 JTAG Programming Subsystem; BOM J4, J5 |
+| FR-CTL-05 | Monitor system power and PM status via I²C, with only essential direct PM handshakes kept as dedicated pins | Telemetry: LTC3350 @ 0x09, STUSB4500 @ 0x28, PCA9534A @ 0x3F, INA219 ×2 (PM U12 @ 0x40; Stator U2 @ 0x45); Direct handshakes: `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `LED_nPWR` | §4 Telemetry & Logic; §6 CM5 GPIO Mapping Matrix |
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
-| FR-CTL-07 | Route power, JTAG, and I²C between the Controller and the Stator board | Via `J2A/J2B` hybrid docks | §2 Dock Interfaces; BOM J2A/J2B |
+| FR-CTL-07 | Route power, JTAG, and I²C between the Controller and the Stator board | Via `J4/J5` hybrid docks | §2 Dock Interfaces; BOM J4/J5 |
 | FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J_DSI1) on Controller Board; display add-on board to be designed separately | §8 Connectivity; BOM J_DSI1 |
 
 #### Design Requirements
@@ -55,16 +56,15 @@ source is active.
 | :--- | :--- | :--- | :--- |
 | DR-CTL-01 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §9 PCB Fabrication & Stackup |
 | DR-CTL-02 | CM5 module | Raspberry Pi Compute Module 5 (SO-DIMM form factor). Multiple current CM5 variants are acceptable. Minimum spec: 4 GB RAM and 8 GB eMMC; on-board Wi-Fi may be fitted or omitted. CM5 Lite (no onboard eMMC) is NOT permitted. BOM reference: various CM5 SKUs. | BOM U1 |
-| DR-CTL-03 | Controller-to-Power-Module dock connectors | `J1A/J1B/J1C` = TE `1-1674231-1` 10-position 2.5mm receptacles | BOM J1A–J1C |
-| DR-CTL-04 | Controller-to-Stator dock connectors | `J2A/J2B` = Molex `2195630015` hybrid receptacles (5 power + 15 signal) | BOM J2A, J2B |
-| ~~DR-CTL-05~~ | ~~Reserved / deleted~~ | ~~—~~ | ~~—~~ |
-| DR-CTL-06 | USB current limit | 1.6 A via TPS2065C; fault output to GPIO 22 (USB_FAULT) | BOM U2 (TPS2065C); §6 GPIO Mapping (GPIO 22) |
-| DR-CTL-07 | RTC battery holder | BT1 = Keystone 3034TR (THT horizontal CR2032 holder; `TR` = tape-reel packaging) | §5 RTC Backup Battery; BOM BT1 (Keystone 3034TR) |
-| DR-CTL-08 | RTC protection | D1 = BAT54 Schottky diode (blocks PMIC VBAT charge path) | §5 RTC Backup Battery; BOM D1 (BAT54) |
-| DR-CTL-09 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 95, Hirose DF40 200-pin) | §5 RTC Backup Battery; BOM C6 |
-| DR-CTL-10 | PM status / SW1 LED interface | Controller must expose the shared `I2C-1` bus plus one optional interrupt input (`PM_IO_INT_N`) to the PM-local `PCA9534A @ 0x3F`, which virtualises `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, `SYS_FAULT`, and runtime `SW_LED_R/G/B + SW_LED_CTRL`. | §4.1 I²C Bus Topology; §6 CM5 GPIO Mapping Matrix |
-| DR-CTL-11 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
-| DR-CTL-12 | DSI1 connector | J_DSI1 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J_DSI1 |
+| DR-CTL-03 | Controller-to-Power-Module dock connectors | `J1/J2/J3` = TE `1-1674231-1` 10-position 2.5mm receptacles | BOM J1–J3 |
+| DR-CTL-04 | Controller-to-Stator dock connectors | `J4/J5` = Molex `2195630015` hybrid receptacles (5 power + 15 signal) | BOM J4, J5 |
+| DR-CTL-05 | USB current limit | 1.6 A via TPS2065C; fault output to GPIO 6 (USB_FAULT) | BOM U2 (TPS2065C); §6 GPIO Mapping (GPIO 6) |
+| DR-CTL-06 | RTC battery holder | BT1 = Keystone 3034TR (THT horizontal CR2032 holder; `TR` = tape-reel packaging) | §5 RTC Backup Battery; BOM BT1 (Keystone 3034TR) |
+| DR-CTL-07 | RTC protection | D1 = BAT54 Schottky diode (blocks PMIC VBAT charge path) | §5 RTC Backup Battery; BOM D1 (BAT54) |
+| DR-CTL-08 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 76, Hirose DF40 200-pin) | §5 RTC Backup Battery; BOM C6 |
+| DR-CTL-09 | PM status / SW1 LED interface | Controller must expose the shared `I2C-1` bus plus one optional interrupt input (`PM_IO_INT_N`) to the PM-local `PCA9534A @ 0x3F`, which virtualises `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, `SYS_FAULT`, and runtime `SW_LED_R/G/B + SW_LED_CTRL`. | §4.1 I²C Bus Topology; §6 CM5 GPIO Mapping Matrix |
+| DR-CTL-10 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
+| DR-CTL-11 | DSI1 connector | J_DSI1 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J_DSI1 |
 
 ## 2. Dock Interfaces
 
@@ -72,90 +72,55 @@ The Controller is the fixed motherboard of the enclosure and carries both remova
 
 ### 2.1. Controller ↔ Power Module Dock
 
-The legacy Samtec Link-Alpha interface is retired. The active PM dock uses three TE 10-position,
-2.5 mm connectors:
-
-* **Controller side:** `1-1674231-1`
-* **Power Module side:** `1123684-7`
-
-**Reference PDFs:** [`TE-1-1674231-1-datasheet.pdf`](../../Datasheets/TE-1-1674231-1-datasheet.pdf),
-[`TE-1123684-7-datasheet.pdf`](../../Datasheets/TE-1123684-7-datasheet.pdf)
-
-| Link | Allocation | Notes |
-| :--- | :--- | :--- |
-| `J1A` | `3 × 5V_MAIN`, `2 × 3V3_ENIG`, `5 × GND` | Main regulated-rail feed from PM to Controller |
-| `J1B` | `3 × VIN_POE_12V`, `7 × GND` | Regulated PoE-derived auxiliary feed from Controller PoE front-end into PM OR-ing stage |
-| `J1C` | `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `4 × GND` | Low-speed control / telemetry |
-
-`5V_MAIN` and `3V3_ENIG` both enter the Controller on `J1A`. The Controller then distributes those rails
-to the CM5, local peripherals, and the Stator docks.
+The Controller connects to the Power Module through the `J1` / `J2` / `J3` TE dock set.
+See §8.1 for the connector family, link allocations, reference PDFs, and the `J2`
+current-sharing rationale.
 
 ### 2.2. Controller ↔ Stator Dock
 
-The legacy Samtec Link-Beta interface is retired. The active Stator dock uses two Molex EXTreme
-Guardian HD hybrid connectors:
+The Controller connects to the Stator through the `J4` / `J5` Molex hybrid dock pair.
+See §8.2 for the connector family, link allocations, reference PDFs, and the `J5`
+logic-domain grouping rationale.
 
-* **Controller side:** `2195630015` receptacles
-* **Stator side:** `2195620015` plugs
+### 2.3. CM5 Module Under-Body Placement Envelope
 
-**Reference PDFs:** [`Molex-2195630015-datasheet.pdf`](../../Datasheets/Molex-2195630015-datasheet.pdf),
-[`Molex-2195630015-drawings.pdf`](../../Datasheets/Molex-2195630015-drawings.pdf),
-[`Molex-2195620015-datasheet.pdf`](../../Datasheets/Molex-2195620015-datasheet.pdf),
-[`Molex-2195620015-drawings.pdf`](../../Datasheets/Molex-2195620015-drawings.pdf),
-[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf)
+The area directly beneath the mounted CM5 module (55mm × 40mm footprint) shall observe a
+**height-limited placement envelope** rather than a total component keep-out:
 
-| Link | Allocation | Notes |
-| :--- | :--- | :--- |
-| `J2A` | `4 × 5V_MAIN` blades, `1 × GND` blade, signal field = additional `GND` returns / guards | 5V-biased power dock |
-| `J2B` | `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, `I2C1_SCL`, remaining signal contacts = `GND` | 3V3 / logic dock |
-
-The `J2B` connector deliberately groups the JTAG cluster and `TTD_RETURN` with the logic-domain
-`3V3_ENIG` feed.
-
-### 2.2.1. Encryption Sniffer Bus
-
-* **Encryption Sniffer Bus**
-  * **Purpose:** ENC_IN/ENC_OUT monitoring has been migrated from CM5 GPIO to MCP23017 U_EXP1
-    (@ 0x20, Stator) via I²C. CM5 GPIO 4–15 are now freed for future use. See DEC-031.
-  * **Naming convention:** Signal names are relative to the **Enigma machine**, not the CM5.
-    `ENC_IN` = the plaintext character entering the machine (from the Keyboard/Encoder board);
-    `ENC_OUT` = the encrypted character exiting the machine (to the Lightboard).
-  * **ENC_IN [0:5]:** Now read via MCP23017 U_EXP1 GPA[0:5] @ 0x20 (Stator) over I²C-1.
-  * **ENC_OUT [0:5]:** Now read via MCP23017 U_EXP1 GPB[0:5] @ 0x20 (Stator) over I²C-1.
-  * **Reset:** SYS_RESET_N migrated to MCP23017 U_EXP2 GPA[7] @ 0x21 (Stator) via I²C.
-    R6 pull-up (10kΩ to 3V3_ENIG) on Stator keeps CPLDs out of reset at power-up. See DEC-031.
-  * **Software cross-reference:**
-    * GUI application real-time display logic: `design/Software/GUI_App/Design_Spec.md`
-    * Linux OS power management, I²C telemetry, and system daemon: `design/Software/Linux_OS/Power_Management.md`
-
-### 2.3. CM5 Module Keep-Out Zone
-
-The area directly beneath the mounted CM5 module (55mm × 40mm footprint) shall be designated
-a **component keep-out zone** on all layers:
-
-* No active or passive components, tall features, or exposed via pads may be placed in this area.
+* Low-profile **passive components only** may be placed within the CM5 shadow area.
+* Maximum installed component height beneath the CM5: **2.0mm** above the Controller PCB surface.
+* Active components, connectors, test points, tall features, and exposed via pads are prohibited within
+  this area.
 * Copper fills, signal routing, and power planes are permitted beneath the module.
-* Enforced in KiCad via a keepout region on the `User.Courtyard` layer covering the full CM5 footprint.
-* Minimum clearance beneath the CM5: **2.5mm** (set by Amphenol 10164227-1004A1RLF 4.0mm stacking height minus 1.5mm CM5 PCB thickness).
+* The mechanical envelope beneath the CM5 remains **2.5mm** using Amphenol `10164227-1004A1RLF`
+  (4.0mm stack height). The 2.0mm component-height rule preserves ~0.5mm assembly margin within that
+  official clearance.
+* The CM5 footprint shadow should still be shown in KiCad on `User.Courtyard`, but as a placement
+  reference boundary for the height rule rather than as a hard no-component keep-out.
 
 ### 2.4. Physical Connector Placement
 
 1. **Top Edge:** Order from Left to Right
-    * **Stator Dock:** `J2A` + `J2B` Molex hybrid connectors to the removable Stator daughterboard.
-    * **PM Dock:** `J1A` + `J1B` + `J1C` TE 10-position connectors to the removable Power Module.
+    * **Stator Dock:** `J4` + `J5` Molex hybrid connectors to the removable Stator daughterboard.
+    * **PM Dock:** `J1` + `J2` + `J3` TE 10-position connectors to the removable Power Module.
 2. **Right Edge:** Order from Top to Bottom to follow CM5 pinout flow:
-    * **RJ45 / PoE Entry:** Long-body magnetics jack with the PoE front-end and Ethernet ESD local to the Controller.
-    * **USB 3.0:** Dual-Stacked Type-A (Molex 48406-0003) with 5.0mm overhang.
-    * **HDMI:** Full-Size Type-A (TE 2007435-1) with 5.0mm overhang.
-    * **Current Limiting:** TPS2065C (1.6A USB Limit + GPIO 22 Fault) and AP2331W (50mA HDMI Limit).
-    * **ESD:** TPD4E05U06 TVS arrays on all external data pins, including the RJ45 entry.
-    * **Telemetry:** USB Power Fault reported to CM5 GPIO 22.
+    * **RJ45 / PoE Entry:** Long-body magnetics jack. The PoE front-end is local to the Controller.
+    * **USB 3.0:** Dual-Stacked Type-A (Molex 48406-0003).
+    * **HDMI:** Full-Size Type-A (TE 2007435-1).
+
+**Right-edge support circuitry note:** The USB and HDMI current-limit switches, the edge-I/O ESD
+protection network, and the `USB_FAULT` telemetry path are all local support circuitry for these
+interfaces, but they are not enclosure-protruding connectors and do not define the external connector
+order.
+
+**External-face note:** Controller right-edge external connectors follow the global **2.0mm nominal
+overhang** rule defined in `design/Standards/Global_Routing_Spec.md §4.1`.
 
 ## 3. JTAG Programming Subsystem (USB Blaster)
 
 The Controller provides JTAG pass-through only. All JTAG chain architecture, device ordering, buffering, termination, and timing specifications are defined in the JDB Design_Spec.
 
-* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly from the JDB hat-header (J_JDB) to the Stator logic dock (`J2B`) on the Controller board without any active
+* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly from the JDB hat-header (J_JDB) to the Stator logic dock (`J5`) on the Controller board without any active
   components. No buffer or series resistors reside on the Controller for JTAG signals.
 * **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for all JTAG chain architecture, FT232H module schematics, buffering, and assembly details. See DEC-016, DEC-024.
 
@@ -172,45 +137,45 @@ For DT bindings and driver configuration for both INA219 devices, see
 
 ### 4.1. I²C Bus Topology
 
-All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed to the Power Module over `J1C` and to
-the Stator over `J2B`.
+All I²C devices share the single I²C-1 bus (CM5 GPIO 2/3) routed to the Power Module over `J3` and to
+the Stator over `J5`.
 
 | Address | Device | Location | Function |
 | :--- | :--- | :--- | :--- |
 | 0x09 | LTC3350 | Power Module | Supercap charger/monitor |
 | 0x0B | Smart Battery | Power Module | SMBus battery monitoring |
-| 0x28 | STUSB4500 | Power Module | USB-C PD controller |
-| 0x3F | PCA9534A (U16) | Power Module | PM-local status inputs + SW1 RGB handoff control |
-| 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |
-| 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
 | 0x20 | MCP23017 (U_EXP1) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
 | 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control |
 | 0x22 | MCP23017 (U_EXP4) | Stator | CPLD config output driver (DEC-032) |
 | 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
 | 0x24 | MCP23017 (U_LED_B1) | Settings Board | Bank 1 LED controller: 5× anodes + RGB bank-rail drivers (DEC-034) |
 | 0x25 | MCP23017 (U_LED_B2) | Settings Board | Bank 2 LED controller: 7× anodes + RGB bank-rail drivers (DEC-034) |
+| 0x28 | STUSB4500 | Power Module | USB-C PD controller |
+| 0x3F | PCA9534A (U16) | Power Module | PM-local status inputs + SW1 RGB handoff control |
+| 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |
+| 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
 | 0x60 | PCA9685 (U_EXP3) | Stator | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
 ## 5. RTC Backup Battery
 
 The CM5's MXL7704 PMIC contains an integrated RTC. To maintain timekeeping through power cycles,
-a 3V coin cell is required on the CM5's VBAT pin (**Pin 95** on the CM5 Hirose DF40 200-pin connector).
+a 3V coin cell is required on the CM5's VBAT pin (**Pin 76** on the CM5 Hirose DF40 200-pin connector).
 
 ### 5.1. Circuit Design
 
 * **Battery (BT1):** Keystone 3034TR CR2032 THT horizontal click-in holder (`TR` = tape-reel packaging). CR2032 = 3.0V, 220mAh.
   Estimated service life >25 years at <1µA RTC quiescent draw.
 * **Protection Diode (D1):** BAT54 Schottky diode (SOT-23, 30V, 200mA).
-  Connected in series: BT1(+) → D1(anode), D1(cathode) → CM5 VBAT (Pin 95). Vf ≈ 0.3V @ 100µA; delivers
+  Connected in series: BT1(+) → D1(anode), D1(cathode) → CM5 VBAT (Pin 76). Vf ≈ 0.3V @ 100µA; delivers
   ~2.7V to VBAT pin (within MXL7704 VBAT operating range). **This diode is mandatory with a CR2032 —
   it physically prevents the PMIC charging circuit from reaching the battery.**
 * **Bypass Cap (C6):** 100nF X7R 0402 (Samsung CL05B104KB5NNNC) from VBAT to GND, placed within 5mm
-  of the CM5 DF40 connector Pin 95.
+  of the CM5 DF40 connector Pin 76.
 
 > ⚠️ **Do NOT substitute ML2032 for CR2032 without removing D1.** The ML2032 is rechargeable and
 > must connect directly to VBAT (no diode). The software charging-disable note in
 > `Software/Linux_OS/Power_Management.md` also applies.
-
+>
 ### 5.2. Placement
 
 * **BT1:** Left edge of board, minimum 20mm from any high-speed trace (GbE pairs, USB 3.0, HDMI).
@@ -223,33 +188,30 @@ a 3V coin cell is required on the CM5's VBAT pin (**Pin 95** on the CM5 Hirose D
 All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate per GPIO bank.
 
 > **CM5 VDD_GPIO_REF:** The CM5 module VDD_GPIO_REF pin on the Hirose DF40 200-pin module connector
-> must be connected to **3V3_ENIG** (not to the CM5-internal 3V3_SYSTEM rail, which is not used as a
+> must be connected to **3V3_ENIG** (not to the CM5-internal `CM5 3V3` rail, which is not used as a
 > logic reference on this board). This ensures GPIO logic levels match all 3V3_ENIG-powered peripherals
 > (CPLDs, FT232H VCCIO, etc.). Failure to connect VDD_GPIO_REF to 3V3_ENIG will result in incorrect
 > GPIO logic levels for the entire system.
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | **Main Bus:** LTC3350 @ 0x09, Smart Battery @ 0x0B, STUSB4500 @ 0x28, **PCA9534A U16 @ 0x3F**, INA219 (PM U12) @ 0x40, INA219 (Stator U2) @ 0x45, MCP23017 U_EXP1 @ 0x20, MCP23017 U_EXP2 @ 0x21, MCP23017 U_EXP4 @ 0x22, MCP23017 U_EXP_SW_IN @ 0x23, MCP23017 U_LED_B1 @ 0x24, MCP23017 U_LED_B2 @ 0x25, PCA9685 U_EXP3 @ 0x60. |
-| **4–9** | *(freed)* | — | — | **Previously ENC_IN[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPA[0:5] @ 0x20 (Stator) via I²C. GPIO 4–9 are now available for future use. See DEC-031. |
-| **10–15** | *(freed)* | — | — | **Previously ENC_OUT[0:5].** Monitoring migrated to MCP23017 U_EXP1 GPB[0:5] @ 0x20 (Stator) via I²C. GPIO 10–15 are now available for future use. See DEC-031. |
-| **16** | **ROTOR_EN** | Output | 3.3V | Direct enable signal to the Power Module `3V3_ENIG` LDO for sequenced rotor-stack power-up. Routed on `J1C`. |
-| **17–20** | *(freed)* | — | — | Former direct SW1 RGB / `SW_LED_CTRL` pins are retired. Runtime LED control now goes through the PM-local `PCA9534A @ 0x3F` over I²C. |
-| **21** | **PM_IO_INT_N** | Input | 3.3V | Optional interrupt input from the PM-local `PCA9534A @ 0x3F`, used to wake the power-management daemon for PM status changes. |
-| **22** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
-| **23–25** | *(freed)* | — | — | Former direct PM status GPIOs (`BATT_PRES_N`, `POE_STAT`, `SYS_FAULT`) are retired in favour of PM-local `PCA9534A` virtualisation on `I2C-1`. |
-| **26** | *(freed)* | — | — | **Previously SYS_RESET_N.** System-wide CPLD reset migrated to MCP23017 U_EXP2 GPA[7] @ 0x21 (Stator) via I²C. R6 pull-up (10kΩ to 3V3_ENIG) on Stator ensures CPLDs remain out of reset at power-up. GPIO 26 is now available for future use. See DEC-031. |
-| **27** | **PWR_GD** | Input | 3.3V | Direct PM rail-health telemetry only — HIGH while `5V_MAIN` ≥ 4.50V; does NOT trigger shutdown. Routed on `J1C`. |
+| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | System I2C-1 shared with the devices listed in §4.1. |
+| **4** | **ROTOR_EN** | Output | 3.3V | Direct enable signal to the Power Module `3V3_ENIG` LDO for sequenced rotor-stack power-up. Routed on `J3`. |
+| **5** | **PM_IO_INT_N** | Input | 3.3V | Optional interrupt input from the PM-local `PCA9534A @ 0x3F`, used to wake the power-management daemon for PM status changes. |
+| **6** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
+| **7** | **PWR_GD** | Input | 3.3V | Direct PM rail-health telemetry only — HIGH while `5V_MAIN` ≥ 4.50V; does NOT trigger shutdown. Routed on `J3`. |
 
 ## 7. Protection & EMI
 
 * **External Links:** All inputs (Status) feature 10kΩ series resistors to protect CM5 pins from transient spikes.
 * **Voltage:** 5V signals are strictly forbidden on: CM5 GPIO pins, I²C SDA/SCL lines, JTAG (TDI/TDO/TCK/TMS), and all low-speed PM / Stator dock signals.
 * **ESD Protection:** [TPD4E05U06](https://www.ti.com) (U4 — USB/HDMI ESD arrays) on Layer 1.
-* **5V_MAIN Bulk Entry:** 5× 10µF X7R 50V at the `J1A` `5V_MAIN` entry region per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule.
-* **3V3_ENIG Tap Decoupling:** Bulk X7R decoupling capacitors are required at the `J1A` `3V3_ENIG` tap node on the Controller (DEC-TBD — specific values deferred to detailed design phase).
-* **Hardware LED Fallback:** The hardware LED fallback path (MIC1555 oscillator) is located on the Power Module.
-  See `Power_Module/Design_Spec.md §3 Power Sequencing & Hardware Reset` for the PM-local `PCA9534A` handoff and runtime RGB sink-stage detail.
+* **5V_MAIN Bulk Entry:** 5× 10µF X7R 50V at the `J1` `5V_MAIN` entry region per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule.
+* **3V3_ENIG Tap Decoupling:** The `J1` `3V3_ENIG` entry on the Controller shall follow the
+  global bulk-entry bank rule: **5× 10uF X7R 50V** placed at the tap node in a
+  **symmetrical star/spoke pattern** per `design/Standards/Global_Routing_Spec.md §3`.
+  This applies because `3V3_ENIG` is the Controller's canonical logic rail; the
+  CM5-local `CM5 3V3` rail is not used as the board logic reference.
 
 ## 8. Connectivity
 
@@ -260,13 +222,44 @@ The Power Module dock uses three copies of the TE 10-position 2.5 mm connector f
 * **Controller side:** `1-1674231-1`
 * **Power Module side:** `1123684-7`
 
+**Reference PDFs:** [`TE-1-1674231-1-datasheet.pdf`](../../Datasheets/TE-1-1674231-1-datasheet.pdf),
+[`TE-1123684-7-datasheet.pdf`](../../Datasheets/TE-1123684-7-datasheet.pdf)
+
 | Link | Allocation | Description |
 | :--- | :--- | :--- |
-| `J1A` | `3 × 5V_MAIN`, `2 × 3V3_ENIG`, `5 × GND` | Main regulated rails from PM to Controller |
-| `J1B` | `3 × VIN_POE_12V`, `7 × GND` | Regulated PoE-derived auxiliary feed from Controller PoE front-end into PM OR-ing stage |
-| `J1C` | `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `4 × GND` | Low-speed control / telemetry connector |
+| `J1` | `3 × 5V_MAIN`, `2 × 3V3_ENIG`, `5 × GND` | Main regulated rails from PM to Controller |
+| `J2` | `3 × VIN_POE_12V`, `7 × GND` | Regulated PoE-derived auxiliary feed from Controller PoE front-end into PM OR-ing stage |
+| `J3` | `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `LED_nPWR`, `3 × GND` | Low-speed control / telemetry connector |
 
-### 8.2. JDB Hat Connectors
+`5V_MAIN` and `3V3_ENIG` both enter the Controller on `J1`. The Controller then distributes those rails
+to the CM5, local peripherals, and the Stator docks.
+
+`J2` intentionally uses only three positive `VIN_POE_12V` contacts because the TE dock family is rated
+at 6 A/contact and the regulated PoE auxiliary feed is a 60 W / 12 V class source (~5 A worst case).
+The positive side is therefore already heavily overprovisioned, while the additional ground contacts
+reduce return impedance and spread the shared current path into the PM OR-ing stage.
+
+### 8.2. Controller ↔ Stator Dock
+
+The Stator dock uses the Molex EXTreme Guardian HD hybrid pair:
+
+* **Controller side:** `2195630015` receptacle
+* **Stator side:** `2195620015` plug
+
+**Reference PDFs:** [`Molex-2195630015-datasheet.pdf`](../../Datasheets/Molex-2195630015-datasheet.pdf),
+[`Molex-2195630015-drawings.pdf`](../../Datasheets/Molex-2195630015-drawings.pdf),
+[`Molex-2195620015-datasheet.pdf`](../../Datasheets/Molex-2195620015-datasheet.pdf),
+[`Molex-2195620015-drawings.pdf`](../../Datasheets/Molex-2195620015-drawings.pdf),
+[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf)
+
+| Link | Allocation | Description |
+| :--- | :--- | :--- |
+| `J4` | `4 × 5V_MAIN` blades, `1 × GND` blade, signal field = `GND` returns / guards | 5V-biased dock |
+| `J5` | `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, `I2C1_SCL`, remaining signal contacts = `GND` | 3V3 / logic dock |
+
+The `J5` connector deliberately groups the JTAG cluster and `TTD_RETURN` with the logic-domain `3V3_ENIG` feed.
+
+### 8.3. JDB Hat Connectors
 
 The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
@@ -304,18 +297,6 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 8 | GND | — | Ground |
 | 9 | VREF (3V3_ENIG) | CTRL → JDB | Voltage reference for JTAG logic |
 | 10 | GND | — | Ground |
-
-### 8.3. Controller ↔ Stator Dock
-
-The Stator dock uses the Molex EXTreme Guardian HD hybrid pair:
-
-* **Controller side:** `2195630015` receptacle
-* **Stator side:** `2195620015` plug
-
-| Link | Allocation | Description |
-| :--- | :--- | :--- |
-| `J2A` | `4 × 5V_MAIN` blades, `1 × GND` blade, signal field = `GND` returns / guards | 5V-biased dock |
-| `J2B` | `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, `I2C1_SCL`, remaining signal contacts = `GND` | 3V3 / logic dock |
 
 ### 8.4. Fan Connector (J_FAN)
 
@@ -377,49 +358,55 @@ The Stator dock uses the Molex EXTreme Guardian HD hybrid pair:
 
 | Net Class | Target Impedance | Width / Spacing | Layer |
 | :--- | :--- | :--- | :--- |
-| **USB 3.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
+| **3V3_ENIG power** | N/A (Power) | 0.80 mm (31.5 mil) — 3.0A LDO max output; consistent with PM §9 and Global_Routing_Spec §1.1 Medium supply (1.0–3.0A); 2oz copper system-wide | L1 surface + L4 inner pour |
+| **5V_MAIN power rail** | N/A (Low Drop) | 78.7 mil (2.00 mm) min + inner pour — 8.76A worst-case; Very High Current (> 5.5A) per Global_Routing_Spec §1.1 | L1 surface + L4 inner pour |
 | **Ethernet/HDMI** | 100Ω Differential | 4.5 mil / 8.5 mil | L3 (Stripline) |
 | **JTAG signals** | 50Ω Single-ended | 5.0 mil (0.127 mm) | L6 |
-| **5V_MAIN power rail** | N/A (Low Drop) | 78.7 mil (2.00 mm) min + inner pour — 8.76A worst-case; Very High Current (> 5.5A) per Global_Routing_Spec §1.1 | L1 surface + L4 inner pour |
 | **Logic/I2C** | N/A | 6.0 mil | L1 |
-| **USB 2.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) — same geometry as USB 3.0 |
-| **3V3_ENIG power** | N/A (Power) | 0.80 mm (31.5 mil) — 3.0A LDO max output; consistent with PM §9 and Global_Routing_Spec §1.1 Medium supply (1.0–3.0A); 2oz copper system-wide | L1 surface + L4 inner pour |
+| **USB 2.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
+| **USB 3.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
 
 ## 10. Thermal, Branding & Diagnostics
 
 ### 10.1. Thermal
 
-* **PM Dock Power Entry:** `J1A` carries the grouped regulated rail entry for the Controller. Add a **"Caution: High Current"** silkscreen label adjacent to the PM dock cluster.
+Estimated Controller-local power dissipation at system peak load:
+
+| Component | Normal Dissipation | Worst Case | Notes |
+| :--- | :--- | :--- | :--- |
+| U9 TPS2372-4 + U10 TPS23730 + T2 POE600F-12L | ~5.1W | ~5.7W | Controller-owned PoE front-end. Loss is dominated by the PoE ACF stage / transformer path at ~51-57W PoE load; see `Electronics/Investigations/PoE_Investigation.md §3.5`. |
+| **Total** | **~5.1W** | **~5.7W** | Fixed Controller-local dissipation only; excludes the CM5 SOM and any optional fan load because those depend on the fitted module SKU and runtime workload. |
+
+* **PM Dock Power Entry:** `J1` carries the grouped regulated rail entry for the Controller. Add a **"Caution: High Current"** silkscreen label adjacent to the PM dock cluster.
 * **CM5 Module Thermal Management:**
   * **Heatsink:** Mount the [Raspberry Pi CM5 Cooler](https://www.raspberrypi.com/products/cm5-cooler/)
     (SC1144, passive aluminium heatsink, ~41×56×12.7mm, conductive silicone pad) directly onto the CM5 module.
     Fasten with the four corner mounting screws for secure thermal contact.
   * **Active Fan Header (J_FAN):** A 4-pin JST SH (1.0mm pitch) fan connector is provided on the Controller
     board, matching the CM5IO J14 standard. Supports 5V PWM-controlled fans.
-    Board part: JST SM04B-SRSS-TB(LF)(SN) (JLCPCB C160404, Mouser 306-SM04BSRSSTBLFSN, DigiKey 455-SM04B-SRSS-TBCT-ND).
-    Pinout: Pin 1 = 5V_MAIN, Pin 2 = GND, Pin 3 = TACH (CM5 Pin 16), Pin 4 = PWM (CM5 Pin 19).
-    FAN_TACH and FAN_PWM are dedicated BCM2712 fan controller pins on the CM5 module connector
-    — no GPIO allocation required.
+    See §8.4 for the connector pinout and mating-cable definition. FAN_TACH and FAN_PWM connect
+    directly to the dedicated BCM2712 fan-controller pins on the CM5 module connector — no GPIO
+    allocation required.
 
 ### 10.2. Diagnostics & Aesthetics
 
-* **Placement:** 2×10 2.54mm ENIG Gold Looped Probe Pad Banks placed on L1, directly behind the PM and Stator dock regions.
+* **Placement:** Diagnostic probe pad banks placed on L1, directly behind the PM and Stator dock regions.
 * **Orientation:** Facing upwards for easy logic analyser ribbon cable connection.
 * **Silkscreen:** Dark Green mask with White Bilingual Typewriter font. Silkscreen legend must label each pad individually.
 * **Branding:** Top-left 10mm "Enigma-NG" shielded gold emblem (Exposed ENIG Gold tied to GND_CHASSIS). Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom).
   See `design/Standards/Global_Routing_Spec.md §6` for full branding specification.
 
-#### Diagnostic Bank-Alpha (PM Dock) — 2×10
+#### Diagnostic Bank-Alpha (PM Dock) — 2×8
 
 Monitors the Controller ↔ Power Module dock cluster.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_A | PM → CTRL | J1A regulated 5V sample |
-| 2 | 5V_MAIN_B | PM → CTRL | J1A regulated 5V sample |
-| 3 | 3V3_ENIG_A | PM → CTRL | J1A logic-rail sample |
-| 4 | 3V3_ENIG_B | PM → CTRL | J1A logic-rail sample |
-| 5 | VIN_POE_12V | CTRL → PM | J1B PoE auxiliary feed sample |
+| 1 | 5V_MAIN_A | PM → CTRL | J1 regulated 5V sample |
+| 2 | 5V_MAIN_B | PM → CTRL | J1 regulated 5V sample |
+| 3 | 3V3_ENIG_A | PM → CTRL | J1 logic-rail sample |
+| 4 | 3V3_ENIG_B | PM → CTRL | J1 logic-rail sample |
+| 5 | VIN_POE_12V | CTRL → PM | J2 PoE auxiliary feed sample |
 | 6 | I2C1_SDA | Bidir | PM telemetry bus |
 | 7 | I2C1_SCL | Bidir | PM telemetry bus |
 | 8 | PM_IO_INT_N | PM → CTRL | PM expander interrupt |
@@ -429,23 +416,19 @@ Monitors the Controller ↔ Power Module dock cluster.
 | 12 | GND | — | Signal ground |
 | 13 | GND | — | Signal ground |
 | 14 | GND | — | Signal ground |
-| 15 | SPARE | — | Reserved for future use |
-| 16 | SPARE | — | Reserved for future use |
-| 17 | SPARE | — | Reserved for future use |
-| 18 | SPARE | — | Reserved for future use |
-| 19 | GND_CHASSIS | — | Local shield/chassis reference only |
-| 20 | GND | — | Signal/power ground return |
+| 15 | GND | — | Signal/power ground return |
+| 16 | GND_CHASSIS | — | Local shield/chassis reference only |
 
-#### Diagnostic Bank-Beta (Stator Dock) — 2×10
+#### Diagnostic Bank-Beta (Stator Dock) — 2×8
 
 Monitors the Controller ↔ Stator dock cluster.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_J2A_1 | CTRL → Stator | J2A 5V blade sample |
-| 2 | 5V_MAIN_J2A_2 | CTRL → Stator | J2A 5V blade sample |
-| 3 | 3V3_ENIG_J2B_1 | CTRL → Stator | J2B 3V3 blade sample |
-| 4 | 3V3_ENIG_J2B_2 | CTRL → Stator | J2B 3V3 blade sample |
+| 1 | 5V_MAIN_J4_1 | CTRL → Stator | J4 5V blade sample |
+| 2 | 5V_MAIN_J4_2 | CTRL → Stator | J4 5V blade sample |
+| 3 | 3V3_ENIG_J5_1 | CTRL → Stator | J5 3V3 blade sample |
+| 4 | 3V3_ENIG_J5_2 | CTRL → Stator | J5 3V3 blade sample |
 | 5 | I2C1_SDA | Bidir | Shared Stator / Settings I²C bus |
 | 6 | I2C1_SCL | Bidir | Shared Stator / Settings I²C bus |
 | 7 | JTAG_TCK | JDB → Stator | JTAG clock |
@@ -456,26 +439,23 @@ Monitors the Controller ↔ Stator dock cluster.
 | 12 | GND_RET_B | — | Dock return / guard |
 | 13 | GND_RET_C | — | Dock return / guard |
 | 14 | GND_RET_D | — | Dock return / guard |
-| 15 | SPARE | — | Reserved for future use |
-| 16 | SPARE | — | Reserved for future use |
-| 17 | SPARE | — | Reserved for future use |
-| 18 | SPARE | — | Reserved for future use |
-| 19 | GND_CHASSIS | — | Local shield/chassis reference only |
-| 20 | GND | — | Signal/power ground return |
+| 15 | GND | — | Signal/power ground return |
+| 16 | GND_CHASSIS | — | Local shield/chassis reference only |
 
 ## 11. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
-| J1A-J1C | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
-| J2A, J2B | Stator dock hybrid receptacles (×2) | Molex 2195630015 | 5 power + 15 signal press-fit receptacle | 538-219563-0015 | 900-2195630015-ND | Global sourcing / consignment |
-| J3 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-48406-0003 | WM10420-ND | C565298 |
-| J4 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A141617-ND | C195051 |
-| J5 | RJ45 with integrated magnetics / PoE entry | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
+| J1-J3 | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
+| J4, J5 | Stator dock hybrid receptacles (×2) | Molex 2195630015 | 5 power + 15 signal press-fit receptacle | 538-219563-0015 | 900-2195630015-ND | Global sourcing / consignment |
+| J6 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-48406-0003 | WM10420-ND | C565298 |
+| J7 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A141617-ND | C195051 |
+| J8 | RJ45 with integrated magnetics / PoE entry | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
 | J_DSI1 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | Amphenol F52Q-1A7H1-11015 | 15-pin ZIF, 1.0mm pitch | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 |
 | J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
 | J_JDB_PWR | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |

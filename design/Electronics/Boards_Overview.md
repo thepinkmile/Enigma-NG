@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-04-20
 
 ## 1. Overview
 
@@ -35,8 +35,8 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
 ## 4. I2C Bus Map
 
 - `I2C1` (`SCL`/`SDA`) originates on the Controller and fans out in parallel:
-  - Controller -> Power Module over `J1C`
-  - Controller -> Stator over `J2B`
+  - Controller -> Power Module over `J3`
+  - Controller -> Stator over `J5`
   - Stator -> Settings Board over `J_CFG`
   - `0x09`: LTC3350 supercap charger / monitor (Power Module)
   - `0x0B`: Smart Battery / SMBus monitor (Power Module)
@@ -68,7 +68,7 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
 
 ## 6. Notes
 
-- The Controller ↔ Power Module Samtec Link-Alpha interface is retired.
-- The Controller ↔ Stator Samtec Link-Beta interface is retired.
-- Rotor / Extension / Reflector Samtec Edge-Rate connectors remain valid and unchanged.
-- All external I/O is now intentionally grouped on the Controller side of the enclosure.
+- The Controller ↔ Power Module dock uses three TE 10-position 2.5mm connectors.
+- The Controller ↔ Stator dock uses two Molex EXTreme Guardian HD hybrid connectors.
+- Rotor / Extension / Reflector interconnects use Samtec Edge-Rate connectors.
+- All external I/O is grouped on the Controller side of the enclosure.

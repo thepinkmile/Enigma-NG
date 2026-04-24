@@ -17,7 +17,6 @@ the correctly-restored Extension U1 buffer).
    - Fixed: changed "cable segment" to "BtB-connected segment" — TCK/TMS/TDI travel via BtB, not cable.
    - Fixed: signal integrity note (95Ω × 30pF) updated to describe BtB connector/trace capacitance
      correctly; removed misleading 95Ω source impedance figure.
-
 2. **User clarified full JTAG topology (key design facts)**
    - TCK/TMS/TDI travel via BtB connectors (ERM8/ERF8 Samtec 0.8mm pitch) through the entire
      rotor stack. NO ribbon cables are used for JTAG signals within the rotor stack.
@@ -29,7 +28,6 @@ the correctly-restored Extension U1 buffer).
      they do not apply to the BtB rotor stack.
    - The confusion arose because the Reflector J4 ribbon also carries ENC signals, which some agents
      interpreted as the JTAG chain continuing past the Reflector.
-
 3. **JTAG topology documentation overhauled (commit 23aa4a3)**
    - JTAG_Integrity.md §1: distinguish two interconnect types (ribbon for Stator-Encoder ports,
      BtB ERM8/ERF8 for rotor stack).
@@ -46,7 +44,6 @@ the correctly-restored Extension U1 buffer).
    - Extension Design_Spec §2: corrected wrong claim that Stator R7-R15 / Encoder R7-R8 apply to
      BtB segments — these are for encoder ribbon ports only.
    - Reflector Design_Spec §3: added prominent ⚠️ JTAG chain END warning with explicit J4 pin list.
-
 4. **R49-retry completed — all 17 findings discarded**
    - Agent ran with stale known-correct list (pre-restoration, Extension has no U1 buffer).
    - All 17 findings were false positives asking to remove the correctly-restored U1 buffer,
@@ -63,7 +60,6 @@ Files modified since checkpoint 007:
   - §2: updated signal integrity note (removed misleading 95Ω figure, described BtB capacitance)
   - §2 JTAG TTD_RETURN/TDI note: corrected — Stator R7-R15 / Encoder R7-R8 are for encoder
     ribbon ports only, not the BtB rotor stack; JTAG terminates at Reflector R1
-
 - `design/Electronics/Investigations/JTAG_Integrity.md`
   - §1 intro: two-interconnect-type description (ribbon vs BtB)
   - §1 topology diagram: expanded rotor stack section (BtB labels, Extension U1, Reflector END,
@@ -73,7 +69,6 @@ Files modified since checkpoint 007:
   - §7.1: added Reflector R1 end-of-chain row
   - §7.3: ribbon vs BtB columns; rotor BtB and encoder sub-chain blockquote notes
   - §7.4: "encoder ribbon port" labels; Reflector R1 annotated as JTAG chain END
-
 - `design/Electronics/Reflector/Design_Spec.md`
   - §3: added ⚠️ JTAG chain END blockquote with explicit J4 pin-by-pin description
   - §3: J4 now clearly documents which pins are JTAG (pin 15 TTD_RETURN only) vs ENC config
@@ -180,18 +175,14 @@ $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine")+";"+[
 - `design/Electronics/Extension/Design_Spec.md`
   - U1 buffer fully restored and §2 JTAG section now consistent — no conflicts.
   - FR-EXT-01/02, DR-EXT-04/05/06, §4 C6 rule, BOM U1+C6 rows all present and correct.
-
 - `design/Electronics/Extension/Board_Layout.md`
   - U1 in ASCII art and §9 trace table — correct.
-
 - `design/Electronics/Investigations/JTAG_Integrity.md`
   - §1 now has full BtB/ribbon topology description and expanded diagram.
   - §7.3/7.4 clearly separate ribbon (encoder) from BtB (rotor stack) termination.
   - §8 trace table Extension row names U1 re-buffer.
-
 - `design/Electronics/Reflector/Design_Spec.md`
   - §3 has ⚠️ JTAG chain END blockquote with J4 pin-by-pin breakdown.
-
 - `design/Electronics/Consolidated_BOM.md`
   - SN74LVC2G125DCUR: EXT=1, Total=2 — correct.
   - 0.1µF X7R 0402: EXT=1, Total=508 — correct.
@@ -205,7 +196,6 @@ $env:PATH = [System.Environment]::GetEnvironmentVariable("PATH","Machine")+";"+[
    - Deep-dive all design docs under design/Electronics/ and design/Standards/
    - Report findings as numbered table: file / section / issue / current / correct
    - Do NOT flag any Extension U1 buffer items as issues — they are all correct
-
 2. Launch R50 general-purpose review agent.
 3. If R50 is clean → launch R51 (second consecutive clean pass).
 4. Both clean → proceed to close out.

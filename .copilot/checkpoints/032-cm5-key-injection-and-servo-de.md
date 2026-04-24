@@ -27,23 +27,19 @@ This session had two major work streams: (1) completing the Power Module backup 
 
 1. **Background agent completed commit `acae80d`** (from prior session) and the user confirmed readiness to proceed
    - Commit `acae80d` had already applied: eFuse variant lock blocks, Extension U1 root cause fix, supercap stale value sweep, DEC-029 creation
-
 2. **User confirmed: proceed with all pending PM transient fix changes**
    - Launched background agent `pm-changes-commit` to implement all pending work
    - While agent ran, user introduced a new feature idea
-
 3. **New feature: CM5 autonomous key injection**
    - User wants CM5 to be able to inject virtual keypresses for: rotor config testing, autonomous cipher operation, eliminating human error
    - Initial analysis: feasibility confirmed; I2C GPIO expander on Stator is the right approach
    - Established: 6 injection pins (5-bit KEY_ADDR + KEY_EN) + dedicated SOURCE_SEL pin
    - User decided: 2× MCP23017 (32 GPIO total) for headroom, not 1×
-
 4. **Motor requirement identified**
    - User raised need for a motor to actuate the mechanical stepping mechanism
    - Initial incorrect assessment by assistant (said no motor needed because CPLD handles stepping digitally)
    - Corrected after reading rotor mechanical spec: rotors have PHYSICALLY rotating aluminium shrouds read by capacitive encoders — CPLD reads actual encoder position, not a software counter. Motor IS required.
    - Mechanical design (not yet documented): each key press pushes a bar via a dangling lever; the bar connects to a pivot/lever that advances the rotor one step — identical to original Enigma mechanism; servo drives the same bar
-
 5. **Servo motor selection**
    - User has Miuzei Metal Gearbox 90 servo motors (6V/2500RPM, purchased from Amazon)
    - Confirmed 4.8–6V rated → 5V_MAIN is within spec ✓
@@ -51,23 +47,19 @@ This session had two major work streams: (1) completing the Power Module backup 
    - PWM required → MCP23017 cannot do PWM → add **PCA9685** I²C PWM driver
    - PCA9685 address: **0x60** (user requested "further down" address space for I2C debugging clarity)
    - All-call disable (MODE1 bit 0): done in enigma daemon init, not DT or separate systemd service
-
 6. **SERVO_HOME switch**
    - User requested a homing switch (like 3D printer endstop) to detect servo 0° position
    - SPST normally-open momentary switch, active-low, on Stator PCB (servo is locally mounted on Stator)
    - RC debounce: 10kΩ pull-up + 100nF (same as keyboard switches)
    - Assigned to MCP23017 U_EXP2 GPB[1]
-
 7. **Mechanical design confirmed by user**
    - Servo mounted on Stator board
    - Keyboard keys have dangling levers pushing a common bar at enclosure base
    - Bar connects to lever/pivot → advances rotor stack one step
    - Servo drives same bar → replaces keyboard actuation for CM5 virtual keypresses
    - Carry mechanism is purely mechanical (as per original Enigma)
-
 8. **Background agent completed — commit `6fe5341` confirmed**
    - All PM transient fix and 2S4P cascade changes applied and committed
-
 9. **Mechanical folder restructuring requested**
    - User noted current `design/Mechanical/` structure (PCB-named folders) is misleading
    - Requested new assembly-based structure (see next steps)
@@ -149,24 +141,19 @@ Work completed:
   - Contains all DECs including DEC-029 (2S4P supercap), DEC-030 (PM transient fix)
   - New DEC-031 needed for CM5 key injection feature
   - New DEC for mechanical restructuring may be needed
-
 - `design/Electronics/Stator/Design_Spec.md`
   - Primary file needing updates for new feature: add 3× I²C expanders to BOM and FR/DR, add SOURCE_SEL MUX note to CPLD section, add servo connector and SERVO_HOME switch, add 5V_MAIN to LINK-BETA pin table
   - I²C table needs 0x20, 0x21, 0x60 entries
-
 - `design/Electronics/Controller/Design_Spec.md`
   - GPIO table needs updating: GPIO 4–15 freed (ENC monitoring → expander), GPIO 26 freed (SYS_RESET_N → expander)
   - LINK-BETA pin table: remove 12 monitoring pins, remove SYS_RESET_N pin, add 2× 5V_MAIN pins
   - I²C bus topology table: add 0x20, 0x21, 0x60
-
 - `design/Electronics/Consolidated_BOM.md`
   - Add: 2× MCP23017T-E/SO (SOIC-28), 1× PCA9685 (SSOP-28), 1× SPST micro switch (SERVO_HOME), 1× servo connector (3-pin), servo motor note
   - Update: LINK-BETA pin allocation narrative
-
 - `design/Software/Linux_OS/Power_Management.md`
   - Add: PCA9685 DT overlay config (pwm-pca9685 at 0x60, 50Hz)
   - Add: Enigma daemon hardware init sequence (ALLCALL disable, MODE1 config, SERVO_HOME homing sequence)
-
 - `design/Mechanical/` (entire folder restructure pending)
   - Current: 9 files, 3 with content, 6 pure stubs
   - Target: Power_Module, Extension, Reflector, Rotor_Actuation_Assembly, HID_Assembly, Plugboard_Assembly, Main_Enclosure, Complete_System_Assembly
@@ -186,19 +173,12 @@ Work completed:
    - Delete stubs: `Stator/`, `Encoder/`, `JTAG_Daughterboard/`
    - Keep stubs: `Reflector/`, `Extension/`, `Power_Module/`
    - Add servo/stepping mechanism description to `Rotor_Actuation_Assembly/Design_Spec.md`
-
 2. **DEC-031 in Design_Log.md** — CM5 key injection feature decision (architecture, component selection, I²C addresses, servo choice)
-
 3. **Stator Design_Spec.md** — Add FR/DR for expanders, PCA9685, SERVO_HOME, SOURCE_SEL MUX, 5V_MAIN on LINK-BETA, servo connector
-
 4. **Controller Design_Spec.md** — GPIO table (free 13 pins), LINK-BETA pin table (remove 13, add 5V_MAIN), I²C topology table (add 0x20, 0x21, 0x60)
-
 5. **Consolidated_BOM.md** — Add MCP23017 ×2, PCA9685, SERVO_HOME switch, servo connector
-
 6. **Power_Management.md** — PCA9685 DT overlay + daemon init sequence
-
 7. **markdownlint fix → clean check → git commit**
-
 8. Create checkpoint 032
 
 </next_steps>

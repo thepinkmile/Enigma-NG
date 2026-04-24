@@ -12,23 +12,19 @@ This session continues the Enigma-NG electronics design documentation review cyc
    - Previous session ran R15–R25; R23 was first clean pass but R24 (3 findings) and R25 (6 findings) reset the counter
    - Need two consecutive clean passes (R26 + R27) to close the review cycle
    - Set up plan.md and SQL todos for this session; marked `review-cycle-close` in_progress
-
 2. **R26 deep-dive review launched** (background agent)
    - Covered all 25 design documents against stale values list and cross-document consistency rules
    - While R26 ran, user initiated discussion on QUE-001 (supercap rib clearway ENIG bonding)
-
 3. **QUE-001 / DEC-020 discussion**
    - Reviewed Design_Log QUE-001 and DEC-020 placeholder; checked Cert_Evidence §2.2 (single-point GND_CHASSIS rule)
    - Confirmed rib bonding does NOT violate single-point rule (enclosure↔GND_CHASSIS bonds, not signal GND crossings)
    - User confirmed: YES to ENIG strips; YES to Kapton tape (min 2-mil/50µm polyimide); YES to conductive elastomer gasket; Faraday cage intent noted
    - Gasket: specify type/properties only, defer part selection to mechanical design phase
    - Other boards deferred — Controller uses 3D-printed prototype chassis; Stator/Encoder/Rotor mechanical docs not yet written
-
 4. **R26 results received — 20 claimed findings, 14 were FALSE POSITIVES**
    - Findings 1–14: Agent tried to revert TPS259804ONRGER → TPS259807ONRGER
    - **Critical:** TPS259807ONRGER is on the stale values list; TPS259804ONRGER is the current correct eFuse (silicon-fixed 16.9V OVLO). These were correctly discarded.
    - Genuine findings: #15–20 (6 findings)
-
 5. **R26 fixes + DEC-020 applied** (commit `ab7452f`)
    - Fix 15: CTL Design_Spec §9.2 L6 label corrected
    - Fix 16: CTL Board_Layout §9 stackup summary L6 label corrected
@@ -36,14 +32,12 @@ This session continues the Enigma-NG electronics design documentation review cyc
    - Fix 18: Design_Log INC-22 TPD4E05U06DQAR→DRYR
    - Fix 19+20: PM Design_Spec D3/D4/D5 DBVR/DQAR→DRYR (U-DFN-10 correct suffix)
    - DEC-020 fully written in Design_Log; QUE-001 closed; PM Design_Spec §4 and PM Board_Layout updated with Kapton/gasket/ENIG/Faraday cage specs
-
 6. **Supercap count discrepancy found**
    - User believed layout was 2×3; docs showed 2×2 everywhere (consistent but wrong per user's intent)
    - Calculated: 2S3P (6 cells) → 33F at 5.4V, ≥21.8s hold-up @ 5W (vs current ≥14.5s)
    - Block footprint: 28×42mm; shadow keepout 32×46mm; 2 rib clearways per row
    - LTC3350 supports 2S3P; voltage unchanged; board space not a constraint
    - User confirmed: change to 2×3 2S3P across all docs
-
 7. **2×3 change agent launched** (background, currently running)
    - Will update 7 files; create DEC-021; commit as single clean commit
 </history>
@@ -134,28 +128,21 @@ Tasks:
   - Master log of all decisions (DEC-xxx), incidents (INC-xxx), and questions (QUE-xxx)
   - Modified: INC-22 suffix fix; QUE-001 closed; DEC-020 written; DEC-021 will be added by in-flight agent
   - Key sections: DEC-020 (~line 690), QUE-001 (~line 828), INC-22 (~line 963)
-
 - `design/Electronics/Power_Module/Design_Spec.md`
   - Core PM spec; most supercap, eFuse, and layout details live here
   - Modified: D3/D4/D5 TPD4E05U06 suffix; DEC-020 Kapton/ENIG bullet in §4; 2×3 change in-flight
   - Key: DR-PM-07 (supercap spec), §4 (supercap block), BOM (C_SC1–x rows, D3/D4/D5 rows)
-
 - `design/Electronics/Power_Module/Board_Layout.md`
   - PM PCB layout description and ASCII diagrams
   - Modified: DEC-020 rib clearway zone note; 2×3 ASCII diagram update in-flight
-
 - `design/Electronics/Consolidated_BOM.md`
   - System-wide parts list; supercap count update in-flight
-
 - `design/Standards/Certification_Evidence.md`
   - EMC/safety rationale; §2.2 single-point GND_CHASSIS rule; supercap hold-up specs in-flight
-
 - `design/Electronics/Controller/Design_Spec.md`
   - Modified: L6 label fix in §9.2 (this session)
-
 - `design/Electronics/Controller/Board_Layout.md`
   - Modified: L6 label fix in stackup summary; GND trace table note corrected (this session)
-
 - `%USERPROFILE%\.copilot\session-state\<session-id>\plan.md`
   - Current session plan with todos and technical notes
 </important_files>
