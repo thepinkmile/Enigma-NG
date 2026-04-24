@@ -6,22 +6,27 @@
 
 ---
 ## Overview
-The repository is now in a **clean repo-local handoff state** after closing the manual component
-verification sweep and removing redundant Copilot working notes.
+The repository is in a **clean repo-local handoff state** and now also carries the latest
+Power Module / Controller / Linux OS power-management documentation sync from 2026-04-24,
+followed by a root `README.md` refresh so the top-level project summary better matches the
+current board set and review-state wording.
 
 Recent milestones now applied in the working tree:
 
-- the final stale component-tracker bucket rows were removed
-- the old `.copilot/components-todo.md` and `.copilot/component-types-summary.md` files were retired
-- the old `.copilot/files/*.md` historical session notes were audited and removed
-- `.copilot/handoff.md` now serves as the single generic repo-local handoff note
-- the active `design/` documents already carry the important design facts from those retired notes
+- Power Module and Controller docs now agree on the `LED_nPWR` / SW2 hardware-indicator design
+- SW1 / SW2 LED behavior is now aligned across the PM spec and Linux OS power-management doc
+- the PM eFuse latch-off recovery procedure was moved into `design/Guides/Maintenance_Guide.md`
+- PM and Controller thermal sections are now board-local rather than cross-referencing each other
+- `Design_Log.md` mojibake / stale staged-copy issue was corrected
+- Linux OS power-management open items were reduced to the genuinely unresolved prototype-stage item(s)
+- `README.md` now includes the missing board summaries, updated hardware-flow ordering, and `In Review`
+  wording for the current pre-issue-1 board state
 
 Current goal: leave the tree **commit-ready** tonight so the next session can begin from the
-repo-local state directly, without repeating component-tracker or handoff-note cleanup.
+repo-local state directly, without reconstructing today's documentation work.
 ### Immediate remaining work
 1. Create the commit for the current design and `.copilot/` sync.
-2. Start the next session from `.copilot/plan.md`, `.copilot/handoff.md`, and checkpoint 056.
+2. Start the next session from `.copilot/plan.md`, `.copilot/handoff.md`, and checkpoint 058.
 3. Resume only the genuine open design-review and mechanical follow-up items.
 
 ---
@@ -43,6 +48,7 @@ is genuinely required.
 ## Current Open Workstreams
 | ID | Status | Scope |
 |----|--------|-------|
+| `battery-connector-review` | pending | Review battery connector alternatives and capture any resulting design-document updates |
 | `encoder-board-split-review` | in_progress | Replace the current dual-half Encoder board with a single generic half-board design reused as KBD_ENC, LBD_DEC, PLG_PASS1_DEC, PLG_PASS1_ENC, PLG_PASS2_DEC, and PLG_PASS2_ENC; Stator grows to 6 encoder connectors in 3 banks of 2 with the existing pinout retained |
 | `extension-mechanical-usage` | pending | Review how Extensions should be used mechanically, including whether interconnect choices for the Stator / Reflector / Extension chain should change |
 | `extension-notch-pass-through` | pending | Review whether Extensions need additional servo circuitry to pass through notch rotations |
@@ -69,15 +75,15 @@ For future part work, treat the active design docs as the source of truth:
 ## Board Design Status
 | Board | Status |
 |-------|--------|
-| Power Module | ✅ Complete |
-| Stator | ✅ Complete |
-| Reflector | ✅ Complete |
-| Extension | ✅ Complete |
-| JDB | ✅ Complete |
-| Controller | ✅ Complete |
-| Encoder | ✅ Complete |
-| Rotor | ✅ Complete |
-| Settings Board | ✅ Complete |
+| Power Module | In Review |
+| Stator | In Review |
+| Reflector | In Review |
+| Extension | In Review |
+| JDB | In Review |
+| Controller | In Review |
+| Encoder | In Review |
+| Rotor | In Review |
+| Settings Board | In Review |
 
 ---
 ## Next Session Start Point
@@ -85,7 +91,7 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/056-component-closeout-and-handoff-consolidation.md`
+3. `.copilot/checkpoints/058-readme-architecture-sync-and-handoff.md`
 4. any earlier checkpoints directly relevant to the next task
 
 Then proceed straight into the next real design task rather than reconstructing old component

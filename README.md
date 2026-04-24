@@ -29,22 +29,47 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ## Core Component Overview
 
-* **Controller:** Raspberry Pi Compute Module 5 (CM5) carrier board for monitoring and programming the system.
-* **Power Module:** Triple-input OR-ing with documented PoE-over-USB-C priority and
-  voltage-dependent USB-C/Battery precedence, plus 11V–16.9V eFuse protection.
-* **Stator:** A CPLD powered component mapper and the initial starting point of the rotor stack.
-* **Extension:** A block that allows extension of the rotor stack in 5-rotor increments.
-* **Reflector:** A logic loopback from the end of the rotor stack. Also, uses the Stator for mapping comonents (if/when required).
+* **Controller Board:** Raspberry Pi Compute Module 5 (CM5) carrier board hosting the fixed
+  motherboard, external I/O, and service docks.
+* **Power Module:** Removable power-conditioning / UPS cartridge with PoE, USB-C, smart-battery
+  inputs, eFuse protection, and supercap-backed hold-up.
+* **Stator Board:** Removable vertical daughterboard and CPLD routing hub for the rotor stack,
+  encoder ports, reflector return, and Settings Board I2C link.
+* **Rotor Module:** Repeated smart encryption unit (up to 30 fitted) with local CPLD and position
+  sensing.
+* **Extension Board:** 5-rotor group bridge used to regenerate JTAG timing and carry power /
+  return-path continuity between rotor groups.
+* **Reflector Board:** Mandatory passive turnaround board at the end of the rotor chain.
+* **Encoder Module:** Single generic 64-line interface board reused in keyboard, lightboard, and
+  plugboard encode / decode roles.
+* **Settings Board:** Panel-mount switch and RGB indicator board on the shared Stator I2C-1 bus.
+* **JTAG Daughterboard:** Internal FT232H-based USB-to-JTAG bridge for programming all system CPLDs.
 
 ## Core Requirements
 
-* **Interface:** 80-pin Samtec BtB Link-Alpha between Power→Controller, plus 40-pin Samtec BtB Link-Beta between Controller→Stator.
-* **Diagnostics:** 2x10 Gold-plated (ENIG) test loop bank for power, I2C, JTAG, and spare-signal monitoring.
+* **Interface:** Controller ↔ Power Module uses three TE 10-position 2.5mm dock connectors; Controller
+  ↔ Stator uses two Molex EXTreme Guardian HD hybrid docks.
+* **Diagnostics:** Two ENIG diagnostic banks are provided on the Controller for the PM and Stator dock
+  interfaces.
 * **UI:** .NET 10.0 Cross-platform GUI with:
   * Live power telemetry.
   * Historical resources.
   * 3D graphical visualiser.
   * Configuration programmer (and creator).
+
+## Board Status Snapshot
+
+| Board | Status |
+| :--- | :--- |
+| Controller Board | In Review |
+| Power Module | In Review |
+| Stator Board | In Review |
+| Rotor Module | In Review |
+| Extension Board | In Review |
+| Reflector Board | In Review |
+| Encoder Module | In Review |
+| Settings Board | In Review |
+| JTAG Daughterboard | In Review |
 
 ---
 
@@ -80,11 +105,41 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 * **JTAG Master:** Embedded FT232H (Permanent USB Blaster) on internal USB 2.0.
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
 
-### 3. Stator Board (Nervous System)
+### 3. JTAG Daughterboard
 
-* {TBD}
+* **Logic:** FT232H USB-to-JTAG bridge with buffered TCK / TMS drive.
+* **Role:** Programs the full 37-device JTAG chain (1 Stator + 6 Encoder + 30 Rotor CPLDs).
+* **Mounting:** Small internal hat-style daughterboard on the Controller; no external connectors.
 
-### 4. Universal Rotor (The Engine)
+### 4. Stator Board (Nervous System)
+
+* **Role:** Removable vertical daughterboard and electrical backbone of the rotor stack.
+* **Routing Hub:** Stator CPLD is the ENC_DATA routing matrix, reflector-map application point, and
+  first device in the system JTAG chain.
+* **Interconnects:** Hosts the Controller hybrid docks, rotor sockets, reflector / extension return
+  connector, six Encoder-module IDC ports, and the Settings Board I2C harness.
+* **Peripherals:** Owns the rotor-stack INA219 current monitor, three MCP23017 expanders, and the
+  PCA9685 servo PWM driver.
+
+### 5. Encoder Module (Universal Interface)
+
+* **Generic PCB:** One single-sided board reused in six roles: `KBD_ENC`, `LBD_DEC`,
+  `PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, and `PLG_PASS2_ENC`.
+* **Logic:** Intel **MAX II EPM240T100I5N** CPLD per board.
+* **HID Path:** Physical keyboard layout is 40 positions (`[a-z0-9+=]` plus left / right Shift),
+  while the logical repertoire remains the full 64-character code space.
+* **Plugboard Path:** Two decode / encode board pairs provide the two configurable passive plugboard
+  passes.
+
+### 6. Settings Board (Configuration Panel)
+
+* **Role:** User-accessible configuration board with 12 panel-mount toggles, 12 RGB LEDs, and a
+  `CFG_APPLY` pushbutton.
+* **Interface:** Shared Stator I2C-1 bus over a 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`,
+  `SCL`, `GND`).
+* **Expanders:** MCP23017 devices at `0x23`, `0x24`, and `0x25`.
+
+### 7. Rotor Module (The Engine)
 
 * **Logic:** Intel **MAX II EPM570T100I5N** CPLD.
 * **Dimensions:** Ø92 mm PCB / **Ø100 mm shroud outer**.
@@ -95,12 +150,25 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
   * Power (2x2), JTAG (2x4 Shielded), and Enigma (2x6 Bidirectional Relay) in a "Tripod" layout.
 * **Signal Integrity:** **SN74LVC2G125DCUR** buffer on each Extension Board (one per 5-rotor group) for TCK/TMS regeneration.
 
-### 5. Universal Interface (Keyboard/Plugboard)
+### 8. Extension Board
 
-* **Logic:** 2x Intel **MAX II EPM240T100I5N** CPLD (Decoder/Encoder).
-* **Keyboard:** 64-key "Hold-to-Shift" layout with Vintage Amber LED feedback.
-* **Plugboard:** 64x 6.35mm (¼″) Switching Jacks with 8-channel TVS ESD protection.
-* **Logic Pattern:** Active-Low (Internal CPLD pull-ups for keys, Sink-to-GND for LEDs).
+* **Role:** Mid-stack bridge inserted between 5-rotor groups in extended builds.
+* **JTAG Support:** Re-buffers `TCK` and `TMS` with `SN74LVC2G125DCUR` to restore timing margin for
+  the downstream rotor group.
+* **Power / Return Path:** Receives `3V3_ENIG` and `GND` through the Extension Port, passes
+  `ENC_IN[0:5]`, `ENC_OUT[0:5]`, `SYS_RESET_N`, and `TTD_RETURN`, and avoids a parallel power path
+  through the rotor BtB power connector.
+* **Scale:** Up to five Extension Boards may be fitted in the full 30-rotor architecture.
+
+### 9. Reflector Board
+
+* **Role:** Passive end-of-stack turnaround board for the final rotor group.
+* **Mapping Ownership:** No local CPLD; the Stator CPLD remains responsible for reflector-map
+  selection and application.
+* **JTAG Return:** Terminates the JTAG daisy-chain and returns `TTD_RETURN` to the Stator through the
+  16-pin reflector ribbon.
+* **Signal Path:** Returns the 6-bit ENC path back toward the Stator over a separate electrical path
+  while keeping the board itself logically passive.
 
 ---
 
@@ -123,7 +191,13 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ### 3. VHDL Firmware (The Navigators)
 
-* {TBD}
+* **Stator CPLD:** Owns the ENC routing matrix, plugboard insertion positions, reflector-map
+  application, and source-selection handoff between keyboard and CM5 virtual input.
+* **Rotor CPLDs:** Implement the rotor wiring libraries and per-rotor identity selection.
+* **Encoder CPLDs:** Provide the encode / decode logic used by the keyboard, lightboard, and both
+  plugboard passes.
+* **Status:** Board-level hardware architecture is defined in the active design specs; implementation
+  planning and pseudo-code remain tracked as open work in `design/Design_Log.md`.
 
 ---
 
@@ -138,12 +212,15 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ## 📅 Development Roadmap
 
-1. **Controller Board:** KiCAD 9 Schematic & Layout (Power, CM5, High-Speed I/O, JTAG Master).
-2. **Universal Rotor:** Hardware Prototype (MAX II, Ø100mm shroud outer, FDC2114RGHR capacitive encoders).
-3. **Power Injection & Support (PIS):** Passive "Mid-Span" bridge for mechanical alignment and 3.3V rail boosting.
-4. **Universal Interface:** 64-Jack Plugboard and 64-key "Hold-to-Shift" layout.
-5. **Firmware:** Verilog for Rotor libraries and Interface Encoding/Decoding.
-6. **Driver & GUI:** Linux C-Driver and .NET 10 terminal application.
+1. **Battery connector review:** confirm whether alternative battery-connector options should replace
+   or supplement the present Power Module choice.
+2. **Encoder board updates:** finish the current Encoder review / update pass and confirm whether any
+   structural split work is still required.
+3. **Extension follow-up:** review mechanical usage and whether notch-rotation pass-through needs extra
+   circuitry.
+4. **Coupon / PAS planning:** add and review board-level coupons and acceptance-test hooks across the
+   design set.
+5. **Deep review rerun:** rerun the review passes after the next material design-document change set.
 
 ## Contributions
 

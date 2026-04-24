@@ -9,9 +9,25 @@ Use the active `design/` documents as the authoritative record:
 - board-level `design/Electronics/*/Design_Spec.md`
 - relevant mechanical and software `Design_Spec.md` files
 - `design/Datasheets/` for preserved vendor and project-side reference material
+## 2026-04-24 session result
+Today's working-tree progress was a documentation-sync pass across the active design docs. The main
+outcomes now present in the repo are:
+
+- PM / Controller / Linux OS docs aligned around the `LED_nPWR`-driven SW2 hardware indicator
+- SW1 red now represents **PM fault or hold-up unavailable** rather than a generic historical
+  shutdown indication
+- the PM eFuse latch-off recovery procedure now lives in `design/Guides/Maintenance_Guide.md`,
+  with the PM design spec carrying only a cross-reference
+- PM and Controller thermal sections are now board-local
+- `Design_Log.md` text encoding / staged-state issue was corrected
+- Linux OS power-management open items were pruned to the genuine unresolved prototype-stage work
+- `README.md` was refreshed to remove stale `{TBD}` placeholders, restore missing board summaries,
+  reorder the board walkthrough to follow the system flow, and mark the current board set as
+  **In Review** rather than complete
+
 ## 2026-04-19 audit result
-The old component re-verification and session working notes were audited and removed because their
-design-bearing content is already captured in the live docs above.
+The older component re-verification and session working notes were audited and removed because
+their design-bearing content is already captured in the live docs above.
 
 Retired note sets covered:
 
@@ -29,8 +45,11 @@ including:
 ## Remaining follow-up work
 These are still open design review items, but they are not yet committed design decisions:
 
-1. Review how Extensions should be used mechanically, including whether interconnect choices for the
+1. Review battery connector alternatives.
+2. Review how Extensions should be used mechanically, including whether interconnect choices for the
    Stator / Reflector / Extension chain should change.
-2. Review whether the Encoder Board should split into separate Keyboard and Lightboard physical
+3. Review whether the Encoder Board should split into separate Keyboard and Lightboard physical
    assemblies.
-3. Review whether Extensions need additional servo circuitry to pass through notch rotations.
+4. Review whether Extensions need additional servo circuitry to pass through notch rotations.
+5. Add / review board-level coupons and PAS-oriented test coverage.
+6. Rerun deep review agents after the next material design-doc change set.

@@ -63,3 +63,5 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 54 | Final propagation and datasheet tracking sync | 054-final-propagation-and-datasheet-tracking.md |
 | 55 | LINK-BETA DEC-037 pin remap | 055-link-beta-dec037-pin-remap.md |
 | 56 | Component closeout and handoff consolidation | 056-component-closeout-and-handoff-consolidation.md |
+| 57 | Power-doc sync and session handoff refresh | 057-power-doc-sync-and-session-handoff.md |
+| 58 | README architecture sync and handoff refresh | 058-readme-architecture-sync-and-handoff.md |
