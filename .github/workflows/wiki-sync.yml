@@ -2,7 +2,10 @@ name: Wiki Sync
 on:
   push:
     branches: [ main ]
-    paths: [ 'design/**', 'README.md' ]
+    paths:
+      - 'design/**'
+      - '!design/Datasheets/**'
+      - 'README.md'
 
 jobs:
   contrib-readme-job:
@@ -31,7 +34,7 @@ jobs:
           mkdir -p wiki_staging
           # Renames design/Electronics/Power_Module/Design_Spec.md -> Electronics-Power-Module-Design-Spec.md
           # _Sidebar.md is excluded here; it is auto-generated in the next step.
-          find design/ -name "*.md" ! -name "_Sidebar.md" | while read file; do 
+          find design/ -path "design/Datasheets" -prune -o -name "*.md" ! -name "_Sidebar.md" -print | while read file; do 
             newname=$(echo "$file" | sed "s|design/||; s|/|-|g; s|_|-|g"); 
             cp "$file" "wiki_staging/$newname"; 
           done
@@ -45,6 +48,7 @@ jobs:
           DESIGN_ROOT = "design"
           WIKI_ROOT   = "wiki_staging"
           EXCLUDE     = {"_Sidebar.md"}
+          EXCLUDE_DIRS = {"Datasheets"}
 
           def path_to_wiki_name(repo_path):
               p = repo_path.replace("\\", "/")
@@ -78,6 +82,8 @@ jobs:
                       continue
 
                   if entry.is_dir():
+                      if entry.name in EXCLUDE_DIRS:
+                          continue
                       label = entry.name.replace("_", " ")
                       lines.append(f"{prefix}* **{label}**")
                       sub_repo = f"{repo_dir_path}/{entry.name}"
@@ -120,6 +126,7 @@ jobs:
 
           DESIGN_ROOT = "design"
           WIKI_ROOT   = "wiki_staging"
+          EXCLUDE_DIRS = {"Datasheets"}
 
           def path_to_wiki_name(repo_path):
               """
@@ -139,7 +146,8 @@ jobs:
 
           # Build forward map:  repo-relative path  ->  wiki page name
           path_map = {}
-          for dirpath, _, filenames in os.walk(DESIGN_ROOT):
+          for dirpath, dirnames, filenames in os.walk(DESIGN_ROOT):
+              dirnames[:] = [d for d in dirnames if d not in EXCLUDE_DIRS]
               for fn in filenames:
                   if fn.endswith(".md"):
                       p = os.path.normpath(os.path.join(dirpath, fn)).replace("\\", "/")
@@ -224,10 +232,10 @@ jobs:
           EOF
 
       - name: Sync to Wiki
-        uses: Andrew-Chen-Wang/github-wiki-action@v4
+        uses: Andrew-Chen-Wang/github-wiki-action@v5
         with:
           token: ${{ secrets.WIKI_SYNC_TOKEN }}
           path: wiki_staging/
           strategy: init # This clears the wiki and force-pushes the new "flattened" structure
+          commit-message: "Auto-sync Wiki from design docs (flattened structure); SHA: ${{ github.sha }}"
           preprocess: false # We handled this manually in the script for better control
-          commit_message: "Auto-sync Wiki from design docs (flattened structure)"
