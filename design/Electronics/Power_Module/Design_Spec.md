@@ -27,8 +27,8 @@ Controller Board via dock connector `J1`.
   * **Provided to Controller:** `5V_MAIN`, `3V3_ENIG`, PM telemetry, `PWR_GD`, and `PWR_BUT`.
   * **Received from Controller:** `VIN_POE_12V`, `I2C-1`, `PM_IO_INT_N` return path, `ROTOR_EN`, and `LED_nPWR`.
   * **Cross-ref:** See `Controller/Design_Spec.md` and `Controller/Board_Layout.md` for the active dock allocation.
-  * **Reference PDFs:** [`TE-1123684-7-datasheet.pdf`](../../Datasheets/TE-1123684-7-datasheet.pdf),
-    [`TE-1-1674231-1-datasheet.pdf`](../../Datasheets/TE-1-1674231-1-datasheet.pdf)
+  * **Reference datasheets:** [`TE-1123684-7-datasheet.md`](../../Datasheets/TE-1123684-7-datasheet.md),
+    [`TE-1-1674231-1-datasheet.md`](../../Datasheets/TE-1-1674231-1-datasheet.md)
 
 ### Functional & Design Requirements
 
@@ -128,7 +128,7 @@ Controller Board via dock connector `J1`.
   * **Outputs:** `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`
   * **Interrupt:** Open-drain `PM_IO_INT_N` exported to the Controller on `J3`.
   * **Power-up state:** All pins default to inputs, so the pre-boot hardware orange flash path remains dominant until firmware reconfigures the expander.
-  * **Reference PDF:** [`pca9534a-datasheet.pdf`](../../Datasheets/pca9534a-datasheet.pdf)
+  * **Reference datasheet:** [`pca9534a-datasheet.md`](../../Datasheets/pca9534a-datasheet.md)
 * **5V_MAIN Current Monitor:**
   * **Purpose:** Provides real-time current/voltage telemetry for the 5V_MAIN rail to the CM5.
   * **Sensor:** TI INA219AIDR (U12) zero-drift power monitor at I²C address **0x40**.

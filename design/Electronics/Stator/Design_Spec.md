@@ -240,11 +240,11 @@ and `KEY_CM5_ACTIVE` continues to occupy GPA[6].
   * **J12 (3V3 / logic dock):** `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, and `I2C1_SCL`; all remaining signal contacts tied to `GND`.
   * **Controller mating part:** Molex `2195630015` receptacle. **Stator plug:** Molex `2195620015`.
   * **Cross-ref:** See `Controller/Design_Spec.md` §2 and `Controller/Board_Layout.md` for the active dock allocation.
-  * **Reference PDFs:** [`Molex-2195630015-datasheet.pdf`](../../Datasheets/Molex-2195630015-datasheet.pdf),
-    [`Molex-2195630015-drawings.pdf`](../../Datasheets/Molex-2195630015-drawings.pdf),
-    [`Molex-2195620015-datasheet.pdf`](../../Datasheets/Molex-2195620015-datasheet.pdf),
-    [`Molex-2195620015-drawings.pdf`](../../Datasheets/Molex-2195620015-drawings.pdf),
-    [`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf)
+  * **Reference datasheets:** [`Molex-2195630015-datasheet.md`](../../Datasheets/Molex-2195630015-datasheet.md),
+    [`Molex-2195630015-drawings.md`](../../Datasheets/Molex-2195630015-drawings.md),
+    [`Molex-2195620015-datasheet.md`](../../Datasheets/Molex-2195620015-datasheet.md),
+    [`Molex-2195620015-drawings.md`](../../Datasheets/Molex-2195620015-drawings.md),
+    [`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md)
 * **Settings Board Interconnect:** `J13` is the 6-pin JST PH 2.0mm harness from the Stator to the
   Settings Board `J1` connector.
   * **Signals:** `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`.

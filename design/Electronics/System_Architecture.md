@@ -87,8 +87,8 @@ Functional allocation:
 - **J2:** `3 × VIN_POE_12V`, `7 × GND`
 - **J3:** `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `4 × GND`
 
-**Reference PDFs:** [`TE-1-1674231-1-datasheet.pdf`](../Datasheets/TE-1-1674231-1-datasheet.pdf),
-[`TE-1123684-7-datasheet.pdf`](../Datasheets/TE-1123684-7-datasheet.pdf)
+**Reference datasheets:** [`TE-1-1674231-1-datasheet.md`](../Datasheets/TE-1-1674231-1-datasheet.md),
+[`TE-1123684-7-datasheet.md`](../Datasheets/TE-1123684-7-datasheet.md)
 
 ### 2.2 Controller ↔ Stator
 
@@ -110,11 +110,11 @@ Functional allocation:
 The small signal contacts are valid current-carrying return paths as well as guards; the family
 specification rates them at 4.5 A/contact.
 
-**Reference PDFs:** [`Molex-2195630015-datasheet.pdf`](../Datasheets/Molex-2195630015-datasheet.pdf),
-[`Molex-2195630015-drawings.pdf`](../Datasheets/Molex-2195630015-drawings.pdf),
-[`Molex-2195620015-datasheet.pdf`](../Datasheets/Molex-2195620015-datasheet.pdf),
-[`Molex-2195620015-drawings.pdf`](../Datasheets/Molex-2195620015-drawings.pdf),
-[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf`](../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf)
+**Reference datasheets:** [`Molex-2195630015-datasheet.md`](../Datasheets/Molex-2195630015-datasheet.md),
+[`Molex-2195630015-drawings.md`](../Datasheets/Molex-2195630015-drawings.md),
+[`Molex-2195620015-datasheet.md`](../Datasheets/Molex-2195620015-datasheet.md),
+[`Molex-2195620015-drawings.md`](../Datasheets/Molex-2195620015-drawings.md),
+[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md`](../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md)
 
 ### 2.3 Rotor-Stack Connectors
 

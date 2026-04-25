@@ -228,8 +228,8 @@ The Power Module dock uses three copies of the TE 10-position 2.5 mm connector f
 * **Controller side:** `1-1674231-1`
 * **Power Module side:** `1123684-7`
 
-**Reference PDFs:** [`TE-1-1674231-1-datasheet.pdf`](../../Datasheets/TE-1-1674231-1-datasheet.pdf),
-[`TE-1123684-7-datasheet.pdf`](../../Datasheets/TE-1123684-7-datasheet.pdf)
+**Reference datasheets:** [`TE-1-1674231-1-datasheet.md`](../../Datasheets/TE-1-1674231-1-datasheet.md),
+[`TE-1123684-7-datasheet.md`](../../Datasheets/TE-1123684-7-datasheet.md)
 
 | Link | Allocation | Description |
 | :--- | :--- | :--- |
@@ -252,11 +252,11 @@ The Stator dock uses the Molex EXTreme Guardian HD hybrid pair:
 * **Controller side:** `2195630015` receptacle
 * **Stator side:** `2195620015` plug
 
-**Reference PDFs:** [`Molex-2195630015-datasheet.pdf`](../../Datasheets/Molex-2195630015-datasheet.pdf),
-[`Molex-2195630015-drawings.pdf`](../../Datasheets/Molex-2195630015-drawings.pdf),
-[`Molex-2195620015-datasheet.pdf`](../../Datasheets/Molex-2195620015-datasheet.pdf),
-[`Molex-2195620015-drawings.pdf`](../../Datasheets/Molex-2195620015-drawings.pdf),
-[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf)
+**Reference datasheets:** [`Molex-2195630015-datasheet.md`](../../Datasheets/Molex-2195630015-datasheet.md),
+[`Molex-2195630015-drawings.md`](../../Datasheets/Molex-2195630015-drawings.md),
+[`Molex-2195620015-datasheet.md`](../../Datasheets/Molex-2195620015-datasheet.md),
+[`Molex-2195620015-drawings.md`](../../Datasheets/Molex-2195620015-drawings.md),
+[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md)
 
 | Link | Allocation | Description |
 | :--- | :--- | :--- |
@@ -331,7 +331,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Interface:** MIPI DSI1 — 4-lane differential (CLK+/−, D0+/−, D1+/−, D2+/−, D3+/−).
 * **Impedance:** 100 Ω differential; route on L3 (stripline) — same rule as HDMI/Ethernet.
 * **MPN:** Amphenol **F52Q-1A7H1-11015**. See `Consolidated_BOM.md` and
-  `design/Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf`.
+  `design/Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.md`.
 * **Power / deferred scope boundary:** `J9` is the only Controller-side display connector fixed in
   the current design scope. No separate display power header is defined on the Controller at this
   stage; any future display power and touch-side auxiliary wiring stays deferred with the display

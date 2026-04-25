@@ -29,12 +29,19 @@ Main outcomes:
   BOM; this was committed as `7829f8a` (`Normalize design document refdes`)
 - all markdown document metadata `Version` headers were reset to `v.0.1.0` by explicit user
   direction because the project is still in design phase
+- local datasheet PDFs under `design/Datasheets/` now have generated markdown companions, those
+  markdown datasheets were reviewed in category batches, and design-doc references were migrated
+  from `.pdf` links to the corresponding `.md` datasheets
 
 ## Documentation policy reminders
 - Do not update document `Version` metadata unless the user explicitly requests it.
 - Do not infer version bumps from the size or perceived significance of a change.
 - Keep `.copilot/` synchronized with meaningful design-state changes, but treat it as handoff
   material rather than design truth.
+- Connector/mechanical-drawing datasheet markdown can remain lightweight for now; fuller detail can
+  wait until initial KiCAD library generation.
+- Design docs should reference the markdown datasheets, but the generated datasheet markdown files
+  should continue to link back to their source PDFs.
 
 ## Remaining follow-up work
 These are still open design review items, but they are not yet committed design decisions:

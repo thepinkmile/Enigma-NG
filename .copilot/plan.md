@@ -18,11 +18,14 @@ The current active design docs now reflect:
 - wiki-sync exclusion of `design/Datasheets`
 - numeric component refdes normalization across active design docs and the consolidated BOM
 - document metadata version headers reset to `v.0.1.0` because the project is still in design phase
+- local PDF datasheets now have markdown companions under `design/Datasheets/`, with reviewed
+  design-doc references retargeted from PDF links to the markdown versions
 
 Recent locked work:
 
 - `7829f8a` — `Normalize design document refdes`
-- the current working tree carries the metadata-version reset plus repo-local `.copilot/` refresh
+- `1c2a505` — `Reset doc metadata versions`
+- the current working tree carries the datasheet-markdown generation, review pass, and design-link migration
 
 ---
 ## Current Open Workstreams
@@ -55,8 +58,8 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/059-version-metadata-and-state-sync.md`
-4. `.copilot/checkpoints/058-readme-architecture-sync-and-handoff.md` if broader pre-cleanup context is needed
+3. `.copilot/checkpoints/060-datasheet-markdown-migration.md`
+4. `.copilot/checkpoints/059-version-metadata-and-state-sync.md`
 
 Then proceed into the next design-review task from the active `design/` docs rather than treating
 `.copilot/` content as design truth.
@@ -68,6 +71,8 @@ Then proceed into the next design-review task from the active `design/` docs rat
 - `.copilot/` files are session/handoff artifacts only; they are not design documents.
 - Do not change document `Version` metadata unless the user explicitly requests it.
 - The current metadata baseline for active docs is `v.0.1.0`.
+- Design-doc datasheet references should point at the reviewed markdown datasheets, while each
+  generated datasheet markdown file keeps its own source-PDF link.
 
 ### Refdes / naming state
 - Controller internal connectors are now normalized to numeric refs (`J9`-`J15`) in the active docs.

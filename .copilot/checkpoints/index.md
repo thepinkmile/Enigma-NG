@@ -66,3 +66,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 57 | Power-doc sync and session handoff refresh | 057-power-doc-sync-and-session-handoff.md |
 | 58 | README architecture sync and handoff refresh | 058-readme-architecture-sync-and-handoff.md |
 | 59 | Version metadata reset and repo-local state sync | 059-version-metadata-and-state-sync.md |
+| 60 | Datasheet markdown migration | 060-datasheet-markdown-migration.md |

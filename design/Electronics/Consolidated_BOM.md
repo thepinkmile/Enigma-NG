@@ -453,61 +453,61 @@ Product page links for all major components for design review and procurement ve
 
 | Ref | Part / Description | Manufacturer | Local Datasheet |
 | :--- | :--- | :--- | :--- |
-| U1 | TPS259804ONRGER — eFuse 16.9V silicon-fixed OVLO | Texas Instruments | [TPS25980-datasheet.pdf](../Datasheets/TPS25980-datasheet.pdf) |
-| U2A, U2B | LMQ61460AFSQRJRRQ1 — 6A Sync Buck (AEC-Q100) | Texas Instruments | [lmq61460-q1-datasheet.pdf](../Datasheets/lmq61460-q1-datasheet.pdf) |
-| U3 | LTC3350EUHF#PBF — Supercap Manager / Charger / Backup | Analog Devices | [ltc3350-datasheet.pdf](../Datasheets/ltc3350-datasheet.pdf) |
-| U4 | TPS25751DREFR — USB PD 3.1 DRP Controller | Texas Instruments | [tps25751-datasheet.pdf](../Datasheets/tps25751-datasheet.pdf) |
-| U5 | STUSB4500LQTR — USB-C Sink PD Controller | STMicroelectronics | [stusb4500l-datasheet.pdf](../Datasheets/stusb4500l-datasheet.pdf) |
-| U6 | LM74700QDBVRQ1 — Ideal-Diode OR-ing Controller | Texas Instruments | [lm74700-q1-datasheet.pdf](../Datasheets/lm74700-q1-datasheet.pdf) |
-| U7 | TPS75733KTTRG3 — 3.3V 3A LDO (3V3_ENIG) | Texas Instruments | [tps757-datasheet.pdf](../Datasheets/tps757-datasheet.pdf) |
-| U8 | MCP121T-450E/LB — 4.50V Voltage Supervisor | Microchip Technology | [MCP121-datasheet.pdf](../Datasheets/MCP121-datasheet.pdf) |
-| U9 | TPS2372-4RGWR — IEEE 802.3bt PoE PD Controller | Texas Instruments | [tps2372-datasheet.pdf](../Datasheets/tps2372-datasheet.pdf) |
-| U10 | TPS23730RMTR — ACF PoE+ DC/DC Controller | Texas Instruments | [tps23730-datasheet.pdf](../Datasheets/tps23730-datasheet.pdf) |
-| U11, U15 | MIC1555YM5-TR — CMOS Timer / LED Oscillator | Microchip Technology | [MIC1555-datasheet.pdf](../Datasheets/MIC1555-datasheet.pdf) |
-| U12 (PM), U2 (STA) | INA219AIDR — Zero-Drift Power Monitor | Texas Instruments | [INA219-datasheet.pdf](../Datasheets/INA219-datasheet.pdf) |
-| U16 (PM) | PCA9534APWR — 8-bit I²C GPIO Expander | Texas Instruments | [pca9534a-datasheet.pdf](../Datasheets/pca9534a-datasheet.pdf) |
-| U13, U14, U17 | NL27WZ14DFT2G-Q — Automotive Dual Schmitt Inverter | onsemi | [NL27WZ14-D.pdf](../Datasheets/NL27WZ14-D.pdf) |
-| U2 (CTL) | TPS2065CDBVR — USB Power Switch 1.6A | Texas Instruments | [tps2065c-datasheet.pdf](../Datasheets/tps2065c-datasheet.pdf) |
-| U3 (CTL) | AP2331W-7 — HDMI Current Limiter | Diodes Inc. | [AP2331-datasheet.pdf](../Datasheets/AP2331-datasheet.pdf) |
-| D3 (PM); U4-U6 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | [tpd4e05u06-q1-datasheet.pdf](../Datasheets/tpd4e05u06-q1-datasheet.pdf) |
-| D2 | TPD2E2U06DRLR — Dual 5.5V SMBus ESD | Texas Instruments | [tpd2e2u06-datasheet.pdf](../Datasheets/tpd2e2u06-datasheet.pdf) |
-| D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.pdf](../Datasheets/tpd1e10b06-q1-datasheet.pdf) |
-| C25 (CTL), C40 (PM) | C0402C103K1RACAUTO / C0402C101K3RACAUTO — KEMET automotive X7R MLCC family | KEMET | [KEM_C1023_X7R_AUTO_SMD-datasheet.pdf](../Datasheets/KEM_C1023_X7R_AUTO_SMD-datasheet.pdf) |
-| U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.pdf](../Datasheets/sn74lvc2g125-datasheet.pdf) |
-| U4-U5 (STA) | 74HC157PW-Q100,118 — Automotive quad 2:1 mux | Nexperia | [74HC_HCT157_Q100-datasheet.pdf](../Datasheets/74HC_HCT157_Q100-datasheet.pdf) |
-| U1 (JDB) | FT232HL-REEL — USB 2.0 MPSSE Bridge | FTDI | [FT232H-datasheet.pdf](../Datasheets/FT232H-datasheet.pdf) |
-| U1 (ENC) | EPM240T100I5N — Intel MAX II CPLD 240 LE | Intel (Altera) | [Intel_max2_cpld-handbook.pdf](../Datasheets/Intel_max2_cpld-handbook.pdf) |
-| U1 (STA/ROT) | EPM570T100I5N — Intel MAX II CPLD 570 LE | Intel (Altera) | [Intel_max2_cpld-handbook.pdf](../Datasheets/Intel_max2_cpld-handbook.pdf) |
-| U2/U3/U4 (ROT) | FDC2114RGHR — 4-ch Capacitive Sensor IC ⚠️ MOQ 4500 at distributors; MOQ 2 at JLCPCB | Texas Instruments | [fdc2112-datasheet.pdf](../Datasheets/fdc2112-datasheet.pdf) *(FDC2x1x family datasheet covering FDC2114)* |
-| U1 (CTL) | CM5 — Raspberry Pi Compute Module 5 | Raspberry Pi Ltd | [RPi-cm5-datasheet.pdf](../Datasheets/RPi-cm5-datasheet.pdf) |
-| Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [csd17483f4-datasheet.pdf](../Datasheets/csd17483f4-datasheet.pdf) |
-| Q4, Q5 | BSS138 — N-ch Logic MOSFET 50V, SOT-23 | onsemi | [BSS138-onsemi-datasheet.pdf](../Datasheets/BSS138-onsemi-datasheet.pdf) |
-| BAT54 | BAT54 — Schottky Diode, SOT-23 | Generic / multi-source | [bat54-diotec-datasheet.pdf](../Datasheets/bat54-diotec-datasheet.pdf) |
-| T2 | POE600F-12L — Active Clamp Flyback Transformer (`D` suffix = packaging only) | Coilcraft | [coilcraft-poe600f-datasheet.pdf](../Datasheets/coilcraft-poe600f-datasheet.pdf) |
-| L1, L2 | WE-CMBNC 7448031002 — Nanocrystalline CMC | Würth Elektronik | [WE-CMBNC-7448031002-datasheet.pdf](../Datasheets/WE-CMBNC-7448031002-datasheet.pdf) |
-| L3 | SRP1265A-100M — 10µH 14A Power Inductor | Bourns | [srp1265a-datasheet.pdf](../Datasheets/srp1265a-datasheet.pdf) |
+| U1 | TPS259804ONRGER — eFuse 16.9V silicon-fixed OVLO | Texas Instruments | [TPS25980-datasheet.md](../Datasheets/TPS25980-datasheet.md) |
+| U2A, U2B | LMQ61460AFSQRJRRQ1 — 6A Sync Buck (AEC-Q100) | Texas Instruments | [lmq61460-q1-datasheet.md](../Datasheets/lmq61460-q1-datasheet.md) |
+| U3 | LTC3350EUHF#PBF — Supercap Manager / Charger / Backup | Analog Devices | [ltc3350-datasheet.md](../Datasheets/ltc3350-datasheet.md) |
+| U4 | TPS25751DREFR — USB PD 3.1 DRP Controller | Texas Instruments | [tps25751-datasheet.md](../Datasheets/tps25751-datasheet.md) |
+| U5 | STUSB4500LQTR — USB-C Sink PD Controller | STMicroelectronics | [stusb4500l-datasheet.md](../Datasheets/stusb4500l-datasheet.md) |
+| U6 | LM74700QDBVRQ1 — Ideal-Diode OR-ing Controller | Texas Instruments | [lm74700-q1-datasheet.md](../Datasheets/lm74700-q1-datasheet.md) |
+| U7 | TPS75733KTTRG3 — 3.3V 3A LDO (3V3_ENIG) | Texas Instruments | [tps757-datasheet.md](../Datasheets/tps757-datasheet.md) |
+| U8 | MCP121T-450E/LB — 4.50V Voltage Supervisor | Microchip Technology | [MCP121-datasheet.md](../Datasheets/MCP121-datasheet.md) |
+| U9 | TPS2372-4RGWR — IEEE 802.3bt PoE PD Controller | Texas Instruments | [tps2372-datasheet.md](../Datasheets/tps2372-datasheet.md) |
+| U10 | TPS23730RMTR — ACF PoE+ DC/DC Controller | Texas Instruments | [tps23730-datasheet.md](../Datasheets/tps23730-datasheet.md) |
+| U11, U15 | MIC1555YM5-TR — CMOS Timer / LED Oscillator | Microchip Technology | [MIC1555-datasheet.md](../Datasheets/MIC1555-datasheet.md) |
+| U12 (PM), U2 (STA) | INA219AIDR — Zero-Drift Power Monitor | Texas Instruments | [INA219-datasheet.md](../Datasheets/INA219-datasheet.md) |
+| U16 (PM) | PCA9534APWR — 8-bit I²C GPIO Expander | Texas Instruments | [pca9534a-datasheet.md](../Datasheets/pca9534a-datasheet.md) |
+| U13, U14, U17 | NL27WZ14DFT2G-Q — Automotive Dual Schmitt Inverter | onsemi | [NL27WZ14-D.md](../Datasheets/NL27WZ14-D.md) |
+| U2 (CTL) | TPS2065CDBVR — USB Power Switch 1.6A | Texas Instruments | [tps2065c-datasheet.md](../Datasheets/tps2065c-datasheet.md) |
+| U3 (CTL) | AP2331W-7 — HDMI Current Limiter | Diodes Inc. | [AP2331-datasheet.md](../Datasheets/AP2331-datasheet.md) |
+| D3 (PM); U4-U6 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | [tpd4e05u06-q1-datasheet.md](../Datasheets/tpd4e05u06-q1-datasheet.md) |
+| D2 | TPD2E2U06DRLR — Dual 5.5V SMBus ESD | Texas Instruments | [tpd2e2u06-datasheet.md](../Datasheets/tpd2e2u06-datasheet.md) |
+| D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.md](../Datasheets/tpd1e10b06-q1-datasheet.md) |
+| C25 (CTL), C40 (PM) | C0402C103K1RACAUTO / C0402C101K3RACAUTO — KEMET automotive X7R MLCC family | KEMET | [KEM_C1023_X7R_AUTO_SMD-datasheet.md](../Datasheets/KEM_C1023_X7R_AUTO_SMD-datasheet.md) |
+| U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.md](../Datasheets/sn74lvc2g125-datasheet.md) |
+| U4-U5 (STA) | 74HC157PW-Q100,118 — Automotive quad 2:1 mux | Nexperia | [74HC_HCT157_Q100-datasheet.md](../Datasheets/74HC_HCT157_Q100-datasheet.md) |
+| U1 (JDB) | FT232HL-REEL — USB 2.0 MPSSE Bridge | FTDI | [FT232H-datasheet.md](../Datasheets/FT232H-datasheet.md) |
+| U1 (ENC) | EPM240T100I5N — Intel MAX II CPLD 240 LE | Intel (Altera) | [Intel_max2_cpld-handbook.md](../Datasheets/Intel_max2_cpld-handbook.md) |
+| U1 (STA/ROT) | EPM570T100I5N — Intel MAX II CPLD 570 LE | Intel (Altera) | [Intel_max2_cpld-handbook.md](../Datasheets/Intel_max2_cpld-handbook.md) |
+| U2/U3/U4 (ROT) | FDC2114RGHR — 4-ch Capacitive Sensor IC ⚠️ MOQ 4500 at distributors; MOQ 2 at JLCPCB | Texas Instruments | [fdc2112-datasheet.md](../Datasheets/fdc2112-datasheet.md) *(FDC2x1x family datasheet covering FDC2114)* |
+| U1 (CTL) | CM5 — Raspberry Pi Compute Module 5 | Raspberry Pi Ltd | [RPi-cm5-datasheet.md](../Datasheets/RPi-cm5-datasheet.md) |
+| Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [csd17483f4-datasheet.md](../Datasheets/csd17483f4-datasheet.md) |
+| Q4, Q5 | BSS138 — N-ch Logic MOSFET 50V, SOT-23 | onsemi | [BSS138-onsemi-datasheet.md](../Datasheets/BSS138-onsemi-datasheet.md) |
+| BAT54 | BAT54 — Schottky Diode, SOT-23 | Generic / multi-source | [bat54-diotec-datasheet.md](../Datasheets/bat54-diotec-datasheet.md) |
+| T2 | POE600F-12L — Active Clamp Flyback Transformer (`D` suffix = packaging only) | Coilcraft | [coilcraft-poe600f-datasheet.md](../Datasheets/coilcraft-poe600f-datasheet.md) |
+| L1, L2 | WE-CMBNC 7448031002 — Nanocrystalline CMC | Würth Elektronik | [WE-CMBNC-7448031002-datasheet.md](../Datasheets/WE-CMBNC-7448031002-datasheet.md) |
+| L3 | SRP1265A-100M — 10µH 14A Power Inductor | Bourns | [srp1265a-datasheet.md](../Datasheets/srp1265a-datasheet.md) |
 | R12 / R_SENSE | CSS2H-2512R-R010ELF — 10mΩ Kelvin Shunt | Bourns | [bourns.com/CSS2H](https://www.bourns.com/products/resistors/current-sense-resistors/product/CSS2H) |
-| F1 | AC72ABD — 72C SMD Thermal Cutoff | Bourns | [Bourns-AC72ABD-datasheet.pdf](../Datasheets/Bourns-AC72ABD-datasheet.pdf) |
-| J1/J2/J3 (PM) | 1123684-7 — 10-pin 2.5mm board-to-board dock header | TE Connectivity | [TE-1123684-7-datasheet.pdf](../Datasheets/TE-1123684-7-datasheet.pdf) |
-| J3 (PM) | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [Molex-PS-43650-datasheet.pdf](../Datasheets/Molex-PS-43650-datasheet.pdf) |
-| J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [usb4135-datasheet.pdf](../Datasheets/usb4135-datasheet.pdf) |
-| J6 (CTL) | 48406-0003 — USB 3.0 Type-A Dual-Stack | Molex | [Molex-48406-0003-datasheet.pdf](../Datasheets/Molex-48406-0003-datasheet.pdf) |
-| J7 (CTL) | 2007435-1 — HDMI Type-A Full-Size | TE Connectivity | [TE-2007435-1-datasheet.pdf](../Datasheets/TE-2007435-1-datasheet.pdf) |
-| J9 (CTL) | F52Q-1A7H1-11015 — 15-pin 1.0mm right-angle ZIF/FPC connector | Amphenol | [amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf](../Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf) |
-| J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
-| J1/J2/J3 (CTL) | 1-1674231-1 — 10-pin 2.5mm board-to-board dock receptacle | TE Connectivity | [TE-1-1674231-1-datasheet.pdf](../Datasheets/TE-1-1674231-1-datasheet.pdf) |
-| J4/J5 (CTL) / J11/J12 (STA) | 2195630015 / 2195620015 — EXTreme Guardian HD hybrid dock pair | Molex | [Molex-2195630015-datasheet.pdf](../Datasheets/Molex-2195630015-datasheet.pdf) |
-| J4/J5 (CTL) | 2195630015 — EXTreme Guardian HD receptacle mechanical drawing | Molex | [Molex-2195630015-drawings.pdf](../Datasheets/Molex-2195630015-drawings.pdf) |
-| J11/J12 (STA) | 2195620015 — EXTreme Guardian HD plug mechanical drawing | Molex | [Molex-2195620015-drawings.pdf](../Datasheets/Molex-2195620015-drawings.pdf) |
-| J4/J5 / J11/J12 family | EXTreme Guardian HD product family specification | Molex | [Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf](../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf) |
-| C_SC1–8 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
-| SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
-| J4–J9 (STA), J2 (ENC) | BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.pdf](../Datasheets/bhr-xx-vua-data-sheet.pdf) |
-| J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.pdf](../Datasheets/bhr-xx-vua-data-sheet.pdf) |
-| J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
-| J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
-| J12 (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
-| J13 (CTL) | RS1-10-G — 1×10 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
-| H_SW3 Board A (ROT) | PH1-07-UA — 1×7 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
-| H_SW3 Board B (ROT) | RS1-07-G — 1×7 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
+| F1 | AC72ABD — 72C SMD Thermal Cutoff | Bourns | [Bourns-AC72ABD-datasheet.md](../Datasheets/Bourns-AC72ABD-datasheet.md) |
+| J1/J2/J3 (PM) | 1123684-7 — 10-pin 2.5mm board-to-board dock header | TE Connectivity | [TE-1123684-7-datasheet.md](../Datasheets/TE-1123684-7-datasheet.md) |
+| J3 (PM) | 43650-0519 — Micro-Fit 3.0, 5-pin Vertical THT | Molex | [Molex-PS-43650-datasheet.md](../Datasheets/Molex-PS-43650-datasheet.md) |
+| J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [usb4135-datasheet.md](../Datasheets/usb4135-datasheet.md) |
+| J6 (CTL) | 48406-0003 — USB 3.0 Type-A Dual-Stack | Molex | [Molex-48406-0003-datasheet.md](../Datasheets/Molex-48406-0003-datasheet.md) |
+| J7 (CTL) | 2007435-1 — HDMI Type-A Full-Size | TE Connectivity | [TE-2007435-1-datasheet.md](../Datasheets/TE-2007435-1-datasheet.md) |
+| J9 (CTL) | F52Q-1A7H1-11015 — 15-pin 1.0mm right-angle ZIF/FPC connector | Amphenol | [amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.md](../Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.md) |
+| J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.md](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.md) |
+| J1/J2/J3 (CTL) | 1-1674231-1 — 10-pin 2.5mm board-to-board dock receptacle | TE Connectivity | [TE-1-1674231-1-datasheet.md](../Datasheets/TE-1-1674231-1-datasheet.md) |
+| J4/J5 (CTL) / J11/J12 (STA) | 2195630015 / 2195620015 — EXTreme Guardian HD hybrid dock pair | Molex | [Molex-2195630015-datasheet.md](../Datasheets/Molex-2195630015-datasheet.md) |
+| J4/J5 (CTL) | 2195630015 — EXTreme Guardian HD receptacle mechanical drawing | Molex | [Molex-2195630015-drawings.md](../Datasheets/Molex-2195630015-drawings.md) |
+| J11/J12 (STA) | 2195620015 — EXTreme Guardian HD plug mechanical drawing | Molex | [Molex-2195620015-drawings.md](../Datasheets/Molex-2195620015-drawings.md) |
+| J4/J5 / J11/J12 family | EXTreme Guardian HD product family specification | Molex | [Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md](../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md) |
+| C_SC1–8 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.md](../Datasheets/ADCR-T02R7S-datasheet.md) |
+| SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.md](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.md) |
+| J4–J9 (STA), J2 (ENC) | BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.md](../Datasheets/bhr-xx-vua-data-sheet.md) |
+| J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.md](../Datasheets/bhr-xx-vua-data-sheet.md) |
+| J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
+| J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
+| J12 (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.md](../Datasheets/rs1-xx-g-datasheet.md) |
+| J13 (CTL) | RS1-10-G — 1×10 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.md](../Datasheets/rs1-xx-g-datasheet.md) |
+| H_SW3 Board A (ROT) | PH1-07-UA — 1×7 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
+| H_SW3 Board B (ROT) | RS1-07-G — 1×7 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.md](../Datasheets/rs1-xx-g-datasheet.md) |
 | SW1-40 (ENC/HID) | uxcell-style DPDT 6-pin momentary push button switch | gadgetskingdom (eBay) | [Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md](../Datasheets/Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md) |

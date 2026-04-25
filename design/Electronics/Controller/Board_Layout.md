@@ -38,8 +38,8 @@ rear edge of Controller
 **Connector family:** TE `1-1674231-1` (Controller receptacle) ↔ `1123684-7` (PM plug), 10 positions,
 2.5 mm pitch, 6 A/contact.
 
-**Reference PDFs:** [`TE-1-1674231-1-datasheet.pdf`](../../Datasheets/TE-1-1674231-1-datasheet.pdf),
-[`TE-1123684-7-datasheet.pdf`](../../Datasheets/TE-1123684-7-datasheet.pdf)
+**Reference datasheets:** [`TE-1-1674231-1-datasheet.md`](../../Datasheets/TE-1-1674231-1-datasheet.md),
+[`TE-1123684-7-datasheet.md`](../../Datasheets/TE-1123684-7-datasheet.md)
 
 ### 2.2 J2 — PoE Auxiliary Feed
 
@@ -81,11 +81,11 @@ rear edge of Controller
 
 **Connector family:** Molex `2195630015` receptacle on Controller ↔ `2195620015` plug on Stator.
 
-**Reference PDFs:** [`Molex-2195630015-datasheet.pdf`](../../Datasheets/Molex-2195630015-datasheet.pdf),
-[`Molex-2195630015-drawings.pdf`](../../Datasheets/Molex-2195630015-drawings.pdf),
-[`Molex-2195620015-datasheet.pdf`](../../Datasheets/Molex-2195620015-datasheet.pdf),
-[`Molex-2195620015-drawings.pdf`](../../Datasheets/Molex-2195620015-drawings.pdf),
-[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf)
+**Reference datasheets:** [`Molex-2195630015-datasheet.md`](../../Datasheets/Molex-2195630015-datasheet.md),
+[`Molex-2195630015-drawings.md`](../../Datasheets/Molex-2195630015-drawings.md),
+[`Molex-2195620015-datasheet.md`](../../Datasheets/Molex-2195620015-datasheet.md),
+[`Molex-2195620015-drawings.md`](../../Datasheets/Molex-2195620015-drawings.md),
+[`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md)
 
 The `J5` logic connector deliberately groups the JTAG cluster and `TTD_RETURN` with the `3V3_ENIG`
 feed. The `J4` connector is reserved for 5V delivery and return-current support.
