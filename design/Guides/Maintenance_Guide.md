@@ -47,60 +47,7 @@ The Power Module TPS25980 eFuse may latch OFF under the following fault conditio
 > ⚠️ If the eFuse repeatedly latches, do not continue cycling power. Diagnose with a bench power supply
 > and current meter before reconnecting the system.
 
-## 4. Diagnostic Probe Banks
+## 4. Future Coupon Access
 
-The Controller board features two 2×10 ENIG Gold diagnostic probe pad banks for real-time bus monitoring during bring-up and fault diagnosis. Connect a logic analyser via a 2×10 ribbon cable.
-
-### Bank-Alpha (PM Dock) — Top-Right of Controller
-
-Monitors the Controller ↔ Power Module dock cluster.
-
-| Pin | Signal | Direction | Description |
-| :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_A | PM → CTRL | J1 regulated 5V sample |
-| 2 | 5V_MAIN_B | PM → CTRL | J1 regulated 5V sample |
-| 3 | 3V3_ENIG_A | PM → CTRL | J1 logic-rail sample |
-| 4 | 3V3_ENIG_B | PM → CTRL | J1 logic-rail sample |
-| 5 | VIN_POE_12V | CTRL → PM | J2 PoE auxiliary feed sample |
-| 6 | I2C1_SDA | Bidir | PM telemetry bus |
-| 7 | I2C1_SCL | Bidir | PM telemetry bus |
-| 8 | PM_IO_INT_N | PM → CTRL | PM expander interrupt |
-| 9 | PWR_GD | PM → CTRL | PM rail-health signal |
-| 10 | ROTOR_EN | CTRL → PM | PM LDO enable |
-| 11 | PWR_BUT | PM → CTRL | CM5 power-button path |
-| 12 | GND | — | Signal ground |
-| 13 | GND | — | Signal ground |
-| 14 | GND | — | Signal ground |
-| 15 | SPARE | — | Reserved for future use |
-| 16 | SPARE | — | Reserved for future use |
-| 17 | SPARE | — | Reserved for future use |
-| 18 | SPARE | — | Reserved for future use |
-| 19 | GND_CHASSIS | — | Chassis ground reference |
-| 20 | GND | — | Signal/power ground return |
-
-### Bank-Beta (Stator Dock) — Top-Left of Controller
-
-Monitors the Controller ↔ Stator dock cluster.
-
-| Pin | Signal | Direction | Description |
-| :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_J4_1 | CTRL → Stator | J4 5V blade sample |
-| 2 | 5V_MAIN_J4_2 | CTRL → Stator | J4 5V blade sample |
-| 3 | 3V3_ENIG_J5_1 | CTRL → Stator | J5 3V3 blade sample |
-| 4 | 3V3_ENIG_J5_2 | CTRL → Stator | J5 3V3 blade sample |
-| 5 | I2C1_SDA | Bidir | Shared Stator / Settings I²C bus |
-| 6 | I2C1_SCL | Bidir | Shared Stator / Settings I²C bus |
-| 7 | JTAG_TCK | JDB → Stator | JTAG clock |
-| 8 | TMS | JDB → Stator | JTAG mode select |
-| 9 | TDI | JDB → Stator | JTAG data in |
-| 10 | TTD_RETURN | Stator → JDB | JTAG return from rotor / reflector chain |
-| 11 | GND_RET_A | — | Dock return / guard |
-| 12 | GND_RET_B | — | Dock return / guard |
-| 13 | GND_RET_C | — | Dock return / guard |
-| 14 | GND_RET_D | — | Dock return / guard |
-| 15 | SPARE | — | Reserved for future use |
-| 16 | SPARE | — | Reserved for future use |
-| 17 | SPARE | — | Reserved for future use |
-| 18 | SPARE | — | Reserved for future use |
-| 19 | GND_CHASSIS | — | Chassis ground reference |
-| 20 | GND | — | Signal/power ground return |
+Any future bring-up or service probe access should be implemented on removable coupons rather than
+as permanent features on the production boards.

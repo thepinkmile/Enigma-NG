@@ -9,7 +9,7 @@
 
 This board implements our version of an Intel (Altera) USB Blaster II device for programming CPLDs.
 
-## Component Areas
+## 1. Component Areas
 
 ```text
 TOP VIEW (L1) - 4-Layer (DEC-017) / 2oz Copper
@@ -29,7 +29,7 @@ TOP VIEW (L1) - 4-Layer (DEC-017) / 2oz Copper
 |_____________________________________________________________________________|
 ```
 
-## Simplified Layout
+## 2. Simplified Layout
 
 ```text
 _____________________________________________________________________________ 
@@ -43,7 +43,7 @@ _____________________________________________________________________________
 
 > **Connector Definition Owner:** This board. All other boards connecting to the JTAG Daughterboard cross-reference here.
 >
-## JTAG Header Pinout (J2 — 10-Pin, Interleaved GND)
+## 3. JTAG Header Pinout (J2 — 10-Pin, Interleaved GND)
 
 ```text
 PIN | SIGNAL          | DESCRIPTION
@@ -60,7 +60,7 @@ PIN | SIGNAL          | DESCRIPTION
 10  | GND             | Ground
 ```
 
-## INPUT Header Pinout (J1 — 5-Pin)
+## 4. INPUT Header Pinout (J1 — 5-Pin)
 
 ```text
 PIN | SIGNAL          | DESCRIPTION
@@ -72,7 +72,7 @@ PIN | SIGNAL          | DESCRIPTION
 5   | GND             | Ground
 ```
 
-## PCB Stackup — JLC04161H-7628 (4-Layer)
+## 5. PCB Stackup — JLC04161H-7628 (4-Layer)
 
 **Stackup:** JLC04161H-7628 (JLCPCB standard 4-layer)
 
@@ -83,13 +83,13 @@ PIN | SIGNAL          | DESCRIPTION
 | L3 | Power distribution pours (5V_USB + 3V3_ENIG) | Inner power layer |
 | L4 | GND pour shield | Faces away from Controller (exterior/top when mounted) |
 
-## Grounding Notes
+## 6. Grounding Notes
 
 GND_CHASSIS is not implemented on the JDB — see DEC-023. Mounting holes connect to GND (circuit return).
 
 ---
 
-## §9 Routing — Trace Width Specifications
+## 7. Routing — Trace Width Specifications
 
 **Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).
 L1 = GND plane (component side); L2 = all signal traces (inner layer); L3 = power pours; L4 = GND pour.
@@ -98,7 +98,7 @@ L1 = GND plane (component side); L2 = all signal traces (inner layer); L3 = powe
 External: ~0.15 mm/A. Internal: multiply by 2.5× for same thermal rise.
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
-### Trace Width Table
+### 7.1 Trace Width Table
 
 | Net | Peak Current | IPC Calc (2oz) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -109,7 +109,7 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 | GND pours (outer layers) | — | — | pour | **copper pour** | L1 + L4 | Both outer layers = solid GND; provides dual-sided shielding for L2 signals |
 | Power pours (inner power layer) | ≤ 400 mA | — | pour | **copper pour** | L3 | Separate pour zones for 5V_USB and 3V3_ENIG |
 
-### Notes
+### 7.2 Notes
 
 * All JTAG traces on L2 are sandwiched between the L1 GND reference (top) and L3 power pour (bottom),
   providing inherent shielding and a well-defined impedance environment.

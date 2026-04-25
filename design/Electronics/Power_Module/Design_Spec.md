@@ -461,7 +461,7 @@ Estimated PM-local power dissipation at system peak load:
 | D3 | USB-C ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | C33 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C34, C35 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C36, C37 | VCC bypass for U13 and U14 (SN74LVC1G14DBVRQ1) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C36, C37 | VCC bypass for U13 and U14 (NL27WZ14DFT2G-Q) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C38 | VCC bypass for U15 (MIC1555 monostable) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C39 | VCC bypass for U16 (`PCA9534APWR`) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C40 | SYNC delay chain SW-ringing low-pass filter (C_F1) | 100pF X7R 25V (C0402C101K3RACAUTO) | 0402 | 80-C0402C101K3RAUTO | 399-C0402C101K3RACAUTOCT-ND | C5272912 |
@@ -520,10 +520,10 @@ Estimated PM-local power dissipation at system peak load:
 | U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | C625189 |
 | U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 |
 | U12 | 5V_MAIN Current Monitor | INA219AIDR — Zero-Drift Current/Power Monitor (I²C 0x40) | SOIC-8 | 595-INA219AIDR | 296-23978-1-ND | C138706 |
-| U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | SN74LVC1G14DBVRQ1 (AEC-Q100 single-gate Schmitt inverter) | SOT-23-5 | 595-N74LVC1G14DBVRQ1 | 296-SN74LVC1G14DBVRQ1CT-ND | C49303123 |
+| U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | NL27WZ14DFT2G-Q — AEC-Q100 dual Schmitt-trigger inverter, one gate used per SYNC stage | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 |
 | U15 | PWR_BUT shutdown one-shot timer | MIC1555YM5-TR — CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C42 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C38 (100nF). | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 |
 | U16 | PM-local GPIO expander | PCA9534APWR — 8-bit I²C GPIO expander @ 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`. `INT` exported as `PM_IO_INT_N`. | TSSOP-16 | 595-PCA9534APWR | 296-21760-1-ND | C2871127 |
-| U17 | SW2 hardware signal conditioner | SN74LVC2G14DBVR — dual Schmitt-trigger inverter, 1.65–5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. | SOT-23-6 | 595-SN74LVC2G14DBVR | 296-13010-1-ND | C12401 |
+| U17 | SW2 hardware signal conditioner | NL27WZ14DFT2G-Q — automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 |
 | U18 | SW2 shutdown latch | SN74LVC1G175DBVR — single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. Latches shutdown active on `PWR_BUT` assertion and clears when `LED_nPWR` deasserts. | SOT-23-6 | 595-SN74LVC1G175DBVR | 296-17617-1-ND | C128412 |
 | U19 | SW2 red blink gate | SN74LVC1G08DBVR — single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. Gates the U11 1Hz oscillator into the SW2 red sink while the shutdown latch is set. | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 |
 
@@ -623,8 +623,8 @@ Estimated PM-local power dissipation at system peak load:
 >   cap. C24–C39 (100nF bypass / HF shunt) share the same Samsung
 >   CL05B104KB5NNNC / C1525. C40 (100pF) and C41 (22nF) are the dedicated SYNC
 >   filter / delay capacitors; C42 is the dedicated U15 one-shot timing cap.
-> * **U13/U14 SN74LVC1G14DBVRQ1** — AEC-Q100 single Schmitt-trigger inverter in SOT-23-5. Used as U_INV1 (U13) and U_INV2 (U14) in the 180° SYNC interleaving delay chain.
->   Mouser: `595-SN74LVC1G14DBVRQ1`; DigiKey: `296-SN74LVC1G14DBVRQ1CT-ND`; JLCPCB: `C49303123`.
+> * **U13/U14 NL27WZ14DFT2G-Q** — AEC-Q100 dual Schmitt-trigger inverter in SC-88. One gate is used as U_INV1 (U13) and one as U_INV2 (U14) in the 180° SYNC interleaving delay chain.
+>   Mouser: `863-NL27WZ14DFT2G-Q`; DigiKey: `488-NL27WZ14DFT2G-QCT-ND`; JLCPCB: `C24511261`.
 > * **R24–R27, C40–C41 SYNC sub-circuit** — Complete SYNC interleaving chain from U2A SW node to U2B FSET/SYNC pin.
 >   R_FSET (R24, 86.6kΩ ERJ-3EKF8662V) sets U2A switching frequency. R_SW (R25, 10kΩ) + C_F1 (C40, 100pF) form a 1µs LP filter attenuating SW node ringing before the first Schmitt stage (U13).
 >   R_DLY (R26, 82.0kΩ ERJ-2RKF8202X) + C_DLY (C41, 22nF CL10B223KB8WPNC) implement the RC phase delay: τ = 1.804ms → 180° at 400kHz. R_PD (R27, 10kΩ) ensures U2B SYNC pin is pulled low

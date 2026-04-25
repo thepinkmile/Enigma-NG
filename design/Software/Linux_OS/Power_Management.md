@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-25
 
 ## Overview
 
@@ -41,7 +41,7 @@ PMIC power-button input (`PWR_BUT`). No firmware polling is required for the pri
 | PWR_BUT | CM5 PMIC pin (via PM dock `J3`) | CM5 module internal 10kΩ | MIC1555 U15 one-shot / SW2 tactile | **Primary shutdown trigger** — 3 s LOW pulse from U15 on backup-mode entry; or manual press of SW2 |
 | PWR_GD | GPIO 7 (BCM) | R3 10kΩ to 3V3_ENIG (Controller board) | MCP121T-450E U8 | **Rail-health telemetry only** — HIGH while 5V_MAIN ≥ 4.50V; stays HIGH throughout hold-up; deasserts only on supercap depletion |
 | PM_IO_INT_N | GPIO 5 (BCM) | Open-drain on PM; controller-side pull-up as required | PCA9534A U16 | Optional interrupt line for PM status / SW1 LED expander updates |
-| LTC3350 /INTB | GPIO (TBD — assign at schematic capture) | R29 10kΩ to 3V3_ENIG (Power Module) | LTC3350 U3 | **Backup-mode indicator** — active-LOW when LTC3350 in backup mode (5V_MAIN < 4.812V, R14=30.1kΩ; see DR-PM-08, DEC-030); also triggers MIC1555 U15 one-shot directly in hardware |
+| LTC3350 /INTB | PM-local only (not routed to CM5) | R29 10kΩ to 3V3_ENIG (Power Module) | LTC3350 U3 | **Hardware-only backup trigger** — active-LOW when LTC3350 enters backup mode (5V_MAIN < 4.812V, R14 = 30.1kΩ; see DR-PM-08, DEC-030); drives the MIC1555 U15 one-shot locally to generate the `PWR_BUT` shutdown pulse |
 
 ## Option C: Recommended Implementation
 
@@ -60,34 +60,34 @@ HandlePowerKey=poweroff
 This is sufficient for production use. No polling, no daemon, no I²C read required for the shutdown
 path itself.
 
-### Phase 2 — LTC3350 I²C Telemetry Driver (Deferred — DEC-025)
+### Phase 2 — LTC3350 I²C Telemetry Support (Deferred — DEC-025)
 >
-> **Deferred to Software PoC Stage.** The custom Linux driver is useful for telemetry, LED state
-> control, and post-mortem logging, but is **not required** for shutdown safety. Development is
-> deferred until hardware is available. See **DEC-025**.
+> **Deferred to Software PoC Stage.** Any LTC3350 software support is limited to I²C telemetry,
+> LED state control, and post-mortem logging; it is **not required** for shutdown safety.
+> No dedicated `/INTB` GPIO or device-tree interrupt mapping is required in the current
+> architecture. Development is deferred until hardware is available. See **DEC-025**.
 
 **Intended behaviour (reference only):**
 
-The driver will:
+The software support will:
 
-1. Register an interrupt handler on the LTC3350 `/INTB` pin.
-2. On interrupt, read LTC3350 STATUS register (I2C 0x09, register 0x01) to confirm BACKUP bit (bit 3).
-3. Read LTC3350 charge / monitor status to determine whether the supercap bank is healthy and charged
+1. Read LTC3350 STATUS register (I2C 0x09, register 0x01) to confirm BACKUP bit (bit 3) whenever PM
+   telemetry is sampled.
+2. Read LTC3350 charge / monitor status to determine whether the supercap bank is healthy and charged
    enough to provide the guaranteed hold-up window.
-4. Set SW1 LED to **solid red** whenever the LTC3350 reports a PM fault or the supercap bank is not
+3. Set SW1 LED to **solid red** whenever the LTC3350 reports a PM fault or the supercap bank is not
    hold-up ready, even if a normal input source is still present.
-5. Set SW1 LED to **2 Hz orange flash** during valid backup-mode operation when the bank remains healthy.
-6. Log the event to the kernel ring buffer for post-mortem analysis.
-7. Optionally read VCAP / charge telemetry for remaining supercap SOC estimation.
+4. Set SW1 LED to **2 Hz orange flash** during valid backup-mode operation when the bank remains healthy.
+5. Log the event to the kernel ring buffer for post-mortem analysis.
+6. Optionally read VCAP / charge telemetry for remaining supercap SOC estimation.
 
-**I2C parameters (for driver development reference):**
+**I2C parameters (for deferred telemetry support reference):**
 
 | Parameter | Value |
 | --- | --- |
 | I2C address | 0x09 |
 | STATUS register | 0x01 |
 | BACKUP bit | bit 3 (value 0x08) |
-| /INTB pin | Active-low open-drain; R29 10kΩ pull-up on Power Module |
 
 ### Phase 3 — PWR_GD GPIO Backstop (Not Applicable)
 >
@@ -336,66 +336,31 @@ sudo hwclock --show
 
 - [ ] Test hold-up timing under actual CM5 load profile (5W assumed; measure at first prototype)
 
-## PCA9685 Servo PWM Driver
+## Direct CM5 Servo Interface
 
-The servo motor (Miuzei Metal Gearbox 90) is driven by a PCA9685 I²C PWM driver (U_EXP3) at
-address **0x60** on the I²C-1 bus. The servo requires a 50Hz PWM signal with pulse widths between
-approximately 1ms (0°) and 2ms (180°).
+The servo motor (Miuzei Metal Gearbox 90) is driven directly from the Controller-local CM5 interface.
+`SERVO_PWM` is generated on **GPIO 12** (PWM-capable) and the `SERVO_HOME` switch is read on
+**GPIO 17**. No PCA9685 I²C PWM driver or expander-owned servo GPIO is used in the active design.
 
-### Device Tree Overlay
+### GPIO Configuration
 
-The PCA9685 is configured via a Device Tree overlay on I²C-1:
-
-```dts
-// /boot/overlays/enigma-pca9685.dts
-/dts-v1/;
-/plugin/;
-
-&i2c1 {
-    #address-cells = <1>;
-    #size-cells = <0>;
-
-    pca9685: pwm@60 {
-        compatible = "nxp,pca9685-pwm";
-        reg = <0x60>;
-        #pwm-cells = <2>;
-        clock-frequency = <25000000>;  /* 25 MHz internal oscillator */
-    };
-};
-```
-
-Load via `/boot/firmware/config.txt`:
-
-```ini
-dtoverlay=enigma-pca9685
-```
+Configure GPIO 12 for a **50Hz PWM** waveform with pulse widths between approximately **1ms (0°)** and
+**2ms (180°)**. Configure GPIO 17 as an input with the local hardware pull-up / RC debounce network.
 
 ### Enigma Daemon Hardware Initialisation Sequence
 
 On startup, the `enigmad` daemon performs the following hardware init sequence before accepting
 any cipher commands:
 
-1. **PCA9685 all-call disable:** Write MODE1 register (0x00) with bit 0 (ALLCAL) = 0 to disable
-   the all-call I²C address (0x70). This prevents unintended broadcast writes from affecting the
-   PCA9685 when addressing other devices.
-
-   ```python
-   # Pseudocode
-   i2c.write_byte_data(0x60, 0x00, 0x20)  # MODE1: SLEEP=1, ALLCAL=0
-   time.sleep(0.001)
-   i2c.write_byte_data(0x60, 0x00, 0x00)  # MODE1: wake, 50Hz ready
-   pca9685_set_pwm_freq(50)               # Set 50Hz for servo
-   ```
-
+1. **Servo PWM setup:** Configure CM5 GPIO 12 for the required 50Hz PWM output before any actuation.
 2. **Servo homing sequence:**
-   - Assert SERVO_EN (U_EXP2 GPB[0] HIGH via I²C to 0x21).
    - Command servo to 0° (pulse width ≈ 1ms at 50Hz).
-   - Poll SERVO_HOME (U_EXP2 GPB[1]) — wait for LOW within 3-second timeout.
+   - Poll `SERVO_HOME` (GPIO 17) — wait for LOW within 3-second timeout.
    - If timeout expires, log error and halt init (servo not homed — mechanical fault).
    - On SERVO_HOME LOW confirmed: servo is at 0° reference position.
 3. **MCP23017 port direction init:**
    - U_EXP1 (0x20): GPA = 0xFF (all inputs), GPB = 0xFF (all inputs).
-   - U_EXP2 (0x21): GPA = 0x00 (all outputs), GPB[0] = output, GPB[1] = input, GPB[2:7] = output.
+   - U_EXP2 (0x21): GPA = 0x00 (all outputs, including `SYS_RESET_N` on GPA[7]); GPB = 0xFF-equivalent spare state until any future functions are assigned.
 
 ### Virtual Keypress Sequence (One Key Injection Cycle)
 
@@ -405,10 +370,8 @@ To inject a virtual keypress for character N (5-bit address):
 2. Write KEY_ADDR[4:0] = N to U_EXP2 GPA[4:0].
 3. Assert KEY_EN (U_EXP2 GPA[5] HIGH) — CPLD samples the key address.
 4. Deassert KEY_EN (LOW).
-5. Assert SERVO_EN (U_EXP2 GPB[0] HIGH) — enables PCA9685 Ch0 output.
-6. Command servo 0°→180° (one sweep half).
-7. Wait for mechanical actuation period (≈ 300ms).
-8. Command servo 180°→0° (return sweep).
-9. Wait for return (≈ 300ms).
-10. Deassert SERVO_EN (GPB[0] LOW).
-11. Deassert SOURCE_SEL (GPA[6] LOW) — returns CPLD to keyboard input mode.
+5. Command servo 0°→180° (one sweep half) on `SERVO_PWM` (GPIO 12).
+6. Wait for mechanical actuation period (≈ 300ms).
+7. Command servo 180°→0° (return sweep).
+8. Wait for return (≈ 300ms).
+9. Deassert SOURCE_SEL (GPA[6] LOW) — returns CPLD to keyboard input mode.

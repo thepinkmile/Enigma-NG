@@ -26,7 +26,7 @@ pinouts, and DIP switch mechanisms. A mixed stack is fully supported at the hard
 ## 2. Character Set and Data Bus
 
 * **Character count:** 64
-* **Data bus width:** 6 bits (ENC[0:5]); all 6 bits are active on this variant
+* **Data bus width:** 6 bits (ENC[5:0]); all 6 bits are active on this variant
 * **Encoding:** Binary, 0–63 mapping to the Enigma-NG extended character set (to be defined in
   the VHDL / software design specification; see OWI-003)
 * **Connector bus:** ERM8-010 / ERF8-010 (6-bit footprint); all 12 signal pins on J3/J6 active.
@@ -84,7 +84,7 @@ Up to 21 distinct forward maps can be stored, each usable in both forward and re
 See `Design_Spec.md §2.3` for the SW1 hardware description.
 For the 64-character variant:
 
-* The CPLD reads 6 Gray code bits (G[5:3] from FDC2114 U2 on Board A, G[2:0] from FDC2114 U3
+* The CPLD reads 6 Gray code bits (G[5:3] from FDC2114 U2 on Board A, G[2:0] from FDC2114 U4
   on Board B) and decodes them to binary position 0–63 via the XOR chain (see §7). All 64
   6-bit Gray codes are valid; no between-character jam detection is required for this variant.
 * SW1[5:0] is summed **modulo 64** with the decoded binary position to yield the effective position.
@@ -116,7 +116,7 @@ back to position 0.
   into the inner face of the shroud **cover** flange (Board B side).
 * **Sensing:** Bare copper electrode pads on the PCB flat face (no electronic components on
   the shroud). Aluminium (solid) = high capacitance; milled slot = low capacitance. Sensed by
-  FDC2114RGHR (U2 on Board A, U3 on Board B).
+  FDC2114RGHR (U2 on Board A, U4 on Board B).
 * **Shroud:** Must remain electrically **floating** (bearing isolation — ceramic or nylon
   rolling elements). Not connected to circuit ground.
 
@@ -164,7 +164,7 @@ at any rotor position. All 64 codes are unique. No invalid-code jam detection is
 
 ### CPLD Decode — XOR Chain (Gray to Binary)
 
-The CPLD decodes the 6 raw Gray code bits G[5:0] (from FDC2114 U2 bits[5:3] and U3 bits[2:0])
+The CPLD decodes the 6 raw Gray code bits G[5:0] (from FDC2114 U2 bits[5:3] and U4 bits[2:0])
 to 6-bit binary position B[5:0] using the standard XOR chain:
 
 ```text

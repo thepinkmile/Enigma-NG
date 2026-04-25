@@ -64,8 +64,9 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 ### 2.2. Prototype Standards (Spec-B)
 
 * **Component Placement:** All active and passive components (CPLDs, ICs, SMT Passives) MUST be placed on the Top Layer (L1) for the V1.0 prototype.
-* **Bottom Layer (L_MAX):** Reserved strictly for Diagnostic Banks, Data Plates, and
-  `GND_CHASSIS` pours / shield features where the board layout requires them.
+* **Bottom Layer (L_MAX):** Reserved primarily for Data Plates and `GND_CHASSIS` pours / shield
+  features where the board layout requires them. Any future coupon-based diagnostics should use the
+  dedicated coupon area rather than permanent production-board probe banks.
 
 ## 3. Power Decoupling
 

@@ -16,7 +16,7 @@ This assembly contains the lightboard panel, the lamp / indicator harness, and o
 populated/programmed in the **`LBD_DEC`** role.
 
 The lightboard assembly is electrically independent of the keyboard assembly. It connects to the
-Stator through its own 26-pin IDC ribbon on the dedicated `LBD_DEC` port.
+Stator through its own 20-pin IDC ribbon on the dedicated `LBD_DEC` port.
 
 ---
 
@@ -39,7 +39,7 @@ The lightboard mirrors the same **40-position physical layout** used by the keyb
 
 The lightboard assembly uses one generic Encoder Module in **decode** service:
 
-* Stator drives `ENC_IN[0:5]` into the `LBD_DEC` board.
+* Stator drives `ENC_DATA[5:0]` into the `LBD_DEC` board via the Stator-side alias `ENC_OUT_LBD[5:0]`.
 * The board asserts one of up to 64 output lines.
 * Initial Rev A implementations may populate only the 26- or 40-position lightboard subset, while
   the board footprint retains the full 64-line capability for future layouts.

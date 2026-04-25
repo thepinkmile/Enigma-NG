@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-25
 
 ---
 
@@ -27,7 +27,7 @@ rear edge of Controller
 
 ## 2. Controller ↔ Power Module Dock
 
-### J1 — Main Regulated Rails
+### 2.1 J1 — Main Regulated Rails
 
 | Allocation | Notes |
 | :--- | :--- |
@@ -41,14 +41,14 @@ rear edge of Controller
 **Reference PDFs:** [`TE-1-1674231-1-datasheet.pdf`](../../Datasheets/TE-1-1674231-1-datasheet.pdf),
 [`TE-1123684-7-datasheet.pdf`](../../Datasheets/TE-1123684-7-datasheet.pdf)
 
-### J2 — PoE Auxiliary Feed
+### 2.2 J2 — PoE Auxiliary Feed
 
 | Allocation | Notes |
 | :--- | :--- |
 | `3 × VIN_POE_12V` | Regulated PoE-derived 12V-class auxiliary feed from Controller PoE front-end into PM OR-ing stage |
 | `7 × GND` | Shared return path |
 
-### J3 — Low-Speed Control / Telemetry
+### 2.3 J3 — Low-Speed Control / Telemetry
 
 | Signal | Direction | Notes |
 | :--- | :--- | :--- |
@@ -65,14 +65,14 @@ rear edge of Controller
 
 ## 3. Controller ↔ Stator Dock
 
-### J4 — 5V_MAIN-Biased Hybrid Dock
+### 3.1 J4 — 5V_MAIN-Biased Hybrid Dock
 
 | Contact group | Allocation |
 | :--- | :--- |
 | Power blades | `4 × 5V_MAIN`, `1 × GND` |
 | Signal field | additional `GND` guards / returns |
 
-### J5 — 3V3_ENIG + JTAG / I2C Hybrid Dock
+### 3.2 J5 — 3V3_ENIG + JTAG / I2C Hybrid Dock
 
 | Contact group | Allocation |
 | :--- | :--- |
@@ -95,7 +95,7 @@ feed. The `J4` connector is reserved for 5V delivery and return-current support.
 ## 4. External I/O Placement
 
 ```text
-top / right edge of Controller
+right edge of Controller
 
  [ RJ45 + PoE front-end ]
  [ USB 3.0 stacked Type-A ]
@@ -105,65 +105,27 @@ top / right edge of Controller
 - The Controller owns the **RJ45, Ethernet ESD, magnetics, and PoE PD / ACF front-end**.
   The PoE front-end passes its regulated auxiliary feed into the Power Module over `J2`.
 - `J_DSI1` and `J_FAN` are internal-only connectors and are not part of the external I/O edge.
-  `J_DSI1` routes to the future in-lid touchscreen expansion, while `J_FAN` serves the CM5
-  active-cooler heatsink fan.
+  `J_DSI1` sits between `J5` and the Power Module mounting area so it can route by ribbon cable into
+  the future in-lid touchscreen assembly, while `J_FAN` serves the CM5 active-cooler heatsink fan.
 
 ---
 
-## 5. Diagnostic Banks
-
-### Diagnostic Bank-Alpha — Power Module Dock (2×8)
-
-| Pin | Signal | Description |
-| :--- | :--- | :--- |
-| 1 | `5V_MAIN_A` | J1 regulated 5V feed sample |
-| 2 | `5V_MAIN_B` | J1 regulated 5V feed sample |
-| 3 | `3V3_ENIG_A` | J1 logic-rail sample |
-| 4 | `3V3_ENIG_B` | J1 logic-rail sample |
-| 5 | `VIN_POE_12V` | J2 PoE auxiliary feed sample |
-| 6 | `I2C1_SDA` | PM telemetry bus |
-| 7 | `I2C1_SCL` | PM telemetry bus |
-| 8 | `PM_IO_INT_N` | PM expander interrupt |
-| 9 | `PWR_GD` | Direct PM rail-health signal |
-| 10 | `ROTOR_EN` | Direct PM LDO enable |
-| 11 | `PWR_BUT` | CM5 PMIC power-button path |
-| 12 | `LED_nPWR` | Direct CM5 power-state indication to the PM |
-| 13 | `GND` | Signal ground |
-| 14 | `GND` | Signal ground |
-| 15 | `GND` | System ground |
-| 16 | `GND_CHASSIS` | Controller local shield/chassis reference only |
-
-### Diagnostic Bank-Beta — Stator Dock (2×8)
-
-| Pin | Signal | Description |
-| :--- | :--- | :--- |
-| 1 | `5V_MAIN_J4_1` | J4 5V blade sample |
-| 2 | `5V_MAIN_J4_2` | J4 5V blade sample |
-| 3 | `3V3_ENIG_J5_1` | J5 3V3 blade sample |
-| 4 | `3V3_ENIG_J5_2` | J5 3V3 blade sample |
-| 5 | `I2C1_SDA` | Shared Stator / Settings bus |
-| 6 | `I2C1_SCL` | Shared Stator / Settings bus |
-| 7 | `TCK` | JTAG clock |
-| 8 | `TMS` | JTAG mode |
-| 9 | `TDI` | JTAG data in |
-| 10 | `TTD_RETURN` | JTAG return from Reflector chain |
-| 11 | `GND` | Logic guard |
-| 12 | `GND` | Logic guard |
-| 13 | `GND` | Power return |
-| 14 | `GND` | Power return |
-| 15 | `GND` | System ground |
-| 16 | `GND_CHASSIS` | Local shield/chassis reference only |
-
----
-
-## 6. Placement Summary
+## 5. Placement Summary
 
 ```text
-         rear docks                    controller core                  user I/O
- __________________________________________________________________________________________
-|   [J4][J5] [J1][J2][J3]    | [ CM5 sockets + JDB headers ]  | [RJ45] [USB3] [HDMI] [DSI] |
-|____________________________|________________________________|____________________________|
+rear / dock edge
+ ________________________________________________________________________
+|     [J4] [J5]         [J_DSI1]               | (Power Module mounting) |
+|                          _________________   | [J1]               [J3] |
+|  [ JDB headers ]        |                 |  |          [J2]           |
+|                         |      CM5        |  |_________________________|
+|                         |     Module      |                            |
+|                         | [ Low-Profile ] |                     [RJ45] |
+|                         | [    Area     ] |                     [USB3] |
+| [ SERVO controls ]      |_________________|                     [HDMI] |
+|________________________________________________________________________|
+left side / internal                                            right side
 ```
 
-The Controller remains the only board that must be inserted as the enclosure reference part. The
-Power Module and Stator then dock into it as mechanically independent service modules.
+The Controller is the only board that must be inserted as the enclosure reference part.
+The Power Module and Stator then dock into it as mechanically independent service modules.

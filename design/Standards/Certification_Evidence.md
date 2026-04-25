@@ -135,7 +135,7 @@ The eFuse (**TPS259804ONRGER**, 16.9V silicon-fixed OVLO, VQFN 4×4mm) is progra
 | --- | --- | --- |
 | R_UVLO_HI | 232 kΩ (ERJ-3EKF2323V — Mouser 667-ERJ-3EKF2323V / DigiKey P232KHCT-ND / JLCPCB C403086) | UVLO upper resistor |
 | R_UVLO_LO | 28.7 kΩ (ERJ-3EKF2872V — Mouser 667-ERJ-3EKF2872V / DigiKey P28.7KHCT-ND / JLCPCB C403135) | UVLO lower resistor |
-| R_ILIM | 210 Ω (ERA-3ARB2100V — Mouser 667-ERA-3ARB2100V / DigiKey P210HCT-ND / JLCPCB C403064) | ILIM set resistor (R3) — programs 7.0A trip current |
+| R_ILIM | 210 Ω (ERA-3VEB2100V — Mouser 667-ERA-3VEB2100V / DigiKey 10-ERA-3VEB2100VCT-ND / JLCPCB C1861624) | ILIM set resistor (R3) — programs 7.0A trip current |
 
 > **Note on Battery Voltage — OVLO Margin:** The TPS259804ONRGER has a silicon-fixed OVLO rising threshold of 16.9V typ (16.32V min / 17.31V max from datasheet). To maintain an engineering margin of
 > ≥0.5V, the Smart Battery BMS is specified to limit charge to **4.1V/cell maximum (16.4V for a 4S pack)** — giving 0.5V margin to the 16.9V typ threshold. This specification must be enforced in
@@ -195,12 +195,12 @@ U2A SW node
     │
    [C_F1: 100pF X7R 0402]         (low-pass: τ = 1µs, attenuates SW ringing)
     │
-   [U_INV1: SN74LVC1G14DBVRQ1 SOT-23-5 (U13)]  (Schmitt trigger — restores clean digital signal)
+   [U_INV1: NL27WZ14DFT2G-Q SC-88 (U13)]  (Schmitt trigger — restores clean digital signal)
     │
    [R_DLY: 82.0kΩ 1% 0402 (R26, ERJ-2RKF8202X)]  ┐
    [C_DLY: 22nF X7R 0603 (C29, CL10B223KB8WPNC)]  ┘  RC delay: τ = 1.804ms → well beyond ½ period at 400kHz (1.25µs); delay circuit relies on Schmitt-trigger threshold crossing, not τ ≈ T/2
     │
-   [U_INV2: SN74LVC1G14DBVRQ1 SOT-23-5 (U14)]  (Schmitt trigger — re-squares delayed signal)
+   [U_INV2: NL27WZ14DFT2G-Q SC-88 (U14)]  (Schmitt trigger — re-squares delayed signal)
     │
   U2B FSET/SYNC
     │
@@ -208,7 +208,7 @@ U2A SW node
                                     at ~400kHz via R_FSET resistor until SYNC locks)
 ```
 
-Both SN74LVC1G14DBVRQ1 instances are powered from 3V3_ENIG (available post-LDO startup). 100nF X7R decoupling capacitors are placed within 0.5mm of each VCC pin.
+Both NL27WZ14DFT2G-Q instances are powered from 3V3_ENIG (available post-LDO startup). 100nF X7R decoupling capacitors are placed within 0.5mm of each VCC pin.
 
 **Phase accuracy:** At 400 kHz nominal, the RC delay produces a 180° offset. With DRSS modulation at ±5.5% (frequency range 378–422 kHz), the fixed RC delay introduces ±8° phase variation. The
 residual asymmetric ripple at this offset error is less than 5% of the single-phase ripple amplitude — acceptable for all certification purposes.
@@ -348,7 +348,8 @@ GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
 Stator dock pair) are not individually ESD-protected in the standard configuration, as they are
 considered internal interfaces not subject to user contact during normal operation.
 
-**Diagnostic test banks:** ESD protection on diagnostic banks is deferred to the post-prototype stage (see §8, deferred item DA-01).
+**Coupon-based bring-up access:** If removable coupon probe access is added later, any exposed pads
+will require a dedicated ESD review before production release.
 
 ---
 
@@ -490,7 +491,7 @@ Any replacement CPLD must be verified for:
 
 | ID | Description | Owner | Priority |
 | --- | --- | --- | --- |
-| OA-01 | **[CLOSED]** eFuse variant confirmed as **TPS259804ONRGER** (16.9V silicon-fixed OVLO, VQFN-24). UVLO confirmed: V_UVLO_R = 1.20V typ; R1=232kΩ, R2=28.7kΩ → 10.90V typ (range 10.72–11.17V). OVLO: silicon-fixed 16.9V typ (16.32V min / 17.31V max rising) — no external R; worst-case min 16.32V gives 0.32V margin above BMS 16.4V max — documented in §3.2 battery note. ILIM: R3 = 210 Ω ERA-3ARB2100V (Mouser 667-ERA-3ARB2100V, 0.1% thin-film) — DigiKey and JLCPCB PNs TBD, programs 7.062A typ via R = 1460/(I−0.11). All PNs confirmed. | Hardware Designer | **CLOSED** |
+| OA-01 | **[CLOSED]** eFuse variant confirmed as **TPS259804ONRGER** (16.9V silicon-fixed OVLO, VQFN-24). UVLO confirmed: V_UVLO_R = 1.20V typ; R1=232kΩ, R2=28.7kΩ → 10.90V typ (range 10.72–11.17V). OVLO: silicon-fixed 16.9V typ (16.32V min / 17.31V max rising) — no external R; worst-case min 16.32V gives 0.32V margin above BMS 16.4V max — documented in §3.2 battery note. ILIM: R3 = 210 Ω ERA-3VEB2100V (Mouser 667-ERA-3VEB2100V, DigiKey 10-ERA-3VEB2100VCT-ND, JLCPCB C1861624; 0.1% thin-film), programs 7.062A typ via R = 1460/(I−0.11). All PNs confirmed. | Hardware Designer | **CLOSED** |
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** — LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~9 min charge from cold: 53.2W / 72W = 73.9% ✓ — within 75% design rule. Steady-state: 50.3W / 72W = 69.9% ✓. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** — Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12L ACF transformer (`D` suffix = packaging only). Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
@@ -503,7 +504,7 @@ Any replacement CPLD must be verified for:
 
 | ID | Description | Deferred Until |
 | --- | --- | --- |
-| DA-01 | ESD protection on Diagnostic Bank-A and Diagnostic Bank-B exposed ENIG pads. TVS arrays (TPD4E05U06 or equivalent) to GND_CHASSIS required before production release and any classroom deployment. | Post-prototype validation |
+| DA-01 | If coupon-based diagnostic access is introduced, exposed ENIG pads must receive dedicated ESD protection or documented justification before production release and any classroom deployment. | Post-coupon diagnostic design |
 | DA-02 | ESD policy for classroom deployment variant — define which internal BtB-accessible connections require additional ESD protection when the device is used in an educational/student-access configuration. | Pre-production (classroom variant) |
 | DA-03 | Full consistency documentation pass — legacy Link-Alpha / Link-Beta references must remain historical-only after DEC-038. If further active docs are added, ensure they use the TE PM dock and Molex Stator dock naming from the start. | Ongoing document maintenance |
 | DA-04 | Update Consolidated BOM with all locked Power Module components. Format: component description, specification, boards requiring, quantity, notes (no reference designators — these are per-board). | Post-eFuse part lock (OA-01) |
@@ -523,7 +524,7 @@ The following table records alignment of the current Enigma-NG Power Module desi
 | :--- | :--- | :---: | :--- | :--- |
 | **MIL-STD-461G** | Primary EMC standard for defence equipment | ⚠️ Partial | CE102 input filter provides −46 dB @ 150 kHz; RE102 Faraday enclosure; §3.6 GND bond rule explicitly documented | CS114/RS103 susceptibility not addressed; non-PM boards lack EMC design documentation |
 | **DEF STAN 59-411** | UK MoD EMC policy (Navy/Army/Air) | ⚠️ Partial | CMC below 150 kHz per specification; Faraday enclosure; ESD protection at all external ports | Platform category (Ship/Vehicle/Aircraft) not determined — this gates test levels |
-| **IEC 61000-4-2** | ESD immunity | ✅ Aligned | TPD4E05U06 ESD suppressors fitted at all external ports; transients steered to GND_CHASSIS | Diagnostic Bank ESD protection deferred (see OA-01) |
+| **IEC 61000-4-2** | ESD immunity | ✅ Aligned | TPD4E05U06 ESD suppressors fitted at all external ports; transients steered to GND_CHASSIS | Any future coupon-based diagnostic access needs a dedicated ESD review before release |
 | **IEC 61000-4-4** | Electrical Fast Transient (EFT) | ⚠️ Partial | Pi-filter + CMC provides significant attenuation of fast transients on input lines | No EFT margin calculation documented against specific test levels |
 | **IEC 61000-4-5** | Surge immunity | ⚠️ Partial | 1500 Vrms isolation on PoE path; TVS diode on battery input | No differential-mode surge margin calculated against specific test levels |
 | **IEC 61000-4-6** | Conducted susceptibility (RF) | ⚠️ Partial | Dual CMC topology provides common-mode RF rejection | No CM susceptibility margin documented |

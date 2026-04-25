@@ -26,8 +26,8 @@ pushbutton.
 
 | Feature | Quantity | Location | Notes |
 | :--- | :---: | :--- | :--- |
-| Toggle switch cutouts (Bank 1 — Plugboard Routing) | 5 | Right side, top face, near rotors | Bank 1 enable + SW_B1[0:3] — panel-mount SPDT toggle |
-| Toggle switch cutouts (Bank 2 — Reflector Mapping) | 7 | Right side, top face, near rotors | Bank 2 enable + SW_B2[0:5] — panel-mount SPDT toggle |
+| Toggle switch cutouts (Bank 1 — Plugboard Routing) | 5 | Right side, top face, near rotors | Bank 1 enable + SW_B1[3:0] — panel-mount SPDT toggle |
+| Toggle switch cutouts (Bank 2 — Reflector Mapping) | 7 | Right side, top face, near rotors | Bank 2 enable + SW_B2[5:0] — panel-mount SPDT toggle |
 | RGB LED apertures (Bank 1 indicators) | 5 | Adjacent to Bank 1 toggles | One 5mm indicator LED per switch position |
 | RGB LED apertures (Bank 2 indicators) | 7 | Adjacent to Bank 2 toggles | One 5mm indicator LED per switch position |
 | CFG_APPLY actuator cutout | 1 | Right side, top face | Opening for a mechanical actuator/plunger that presses the Settings Board's internal momentary tactile switch; triggers CPLD config re-latch |

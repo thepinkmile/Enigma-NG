@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
-**Last Updated:** 2026-04-21
+**Last Updated:** 2026-04-25
 
 ## Overview
 
@@ -24,7 +24,11 @@ quantities for one Extension board; Rev A uses ×1 Extension board, while the fu
 requires ×5 Extension boards (one between each pair of 5-rotor groups). System Total reflects
 the Rev A single-Extension configuration unless otherwise noted. Role-specific Encoder Module
 populations are broken out as dedicated static rows rather than range-valued quantity cells.
-Assembly-level plugboard jacks and keyboard switches are listed in §4a instead of this board matrix.
+Variant-dependent Rotor-only populations may use range-valued totals where the N=26 vs. N=64 build
+mix changes whether a part is stuffed. When a variant-specific rotor part is populated, it is
+fitted in complete rotor sets of **5, 10, 15, 20, 25, or 30** boards — never as a single loose
+rotor. Assembly-level plugboard jacks and keyboard switches are listed in §4a instead of this
+board matrix.
 
 | MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×6) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | SBD | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
@@ -33,10 +37,11 @@ Assembly-level plugboard jacks and keyboard switches are listed in §4a instead 
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | — | 2 |
 | PCA9534APWR — I²C GPIO Expander 8-bit (TSSOP-16) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | FDC2114RGHR — 4-ch Capacitive Sensor IC, U2 Track A (bits[5:3] N=64; bits[3:0] N=26), Board A, addr 0x2A (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
-| FDC2114RGHR — 4-ch Capacitive Sensor IC, U3 Track B (bits[2:0] N=64 only; NOT POPULATED for N=26), Board B, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
-| FDC2114RGHR — 4-ch Capacitive Sensor IC, U4 STGC bit[4] (N=26 only; NOT POPULATED for N=64), Board A, addr 0x2B (16-VQFN) | — | — | — | — | — | 1 | TBD | — | — | — | — | TBD (N=26 builds only) |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U3 STGC bit[4] (N=26 only; NOT POPULATED for N=64), Board A, addr 0x2B (16-VQFN) | — | — | — | — | — | 0 / 1 | 5-30 (sets of 5) | — | — | — | — | 5-30 (sets of 5, N=26 builds only) |
+| FDC2114RGHR — 4-ch Capacitive Sensor IC, U4 Track B (bits[2:0] N=64 only; NOT POPULATED for N=26), Board B, addr 0x2B (16-VQFN) | — | — | — | — | — | 0 / 1 | 5-30 (sets of 5) | — | — | — | — | 5-30 (sets of 5, N=64 builds only) |
 | SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | — | 2 |
-| SN74LVC1G14DBVRQ1 — Single Schmitt Inverter (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| 74HC157PW-Q100,118 — Automotive quad 2:1 mux (TSSOP-16) | — | — | 2 | — | — | — | — | — | — | — | — | 2 |
+| NL27WZ14DFT2G-Q — Automotive Dual Schmitt Inverter (SC-88; PM U13/U14 SYNC delay chain + U17 SW2 signal conditioner) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
 | FT232HL-REEL — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
 | CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS75733KTTRG3 — 3.3 V LDO Regulator (TO-263 KTT 5-pin) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -57,12 +62,10 @@ Assembly-level plugboard jacks and keyboard switches are listed in §4a instead 
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
 | BSS138 — 50 V N-ch Logic-Level MOSFET (SOT-23) | 7 | — | — | — | — | — | — | — | — | — | 6 | 13 |
-| TBD — Dual Schmitt inverter / buffer, 1.65-5.5V, 3.3V logic compatible (SW2 `LED_nPWR` / `PWR_BUT` conditioning) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| TBD — Single D-type flip-flop with async clear, 1.65-5.5V, 3.3V logic compatible (SW2 shutdown latch) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| TBD — Single 2-input AND gate, 1.65-5.5V, 3.3V logic compatible (SW2 red blink gate) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| SN74LVC1G175DBVR — Single D-type flip-flop with async clear, 1.65-5.5V, 3.3V logic compatible (PM SW2 shutdown latch) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
+| SN74LVC1G08DBVR — Single 2-input AND gate (SOT-23-5; PM SW2 red blink gate + Stator reset/apply gate) | 1 | — | 1 | — | — | — | — | — | — | — | — | 2 |
 | BAT54 — Schottky Diode (SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 3 | 6 |
-| PCA9685BS/3 — I²C 16-ch PWM Driver (SSOP-28) | — | — | 1 | — | — | — | — | — | — | — | — | 1 |
 | J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap — common fitted population | 15 | 1 | 9 | 8 | 48 | 8 | 240 | — | 1 | 4 | 4 | 322 |
@@ -120,7 +123,7 @@ Assembly-level plugboard jacks and keyboard switches are listed in §4a instead 
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | — | 32 |
 | Adam Tech PH1-07-UA — 1×7 2.54mm male pin header, Rotor Board A H\_SW3 (Mouser 737-PH1-07-UA; DigiKey 2057-PH1-07-UA-ND; JLCPCB C3331618) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
 | Adam Tech RS1-07-G — 1×7 2.54mm female socket, Rotor Board B H\_SW3 (Mouser 737-RS1-07-G; DigiKey 2057-RS1-07-G-ND; JLCPCB C3321543) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
-| Amphenol T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm (RS-Online 832-3503; JLCPCB C3013501) | — | — | 6 | 1 | 6 | — | — | — | — | — | — | 12 |
+| Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm (Mouser 737-BHR-20-VUA; DigiKey 2057-BHR-20-VUA-ND; JLCPCB C17340054 uses 2BHR-20-VUA MPN) | — | — | 6 | 1 | 6 | — | — | — | — | — | — | 12 |
 | Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | — | 4 |
 | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1/Rotor H\_PWR+H\_JTAG(BrdB)+H\_SENS(BrdA) (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | 3 | 90 | — | — | 1 | — | 91 |
 | Adam Tech RS1-05-G — 1×5 2.54mm female socket, CTL J\_JDB\_PWR/Rotor H\_PWR+H\_JTAG(BrdA)+H\_SENS(BrdB) (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | 3 | 90 | — | — | — | — | 91 |
@@ -189,7 +192,7 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M | 10µH, 15.5A Isat, DCR 16.5mΩ | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M; alt: Farnell ~2741 in stock |
 | C1-C4 | Pi-filter bulk cap bank (C1/C2 at filter input, C3/C4 at filter output) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
 | C5-C8, C9-C12, C13-C15 | Power-stage 22µF bulk caps (buck inputs, eFuse input/output, LDO output, backup bank) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
-| C16-C19 | LMQ61460-Q1 buck output bulk caps | TDK CGA9N3X7R1E476M230KB | 4× 47µF 25V X7R MLCC total (2 fitted at U2A OUT, 2 fitted at U2B OUT) | 810-A9N3X7476M23KB | 445-174773-1-ND |
+| C16-C19 | LMQ61460-Q1 buck output bulk caps | TDK CGA9N3X7R1E476M230KB | 4× 47µF 25V X7R MLCC total (2 fitted at U2A OUT, 2 fitted at U2B OUT) | 2220 | 810-A9N3X7476M23KB |
 | C20 | LDO input cap (U7 VIN) | Kemet C1206C106K3RACTU | 10µF 25V X7R | 1206 | 80-C1206C106K3R |
 | C21-C23 | 1µF caps (Pi-filter mid-frequency legs and U11 timer) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
 | C24-C39 | 100nF caps (Pi-filter HF legs and IC VCC bypass network) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
@@ -197,6 +200,7 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 | C41 | SYNC 180° phase delay capacitor (C_DLY) | Samsung CL10B223KB8WPNC | 22nF X7R 25V | 0603 | 187-CL10B223KB8WPNC |
 | C42 | U15 MIC1555 one-shot timing cap | Yageo CC1206KKX7R8BB106 | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 |
 | CTL C24 | Controller PoE front-end TPS23730 soft-start cap (U10 C_SS) | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
+| JDB C5 | 5V_USB power-entry filter cap | TDK CGA6P3X7R1H475K250AD | 4.7µF X7R | 1210 | 810-CGA6P3X7R1H475KD |
 
 **Pi-filter performance summary (f_c = 7.5kHz):**
 
@@ -239,9 +243,9 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| R16–R19 | SW1[0:3] CPLD config input pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
+| R16–R19 | SW1[3:0] CPLD config input pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
 | R20 | STATOR_CFG_RDY input pull-down (×1) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
-| R21–R26 | SW2[0:5] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
+| R21–R26 | SW2[5:0] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
 
 Pull-down resistors R16–R26 are retained on the Stator CPLD config input pins as power-up safe
 defaults (hold all inputs LOW when U_EXP4 is uninitialised). Physical switches SW1 and SW2 have
@@ -255,19 +259,25 @@ configuration tables.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 | U_EXP1, U_EXP2 | MCP23017 I²C GPIO Expander (×2) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
 | U_EXP4 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| U_EXP3 | PCA9685 I²C PWM Driver | PCA9685BS/3 | SSOP-28 | 771-PCA9685BS3118 | PCA9685BS/3,118CT-ND | C18805 | 🔒 |
-| J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 | 🔒 |
-| J_CFG | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
-| SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — | 🔒 |
+| J13 | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
 
 U_EXP1 @ 0x20: ENC_IN/ENC_OUT monitoring. U_EXP2 @ 0x21: virtual keypress injection, SOURCE_SEL,
-SYS_RESET_N, servo control. U_EXP4 @ 0x22: CPLD config output driver (SW1[0:3] + SW2[0:5] +
-STATOR_CFG_RDY). U_EXP3 @ 0x60: servo PWM (Ch0 = 50Hz). J_CFG (6-pin JST PH) connects to Settings
-Board J_I2C and carries 3V3_ENIG, 5V_MAIN (used as the Settings indicator rail), 2× GND, SDA, SCL.
+SYS_RESET_N, spare GPIO. U_EXP4 @ 0x22: CPLD config output driver (SW1[3:0] + SW2[5:0] +
+STATOR_CFG_RDY). J13 (6-pin JST PH) connects to Settings Board J_I2C and carries 3V3_ENIG,
+5V_MAIN (used as the Settings indicator rail), 2× GND, SDA, SCL.
 
-> **Note:** The servo motor itself (Miuzei Metal Gearbox 90) is a purchased item (Amazon, already
-> purchased). It is not in the electronic BOM.
->
+### Controller-local Servo Interface Components
+
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
+| J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 | 🔒 |
+| SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — | 🔒 |
+| R_SH1 | SERVO_HOME pull-up resistor (10kΩ) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 |
+| C_SH1 | SERVO_HOME RC debounce capacitor (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+
+The servo motor itself (Miuzei Metal Gearbox 90) is a purchased mechanical item and is therefore not
+listed in the electronic BOM.
+
 ## 4d. Settings Board
 
 The Settings Board replaces the Stator DIP switches with user-accessible panel-mount toggle
@@ -279,12 +289,12 @@ specification.
 | U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x23 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
 | U_LED_B1 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x24 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
 | U_LED_B2 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x25 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| SW_B1_EN, SW_B1[0:3] | Bank 1 configuration toggle switches (×5: bank enable + routing bits 0–3) | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
-| SW_B2_EN, SW_B2[0:5] | Bank 2 configuration toggle switches (×7: bank enable + reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
-| LED_B1_EN, LED_B1[0:3] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
-| LED_B2_EN, LED_B2[0:5] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
+| SW_B1_EN, SW_B1[3:0] | Bank 1 configuration toggle switches (×5: bank enable + routing bits 0–3) | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
+| SW_B2_EN, SW_B2[5:0] | Bank 2 configuration toggle switches (×7: bank enable + reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
+| LED_B1_EN, LED_B1[3:0] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
+| LED_B2_EN, LED_B2[5:0] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
 | SW_CFG_APPLY | CFG_APPLY momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | ✅ |
-| J_I2C | I²C ribbon cable connector to Stator J_CFG | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
+| J_I2C | I²C ribbon cable connector to Stator J13 | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
 | Q_BNK1_R, Q_BNK1_G, Q_BNK1_B, Q_BNK2_R, Q_BNK2_G, Q_BNK2_B | Low-side colour-rail sink MOSFETs (×6 total; 3 per bank for RGB) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
 | R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
 | R_CA1 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
@@ -299,7 +309,7 @@ specification.
 
 U_EXP_SW_IN @ 0x23: reads all 12 switch states + CFG_APPLY. U_LED_B1 @ 0x24 and U_LED_B2 @ 0x25:
 drive per-bit LED anodes and per-bank RGB colour-rail MOSFET sinks. All three share the Stator
-I²C-1 bus via the J_I2C → J_CFG ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
+I²C-1 bus via the J_I2C → J13 ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
 green/blue series resistors. `5V_MAIN` is routed from the Controller via the `J4`
 high-current dock through the Stator to the Settings Board.
 
@@ -391,9 +401,9 @@ high-current dock through the Stator to the Settings Board.
 | U4 | TPS25751DREFR | WQFN-38 6×4mm | 595-TPS25751DREFR | 296-TPS25751DREFRCT-ND | C30169739 | 🔒 ✅ Replaces NRND TPS25750DRCR (see DEC-012). PD3.1 certified (USB-IF TID#10306). Package: WQFN-38 6×4mm (note: different from TPS25750 QFN-28). |
 | U7 | TPS75733KTTRG3 | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 | 🔒 Fixed 3.3V, TO-263 KTT 5-pin. Active-LOW EN (EN LOW = enabled). ✓ |
 | U16 | PCA9534APWR | TSSOP-16 | 595-PCA9534APWR | 296-21760-1-ND | C2871127 | 🔒 PM-local 8-bit I²C GPIO expander at 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R/G/B`, `SW_LED_CTRL`. |
-| U17 | SN74LVC2G14DBVR | SOT-23-6 | 595-SN74LVC2G14DBVR | 296-13010-1-ND | C12401 | PM SW2 hardware signal conditioner. Dual Schmitt-trigger inverter, 1.65–5.5V supply, push-pull outputs, 5.5V-tolerant inputs. |
+| U17 | NL27WZ14DFT2G-Q | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 | PM SW2 hardware signal conditioner. Automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. |
 | U18 | SN74LVC1G175DBVR | SOT-23-6 | 595-SN74LVC1G175DBVR | 296-17617-1-ND | C128412 | PM SW2 shutdown latch. Single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. |
-| U19 | SN74LVC1G08DBVR | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 | PM SW2 red blink gate. Single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. |
+| U19 | SN74LVC1G08DBVR | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 | PM SW2 red blink gate. Also reused as the Stator reset/apply gate (`SYS_RESET_N` AND `CFG_APPLY_N` -> `DEV_CLRN`). Single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. |
 | U9 | TPS2372-4RGWR | VQFN-20 | **595-TPS2372-4RGWR** (provided) | **296-52795-1-ND** ✓ | C470955 | 🔒 DigiKey stock verified. $3.09/1. VQFN-20 per TI. |
 | U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | C3189530 | 🔒 ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | C1972959 | 🔒 DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
@@ -456,7 +466,7 @@ Product page links for all major components for design review and procurement ve
 | U11, U15 | MIC1555YM5-TR — CMOS Timer / LED Oscillator | Microchip Technology | [MIC1555-datasheet.pdf](../Datasheets/MIC1555-datasheet.pdf) |
 | U12 (PM), U2 (STA) | INA219AIDR — Zero-Drift Power Monitor | Texas Instruments | [INA219-datasheet.pdf](../Datasheets/INA219-datasheet.pdf) |
 | U16 (PM) | PCA9534APWR — 8-bit I²C GPIO Expander | Texas Instruments | [pca9534a-datasheet.pdf](../Datasheets/pca9534a-datasheet.pdf) |
-| U13, U14 | SN74LVC1G14DBVRQ1 — Single Schmitt Inverter | Texas Instruments | [sn74lvc1g14-q1-datasheet.pdf](../Datasheets/sn74lvc1g14-q1-datasheet.pdf) |
+| U13, U14, U17 | NL27WZ14DFT2G-Q — Automotive Dual Schmitt Inverter | onsemi | [NL27WZ14-D.pdf](../Datasheets/NL27WZ14-D.pdf) |
 | U2 (CTL) | TPS2065CDBVR — USB Power Switch 1.6A | Texas Instruments | [tps2065c-datasheet.pdf](../Datasheets/tps2065c-datasheet.pdf) |
 | U3 (CTL) | AP2331W-7 — HDMI Current Limiter | Diodes Inc. | [AP2331-datasheet.pdf](../Datasheets/AP2331-datasheet.pdf) |
 | D3 (PM); U4-U6 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | [tpd4e05u06-q1-datasheet.pdf](../Datasheets/tpd4e05u06-q1-datasheet.pdf) |
@@ -464,6 +474,7 @@ Product page links for all major components for design review and procurement ve
 | D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.pdf](../Datasheets/tpd1e10b06-q1-datasheet.pdf) |
 | C25 (CTL), C40 (PM) | C0402C103K1RACAUTO / C0402C101K3RACAUTO — KEMET automotive X7R MLCC family | KEMET | [KEM_C1023_X7R_AUTO_SMD-datasheet.pdf](../Datasheets/KEM_C1023_X7R_AUTO_SMD-datasheet.pdf) |
 | U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.pdf](../Datasheets/sn74lvc2g125-datasheet.pdf) |
+| U4-U5 (STA) | 74HC157PW-Q100,118 — Automotive quad 2:1 mux | Nexperia | [74HC_HCT157_Q100-datasheet.pdf](../Datasheets/74HC_HCT157_Q100-datasheet.pdf) |
 | U1 (JDB) | FT232HL-REEL — USB 2.0 MPSSE Bridge | FTDI | [FT232H-datasheet.pdf](../Datasheets/FT232H-datasheet.pdf) |
 | U1 (ENC) | EPM240T100I5N — Intel MAX II CPLD 240 LE | Intel (Altera) | [Intel_max2_cpld-handbook.pdf](../Datasheets/Intel_max2_cpld-handbook.pdf) |
 | U1 (STA/ROT) | EPM570T100I5N — Intel MAX II CPLD 570 LE | Intel (Altera) | [Intel_max2_cpld-handbook.pdf](../Datasheets/Intel_max2_cpld-handbook.pdf) |
@@ -491,7 +502,7 @@ Product page links for all major components for design review and procurement ve
 | J4/J5 / J11/J12 family | EXTreme Guardian HD product family specification | Molex | [Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf](../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf) |
 | C_SC1–8 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.pdf](../Datasheets/ADCR-T02R7S-datasheet.pdf) |
 | SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.pdf](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.pdf) |
-| J4–J9 (STA), J2 (ENC) | T821126A1S100CEU — 26-pin 2×13 shrouded box header, 2.54mm | Amphenol | TBD — datasheet to be added |
+| J4–J9 (STA), J2 (ENC) | BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.pdf](../Datasheets/bhr-xx-vua-data-sheet.pdf) |
 | J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.pdf](../Datasheets/bhr-xx-vua-data-sheet.pdf) |
 | J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
 | J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |

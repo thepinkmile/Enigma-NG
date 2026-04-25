@@ -57,8 +57,8 @@ second CPLD on the Reflector itself.
 * **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical).
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
   > This board uses the mating connector as J4 (Adam Tech BHR-16-VUA — see BOM). The authoritative
-  > 16-pin pinout is defined on the Stator; Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
-  > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
+  > 16-pin pinout is defined on the Stator; Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = `ENC_OUT_REF[5:0]`,
+  > Pins 9–14 = `ENC_IN_REF[5:0]`, Pin 15 = TTD_RETURN, Pin 16 = GND.
 
 > **Compatibility note:** J4 pin allocation matches Stator J10 (16-pin 2×8). The Stator J10 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
 
@@ -76,10 +76,11 @@ second CPLD on the Reflector itself.
 >
 > * **Pin 15 — TTD_RETURN:** JTAG TDO return only — completes the chain back to the FT232H. This is
 >   the ONLY JTAG signal on J4.
-> * **Pins 3–14 — ENC_IN[0:5] / ENC_OUT[0:5]:** Bidirectional Stator CPLD interface (simultaneous).
->   ENC_IN[0:5] (pins 3–8): return-pass signal driven by Stator CPLD to Reflector chain after optional
->   plugboard insertion (Step 2 drive). ENC_OUT[0:5] (pins 9–14): reflected signal returned from
->   passive Reflector turnaround to the Stator CPLD (Step 2 receive). **These are NOT JTAG signals.**
+> * **Pins 3–14 — `ENC_OUT_REF[5:0]` / `ENC_IN_REF[5:0]`:** Bidirectional Stator CPLD interface
+>   (simultaneous, using Stator-owned aliases). `ENC_OUT_REF[5:0]` (pins 3–8): return-pass signal
+>   driven by the Stator CPLD to the Reflector chain after optional plugboard insertion (Step 2
+>   drive). `ENC_IN_REF[5:0]` (pins 9–14): reflected signal returned from passive Reflector
+>   turnaround to the Stator CPLD (Step 2 receive). **These are NOT JTAG signals.**
 >   See `Stator/Design_Spec.md §3 CPLD Signal Routing Matrix` for full signal flow details.
 > * **Pin 2 — SYS_RESET_N**, **Pin 1 — 3V3_ENIG**, **Pin 16 — GND.**
 >
@@ -92,8 +93,10 @@ second CPLD on the Reflector itself.
   **50 Ω controlled impedance**. Stackup upgraded to 4-Layer per DEC-017.
   See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
 * **JTAG Return:** TDO from Rotor 30 is routed to Pin 15 (TTD_RETURN) for return to the Stator.
-* **Loopback:** Directly routes 6-bit ENC_IN to 6-bit ENC_OUT via 2oz 10-mil traces.
-* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
+* **Loopback:** Directly routes the 6-bit `ENC_OUT_REF` turnaround into the returned 6-bit `ENC_IN_REF`
+  path via 2oz 10-mil traces.
+* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), `ENC_OUT_REF` / `ENC_IN_REF`, and
+  JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
   * `Extension/Design_Spec.md`
 
@@ -109,7 +112,7 @@ on each Rotor's output side (J4/J5/J6). One set of three connectors per the Roto
 | --- | ---- | ------------ | ----------- | --- |
 | J1 | ERM8-005 (10-pin, **male**) | JTAG (TCK, TMS, TTD, SYS_RESET_N + GND) | Samtec ERM8 | ERM8-005-05.0-S-DV-K-TR |
 | J2 | ERM8-005 (10-pin, **male**) | Power (3V3_ENIG × 5, GND × 5) — **power pins NC on this board** | Samtec ERM8 | ERM8-005-05.0-S-DV-K-TR |
-| J3 | ERM8-010 (20-pin, **male**) | ENC data (ENC_IN[0:5], ENC_OUT[0:5] + GND interleave) | Samtec ERM8 | ERM8-010-05.0-S-DV-K-TR |
+| J3 | ERM8-010 (20-pin, **male**) | ENC data (ENC_IN[5:0], ENC_OUT[5:0] + GND interleave) | Samtec ERM8 | ERM8-010-05.0-S-DV-K-TR |
 
 > **J2 power pins (3V3_ENIG and GND) are not connected to the board power plane.** J2 is present for
 > mechanical engagement with Rotor 30 J5 only. The Reflector's sole power entry is J4 (ribbon cable,
@@ -129,28 +132,7 @@ defined on the Power Module at the common power-entry point immediately before t
 pin 16 is treated as signal/power return only and must not be bridged locally to chassis on the
 Reflector.
 
-### 4.1 Prototype Bench-Testing Provision (Break-Off Coupons)
-
-Each board panel includes **3 break-off PCB coupons** (one per ERx8 connector), attached by mousebite
-perforations. Each coupon fans out the 0.8mm pitch Samtec pads to a standard **2.54mm pitch shrouded
-IDC box header**, permitting standard ribbon cable assemblies to be used for bench testing before full
-stack assembly. For final production the coupons are snapped off at the mousebite perforations.
-
-| Coupon | Connector | IDC Header | Signal |
-| :--- | :--- | :--- | :--- |
-| 1 | J1 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | JTAG |
-| 2 | J2 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | Power |
-| 3 | J3 — ERM8-010 (20-pin male) | 2×10 IDC box header, 2.54mm | ENC Data |
-
-IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layout phase.
-
-## 5. Diagnostic & Monitoring
-
-To ensure the signal has successfully navigated the 30-rotor stack, a dedicated monitoring bank is included.
-
-* **Bank Configuration:** 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank.
-* **Standard:** Matches the **Controller Board** 2.54mm (0.1") pitch standard for unified system debugging.
-* **Labelling:** `REFLEKTOR-DIAGNOSE [Reflector Diag]` in ALL-CAPS German typewriter font.
+## 5. Monitoring & Branding
 
 ## 6. PCB Fabrication & Stackup
 
@@ -174,5 +156,4 @@ To ensure the signal has successfully navigated the 30-rotor stack, a dedicated 
 | J2 | Rotor 30 output interface — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J5 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
 | J4 | Interconnect header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
-| J5 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P220HCT-ND | C403073 |

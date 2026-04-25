@@ -114,7 +114,7 @@ components).
 * **Track A** (5-bit STGC): milled into inner face of shroud **dish** (Board A side flange)
   only
 * Board B side flange: no encoder slots (plain inner face)
-* 5 sensor electrodes on Board A only (4 read by U2, addr 0x2A, STGC bits[3:0]; 1 read by U4,
+* 5 sensor electrodes on Board A only (4 read by U2, addr 0x2A, STGC bits[3:0]; 1 read by U3,
   addr 0x2B, STGC bit[4]; both FDC2114RGHR ICs on Board A)
 * Encoding: Single-Track Gray Code (STGC) — nearest achievable to Gray code for N=26
   (non-power-of-2)

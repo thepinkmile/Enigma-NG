@@ -24,7 +24,7 @@ The following table lists every component category present in the assembled mach
 | Category | Qty | Description | Sub-Assembly Document |
 | :--- | :--- | :--- | :--- |
 | Rotors | 30 | Individual rotor modules (shroud, bearings, encoder slots, ERM8 male headers) | `Rotor/Design_Spec.md` |
-| Stator Board | 1 | PCB backplane: rotor stack, JTAG hub, encryption routing, I²C expanders, servo | `Stator/Design_Spec.md` (Electronics) |
+| Stator Board | 1 | PCB backplane: rotor stack, JTAG hub, encryption routing, I²C expanders | `Stator/Design_Spec.md` (Electronics) |
 | Rotor Actuation Assembly | 1 | Depression bar, pivot lever, actuation arm, sprung retention bar, servo motor | `Rotor_Actuation_Assembly/Design_Spec.md` |
 | Keyboard Assembly | 1 | Keyboard panel, key-switch harness, Encoder Module (`KBD_ENC`) | `Keyboard_Assembly/Design_Spec.md` |
 | Lightboard Assembly | 1 | Lightboard panel, indicator harness, Encoder Module (`LBD_DEC`) | `Lightboard_Assembly/Design_Spec.md` |
@@ -32,13 +32,13 @@ The following table lists every component category present in the assembled mach
 | Reflector | 1 | Mandatory passive turnaround sub-assembly; reflection mapping is owned by the Stator CPLD | `Reflector/Design_Spec.md` |
 | Extension (optional) | 0–N | Extension board for multi-stack rotor configurations | `Extension/Design_Spec.md` |
 | Power Module | 1 | Standalone power supply sub-assembly (LTC3350, eFuse, INA219, supercaps) | `Power_Module/Design_Spec.md` |
-| Controller Board | 1 | CM5 carrier board (CM5 module, JDB hat, PM dock, Stator dock, Ethernet / PoE entry) | `Controller/Design_Spec.md` (Electronics) |
+| Controller Board | 1 | CM5 carrier board (CM5 module, JDB hat, PM dock, Stator dock, Ethernet / PoE entry, local servo interface) | `Controller/Design_Spec.md` (Electronics) |
 | Main Enclosure | 1 | Chassis, panels, cable routing, EMI bonding, fan | `Main_Enclosure/Design_Spec.md` |
-| Servo Motor | 1 | Miuzei Metal Gearbox 90 (5V, 3-pin, PCB-mount on Stator) | `Rotor_Actuation_Assembly/Design_Spec.md` |
-| SERVO_HOME Switch | 1 | SPST NO momentary (Omron SS-01GL13), PCB-mount on Stator | `Stator/Design_Spec.md` (Electronics) |
+| Servo Motor | 1 | Miuzei Metal Gearbox 90 (5V, 3-pin, Controller-mounted) | `Rotor_Actuation_Assembly/Design_Spec.md` |
+| SERVO_HOME Switch | 1 | SPST NO momentary (Omron SS-01GL13), PCB-mount on Controller | `Controller/Design_Spec.md` (Electronics) |
 | Settings Board | 1 | Panel-mount configuration switch PCB (12× SPDT toggles, 12× discrete RGB indicators, + CFG_APPLY button); mounts to right side top face of Main Enclosure; connects to Stator via I²C ribbon | `Settings_Board/Design_Spec.md` (Electronics) |
-| Cable Harnesses | TBD | Encoder IDC ribbons, reflector cable, fan cable, Settings Board I²C ribbon, switch / battery harnesses | Each sub-assembly doc |
-| Connectors | TBD | TE PM dock, Molex Stator dock, ERF8/ERM8 rotor-family BtB, JST PH servo, JST SH fan, Molex IDC encoder, etc. | Per sub-assembly BOM |
+| Cable Harnesses | TBD | 20-pin encoder IDC ribbons, reflector cable, fan cable, Settings Board I²C ribbon, switch / battery harnesses | Each sub-assembly doc |
+| Connectors | TBD | TE PM dock, Molex Stator dock, ERF8/ERM8 rotor-family BtB, JST PH servo, JST SH fan, 20-pin IDC encoder, etc. | Per sub-assembly BOM |
 
 ## Assembly Sequence Overview
 
@@ -48,17 +48,17 @@ steps are detailed in each referenced document; this section defines integration
 | Step | Sub-Assembly | Notes |
 | :--- | :--- | :--- |
 | 1 | Power Module | Standalone build; test on bench before integration. Delivers 5V_MAIN and 3V3_ENIG. |
-| 2 | Stator Board | Install ICs (CPLD, MCP23017 ×3, PCA9685, INA219), passives, connectors. Mount servo + SERVO_HOME switch. Bench-test I²C expanders before stack assembly. |
+| 2 | Stator Board | Install ICs (CPLD, MCP23017 ×3, INA219), passives, connectors. Bench-test I²C expanders before stack assembly. |
 | 3 | Rotors (×30) | Build all 30 rotor modules. Verify ERM8 header alignment and encoder slot clearance before stacking. |
 | 4 | Rotor groups onto Stator | Press Rotor 1 ERM8 headers into Stator ERF8 sockets. Build the first 5-rotor group, then insert an Extension before each further 5-rotor group as required. Verify JTAG daisy-chain continuity at each group boundary. |
-| 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Stator J_SERVO. Verify SERVO_HOME switch actuation. |
+| 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Controller J_SERVO. Verify Controller SERVO_HOME switch actuation. |
 | 6 | Keyboard Assembly | Build keyboard panel + `KBD_ENC` Encoder Module. Connect IDC ribbon to the Stator keyboard encoder port. |
 | 7 | Lightboard Assembly | Build lightboard panel + `LBD_DEC` Encoder Module. Connect IDC ribbon to the Stator lightboard decoder port. |
 | 8 | Plugboard Assembly | Build both plugboard passes. Connect IDC ribbons to the four Stator plugboard ports (`PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`). |
 | 9 | Reflector | Install the mandatory passive Reflector sub-assembly at the far end of the final rotor group. Connect the 16-pin cable to Stator J10. Reflection-map selection remains Stator-CPLD-owned. |
 | 10 | Extension (if used) | Insert each Extension between 5-rotor groups: `Stator -> 5 rotors -> [Extension -> 5 rotors]* -> Reflector`. Each Extension reinjects clean 3V3_ENIG/GND to the next rotor group via J7 -> J5. |
 | 11 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Engage the TE PM dock cluster (`J1/J2/J3`) to the Power Module, then mate the Molex Stator dock pair (`J4/J5` ↔ `J11/J12`). |
-| 12 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J_CFG. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
+| 12 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J13. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
 | 13 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
 
 > **Note on the JTAG Daughterboard (JDB):** The JDB is a PCB hat that mounts directly on the
@@ -86,7 +86,7 @@ steps are detailed in each referenced document; this section defines integration
 | Document | Description |
 | :--- | :--- |
 | `design/Electronics/Settings_Board/Design_Spec.md` | Settings Board electrical specification — panel switches, LED expanders, I²C interface |
-| `design/Electronics/Stator/Design_Spec.md` | Stator Board electrical specification — J_CFG I²C connector to Settings Board |
+| `design/Electronics/Stator/Design_Spec.md` | Stator Board electrical specification — J13 I²C connector to Settings Board |
 | `design/Mechanical/Main_Enclosure/Design_Spec.md` | Main Enclosure — Settings Board panel cutout requirements |
 | `design/Guides/Maintenance_Guide.md` | Maintenance procedures referencing assembly steps |
 | `design/Guides/User_Manual.md` | User-facing assembly and operation guide |

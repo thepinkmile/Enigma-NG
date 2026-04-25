@@ -16,7 +16,7 @@ the machine's 64-character code space. This assembly contains the keyboard panel
 harness, and one Encoder Module populated/programmed in the **`KBD_ENC`** role.
 
 The keyboard assembly is electrically independent of the lightboard assembly. It connects to the
-Stator through its own 26-pin IDC ribbon on the dedicated `KBD_ENC` port.
+Stator through its own 20-pin IDC ribbon on the dedicated `KBD_ENC` port.
 
 ---
 

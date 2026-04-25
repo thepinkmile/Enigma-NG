@@ -6,10 +6,20 @@
 
 ---
 ## Overview
-The repository is in a **clean repo-local handoff state** and now also carries the latest
-Power Module / Controller / Linux OS power-management documentation sync from 2026-04-24,
-followed by a root `README.md` refresh so the top-level project summary better matches the
-current board set and review-state wording.
+The repository is in a **clean repo-local handoff state** and the active working copy now carries
+the completed Stator / Settings Board configuration-reset cleanup plus the first broad encoder-bus
+documentation cleanup.
+
+The current design state now reflects:
+
+- `CFG_ROUTE[3:0]`, `CFG_REFMAP[5:0]`, active-low `CFG_APPLY_N`
+- `CFG_ROUTE_CM5_ACTIVE` / `CFG_REFMAP_CM5_ACTIVE`
+- external keyboard-source mux assumptions (`CM5_KEY_DATA[0:5]`, `KEY_SEL`, `KEY_EN`)
+- generic Encoder-board `ENC_DATA[0:5]` on 20-pin IDC links
+- Stator-owned encoder aliases (`ENC_IN_KBD`, `ENC_OUT_LBD`, `ENC_OUT/IN_PLG1`, `ENC_OUT/IN_PLG2`,
+  `ENC_OUT/IN_ROT`, `ENC_OUT/IN_REF`)
+- removal of fixed diagnostic banks from the active board set; future diagnostic access should be
+  coupon-based
 
 Recent milestones now applied in the working tree:
 
@@ -21,13 +31,16 @@ Recent milestones now applied in the working tree:
 - Linux OS power-management open items were reduced to the genuinely unresolved prototype-stage item(s)
 - `README.md` now includes the missing board summaries, updated hardware-flow ordering, and `In Review`
   wording for the current pre-issue-1 board state
+- Stator / Settings Board configuration intent, CM5 override, and apply/reset naming are now aligned
+- Stator↔Encoder links are now documented as 20-pin IDC interfaces using generic `ENC_DATA[0:5]`
+- fixed diagnostic banks have been removed from active board docs in favour of future coupon-based access
 
 Current goal: leave the tree **commit-ready** tonight so the next session can begin from the
 repo-local state directly, without reconstructing today's documentation work.
 ### Immediate remaining work
-1. Create the commit for the current design and `.copilot/` sync.
-2. Start the next session from `.copilot/plan.md`, `.copilot/handoff.md`, and checkpoint 058.
-3. Resume only the genuine open design-review and mechanical follow-up items.
+1. Finish the remaining ENC net-name cleanup details, especially any role-specific naming still to be normalised.
+2. Review and select the new logic parts implied by the cleanup (keyboard-source mux and any reset/apply glue logic).
+3. Create the commit for the current design and `.copilot/` sync once the design-doc pass is ready.
 
 ---
 ## Repo-Local Handoff Layout
@@ -49,10 +62,10 @@ is genuinely required.
 | ID | Status | Scope |
 |----|--------|-------|
 | `battery-connector-review` | pending | Review battery connector alternatives and capture any resulting design-document updates |
-| `encoder-board-split-review` | in_progress | Replace the current dual-half Encoder board with a single generic half-board design reused as KBD_ENC, LBD_DEC, PLG_PASS1_DEC, PLG_PASS1_ENC, PLG_PASS2_DEC, and PLG_PASS2_ENC; Stator grows to 6 encoder connectors in 3 banks of 2 with the existing pinout retained |
+| `encoder-board-split-review` | in_progress | Replace the current dual-half Encoder board with a single generic half-board design reused as KBD_ENC, LBD_DEC, PLG_PASS1_DEC, PLG_PASS1_ENC, PLG_PASS2_DEC, and PLG_PASS2_ENC; config-reset cleanup and the first Stator-owned encoder alias pass are now applied, with remaining work focused on final ENC net normalisation and new-part selection |
 | `extension-mechanical-usage` | pending | Review how Extensions should be used mechanically, including whether interconnect choices for the Stator / Reflector / Extension chain should change |
 | `extension-notch-pass-through` | pending | Review whether Extensions need additional servo circuitry to pass through notch rotations |
-| `coupon-testing-review` | pending | Add and review board-level coupons for PAS and manual testing across the design set |
+| `coupon-testing-review` | pending | Add and review board-level coupons for PAS and manual testing across the design set, including moving diagnostic-bank style test access onto removable coupons so production boards do not retain test-only hardware |
 | `rerun-deep-reviews` | pending | Rerun the deep review agents only after the next material design-doc change set |
 
 All component-review and handoff-cleanup tasks are complete for this phase.
@@ -114,6 +127,16 @@ Every checkpoint MUST include ALL of the following steps:
 ## Critical Notes
 ### Component / MPN discipline
 - Never change a component MPN without a matching local datasheet review in `design/Datasheets/`.
+- The project owner has approved the BOM part numbers already captured in the active design docs.
+- Never modify an existing supplier part number (especially Mouser codes) without checking with the
+  user first, even if the distributor code looks shorter than the full manufacturer MPN.
+- Do not "correct" Mouser part numbers by assuming they must match the full MPN format; Mouser may
+  use truncated or non-obvious catalog codes that are nevertheless the confirmed correct order code.
+- Do not highlight package, footprint, or component-size differences as a blocking issue while the
+  project is still pre-schematic / pre-layout unless the user explicitly says that packaging now
+  matters.
+- Treat package-family differences as irrelevant at this stage; revisit them only once schematic,
+  PCB layout, or post-manufacturing optimization work makes footprint choice a real constraint.
 - The correct eFuse is **TPS259804ONRGER**; **TPS259807ONRGER is wrong** for this design.
 - Use **ERA** parts where the design explicitly needs thin-film / 0.1% accuracy; do not silently
   substitute them with **ERJ** thick-film parts.

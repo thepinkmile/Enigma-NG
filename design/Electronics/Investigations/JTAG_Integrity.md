@@ -68,8 +68,8 @@ Stator CPLD (U1)
             │                               R1 22Ω — end-of-chain TDO series damping
             │
             └─▶ TTD_RETURN ribbon: Reflector J4 pin 15 ──▶ Stator J10 pin 15
-                (J4 also carries ENC_IN[0:5] / ENC_OUT[0:5] pins 3–14 for Stator CPLD
-                 plugboard-pass configuration — these are NOT part of the JTAG chain)
+                (J4 also carries `ENC_OUT_REF[5:0]` / `ENC_IN_REF[5:0]` on pins 3–14 for
+                 the Stator CPLD reflector-boundary path — these are NOT part of the JTAG chain)
                 Stator J10 → Controller-facing `J5/J12` `TTD_RETURN` path → FT232H
 ```
 
@@ -256,7 +256,7 @@ Standard 2.54 mm pitch IDC flat ribbon cable has the following impedance charact
 | Alternating signal/GND | **~100 Ω** | Confirmed by Belden/3M cable datasheets |
 | Shielded ribbon (overall foil) | ~100 Ω | Foil improves EMI; minimal Zo change |
 
-The Enigma-NG 26-pin encoder port connector already specifies **alternating GND pins between all JTAG
+The Enigma-NG 20-pin encoder port connector specifies **alternating GND pins between all JTAG
 signals** (J4–J9 pin table in `Stator/Board_Layout.md`). This places the cable Zo at approximately
 **100 Ω**.
 

@@ -35,7 +35,7 @@ The Enigma-NG system comprises the following boards:
   applied by the Stator CPLD.
 - **Encoder Modules (×6)** — 1 `KBD_ENC`, 1 `LBD_DEC`, and 4 plugboard modules
   (`PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`). Connect to the Stator in
-  three banks of two identical 26-pin IDC ports.
+  three banks of two identical 20-pin IDC ports.
 - **JTAG Daughterboard** — USB Blaster II implementation for programming CPLDs.
 
 ### Physical Chain
@@ -220,12 +220,11 @@ All system management devices remain on the single shared `I2C-1` bus:
 | 0x40 | INA219 | Power Module | 5V_MAIN telemetry |
 | 0x45 | INA219 | Stator | Rotor-stack telemetry |
 | 0x20 | MCP23017 | Stator | ENC monitoring |
-| 0x21 | MCP23017 | Stator | Virtual keypress + servo control |
+| 0x21 | MCP23017 | Stator | Virtual keypress + SOURCE_SEL + SYS_RESET_N |
 | 0x22 | MCP23017 | Stator | CPLD config output driver |
 | 0x23 | MCP23017 | Settings Board | Switch input reader |
 | 0x24 | MCP23017 | Settings Board | Bank 1 LED controller |
 | 0x25 | MCP23017 | Settings Board | Bank 2 LED controller |
-| 0x60 | PCA9685 | Stator | Servo PWM driver |
 
 The PM-local expander uses the address block adjacent to the PM INA219 so PM devices remain grouped in
 `i2cdetect` output.

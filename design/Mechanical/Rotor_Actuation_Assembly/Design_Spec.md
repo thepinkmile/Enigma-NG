@@ -49,7 +49,7 @@ contact the depression bar.
 
 ## 4. Servo Actuation
 
-The **Miuzei Metal Gearbox 90 servo** (4.8–6V, mounted on the Stator PCB) provides the CM5
+The **Miuzei Metal Gearbox 90 servo** (4.8–6V, mounted on the Controller PCB) provides the CM5
 actuation path.
 
 * The servo drives an arm that contacts the same depression bar as the keyboard key levers.
@@ -57,8 +57,8 @@ actuation path.
   for rotor stepping purposes.
 * The servo arm geometry must be designed so that the mid-stroke depression (at 90°) matches the
   full-actuation depression of a human keypress on the bar.
-* The SERVO_HOME position (0°) is detected by the SERVO_HOME switch mounted on the Stator PCB.
-  See `design/Electronics/Stator/Design_Spec.md` for servo electrical interface and homing logic.
+* The SERVO_HOME position (0°) is detected by the SERVO_HOME switch mounted on the Controller PCB.
+  See `design/Electronics/Controller/Design_Spec.md` for servo electrical interface and homing logic.
 
 ---
 
@@ -107,5 +107,5 @@ revolution — is **purely mechanical**.
 
 | Document | Description |
 | :--- | :--- |
-| `design/Electronics/Stator/Design_Spec.md` | Stator PCB; servo motor mounted here; SERVO_HOME switch |
+| `design/Electronics/Controller/Design_Spec.md` | Controller PCB; servo motor electrical interface and SERVO_HOME switch |
 | `design/Mechanical/Rotor/Design_Spec.md` | Rotor module mechanical specification (shroud, bearings, encoder slots, stepping notches) |

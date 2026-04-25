@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v1.0.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-25
 
 ---
 
@@ -49,6 +49,7 @@ source is active.
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
 | FR-CTL-07 | Route power, JTAG, and I²C between the Controller and the Stator board | Via `J4/J5` hybrid docks | §2 Dock Interfaces; BOM J4/J5 |
 | FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J_DSI1) on Controller Board; display add-on board to be designed separately | §8 Connectivity; BOM J_DSI1 |
+| FR-CTL-09 | Provide the local servo actuation electrical interface and home sensing for the rotor depression bar | Direct CM5 GPIO on the Controller provides local PWM output and home-switch input; no expander-owned servo path | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM J_SERVO, SW3, R4, C12 |
 
 #### Design Requirements
 
@@ -65,6 +66,9 @@ source is active.
 | DR-CTL-09 | PM status / SW1 LED interface | Controller must expose the shared `I2C-1` bus plus one optional interrupt input (`PM_IO_INT_N`) to the PM-local `PCA9534A @ 0x3F`, which virtualises `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, `SYS_FAULT`, and runtime `SW_LED_R/G/B + SW_LED_CTRL`. | §4.1 I²C Bus Topology; §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-10 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
 | DR-CTL-11 | DSI1 connector | J_DSI1 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J_DSI1 |
+| DR-CTL-12 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: `5V_MAIN`, `GND`, `SERVO_PWM`; mounted on the Controller adjacent to the rotor actuation linkage | §8 Connectivity; BOM J_SERVO |
+| DR-CTL-13 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to `3V3_ENIG` + 100nF X7R debounce cap to GND (RC τ = 1ms); connected directly to a CM5 GPIO on the Controller | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM SW3, R4, C12 |
+| DR-CTL-14 | Direct servo GPIO usage | `SERVO_PWM` uses PWM-capable CM5 GPIO 12; `SERVO_HOME` uses direct CM5 GPIO 17 input. No I²C expander or external PWM driver is used for the servo path. | §6 CM5 GPIO Mapping Matrix |
 
 ## 2. Dock Interfaces
 
@@ -145,7 +149,7 @@ the Stator over `J5`.
 | 0x09 | LTC3350 | Power Module | Supercap charger/monitor |
 | 0x0B | Smart Battery | Power Module | SMBus battery monitoring |
 | 0x20 | MCP23017 (U_EXP1) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
-| 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, servo control |
+| 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, spare GPIO |
 | 0x22 | MCP23017 (U_EXP4) | Stator | CPLD config output driver (DEC-032) |
 | 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
 | 0x24 | MCP23017 (U_LED_B1) | Settings Board | Bank 1 LED controller: 5× anodes + RGB bank-rail drivers (DEC-034) |
@@ -154,7 +158,6 @@ the Stator over `J5`.
 | 0x3F | PCA9534A (U16) | Power Module | PM-local status inputs + SW1 RGB handoff control |
 | 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |
 | 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
-| 0x60 | PCA9685 (U_EXP3) | Stator | Servo PWM driver (Ch0 = 50Hz SERVO_PWM) |
 
 ## 5. RTC Backup Battery
 
@@ -200,6 +203,8 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **5** | **PM_IO_INT_N** | Input | 3.3V | Optional interrupt input from the PM-local `PCA9534A @ 0x3F`, used to wake the power-management daemon for PM status changes. |
 | **6** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **7** | **PWR_GD** | Input | 3.3V | Direct PM rail-health telemetry only — HIGH while `5V_MAIN` ≥ 4.50V; does NOT trigger shutdown. Routed on `J3`. |
+| **12** | **SERVO_PWM** | Output (PWM) | 3.3V | Direct Controller-local servo PWM output. Configure for 50Hz pulse generation during actuation cycles. |
+| **17** | **SERVO_HOME** | Input | 3.3V | Active-low Controller-local servo home switch input with local pull-up and RC debounce. |
 
 ## 7. Protection & EMI
 
@@ -331,6 +336,22 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
   stage; any future display power and touch-side auxiliary wiring stays deferred with the display
   add-on definition.
 
+### 8.6. Servo Connector (J_SERVO)
+
+* **Part:** JST B3B-PH-K-S(LF)(SN) — 3-pin JST PH 2.0mm through-hole header.
+* **Pinout:** `5V_MAIN`, `GND`, `SERVO_PWM`.
+* **Control path:** `SERVO_PWM` is driven directly from CM5 GPIO 12 on the Controller. No external I²C
+  PWM device is used.
+* **Placement intent:** Adjacent to the local rotor actuation linkage so the servo body and cable stay
+  close to the depression bar mechanism.
+
+### 8.7. SERVO_HOME Switch (SW3)
+
+* **Part:** Omron SS-01GL13 — SPST normally-open momentary switch.
+* **Electrical interface:** Active-low to CM5 GPIO 17 with local **R4 = 10kΩ** pull-up to `3V3_ENIG`
+  and **C12 = 100nF X7R** debounce capacitor to GND.
+* **Role:** Detects the 0° reference position of the Controller-mounted servo actuation assembly.
+
 ## 9. PCB Fabrication & Stackup
 
 ### 9.1. PCB Fabrication (JLCPCB Specs)
@@ -339,7 +360,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
   For production runs requiring verified controlled impedance (differential pairs: USB/HDMI/GbE),
   specify JLCPCB's 'Controlled Impedance' service (TDR-verified, ±10% tolerance). Prototype orders
   may omit this per DEC-017.
-* **Finish:** **ENIG (Gold)** for all pads and diagnostic loops.
+* **Finish:** **ENIG (Gold)** for all pads.
 * **Solder Mask:** **Dark Green** (Vintage Industrial Lacquer aesthetic).
 * **Silkscreen:** White, Typewriter-style font, Bilingual (ALL-CAPS GERMAN / Sentence-case English).
 
@@ -366,7 +387,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | **USB 2.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
 | **USB 3.0** | 90Ω Differential | 5.5 mil / 7.5 mil | L3 (Stripline) |
 
-## 10. Thermal, Branding & Diagnostics
+## 10. Thermal & Branding
 
 ### 10.1. Thermal
 
@@ -388,59 +409,11 @@ Estimated Controller-local power dissipation at system peak load:
     directly to the dedicated BCM2712 fan-controller pins on the CM5 module connector — no GPIO
     allocation required.
 
-### 10.2. Diagnostics & Aesthetics
+### 10.2. Aesthetics
 
-* **Placement:** Diagnostic probe pad banks placed on L1, directly behind the PM and Stator dock regions.
-* **Orientation:** Facing upwards for easy logic analyser ribbon cable connection.
 * **Silkscreen:** Dark Green mask with White Bilingual Typewriter font. Silkscreen legend must label each pad individually.
 * **Branding:** Top-left 10mm "Enigma-NG" shielded gold emblem (Exposed ENIG Gold tied to GND_CHASSIS). Inverted Master Data Plate (Silhouette + JLC Serial Block) on L6 (Bottom).
   See `design/Standards/Global_Routing_Spec.md §6` for full branding specification.
-
-#### Diagnostic Bank-Alpha (PM Dock) — 2×8
-
-Monitors the Controller ↔ Power Module dock cluster.
-
-| Pin | Signal | Direction | Description |
-| :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_A | PM → CTRL | J1 regulated 5V sample |
-| 2 | 5V_MAIN_B | PM → CTRL | J1 regulated 5V sample |
-| 3 | 3V3_ENIG_A | PM → CTRL | J1 logic-rail sample |
-| 4 | 3V3_ENIG_B | PM → CTRL | J1 logic-rail sample |
-| 5 | VIN_POE_12V | CTRL → PM | J2 PoE auxiliary feed sample |
-| 6 | I2C1_SDA | Bidir | PM telemetry bus |
-| 7 | I2C1_SCL | Bidir | PM telemetry bus |
-| 8 | PM_IO_INT_N | PM → CTRL | PM expander interrupt |
-| 9 | PWR_GD | PM → CTRL | PM rail-health signal |
-| 10 | ROTOR_EN | CTRL → PM | PM LDO enable |
-| 11 | PWR_BUT | PM → CTRL | CM5 power-button path |
-| 12 | GND | — | Signal ground |
-| 13 | GND | — | Signal ground |
-| 14 | GND | — | Signal ground |
-| 15 | GND | — | Signal/power ground return |
-| 16 | GND_CHASSIS | — | Local shield/chassis reference only |
-
-#### Diagnostic Bank-Beta (Stator Dock) — 2×8
-
-Monitors the Controller ↔ Stator dock cluster.
-
-| Pin | Signal | Direction | Description |
-| :--- | :--- | :--- | :--- |
-| 1 | 5V_MAIN_J4_1 | CTRL → Stator | J4 5V blade sample |
-| 2 | 5V_MAIN_J4_2 | CTRL → Stator | J4 5V blade sample |
-| 3 | 3V3_ENIG_J5_1 | CTRL → Stator | J5 3V3 blade sample |
-| 4 | 3V3_ENIG_J5_2 | CTRL → Stator | J5 3V3 blade sample |
-| 5 | I2C1_SDA | Bidir | Shared Stator / Settings I²C bus |
-| 6 | I2C1_SCL | Bidir | Shared Stator / Settings I²C bus |
-| 7 | JTAG_TCK | JDB → Stator | JTAG clock |
-| 8 | TMS | JDB → Stator | JTAG mode select |
-| 9 | TDI | JDB → Stator | JTAG data in |
-| 10 | TTD_RETURN | Stator → JDB | JTAG return from rotor / reflector chain |
-| 11 | GND_RET_A | — | Dock return / guard |
-| 12 | GND_RET_B | — | Dock return / guard |
-| 13 | GND_RET_C | — | Dock return / guard |
-| 14 | GND_RET_D | — | Dock return / guard |
-| 15 | GND | — | Signal/power ground return |
-| 16 | GND_CHASSIS | — | Local shield/chassis reference only |
 
 ## 11. Bill of Materials
 
@@ -449,6 +422,7 @@ Monitors the Controller ↔ Stator dock cluster.
 | C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C12 | SERVO_HOME RC debounce capacitor | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
 | J1-J3 | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
@@ -458,6 +432,7 @@ Monitors the Controller ↔ Stator dock cluster.
 | J8 | RJ45 with integrated magnetics / PoE entry | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
 | J_DSI1 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | Amphenol F52Q-1A7H1-11015 | 15-pin ZIF, 1.0mm pitch | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 |
 | J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
+| J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 |
 | J_JDB_PWR | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | J_JDB_JTAG | JDB hat JTAG header (female socket) | Adam Tech RS1-10-G — 1×10 2.54mm female | THT | 737-RS1-10-G | 2057-RS1-10-G-ND | C3320525 |
 | J_CM5_A | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
@@ -466,6 +441,8 @@ Monitors the Controller ↔ Stator dock cluster.
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R4 | SERVO_HOME pull-up resistor | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SW865-ND | C3822088 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) — multiple acceptable non-Lite variants; minimum 4GB RAM / 8GB eMMC; Wi-Fi optional | N/A | CM5 (SO-DIMM) | various CM5 SKUs | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065CDBVR | SOT-23-5 | 595-TPS2065CDBVR | 296-39353-1-ND | C353882 |
 | U3 | HDMI power switch | AP2331W-7 | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C460346 |
@@ -482,3 +459,6 @@ The Controller also owns the Ethernet / PoE front-end (`TPS2372-4RGWR`, `TPS2373
 the Ethernet-entry ESD arrays). Those parts are tracked as Controller-owned in
 `design/Electronics/Consolidated_BOM.md`; only the externally visible connector and generic local ESD
 rows are repeated here until the Controller schematic refdes are frozen.
+
+The servo motor itself (Miuzei Metal Gearbox 90) is a purchased mechanical item and is therefore not
+listed in the electronic BOM.

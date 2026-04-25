@@ -23,7 +23,7 @@ The active architecture is:
 - `Q_BNK1_R/G/B` and `Q_BNK2_R/G/B` provide the shared low-side colour rails under CM5 control
 
 All three LED colour channels are routed and driven; CM5 selects the active bank colour according to
-mode or diagnostic state.
+mode or status state.
 
 ```text
 TOP EDGE / ENCLOSURE PANEL FACE
@@ -41,7 +41,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 ## 2. Placement Zones
 
 - **Top edge:** 12 toggle switches, 12 indicator LEDs, and the `SW_CFG_APPLY` actuator position
-- **Left edge:** `J_I2C` 6-pin JST PH connector, cable exit toward Stator `J_CFG`
+- **Left edge:** `J_I2C` 6-pin JST PH connector, cable exit toward Stator `J13`
 - **Centre-left:** `U_EXP_SW_IN`, switch pull-downs, `R_CA1`, `C_CA1`
 - **Centre / centre-right:** `U_LED_B1` and `U_LED_B2`, LED series resistors, and anode-routing fanout
 - **Right edge:** 6 RGB BSS138 rail transistors with adjacent gate resistors
@@ -51,13 +51,13 @@ TOP EDGE / ENCLOSURE PANEL FACE
 ## 3. J_I2C — Stator Harness Connector
 
 **Connector:** `B6B-PH-K-S(LF)(SN)` — 6-pin JST PH 2.0mm, vertical THT  
-**Mating connector:** Stator `J_CFG`  
+**Mating connector:** Stator `J13`  
 **Cable:** 6-wire harness, 100mm recommended
 
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
 | 1 | `3V3_ENIG` | Logic supply for the three MCP23017 devices |
-| 2 | `5V_MAIN` | Indicator power feed from the Controller via Stator `J_CFG` / `J4` |
+| 2 | `5V_MAIN` | Indicator power feed from the Controller via Stator `J13` / `J11` |
 | 3 | `GND` | Logic return only; no local GND_CHASSIS bond |
 | 4 | `SDA` | Shared I2C-1 data |
 | 5 | `SCL` | Shared I2C-1 clock |
@@ -93,7 +93,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 
 ## 5. LED Drive Expanders
 
-### U_LED_B1 — MCP23017 @ 0x24
+### 5.1 U_LED_B1 — MCP23017 @ 0x24
 
 | Port | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -105,9 +105,9 @@ TOP EDGE / ENCLOSURE PANEL FACE
 | GPA | [5] | `BNK1_R` | Output | Drives `Q_BNK1_R` gate |
 | GPA | [6] | `BNK1_G` | Output | Drives `Q_BNK1_G` gate |
 | GPA | [7] | `BNK1_B` | Output | Drives `Q_BNK1_B` gate |
-| GPB | [0:7] | — | — | Spare |
+| GPB | [7:0] | — | — | Spare |
 
-### U_LED_B2 — MCP23017 @ 0x25
+### 5.2 U_LED_B2 — MCP23017 @ 0x25
 
 | Port | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -181,7 +181,7 @@ CM5 firmware normally selects one colour rail per bank at a time:
 | L3 | Power | `3V3_ENIG` and local `5V_MAIN` distribution |
 | L4 | Secondary routing + silkscreen | Low-speed routing only |
 
-### Routing guidance
+### 8.1 Routing guidance
 
 - Keep `SDA` / `SCL` as a matched short pair from `J_I2C` to the three expanders
 - Route the `5V_MAIN` feed and pin-6 return wider than logic traces
@@ -195,6 +195,6 @@ CM5 firmware normally selects one colour rail per bank at a time:
 | Document | Description |
 | :--- | :--- |
 | `design/Electronics/Settings_Board/Design_Spec.md` | Full electrical specification and BOM |
-| `design/Electronics/Stator/Design_Spec.md` | `J_CFG` definition and CPLD configuration ownership |
-| `design/Electronics/Stator/Board_Layout.md` | Mating connector definition for `J_CFG` |
+| `design/Electronics/Stator/Design_Spec.md` | `J13` definition and CPLD configuration ownership |
+| `design/Electronics/Stator/Board_Layout.md` | Mating connector definition for `J13` |
 | `design/Mechanical/Main_Enclosure/Design_Spec.md` | Panel cutout and actuator constraints |

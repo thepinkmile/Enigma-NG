@@ -9,7 +9,7 @@
 
 ---
 
-## Component Areas
+## 1. Component Areas
 
 ```text
 TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
@@ -24,8 +24,6 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 |                                                                             |
 |   [ JTAG BUFFER (U1) ] <--- SN74LVC2G125DCUR, TCK+TMS re-drive for output   |
 |                                                                             |
-|   [ DIAGNOSTIC BANK ] <--- 2x8 ENIG Gold Probe Pads                        |
-|                                                                             |
 |   [ J8: EXTENSION PORT OUT ] <--- 16-pin 2×8 shrouded, to next stage       |
 |                                                                             |
 |   [ DATA PLATE ] <--- Inverted White Silkscreen on L4                      |
@@ -34,16 +32,16 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 
 ---
 
-## J7 — Extension Port IN (16-Pin 2×8)
+## 2. J7 — Extension Port IN (16-Pin 2×8)
 >
 > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J7. See BOM for part number.
-> Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
-> Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
+> Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = `ENC_OUT_REF[5:0]`,
+> Pins 9–14 = `ENC_IN_REF[5:0]`, Pin 15 = TTD_RETURN, Pin 16 = GND.
 
 ---
 
-## J8 — Extension Port OUT (16-Pin 2×8)
+## 3. J8 — Extension Port OUT (16-Pin 2×8)
 >
 > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J8. Carries the same signals as J7, passed through.
@@ -51,7 +49,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 
 ---
 
-## J1–J6 — Rotor Interface Connectors (ERM8/ERF8 Family, 0.8mm Pitch)
+## 4. J1–J6 — Rotor Interface Connectors (ERM8/ERF8 Family, 0.8mm Pitch)
 >
 > **Connector Definition Owner:** `Rotor/Design_Spec.md §3.4`.
 > J1–J3 are ERM8 male headers (input side — plug into previous rotor group's last rotor J4–J6 ERF8 outputs).
@@ -71,14 +69,7 @@ Mark clearly on silkscreen: `ERM8/ERF8 / 0.8mm / NICHT 2.54mm`.
 
 ---
 
-## Diagnostic Bank (J9)
-
-2×8 ENIG Gold probe pad bank for mid-stack signal validation. 2.54mm pitch. Not a separate connector;
-probed directly with logic analyser clips.
-
----
-
-## §9 Routing — Trace Width Specifications
+## 5. Routing — Trace Width Specifications
 
 **Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).
 L1 = signal (JTAG/routing); L2 = GND plane; L3 = 3V3_ENIG power pour; L4 = secondary routing / data plate.
@@ -92,7 +83,7 @@ The Extension board passes 3V3_ENIG from its J7 input to the next rotor group (u
 Worst-case: first Extension board (Rotor group 2) passes power for Rotors 6–30 = 25 rotors × 55 mA = 1.38 A through its J5 output.
 All Extension boards share an identical PCB layout; traces must be sized for the worst case — the first Extension board in the stack.
 
-### Trace Width Table
+### 5.1 Trace Width Table
 
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -103,7 +94,7 @@ All Extension boards share an identical PCB layout; traces must be sized for the
 | 3V3_ENIG distribution (inner power pour) | 1.43 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
 
-### Notes
+### 5.2 Notes
 
 * **JTAG CI traces:** 0.127 mm (5 mil) on L1 over the L2 GND plane achieves 50 Ω controlled
   impedance on the JLC04161H-7628 stackup (h = 0.087 mm, t = 0.035 mm, Eᵣ = 4.4). Per DEC-016.

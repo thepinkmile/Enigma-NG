@@ -45,7 +45,7 @@ I2C pull-ups, BATT_PRES_N pull-up, reset pull-up) is powered by `3V3_ENIG`, gene
 - Pins 21–22: Reassigned from 3V3_SYSTEM → **5V_MAIN** (supplemental power pins)
 - Pins 23–24: Reassigned from 3V3_SYSTEM → **GND** (supplemental return path)
 - Combined 5V_MAIN capacity: 18 pins × 0.5A = **9A** (was 16 pins = 8A)
-- Diagnostic Bank-Alpha Pin 14: Reassigned from 3V3_SYSTEM → **SW_LED_CTRL (GPIO 20)** (subsequently updated; see DEC-009)
+- Legacy Controller probe-access concept Pin 14: Reassigned from 3V3_SYSTEM → **SW_LED_CTRL (GPIO 20)** (subsequently updated; see DEC-009)
 
 ---
 
@@ -236,50 +236,67 @@ The TPS25750 PD emulator advertises a **5V/5A** profile to the CM5 internal USB-
 
 ---
 
-## DEC-009 — Diagnostic Bank-Alpha Pin 14 Reassigned to SW_LED_CTRL
+## DEC-009 — Legacy Controller Probe-Access Pin 14 Reassigned to SW_LED_CTRL
 
 - **Status:** Decided
 - **Date:** 2025 (GND); superseded by final design (SW_LED_CTRL)
 - **Category:** Electrical
-- **Area:** Controller Board Diagnostic Bank-Alpha connector
+- **Area:** Historical Controller bring-up probe-access concept
+
+> **Supersession note:** Historical-only. See **DEC-040** for the current rule that all Diagnostics
+> Banks are removed from the active design specs and will only be reconsidered later during the
+> coupon implementation review.
 
 ### Decision
 
-Diagnostic Bank-Alpha pin 14 was initially reassigned from `3V3_SYSTEM` to **GND**, following the removal of the `3V3_SYSTEM` rail from all BtB interconnects (see DEC-001).
+The legacy Controller probe-access concept pin 14 was initially reassigned from `3V3_SYSTEM` to
+**GND**, following the removal of the `3V3_SYSTEM` rail from all BtB interconnects (see DEC-001).
 In the subsequent design pass that added `SW_LED_CTRL` (GPIO 20) to the Link-Alpha signal set,
-pin 14 was reallocated to **SW_LED_CTRL** to expose the LED-arbitration handshake at the diagnostic header.
+pin 14 was reallocated to **SW_LED_CTRL** to expose the LED-arbitration handshake at the historical
+bring-up probe point.
 
-**Final assignment:** Bank-Alpha Pin 14 = `SW_LED_CTRL` (GPIO 20, CTRL → PM, HIGH = CM5 in control of SW1 RGB LED).
+**Final assignment:** Legacy Controller probe-access concept pin 14 = `SW_LED_CTRL` (GPIO 20, CTRL
+→ PM, HIGH = CM5 in control of SW1 RGB LED).
 
 ### Rationale
 
 - `3V3_SYSTEM` is no longer available at the Power Module side of this debug header.
-- `SW_LED_CTRL` is a useful diagnostic probe point — it shows whether the CM5 has taken control of the RGB LED from the hardware oscillator fallback path.
+- `SW_LED_CTRL` is a useful bring-up observation point — it shows whether the CM5 has taken control
+  of the RGB LED from the hardware oscillator fallback path.
 - GND is freely available on pins 19–20; a redundant GND at pin 14 added no diagnostic value.
 
 ---
 
-## DEC-010 — INC-14 DEFERRED: Diagnostic Bank ESD Protection (Post-Prototype)
+## DEC-010 — INC-14 DEFERRED: Legacy Probe-Access ESD Protection (Post-Prototype)
 
 - **Status:** Deferred — Accepted risk for prototype stage
 - **Date:** 2025
 - **Category:** Electrical
-- **Area:** Controller Board Diagnostic Bank-Alpha / Bank-Beta connectors
+- **Area:** Historical Controller bring-up probe-access concept
+
+> **Supersession note:** Historical-only. See **DEC-040** for the current rule that all Diagnostics
+> Banks are removed from the active design specs and will only be reconsidered later during the
+> coupon implementation review.
 
 ### Decision
 
-ESD protection on the diagnostic bank connectors is **deferred** to post-prototype evaluation. No TVS diodes or series resistors are added to diagnostic header signals at this stage.
+ESD protection on the historical probe-access concept is **deferred** to post-prototype evaluation.
+No TVS diodes or series resistors are added to those bring-up-only signals at this stage.
 
 ### Rationale
 
-- Diagnostic headers are internal, accessed only by engineers with ESD precautions during development.
-- Adding ESD protection to every diagnostic pin adds cost, board space, and complexity before there is validated evidence that it is needed.
+- The probe-access concept was internal, accessed only by engineers with ESD precautions during
+  development.
+- Adding ESD protection to every bring-up-only signal adds cost, board space, and complexity before
+  there is validated evidence that it is needed.
 - Risk accepted for prototype: controlled lab environment, trained operators, no field exposure.
 
 ### Post-Prototype Action Required
 
-- During first prototype test phase, evaluate signal integrity and ESD sensitivity on diagnostic lines.
-- If any diagnostic lines are exposed to field conditions (e.g., external test connectors), add series 33Ω + TVS per line.
+- During first prototype test phase, evaluate signal integrity and ESD sensitivity on any temporary
+  bring-up probe lines.
+- If any such lines are exposed to field conditions (e.g., external test connectors), add series
+  33Ω + TVS per line.
 - Document findings and update this log with the final resolution.
 
 ---
@@ -672,8 +689,8 @@ definition is authoritative.
 | :--- | :--- | :--- | :--- |
 | **LINK-ALPHA** | PM J1 ↔ Controller J1 (80-pin ERM8/ERF8) | **Power Module** | `Power_Module/Board_Layout.md — LINK-ALPHA` |
 | **LINK-BETA** | Controller J2 ↔ Stator J8 (40-pin ERM8/ERF8) | **Controller** | `Controller/Board_Layout.md — LINK-BETA` |
-| **Reflector/Extension Link** | Stator J7 ↔ Extension J7/J8 ↔ Reflector J4 (16-pin 2×8) | **Stator** | `Stator/Board_Layout.md — J7` |
-| **Encoder Ports** | Stator J4/J5/J6 ↔ Encoder J2 (26-pin 2×13) | **Stator** | `Stator/Board_Layout.md — J4–J6` |
+| **Reflector/Extension Link** | Stator J10 ↔ Extension J7/J8 ↔ Reflector J4 (16-pin 2×8) | **Stator** | `Stator/Board_Layout.md — J10` |
+| **Encoder Ports** | Stator J4/J5/J6/J7/J8/J9 ↔ Encoder J2 (20-pin 2×10) | **Stator** | `Stator/Board_Layout.md — J4–J9` |
 | **Rotor Interface** | Stator J1–J3 ↔ Rotor 1 → … → Rotor 30 → Reflector J1–J3 (serial chain; Extension J1–J6 at group boundaries) | **Rotor** | `Rotor/Design_Spec.md §3.4` |
 | **JTAG Daughterboard headers** | JDB J1 (USB 5-pin) + J2 (JTAG 10-pin) | **JTAG Daughterboard** | `JTAG_Daughterboard/Board_Layout.md` |
 
@@ -989,7 +1006,7 @@ for ribbon cable connections. See DEC-016 for the full 75 Ω / 33 Ω rationale.
 
 ---
 
-## DEC-025 — CM5 Shutdown Mechanism: Interrupt-Driven via Custom Linux Driver (Deferred)
+## DEC-025 — CM5 Shutdown Mechanism: Hardware-Driven; LTC3350 Software Support Deferred
 
 - **Status:** Deferred — Software PoC Stage
 - **Date:** 2026-04-09
@@ -998,31 +1015,33 @@ for ribbon cable connections. See DEC-016 for the full 75 Ω / 33 Ω rationale.
 
 ### Decision
 
-The final implementation of the CM5 graceful shutdown mechanism — triggered by the LTC3350 BACKUP
-signal — is deferred to the **Software PoC stage**, pending hardware availability for integration
-testing. The real implementation will use a **custom Linux kernel driver** that registers the BACKUP
-signal as a hardware interrupt, rather than a userspace polling daemon.
+The final implementation of the CM5 graceful shutdown mechanism is **hardware-driven** via the
+LTC3350 `/INTB` -> MIC1555 U15 -> Q5 BSS138 -> `PWR_BUT` one-shot path. Any LTC3350 software
+support is deferred to the **Software PoC stage**, pending hardware availability for integration
+testing, and is limited to I2C telemetry / LED-state handling rather than a dedicated interrupt pin.
 
 The PWR_GD GPIO (GPIO 27, MCP121T-450E output) is rail-health telemetry only and does NOT trigger shutdown. It is a CM5 input that reads HIGH while 5V_MAIN ≥ 4.50V.
 
 ### Rationale
 
-- The custom driver approach eliminates polling latency entirely (interrupt response is effectively
-  immediate vs. up to 500 ms for a 2 Hz poll cycle).
-- Driver development requires the physical hardware to be available for testing and validation.
-  Writing and verifying kernel interrupt handlers against simulated hardware is impractical.
+- The shutdown path is already covered by hardware, so no Linux interrupt path or device-tree
+  mapping is required for safe power-off behaviour.
+- Any future software support can read LTC3350 status over I2C without consuming another
+  dedicated CM5 GPIO.
+- Driver or service development still requires the physical hardware to be available for testing
+  and validation.
 - The system is designed for operational sessions of 15–30 minutes or longer. The hold-up window
   (≥33.5 s) is a generous safety margin; an unplanned shutdown from a fully-charged state is expected
   to be harmless. Deferring the driver to the PoC stage does not create a risk for hardware bring-up.
-- Placeholder pseudocode in design/Software/Linux_OS/Power_Management.md documents the intended
-  behaviour for reference; it is not a specification.
+- Placeholder notes in design/Software/Linux_OS/Power_Management.md document the intended
+  telemetry behaviour for reference; they are not a binding software specification.
 
 ### Impact
 
-- design/Software/Linux_OS/Power_Management.md Phase 1: Polling daemon pseudocode replaced with
-  deferred-decision note referencing DEC-025. The active hardware protection path is the
-  LTC3350 /INTB → MIC1555 U15 → Q5 BSS138 → PWR_BUT one-shot circuit (3.01 s LOW pulse),
-  which requires no software driver.
+- design/Software/Linux_OS/Power_Management.md keeps the deferred LTC3350 telemetry notes but
+  removes any requirement for a dedicated `/INTB` GPIO or device-tree interrupt mapping.
+- The active hardware protection path is the LTC3350 /INTB → MIC1555 U15 → Q5 BSS138 →
+  PWR_BUT one-shot circuit (3.01 s LOW pulse), which requires no software driver.
 
 ---
 
@@ -1044,10 +1063,12 @@ as a K-bit code. A combinational lookup table in the CPLD VHDL maps the raw sens
 binary rotor position (0 to N−1). The SW1 modulo-N adder (ring setting) operates on the decoded
 binary value. No external adder hardware is required — the decode and add are pure CPLD logic.
 
-Two **Texas Instruments FDC2114RGHR** (4-channel, I²C, 16-VQFN, 3.3V) per rotor replace U2:
+Three **Texas Instruments FDC2114RGHR** footprints are defined across the split rotor pair;
+each rotor variant populates two of them:
 
 - U2 (address 0x2A): Track A — bits[5:3] (N=64) or STGC bits[3:0] (N=26).
-- U3 (address 0x2B): Track B — bits[2:0] (N=64 only). NOT POPULATED for N=26. See U4 on Board A for N=26 bit[4].
+- U3 (address 0x2B): Board A STGC bit[4] (N=26 only). NOT POPULATED for N=64.
+- U4 (address 0x2B): Track B — bits[2:0] (N=64 only). NOT POPULATED for N=26.
 - CPLD implements I²C master to read pad states.
 
 #### Track patterns (verified — all N codes unique)
@@ -1174,7 +1195,7 @@ electrode pads on the PCB flat face at r≈44mm sense the pattern capacitively v
 
 For N=64 the encoder is a dual-track 3+3 bit standard reflected Gray code (6-bit), giving
 zero multi-bit transitions including wrap-around (position 63→0). The CPLD decodes via XOR
-chain (G2B). For N=26 all 5 STGC sensor electrodes remain on Board A; U3 on Board B is not
+chain (G2B). For N=26 all 5 STGC sensor electrodes remain on Board A; U4 on Board B is not
 populated.
 
 ### Rationale
@@ -1382,7 +1403,7 @@ to complete backup switchover — INSUFFICIENT.
 - **Status:** Decided
 - **Date:** 2026-04-14
 - **Category:** Electrical / Firmware
-- **Area:** Stator Board — I²C Expanders, Servo, CPLD SOURCE_SEL MUX
+- **Area:** Stator Board — I²C Expanders, Servo, External Keyboard Source Mux
 - **Author:** Izzyonstage & GitHub Copilot
 
 ### Summary
@@ -1402,65 +1423,40 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 
 1. **MCP23017 @ 0x20 (U_EXP1):** 16-bit GPIO expander for ENC_IN/ENC_OUT monitoring. Replaces
    CM5 GPIO 4–15 (12 pins freed).
-   - GPA[0:5] = ENC_IN[0:5] monitor (inputs)
-   - GPB[0:5] = ENC_OUT[0:5] monitor (inputs)
+   - GPA[5:0] = ENC_IN[5:0] monitor (inputs)
+   - GPB[5:0] = ENC_OUT[5:0] monitor (inputs)
    - GPA[6:7], GPB[6:7] = spare
 
-2. **MCP23017 @ 0x21 (U_EXP2):** 16-bit GPIO expander for virtual keypress injection, SOURCE_SEL
-   MUX control, SYS_RESET_N (replaces CM5 GPIO 26 — 1 pin freed), servo enable, and SERVO_HOME sense.
-   - GPA[0:4] = KEY_ADDR[0:4] (outputs — 5-bit key address to Stator CPLD)
-   - GPA[5] = KEY_EN (output — enable for virtual keypress injection)
-   - GPA[6] = SOURCE_SEL (output — MUX select: 0=keyboard, 1=CM5 virtual)
-   - GPA[7] = SYS_RESET_N (output — system-wide CPLD reset)
-   - GPB[0] = SERVO_EN (output — enables servo PWM output)
-   - GPB[1] = SERVO_HOME (input — active-low homing switch, 10kΩ pull-up + 100nF debounce)
-   - GPB[2:7] = spare
-
-3. **PCA9685 @ 0x60 (U_EXP3):** 16-channel I²C PWM driver for servo motor control.
-   - Ch0 = SERVO_PWM (50Hz PWM for servo position control)
-   - A5 → 3V3_ENIG (sets bit 5 = 1), A4–A0 → GND (bits 4:0 = 0) → address 0x60
-   - All-call address (0x70) disabled in enigma daemon init (MODE1 reg bit 0 = 0)
+2. **MCP23017 @ 0x21 (U_EXP2):** 16-bit GPIO expander for virtual key data injection, external
+    keyboard-source mux control, and SYS_RESET_N (replaces CM5 GPIO 26 — 1 pin freed).
+    - GPA[5:0] = CM5_KEY_DATA[5:0] (outputs — 6-bit virtual key data bus)
+    - GPA[6] = KEY_CM5_ACTIVE (output — mux select: 0=physical keyboard, 1=CM5 virtual)
+    - GPA[7] = SYS_RESET_N (output — system-wide CPLD reset)
+    - GPB[7:0] = spare / reserved
 
 ### Rationale for MCP23017 (×2)
 
 - 32 GPIO total provides headroom for future I/O expansion.
 - SYS_RESET_N migration to expander reduces LINK-BETA pin count and frees CM5 GPIO 26.
-- All monitoring and control signals consolidated on Stator (co-located with servo and CPLD).
+- All keyboard-source mux and reset control signals remain co-located with the Stator CPLD.
 - Only 2 wires (I²C SDA/SCL) needed on LINK-BETA instead of 13 discrete signal pins.
 
-### Rationale for PCA9685 @ 0x60
+### External Keyboard Source Mux
 
-- MCP23017 cannot generate PWM; a dedicated PWM IC is required for servo control.
-- Address 0x60 chosen (not 0x40 base) for I²C debugging clarity — all peripheral ICs sit at lower
-  addresses; the expander group starts at 0x60.
-- A5=HIGH, A4–A0=LOW wiring achieves 0x60.
-- All-call address 0x70 disabled in enigma daemon init (MODE1 register bit 0 = 0).
-
-### Servo Motor
-
-- **Part:** Miuzei Metal Gearbox 90 servo (purchased — Amazon, 6 for $18, geekpow seller).
-- **Voltage:** 4.8–6V rated; powered from 5V_MAIN (within spec).
-- **Actuation cycle:** 0°→180°→0° sweep = one virtual keypress.
-- **Mounted:** on Stator PCB via J_SERVO (3-pin JST PH 2.0mm: 5V_MAIN, GND, SERVO_PWM).
-
-### SERVO_HOME Switch
-
-- SPST normally-open momentary switch, active-low.
-- Mounted on Stator PCB.
-- 10kΩ pull-up to 3V3_ENIG + 100nF X7R cap to GND (RC τ = 1ms).
-- Connected to MCP23017 U_EXP2 GPB[1].
-- Homing sequence: assert SERVO_EN → command 0° → poll SERVO_HOME LOW within 3-second timeout.
-
-### SOURCE_SEL MUX
-
-- GPA[6] on U_EXP2 drives Stator CPLD SOURCE_SEL input at J4 ENC_OUT[0:5] entry point.
-- SOURCE_SEL=0: keyboard ENC_OUT is forwarded to the encryption pipeline.
-- SOURCE_SEL=1: KEY_ADDR[0:4] + KEY_EN from U_EXP2 GPA[0:5] synthesises a virtual ENC_OUT signal.
+- GPA[6] on U_EXP2 drives `KEY_CM5_ACTIVE` for the external keyboard-source mux at the Stator
+  keyboard-source entry point.
+- `KEY_CM5_ACTIVE=0`: the physical keyboard 6-bit source bus is forwarded to the encryption pipeline.
+- `KEY_CM5_ACTIVE=1`: `CM5_KEY_DATA[5:0]` is forwarded instead.
+- The selected implementation uses `U4` and `U5`, both `74HC157PW-Q100,118` quad 2:1 mux devices,
+  to cover the 6-bit path, with both `E` pins tied to GND so the mux is always enabled while the
+  board is powered.
+- GPA[7] now carries `SYS_RESET_N`, fully populating the U_EXP2 GPA port and leaving U_EXP2 GPB
+  completely spare / reserved for future use.
 
 ### Net Effect on LINK-BETA
 
-- **Freed (13 pins):** ENC_IN[0:5] (×6), ENC_OUT[0:5] (×6), SYS_RESET_N (×1).
-- **Freed:** pins 8 (SYS_RESET_N), 12–17 (ENC_IN[0:5]), and 19–24 (ENC_OUT[0:5]) were freed by this decision.
+- **Freed (13 pins):** ENC_IN[5:0] (×6), ENC_OUT[5:0] (×6), SYS_RESET_N (×1).
+- **Freed:** pins 8 (SYS_RESET_N), 12–17 (ENC_IN[5:0]), and 19–24 (ENC_OUT[5:0]) were freed by this decision.
 - **Later reuse:** DEC-036 reallocated the former monitor block into grouped LINK-BETA power rails
   (5V_MAIN, 3V3_ENIG, and GND) once the Stator-side 5V needs were formalised.
 - R6 pull-up (10kΩ to 3V3_ENIG) on Stator keeps SYS_RESET_N HIGH at power-up (CPLDs out of reset).
@@ -1485,11 +1481,10 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 | 0x28 | STUSB4500 | Power Module |
 | 0x40 | INA219 (U12) | Power Module |
 | 0x45 | INA219 (U2) | Stator |
-| 0x60 | PCA9685 (U_EXP3) | Stator |
 
 ---
 
-## DEC-032 — Settings Board: Panel-Mount Illuminated Configuration Switches with CM5 Override
+## DEC-032 — Settings Board: Panel-Mount Configuration Controls with CM5 Override
 
 - **Status:** Decided
 - **Date:** 2026-04-14
@@ -1499,10 +1494,11 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 
 ### Summary
 
-Replace the Stator Board's DIP switches (SW1 routing, SW2 reflector map) with panel-mount
-toggle switches plus discrete RGB indicators on a dedicated Settings Board PCB. The Settings Board connects to
-the Stator via I²C only (no parallel signal wiring). A new MCP23017 expander (U_EXP4 @ 0x22) on
-the Stator Board bridges the I²C configuration data to the CPLD config input pins.
+Replace the Stator Board's DIP switches (routing + reflector map) with panel-mount toggle switches
+plus discrete RGB indicators on a dedicated Settings Board PCB. The Settings Board connects to the
+Stator via I²C only (no parallel signal wiring). A new MCP23017 expander (U_EXP4 @ 0x22) on the
+Stator Board bridges the I²C configuration data to the CPLD config input pins and issues the
+Stator-only `CFG_APPLY_N` reload pulse.
 
 ### Problem
 
@@ -1514,29 +1510,30 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 
 1. Remove SW1 and SW2 from the Stator Board.
 2. Add a new Settings Board PCB (panel-mount, right side of enclosure top face near rotors) with:
-   - 12 panel toggle switches plus 12 discrete RGB indicators (5 for Bank 1 routing, 7 for Bank 2 reflector mapping)
-   - 1 momentary CFG_APPLY input; a board-mounted tactile switch actuated through the enclosure is acceptable
-   - U_EXP_SW_IN (MCP23017 @ 0x23): reads switch states
+   - 10 panel toggle switches plus 12 discrete RGB indicators (Bank 1 = 4 config toggles + 1 source-status LED, Bank 2 = 6 config toggles + 1 source-status LED)
+   - 1 momentary active-low `CFG_APPLY_N` input; a board-mounted tactile switch actuated through the enclosure is acceptable
+   - U_EXP_SW_IN (MCP23017 @ 0x23): reads the Settings Board user-intent config plus `CFG_APPLY_N`
    - U_LED_B1 (MCP23017 @ 0x24): drives Bank 1 LED anodes + Bank 1 colour rails
    - U_LED_B2 (MCP23017 @ 0x25): drives Bank 2 LED anodes + Bank 2 colour rails
 3. Add U_EXP4 (MCP23017 @ 0x22) to the Stator Board. Its outputs drive the CPLD configuration
-   input pins directly (SW1[0:3] and SW2[0:5]). Pull-downs R16–R26 are retained on the CPLD
+   input pins directly (`CFG_ROUTE[3:0]` and `CFG_REFMAP[5:0]`). Pull-downs R16–R26 are retained on the CPLD
    input pins to hold safe defaults (all-zero) at power-up before CM5 initialises U_EXP4.
 4. CM5 firmware (enigma daemon):
-   - Reads U_EXP_SW_IN to get physical switch state
-   - If bank enable HIGH (switch-defined): writes switch values to U_EXP4, drives LED colour green
-   - If bank enable LOW (CM5-defined): CM5 writes its own config to U_EXP4, drives LED colour red
-   - After writing final config to U_EXP4, pulses STATOR_CFG_RDY (U_EXP4 GPA[4]) LOW→HIGH to
-     trigger CPLD re-latch of new configuration
-5. Physical CFG_APPLY button on Settings Board: reads via U_EXP_SW_IN GPB[7]; CM5 daemon polls
-   this and triggers the same U_EXP4 write + STATOR_CFG_RDY strobe when pressed. The switch may be
+   - Reads U_EXP_SW_IN to get user-intent config state
+   - Decides in software whether each bank forwards user intent or uses a CM5-defined preset
+   - Drives the bank source indicators via `CFG_ROUTE_CM5_ACTIVE` / `CFG_REFMAP_CM5_ACTIVE`
+     (green = user intent forwarded, red = CM5-defined)
+   - After writing final config to U_EXP4, pulses `CFG_APPLY_N` (U_EXP4 GPA[4]) LOW→HIGH to
+     trigger a Stator-only configuration reload
+5. Physical `CFG_APPLY_N` button on Settings Board: reads via U_EXP_SW_IN GPB[7]; CM5 daemon polls
+   this and triggers the same U_EXP4 write + `CFG_APPLY_N` pulse when pressed. The switch may be
    a board-mounted tactile part with a simple actuator/plunger through the enclosure rather than a
    true panel-mount pushbutton.
 
 ### LED Colour Scheme
 
-- **Green illumination:** Bank is in switch-defined mode (bank enable HIGH); illuminated bits show active switch positions.
-- **Red illumination:** Bank is in CM5-defined mode (bank enable LOW); illuminated bits show CM5-programmed configuration.
+- **Green illumination:** Bank is forwarding Settings Board user intent; illuminated bits show the active forwarded configuration.
+- **Red illumination:** Bank is in CM5-defined mode; illuminated bits show the CM5-programmed configuration.
 - Per-bank shared colour rail: all switches in a bank share the same colour (green or red) while individual anode control shows which bits are set.
 
 ### I²C Address Assignments (new)
@@ -1556,8 +1553,8 @@ Additionally, the CM5 has no way to programmatically override the configuration.
   `5V_MAIN`, `GND`, `SDA`, `SCL`, and a dedicated LED return GND.
 - Retaining R16–R26 pull-downs ensures the CPLD receives a safe all-zero default at power-up
   (no plugboard insertion, physical reflector pass-through) before the CM5 writes the desired config.
-- Per-bank enable switches give the operator independent control of whether the physical switches or
-  CM5 firmware define each bank's configuration.
+- CM5 remains the single authority arbiter, allowing GUI presets to forward or override the Settings
+  Board user-intent image while still exposing that authority state through the indicators.
 - RGB illumination (green/red) provides immediate visual feedback on configuration source with no
   additional UI required.
 
@@ -1568,12 +1565,13 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 
 ### Impact
 
-- **Stator Board:** SW1 and SW2 removed; U_EXP4 and J_CFG added; STATOR_CFG_RDY signal added to CPLD
+- **Stator Board:** SW1 and SW2 removed; U_EXP4 and J13 added; `CFG_APPLY_N` added to the Stator-only reset/apply path
 - **New Board:** Settings Board added to system BOM
-- **Firmware:** enigma daemon startup sequence must: read U_EXP_SW_IN, evaluate bank enables, write
-  U_EXP4, pulse STATOR_CFG_RDY, update U_LED_B1 / U_LED_B2
-- **CPLD:** STATOR_CFG_RDY is a new input pin; CPLD must re-latch SW1/SW2 values on rising edge
-  (replaces power-up-only latch)
+- **Firmware:** enigma daemon startup sequence must: read U_EXP_SW_IN, determine final applied config,
+  write U_EXP4, pulse `CFG_APPLY_N`, update U_LED_B1 / U_LED_B2
+- **CPLD / reset path:** the Stator-only `CFG_APPLY_N` pulse is combined with `SYS_RESET_N` so the
+  Stator CPLD can be reloaded without forcing a global system reset; implemented with
+  `SN74LVC1G08DBVR` on the Stator
 
 ---
 
@@ -1663,9 +1661,10 @@ spade-terminal wiring.
 
 ### Decision
 
-1. **Settings Board switch selection:** Use `200MSP1T2B4M2QE` for all 12 configuration toggles
-   (`SW_B1_EN`, `SW_B1[0:3]`, `SW_B2_EN`, `SW_B2[0:5]`).
-2. **Settings Board LED selection:** Use `WP154A4SEJ3VBDZGW/CA` for all 12 switch indicators.
+1. **Settings Board switch selection:** Use `200MSP1T2B4M2QE` for the 10 configuration toggles
+   (`SW_B1[3:0]`, `SW_B2[5:0]`).
+2. **Settings Board LED selection:** Use `WP154A4SEJ3VBDZGW/CA` for all 12 Settings Board indicators
+   (10 config-bit indicators + 2 source-status indicators).
    - Kingbright 5mm common-anode RGB through-hole LED
    - Full RGB operation is available under CM5 control
    - Separate red, green, and blue series resistors per switch allow colour balancing under nominal 5V operation
@@ -1834,12 +1833,14 @@ Retain the 40-pin LINK-BETA connector and apply this active allocation:
 
 - Controller / Stator LINK-BETA tables updated to grouped 5V_MAIN, 3V3_ENIG, and GND allocations
 - Settings Board and Stator docs updated to source `5V_MAIN` from LINK-BETA pins **14–17**
-- Diagnostic Bank-Beta repurposed from unused spare pads to power/I²C bring-up probes
+- Historical Controller probe-access concept repurposed from unused spare pads to power/I²C
+  bring-up probes
 
 ### Cross-ref
 
 DEC-015 (40-pin connector retained). DEC-031 (freed the former monitor pins). DEC-034
-(Settings Board full-RGB 5V indicator branch creates a standing Stator-side 5V load).
+(Settings Board full-RGB 5V indicator branch creates a standing Stator-side 5V load). DEC-040
+(all Diagnostics Banks removed from active specs; revisit only during coupon review).
 
 ---
 
@@ -1848,7 +1849,7 @@ DEC-015 (40-pin connector retained). DEC-031 (freed the former monitor pins). DE
 - **Status:** Decided
 - **Date:** 2026-04-18
 - **Category:** Electrical / Interconnect definition
-- **Area:** Controller Board J2 (LINK-BETA), Stator Board J8, Controller Bank-Beta diagnostics
+- **Area:** Controller Board J2 (LINK-BETA), Stator Board J8, historical Controller bring-up probe concept
 - **Author:** Izzyonstage & GitHub Copilot
 
 ### Summary
@@ -1862,7 +1863,7 @@ table.
 
 DEC-036 solved the spare-pin problem, but the resulting active map split `3V3_ENIG` into a small
 middle block plus a rear block and left the overall pin order harder to reason about in board docs
-and diagnostics. The design intent now is to preserve a dedicated guarded JTAG region, keep
+and bring-up references. The design intent now is to preserve a dedicated guarded JTAG region, keep
 `TTD_RETURN` near that JTAG region, keep I2C shielded, and make the remaining rails cleaner to read
 without relying on historical "additional" or "pass-through" distinctions.
 
@@ -1937,12 +1938,14 @@ Adopt this LINK-BETA allocation as the active mapping:
 - Controller and Stator LINK-BETA tables updated to the DEC-037 map.
 - Power-budget docs updated to the new **7.0A** LINK-BETA `3V3_ENIG` connector capacity.
 - Stator/Settings power-feed references updated to the new `5V_MAIN` pins **3, 4, 37, 38**.
-- Diagnostic Bank-Beta remapped to probe the new LINK-BETA rail and control-pin positions.
+- Historical Controller bring-up probe concept remapped to the new LINK-BETA rail and control-pin
+  positions.
 
 ### Cross-ref
 
 DEC-015 (40-pin connector retained), DEC-031 (functions moved off the connector), DEC-034
-(Stator-side 5V indicator load), DEC-036 (obsolete prior grouped-rail map).
+(Stator-side 5V indicator load), DEC-036 (obsolete prior grouped-rail map), DEC-040
+(all Diagnostics Banks removed from active specs; revisit only during coupon review).
 
 ---
 
@@ -2030,6 +2033,19 @@ Active partition:
 This retains the JTAG cluster on the `3V3_ENIG` / logic-biased connector and gives the Stator two
 mechanical support points instead of one fine-pitch mezzanine connector.
 
+#### 4a. Controller owns the local servo actuation interface
+
+Because the Stator is now a removable **vertical** daughterboard, the servo motor and its home switch
+must remain close to the mechanical depression-bar linkage rather than hanging off the Stator PCB.
+The Controller therefore owns the full local servo electrical interface:
+
+- **J_SERVO** on the Controller carries `5V_MAIN`, `GND`, and `SERVO_PWM`
+- **SW3 / SERVO_HOME** is mounted on the Controller with a local pull-up and debounce network
+- **CM5 GPIO 12** provides direct 50 Hz `SERVO_PWM`
+- **CM5 GPIO 17** reads the active-low `SERVO_HOME` input
+
+No I²C expander-owned servo GPIO and no standalone PCA9685 PWM driver are used in the active design.
+
 #### 5. PM-local I2C expander replaces legacy direct PM status GPIOs
 
 Add **`PCA9534APWR`** on the Power Module at **I2C address `0x3F`**. Use it for:
@@ -2076,6 +2092,8 @@ create a second galvanic bond to system ground.
 
 - Controller, Power Module, and Stator design specs must be updated to the new dock model.
 - Controller PoE / Ethernet ownership moves out of the Power Module docs and BOM ownership.
+- Servo motor electrical ownership moves from the Stator to the Controller so the actuation hardware
+  remains co-located with the rotor depression bar in the vertical-Stator enclosure layout.
 - PM GPIO / SW1 RGB runtime control moves to `PCA9534APWR @ 0x3F`.
 - Power-budget and overview documents must stop referencing Samtec Link-Alpha / Link-Beta as active
   PM/Stator bottlenecks.
@@ -2176,6 +2194,85 @@ DEC-020, DEC-023, DEC-038, `design/Standards/Global_Routing_Spec.md §4–§5`,
 
 ---
 
+## DEC-040 — Diagnostics Banks Removed from Active Design Specs Pending Coupon Review
+
+- **Status:** Decided
+- **Date:** 2026-04-25
+- **Category:** Documentation / Test-access strategy
+- **Area:** All boards — active design specs, board layouts, and future coupon planning
+- **Author:** Izzyonstage & GitHub Copilot
+
+### Summary
+
+All Diagnostics Banks have been removed from all design specs, as these are not production board
+components and will be re-addressed later when reviewing the coupon implementations TODO item.
+
+### Problem
+
+The documentation had drifted into an inconsistent state:
+
+- some active `Design_Spec.md` and `Board_Layout.md` files still described Diagnostics Banks or
+  related future test-access details
+- the finished machine is not intended to carry permanent Diagnostics Bank hardware
+- the coupon strategy is already tracked separately as future work, so embedding those details into
+  current board specs makes the active design harder to review
+
+That mixed future test-access planning into documents that are supposed to define the current
+production-board design.
+
+### Decision
+
+1. **Remove all Diagnostics Bank details from active board specs/layouts.**
+   - No active `Design_Spec.md` or `Board_Layout.md` should describe Diagnostics Banks as if they are
+     present on the current production boards.
+   - Future test-access features must not appear as active board content before they are actually
+     designed.
+
+2. **Keep historical traceability in the Design Log only.**
+   - Older Diagnostics Bank discussions remain in this log as historical context.
+   - Where needed, those older entries are treated as superseded historical material rather than
+     active design definition.
+
+3. **Revisit test-access details only during the coupon work item.**
+   - Any future removable coupon implementation is to be reviewed later under **OWI-001 — Test
+     Coupons per Board**.
+   - Per-board coupon signal selection, geometry, connector choices, and any related probe-access
+     strategy are deferred until that dedicated review.
+
+4. **Require a fresh review before any reintroduction.**
+   - If test-access features are reintroduced later, they require a new explicit design update and
+     the appropriate ESD / certification review at that time.
+
+### Rationale
+
+- Keeps active board docs focused on the actual production-board design.
+- Avoids presenting future bring-up hardware as though it were already approved.
+- Preserves the test-coverage intent without prematurely freezing implementation details.
+- Makes the separation between **current design** and **future TODO work** explicit.
+
+### Supersession / Obsolescence
+
+- **DEC-009** and **DEC-010** remain historical traceability for the old Controller probe-access
+  concept, but they are superseded as active board-definition guidance by this decision.
+- Any historical references to Diagnostics Banks or equivalent fixed bring-up probe features in the
+  active board specs/layouts are obsolete.
+
+### Impact
+
+- Active board `Design_Spec.md` and `Board_Layout.md` files must omit Diagnostics Bank content until
+  the coupon work is actually designed.
+- Future test-access planning stays in the Design Log / work-item tracking rather than in current
+  board specs.
+- Later coupon implementation work must decide the real test-access architecture per board instead of
+  inheriting outdated fixed-bank assumptions.
+
+### Cross-ref
+
+DEC-009, DEC-010, QUE-002, OWI-001, OWI-002, `design/Standards/Certification_Evidence.md §8`
+(DA-01).
+
+---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.
@@ -2265,6 +2362,10 @@ For final assembly the coupons are snapped off at the mousebite perforations and
 directly board-to-board. Coupon IDC connector selection (shrouded box header part numbers) and exact
 PCB fanout geometry to be defined at schematic/layout phase.
 
+Where early board concepts currently show permanent probe pads or other test-only breakout features,
+that access should be reviewed for migration onto the removable coupons during schematic/layout
+finalisation so the finished machine does not carry unnecessary permanent diagnostic hardware.
+
 ### Background
 
 The rotor-to-rotor, rotor-to-Stator, and rotor-to-Reflector/Extension connections all use the Samtec
@@ -2284,8 +2385,8 @@ readily available.
 2. **Connector selection review:** Confirm that ERF8/ERM8 is still the correct family for the final
    design before committing to prototype PCB orders — alternative connector families may offer
    cable-assembly options without changing the electrical design.
-3. **2.54mm IDC cables:** Confirm standard IDC ribbon cable lengths and sources for Stator J7
-   (16-pin 2×8) and Stator J4-J6 encoder ports (26-pin 2×13).
+3. **2.54mm IDC cables:** Confirm standard IDC ribbon cable lengths and sources for Stator J10
+   (16-pin 2×8) and Stator J4-J9 encoder ports (20-pin 2×10).
 
 ### Note
 
@@ -2316,7 +2417,7 @@ This section records all INC (inconsistency) items tracked during the design pro
 | INC-11 | Power Module Battery | BATT_PRES_N pull-up R6 tied to 3V3_SYSTEM — invalid once 3V3_SYSTEM removed | R6 pull-up to 3V3_SYSTEM | R6 pull-up moved to 3V3_ENIG | ✅ Resolved |
 | INC-12 | Link-Alpha BtB Connector | Power cluster labelled "6A Delivery Cluster" — outdated after dual 12A buck upgrade and pin reallocation | "6A Delivery Cluster" (16 pins) | 9A delivery (18 pins × 0.5A/pin after reallocation). Label updated | ✅ Resolved |
 | INC-13 | Power Module USB-C | STUSB4500 specified to negotiate 15V/3A (45W) — only 56.7% eFuse utilisation violation at worst-case 42.5W load | STUSB4500: 15V/3A (45W) | STUSB4500: 15V/5A (75W). See DEC-006 | ✅ Resolved — DEC-006 |
-| INC-14 | Controller Diagnostic Banks | Diagnostic Bank-Alpha and Bank-Beta have no ESD protection; exposed ENIG pads treated as external interfaces | No ESD on diagnostic banks | Deferred to post-prototype. Accept risk for prototype stage. See DEC-010 | ✅ Resolved — DEC-010 (deferred) |
+| INC-14 | Controller probe-access concept | Historical Controller bring-up probe pads had no ESD protection while exposed ENIG pads were still present in the concept design | No ESD on bring-up probe pads | Fixed probe-access pads removed from the active board design; any future coupon-based probe access will need a new ESD review | ✅ Resolved — pads removed from active design |
 | INC-15 | Controller/Power Module | Internal conflict in Board_Layout.md: bullet list said I2C=pins 35–40, 3V3_ENIG=pins 41–44; ASCII diagram said I2C=35–38, 3V3_ENIG=39–44 | Bullets: I2C 35–40; 3V3_ENIG 41–44 | ASCII diagram authoritative: I2C 35–38, 3V3_ENIG 39–44 (6 pins at 51.4% utilisation) | ✅ Resolved — ASCII diagram is authoritative |
 | INC-16 | Board_Layout.md ETH LED diagram | ETH LED diagram showed PIN 27 = ETH_LED_ACT; main pin map shows pins 27–30 = GND Isolation Moat | Diagram: PIN 27 = ETH_LED_ACT | Correct: PIN 26 = ETH_LED_ACT; PIN 27 = GND Moat | ✅ Resolved |
 | INC-17 | Power Module Battery | eFuse OVLO margin: with 16.9V OVLO and 4.2V/cell BMS (16.8V max), only 0.1V margin — risk of nuisance trips | BMS max 4.2V/cell (16.8V); OVLO 16.9V; margin 0.1V | BMS must use 4.1V/cell max (16.4V total for 4S), giving 0.5V margin. Added to Design_Spec §2. See DEC-005 | ✅ Resolved |
@@ -2351,8 +2452,6 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J2 | Link-Beta BtB — 40-pin socket to Stator Board | Samtec ERF8-020-05.0-S-DV-K-TR | ERF8-020 | 200-ERF8020050SDVKTR | SAM8619CT-ND | Female socket (ERF8). Mating male on Stator (ERM8-020). 40-pin per DEC-015 |
 | J3 | USB 3.0 — Dual-stacked Type-A port | Molex 48406-0003 | 48406-0003 | 538-0484060003 | WM1394-ND | Dual-stack Type-A, 5.0mm protrusion through chassis |
 | J4 | HDMI — Full-size Type-A | TE Connectivity 2007435-1 | 2007435-1 | 571-2007435-1 | A125057-ND | Full-size HDMI Type-A, 5.0mm protrusion through chassis |
-| — | Diagnostic Bank-Alpha | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, placed behind BtB header. Not a separate connector; probed directly with logic analyser clips |
-| — | Diagnostic Bank-Beta | 2×10 ENIG Gold looped probe pads | — | — | — | 2.54mm pitch, L1 layer. Monitors LINK-BETA grouped power rails, I²C extension, and JTAG return path after DEC-037 — see Controller/Board_Layout.md Diagnostic Bank-Beta. |
 | — | JTAG Daughterboard link (to FT232H board) | 1×5 INPUT header + 1×10 JTAG header | — | — | — | 2.54mm ENIG male headers on Controller. JDB female headers mate here. USB 2.0 to CM5 internally |
 
 ### Stator Board
@@ -2360,8 +2459,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) | ERF8 0.8mm pitch female sockets. Rotor 1 input side only (serial chain — not 30 slots). J1 pin 6 = TTD (outgoing TDI). |
-| J4-J6 | Encoder Port headers (×3: HID J4, Plugboard A J5, Plugboard B J6) — 26-pin 2×13 shrouded box header | Amphenol T821126A1S100CEU (2×13, 2.54mm) | T821126A1S100CEU | — (RS-Online 832-3503) | — | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J4–J6. JLCPCB C3013501 |
-| J7 | Extension/Reflector Link — 16-pin shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | THT, shrouded. Power, ENC_DATA, TTD_RETURN (pin 15). Pinout definition owner — see Stator/Board_Layout.md J7. JLCPCB C17692295 |
+| J4-J9 | Encoder port headers (×6: `KBD_ENC`, `LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`) — 20-pin 2×10 shrouded box header | Adam Tech BHR-20-VUA / 2BHR-20-VUA (2×10, 2.54mm) | BHR-20-VUA | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | THT, shrouded, keyed. Pinout definition owner — see Stator/Board_Layout.md J4–J9. JLCPCB C17340054 uses 2BHR-20-VUA MPN. |
+| J10 | Extension/Reflector Link — 16-pin shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | THT, shrouded. Power, reflector-boundary aliases, TTD_RETURN (pin 15). Pinout definition owner — see Stator/Board_Layout.md J10. JLCPCB C17692295 |
 | J8 | Link-Beta BtB — 40-pin plug to Controller Board | Samtec ERM8-020-05.0-S-DV-K-TR | ERM8-020 | 200-ERM8020050SDVKTR | SAM8611CT-ND | Male plug (ERM8). Mating female on Controller (ERF8-020). 40-pin per DEC-015 |
 | — | JTAG Aux header | 2×5 2.54mm shrouded | — | — | — | Pin pattern: GND\|TCK\|GND\|TMS\|GND\|TDI\|GND\|SYS_RESET_N\|GND |
 
@@ -2381,8 +2480,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | Ref | Description | Part / Series | MPN | Mouser PN | DigiKey PN | Notes |
 | ----- | ------------- | --------------- | ----- | ----------- | ------------ | ------- |
 | J1 (×64) | Plugboard cipher jack sockets (one per key/lamp position) | 6.35mm (¼″) mono switched panel-mount jack socket — already purchased (eBay: SaiBuy.Ltd item 334364197440) | — | — | — | THT panel-mount. 64× per board (26 input + 26 output + 10 plugboard positions + 2 spare). Purchased. |
-| J2 | Data link to Stator — 26-pin 2×13 shrouded box header | Amphenol T821126A1S100CEU (2×13, 2.54mm) | T821126A1S100CEU | — (RS-Online 832-3503) | — | Mating connector for Stator J4/J5/J6. Cross-ref: Stator/Board_Layout.md J4–J6. JLCPCB C3013501 |
-| J3 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | 2.54mm pitch. Not a separate connector; probed directly |
+| J2 | Data link to Stator — 20-pin 2×10 shrouded box header | Adam Tech BHR-20-VUA / 2BHR-20-VUA (2×10, 2.54mm) | BHR-20-VUA | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | Mating connector for Stator J4–J9. Cross-ref: Stator/Board_Layout.md J4–J9. JLCPCB C17340054 uses 2BHR-20-VUA MPN. |
 
 ### Reflector Board
 
@@ -2391,8 +2489,7 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J1 | Rotor 30 output — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 | Plugs into Rotor 30 J4 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
 | J2 | Rotor 30 output — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | ERM8-005-05.0-S-DV-K-TR | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 | Plugs into Rotor 30 J5 (ERF8-005 female). Definition owner: Rotor/Design_Spec.md §3.4 |
 | J3 | Rotor 30 output — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | ERM8-010-05.0-S-DV-K-TR | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 | Plugs into Rotor 30 J6 (ERF8-010 female). Definition owner: Rotor/Design_Spec.md §3.4 |
-| J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Mating connector for **Stator J7** (or Extension J7/J8). Carries TTD_RETURN on pin 15. |
-| J5 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | N/A | 2.54mm pitch. Not a separate connector; probed directly |
+| J4 | Interconnect to Stator/Extension — 16-pin shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Mating connector for **Stator J10** (or Extension J7/J8). Carries TTD_RETURN on pin 15. |
 
 ### Extension Board
 
@@ -2404,9 +2501,8 @@ changes have inadvertently altered connector placement, orientation, or mating r
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J1 (ERM8-005 male). Cross-ref: Rotor/Design_Spec.md §3.4 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | ERF8-005-05.0-S-DV-K-TR | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | Receives next rotor group's first rotor J2 (ERM8-005 male). |
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | ERF8-010-05.0-S-DV-K-TR | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 | Receives next rotor group's first rotor J3 (ERM8-010 male). |
-| J7 | Extension Port IN — 16-pin 2×8 shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Mating connector for Stator J7 (or previous Extension J8). Cross-ref: Stator/Board_Layout.md J7 |
-| J8 | Extension Port OUT — 16-pin 2×8 shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Feeds next Extension J7 or Reflector J4. Cross-ref: Stator/Board_Layout.md J7 |
-| J9 | Diagnostic looped probe pads | 2×8 ENIG Gold pads | — | — | — | — | 2.54mm pitch. Not a separate connector |
+| J7 | Extension Port IN — 16-pin 2×8 shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Mating connector for Stator J10 (or previous Extension J8). Cross-ref: Stator/Board_Layout.md J10 |
+| J8 | Extension Port OUT — 16-pin 2×8 shrouded box header | Adam Tech BHR-16-VUA (2×8, 2.54mm) | BHR-16-VUA | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | JLCPCB C17692295 | Feeds next Extension J7 or Reflector J4. Cross-ref: Stator/Board_Layout.md J10 |
 
 ### JTAG Daughterboard (FT232H)
 
@@ -2430,6 +2526,9 @@ The following items have been identified as future tasks. They are not yet sched
 
 Add test coupon footprints to each board design to simplify manufacturing test and functional verification.
 Each board must be specified independently, as the relevant test signals and accessible nets will differ per board.
+Diagnostic-bank style bring-up access should be relocated onto these removable coupons wherever practical,
+so full prototype and service test coverage is retained without carrying extra test-only hardware into the
+final assembled machine.
 
 ### OWI-002 — PAS Definitions per Board
 
@@ -2438,6 +2537,8 @@ Define Provisional Acceptance Specifications (PAS) for each board, covering:
 - **Basic board testing** — power-on checks, continuity, short detection.
 - **Functional testing via coupons** — using coupon connections to real external devices to verify board functionality
   end-to-end (e.g. JTAG chain continuity, signal integrity, CPLD programming verification).
+- **Bring-up access strategy** — PAS definitions should prefer removable coupon-based access for
+  bring-up probes, rather than requiring permanent on-board probe features in the finished product.
 
 Each board must be specified independently.
 

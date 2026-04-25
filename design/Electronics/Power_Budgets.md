@@ -51,7 +51,7 @@ being an unachievable worst-case peak).
 | INA219 current monitor (Stator) | 1 | 1 | 1 | Negligible |
 | INA219 current monitor (Power Module) | 1 | 1 | 1 | Negligible |
 | Stator GPIO expanders (MCP23017 ×3) | 3 | 10 | 30 | `U_EXP1`, `U_EXP2`, `U_EXP4` on shared `I2C-1`; monitor / control overhead only |
-| Stator servo PWM driver (PCA9685 ×1) | 1 | 5 | 5 | `U_EXP3 @ 0x60`; low-duty housekeeping load |
+| Controller direct servo GPIO interface | — | — | Included in Controller-local housekeeping | Servo PWM / home sensing moved to direct CM5 GPIO on the Controller |
 | PM-local GPIO expander (PCA9534A ×1) | 1 | 5 | 5 | `U16 @ 0x3F`; PM status + SW1 runtime RGB handoff control |
 | Settings Board GPIO expanders (MCP23017 ×3) | 3 | 25 | 75 | `U_EXP_SW_IN`, `U_LED_B1`, `U_LED_B2` on the shared Stator `I2C-1` bus |
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
@@ -111,13 +111,13 @@ being an unachievable worst-case peak).
 | FT232H VCC (JTAG Daughterboard — via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
 | USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |
 | HDMI sink device | 0.05 A | System boundary: connected HDMI sink; AP2331W-limited |
-| Settings Board indicator rail (via Controller↔Stator dock → J_CFG) | 0.24 A | 12 indicators, one active colour per bank, 240mA max |
-| Stator servo rail (via Controller↔Stator dock → J_SERVO) | 0.50 A | Budgeted Stator-side servo allocation |
+| Settings Board indicator rail (via Controller↔Stator dock → J13) | 0.24 A | 12 indicators, one active colour per bank, 240mA max |
+| Controller-local servo rail (via Controller J_SERVO) | 0.50 A | Budgeted Controller-side servo allocation |
 | **Total 5V_MAIN worst case (system boundary)** | **9.50 A** | |
 | **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 79.2% utilisation (9.50/12.0) ✓ |
 
 > **Scope note:** The 7.40 A board-level budget (internal consumers: CM5 + LDO + misc + FT232H) covers internal consumers only.
-> External device loads (USB 3.0 + HDMI) plus the Stator-fed Settings Board + servo loads add 2.39 A, giving a system total of 9.50 A.
+> External device loads (USB 3.0 + HDMI) plus the Stator-fed Settings Board load and the Controller-local servo load add 2.39 A, giving a system total of 9.50 A.
 > Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 9.50 A system total.
 >
 > **Stator dock 5V margin:** The Stator-facing 5V branch uses four large `5V_MAIN` blades on the

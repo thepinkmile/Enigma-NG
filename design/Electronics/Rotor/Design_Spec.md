@@ -22,7 +22,7 @@ proportions. These internal headers are manually assembled post-JLCPCB SMT pick-
 **Board A (input side):** Carries the CPLD (U1), FDC2114 U2 (Track A encoder), SW1 (ring
 setting), SW2 (forward map select), and J1–J3 (ERM8 male, input connectors).
 
-**Board B (output side):** Carries FDC2114 U3 (Track B encoder, N=64 only), SW3 (return map
+**Board B (output side):** Carries FDC2114 U4 (Track B encoder, N=64 only), SW3 (return map
 select), and J4–J6 (ERF8 female, output connectors).
 
 The aluminium shroud is retained by **rolling-pin style cylindrical bearings** around the
@@ -36,7 +36,7 @@ shroud at r=50mm.
 The current position of the outer ring is detected using a **dual-track absolute capacitive
 encoder** (N=64) or **single-track STGC encoder** (N=26). For N=64, 3+3 sensor electrodes on
 Board A and Board B read a 6-bit standard reflected Gray code with zero multi-bit transitions.
-For N=26, all 5 STGC electrodes are on Board A only (U3 on Board B is not populated).
+For N=26, all 5 STGC electrodes are on Board A only (U4 on Board B is not populated).
 
 Two rotor variants are defined: the **26-character variant** (5-bit STGC, compatible with
 original Enigma rotors I–VIII, Beta, Gamma) and the **64-character variant** (6-bit dual-track
@@ -65,7 +65,7 @@ not be used as a local chassis-bond point.
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-ROT-01 | Emulate the substitution cipher wiring of a historical Enigma rotor in real-time | 21 forward maps in CPLD UFM; direction bit doubles to 42 configs; see variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
-| FR-ROT-02 | Detect rotor angular position using a capacitive encoder; N=64: dual-track 3+3 bit reflected Gray code (Board A and Board B); N=26: single-track 5-bit STGC (Board A only) | N=64: zero multi-bit transitions, XOR-chain decode; N=26: STGC lookup table, invalid codes flagged as fault | §2.1 Position Sensing; BOM U2 (Board A), U3 (Board B, N=64 only) |
+| FR-ROT-02 | Detect rotor angular position using a capacitive encoder; N=64: dual-track 3+3 bit reflected Gray code (Board A and Board B); N=26: single-track 5-bit STGC (Board A only) | N=64: zero multi-bit transitions, XOR-chain decode; N=26: STGC lookup table, invalid codes flagged as fault | §2.1 Position Sensing; BOM U2/U3 (Board A), U4 (Board B, N=64 only) |
 | FR-ROT-03 | Pass JTAG chain signals to the next rotor in the stack (or to the Reflector at position 30) | Serial daisy-chain; each rotor is one JTAG device | §3.3 Signal Integrity; BOM J1 (ERM8-005 JTAG in), J4 (ERF8-005 JTAG out) |
 | FR-ROT-04 | Receive 3V3_ENIG power from the upstream board and forward to the downstream board | Passive power pass-through via J2/J5 | §3.1 Power Management; BOM J2 (ERM8-005 power in), J5 (ERF8-005 power out) |
 | FR-ROT-05 | Apply cipher substitution at each rotor hop via CPLD; forward and return paths processed independently using SW2/SW3 selected maps | J3 ENC_IN → CPLD (SW2 map+dir) → J6 ENC_OUT; J6 ENC_IN → CPLD (SW3 map+dir) → J3 ENC_OUT; see §3.2 | §3.2 Communication Bus; BOM J3 (ERM8-010), J6 (ERF8-010) |
@@ -81,7 +81,7 @@ not be used as a local chassis-bond point.
 | :--- | :--- | :--- | :--- |
 | DR-ROT-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §4 PCB Fabrication & Stackup |
 | DR-ROT-02 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; 21 UFM forward maps; SW2/SW3 direction bit gives 42 effective configs; character width in variant design files | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N) |
-| DR-ROT-03 | Position sensor | Split dual-track capacitive encoder: FDC2114RGHR U2 on Board A (Track A, r≈44mm, bits[5:3] N=64 or STGC bits[3:0] N=26, addr 0x2A); FDC2114RGHR U3 on Board B (Track B, r≈44mm, bits[2:0] N=64 only — not populated for N=26, addr 0x2B); FDC2114RGHR U4 on Board A (addr 0x2B, CH0 = STGC bit[4] — N=26 builds only; not populated for N=64); PCB Ø=92mm; track patterns in variant design files | §2.1 Position Sensing; BOM U2 (Board A), U3 (Board B), U4 (Board A, N=26 only) |
+| DR-ROT-03 | Position sensor | Split dual-track capacitive encoder: FDC2114RGHR U2 on Board A (Track A, r≈44mm, bits[5:3] N=64 or STGC bits[3:0] N=26, addr 0x2A); FDC2114RGHR U3 on Board A (addr 0x2B, CH0 = STGC bit[4] — N=26 builds only; not populated for N=64); FDC2114RGHR U4 on Board B (Track B, r≈44mm, bits[2:0] N=64 only — not populated for N=26, addr 0x2B); PCB Ø=92mm; track patterns in variant design files | §2.1 Position Sensing; BOM U2/U3 (Board A), U4 (Board B, N=64 only) |
 | DR-ROT-04 | Input connectors (Board A) | J1 = ERM8-005 (JTAG in), J2 = ERM8-005 (Power in), J3 = ERM8-010 (ENC in) | §3.4 Connector Pinouts; BOM J1–J3 |
 | DR-ROT-05 | Output connectors (Board B) | J4 = ERF8-005 (JTAG out), J5 = ERF8-005 (Power out), J6 = ERF8-010 (ENC out) | §3.4 Connector Pinouts; BOM J4–J6 |
 | DR-ROT-11 | Internal connectors (H_SW3/H_PWR/H_JTAG/H_SENS) | Four single-row 2.54mm THT headers on inner face of both boards (H_SW3: 1×7, H_PWR: 1×5, H_JTAG: 1×5, H_SENS: 1×5; total 22 pins); mixed gender between boards provides physical keying; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM H_SW3/H_PWR/H_JTAG/H_SENS |
@@ -122,22 +122,21 @@ capacitive-to-digital converter, I²C, 3.3 V, 16-VQFN), but the second device di
 
 * **U2 (Board A)** — senses Track A (bits[5:3] for N=64; STGC bits[3:0] for N=26); I²C address 0x2A.
   Track A slots milled into the inner face of the shroud **dish** flange (Board A side).
-* **U3 (Board B, N=64 only)** — senses Track B (bits[2:0] for N=64 only); I²C address 0x2B.
+* **U3 (Board A, N=26 only)** — second FDC2114 for the N=26 variant, addr 0x2B. CH0 = STGC bit[4]; CH1–CH3 unused
+  (IN pins tied to GND via 100 kΩ). **U3 is not populated for N=64**. N=26 variant: U2
+  (addr 0x2A) reads STGC bits[3:0], U3 (addr 0x2B, Board A) reads STGC bit[4].
+* **U4 (Board B, N=64 only)** — senses Track B (bits[2:0] for N=64 only); I²C address 0x2B.
   Track B slots milled into the inner face of the shroud **cover** flange (Board B side).
-  **U3 is not populated for N=26 rotors.** Unused channels have their IN pins tied to GND
+  **U4 is not populated for N=26 rotors.** Unused channels have their IN pins tied to GND
   via 100 kΩ.
-* **U4 (Board A, N=26 only)** — second FDC2114 for the N=26 variant, addr 0x2B. CH0 = STGC bit[4]; CH1–CH3 unused
-  (IN pins tied to GND via 100 kΩ). **U4 is not populated for N=64** (where addr 0x2B is used
-  by U3 on Board B instead). N=26 variant: U2 (addr 0x2A) reads STGC bits[3:0], U4 (addr 0x2B,
-  Board A) reads STGC bit[4].
 
-The CPLD implements a simple I²C master and polls U2 and U4 (N=26) or U2 and U3 (N=64) at power-up and after
+The CPLD implements a simple I²C master and polls U2 and U3 (N=26) or U2 and U4 (N=64) at power-up and after
 each detected position change. Each channel reports HIGH (solid aluminium) or LOW (milled slot).
 
 #### CPLD Position Decode
 
 **N=64 (dual-track, 6-bit reflected Gray code):**
-The 6 sensor readings (G[5:3] from U2 Track A, G[2:0] from U3 Track B) form a 6-bit standard
+The 6 sensor readings (G[5:3] from U2 Track A, G[2:0] from U4 Track B) form a 6-bit standard
 reflected Gray code. The CPLD decodes via XOR chain:
 
 ```text
@@ -149,7 +148,7 @@ No lookup table required. All 64 codes are valid. Zero multi-bit transitions at 
 including the 63→0 wrap. Full decode detail in `Rotor_64_Char_Design.md §7`.
 
 **N=26 (single-track, 5-bit STGC):**
-The 5 sensor readings (U2 STGC bits[3:0] and U4 STGC bit[4], both on Board A) form a 5-bit STGC code. A **combinational
+The 5 sensor readings (U2 STGC bits[3:0] and U3 STGC bit[4], both on Board A) form a 5-bit STGC code. A **combinational
 lookup table** in the CPLD VHDL maps each valid code to its corresponding binary position
 (0 to 25). Invalid codes flag a between-character fault. Standard Gray code is not achievable
 for N=26 (not a power of 2); the lookup table is retained. Full decode detail in
@@ -266,13 +265,13 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
   * **Return path:** J6 ENC\_IN[0:W-1] → CPLD applies SW3-selected map (direction per SW3[5])
     → J3 ENC\_OUT[0:W-1]
   * W = 5 for 26-character variant; W = 6 for 64-character variant (N denotes alphabet size; W denotes ENC bus active bit width).
-  * All connectors carry 6 bits (ENC[0:5]) regardless of variant to maintain a common pinout
+  * All connectors carry 6 bits (ENC[5:0]) regardless of variant to maintain a common pinout
     across mixed stacks. The 26-character variant leaves ENC[5] as NC.
   * This path is entirely separate from the JTAG TTD\_RETURN signal.
 * **JTAG TTD\_RETURN Path:** After the Reflector processes the cipher reversal, `TTD_RETURN` travels
   separately: Reflector J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H on JDB (JTAG
   chain closure only).
-* **Control:** Each rotor has a local I²C bus for position sensing (FDC2114 U2/U3 for N=64; U2/U4 for N=26). The CPLD acts as I²C master; no I²C signals are exposed on J1–J6.
+* **Control:** Each rotor has a local I²C bus for position sensing (FDC2114 U2/U4 for N=64; U2/U3 for N=26). The CPLD acts as I²C master; no I²C signals are exposed on J1–J6.
 * **JTAG:** Pass-through lines allow the **USB Blaster** on the Controller Board to program the
   entire 30-rotor stack in one daisy-chain operation. Under normal operation JTAG is idle; cipher
   maps are selected via SW2/SW3 without reprogramming.
@@ -433,7 +432,7 @@ Board A: **PH1-07-UA** (male) · Board B: **RS1-07-G** (female)
 | 7 | GND | — | Ground reference |
 
 > **SW3 bit coverage note:** All 6 SW3 DIP switch bits reach the CPLD on Board A via H_SW3:
-> pins 1–4 carry SW3[0:3]; pins 5–6 carry SW3[4:5].
+> pins 1–4 carry SW3[3:0]; pins 5–6 carry SW3[4:5].
 >
 ##### H_PWR — Power Distribution (1×5, 5-pin)
 
@@ -465,39 +464,21 @@ Compact internal transfer of the four JTAG/reset nets plus one shared ground bet
 
 Board A: **PH1-05-UA** (male) · Board B: **RS1-05-G** (female)
 
-Carries the local I²C link used by the Board A CPLD to poll FDC2114 U3 on Board B. U3 measurement
+Carries the local I²C link used by the Board A CPLD to poll FDC2114 U4 on Board B. U4 measurement
 results return over I²C; no dedicated POS_B parallel readback wires are required. The remaining pins
 are reserved so the same 1×5 keyed header footprint can be retained across both rotor variants.
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
-| 1 | SDA | A→B | I²C data (CPLD master → U3 FDC2114 on Board B) |
-| 2 | SCL | A→B | I²C clock (CPLD master → U3 FDC2114 on Board B) |
+| 1 | SDA | A→B | I²C data (CPLD master → U4 FDC2114 on Board B) |
+| 2 | SCL | A→B | I²C clock (CPLD master → U4 FDC2114 on Board B) |
 | 3 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
 | 4 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
 | 5 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
 
-> **Variant note:** N=64 builds populate U3 on Board B and use only SDA/SCL on this header. N=26
-> builds do not populate U3; pins 3–5 remain reserved/unused in both variants.
+> **Variant note:** N=64 builds populate U4 on Board B and use only SDA/SCL on this header. N=26
+> builds do not populate U4; pins 3–5 remain reserved/unused in both variants.
 >
-### 3.5 Prototype Bench-Testing Provision (Break-Off Coupons)
-
-Each board panel includes **6 break-off PCB coupons** (one per ERx8 connector), attached by mousebite
-perforations. Each coupon fans out the 0.8mm pitch Samtec pads to a standard **2.54mm pitch shrouded
-IDC box header**, permitting standard ribbon cable assemblies to be used for bench testing before full
-stack assembly. For final production the coupons are snapped off at the mousebite perforations.
-
-| Coupon | Connector | IDC Header | Signal |
-| :--- | :--- | :--- | :--- |
-| 1 | J1 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | JTAG in |
-| 2 | J2 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | Power in |
-| 3 | J3 — ERM8-010 (20-pin male) | 2×10 IDC box header, 2.54mm | ENC Data in |
-| 4 | J4 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | JTAG out |
-| 5 | J5 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | Power out |
-| 6 | J6 — ERF8-010 (20-pin female) | 2×10 IDC box header, 2.54mm | ENC Data out |
-
-IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layout phase.
-
 ## 4. PCB Fabrication & Stackup
 
 * **Layers:** 4-Layer (JLC04161H-7628).
@@ -527,7 +508,7 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; STGC bits[3:0] N=26); I²C addr 0x2A | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| U4 | FDC2114RGHR, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
+| U3 | FDC2114RGHR, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
 | SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
 
@@ -542,5 +523,5 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | H_PWR | Board A↔B internal interconnect, inner face, power distribution — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | H_JTAG | Board A↔B internal interconnect, inner face, JTAG pass-through — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| U3 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
+| U4 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |

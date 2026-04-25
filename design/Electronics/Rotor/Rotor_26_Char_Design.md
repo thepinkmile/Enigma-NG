@@ -97,7 +97,7 @@ For the 26-character variant:
 * The CPLD reads 5 sensor pads (S0–S4, all on Board A) as a 5-bit STGC code and maps it via a
   combinational lookup table to a binary position 0–25. Codes not present in the lookup table
   (11, 13, 21, 22, 26, 31) indicate a between-character position and are flagged as a mechanical
-  fault condition. FDC2114 U3 on Board B is **not populated** for the N=26 rotor.
+  fault condition. FDC2114 U4 on Board B is **not populated** for the N=26 rotor.
 * SW1[5:0] is summed **modulo 26** with the decoded binary position to yield the effective position.
 * Notch trigger positions are defined per map in the VHDL tables (see OWI-003).
 
@@ -118,17 +118,17 @@ runtime.
 
 The 26-character rotor uses a **single-track 5-bit STGC** encoder. All 5 sensor electrodes
 are on **Board A only**. Board B has no encoder electrodes for the N=26 rotor, and FDC2114
-**U3 on Board B is not populated** for this variant.
+**U4 on Board B is not populated** for this variant.
 
 * **Track** (5 bits, STGC): 5 sensor electrodes on Board A at r≈44mm; pattern milled into the
   inner face of the shroud **dish** flange (Board A side).
 * **Board B shroud flange:** No encoder slots milled for N=26.
 * **Sensing:** Bare copper electrode pads on the Board A flat face (no electronic components
   on the shroud). Aluminium (solid) = high capacitance; milled slot = low capacitance. Sensed
-  by FDC2114RGHR U2 and U4 on Board A:
+  by FDC2114RGHR U2 and U3 on Board A:
   * **U2 (Board A, addr 0x2A):** CH0–CH3 = STGC bits[3:0]
-  * **U4 (Board A, addr 0x2B):** CH0 = STGC bit[4]; CH1–CH3 tied to GND via 100 kΩ
-  * U4 is an additional FDC2114RGHR populated on Board A for N=26 builds only.
+  * **U3 (Board A, addr 0x2B):** CH0 = STGC bit[4]; CH1–CH3 tied to GND via 100 kΩ
+  * U3 is an additional FDC2114RGHR populated on Board A for N=26 builds only.
 * **Shroud:** Must remain electrically **floating** (bearing isolation — ceramic or nylon
   rolling elements). Not connected to circuit ground.
 
@@ -163,9 +163,9 @@ The CPLD VHDL implements a 32-entry lookup ROM (5-bit address → 5-bit position
 Gray code is not achievable for N=26 (not a power of 2); therefore a lookup table decode is
 retained. Codes not listed below are invalid and trigger a mechanical fault flag.
 
-> **Note:** For the N=26 variant, U3 (FDC2114 on Board B) is not populated. U2 (Board A,
-> addr 0x2A) reads STGC bits[3:0] via CH0–CH3. U4 (Board A, addr 0x2B) reads STGC bit[4]
-> via CH0; CH1–CH3 are tied to GND via 100 kΩ. U4 is an additional FDC2114RGHR populated
+> **Note:** For the N=26 variant, U4 (FDC2114 on Board B) is not populated. U2 (Board A,
+> addr 0x2A) reads STGC bits[3:0] via CH0–CH3. U3 (Board A, addr 0x2B) reads STGC bit[4]
+> via CH0; CH1–CH3 are tied to GND via 100 kΩ. U3 is an additional FDC2114RGHR populated
 > on Board A for N=26 builds only.
 
 | STGC Code | Binary | Position | | STGC Code | Binary | Position |

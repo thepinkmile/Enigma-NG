@@ -50,8 +50,8 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 * **Extension Port (J7 IN / J8 OUT):** 16-pin 2×8 shrouded box header.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
   > This board uses the mating connector on both J7 and J8 (Adam Tech BHR-16-VUA — see BOM).
-  > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = ENC_IN[0:5],
-  > Pins 9–14 = ENC_OUT[0:5], Pin 15 = TTD_RETURN, Pin 16 = GND.
+  > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = `ENC_OUT_REF[5:0]`,
+  > Pins 9–14 = `ENC_IN_REF[5:0]`, Pin 15 = TTD_RETURN, Pin 16 = GND.
 * **Rotor Interface Connectors (3 per rotor-facing side × 2 sides = 6 connectors total):**
   The Extension board provides ERM8 male headers on the **input side** (J1–J3, plugging into the
   previous rotor group's last rotor J4/J5/J6 ERF8 output sockets) and ERF8 female sockets on the
@@ -111,37 +111,19 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
   TCK and TMS are actively re-buffered by U1 (see JTAG Signal Buffering above).
 * **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
-* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), ENC_IN/ENC_OUT, and JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
+* **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), `ENC_OUT_REF` / `ENC_IN_REF`, and
+  JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
   * `Reflector/Design_Spec.md`
 
-### 2.1 Prototype Bench-Testing Provision (Break-Off Coupons)
+## 3. Branding
 
-Each board panel includes **6 break-off PCB coupons** (one per ERx8 connector), attached by mousebite
-perforations. Each coupon fans out the 0.8mm pitch Samtec pads to a standard **2.54mm pitch shrouded
-IDC box header**, permitting standard ribbon cable assemblies to be used for bench testing before full
-stack assembly. For final production the coupons are snapped off at the mousebite perforations.
-
-| Coupon | Connector | IDC Header | Signal |
-| :--- | :--- | :--- | :--- |
-| 1 | J1 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | JTAG in |
-| 2 | J2 — ERM8-005 (10-pin male) | 2×5 IDC box header, 2.54mm | Power in |
-| 3 | J3 — ERM8-010 (20-pin male) | 2×10 IDC box header, 2.54mm | ENC Data in |
-| 4 | J4 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | JTAG out |
-| 5 | J5 — ERF8-005 (10-pin female) | 2×5 IDC box header, 2.54mm | Power out |
-| 6 | J6 — ERF8-010 (20-pin female) | 2×10 IDC box header, 2.54mm | ENC Data out |
-
-IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layout phase.
-
-## 3. Diagnostics & Branding
-
-* **Diagnostics:** Integrated 2x8 ENIG Gold Diagnostic Looped Probe Pad Bank (Mid-Stack troubleshooting).
 * **Identity:** 2oz Copper / Inverted White Data Plate (V1.0 traceability).
 
 ## 4. PCB Fabrication & Stackup
 
 * **Layers:** 4-Layer (JLC04161H-7628).
-* **Finish:** ENIG (Gold) for connector and diagnostic pad surfaces.
+* **Finish:** ENIG (Gold) for connector surfaces.
 * **Layer Mapping:** L1: Signal (JTAG pass-through / routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
 * **Aesthetics:** Dark Green Solder Mask; Typewriter font (ALL-CAPS GERMAN).
 * **JTAG Trace Width Rule:** The Extension board carries only the **TTD_RETURN** signal on its J7/J8 pass-through path
@@ -175,6 +157,5 @@ IDC part numbers and coupon PCB fanout geometry to be defined at schematic/layou
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
 | J7 | Extension Port IN header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded box | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
 | J8 | Extension Port OUT header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded box | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
-| J9 | Diagnostic looped probe pads | 2x8 ENIG Gold | 2.54mm | N/A | N/A | N/A — bare PCB pads; no component |
 | R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |

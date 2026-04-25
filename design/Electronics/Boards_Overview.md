@@ -37,11 +37,11 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
 - `I2C1` (`SCL`/`SDA`) originates on the Controller and fans out in parallel:
   - Controller -> Power Module over `J3`
   - Controller -> Stator over `J5`
-  - Stator -> Settings Board over `J_CFG`
+  - Stator -> Settings Board over `J13`
   - `0x09`: LTC3350 supercap charger / monitor (Power Module)
   - `0x0B`: Smart Battery / SMBus monitor (Power Module)
   - `0x20`: MCP23017 U_EXP1 (Stator ENC monitoring)
-  - `0x21`: MCP23017 U_EXP2 (Stator virtual keypress / servo control)
+  - `0x21`: MCP23017 U_EXP2 (Stator virtual keypress / SOURCE_SEL / SYS_RESET_N)
   - `0x22`: MCP23017 U_EXP4 (Stator CPLD config output driver)
   - `0x23`: MCP23017 U_EXP_SW_IN (Settings Board switch input)
   - `0x24`: MCP23017 U_LED_B1 (Settings Board Bank 1 LED controller)
@@ -50,7 +50,6 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
   - `0x3F`: PCA9534APWR PM-local GPIO expander (Power Module)
   - `0x40`: INA219 (Power Module)
   - `0x45`: INA219 (Stator)
-  - `0x60`: PCA9685 (Stator servo PWM)
 
 ## 5. System Architecture & Status
 
