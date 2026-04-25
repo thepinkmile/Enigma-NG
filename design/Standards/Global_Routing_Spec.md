@@ -1,7 +1,7 @@
 # Enigma-NG Global Routing Specification (V1.0)
 
 **Status:** Draft
-**Version:** v1.0.0
+**Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-20
 

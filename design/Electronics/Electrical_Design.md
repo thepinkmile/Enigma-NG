@@ -1,7 +1,7 @@
 # Electrical Design Requirements
 
 **Status:** Reference
-**Version:** v1.0.0
+**Version:** v.0.1.0
 **Last Updated:** 2026-04-19
 
 ## 1. Component Rules (The "Museum-Grade" Standard)

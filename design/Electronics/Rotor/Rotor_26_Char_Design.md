@@ -2,7 +2,7 @@
 
 **Status:** Draft
 **Project:** Enigma-NG
-**Version:** v1.0.0
+**Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-XX
 **Parent Document:** `design/Electronics/Rotor/Design_Spec.md`

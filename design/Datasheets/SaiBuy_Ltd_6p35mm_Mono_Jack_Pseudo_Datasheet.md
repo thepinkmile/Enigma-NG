@@ -3,7 +3,7 @@
 **Status:** Pseudo datasheet derived from marketplace listing metadata  
 **Project:** Enigma-NG  
 **Author:** Izzyonstage & GitHub Copilot  
-**Version:** v0.1.0  
+**Version:** v.0.1.0
 **Last Updated:** 2026-04-19  
 **Source Listing:** eBay item `334364197440`  
 **Seller:** `SaiBuy.Ltd`  

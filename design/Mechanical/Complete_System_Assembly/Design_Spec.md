@@ -3,7 +3,7 @@
 **Status:** Draft
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
-**Version:** v0.3.0
+**Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-20
 
