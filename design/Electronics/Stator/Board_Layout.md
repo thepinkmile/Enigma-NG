@@ -146,7 +146,7 @@ owns the per-port alias names below so the CPLD wiring remains self-describing.
 **Component:** JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm THT (JLCPCB: C131342).  
 **Placement:** Board edge facing the enclosure panel, accessible without rotor stack removal.
 
-## 6. U_EXP4 — MCP23017 CPLD Config Output Driver (@ 0x22)
+## 6. U8 — MCP23017 CPLD Config Output Driver (@ 0x22)
 
 **Component:** MCP23017T-E/SO, SOIC-28.  
 **Placement:** Near Stator CPLD U1, within 15 mm of config pull-down resistors. Decoupling cap within
@@ -189,14 +189,14 @@ Stator-only `CFG_APPLY_N` pulse under CM5 firmware control.
 | `ENC_IN_ROT[5:0]` | 6 | Input | Return-path bus from the rotor stack via `J3` |
 | `ENC_OUT_REF[5:0]` | 6 | Output | Stator-owned outbound reflector/extension bus via `J10` |
 | `ENC_IN_REF[5:0]` | 6 | Input | Stator-owned inbound reflector/extension return bus via `J10` |
-| `CFG_ROUTE[3:0]` | 4 | Input | Route-select inputs driven by `U_EXP4` |
-| `CFG_REFMAP[5:0]` | 6 | Input | Reflector-map select inputs driven by `U_EXP4` |
+| `CFG_ROUTE[3:0]` | 4 | Input | Route-select inputs driven by `U8` |
+| `CFG_REFMAP[5:0]` | 6 | Input | Reflector-map select inputs driven by `U8` |
 
 **Logical budget summary:** 70 general-purpose signal connections total = **40 inputs + 30 outputs**,
 plus the dedicated JTAG / clear pins above.
 
 **Spare-pin policy:** the two unused channels inside the `U4`/`U5` mux pair are **not** currently
-routed into U1. `U_EXP2 GPA[7]` is now allocated to `SYS_RESET_N`, so the entire `U_EXP2 GPB[7:0]`
+routed into U1. `U7 GPA[7]` is now allocated to `SYS_RESET_N`, so the entire `U7 GPB[7:0]`
 port remains spare/reserved for any future Stator-side control additions.
 
 ---

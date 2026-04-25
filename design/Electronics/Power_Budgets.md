@@ -50,10 +50,10 @@ being an unachievable worst-case peak).
 | Rotor FDC2114RGHR capacitive sensor ICs (U2/U3 or U2/U4, 2 ICs per rotor, 60 ICs total) | 60 | 2.1 | 126 | Continuous position polling; two ICs per rotor add 4.2 mA to the 50 mA CPLD budget, giving 54.2 mA typ / 55 mA budget per rotor |
 | INA219 current monitor (Stator) | 1 | 1 | 1 | Negligible |
 | INA219 current monitor (Power Module) | 1 | 1 | 1 | Negligible |
-| Stator GPIO expanders (MCP23017 ×3) | 3 | 10 | 30 | `U_EXP1`, `U_EXP2`, `U_EXP4` on shared `I2C-1`; monitor / control overhead only |
+| Stator GPIO expanders (MCP23017 ×3) | 3 | 10 | 30 | `U6`, `U7`, `U8` on shared `I2C-1`; monitor / control overhead only |
 | Controller direct servo GPIO interface | — | — | Included in Controller-local housekeeping | Servo PWM / home sensing moved to direct CM5 GPIO on the Controller |
 | PM-local GPIO expander (PCA9534A ×1) | 1 | 5 | 5 | `U16 @ 0x3F`; PM status + SW1 runtime RGB handoff control |
-| Settings Board GPIO expanders (MCP23017 ×3) | 3 | 25 | 75 | `U_EXP_SW_IN`, `U_LED_B1`, `U_LED_B2` on the shared Stator `I2C-1` bus |
+| Settings Board GPIO expanders (MCP23017 ×3) | 3 | 25 | 75 | `U1`, `U2`, `U3` on the shared Stator `I2C-1` bus |
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
 | Controller-local housekeeping | — | — | 50 | Controller overhead subtracted before Stator distribution |
 | **Typical total** | | | **2,163 mA** | |
@@ -112,7 +112,7 @@ being an unachievable worst-case peak).
 | USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |
 | HDMI sink device | 0.05 A | System boundary: connected HDMI sink; AP2331W-limited |
 | Settings Board indicator rail (via Controller↔Stator dock → J13) | 0.24 A | 12 indicators, one active colour per bank, 240mA max |
-| Controller-local servo rail (via Controller J_SERVO) | 0.50 A | Budgeted Controller-side servo allocation |
+| Controller-local servo rail (via Controller J11) | 0.50 A | Budgeted Controller-side servo allocation |
 | **Total 5V_MAIN worst case (system boundary)** | **9.50 A** | |
 | **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 79.2% utilisation (9.50/12.0) ✓ |
 

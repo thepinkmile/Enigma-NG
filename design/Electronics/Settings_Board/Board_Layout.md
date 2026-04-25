@@ -13,14 +13,14 @@
 
 The Settings Board is a landscape-orientation panel-mount PCB. The switch bodies mount through the
 enclosure top-face panel cutouts, while the PCB sits directly behind the panel and connects back to
-the Stator via a 6-wire harness on `J_I2C`.
+the Stator via a 6-wire harness on `J1`.
 
 The active architecture is:
 
-- `U_EXP_SW_IN` (`MCP23017 @ 0x23`) reads all toggle-switch states plus `CFG_APPLY`
-- `U_LED_B1` (`MCP23017 @ 0x24`) drives the 5 Bank 1 LED anodes plus the Bank 1 RGB rails
-- `U_LED_B2` (`MCP23017 @ 0x25`) drives the 7 Bank 2 LED anodes plus the Bank 2 RGB rails
-- `Q_BNK1_R/G/B` and `Q_BNK2_R/G/B` provide the shared low-side colour rails under CM5 control
+- `U1` (`MCP23017 @ 0x23`) reads all toggle-switch states plus `CFG_APPLY`
+- `U2` (`MCP23017 @ 0x24`) drives the 5 Bank 1 LED anodes plus the Bank 1 RGB rails
+- `U3` (`MCP23017 @ 0x25`) drives the 7 Bank 2 LED anodes plus the Bank 2 RGB rails
+- `Q1/G/B` and `Q4/G/B` provide the shared low-side colour rails under CM5 control
 
 All three LED colour channels are routed and driven; CM5 selects the active bank colour according to
 mode or status state.
@@ -32,7 +32,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
       |          |         |         |         |            |          |         |         |         |         |         |        |
    [LED]      [LED]     [LED]     [LED]     [LED]        [LED]      [LED]     [LED]     [LED]     [LED]     [LED]     [LED]   [PB]
 
-   J_I2C        U_EXP_SW_IN (0x23)          U_LED_B1 (0x24)          U_LED_B2 (0x25)       Q_BNK1_R/G/B Q_BNK2_R/G/B
+   J1        U1 (0x23)          U2 (0x24)          U3 (0x25)       Q1/G/B Q4/G/B
    left edge        centre-left                 centre                     centre-right             right edge
 ```
 
@@ -40,15 +40,15 @@ TOP EDGE / ENCLOSURE PANEL FACE
 
 ## 2. Placement Zones
 
-- **Top edge:** 12 toggle switches, 12 indicator LEDs, and the `SW_CFG_APPLY` actuator position
-- **Left edge:** `J_I2C` 6-pin JST PH connector, cable exit toward Stator `J13`
-- **Centre-left:** `U_EXP_SW_IN`, switch pull-downs, `R_CA1`, `C_CA1`
-- **Centre / centre-right:** `U_LED_B1` and `U_LED_B2`, LED series resistors, and anode-routing fanout
+- **Top edge:** 12 toggle switches, 12 indicator LEDs, and the `SW11` actuator position
+- **Left edge:** `J1` 6-pin JST PH connector, cable exit toward Stator `J13`
+- **Centre-left:** `U1`, switch pull-downs, `R11`, `C4`
+- **Centre / centre-right:** `U2` and `U3`, LED series resistors, and anode-routing fanout
 - **Right edge:** 6 RGB BSS138 rail transistors with adjacent gate resistors
 
 ---
 
-## 3. J_I2C — Stator Harness Connector
+## 3. J1 — Stator Harness Connector
 
 **Connector:** `B6B-PH-K-S(LF)(SN)` — 6-pin JST PH 2.0mm, vertical THT  
 **Mating connector:** Stator `J13`  
@@ -67,7 +67,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 
 ---
 
-## 4. U_EXP_SW_IN — MCP23017 @ 0x23
+## 4. U1 — MCP23017 @ 0x23
 
 **Package:** SOIC-28  
 **Role:** Reads Bank 1, Bank 2, and `CFG_APPLY`
@@ -93,7 +93,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 
 ## 5. LED Drive Expanders
 
-### 5.1 U_LED_B1 — MCP23017 @ 0x24
+### 5.1 U2 — MCP23017 @ 0x24
 
 | Port | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -102,12 +102,12 @@ TOP EDGE / ENCLOSURE PANEL FACE
 | GPA | [2] | `LED_B1_1_A` | Output | Bank 1 bit 1 LED anode |
 | GPA | [3] | `LED_B1_2_A` | Output | Bank 1 bit 2 LED anode |
 | GPA | [4] | `LED_B1_3_A` | Output | Bank 1 bit 3 LED anode |
-| GPA | [5] | `BNK1_R` | Output | Drives `Q_BNK1_R` gate |
-| GPA | [6] | `BNK1_G` | Output | Drives `Q_BNK1_G` gate |
-| GPA | [7] | `BNK1_B` | Output | Drives `Q_BNK1_B` gate |
+| GPA | [5] | `BNK1_R` | Output | Drives `Q1` gate |
+| GPA | [6] | `BNK1_G` | Output | Drives `Q2` gate |
+| GPA | [7] | `BNK1_B` | Output | Drives `Q3` gate |
 | GPB | [7:0] | — | — | Spare |
 
-### 5.2 U_LED_B2 — MCP23017 @ 0x25
+### 5.2 U3 — MCP23017 @ 0x25
 
 | Port | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -118,26 +118,26 @@ TOP EDGE / ENCLOSURE PANEL FACE
 | GPA | [4] | `LED_B2_3_A` | Output | Bank 2 bit 3 LED anode |
 | GPA | [5] | `LED_B2_4_A` | Output | Bank 2 bit 4 LED anode |
 | GPA | [6] | `LED_B2_5_A` | Output | Bank 2 bit 5 LED anode |
-| GPA | [7] | `BNK2_R` | Output | Drives `Q_BNK2_R` gate |
-| GPB | [0] | `BNK2_G` | Output | Drives `Q_BNK2_G` gate |
-| GPB | [1] | `BNK2_B` | Output | Drives `Q_BNK2_B` gate |
+| GPA | [7] | `BNK2_R` | Output | Drives `Q4` gate |
+| GPB | [0] | `BNK2_G` | Output | Drives `Q5` gate |
+| GPB | [1] | `BNK2_B` | Output | Drives `Q6` gate |
 | GPB | [2:7] | — | — | Spare |
 
 ---
 
 ## 6. LED Colour-Rail Topology
 
-Each indicator LED is common-anode and uses one individually switched anode from `U_LED_B1` or
-`U_LED_B2` plus three shared cathode rails per bank (red, green, blue).
+Each indicator LED is common-anode and uses one individually switched anode from `U2` or
+`U3` plus three shared cathode rails per bank (red, green, blue).
 
 | Transistor | Gate source | Function |
 | :--- | :--- | :--- |
-| `Q_BNK1_R` | `U_LED_B1.GPA[5]` via `R_GATE1` | Pull Bank 1 red rail low |
-| `Q_BNK1_G` | `U_LED_B1.GPA[6]` via `R_GATE2` | Pull Bank 1 green rail low |
-| `Q_BNK1_B` | `U_LED_B1.GPA[7]` via `R_GATE3` | Pull Bank 1 blue rail low |
-| `Q_BNK2_R` | `U_LED_B2.GPA[7]` via `R_GATE4` | Pull Bank 2 red rail low |
-| `Q_BNK2_G` | `U_LED_B2.GPB[0]` via `R_GATE5` | Pull Bank 2 green rail low |
-| `Q_BNK2_B` | `U_LED_B2.GPB[1]` via `R_GATE6` | Pull Bank 2 blue rail low |
+| `Q1` | `U2.GPA[5]` via `R12` | Pull Bank 1 red rail low |
+| `Q2` | `U2.GPA[6]` via `R13` | Pull Bank 1 green rail low |
+| `Q3` | `U2.GPA[7]` via `R14` | Pull Bank 1 blue rail low |
+| `Q4` | `U3.GPA[7]` via `R15` | Pull Bank 2 red rail low |
+| `Q5` | `U3.GPB[0]` via `R16` | Pull Bank 2 green rail low |
+| `Q6` | `U3.GPB[1]` via `R17` | Pull Bank 2 blue rail low |
 
 CM5 firmware normally selects one colour rail per bank at a time:
 
@@ -150,19 +150,19 @@ CM5 firmware normally selects one colour rail per bank at a time:
 
 | Physical control | Switch input | LED anode output | Bank colour rail source |
 | :--- | :--- | :--- | :--- |
-| `SW_B1_EN` | `U_EXP_SW_IN.GPA[0]` | `U_LED_B1.GPA[0]` | `U_LED_B1.GPA[5:7]` |
-| `SW_B1[0]` | `U_EXP_SW_IN.GPA[1]` | `U_LED_B1.GPA[1]` | `U_LED_B1.GPA[5:7]` |
-| `SW_B1[1]` | `U_EXP_SW_IN.GPA[2]` | `U_LED_B1.GPA[2]` | `U_LED_B1.GPA[5:7]` |
-| `SW_B1[2]` | `U_EXP_SW_IN.GPA[3]` | `U_LED_B1.GPA[3]` | `U_LED_B1.GPA[5:7]` |
-| `SW_B1[3]` | `U_EXP_SW_IN.GPA[4]` | `U_LED_B1.GPA[4]` | `U_LED_B1.GPA[5:7]` |
-| `SW_B2_EN` | `U_EXP_SW_IN.GPB[0]` | `U_LED_B2.GPA[0]` | `U_LED_B2.GPA[7]` / `GPB[0:1]` |
-| `SW_B2[0]` | `U_EXP_SW_IN.GPB[1]` | `U_LED_B2.GPA[1]` | `U_LED_B2.GPA[7]` / `GPB[0:1]` |
-| `SW_B2[1]` | `U_EXP_SW_IN.GPB[2]` | `U_LED_B2.GPA[2]` | `U_LED_B2.GPA[7]` / `GPB[0:1]` |
-| `SW_B2[2]` | `U_EXP_SW_IN.GPB[3]` | `U_LED_B2.GPA[3]` | `U_LED_B2.GPA[7]` / `GPB[0:1]` |
-| `SW_B2[3]` | `U_EXP_SW_IN.GPB[4]` | `U_LED_B2.GPA[4]` | `U_LED_B2.GPA[7]` / `GPB[0:1]` |
-| `SW_B2[4]` | `U_EXP_SW_IN.GPB[5]` | `U_LED_B2.GPA[5]` | `U_LED_B2.GPA[7]` / `GPB[0:1]` |
-| `SW_B2[5]` | `U_EXP_SW_IN.GPB[6]` | `U_LED_B2.GPA[6]` | `U_LED_B2.GPA[7]` / `GPB[0:1]` |
-| `SW_CFG_APPLY` | `U_EXP_SW_IN.GPB[7]` | — | — |
+| `SW_B1_EN` | `U1.GPA[0]` | `U2.GPA[0]` | `U2.GPA[5:7]` |
+| `SW_B1[0]` | `U1.GPA[1]` | `U2.GPA[1]` | `U2.GPA[5:7]` |
+| `SW_B1[1]` | `U1.GPA[2]` | `U2.GPA[2]` | `U2.GPA[5:7]` |
+| `SW_B1[2]` | `U1.GPA[3]` | `U2.GPA[3]` | `U2.GPA[5:7]` |
+| `SW_B1[3]` | `U1.GPA[4]` | `U2.GPA[4]` | `U2.GPA[5:7]` |
+| `SW_B2_EN` | `U1.GPB[0]` | `U3.GPA[0]` | `U3.GPA[7]` / `GPB[0:1]` |
+| `SW_B2[0]` | `U1.GPB[1]` | `U3.GPA[1]` | `U3.GPA[7]` / `GPB[0:1]` |
+| `SW_B2[1]` | `U1.GPB[2]` | `U3.GPA[2]` | `U3.GPA[7]` / `GPB[0:1]` |
+| `SW_B2[2]` | `U1.GPB[3]` | `U3.GPA[3]` | `U3.GPA[7]` / `GPB[0:1]` |
+| `SW_B2[3]` | `U1.GPB[4]` | `U3.GPA[4]` | `U3.GPA[7]` / `GPB[0:1]` |
+| `SW_B2[4]` | `U1.GPB[5]` | `U3.GPA[5]` | `U3.GPA[7]` / `GPB[0:1]` |
+| `SW_B2[5]` | `U1.GPB[6]` | `U3.GPA[6]` | `U3.GPA[7]` / `GPB[0:1]` |
+| `SW11` | `U1.GPB[7]` | — | — |
 
 ---
 
@@ -183,7 +183,7 @@ CM5 firmware normally selects one colour rail per bank at a time:
 
 ### 8.1 Routing guidance
 
-- Keep `SDA` / `SCL` as a matched short pair from `J_I2C` to the three expanders
+- Keep `SDA` / `SCL` as a matched short pair from `J1` to the three expanders
 - Route the `5V_MAIN` feed and pin-6 return wider than logic traces
 - Place one 100nF decoupler at each MCP23017 supply pin cluster
 - Keep gate resistors directly adjacent to the six BSS138 devices

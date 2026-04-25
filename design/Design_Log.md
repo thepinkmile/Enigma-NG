@@ -457,18 +457,18 @@ post-reduction allocation; the current active allocation is defined by **DEC-037
 | 5 | GND | — | TMS/TDI inter-pin shield |
 | 6 | TDI | CTRL→Stator | JTAG data in |
 | 7 | GND | — | TDI/SPARE inter-pin shield |
-| 8 | SPARE | — | Freed by DEC-031 (was SYS_RESET_N — migrated to I²C U_EXP2 GPA[7] @ 0x21) |
+| 8 | SPARE | — | Freed by DEC-031 (was SYS_RESET_N — migrated to I²C U7 GPA[7] @ 0x21) |
 | 9 | GND | — | JTAG trailing shield |
 | 10 | GND | — | Isolation moat pin 1 |
 | 11 | GND | — | Isolation moat pin 2 |
-| 12 | SPARE | — | Freed by DEC-031 (was ENC_IN[0] — migrated to I²C U_EXP1 @ 0x20) |
+| 12 | SPARE | — | Freed by DEC-031 (was ENC_IN[0] — migrated to I²C U6 @ 0x20) |
 | 13 | SPARE | — | Freed by DEC-031 (was ENC_IN[1]) |
 | 14 | SPARE | — | Freed by DEC-031 (was ENC_IN[2]) |
 | 15 | SPARE | — | Freed by DEC-031 (was ENC_IN[3]) |
 | 16 | SPARE | — | Freed by DEC-031 (was ENC_IN[4]) |
 | 17 | SPARE | — | Freed by DEC-031 (was ENC_IN[5]) |
 | 18 | GND | — | Inter-group shield |
-| 19 | SPARE | — | Freed by DEC-031 (was ENC_OUT[0] — migrated to I²C U_EXP1 @ 0x20) |
+| 19 | SPARE | — | Freed by DEC-031 (was ENC_OUT[0] — migrated to I²C U6 @ 0x20) |
 | 20 | SPARE | — | Freed by DEC-031 (was ENC_OUT[1]) |
 | 21 | SPARE | — | Freed by DEC-031 (was ENC_OUT[2]) |
 | 22 | SPARE | — | Freed by DEC-031 (was ENC_OUT[3]) |
@@ -1421,13 +1421,13 @@ inject keypresses without human intervention.
 
 Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 
-1. **MCP23017 @ 0x20 (U_EXP1):** 16-bit GPIO expander for ENC_IN/ENC_OUT monitoring. Replaces
+1. **MCP23017 @ 0x20 (U6):** 16-bit GPIO expander for ENC_IN/ENC_OUT monitoring. Replaces
    CM5 GPIO 4–15 (12 pins freed).
    - GPA[5:0] = ENC_IN[5:0] monitor (inputs)
    - GPB[5:0] = ENC_OUT[5:0] monitor (inputs)
    - GPA[6:7], GPB[6:7] = spare
 
-2. **MCP23017 @ 0x21 (U_EXP2):** 16-bit GPIO expander for virtual key data injection, external
+2. **MCP23017 @ 0x21 (U7):** 16-bit GPIO expander for virtual key data injection, external
     keyboard-source mux control, and SYS_RESET_N (replaces CM5 GPIO 26 — 1 pin freed).
     - GPA[5:0] = CM5_KEY_DATA[5:0] (outputs — 6-bit virtual key data bus)
     - GPA[6] = KEY_CM5_ACTIVE (output — mux select: 0=physical keyboard, 1=CM5 virtual)
@@ -1443,14 +1443,14 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 
 ### External Keyboard Source Mux
 
-- GPA[6] on U_EXP2 drives `KEY_CM5_ACTIVE` for the external keyboard-source mux at the Stator
+- GPA[6] on U7 drives `KEY_CM5_ACTIVE` for the external keyboard-source mux at the Stator
   keyboard-source entry point.
 - `KEY_CM5_ACTIVE=0`: the physical keyboard 6-bit source bus is forwarded to the encryption pipeline.
 - `KEY_CM5_ACTIVE=1`: `CM5_KEY_DATA[5:0]` is forwarded instead.
 - The selected implementation uses `U4` and `U5`, both `74HC157PW-Q100,118` quad 2:1 mux devices,
   to cover the 6-bit path, with both `E` pins tied to GND so the mux is always enabled while the
   board is powered.
-- GPA[7] now carries `SYS_RESET_N`, fully populating the U_EXP2 GPA port and leaving U_EXP2 GPB
+- GPA[7] now carries `SYS_RESET_N`, fully populating the U7 GPA port and leaving U7 GPB
   completely spare / reserved for future use.
 
 ### Net Effect on LINK-BETA
@@ -1472,12 +1472,12 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 | :--- | :--- | :--- |
 | 0x09 | LTC3350 | Power Module |
 | 0x0B | Smart Battery | Power Module |
-| 0x20 | MCP23017 (U_EXP1) | Stator |
-| 0x21 | MCP23017 (U_EXP2) | Stator |
-| 0x22 | MCP23017 (U_EXP4) | Stator |
-| 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board |
-| 0x24 | MCP23017 (U_LED_B1) | Settings Board |
-| 0x25 | MCP23017 (U_LED_B2) | Settings Board |
+| 0x20 | MCP23017 (U6) | Stator |
+| 0x21 | MCP23017 (U7) | Stator |
+| 0x22 | MCP23017 (U8) | Stator |
+| 0x23 | MCP23017 (U1) | Settings Board |
+| 0x24 | MCP23017 (U2) | Settings Board |
+| 0x25 | MCP23017 (U3) | Settings Board |
 | 0x28 | STUSB4500 | Power Module |
 | 0x40 | INA219 (U12) | Power Module |
 | 0x45 | INA219 (U2) | Stator |
@@ -1496,7 +1496,7 @@ Add three I²C expanders to the Stator board on the shared I²C-1 bus:
 
 Replace the Stator Board's DIP switches (routing + reflector map) with panel-mount toggle switches
 plus discrete RGB indicators on a dedicated Settings Board PCB. The Settings Board connects to the
-Stator via I²C only (no parallel signal wiring). A new MCP23017 expander (U_EXP4 @ 0x22) on the
+Stator via I²C only (no parallel signal wiring). A new MCP23017 expander (U8 @ 0x22) on the
 Stator Board bridges the I²C configuration data to the CPLD config input pins and issues the
 Stator-only `CFG_APPLY_N` reload pulse.
 
@@ -1512,21 +1512,21 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 2. Add a new Settings Board PCB (panel-mount, right side of enclosure top face near rotors) with:
    - 10 panel toggle switches plus 12 discrete RGB indicators (Bank 1 = 4 config toggles + 1 source-status LED, Bank 2 = 6 config toggles + 1 source-status LED)
    - 1 momentary active-low `CFG_APPLY_N` input; a board-mounted tactile switch actuated through the enclosure is acceptable
-   - U_EXP_SW_IN (MCP23017 @ 0x23): reads the Settings Board user-intent config plus `CFG_APPLY_N`
-   - U_LED_B1 (MCP23017 @ 0x24): drives Bank 1 LED anodes + Bank 1 colour rails
-   - U_LED_B2 (MCP23017 @ 0x25): drives Bank 2 LED anodes + Bank 2 colour rails
-3. Add U_EXP4 (MCP23017 @ 0x22) to the Stator Board. Its outputs drive the CPLD configuration
+   - U1 (MCP23017 @ 0x23): reads the Settings Board user-intent config plus `CFG_APPLY_N`
+   - U2 (MCP23017 @ 0x24): drives Bank 1 LED anodes + Bank 1 colour rails
+   - U3 (MCP23017 @ 0x25): drives Bank 2 LED anodes + Bank 2 colour rails
+3. Add U8 (MCP23017 @ 0x22) to the Stator Board. Its outputs drive the CPLD configuration
    input pins directly (`CFG_ROUTE[3:0]` and `CFG_REFMAP[5:0]`). Pull-downs R16–R26 are retained on the CPLD
-   input pins to hold safe defaults (all-zero) at power-up before CM5 initialises U_EXP4.
+   input pins to hold safe defaults (all-zero) at power-up before CM5 initialises U8.
 4. CM5 firmware (enigma daemon):
-   - Reads U_EXP_SW_IN to get user-intent config state
+   - Reads U1 to get user-intent config state
    - Decides in software whether each bank forwards user intent or uses a CM5-defined preset
    - Drives the bank source indicators via `CFG_ROUTE_CM5_ACTIVE` / `CFG_REFMAP_CM5_ACTIVE`
      (green = user intent forwarded, red = CM5-defined)
-   - After writing final config to U_EXP4, pulses `CFG_APPLY_N` (U_EXP4 GPA[4]) LOW→HIGH to
+   - After writing final config to U8, pulses `CFG_APPLY_N` (U8 GPA[4]) LOW→HIGH to
      trigger a Stator-only configuration reload
-5. Physical `CFG_APPLY_N` button on Settings Board: reads via U_EXP_SW_IN GPB[7]; CM5 daemon polls
-   this and triggers the same U_EXP4 write + `CFG_APPLY_N` pulse when pressed. The switch may be
+5. Physical `CFG_APPLY_N` button on Settings Board: reads via U1 GPB[7]; CM5 daemon polls
+   this and triggers the same U8 write + `CFG_APPLY_N` pulse when pressed. The switch may be
    a board-mounted tactile part with a simple actuator/plunger through the enclosure rather than a
    true panel-mount pushbutton.
 
@@ -1540,10 +1540,10 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 
 | Address | Device | Location |
 | :--- | :--- | :--- |
-| 0x22 | MCP23017 (U_EXP4) | Stator — CPLD config output driver |
-| 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board — switch input reader |
-| 0x24 | MCP23017 (U_LED_B1) | Settings Board — Bank 1 LED anode + colour rail driver |
-| 0x25 | MCP23017 (U_LED_B2) | Settings Board — Bank 2 LED anode + colour rail driver |
+| 0x22 | MCP23017 (U8) | Stator — CPLD config output driver |
+| 0x23 | MCP23017 (U1) | Settings Board — switch input reader |
+| 0x24 | MCP23017 (U2) | Settings Board — Bank 1 LED anode + colour rail driver |
+| 0x25 | MCP23017 (U3) | Settings Board — Bank 2 LED anode + colour rail driver |
 
 ### Rationale
 
@@ -1560,15 +1560,15 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 
 > **Supersession note:** This decision records the original Settings Board migration intent. The
 > active address map and harness definition were later refined by the post-audit cleanup:
-> `U_EXP_SW_IN @ 0x23`, `U_LED_B1 @ 0x24`, `U_LED_B2 @ 0x25`, and a 6-wire JST PH harness carrying
+> `U1 @ 0x23`, `U2 @ 0x24`, `U3 @ 0x25`, and a 6-wire JST PH harness carrying
 > `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`.
 
 ### Impact
 
-- **Stator Board:** SW1 and SW2 removed; U_EXP4 and J13 added; `CFG_APPLY_N` added to the Stator-only reset/apply path
+- **Stator Board:** SW1 and SW2 removed; U8 and J13 added; `CFG_APPLY_N` added to the Stator-only reset/apply path
 - **New Board:** Settings Board added to system BOM
-- **Firmware:** enigma daemon startup sequence must: read U_EXP_SW_IN, determine final applied config,
-  write U_EXP4, pulse `CFG_APPLY_N`, update U_LED_B1 / U_LED_B2
+- **Firmware:** enigma daemon startup sequence must: read U1, determine final applied config,
+  write U8, pulse `CFG_APPLY_N`, update U2 / U3
 - **CPLD / reset path:** the Stator-only `CFG_APPLY_N` pulse is combined with `SYS_RESET_N` so the
   Stator CPLD can be reloaded without forcing a global system reset; implemented with
   `SN74LVC1G08DBVR` on the Stator
@@ -1585,7 +1585,7 @@ Additionally, the CM5 has no way to programmatically override the configuration.
 
 ### Summary
 
-Add a DSI1 4-lane FPC connector (J_DSI1) to the Controller Board to provision for an optional
+Add a DSI1 4-lane FPC connector (J9) to the Controller Board to provision for an optional
 lid-mounted touchscreen display, enabling the Enigma-NG to operate as a self-contained machine
 without an external monitor. The Display Add-on Board design is deferred.
 
@@ -1599,15 +1599,15 @@ and mouse for system administration tasks.
 
 ### Decision
 
-1. Add J_DSI1 (Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch ZIF/FPC connector) to the Controller Board to expose
+1. Add J9 (Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch ZIF/FPC connector) to the Controller Board to expose
    the CM5 DSI1 4-lane interface (CLK +/−, D0–D3 +/−).
 2. Route DSI1 differential pairs on L3 (100 Ω differential stripline — same rule as HDMI/USB).
-   Traces run from CM5 mezzanine connector pins to J_DSI1 near the CM5 socket.
+   Traces run from CM5 mezzanine connector pins to J9 near the CM5 socket.
 3. Touch I²C (capacitive touch controller SDA/SCL) is routed via the I²C-1 bus already present
    on the Controller Board.
-4. `J_DSI1` is the only Controller-side display connector fixed in the current scope. Any future
+4. `J9` is the only Controller-side display connector fixed in the current scope. Any future
    display power or auxiliary touch wiring remains deferred with the display add-on board definition.
-5. The HDMI port (J4) is retained and unaffected — J_DSI1 is additive.
+5. The HDMI port (J4) is retained and unaffected — J9 is additive.
 6. Display Add-on Board design (lid mounting frame, FPC cable assembly, backlight driver if
    required, touch controller interface) is **deferred** to a future design phase.
 
@@ -1630,7 +1630,7 @@ and mouse for system administration tasks.
 
 ### Impact
 
-- **Controller Board:** J_DSI1 added; ~10 new 100 Ω diff traces on L3; small ZIF footprint on L1 near CM5
+- **Controller Board:** J9 added; ~10 new 100 Ω diff traces on L3; small ZIF footprint on L1 near CM5
 - **Main Enclosure:** Lid requires provision for display mounting and FPC hinge routing (see `Main_Enclosure/Design_Spec.md`)
 - **Display Add-on Board:** Deferred — to be designed as a separate optional add-on
 - **Firmware / OS:** Standard RPi DSI1 display driver; no custom firmware changes needed for basic display output
@@ -1670,7 +1670,7 @@ spade-terminal wiring.
    - Separate red, green, and blue series resistors per switch allow colour balancing under nominal 5V operation
 3. **Settings Board LED topology update:** Change the indicator drive from the previous
    common-cathode / PNP sourcing concept to:
-   - individual LED anode drive from `U_LED_B1` / `U_LED_B2`
+   - individual LED anode drive from `U2` / `U3`
    - per-bank red / green / blue shared cathode rails
    - low-side BSS138 sink devices on each bank colour rail
 4. **Power Module switch selection:** Use Adafruit `4660` for `SW1`.
@@ -2039,7 +2039,7 @@ Because the Stator is now a removable **vertical** daughterboard, the servo moto
 must remain close to the mechanical depression-bar linkage rather than hanging off the Stator PCB.
 The Controller therefore owns the full local servo electrical interface:
 
-- **J_SERVO** on the Controller carries `5V_MAIN`, `GND`, and `SERVO_PWM`
+- **J11** on the Controller carries `5V_MAIN`, `GND`, and `SERVO_PWM`
 - **SW3 / SERVO_HOME** is mounted on the Controller with a local pull-up and debounce network
 - **CM5 GPIO 12** provides direct 50 Hz `SERVO_PWM`
 - **CM5 GPIO 17** reads the active-low `SERVO_HOME` input

@@ -60,13 +60,13 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 * **Purpose:** System power in (5V_USB + GND from Controller Board TPS2065C-protected USB rail);
   JTAG signal voltage reference (3V3_ENIG from Controller Board); internal USB 2.0 data to CM5 (D+/D−)
 * **Physical location:** One edge of the board (INPUT side)
-* **Mating Part (Controller J_JDB_PWR):** Adam Tech RS1-05-G — 1×5 2.54mm female socket (JLCPCB C3321119)
+* **Mating Part (Controller J12):** Adam Tech RS1-05-G — 1×5 2.54mm female socket (JLCPCB C3321119)
 
 ### J2 — JTAG OUTPUT Header (10-Pin)
 
 * **Type:** Single-row 2.54mm pitch male pin header, 10 pins
 * **Physical location:** Opposing edge of the board (OUTPUT side), physically opposite J1
-* **Mating Part (Controller J_JDB_JTAG):** Adam Tech RS1-10-G — 1×10 2.54mm female socket (JLCPCB C3320525)
+* **Mating Part (Controller J13):** Adam Tech RS1-10-G — 1×10 2.54mm female socket (JLCPCB C3320525)
 
 > **No external connectors:** The JDB has no external connectors. USB is entirely internal via J1.
 > No USB-C connector exists on the JDB. CC pins are irrelevant (USB 2.0 only).

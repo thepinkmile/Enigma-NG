@@ -48,8 +48,8 @@ source is active.
 | FR-CTL-05 | Monitor system power and PM status via I²C, with only essential direct PM handshakes kept as dedicated pins | Telemetry: LTC3350 @ 0x09, STUSB4500 @ 0x28, PCA9534A @ 0x3F, INA219 ×2 (PM U12 @ 0x40; Stator U2 @ 0x45); Direct handshakes: `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `LED_nPWR` | §4 Telemetry & Logic; §6 CM5 GPIO Mapping Matrix |
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
 | FR-CTL-07 | Route power, JTAG, and I²C between the Controller and the Stator board | Via `J4/J5` hybrid docks | §2 Dock Interfaces; BOM J4/J5 |
-| FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J_DSI1) on Controller Board; display add-on board to be designed separately | §8 Connectivity; BOM J_DSI1 |
-| FR-CTL-09 | Provide the local servo actuation electrical interface and home sensing for the rotor depression bar | Direct CM5 GPIO on the Controller provides local PWM output and home-switch input; no expander-owned servo path | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM J_SERVO, SW3, R4, C12 |
+| FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J9) on Controller Board; display add-on board to be designed separately | §8 Connectivity; BOM J9 |
+| FR-CTL-09 | Provide the local servo actuation electrical interface and home sensing for the rotor depression bar | Direct CM5 GPIO on the Controller provides local PWM output and home-switch input; no expander-owned servo path | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM J11, SW3, R4, C12 |
 
 #### Design Requirements
 
@@ -65,8 +65,8 @@ source is active.
 | DR-CTL-08 | RTC bypass capacitor | C6 = 100 nF 0402 on CM5 VBAT (Pin 76, Hirose DF40 200-pin) | §5 RTC Backup Battery; BOM C6 |
 | DR-CTL-09 | PM status / SW1 LED interface | Controller must expose the shared `I2C-1` bus plus one optional interrupt input (`PM_IO_INT_N`) to the PM-local `PCA9534A @ 0x3F`, which virtualises `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, `SYS_FAULT`, and runtime `SW_LED_R/G/B + SW_LED_CTRL`. | §4.1 I²C Bus Topology; §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-10 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
-| DR-CTL-11 | DSI1 connector | J_DSI1 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J_DSI1 |
-| DR-CTL-12 | Servo connector | J_SERVO = 3-pin JST PH 2.0mm connector; pins: `5V_MAIN`, `GND`, `SERVO_PWM`; mounted on the Controller adjacent to the rotor actuation linkage | §8 Connectivity; BOM J_SERVO |
+| DR-CTL-11 | DSI1 connector | J9 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J9 |
+| DR-CTL-12 | Servo connector | J11 = 3-pin JST PH 2.0mm connector; pins: `5V_MAIN`, `GND`, `SERVO_PWM`; mounted on the Controller adjacent to the rotor actuation linkage | §8 Connectivity; BOM J11 |
 | DR-CTL-13 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to `3V3_ENIG` + 100nF X7R debounce cap to GND (RC τ = 1ms); connected directly to a CM5 GPIO on the Controller | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM SW3, R4, C12 |
 | DR-CTL-14 | Direct servo GPIO usage | `SERVO_PWM` uses PWM-capable CM5 GPIO 12; `SERVO_HOME` uses direct CM5 GPIO 17 input. No I²C expander or external PWM driver is used for the servo path. | §6 CM5 GPIO Mapping Matrix |
 
@@ -124,7 +124,8 @@ overhang** rule defined in `design/Standards/Global_Routing_Spec.md §4.1`.
 
 The Controller provides JTAG pass-through only. All JTAG chain architecture, device ordering, buffering, termination, and timing specifications are defined in the JDB Design_Spec.
 
-* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly from the JDB hat-header (J_JDB) to the Stator logic dock (`J5`) on the Controller board without any active
+* **Controller Pass-Through:** JTAG lines (TCK, TMS, TDI, TTD_RETURN, VREF) are routed directly
+  from the JDB hat-headers (`J12`/`J13`) to the Stator logic dock (`J5`) on the Controller board without any active
   components. No buffer or series resistors reside on the Controller for JTAG signals.
 * **Cross-ref:** See `JTAG_Daughterboard/Design_Spec.md` for all JTAG chain architecture, FT232H module schematics, buffering, and assembly details. See DEC-016, DEC-024.
 
@@ -148,12 +149,12 @@ the Stator over `J5`.
 | :--- | :--- | :--- | :--- |
 | 0x09 | LTC3350 | Power Module | Supercap charger/monitor |
 | 0x0B | Smart Battery | Power Module | SMBus battery monitoring |
-| 0x20 | MCP23017 (U_EXP1) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
-| 0x21 | MCP23017 (U_EXP2) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, spare GPIO |
-| 0x22 | MCP23017 (U_EXP4) | Stator | CPLD config output driver (DEC-032) |
-| 0x23 | MCP23017 (U_EXP_SW_IN) | Settings Board | Switch input reader (DEC-032) |
-| 0x24 | MCP23017 (U_LED_B1) | Settings Board | Bank 1 LED controller: 5× anodes + RGB bank-rail drivers (DEC-034) |
-| 0x25 | MCP23017 (U_LED_B2) | Settings Board | Bank 2 LED controller: 7× anodes + RGB bank-rail drivers (DEC-034) |
+| 0x20 | MCP23017 (U6) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
+| 0x21 | MCP23017 (U7) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, spare GPIO |
+| 0x22 | MCP23017 (U8) | Stator | CPLD config output driver (DEC-032) |
+| 0x23 | MCP23017 (U1) | Settings Board | Switch input reader (DEC-032) |
+| 0x24 | MCP23017 (U2) | Settings Board | Bank 1 LED controller: 5× anodes + RGB bank-rail drivers (DEC-034) |
+| 0x25 | MCP23017 (U3) | Settings Board | Bank 2 LED controller: 7× anodes + RGB bank-rail drivers (DEC-034) |
 | 0x28 | STUSB4500 | Power Module | USB-C PD controller |
 | 0x3F | PCA9534A (U16) | Power Module | PM-local status inputs + SW1 RGB handoff control |
 | 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |
@@ -268,7 +269,7 @@ The `J5` connector deliberately groups the JTAG cluster and `TTD_RETURN` with th
 
 The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
-#### J_JDB_PWR — Power/USB Header (1×5, 2.54mm)
+#### J12 — Power/USB Header (1×5, 2.54mm)
 
 * **Part:** Adam Tech RS1-05-G (Female Socket, 1×5, 2.54mm pitch, vertical THT). Mouser 737-RS1-05-G, DigiKey 2057-RS1-05-G-ND, JLCPCB C3321119.
 * **Mating Part (JDB J1):** Adam Tech PH1-05-UA — 1×5 2.54mm male pin header (JLCPCB C5374051). See `JTAG_Daughterboard/Design_Spec.md §3`.
@@ -283,7 +284,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 4 | USB_D− | Bidir | USB 2.0 D− to CM5 |
 | 5 | GND | — | Power/signal return |
 
-#### J_JDB_JTAG — JTAG Output Header (1×10, 2.54mm)
+#### J13 — JTAG Output Header (1×10, 2.54mm)
 
 * **Part:** Adam Tech RS1-10-G (Female Socket, 1×10, 2.54mm pitch, vertical THT). Mouser 737-RS1-10-G, DigiKey 2057-RS1-10-G-ND, JLCPCB C3320525.
 * **Mating Part (JDB J2):** Adam Tech PH1-10-UA — 1×10 2.54mm male pin header (JLCPCB C3330527). See `JTAG_Daughterboard/Design_Spec.md §3`.
@@ -303,7 +304,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 | 9 | VREF (3V3_ENIG) | CTRL → JDB | Voltage reference for JTAG logic |
 | 10 | GND | — | Ground |
 
-### 8.4. Fan Connector (J_FAN)
+### 8.4. Fan Connector (J10)
 
 * **Part:** JST SM04B-SRSS-TB(LF)(SN) — 4-pin JST SH 1.0mm pitch right-angle header
 * **Mating Part:** JST SHR-04V-S (female crimp housing)
@@ -320,9 +321,9 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * FAN_TACH and FAN_PWM connect directly from the CM5 module DF40 connector (dedicated BCM2712 fan controller interface). No GPIO allocation required.
 * Mating fan cable: JST SHR-04V-S housing with 4× JST SSH-003T-P0.2 crimp terminals.
 
-### 8.5. DSI1 Display Connector (J_DSI1)
+### 8.5. DSI1 Display Connector (J9)
 
-* **DSI1 Display (J_DSI1):** Amphenol **F52Q-1A7H1-11015** 15-pin 1.0mm pitch ZIF/FPC connector.
+* **DSI1 Display (J9):** Amphenol **F52Q-1A7H1-11015** 15-pin 1.0mm pitch ZIF/FPC connector.
   Breaks out DSI1
   4-lane interface from CM5 for optional lid-mounted touchscreen add-on. Display add-on board
   design is deferred (see DEC-033). Connector placed near CM5 mezzanine socket on L1.
@@ -331,12 +332,12 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 * **Impedance:** 100 Ω differential; route on L3 (stripline) — same rule as HDMI/Ethernet.
 * **MPN:** Amphenol **F52Q-1A7H1-11015**. See `Consolidated_BOM.md` and
   `design/Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf`.
-* **Power / deferred scope boundary:** `J_DSI1` is the only Controller-side display connector fixed in
+* **Power / deferred scope boundary:** `J9` is the only Controller-side display connector fixed in
   the current design scope. No separate display power header is defined on the Controller at this
   stage; any future display power and touch-side auxiliary wiring stays deferred with the display
   add-on definition.
 
-### 8.6. Servo Connector (J_SERVO)
+### 8.6. Servo Connector (J11)
 
 * **Part:** JST B3B-PH-K-S(LF)(SN) — 3-pin JST PH 2.0mm through-hole header.
 * **Pinout:** `5V_MAIN`, `GND`, `SERVO_PWM`.
@@ -403,7 +404,7 @@ Estimated Controller-local power dissipation at system peak load:
   * **Heatsink:** Mount the [Raspberry Pi CM5 Cooler](https://www.raspberrypi.com/products/cm5-cooler/)
     (SC1144, passive aluminium heatsink, ~41×56×12.7mm, conductive silicone pad) directly onto the CM5 module.
     Fasten with the four corner mounting screws for secure thermal contact.
-  * **Active Fan Header (J_FAN):** A 4-pin JST SH (1.0mm pitch) fan connector is provided on the Controller
+  * **Active Fan Header (J10):** A 4-pin JST SH (1.0mm pitch) fan connector is provided on the Controller
     board, matching the CM5IO J14 standard. Supports 5V PWM-controlled fans.
     See §8.4 for the connector pinout and mating-cable definition. FAN_TACH and FAN_PWM connect
     directly to the dedicated BCM2712 fan-controller pins on the CM5 module connector — no GPIO
@@ -430,13 +431,13 @@ Estimated Controller-local power dissipation at system peak load:
 | J6 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-48406-0003 | WM10420-ND | C565298 |
 | J7 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A141617-ND | C195051 |
 | J8 | RJ45 with integrated magnetics / PoE entry | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
-| J_DSI1 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | Amphenol F52Q-1A7H1-11015 | 15-pin ZIF, 1.0mm pitch | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 |
-| J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
-| J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 |
-| J_JDB_PWR | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| J_JDB_JTAG | JDB hat JTAG header (female socket) | Adam Tech RS1-10-G — 1×10 2.54mm female | THT | 737-RS1-10-G | 2057-RS1-10-G-ND | C3320525 |
-| J_CM5_A | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
-| J_CM5_B | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
+| J9 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | Amphenol F52Q-1A7H1-11015 | 15-pin ZIF, 1.0mm pitch | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 |
+| J10 | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
+| J11 | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 |
+| J12 | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
+| J13 | JDB hat JTAG header (female socket) | Adam Tech RS1-10-G — 1×10 2.54mm female | THT | 737-RS1-10-G | 2057-RS1-10-G-ND | C3320525 |
+| J14 | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
+| J15 | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | MH1–MH4 | CM5 brass standoff M2.5 × 4.0mm SMT (Würth 9774040151R) × 4 | M2.5 × 4.0mm | SMT | 710-9774040151R | 732-7089-1-ND | C5182034 |
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |

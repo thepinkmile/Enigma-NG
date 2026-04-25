@@ -66,7 +66,7 @@ board matrix.
 | SN74LVC1G08DBVR — Single 2-input AND gate (SOT-23-5; PM SW2 red blink gate + Stator reset/apply gate) | 1 | — | 1 | — | — | — | — | — | — | — | — | 2 |
 | BAT54 — Schottky Diode (SOT-23) | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 3 | 6 |
-| J_DSI1 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| J9 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap — common fitted population | 15 | 1 | 9 | 8 | 48 | 8 | 240 | — | 1 | 4 | 4 | 322 |
 | 0.1 µF X7R 0402 encoder input RC filter cap — encode-role population only | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
@@ -128,7 +128,7 @@ board matrix.
 | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1/Rotor H\_PWR+H\_JTAG(BrdB)+H\_SENS(BrdA) (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | 3 | 90 | — | — | 1 | — | 91 |
 | Adam Tech RS1-05-G — 1×5 2.54mm female socket, CTL J\_JDB\_PWR/Rotor H\_PWR+H\_JTAG(BrdA)+H\_SENS(BrdB) (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | 3 | 90 | — | — | — | — | 91 |
 | Adam Tech PH1-10-UA — 1×10 2.54mm male pin header, JDB J2 JTAG OUTPUT (Mouser 737-PH1-10-UA; DigiKey 2057-PH1-10-UA-ND; JLCPCB C3330527) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
-| Adam Tech RS1-10-G — 1×10 2.54mm female socket, Controller J_JDB_JTAG (Mouser 737-RS1-10-G; DigiKey 2057-RS1-10-G-ND; JLCPCB C3320525) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| Adam Tech RS1-10-G — 1×10 2.54mm female socket, Controller J13 (Mouser 737-RS1-10-G; DigiKey 2057-RS1-10-G-ND; JLCPCB C3320525) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | USB 3.0 Type-A Dual-Stack (Molex 48406-0003) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | HDMI Type-A Full-Size (TE 2007435-1) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | USB-C SMT Receptacle 6-pos (GCT USB4135-GF-A) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -248,7 +248,7 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 | R21–R26 | SW2[5:0] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
 
 Pull-down resistors R16–R26 are retained on the Stator CPLD config input pins as power-up safe
-defaults (hold all inputs LOW when U_EXP4 is uninitialised). Physical switches SW1 and SW2 have
+defaults (hold all inputs LOW when U8 is uninitialised). Physical switches SW1 and SW2 have
 been removed and relocated to the Settings Board. See `Settings_Board/Design_Spec.md` for the
 full switch specifications and `Stator/Design_Spec.md §3 Panel Switch Configuration` for the
 configuration tables.
@@ -257,23 +257,23 @@ configuration tables.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| U_EXP1, U_EXP2 | MCP23017 I²C GPIO Expander (×2) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| U_EXP4 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| U6, U7 | MCP23017 I²C GPIO Expander (×2) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| U8 | MCP23017 I²C GPIO Expander (CPLD config output driver) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
 | J13 | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
 
-U_EXP1 @ 0x20: ENC_IN/ENC_OUT monitoring. U_EXP2 @ 0x21: virtual keypress injection, SOURCE_SEL,
-SYS_RESET_N, spare GPIO. U_EXP4 @ 0x22: CPLD config output driver (SW1[3:0] + SW2[5:0] +
-STATOR_CFG_RDY). J13 (6-pin JST PH) connects to Settings Board J_I2C and carries 3V3_ENIG,
+U6 @ 0x20: ENC_IN/ENC_OUT monitoring. U7 @ 0x21: virtual keypress injection, SOURCE_SEL,
+SYS_RESET_N, spare GPIO. U8 @ 0x22: CPLD config output driver (SW1[3:0] + SW2[5:0] +
+STATOR_CFG_RDY). J13 (6-pin JST PH) connects to Settings Board J1 and carries 3V3_ENIG,
 5V_MAIN (used as the Settings indicator rail), 2× GND, SDA, SCL.
 
 ### Controller-local Servo Interface Components
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| J_SERVO | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 | 🔒 |
+| J11 | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 | 🔒 |
 | SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — | 🔒 |
-| R_SH1 | SERVO_HOME pull-up resistor (10kΩ) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 |
-| C_SH1 | SERVO_HOME RC debounce capacitor (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| R4 | SERVO_HOME pull-up resistor (10kΩ) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 |
+| C12 | SERVO_HOME RC debounce capacitor (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 
 The servo motor itself (Miuzei Metal Gearbox 90) is a purchased mechanical item and is therefore not
 listed in the electronic BOM.
@@ -286,30 +286,30 @@ specification.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| U_EXP_SW_IN | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x23 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| U_LED_B1 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x24 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| U_LED_B2 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x25 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
-| SW_B1_EN, SW_B1[3:0] | Bank 1 configuration toggle switches (×5: bank enable + routing bits 0–3) | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
-| SW_B2_EN, SW_B2[5:0] | Bank 2 configuration toggle switches (×7: bank enable + reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
-| LED_B1_EN, LED_B1[3:0] | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
-| LED_B2_EN, LED_B2[5:0] | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
-| SW_CFG_APPLY | CFG_APPLY momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | ✅ |
-| J_I2C | I²C ribbon cable connector to Stator J13 | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
-| Q_BNK1_R, Q_BNK1_G, Q_BNK1_B, Q_BNK2_R, Q_BNK2_G, Q_BNK2_B | Low-side colour-rail sink MOSFETs (×6 total; 3 per bank for RGB) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
-| R_SW1–R_SW12 | Switch input pull-down resistors (×12: 5 Bank 1 + 7 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
-| R_CA1 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
-| R_LED_R1–R_LED_R12 | Per-switch red LED series resistors (×12) | 150Ω 1% — 5V operation @ 20mA nominal (Vf_red ≈ 2.0V) | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 | 🔒 |
-| R_LED_G1–R_LED_G12 | Per-switch green LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_green ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
-| R_LED_B1–R_LED_B12 | Per-switch blue LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_blue ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
-| R_GATE1–R_GATE6 | MOSFET gate resistors (×6; 1 per MOSFET) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 | 🔒 |
-| C_CA1 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
-| C_U_EXP_SW_IN | VCC decoupling cap for U_EXP_SW_IN (MCP23017 @ 0x23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
-| C_U_LED_B1 | VCC decoupling cap for U_LED_B1 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
-| C_U_LED_B2 | VCC decoupling cap for U_LED_B2 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| U1 | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x23 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| U2 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x24 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| U3 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x25 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
+| D1-D5 | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
+| D6-D12 | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
+| SW11 | CFG_APPLY momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | ✅ |
+| J1 | I²C ribbon cable connector to Stator J13 | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
+| Q1, Q2, Q3, Q4, Q5, Q6 | Low-side colour-rail sink MOSFETs (×6 total; 3 per bank for RGB) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
+| R1-R10 | Switch input pull-down resistors (×10: 4 Bank 1 + 6 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
+| R11 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
+| R12-R17 | MOSFET gate resistors (×6; 1 per MOSFET) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 | 🔒 |
+| R18-R29 | Per-switch red LED series resistors (×12) | 150Ω 1% — 5V operation @ 20mA nominal (Vf_red ≈ 2.0V) | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 | 🔒 |
+| R30-R41 | Per-switch green LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_green ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
+| R42-R53 | Per-switch blue LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_blue ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
+| SW1-SW4 | Bank 1 configuration toggle switches (×4: routing bits 0–3) | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
+| SW5-SW10 | Bank 2 configuration toggle switches (×6: reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
+| C4 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| C1 | VCC decoupling cap for U1 (MCP23017 @ 0x23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| C2 | VCC decoupling cap for U2 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| C3 | VCC decoupling cap for U3 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 
-U_EXP_SW_IN @ 0x23: reads all 12 switch states + CFG_APPLY. U_LED_B1 @ 0x24 and U_LED_B2 @ 0x25:
+U1 @ 0x23: reads all 12 switch states + CFG_APPLY. U2 @ 0x24 and U3 @ 0x25:
 drive per-bit LED anodes and per-bank RGB colour-rail MOSFET sinks. All three share the Stator
-I²C-1 bus via the J_I2C → J13 ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
+I²C-1 bus via the J1 → J13 ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
 green/blue series resistors. `5V_MAIN` is routed from the Controller via the `J4`
 high-current dock through the Stator to the Settings Board.
 
@@ -350,8 +350,8 @@ high-current dock through the Stator to the Settings Board.
 
 | Ref | Component | Description | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| J_DSI1 | DSI1 FPC connector (15-pin 1.0mm ZIF) | Amphenol F52Q-1A7H1-11015 — DSI1 4-lane FPC/ZIF connector for optional lid-mounted touchscreen; connector is fixed even though the display add-on remains deferred; 100 Ω differential, route on L3 | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 | ✅ |
-| J_FAN | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) — 5V PWM fan connector (Pin 1 = 5V_MAIN, Pin 2 = GND, Pin 3 = TACH, Pin 4 = PWM) | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 | 🔒 |
+| J9 | DSI1 FPC connector (15-pin 1.0mm ZIF) | Amphenol F52Q-1A7H1-11015 — DSI1 4-lane FPC/ZIF connector for optional lid-mounted touchscreen; connector is fixed even though the display add-on remains deferred; 100 Ω differential, route on L3 | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 | ✅ |
+| J10 | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) — 5V PWM fan connector (Pin 1 = 5V_MAIN, Pin 2 = GND, Pin 3 = TACH, Pin 4 = PWM) | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 | 🔒 |
 
 ## 6. Backplane & Extension Components
 
@@ -493,7 +493,7 @@ Product page links for all major components for design review and procurement ve
 | J4 (PM) | USB4135-GF-A — USB Type-C SMT Receptacle, 5A | GCT | [usb4135-datasheet.pdf](../Datasheets/usb4135-datasheet.pdf) |
 | J6 (CTL) | 48406-0003 — USB 3.0 Type-A Dual-Stack | Molex | [Molex-48406-0003-datasheet.pdf](../Datasheets/Molex-48406-0003-datasheet.pdf) |
 | J7 (CTL) | 2007435-1 — HDMI Type-A Full-Size | TE Connectivity | [TE-2007435-1-datasheet.pdf](../Datasheets/TE-2007435-1-datasheet.pdf) |
-| J_DSI1 (CTL) | F52Q-1A7H1-11015 — 15-pin 1.0mm right-angle ZIF/FPC connector | Amphenol | [amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf](../Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf) |
+| J9 (CTL) | F52Q-1A7H1-11015 — 15-pin 1.0mm right-angle ZIF/FPC connector | Amphenol | [amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf](../Datasheets/amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf) |
 | J\_CM5\_A/B (CTL) | 10164227-1004A1RLF — 100-pin B2B SO-DIMM Socket 4.0mm | Amphenol | [Amphenol-10164227-1004A1RLF-datasheet.pdf](../Datasheets/Amphenol-10164227-1004A1RLF-datasheet.pdf) |
 | J1/J2/J3 (CTL) | 1-1674231-1 — 10-pin 2.5mm board-to-board dock receptacle | TE Connectivity | [TE-1-1674231-1-datasheet.pdf](../Datasheets/TE-1-1674231-1-datasheet.pdf) |
 | J4/J5 (CTL) / J11/J12 (STA) | 2195630015 / 2195620015 — EXTreme Guardian HD hybrid dock pair | Molex | [Molex-2195630015-datasheet.pdf](../Datasheets/Molex-2195630015-datasheet.pdf) |
@@ -506,8 +506,8 @@ Product page links for all major components for design review and procurement ve
 | J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.pdf](../Datasheets/bhr-xx-vua-data-sheet.pdf) |
 | J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
 | J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
-| J_JDB_PWR (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
-| J_JDB_JTAG (CTL) | RS1-10-G — 1×10 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
+| J12 (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
+| J13 (CTL) | RS1-10-G — 1×10 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
 | H_SW3 Board A (ROT) | PH1-07-UA — 1×7 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.pdf](../Datasheets/ph1-xx-ua-data-sheet.pdf) |
 | H_SW3 Board B (ROT) | RS1-07-G — 1×7 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.pdf](../Datasheets/rs1-xx-g-datasheet.pdf) |
 | SW1-40 (ENC/HID) | uxcell-style DPDT 6-pin momentary push button switch | gadgetskingdom (eBay) | [Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md](../Datasheets/Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md) |

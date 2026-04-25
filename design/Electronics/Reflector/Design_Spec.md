@@ -46,8 +46,8 @@ second CPLD on the Reflector itself.
 * **Logic Type:** Passive turnaround.
 * **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM570T100I5N CPLD**
   located on the Stator Board. The active reflection-map configuration is selected via the Settings
-  Board panel switches (Bank 2, SW_B2[5:0]) read by Settings Board `U_EXP_SW_IN` @ 0x23 and driven to
-  the Stator CPLD by `U_EXP4` @ 0x22 — see DEC-032.
+  Board panel switches (Bank 2, SW_B2[5:0]) read by Settings Board `U1` @ 0x23 and driven to
+  the Stator CPLD by `U8` @ 0x22 — see DEC-032.
 * **CPLD support:** None on this PCB; the board only provides the mandatory return path.
 * **Signal Path:** Final rotor/extension outputs → Reflector J1–J3 (ERM8 male) → passive turnaround traces
   → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (16-pin header, pin 15) → Stator J10.

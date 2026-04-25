@@ -52,17 +52,17 @@ The following provisions must be made at detailed mechanical design phase:
 | :--- | :--- |
 | Display aperture in lid | Sized for chosen display (TBD — up to 10"); flush-mount or recessed bezel |
 | Display mounting frame / bracket | Secures display panel against lid inner face |
-| FPC hinge routing | Clear path for DSI1 FPC cable from lid through hinge to Controller Board J_DSI1 |
-| Deferred display auxiliaries | No separate display power or touch harness is fixed yet; reserve hinge space beyond the `J_DSI1` FPC path only as future margin until the display add-on is defined |
+| FPC hinge routing | Clear path for DSI1 FPC cable from lid through hinge to Controller Board J9 |
+| Deferred display auxiliaries | No separate display power or touch harness is fixed yet; reserve hinge space beyond the `J9` FPC path only as future margin until the display add-on is defined |
 
-See `design/Electronics/Controller/Design_Spec.md` (J_DSI1) and `design/Electronics/Settings_Board/Design_Spec.md` for electrical context.
+See `design/Electronics/Controller/Design_Spec.md` (J9) and `design/Electronics/Settings_Board/Design_Spec.md` for electrical context.
 
 ## Cross-References
 
 | Document | Description |
 | :--- | :--- |
 | `design/Electronics/Controller/Design_Spec.md` | Controller Board electrical specification |
-| `design/Electronics/Controller/Design_Spec.md` | Controller Board — DSI1 connector J_DSI1 for lid display |
+| `design/Electronics/Controller/Design_Spec.md` | Controller Board — DSI1 connector J9 for lid display |
 | `design/Electronics/Stator/Design_Spec.md` | Stator Board electrical specification — includes I²C interface to Settings Board |
 | `design/Electronics/Settings_Board/Design_Spec.md` | Settings Board electrical specification — panel switch and LED expanders |
 | `design/Mechanical/Keyboard_Assembly/Design_Spec.md` | Independent keyboard sub-assembly mounted into the enclosure |

@@ -104,9 +104,9 @@ right edge of Controller
 
 - The Controller owns the **RJ45, Ethernet ESD, magnetics, and PoE PD / ACF front-end**.
   The PoE front-end passes its regulated auxiliary feed into the Power Module over `J2`.
-- `J_DSI1` and `J_FAN` are internal-only connectors and are not part of the external I/O edge.
-  `J_DSI1` sits between `J5` and the Power Module mounting area so it can route by ribbon cable into
-  the future in-lid touchscreen assembly, while `J_FAN` serves the CM5 active-cooler heatsink fan.
+- `J9` and `J10` are internal-only connectors and are not part of the external I/O edge.
+  `J9` sits between `J5` and the Power Module mounting area so it can route by ribbon cable into
+  the future in-lid touchscreen assembly, while `J10` serves the CM5 active-cooler heatsink fan.
 
 ---
 
@@ -115,7 +115,7 @@ right edge of Controller
 ```text
 rear / dock edge
  ________________________________________________________________________
-|     [J4] [J5]         [J_DSI1]               | (Power Module mounting) |
+|     [J4] [J5]             [J9]               | (Power Module mounting) |
 |                          _________________   | [J1]               [J3] |
 |  [ JDB headers ]        |                 |  |          [J2]           |
 |                         |      CM5        |  |_________________________|

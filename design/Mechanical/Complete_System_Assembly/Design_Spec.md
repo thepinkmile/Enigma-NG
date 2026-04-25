@@ -51,14 +51,14 @@ steps are detailed in each referenced document; this section defines integration
 | 2 | Stator Board | Install ICs (CPLD, MCP23017 ×3, INA219), passives, connectors. Bench-test I²C expanders before stack assembly. |
 | 3 | Rotors (×30) | Build all 30 rotor modules. Verify ERM8 header alignment and encoder slot clearance before stacking. |
 | 4 | Rotor groups onto Stator | Press Rotor 1 ERM8 headers into Stator ERF8 sockets. Build the first 5-rotor group, then insert an Extension before each further 5-rotor group as required. Verify JTAG daisy-chain continuity at each group boundary. |
-| 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Controller J_SERVO. Verify Controller SERVO_HOME switch actuation. |
+| 5 | Rotor Actuation Assembly | Install depression bar, pivot lever, actuation arm, sprung retention bar. Connect servo 3-pin JST to Controller J11. Verify Controller SERVO_HOME switch actuation. |
 | 6 | Keyboard Assembly | Build keyboard panel + `KBD_ENC` Encoder Module. Connect IDC ribbon to the Stator keyboard encoder port. |
 | 7 | Lightboard Assembly | Build lightboard panel + `LBD_DEC` Encoder Module. Connect IDC ribbon to the Stator lightboard decoder port. |
 | 8 | Plugboard Assembly | Build both plugboard passes. Connect IDC ribbons to the four Stator plugboard ports (`PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`). |
 | 9 | Reflector | Install the mandatory passive Reflector sub-assembly at the far end of the final rotor group. Connect the 16-pin cable to Stator J10. Reflection-map selection remains Stator-CPLD-owned. |
 | 10 | Extension (if used) | Insert each Extension between 5-rotor groups: `Stator -> 5 rotors -> [Extension -> 5 rotors]* -> Reflector`. Each Extension reinjects clean 3V3_ENIG/GND to the next rotor group via J7 -> J5. |
 | 11 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Engage the TE PM dock cluster (`J1/J2/J3`) to the Power Module, then mate the Molex Stator dock pair (`J4/J5` ↔ `J11/J12`). |
-| 12 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J13. Verify `U_EXP_SW_IN`, `U_LED_B1`, and `U_LED_B2` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
+| 12 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J13. Verify `U1`, `U2`, and `U3` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
 | 13 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
 
 > **Note on the JTAG Daughterboard (JDB):** The JDB is a PCB hat that mounts directly on the

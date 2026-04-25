@@ -20,12 +20,12 @@
 | 0x28 | STUSB4500 | Power Module | USB-C PD Controller |
 | 0x3F | PCA9534A | Power Module | PM-local GPIO expander (`POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`, SW1 RGB control) |
 | 0x40 | INA219 | Power Module | 5V_MAIN current/power monitoring (10mΩ Kelvin-sense shunt R23) |
-| 0x20 | MCP23017 | Stator | ENC monitor expander (`U_EXP1`) |
-| 0x21 | MCP23017 | Stator | Virtual keypress / SOURCE_SEL / SYS_RESET_N expander (`U_EXP2`) |
-| 0x22 | MCP23017 | Stator | CPLD configuration output expander (`U_EXP4`) |
-| 0x23 | MCP23017 | Settings Board | Switch input expander (`U_EXP_SW_IN`) |
-| 0x24 | MCP23017 | Settings Board | Bank 1 LED controller (`U_LED_B1`) |
-| 0x25 | MCP23017 | Settings Board | Bank 2 LED controller (`U_LED_B2`) |
+| 0x20 | MCP23017 | Stator | ENC monitor expander (`U6`) |
+| 0x21 | MCP23017 | Stator | Virtual keypress / SOURCE_SEL / SYS_RESET_N expander (`U7`) |
+| 0x22 | MCP23017 | Stator | CPLD configuration output expander (`U8`) |
+| 0x23 | MCP23017 | Settings Board | Switch input expander (`U1`) |
+| 0x24 | MCP23017 | Settings Board | Bank 1 LED controller (`U2`) |
+| 0x25 | MCP23017 | Settings Board | Bank 2 LED controller (`U3`) |
 | 0x45 | INA219 | Stator | Rotor stack power telemetry (CSS2H-2512R-R010ELF 10mΩ shunt R1) |
 
 > **Note:** This document captures global electrical design rules. Board-specific design rules are in each board's Design_Spec.md.

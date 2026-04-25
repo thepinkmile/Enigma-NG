@@ -359,16 +359,16 @@ any cipher commands:
    - If timeout expires, log error and halt init (servo not homed — mechanical fault).
    - On SERVO_HOME LOW confirmed: servo is at 0° reference position.
 3. **MCP23017 port direction init:**
-   - U_EXP1 (0x20): GPA = 0xFF (all inputs), GPB = 0xFF (all inputs).
-   - U_EXP2 (0x21): GPA = 0x00 (all outputs, including `SYS_RESET_N` on GPA[7]); GPB = 0xFF-equivalent spare state until any future functions are assigned.
+   - U6 (0x20): GPA = 0xFF (all inputs), GPB = 0xFF (all inputs).
+   - U7 (0x21): GPA = 0x00 (all outputs, including `SYS_RESET_N` on GPA[7]); GPB = 0xFF-equivalent spare state until any future functions are assigned.
 
 ### Virtual Keypress Sequence (One Key Injection Cycle)
 
 To inject a virtual keypress for character N (5-bit address):
 
-1. Assert SOURCE_SEL=1 (U_EXP2 GPA[6] HIGH) — switches CPLD to CM5 virtual input mode.
-2. Write KEY_ADDR[4:0] = N to U_EXP2 GPA[4:0].
-3. Assert KEY_EN (U_EXP2 GPA[5] HIGH) — CPLD samples the key address.
+1. Assert SOURCE_SEL=1 (U7 GPA[6] HIGH) — switches CPLD to CM5 virtual input mode.
+2. Write KEY_ADDR[4:0] = N to U7 GPA[4:0].
+3. Assert KEY_EN (U7 GPA[5] HIGH) — CPLD samples the key address.
 4. Deassert KEY_EN (LOW).
 5. Command servo 0°→180° (one sweep half) on `SERVO_PWM` (GPIO 12).
 6. Wait for mechanical actuation period (≈ 300ms).
