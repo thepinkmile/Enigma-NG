@@ -57,6 +57,9 @@ Main outcomes:
 - the Power Module battery-connector review now has a dedicated candidate-note document,
   `design/Electronics/Power_Module/Millitary_Battery_Connection_Option.md`, which captures:
   - Glenair candidate `807-216-00ZNU6-6DY`
+  - ODU AMC NP as an alternate military circular-connector lead pending sales-team feedback
+  - a newly noted ODU advantage: panel-mount connector plus wiring-harness availability may avoid a
+    custom PM interposer and may also simplify the prototype battery-pack / adapter build
   - Heilind-only sourcing with JLCPCB **consignment-only** assembly expectation
   - the provisional 6-pin vs 5-signal mapping caution
   - confirmed `Y` keying as the standard battery keying intended to prevent mating with data-only

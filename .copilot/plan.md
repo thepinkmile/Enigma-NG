@@ -39,6 +39,8 @@ The current active design docs now reflect:
 - the battery-connector review workstream is now closed at the candidate-document stage; the chosen
   connector still requires explicit confirmation during the final deep-dive and manual review before
   the design is treated as a complete Version 1 release
+- the battery connector option note now also records the ODU AMC NP family as an alternate
+  military-style connector lead pending sales feedback and further review
 
 Recent locked work:
 
@@ -99,8 +101,9 @@ Then proceed into the next design-review task from the active `design/` docs rat
 - Active HID-side Encoder connector contract: pin 8 is `ENC_ACTIVE_N`, idle state is HIGH, and the
   signal is intentionally local to the keyboard / lightboard path rather than the wider cipher path.
 - Active PM battery review state: Glenair `807-216-00ZNU6-6DY` is the documented candidate path,
-  `Y` keying is confirmed standard battery keying, and the remaining connector questions must be
-  rechecked during the final deep-dive and manual review before the design is marked complete V1.
+  `Y` keying is confirmed standard battery keying, ODU AMC NP is logged as an alternate vendor lead,
+  and the remaining connector questions must be rechecked during the final deep-dive and manual
+  review before the design is marked complete V1.
 
 ### Refdes / naming state
 - Controller internal connectors are now normalized to numeric refs (`J9`-`J15`) in the active docs.

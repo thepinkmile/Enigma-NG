@@ -31,6 +31,29 @@ This is **not yet** the official Power Module battery connector.
 | Mounting style | Vertical PCB mount receptacle |
 | Keying note | Trailing `Y` keying is the verified standard battery keying for this connector family and is specifically associated with LI-145 battery use |
 
+### 2.1 Additional vendor lead
+
+An additional rugged circular-connector lead is also being tracked:
+
+| Item | Value |
+| :--- | :--- |
+| Manufacturer | ODU |
+| Family | `ODU AMC NP` |
+| Product page | <https://odu-connectors.com/uk/products/circular-connectors/odu-amc-np/> |
+| Current state | User has contacted ODU sales for more information |
+| Current role in this review | Alternate military-style connector family to evaluate against the Glenair path if the contact layout, cable ecosystem, or mechanical integration prove more suitable |
+
+This ODU family is **not** currently the selected candidate. It is being retained as a documented
+follow-up lead pending vendor feedback, mating-cable information, contact-layout detail, and a
+better understanding of how well it matches the Enigma-NG battery-interface needs.
+
+The strongest currently identified advantage of the ODU path is integration simplicity:
+
+- ODU appear to offer **panel-mount connectors with wiring-harness options**
+- that may allow the Power Module battery entry to be integrated without a custom PCB interposer
+- the same approach may also simplify the prototype battery-pack / adapter build by allowing a direct
+  harnessed panel connector rather than a bespoke interposer board
+
 ## 3. Why This Option Exists
 
 The currently documented Molex Micro-Fit battery connector remains electrically workable, but it is
@@ -59,6 +82,10 @@ The active preferred integration approach is therefore:
    directly into the PM board outline
 
 This keeps the main Power Module layout flexible and allows panel alignment to be solved cleanly.
+
+By comparison, if ODU can supply a suitable panel-mount connector plus harness assembly for the
+required battery signals, that path may reduce mechanical risk and remove the need for a custom PM
+interposer board entirely.
 
 ### 4.2 Prototype-only adapter board
 
@@ -116,7 +143,11 @@ The connector keying itself is **not** provisional:
 2. which contact should carry `BATT_PRES_N`
 3. whether one position is intentionally unused, reserved, or dedicated by the cable standard
 4. whether the selected mating cable assembly is confirmed as a minimum **5-signal** cable suitable
-   for the Enigma-NG battery interface
+    for the Enigma-NG battery interface
+5. whether the ODU AMC NP family offers a materially better cable / sourcing / panel-integration path
+   than the current Glenair candidate
+6. whether ODU can supply a panel-mount harnessed solution that also simplifies the prototype
+   battery-pack / adapter build
 
 ## 7. Sourcing Rules
 
