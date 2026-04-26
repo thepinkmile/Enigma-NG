@@ -25,12 +25,17 @@ The current active design docs now reflect:
 - the Encoder board split review is now closed around the `EPM570` / weak-pull-up /
   programming-defined-role baseline, with the rationale captured in the active design docs and
   `DEC-041`
+- the Stator ↔ Encoder 20-pin contract now assigns **pin 8** to the HID-local active-low
+  `ENC_ACTIVE_N` sideband, with `KBD_ENC` driving activity, `LBD_DEC` using it for blanking, and
+  the Stator muxing / monitoring the selected activity source under `DEC-042`
 
 Recent locked work:
 
 - `7829f8a` — `Normalize design document refdes`
 - `1c2a505` — `Reset doc metadata versions`
-- the current working tree carries the datasheet-markdown generation, review pass, and design-link migration
+- `4e36234` — `Close encoder split review`
+- the current working tree carries the HID-local `ENC_ACTIVE_N` sideband update across Stator /
+  Encoder design docs, CPLD logic requirements, and the design log
 
 ---
 ## Current Open Workstreams
@@ -62,10 +67,10 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/062-encoder-split-review-closed.md`
-4. `.copilot/checkpoints/061-encoder-epm570-and-logic-spec.md`
-5. `.copilot/checkpoints/060-datasheet-markdown-migration.md`
-6. `.copilot/checkpoints/059-version-metadata-and-state-sync.md`
+3. `.copilot/checkpoints/063-encoder-active-sideband.md`
+4. `.copilot/checkpoints/062-encoder-split-review-closed.md`
+5. `.copilot/checkpoints/061-encoder-epm570-and-logic-spec.md`
+6. `.copilot/checkpoints/060-datasheet-markdown-migration.md`
 
 Then proceed into the next design-review task from the active `design/` docs rather than treating
 `.copilot/` content as design truth.
@@ -81,6 +86,8 @@ Then proceed into the next design-review task from the active `design/` docs rat
   generated datasheet markdown file keeps its own source-PDF link.
 - Active Encoder baseline: `EPM570T100I5N`, digital debounce in CPLD logic, and role selected by
   programming rather than role-specific RC population.
+- Active HID-side Encoder connector contract: pin 8 is `ENC_ACTIVE_N`, idle state is HIGH, and the
+  signal is intentionally local to the keyboard / lightboard path rather than the wider cipher path.
 
 ### Refdes / naming state
 - Controller internal connectors are now normalized to numeric refs (`J9`-`J15`) in the active docs.

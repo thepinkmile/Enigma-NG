@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-25
+**Last Updated:** 2026-04-26
 
 The Stator Board is the mechanical and electrical backbone of the rotor stack. It provides the high-current distribution and signal routing for the 30 modular rotors.
 
@@ -25,15 +25,15 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 | §2 Core Features; §3 Encryption & JTAG Hub; BOM L1–L4 (ferrite beads) |
 | FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-04 | Receive TTD_RETURN from the Reflector and forward to the Controller Board | Via J10 (Adam Tech `BHR-16-VUA` 16-pin reflector / extension port) into the `J5` logic dock return path | §3 Encryption & JTAG Hub; BOM J10, R2 (10kΩ pull-up) |
-| FR-STA-05 | Interface with up to 6 Encoder Modules via IDC ribbon cables; route a single 6-bit `ENC_DATA[5:0]` service bus through one HID encode path, one HID decode path, and two configurable plugboard passes | Bank 1 = `KBD_ENC` + `LBD_DEC`; Bank 2 = `PLG_PASS1_DEC` + `PLG_PASS1_ENC`; Bank 3 = `PLG_PASS2_DEC` + `PLG_PASS2_ENC`; Stator owns the fixed per-port aliases | §3 Plugboard Routing; §4 Interconnects; BOM J4–J9 (20-pin IDC) |
+| FR-STA-05 | Interface with up to 6 Encoder Modules via IDC ribbon cables; route a single 6-bit `ENC_DATA[5:0]` service bus through one HID encode path, one HID decode path, and two configurable plugboard passes, plus a HID-local `ENC_ACTIVE_N` sideband | Bank 1 = `KBD_ENC` + `LBD_DEC`; Bank 2 = `PLG_PASS1_DEC` + `PLG_PASS1_ENC`; Bank 3 = `PLG_PASS2_DEC` + `PLG_PASS2_ENC`; Stator owns the fixed per-port aliases and forwards `ENC_ACTIVE_N` only for the HID bank | §3 Plugboard Routing; §4 Interconnects; BOM J4–J9 (20-pin IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM570 (570 LEs required for startup-loaded reflector map registers + routing matrix) | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via two hybrid blind-mate dock connectors | `J11` = 5V-biased power dock; `J12` = 3V3/JTAG/I2C dock | §4 Interconnects; BOM J11, J12 |
 | FR-STA-08 | Select the active plugboard routing configuration from the Settings Board user-intent bus via I²C; CM5 may override it with GUI-selected presets | Settings Board `CFG_ROUTE[3:0]` provides 16 routing configurations; CM5 reads U1 @ 0x23, decides whether to forward user intent or apply an override, writes final `CFG_ROUTE[3:0]` to U8 GPA[3:0] @ 0x22, and pulses `CFG_APPLY_N` to reload the Stator CPLD | §3 Configuration Bank 1 (Routing); §4.2 I²C-1 Bus Devices; BOM U8, R16–R19 |
 | FR-STA-09 | Select and apply a stored reflector substitution map at the reflection boundary while retaining the mandatory physical Reflector board as the electrical turnaround | Settings Board `CFG_REFMAP[5:0]` provides a 6-bit reflector-map selection; CM5 may override it with GUI-selected presets; final `CFG_REFMAP[5:0]` is driven to the CPLD by U8 GPB[5:0] @ 0x22 | §3 Configuration Bank 2 (Reflector Mapping); §4.2 I²C-1 Bus Devices; BOM U8, R21–R26 |
-| FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, ENC service-bus monitoring, SYS_RESET_N management, and CPLD configuration driving | Via three MCP23017 expanders: U6 @ 0x20, U7 @ 0x21, U8 @ 0x22 on shared I²C-1 bus | §4 I²C Devices; BOM U6, U7, U8 |
+| FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, HID activity selection/monitoring, ENC service-bus monitoring, SYS_RESET_N management, and CPLD configuration driving | Via three MCP23017 expanders: U6 @ 0x20, U7 @ 0x21, U8 @ 0x22 on shared I²C-1 bus | §4 I²C Devices; BOM U6, U7, U8 |
 | FR-STA-11 | **Retired** — servo PWM output moved to the Controller | Controller-local direct CM5 PWM now owns the servo interface | DEC-038; `Controller/Design_Spec.md` |
 | FR-STA-12 | **Retired** — SERVO_HOME sensing moved to the Controller | Controller-local home switch now owns the 0° reference sensing | DEC-038; `Controller/Design_Spec.md` |
-| FR-STA-13 | Select between the physical keyboard 6-bit source bus and CM5 virtual key data before the cipher pipeline | External 6-bit 2:1 mux at the `KBD_ENC` (`J4`) entry point; `KEY_CM5_ACTIVE` chooses the source, `CM5_KEY_DATA[5:0]` carries the CM5 value, and the mux enable pin(s) are tied LOW so the selected path is always driven while the board is powered | §3 External Keyboard Source Mux |
+| FR-STA-13 | Select between the physical keyboard source and CM5 virtual key source before the cipher pipeline, including both the 6-bit bus and the HID activity sideband | External 7-channel 2:1 mux implementation at the `KBD_ENC` (`J4`) entry point; `KEY_CM5_ACTIVE` chooses the source, `CM5_KEY_DATA[5:0]` carries the CM5 value, `CM5_KEY_ACTIVE_N` carries the CM5 activity state, and the mux enable pin(s) are tied LOW so the selected path is always driven while the board is powered | §3 External Keyboard Source Mux |
 | FR-STA-14 | Connect to Settings Board via I²C-1 bus for user-intent configuration, `CFG_APPLY_N`, and LED status output | J13 = 6-pin JST PH 2.0mm connector (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`); Settings Board expanders 0x23 (user-intent input), 0x24 (Bank 1 LED), and 0x25 (Bank 2 LED) share the Stator I²C-1 bus | §4.2 I²C-1 Bus Devices; BOM J13 |
 
 #### Design Requirements
@@ -43,7 +43,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §7 PCB Fabrication & Stackup |
 | DR-STA-02 | Layer mapping | L1 = Signal (JTAG/routing), L2 = GND, L3 = 3V3_ENIG, L4 = ENC Data | §1 Overview |
 | DR-STA-03 | Rotor interface (per slot) | J1 = ERF8-005 (JTAG), J2 = ERF8-005 (Power), J3 = ERF8-010 (ENC); 1 slot set | §4 Interconnects; BOM J1–J3 (ERF8-005/ERF8-010) |
-| DR-STA-04 | Encoder interface | J4/J5/J6/J7/J8/J9 = 20-pin 2×10 IDC (6 fixed-role encoder ports in 3 banks of 2) carrying generic Encoder `ENC_DATA[5:0]` plus Stator-owned aliases | §4 Interconnects; BOM J4–J9 |
+| DR-STA-04 | Encoder interface | J4/J5/J6/J7/J8/J9 = 20-pin 2×10 IDC (6 fixed-role encoder ports in 3 banks of 2) carrying generic Encoder `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, and Stator-owned aliases | §4 Interconnects; BOM J4–J9 |
 | DR-STA-05 | TTD_RETURN input | J10 = Adam Tech `BHR-16-VUA` 16-pin 2×8 shrouded header; `TTD_RETURN` on pin 15 (from Reflector J4) | §3 Encryption & JTAG Hub; BOM J10 |
 | DR-STA-06 | Controller dock connectors | `J11/J12` = Molex `2195620015` hybrid plugs mating with Controller `2195630015` receptacles | §4 Interconnects; BOM J11, J12 |
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240 (drop-in); 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
@@ -109,6 +109,11 @@ service aliases that map onto the remote Encoder board's generic `ENC_DATA[5:0]`
 its own generic `ENC_IN[5:0]` and `ENC_OUT[5:0]` definitions. The active insertion positions are
 determined by the VHDL routing case statement selected by U8 GPA[3:0] written by the CM5 daemon
 (see §3 Panel Switch Configuration and DEC-032).
+
+`ENC_ACTIVE_N` is intentionally **not** part of the wider cipher routing matrix. It is a HID-local
+sideband only: the selected keyboard-source activity state is forwarded to `LBD_DEC` so the
+lightboard can blank when no key event is active, but the signal is not propagated through the
+plugboard, rotor, reflector, or extension interfaces.
 
 #### Configuration Bank 1 — Plugboard Routing
 
@@ -220,18 +225,31 @@ symmetry. Pre-loaded indices:
 
 #### External Keyboard Source Mux
 
-The Stator shall use an external 6-bit 2:1 mux at the `J4` keyboard-source entry point
-(Step 1 — Forward entry in the routing matrix). `KEY_CM5_ACTIVE` chooses which 6-bit source is
-forwarded into the cipher pipeline. The implementation uses `U4` and `U5`, both
-`74HC157PW-Q100,118` quad 2:1 mux devices, with both `E` pins tied to GND so the mux path remains
-enabled whenever the board is powered:
+The Stator shall use an external 7-channel 2:1 mux implementation at the `J4` keyboard-source entry
+point (Step 1 — Forward entry in the routing matrix). `KEY_CM5_ACTIVE` chooses which keyboard-source
+bundle is forwarded:
 
-* **`KEY_CM5_ACTIVE=0` (default):** the physical keyboard 6-bit source bus is forwarded. Normal operator use.
-* **`KEY_CM5_ACTIVE=1`:** `CM5_KEY_DATA[5:0]` is forwarded instead, enabling CM5 autonomous / virtual-key mode.
+* 6 data lines: physical `KBD_ENC` bus or `CM5_KEY_DATA[5:0]`
+* 1 activity line: physical `ENC_ACTIVE_KBD_N` or `CM5_KEY_ACTIVE_N`
 
-U7 GPA[7] is used for `SYS_RESET_N` in this implementation, which fully populates the GPA port
-while leaving GPB spare/reserved for future use. The mux enable function remains hard-wired active
-and `KEY_CM5_ACTIVE` continues to occupy GPA[6].
+The implementation uses `U4` and `U5`, both `74HC157PW-Q100,118` quad 2:1 mux devices, with both
+`E` pins tied to GND so the mux path remains enabled whenever the board is powered:
+
+* **`KEY_CM5_ACTIVE=0` (default):** the physical keyboard bundle is forwarded. `ENC_IN_KBD[5:0]`
+  enters the cipher pipeline and `ENC_ACTIVE_KBD_N` becomes the selected activity state. Normal
+  operator use.
+* **`KEY_CM5_ACTIVE=1`:** the CM5 virtual-key bundle is forwarded instead. `CM5_KEY_DATA[5:0]`
+  enters the cipher pipeline and `CM5_KEY_ACTIVE_N` becomes the selected activity state, enabling
+  CM5 autonomous / virtual-key mode.
+
+The selected activity state is routed to `J5 ENC_ACTIVE_LBD_N` so `LBD_DEC` can blank its outputs
+whenever the keyboard source is idle. The same selected activity state is also monitored through U7
+for GUI / telemetry visibility.
+
+U7 GPA[7] is used for `SYS_RESET_N` in this implementation, which fully populates the GPA port.
+`U7 GPB[0]` is allocated to `CM5_KEY_ACTIVE_N` and `U7 GPB[1]` is allocated to the selected
+`KEY_SRC_ACTIVE_N` monitoring input, leaving `U7 GPB[7:2]` spare/reserved. The mux enable function
+remains hard-wired active and `KEY_CM5_ACTIVE` continues to occupy GPA[6].
 
 ## 4. Interconnects
 
@@ -250,7 +268,8 @@ and `KEY_CM5_ACTIVE` continues to occupy GPA[6].
   * **Signals:** `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`.
   * **Power role:** `5V_MAIN` is fanned out from the incoming `J11` branch to `J13` as a
     pass-through LED supply only.
-* **Encoder Interconnects:** 20-pin (2×10) 2.54mm shrouded box headers (power, `ENC_DATA[5:0]`, JTAG).
+* **Encoder Interconnects:** 20-pin (2×10) 2.54mm shrouded box headers (power, `ENC_DATA[5:0]`,
+  `ENC_ACTIVE_N`, JTAG).
 * **Plugboard Routing — Configurable Signal Chain Positions:**
   The Stator CPLD implements a configurable routing matrix (see §3 CPLD Signal Routing Matrix) with
   three plugboard insertion positions in the full encryption cycle. The active configuration is
@@ -305,7 +324,7 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | Address | Device | Ref | Function |
 | :--- | :--- | :--- | :--- |
 | 0x20 | MCP23017 | U6 | ENC service-bus monitoring (16 GPIO) |
-| 0x21 | MCP23017 | U7 | `CM5_KEY_DATA[5:0]`, `KEY_CM5_ACTIVE`, `SYS_RESET_N`, spare GPIO (16 GPIO) |
+| 0x21 | MCP23017 | U7 | `CM5_KEY_DATA[5:0]`, `KEY_CM5_ACTIVE`, `SYS_RESET_N`, `CM5_KEY_ACTIVE_N`, `KEY_SRC_ACTIVE_N`, spare GPIO (16 GPIO) |
 | 0x22 | MCP23017 | U8 | CPLD configuration output driver: `CFG_ROUTE[3:0]` + `CFG_REFMAP[5:0]` + `CFG_APPLY_N` (16 GPIO) |
 | 0x45 | INA219 | U2 | Rotor stack current/power telemetry |
 

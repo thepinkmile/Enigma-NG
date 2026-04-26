@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ## 1. Overview
 
@@ -20,9 +20,10 @@ shared JTAG chain connection on that same cable. The same PCB is reused in six s
 - `PLG_PASS2_DEC` — plugboard pass 2 decode module
 - `PLG_PASS2_ENC` — plugboard pass 2 encode module
 
-The **20-pin ribbon pinout does not change**. Role is determined by the programmed CPLD image, not
-by connector rewiring. The board itself exposes only the generic `ENC_DATA[5:0]` service bus on
-`J2`; role-specific signal names are owned by the Stator.
+The **20-pin ribbon pinout does not change between board roles**. Role is determined by the
+programmed CPLD image, not by connector rewiring. The board itself exposes only the generic
+`ENC_DATA[5:0]` service bus plus `ENC_ACTIVE_N` on `J2`; role-specific signal names are owned by
+the Stator.
 
 ### Plugboard Use (4 modules required)
 
@@ -44,9 +45,11 @@ full Plugboard Assembly contains two such passes.
 The HID path is split mechanically and electrically:
 
 - **`KBD_ENC`:** reads the keyboard switch matrix subset and returns 6-bit `ENC_DATA[5:0]` to the
-  Stator (`ENC_IN_KBD[5:0]` on the Stator side).
+  Stator (`ENC_IN_KBD[5:0]` on the Stator side) while also asserting `ENC_ACTIVE_N` LOW when a
+  debounced key event is active.
 - **`LBD_DEC`:** receives 6-bit `ENC_DATA[5:0]` from the Stator (`ENC_OUT_LBD[5:0]` on the Stator
-  side) and asserts one of up to 64 output lines for the lightboard.
+  side) plus `ENC_ACTIVE_N`; when `ENC_ACTIVE_N` is HIGH the board blanks all outputs instead of
+  illuminating a lamp.
 
 ### Functional & Design Requirements
 
@@ -55,7 +58,7 @@ The HID path is split mechanically and electrically:
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-ENC-01 | Sense and encode the 64-character logical HID repertoire plus the 64-node plugboard interface with sufficient resolution for per-character detection | HID keyboard mode uses a 40-position physical layout (`[a-z0-9+=]` plus Left/Right Shift), while plugboard roles retain the full 64-line capacity | §3 Single-Module Architecture; §6 Key Mapping; `design/Software/CPLD_Logic/Encoder_Logic.md`; BOM U1 (EPM570T100I5N) |
-| FR-ENC-02 | Transmit or receive the 6-bit service bus to/from the Stator Board via IDC ribbon cable | 20-pin IDC interface; local connector always exposes generic `ENC_DATA[5:0]` | §4 Interconnects; BOM J2 |
+| FR-ENC-02 | Transmit or receive the 6-bit service bus plus the `ENC_ACTIVE_N` sideband to/from the Stator Board via IDC ribbon cable | 20-pin IDC interface; local connector always exposes generic `ENC_DATA[5:0]` plus `ENC_ACTIVE_N` | §4 Interconnects; BOM J2 |
 | FR-ENC-03 | Accept JTAG programming for the on-board CPLD from the Stator JTAG chain | One CPLD per module; six modules occupy six chain positions ahead of the rotor stack | §5 JTAG Chain Integrity; BOM U1 |
 | FR-ENC-04 | Operate from 3V3_ENIG power supplied via the Stator ribbon cable | No local voltage regulation required; local bulk and decoupling capacitor network per `design/Standards/Global_Routing_Spec.md §3`. | §2 Power Requirements; BOM J2 |
 
@@ -96,8 +99,8 @@ by `design/Software/CPLD_Logic/Encoder_Logic.md`.
 
 | Role | 6-bit bus used | 64-line bank use | Function |
 | :--- | :--- | :--- | :--- |
-| **Decode role** (`LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS2_DEC`) | `ENC_DATA[5:0]` consumed from Stator | Board drives one of 64 lines | Decodes 6-bit input into a one-of-64 asserted output |
-| **Encode role** (`KBD_ENC`, `PLG_PASS1_ENC`, `PLG_PASS2_ENC`) | `ENC_DATA[5:0]` driven back to Stator | Board reads one of 64 lines | Encodes one asserted line into a 6-bit output |
+| **Decode role** (`LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS2_DEC`) | `ENC_DATA[5:0]` consumed from Stator | Board drives one of 64 lines | Decodes 6-bit input into a one-of-64 asserted output; `LBD_DEC` additionally blanks outputs when `ENC_ACTIVE_N` is HIGH |
+| **Encode role** (`KBD_ENC`, `PLG_PASS1_ENC`, `PLG_PASS2_ENC`) | `ENC_DATA[5:0]` driven back to Stator | Board reads one of 64 lines | Encodes one asserted line into a 6-bit output; `KBD_ENC` additionally drives `ENC_ACTIVE_N` LOW while a debounced keypress is active |
 
 ### Signal Flow — Plugboard Pass
 
@@ -126,14 +129,16 @@ Stator alias `ENC_IN_KBD[5:0]`        one-of-64 light output
 
 ### I/O Capacity
 
-Each CPLD provides enough user I/O for one 64-line interface bank plus JTAG, status LED, power, and
-the 6-bit ribbon interface.
+Each CPLD provides enough user I/O for one 64-line interface bank plus JTAG, status LED, power, the
+6-bit ribbon interface, and the `ENC_ACTIVE_N` sideband.
 
 ## 4. Interconnects
 
 - **Data Link (J2):** 20-pin (2×10) 2.54 mm shrouded box header with polarisation key.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J4/J5/J6/J7/J8/J9`.
   > See `design/Electronics/Stator/Board_Layout.md` for the authoritative pin table.
+  > `ENC_ACTIVE_N` is the generic pin-8 sideband. Active HID roles use it; unused roles shall leave
+  > it HIGH / inactive.
 - **Status LED (D1):** one active-low debug LED per CPLD. CPLD output LOW = LED ON.
   330 Ω current-limiting resistor; ~4 mA drive current at 3.3 V.
 - **Keyboard Switches:** see `design/Mechanical/Keyboard_Assembly/Design_Spec.md`.
@@ -182,6 +187,9 @@ The encode-role Encoder Module maps the HID assembly's physical switch positions
 - **Signal polarity:** encode-role lines are **active-low**. Each CPLD input shall idle HIGH via
   the MAX II weak pull-up input-bias configuration or an equivalent schematic-level bias method
   chosen during schematic capture. A key press or sensed jack closure then pulls the CPLD input LOW.
+- **Activity sideband polarity:** `ENC_ACTIVE_N` is **active-low**. The idle / unconnected / unused
+  state is HIGH. `KBD_ENC` drives it LOW only while a debounced keypress is active. `LBD_DEC`
+  treats HIGH as "blank all outputs."
 - **Weak pull-up justification:** the active design assumes the MAX II weak pull-up setting is
   sufficient for the Encoder input bank because the Stator↔Encoder ribbon link is expected to stay
   short (roughly **5-15 cm** in the finished machine), and prior bench work with a MAX II
@@ -196,7 +204,8 @@ The encode-role Encoder Module maps the HID assembly's physical switch positions
   Digits and `+` / `=` remain unchanged.
 - **Lightboard mapping:** the decode-role lightboard module mirrors the same QWERTY-derived
   printable positions. Uppercase alphabetic outputs illuminate the corresponding alphabetic lamp
-  position rather than a separate uppercase-only physical position.
+  position rather than a separate uppercase-only physical position. When `ENC_ACTIVE_N` is HIGH, all
+  lightboard outputs remain inactive regardless of the 6-bit bus value.
 
 > For keyboard switch mechanical specification and panel assembly, see
 > `design/Mechanical/Keyboard_Assembly/Design_Spec.md`.

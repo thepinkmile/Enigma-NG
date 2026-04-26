@@ -28,11 +28,12 @@ Board-level connector ownership, physical placement, and BOM authority remain in
 
 ## 2. Scope
 
-This logic specification covers three behaviours:
+This logic specification covers four behaviours:
 
 1. **64-bit sampled debounce** for encode-role input banks
 2. **64-to-6 encoding** for keyboard and plugboard encode roles
-3. **6-to-64 decoding** for lightboard and plugboard decode roles
+3. **`ENC_ACTIVE_N` generation / consumption** for HID roles
+4. **6-to-64 decoding** for lightboard and plugboard decode roles
 
 This document does **not** freeze the final VHDL syntax, timing-closure method, or Quartus project
 structure. Those items are deferred until the first prototype boards exist and the practical
@@ -91,6 +92,14 @@ board based on its known JTAG-chain position.
   the active baseline, though schematic capture may still add external reinforcement later if
   prototype evidence shows it is necessary.
 - The logic must assume active-low externally observed events.
+
+### 4.5 Activity sideband convention
+
+- `ENC_ACTIVE_N` is an **active-low** sideband on the generic Encoder connector.
+- Idle / unused state = logic HIGH.
+- Active HID event = logic LOW.
+- The pin shall default HIGH through the MAX II weak pull-up behaviour or an equivalent schematic
+  bias method if the role does not actively drive it.
 
 ## 5. 64-Bit Sampled Debounce Requirements
 
@@ -170,6 +179,7 @@ asserted at a time after debounce.
 - The encode image shall produce `ENC_DATA[5:0]` from the debounced bank state.
 - The mapping from bank index `0..63` to `ENC_DATA[5:0]` shall be deterministic and fixed.
 - The mapping table must be documented in the final VHDL/package files used for implementation.
+- The role-specific image shall also define the `ENC_ACTIVE_N` behaviour for that assembly position.
 
 ### 6.3 Invalid bank-state handling
 
@@ -207,6 +217,9 @@ Required keyboard behaviour:
 - when either Shift input is active, alphabetic keys map to `A-Z`
 - digits, `+`, and `=` are not remapped by Shift
 - Shift keys are consumed as state modifiers rather than emitted as printable output codes
+- `ENC_ACTIVE_N` shall be driven LOW only while a debounced printable keyboard event is active
+- `ENC_ACTIVE_N` shall return HIGH for the idle state and for invalid / ambiguous bank states unless
+  prototype testing later defines a different explicit diagnostic behaviour
 
 Variant / extension notes:
 
@@ -225,6 +238,8 @@ For plugboard encode images:
 
 - the encode result is the debounced logical identity of the currently asserted plugboard line
 - no keyboard Shift remapping is involved
+- `ENC_ACTIVE_N` is not used by the active Stator plugboard path and should therefore be held HIGH /
+  inactive by the programmed image
 
 ## 7. Decode Logic Requirements (6-to-64)
 
@@ -247,6 +262,8 @@ For `LBD_DEC`:
 - uppercase alphabetic codes illuminate the same physical alphabetic lamp position used for the
   corresponding lowercase letter
 - no separate uppercase-only lamp positions exist
+- when `ENC_ACTIVE_N` is HIGH, all decode outputs must remain inactive regardless of the 6-bit code
+- decode outputs may only illuminate a lamp while `ENC_ACTIVE_N` is LOW
 
 ### 7.4 Plugboard decode
 
@@ -254,6 +271,7 @@ For plugboard decode images:
 
 - the 6-bit code selects exactly one destination line into the passive jack field
 - identity continuity with the paired encode board must be preserved by the shared bank ordering
+- `ENC_ACTIVE_N` is not used by the active plugboard decode path and may be ignored internally
 
 ## 8. Programming and Bring-Up Requirements
 

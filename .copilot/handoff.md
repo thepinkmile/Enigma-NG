@@ -47,6 +47,13 @@ Main outcomes:
     educational keyboard mappings acknowledged as variant/follow-on work
   - generic `ENCODER MODULE` board-identification silkscreen only; role-specific silkscreen labels
     are no longer required
+- the active HID connector contract now also records:
+  - generic Encoder connector **pin 8 = `ENC_ACTIVE_N`**
+  - `KBD_ENC` drives `ENC_ACTIVE_N` LOW only while a debounced keypress is active
+  - the Stator source-select path switches both `ENC_DATA[5:0]` and the activity sideband so the
+    physical keyboard and `CM5_KEY_DATA[5:0]` / `CM5_KEY_ACTIVE_N` stay aligned
+  - `LBD_DEC` uses `ENC_ACTIVE_N` to blank all outputs when the selected keyboard source is idle
+  - `design/Design_Log.md` records this connector and HID-blanking update as **DEC-042**
 
 ## Documentation policy reminders
 - Do not update document `Version` metadata unless the user explicitly requests it.

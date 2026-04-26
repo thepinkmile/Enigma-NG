@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ## 1. Component Areas
 
@@ -55,18 +55,18 @@ the six matching headers on the Stator.
 | 5 | ENC_DATA[3] | Role-dependent | Generic 6-bit service bus |
 | 6 | ENC_DATA[4] | Role-dependent | Generic 6-bit service bus |
 | 7 | ENC_DATA[5] | Role-dependent | Generic 6-bit service bus |
-| 8 | GND | — | ENC_DATA / JTAG group separator |
-| 9 | TCK | Stator->Encoder | JTAG clock |
-| 10 | GND | — | TCK/TMS inter-pin shield |
-| 11 | TMS | Stator->Encoder | JTAG mode select |
-| 12 | GND | — | TMS/TDO inter-pin shield |
-| 13 | TDO | Encoder->Stator | JTAG data out |
-| 14 | GND | — | TDO/TDI inter-pin shield |
-| 15 | TDI | Stator->Encoder | JTAG data in |
-| 16 | GND | — | TDI/SYS_RESET_N shield |
-| 17 | SYS_RESET_N | Stator->Encoder | Active-low CPLD reset |
-| 18 | GND | — | JTAG trailing shield / power return |
-| 19 | GND | — | Power return |
+| 8 | ENC_ACTIVE_N | Role-dependent | HID activity sideband; unused roles shall idle HIGH |
+| 9 | GND | — | `ENC_ACTIVE_N` / JTAG group separator |
+| 10 | TCK | Stator->Encoder | JTAG clock |
+| 11 | GND | — | TCK/TMS inter-pin shield |
+| 12 | TMS | Stator->Encoder | JTAG mode select |
+| 13 | GND | — | TMS/TDO inter-pin shield |
+| 14 | TDO | Encoder->Stator | JTAG data out |
+| 15 | GND | — | TDO/TDI inter-pin shield |
+| 16 | TDI | Stator->Encoder | JTAG data in |
+| 17 | GND | — | TDI/SYS_RESET_N shield |
+| 18 | SYS_RESET_N | Stator->Encoder | Active-low CPLD reset |
+| 19 | GND | — | Power return / trailing shield |
 | 20 | 3V3_ENIG | Stator->Encoder | Power supply |
 
 **Power capacity:** 2 × 3V3_ENIG pins × 1 A/pin = 2.0 A. One Encoder Module estimated load ~104 mA
@@ -101,10 +101,11 @@ the six matching headers on the Stator.
 | :--- | :---: | :--- | :--- |
 | `BT1`-`BT64` 64-line bank | 64 | Role-dependent | Encode-role population reads one asserted line; decode-role population drives one-of-64 output |
 | `ENC_DATA[5:0]` | 6 | Role-dependent | Encode role drives the 6-bit service bus back to the Stator; decode role consumes it |
+| `ENC_ACTIVE_N` | 1 | Role-dependent | `KBD_ENC` drives keyboard activity LOW when a debounced key is active; `LBD_DEC` consumes it to blank outputs when idle; other roles keep it inactive |
 | `D1` status LED | 1 | Output | Active-low debug LED: U1 drives LOW to illuminate |
 
-**Logical budget summary:** 71 general-purpose signal connections total = **64 bank lines + 6 bus
-lines + 1 LED**, plus the dedicated JTAG / reset pins above.
+**Logical budget summary:** 72 general-purpose signal connections total = **64 bank lines + 6 bus
+lines + 1 activity sideband + 1 LED**, plus the dedicated JTAG / reset pins above.
 
 **Spare-pin policy:** the active docs do not currently claim any spare U1 user I/O.
 

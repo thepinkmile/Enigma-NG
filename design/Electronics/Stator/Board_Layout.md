@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-24
+**Last Updated:** 2026-04-26
 
 ## 1. J10— Reflector / Extension Link (16-pin, 2×8, 2.54mm Shrouded Box Header)
 
@@ -58,8 +58,8 @@ receptacles are Molex `2195630015` on `J4` / `J5`.
 
 **Connector type:** 2×10 (20-pin) 2.54mm pitch shrouded box header with polarisation key.  
 **Cable:** Standard 20-wire 2.54mm IDC ribbon cable.  
-**Role model:** three physical banks of two identical ports using a single generic Encoder `ENC_DATA[5:0]`
-service bus.
+**Role model:** three physical banks of two identical ports using a single generic Encoder
+`ENC_DATA[5:0]` service bus plus one active-low `ENC_ACTIVE_N` sideband.
 
 ### 4.1 Physical Placement & Silkscreen
 
@@ -99,17 +99,18 @@ all devices. TDI/TDO form a serial chain routed internally on the Stator PCB:
 >
 ### 4.3 Stator Alias Mapping
 
-The remote Encoder board always exposes the same generic `ENC_DATA[5:0]` pins on `J2`. The Stator
-owns the per-port alias names below so the CPLD wiring remains self-describing.
+The remote Encoder board always exposes the same generic `ENC_DATA[5:0]` pins plus one generic
+`ENC_ACTIVE_N` pin on `J2`. The Stator owns the per-port alias names below so the wiring remains
+self-describing.
 
-| Port | Fixed role | Stator alias carried on `ENC_DATA[5:0]` |
-| :--- | :--- | :--- |
-| `J4` | `KBD_ENC` | `ENC_IN_KBD[5:0]` |
-| `J5` | `LBD_DEC` | `ENC_OUT_LBD[5:0]` |
-| `J6` | `PLG_PASS1_DEC` | `ENC_OUT_PLG1[5:0]` |
-| `J7` | `PLG_PASS1_ENC` | `ENC_IN_PLG1[5:0]` |
-| `J8` | `PLG_PASS2_DEC` | `ENC_OUT_PLG2[5:0]` |
-| `J9` | `PLG_PASS2_ENC` | `ENC_IN_PLG2[5:0]` |
+| Port | Fixed role | Stator alias carried on `ENC_DATA[5:0]` | Pin 8 alias |
+| :--- | :--- | :--- | :--- |
+| `J4` | `KBD_ENC` | `ENC_IN_KBD[5:0]` | `ENC_ACTIVE_KBD_N` |
+| `J5` | `LBD_DEC` | `ENC_OUT_LBD[5:0]` | `ENC_ACTIVE_LBD_N` |
+| `J6` | `PLG_PASS1_DEC` | `ENC_OUT_PLG1[5:0]` | Reserved / not used |
+| `J7` | `PLG_PASS1_ENC` | `ENC_IN_PLG1[5:0]` | Reserved / not used |
+| `J8` | `PLG_PASS2_DEC` | `ENC_OUT_PLG2[5:0]` | Reserved / not used |
+| `J9` | `PLG_PASS2_ENC` | `ENC_IN_PLG2[5:0]` | Reserved / not used |
 
 ### 4.4 Pin Table (identical physical pinout across J4/J5/J6/J7/J8/J9)
 
@@ -122,18 +123,18 @@ owns the per-port alias names below so the CPLD wiring remains self-describing.
 | 5 | ENC_DATA[3] | Role-dependent | Stator alias per port — see table above |
 | 6 | ENC_DATA[4] | Role-dependent | Stator alias per port — see table above |
 | 7 | ENC_DATA[5] | Role-dependent | Stator alias per port — see table above |
-| 8 | GND | — | ENC_DATA / JTAG group separator |
-| 9 | TCK | Stator->Encoder | JTAG clock (broadcast to all encoder ports) |
-| 10 | GND | — | TCK/TMS inter-pin shield |
-| 11 | TMS | Stator->Encoder | JTAG mode select (broadcast to all encoder ports) |
-| 12 | GND | — | TMS/TDO inter-pin shield |
-| 13 | TDO | Encoder->Stator | JTAG data out (chains to next device via Stator) |
-| 14 | GND | — | TDO/TDI inter-pin shield |
-| 15 | TDI | Stator->Encoder | JTAG data in (from previous device via Stator) |
-| 16 | GND | — | TDI/SYS_RESET_N shield |
-| 17 | SYS_RESET_N | Stator->Encoder | Active-low CPLD reset (broadcast to all encoder ports) |
-| 18 | GND | — | JTAG trailing shield / power return |
-| 19 | GND | — | Power return |
+| 8 | ENC_ACTIVE_N | Role-dependent | `J4` = `ENC_ACTIVE_KBD_N`, `J5` = `ENC_ACTIVE_LBD_N`, `J6-J9` reserved / held inactive |
+| 9 | GND | — | `ENC_ACTIVE_N` / JTAG group separator |
+| 10 | TCK | Stator->Encoder | JTAG clock (broadcast to all encoder ports) |
+| 11 | GND | — | TCK/TMS inter-pin shield |
+| 12 | TMS | Stator->Encoder | JTAG mode select (broadcast to all encoder ports) |
+| 13 | GND | — | TMS/TDO inter-pin shield |
+| 14 | TDO | Encoder->Stator | JTAG data out (chains to next device via Stator) |
+| 15 | GND | — | TDO/TDI inter-pin shield |
+| 16 | TDI | Stator->Encoder | JTAG data in (from previous device via Stator) |
+| 17 | GND | — | TDI/SYS_RESET_N shield |
+| 18 | SYS_RESET_N | Stator->Encoder | Active-low CPLD reset (broadcast to all encoder ports) |
+| 19 | GND | — | Power return / trailing shield |
 | 20 | 3V3_ENIG | Stator->Encoder | Power supply |
 
 **Power capacity:** 2 × 3V3_ENIG pins × 1A/pin = 2.0A — adequate for one Encoder Module load
@@ -195,9 +196,10 @@ Stator-only `CFG_APPLY_N` pulse under CM5 firmware control.
 **Logical budget summary:** 70 general-purpose signal connections total = **40 inputs + 30 outputs**,
 plus the dedicated JTAG / clear pins above.
 
-**Spare-pin policy:** the two unused channels inside the `U4`/`U5` mux pair are **not** currently
-routed into U1. `U7 GPA[7]` is now allocated to `SYS_RESET_N`, so the entire `U7 GPB[7:0]`
-port remains spare/reserved for any future Stator-side control additions.
+**Spare-pin policy:** one spare channel inside the `U4`/`U5` mux pair remains unallocated after the
+shared `ENC_ACTIVE_N` source-select path is added. `U7 GPA[7]` is allocated to `SYS_RESET_N`;
+`U7 GPB[0]` is allocated to `CM5_KEY_ACTIVE_N` and `U7 GPB[1]` to `KEY_SRC_ACTIVE_N` monitoring, so
+`U7 GPB[7:2]` remains spare/reserved for future Stator-side control additions.
 
 ---
 
