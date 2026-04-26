@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ## 1. Overview
 
@@ -23,7 +23,7 @@ second CPLD on the Reflector itself.
 | :--- | :--- | :--- | :--- |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs | §3 JTAG & Logic Hub; BOM J1–J3 (ERM8) |
 | FR-REF-02 | Provide the mandatory physical turnaround path at the end of the rotor/extension chain while the selected reflection map is applied by the Stator CPLD | Passive turnaround board — no local CPLD required | §2 Architecture; BOM J1–J4 |
-| FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H | §3 JTAG & Logic Hub; BOM J4 (16-pin), R1 (22Ω) |
+| FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H | §3 JTAG & Logic Hub; BOM J4 (20-pin), R1 (22Ω) |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 
 #### Design Requirements
@@ -32,7 +32,7 @@ second CPLD on the Reflector itself.
 | :--- | :--- | :--- | :--- |
 | DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §6 PCB Fabrication & Stackup |
 | DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §4 Rotor Interface Connectors; BOM J1–J3 |
-| DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J10); TTD_RETURN on J4 pin 15 | §3 JTAG & Logic Hub; BOM J4 (16-pin 2×8 shrouded) |
+| DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J10); `TTD_RETURN` on J4 pin 15; pins 17-20 reserved for grouped `5V_MAIN` / returns in the shared reflector / extension harness contract | §3 JTAG & Logic Hub; BOM J4 (20-pin 2×10 shrouded) |
 | DR-REF-04 | End-of-chain damping | R1 = 22 Ω, 0603, on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive turnaround board only; reflector-map selection remains Stator-owned | §2 Architecture |
 
@@ -50,17 +50,18 @@ second CPLD on the Reflector itself.
   the Stator CPLD by `U8` @ 0x22 — see DEC-032.
 * **CPLD support:** None on this PCB; the board only provides the mandatory return path.
 * **Signal Path:** Final rotor/extension outputs → Reflector J1–J3 (ERM8 male) → passive turnaround traces
-  → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (16-pin header, pin 15) → Stator J10.
+  → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (20-pin header, pin 15) → Stator J10.
 
 ## 3. JTAG & Logic Hub
 
-* **Interconnect:** 16-pin (2x8) 2.54mm Shrouded Box Header (Vertical).
+* **Interconnect:** 20-pin (2x10) 2.54mm Shrouded Box Header (Vertical).
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
-  > This board uses the mating connector as J4 (Adam Tech BHR-16-VUA — see BOM). The authoritative
-  > 16-pin pinout is defined on the Stator; Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = `ENC_OUT_REF[5:0]`,
-  > Pins 9–14 = `ENC_IN_REF[5:0]`, Pin 15 = TTD_RETURN, Pin 16 = GND.
+  > This board uses the mating connector as J4 (Adam Tech BHR-20-VUA / 2BHR-20-VUA — see BOM). The authoritative
+  > pinout is defined on the Stator; pins 1-16 preserve the legacy reflector service bus and pins
+  > 17-20 carry grouped `5V_MAIN` / `GND` for Extension-local actuation compatibility.
 
-> **Compatibility note:** J4 pin allocation matches Stator J10 (16-pin 2×8). The Stator J10 was reduced from 20-pin to 16-pin in the design review (this revision) — J4 requires no changes.
+> **Compatibility note:** J4 pin allocation matches Stator J10 (20-pin 2×10). Pins 17-20 are unused on
+> the passive Reflector but retained so the same cable family can be used for Reflector and Extension links.
 
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Termination:**R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
@@ -83,6 +84,8 @@ second CPLD on the Reflector itself.
 >   turnaround to the Stator CPLD (Step 2 receive). **These are NOT JTAG signals.**
 >   See `Stator/Design_Spec.md §3 CPLD Signal Routing Matrix` for full signal flow details.
 > * **Pin 2 — SYS_RESET_N**, **Pin 1 — 3V3_ENIG**, **Pin 16 — GND.**
+> * **Pins 17-20 — `5V_MAIN`, `GND`, `5V_MAIN`, `GND`:** Present for shared cable compatibility only;
+>   unused on the passive Reflector.
 >
 > **Note:** TMS and TDI pull-up resistors (R2/R3) previously listed in this section have been removed.
 > TMS and TDI are NOT routed on J4 (pin 15 = TTD_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
@@ -155,5 +158,5 @@ Reflector.
 | J1 | Rotor 30 output interface — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J4 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Rotor 30 output interface — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J5 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
-| J4 | Interconnect header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
+| J4 | Interconnect header | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P220HCT-ND | C403073 |

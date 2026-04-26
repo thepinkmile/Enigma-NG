@@ -1,8 +1,10 @@
 # Enigma-NG Handoff
+
 This file is the generic repo-local handoff note for session-to-session context that is useful to
 keep near the design docs but is **not** itself a source of design truth.
 
 ## Canonical design sources
+
 Use the active `design/` documents as the authoritative record:
 
 - `design/Design_Log.md`
@@ -13,8 +15,10 @@ Use the active `design/` documents as the authoritative record:
 - `design/Datasheets/` for preserved vendor and project-side reference material
 
 ## 2026-04-26 session result
-The latest repository state now includes the Encoder CPLD consolidation and logic-spec capture in
-addition to the earlier documentation cleanup and datasheet migration work.
+
+The latest repository state now includes the Encoder CPLD consolidation and logic-spec capture,
+the battery-connector candidate note, and the new shared Actuation Module architecture for
+Controller + Extension actuation.
 
 Main outcomes:
 
@@ -69,10 +73,52 @@ Main outcomes:
   - a linked combined markdown datasheet extraction at `design/Datasheets/Glenair-807-216-datasheet.md`
     generated from the Glenair drawing PDF and the 807 NW catalogue PDF
   - closure of the battery-connector review workstream at the candidate-document stage, with the
-    remaining connector specifics to be rechecked during the final deep-dive and manual review
-    before the design is considered a complete Version 1 release
+  remaining connector specifics to be rechecked during the final deep-dive and manual review
+  before the design is considered a complete Version 1 release
+- the old direct Controller-local servo model has now been retired from the active docs in favour
+  of a shared **Actuation Module (AM)** service board:
+  - one AM is hosted on the Controller for the main depression-bar actuation path
+  - each Extension hosts one AM to regenerate group-boundary carry into the next 5-rotor group
+  - the host/AM contract is intentionally minimal: grouped `5V_MAIN`, `3V3_ENIG`, `GND`, and one
+    active-low `ACTUATE_REQUEST`
+  - the AM owns local servo homing, one-shot request capture, servo PWM generation, and local
+    `PWR` / `HOMED` / `ACT` LEDs
+- the AM now reserves separate local **J5 SWD** and **J6 UART/bootloader** service headers plus local
+  **SW1 NRST** and **SW2 BOOT0** tactile buttons so the selected MCU can be programmed before first use
+  with either path
+- the AM board-layout note now uses separate TOP / BOTTOM views to make the fitted-side versus
+  manual-fit-side intent explicit
+- the AM now documents a reduced daughterboard decoupling scheme rather than a full 5x bulk-entry bank:
+  C2-C3 = local STM32 100nF decouplers, C4 = 4.7uF on `3V3_ENIG`, C5 = 10uF on `5V_MAIN` near the
+  servo power path; this is derived from the JDB daughterboard precedent but strengthened for the servo load
+- BOM audit pass: active board design-spec BOMs currently show no open `TBD` / empty-supplier placeholder
+  rows apart from the intentional CM5 distributor-only entry, and the consolidated AM section now carries
+  explicit per-board and Rev A total counts for the current two-module design
+- the AM firmware specification now lives at `design/Software/Actuation_Module/Design_Spec.md`, while
+  the AM hardware spec keeps only a software cross-reference
+- the selected AM controller is now **STMicroelectronics STM32G071K8T3TR**
+- approved supplier references for the AM controller are DigiKey `497-STM32G071K8T3TR-ND`, Mouser
+  `511-STM32G071K8T3TR`, and JLCPCB via global sourcing or consignment only
+- the Mouser product page for the selected AM controller is useful during later PCB work because it
+  exposes footprint and 3D-model links for the package
+- `design/Datasheets/stm32g071.md` now exists as the local markdown companion for
+  `design/Datasheets/stm32g071.pdf`, and the AM design spec now points to that markdown file as the
+  reviewed STM32 candidate-family reference
+- the Reflector / Extension harness has been widened from **16-pin BHR-16-VUA** to
+  **20-pin BHR-20-VUA**:
+  - pins 1-16 preserve the existing reflector-boundary service bus
+  - pins 17-20 add grouped `5V_MAIN` plus returns so an Extension-local AM can be powered without
+    inventing a second cable family
+- `design/Design_Log.md` records the AM architecture and widened harness as **DEC-043**
+- the active mechanical carry wording is now:
+  - purely mechanical within a contiguous 5-rotor group
+  - electrically regenerated across each Extension boundary by the local AM
+- the non-mechanical Extension notch pass-through review is now closed in repo-local state: the active
+  architectural answer is the shared AM baseline, and any remaining Extension follow-up is mechanical
+  linkage / geometry work rather than additional electrical pass-through circuitry
 
 ## Documentation policy reminders
+
 - Do not update document `Version` metadata unless the user explicitly requests it.
 - Do not infer version bumps from the size or perceived significance of a change.
 - Keep `.copilot/` synchronized with meaningful design-state changes, but treat it as handoff
@@ -81,15 +127,24 @@ Main outcomes:
   wait until initial KiCAD library generation.
 - Design docs should reference the markdown datasheets, but the generated datasheet markdown files
   should continue to link back to their source PDFs.
+- Part-detail lookup order is: **reviewed markdown datasheet first**, then the preserved local **PDF
+  datasheet**, and only then an **online source** if the local repository material is missing or
+  insufficient.
+- Repo-local helper scripts that should persist across sessions belong under `.copilot/agent-scripts/`;
+  the datasheet generator now lives there and `_generated_markdown_inventory.json` should be treated as
+  a full datasheet index, not a partial single-run artifact.
 
 ## Remaining follow-up work
+
 These are still open design review items, but they are not yet committed design decisions:
 
 1. Review how Extensions should be used mechanically, including whether interconnect choices for the
    Stator / Reflector / Extension chain should change.
-2. Review whether Extensions need additional servo circuitry to pass through notch rotations.
-3. Add and review board-level coupons and PAS-oriented test coverage.
-4. Rerun deep review agents after the next material design-doc change set.
-5. During the final deep-dive and manual review before declaring Version 1 complete, re-confirm the
+2. Add and review board-level coupons and PAS-oriented test coverage.
+3. Rerun deep review agents after the next material design-doc change set.
+4. During the final deep-dive and manual review before declaring Version 1 complete, re-confirm the
    chosen military battery connector details, especially the remaining 6-pin contact assignment,
    `BATT_PRES_N` position, reserved/unused contact behaviour, cable selection, and interposer fit.
+5. During later schematic capture, preserve the chosen external `J5` / `J6` pinouts, the local
+   SW1 / SW2 tactile pair on `NRST` / `BOOT0`, and confirm the exact STM32 pad assignment and default
+   `BOOT0` bias network behind them.

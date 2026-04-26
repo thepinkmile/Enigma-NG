@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ---
 
@@ -15,33 +15,34 @@
 TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
  _____________________________________________________________________________
 |                                                                             |
-|   [ J7: EXTENSION PORT IN ] <--- 16-pin 2×8 shrouded, from previous stage  |
+|   [ J7: EXTENSION PORT IN ] <--- 20-pin 2×10 shrouded, from previous stage  |
 |                                                                             |
-|   [ BULK DECOUPLING ] <--- 5x 10uF X7R star/spoke near J7                  |
+|   [ BULK DECOUPLING ] <--- 5x 10uF X7R star/spoke near J7                   |
 |                                                                             |
 |   [ ROTOR INTERFACE CONNECTORS ]                                            |
-|   (J1-J3: input side ERM8 male; J4-J6: output side ERF8 female)            |
+|   (J1-J3: input side ERM8 male; J4-J6: output side ERF8 female)             |
 |                                                                             |
 |   [ JTAG BUFFER (U1) ] <--- SN74LVC2G125DCUR, TCK+TMS re-drive for output   |
+|   [ J9 / J10: AM HOST DOCKS ] <--- Power + Trigger sockets for shared AM    |
 |                                                                             |
-|   [ J8: EXTENSION PORT OUT ] <--- 16-pin 2×8 shrouded, to next stage       |
+|   [ J8: EXTENSION PORT OUT ] <--- 20-pin 2×10 shrouded, to next stage       |
 |                                                                             |
-|   [ DATA PLATE ] <--- Inverted White Silkscreen on L4                      |
+|   [ DATA PLATE ] <--- Inverted White Silkscreen on L4                       |
 |_____________________________________________________________________________|
 ```
 
 ---
 
-## 2. J7 — Extension Port IN (16-Pin 2×8)
+## 2. J7 — Extension Port IN (20-Pin 2×10)
 >
 > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J7. See BOM for part number.
-> Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = `ENC_OUT_REF[5:0]`,
-> Pins 9–14 = `ENC_IN_REF[5:0]`, Pin 15 = TTD_RETURN, Pin 16 = GND.
+> Authoritative pinout: pins 1-16 preserve the existing reflector-boundary service bus; pins 17-20 add
+> `5V_MAIN`, `GND`, `5V_MAIN`, `GND` for local actuation power.
 
 ---
 
-## 3. J8 — Extension Port OUT (16-Pin 2×8)
+## 3. J8 — Extension Port OUT (20-Pin 2×10)
 >
 > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J8. Carries the same signals as J7, passed through.
@@ -69,7 +70,17 @@ Mark clearly on silkscreen: `ERM8/ERF8 / 0.8mm / NICHT 2.54mm`.
 
 ---
 
-## 5. Routing — Trace Width Specifications
+## 5. J9 / J10 — Actuation Module Host Docks
+
+* **J9:** AM power dock host socket (ERF8-005) - routes `5V_MAIN`, `3V3_ENIG`, and grouped returns
+  from the Extension Port power entry.
+* **J10:** AM trigger dock host socket (ERF8-005) - routes the local active-low `ACTUATE_REQUEST`
+  source into the AM.
+* The mounted AM footprint on the Extension shall be kept as a **no-component placement zone** except
+  for J9 / J10 and the routing / copper needed to reach them. This preserves the inverted module's
+  clearance and keeps its manual-fit loom / service headers accessible after installation.
+
+## 6. Routing — Trace Width Specifications
 
 **Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).
 L1 = signal (JTAG/routing); L2 = GND plane; L3 = 3V3_ENIG power pour; L4 = secondary routing / data plate.
@@ -79,7 +90,9 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) carries the bus curre
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Extension board power pass-through analysis:**
-The Extension board passes 3V3_ENIG from its J7 input to the next rotor group (up to 5 rotors × 55 mA = 275 mA local group draw plus remaining upstream groups).
+The Extension board passes `3V3_ENIG` from its J7 input to the next rotor group (up to 5 rotors ×
+55 mA = 275 mA local group draw plus remaining upstream groups), and now also receives a grouped
+`5V_MAIN` feed for the local Actuation Module.
 Worst-case: first Extension board (Rotor group 2) passes power for Rotors 6–30 = 25 rotors × 55 mA = 1.38 A through its J5 output.
 All Extension boards share an identical PCB layout; traces must be sized for the worst case — the first Extension board in the stack.
 
@@ -87,11 +100,12 @@ All Extension boards share an identical PCB layout; traces must be sized for the
 
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Signal (ENC_IN/OUT, SYS_RESET_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; pass-through from J7 to J8 and to rotor group connectors |
+| Signal (ENC_IN/OUT, SYS_RESET_N, ACTUATE_REQUEST) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; pass-through from J7 to J8 and local AM trigger routing |
 | JTAG signals: TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
 | 3V3_ENIG entry / pass-through trunk (J7 → J5 output bus) | 1.43 A (worst case) | 0.21 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); worst-case Extension 1 pass-through |
 | 3V3_ENIG local draw (J7 → U1 VCC) | ≤ 10 mA | 0.002 mm | 0.80 mm | **0.80 mm** | L1 | Buffer IC supply; 3V3_ENIG canonical 0.80 mm minimum |
 | 3V3_ENIG distribution (inner power pour) | 1.43 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution |
+| 5V_MAIN to AM host dock (J7 → J9) | 0.50 A | 0.08 mm | 0.80 mm | **0.80 mm** | L1 | Local Extension actuation supply path |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
 
 ### 5.2 Notes

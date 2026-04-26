@@ -17,6 +17,7 @@ Tell Copilot:
 |------|-------------|
 | `plan.md` | Current session plan — state, open workstreams, critical notes, next steps |
 | `handoff.md` | Generic repo-local handoff note for persistent non-design workflow context |
+| `agent-scripts/` | Repo-local helper scripts for repeatable Copilot maintenance tasks |
 | `checkpoints/index.md` | Chronological list of all checkpoints |
 | `checkpoints/NNN-*.md` | Individual checkpoint snapshots (history, work done, technical details) |
 ## Maintenance

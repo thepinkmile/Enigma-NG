@@ -17,6 +17,13 @@
 - Form factor: double-vertical-row high-speed connector family; the PDF is a mechanical / ordering drawing rather than a narrative datasheet.
 - Ordering fields on sheet 1 include position count per row, lead style, plating, `-DV` row spec, and options such as `-K`, `-EGP`, `-EGPS`, `-L`, `-S`, `-TR`, and `-FR`.
 - Material notes in the extract call out a black LCP insulator and phosphor-bronze terminals; plating options include selective-gold / matte-tin variants.
+- Ordering-code decode for the repo's active AM host-dock part `ERF8-005-05.0-S-DV-K-TR`:
+  - `005` = 5 positions per row
+  - `05.0` = 5.0 mm lead style per the local drawing extract
+  - `S` = 30u" selective gold in contact area, matte tin on tail
+  - `DV` = double vertical row specification
+  - `K` = polyimide film pad option
+  - `TR` = tape-and-reel packaging
 - Use the preserved raw text for exact availability tables and dimensions across all 7 sheets.
 
 ## Extraction Notes

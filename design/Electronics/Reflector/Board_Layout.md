@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-26
 
 ## 1. Component Areas
 
@@ -13,8 +13,8 @@
 TOP VIEW (L1) - 4-Layer / 2oz Copper
  ________________________________________________________________________________ 
 |                                                                                |
-|   [ 16-PIN INTERCONNECT HEADER ] <--- Vertical Shrouded Box Header             |
-|   (2x8, 2.54mm Pitch)                                                          |
+|   [ 20-PIN INTERCONNECT HEADER ] <--- Vertical Shrouded Box Header             |
+|   (2x10, 2.54mm Pitch)                                                         |
 |                                                                                |
 |   [ J1–J3: ERM8 CONNECTORS ] <--- ERM8-005 (×2) + ERM8-010 (×1), male headers  |
 |   (Matching Rotor Pitch)                                                       |
@@ -39,9 +39,10 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |_____________________________________________|
 ```
 
-## 3. Interconnect Pinout (16-Pin Header)
+## 3. Interconnect Pinout (20-Pin Header)
 
-This 16-pin (2x8) ribbon-style connector follows odd/even row orientation (odd pins on row 1, even pins on row 2), consistent with the Encoder Data Link pinout format.
+This 20-pin (2x10) ribbon-style connector follows odd/even row orientation (odd pins on row 1, even
+pins on row 2), consistent with the Encoder Data Link pinout format.
 
 ```text
 PIN | SIGNAL          | DESCRIPTION
@@ -62,6 +63,10 @@ PIN | SIGNAL          | DESCRIPTION
 14  | ENC_IN_REF[5]   | Stator-owned inbound reflector-boundary bit 5
 15  | TTD_RETURN      | JTAG Data Out Return
 16  | GND             | Ground (TDO Shield)
+17  | 5V_MAIN         | Reserved on passive Reflector
+18  | GND             | Reserved return
+19  | 5V_MAIN         | Reserved on passive Reflector
+20  | GND             | Reserved return
 ```
 
 ---

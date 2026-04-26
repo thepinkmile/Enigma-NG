@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-25
+**Last Updated:** 2026-04-26
 
 ---
 
@@ -49,7 +49,7 @@ source is active.
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
 | FR-CTL-07 | Route power, JTAG, and I²C between the Controller and the Stator board | Via `J4/J5` hybrid docks | §2 Dock Interfaces; BOM J4/J5 |
 | FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J9) on Controller Board; display add-on board to be designed separately | §8 Connectivity; BOM J9 |
-| FR-CTL-09 | Provide the local servo actuation electrical interface and home sensing for the rotor depression bar | Direct CM5 GPIO on the Controller provides local PWM output and home-switch input; no expander-owned servo path | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM J11, SW3, R4, C12 |
+| FR-CTL-09 | Host one shared Actuation Module for the main depression-bar actuation path | Controller provides AM power and a single active-low `ACTUATE_REQUEST` control line; homing, PWM generation, and diagnostics are local to the AM | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM J11, J16 |
 
 #### Design Requirements
 
@@ -66,9 +66,10 @@ source is active.
 | DR-CTL-09 | PM status / SW1 LED interface | Controller must expose the shared `I2C-1` bus plus one optional interrupt input (`PM_IO_INT_N`) to the PM-local `PCA9534A @ 0x3F`, which virtualises `POE_STAT`, `USB_STAT`, `BATT_PRES_N`, `SYS_FAULT`, and runtime `SW_LED_R/G/B + SW_LED_CTRL`. | §4.1 I²C Bus Topology; §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-10 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
 | DR-CTL-11 | DSI1 connector | J9 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J9 |
-| DR-CTL-12 | Servo connector | J11 = 3-pin JST PH 2.0mm connector; pins: `5V_MAIN`, `GND`, `SERVO_PWM`; mounted on the Controller adjacent to the rotor actuation linkage | §8 Connectivity; BOM J11 |
-| DR-CTL-13 | SERVO_HOME switch | SW3 = SPST normally-open momentary; active-low; 10kΩ pull-up to `3V3_ENIG` + 100nF X7R debounce cap to GND (RC τ = 1ms); connected directly to a CM5 GPIO on the Controller | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM SW3, R4, C12 |
-| DR-CTL-14 | Direct servo GPIO usage | `SERVO_PWM` uses PWM-capable CM5 GPIO 12; `SERVO_HOME` uses direct CM5 GPIO 17 input. No I²C expander or external PWM driver is used for the servo path. | §6 CM5 GPIO Mapping Matrix |
+| DR-CTL-12 | Actuation Module power dock | J11 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating dock for the AM power connector; carries grouped `5V_MAIN`, `3V3_ENIG`, and `GND` returns | §8 Connectivity; BOM J11 |
+| DR-CTL-13 | Actuation Module trigger dock | J16 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating dock for the AM trigger connector; carries active-low `ACTUATE_REQUEST` plus guard / return pins | §8 Connectivity; BOM J16 |
+| DR-CTL-14 | Actuation-request GPIO usage | `ACTUATE_REQUEST` uses CM5 GPIO 8 as an active-low host control output. The former direct `SERVO_PWM` / `SERVO_HOME` CM5 ownership is retired in favour of the shared Actuation Module architecture. | §6 CM5 GPIO Mapping Matrix |
+| DR-CTL-15 | Actuation Module host envelope | The Controller area beneath the installed AM shall be a no-component placement zone except for J11 / J16 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure features that would trap heat or block service access | §8.6; §8.7; `Board_Layout.md` |
 
 ## 2. Dock Interfaces
 
@@ -204,8 +205,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **5** | **PM_IO_INT_N** | Input | 3.3V | Optional interrupt input from the PM-local `PCA9534A @ 0x3F`, used to wake the power-management daemon for PM status changes. |
 | **6** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **7** | **PWR_GD** | Input | 3.3V | Direct PM rail-health telemetry only — HIGH while `5V_MAIN` ≥ 4.50V; does NOT trigger shutdown. Routed on `J3`. |
-| **12** | **SERVO_PWM** | Output (PWM) | 3.3V | Direct Controller-local servo PWM output. Configure for 50Hz pulse generation during actuation cycles. |
-| **17** | **SERVO_HOME** | Input | 3.3V | Active-low Controller-local servo home switch input with local pull-up and RC debounce. |
+| **8** | **ACTUATE_REQUEST** | Output | 3.3V | Active-low request pulse into the Controller-local Actuation Module trigger dock (`J16`). |
 
 ## 7. Protection & EMI
 
@@ -337,21 +337,28 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
   stage; any future display power and touch-side auxiliary wiring stays deferred with the display
   add-on definition.
 
-### 8.6. Servo Connector (J11)
+### 8.6. Actuation Module Power Dock (J11)
 
-* **Part:** JST B3B-PH-K-S(LF)(SN) — 3-pin JST PH 2.0mm through-hole header.
-* **Pinout:** `5V_MAIN`, `GND`, `SERVO_PWM`.
-* **Control path:** `SERVO_PWM` is driven directly from CM5 GPIO 12 on the Controller. No external I²C
-  PWM device is used.
-* **Placement intent:** Adjacent to the local rotor actuation linkage so the servo body and cable stay
-  close to the depression bar mechanism.
+* **Part:** Samtec ERF8-005-05.0-S-DV-K-TR — 10-pin 2x5 female 0.8mm Edge Rate socket.
+* **Function:** Host-side mating connector for the shared Actuation Module `J1` power dock.
+* **Allocation:** Grouped `5V_MAIN`, one `3V3_ENIG` logic feed, and multiple `GND` returns per
+  `Actuation_Module/Design_Spec.md`.
+* **Placement intent:** Adjacent to the local rotor actuation linkage, but without taking servo
+  mechanical load.
+* **Host-board envelope:** Reserve the AM footprint shadow on the Controller as a no-component zone
+  except for J11 and the routing / copper needed to feed it, so the inverted AM keeps its full
+  board-to-board clearance and does not become thermally boxed-in.
 
-### 8.7. SERVO_HOME Switch (SW3)
+### 8.7. Actuation Module Trigger Dock (J16)
 
-* **Part:** Omron SS-01GL13 — SPST normally-open momentary switch.
-* **Electrical interface:** Active-low to CM5 GPIO 17 with local **R4 = 10kΩ** pull-up to `3V3_ENIG`
-  and **C12 = 100nF X7R** debounce capacitor to GND.
-* **Role:** Detects the 0° reference position of the Controller-mounted servo actuation assembly.
+* **Part:** Samtec ERF8-005-05.0-S-DV-K-TR — 10-pin 2x5 female 0.8mm Edge Rate socket.
+* **Function:** Host-side mating connector for the shared Actuation Module `J2` trigger dock.
+* **Control path:** CM5 GPIO 8 provides an active-low `ACTUATE_REQUEST` pulse to this connector.
+  The Actuation Module performs local homing, one-shot latching, and servo PWM generation.
+* **Pin policy:** One active trigger pin plus generous `GND` / guard allocation, matching the
+  serviceability requirement.
+* **Host-board envelope:** Keep the same AM footprint shadow clear around J16; only J11 / J16 and
+  their routing belong inside the mounted-module area.
 
 ## 9. PCB Fabrication & Stackup
 
@@ -423,7 +430,6 @@ Estimated Controller-local power dissipation at system peak load:
 | C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
-| C12 | SERVO_HOME RC debounce capacitor | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
 | J1-J3 | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
@@ -433,17 +439,16 @@ Estimated Controller-local power dissipation at system peak load:
 | J8 | RJ45 with integrated magnetics / PoE entry | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
 | J9 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | Amphenol F52Q-1A7H1-11015 | 15-pin ZIF, 1.0mm pitch | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 |
 | J10 | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
-| J11 | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 |
+| J11 | Actuation Module power dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J12 | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | J13 | JDB hat JTAG header (female socket) | Adam Tech RS1-10-G — 1×10 2.54mm female | THT | 737-RS1-10-G | 2057-RS1-10-G-ND | C3320525 |
 | J14 | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | J15 | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
+| J16 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | MH1–MH4 | CM5 brass standoff M2.5 × 4.0mm SMT (Würth 9774040151R) × 4 | M2.5 × 4.0mm | SMT | 710-9774040151R | 732-7089-1-ND | C5182034 |
 | R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
 | R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R4 | SERVO_HOME pull-up resistor | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SW865-ND | C3822088 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) — multiple acceptable non-Lite variants; minimum 4GB RAM / 8GB eMMC; Wi-Fi optional | N/A | CM5 (SO-DIMM) | various CM5 SKUs | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065CDBVR | SOT-23-5 | 595-TPS2065CDBVR | 296-39353-1-ND | C353882 |
 | U3 | HDMI power switch | AP2331W-7 | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C460346 |
@@ -460,6 +465,3 @@ The Controller also owns the Ethernet / PoE front-end (`TPS2372-4RGWR`, `TPS2373
 the Ethernet-entry ESD arrays). Those parts are tracked as Controller-owned in
 `design/Electronics/Consolidated_BOM.md`; only the externally visible connector and generic local ESD
 rows are repeated here until the Controller schematic refdes are frozen.
-
-The servo motor itself (Miuzei Metal Gearbox 90) is a purchased mechanical item and is therefore not
-listed in the electronic BOM.

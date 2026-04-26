@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-17
+**Last Updated:** 2026-04-26
 
 ---
 
@@ -49,7 +49,7 @@ contact the depression bar.
 
 ## 4. Servo Actuation
 
-The **Miuzei Metal Gearbox 90 servo** (4.8–6V, mounted on the Controller PCB) provides the CM5
+The **Miuzei Metal Gearbox 90 servo** (4.8–6V, mounted local to the mechanism) provides the powered
 actuation path.
 
 * The servo drives an arm that contacts the same depression bar as the keyboard key levers.
@@ -57,8 +57,9 @@ actuation path.
   for rotor stepping purposes.
 * The servo arm geometry must be designed so that the mid-stroke depression (at 90°) matches the
   full-actuation depression of a human keypress on the bar.
-* The SERVO_HOME position (0°) is detected by the SERVO_HOME switch mounted on the Controller PCB.
-  See `design/Electronics/Controller/Design_Spec.md` for servo electrical interface and homing logic.
+* The 0° home position is detected by a local home switch wired into the shared Actuation Module.
+  See `design/Electronics/Actuation_Module/Design_Spec.md` for the electrical interface and homing
+  contract.
 
 ---
 
@@ -94,12 +95,15 @@ mechanism**.
 ## 7. Carry Mechanism
 
 Rotor carry — the advance of higher-order rotors when a lower-order rotor completes a full
-revolution — is **purely mechanical**.
+revolution — is **mechanical within a contiguous 5-rotor group**.
 
 * Carry is triggered by the notch positions machined on each rotor shroud, engaging with the
   carry mechanism of the adjacent higher-order rotor.
-* No electronic or software logic is involved in the carry mechanism.
-* This is identical in function and principle to the original Enigma machine's carry mechanism.
+* At an **Extension boundary**, the mechanical carry event is intentionally converted into a local
+  `ACTUATE_REQUEST` for the Extension-hosted Actuation Module, which then regenerates one local servo
+  step for the next 5-rotor group.
+* This preserves mechanical stepping within a group while allowing the same carry principle to cross
+  the electrically separated Extension boundary.
 
 ---
 

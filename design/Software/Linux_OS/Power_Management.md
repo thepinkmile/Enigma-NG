@@ -336,28 +336,26 @@ sudo hwclock --show
 
 - [ ] Test hold-up timing under actual CM5 load profile (5W assumed; measure at first prototype)
 
-## Direct CM5 Servo Interface
+## Controller Actuation Module Host Interface
 
-The servo motor (Miuzei Metal Gearbox 90) is driven directly from the Controller-local CM5 interface.
-`SERVO_PWM` is generated on **GPIO 12** (PWM-capable) and the `SERVO_HOME` switch is read on
-**GPIO 17**. No PCA9685 I²C PWM driver or expander-owned servo GPIO is used in the active design.
+The servo motor is no longer driven directly from the CM5. The Controller now hosts one shared
+**Actuation Module (AM)** and only provides an active-low `ACTUATE_REQUEST` control pulse on
+**GPIO 8**. Servo homing, PWM generation, and the local home-switch handling are owned by the AM.
+See `../Actuation_Module/Design_Spec.md` for the AM firmware design and boot/service behavior.
 
 ### GPIO Configuration
 
-Configure GPIO 12 for a **50Hz PWM** waveform with pulse widths between approximately **1ms (0°)** and
-**2ms (180°)**. Configure GPIO 17 as an input with the local hardware pull-up / RC debounce network.
+Configure GPIO 8 as a normal 3.3V digital output and drive it **LOW** to request one actuation
+cycle, then return it HIGH / inactive. No direct `SERVO_HOME` CM5 GPIO is used in the active design.
 
 ### Enigma Daemon Hardware Initialisation Sequence
 
 On startup, the `enigmad` daemon performs the following hardware init sequence before accepting
 any cipher commands:
 
-1. **Servo PWM setup:** Configure CM5 GPIO 12 for the required 50Hz PWM output before any actuation.
-2. **Servo homing sequence:**
-   - Command servo to 0° (pulse width ≈ 1ms at 50Hz).
-   - Poll `SERVO_HOME` (GPIO 17) — wait for LOW within 3-second timeout.
-   - If timeout expires, log error and halt init (servo not homed — mechanical fault).
-   - On SERVO_HOME LOW confirmed: servo is at 0° reference position.
+1. **Actuation-request GPIO setup:** Configure CM5 GPIO 8 as an output and drive it HIGH / inactive.
+2. **AM homing guard time:** After rotor-stack power is available, wait the fixed AM power-up homing
+   window (**3 seconds maximum**) before accepting any cipher commands.
 3. **MCP23017 port direction init:**
    - U6 (0x20): GPA = 0xFF (all inputs), GPB = 0xFF (all inputs).
    - U7 (0x21): GPA = 0x00 (all outputs, including `SYS_RESET_N` on GPA[7]); GPB = 0xFF-equivalent spare state until any future functions are assigned.
@@ -370,8 +368,7 @@ To inject a virtual keypress for character N (5-bit address):
 2. Write KEY_ADDR[4:0] = N to U7 GPA[4:0].
 3. Assert KEY_EN (U7 GPA[5] HIGH) — CPLD samples the key address.
 4. Deassert KEY_EN (LOW).
-5. Command servo 0°→180° (one sweep half) on `SERVO_PWM` (GPIO 12).
-6. Wait for mechanical actuation period (≈ 300ms).
-7. Command servo 180°→0° (return sweep).
-8. Wait for return (≈ 300ms).
-9. Deassert SOURCE_SEL (GPA[6] LOW) — returns CPLD to keyboard input mode.
+5. Assert `ACTUATE_REQUEST` LOW on GPIO 8 for one short request pulse (nominal 10-20 ms).
+6. Return GPIO 8 HIGH / inactive.
+7. Wait for the fixed AM actuation window (nominal **650 ms** worst-case for one full home -> act -> return cycle).
+8. Deassert SOURCE_SEL (GPA[6] LOW) — returns CPLD to keyboard input mode.

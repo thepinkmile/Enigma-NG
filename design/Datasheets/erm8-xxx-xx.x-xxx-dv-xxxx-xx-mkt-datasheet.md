@@ -17,6 +17,13 @@
 - Form factor: double-vertical-row companion family with option tables for `-DV`, `-K`, `-L`, `-S`, `-EGP`, `-EGPS`, `-P`, `-TR`, and `-FR`.
 - Material notes in the extract call out a black LCP insulator, phosphor-bronze terminals, BeCu latch, and optional shields.
 - Option text also shows long-pin ground / short-pin signal variants and differential-pair-related options on some lead styles.
+- Ordering-code decode for the repo's active AM part `ERM8-005-05.0-S-DV-K-TR`:
+  - `005` = 5 positions per row
+  - `05.0` = 5.0 mm lead style per the local drawing extract
+  - `S` = 30u" selective gold in contact area, matte tin on tail
+  - `DV` = double vertical row specification
+  - `K` = polyimide film pad option
+  - `TR` = tape-and-reel packaging
 - Use the preserved raw text for exact position counts, lead-style availability, and dimensions across all 7 sheets.
 
 ## Extraction Notes

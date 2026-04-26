@@ -7,7 +7,7 @@
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-26
 
-## 1. J10— Reflector / Extension Link (16-pin, 2×8, 2.54mm Shrouded Box Header)
+## 1. J10— Reflector / Extension Link (20-pin, 2×10, 2.54mm Shrouded Box Header)
 
 Provides a direct power and data link to the Reflector (end-of-stack loopback) board, bypassing the
 full rotor stack to avoid cumulative contact resistance on the power rail and to provide a short TDO
@@ -18,26 +18,30 @@ return path for the JTAG chain.
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | PM -> Reflector | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
+| 1 | 3V3_ENIG | PM -> Reflector / Ext | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
 | 2 | SYS_RESET_N | CTRL->Ext | Active-low CPLD reset broadcast |
-| 3 | ENC_OUT_REF[0] | Stator -> Reflector | Stator-owned outbound reflector-boundary bit 0 |
-| 4 | ENC_OUT_REF[1] | Stator -> Reflector | Stator-owned outbound reflector-boundary bit 1 |
-| 5 | ENC_OUT_REF[2] | Stator -> Reflector | Stator-owned outbound reflector-boundary bit 2 |
-| 6 | ENC_OUT_REF[3] | Stator -> Reflector | Stator-owned outbound reflector-boundary bit 3 |
-| 7 | ENC_OUT_REF[4] | Stator -> Reflector | Stator-owned outbound reflector-boundary bit 4 |
-| 8 | ENC_OUT_REF[5] | Stator -> Reflector | Stator-owned outbound reflector-boundary bit 5 |
-| 9 | ENC_IN_REF[0] | Reflector -> Stator | Stator-owned inbound reflector-boundary bit 0 |
-| 10 | ENC_IN_REF[1] | Reflector -> Stator | Stator-owned inbound reflector-boundary bit 1 |
-| 11 | ENC_IN_REF[2] | Reflector -> Stator | Stator-owned inbound reflector-boundary bit 2 |
-| 12 | ENC_IN_REF[3] | Reflector -> Stator | Stator-owned inbound reflector-boundary bit 3 |
-| 13 | ENC_IN_REF[4] | Reflector -> Stator | Stator-owned inbound reflector-boundary bit 4 |
-| 14 | ENC_IN_REF[5] | Reflector -> Stator | Stator-owned inbound reflector-boundary bit 5 |
-| 15 | TTD_RETURN | Reflector -> Stator | JTAG TDO return path |
-| 16 | GND | — | Signal return / shield |
+| 3 | ENC_OUT_REF[0] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 0 |
+| 4 | ENC_OUT_REF[1] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 1 |
+| 5 | ENC_OUT_REF[2] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 2 |
+| 6 | ENC_OUT_REF[3] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 3 |
+| 7 | ENC_OUT_REF[4] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 4 |
+| 8 | ENC_OUT_REF[5] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 5 |
+| 9 | ENC_IN_REF[0] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 0 |
+| 10 | ENC_IN_REF[1] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 1 |
+| 11 | ENC_IN_REF[2] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 2 |
+| 12 | ENC_IN_REF[3] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 3 |
+| 13 | ENC_IN_REF[4] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 4 |
+| 14 | ENC_IN_REF[5] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 5 |
+| 15 | TTD_RETURN | Reflector / Ext -> Stator | JTAG TDO return path |
+| 16 | GND | — | Logic return |
+| 17 | 5V_MAIN | CTRL -> Ext / Reflector | Extension-local actuation supply |
+| 18 | GND | — | Actuation return |
+| 19 | 5V_MAIN | CTRL -> Ext / Reflector | Additional current path |
+| 20 | GND | — | Actuation return |
 
-**Connector:** 2×8 2.54mm shrouded box header with polarisation key (e.g. Wurth 61201621621 or
-equivalent).  
-**Mating connector on Extension: J7 / Reflector: J4 — same 16-pin 2×8 shrouded box header.**
+**Connector:** 2×10 2.54mm shrouded box header with polarisation key (e.g. Adam Tech BHR-20-VUA /
+2BHR-20-VUA or equivalent).  
+**Mating connector on Extension: J7 / Reflector: J4 — same 20-pin 2×10 shrouded box header.**
 
 ## 2. J1–J3: ROTOR INTERFACE CONNECTORS
 >

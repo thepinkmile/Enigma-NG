@@ -5,14 +5,15 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ## 1. Overview
 
-The Extension Board acts as a mid-stack JTAG signal repeater and power injection point between
-5-rotor sub-groups in extended rotor configurations. It buffers TCK and TMS drive signals to
-compensate for capacitive loading, and bridges the TTD_RETURN signal and 3V3_ENIG power rail
-transparently between rotor groups via the Extension Port connectors (J7/J8).
+The Extension Board acts as a mid-stack JTAG signal repeater, power injection point, and
+group-boundary actuation host between 5-rotor sub-groups in extended rotor configurations. It
+buffers TCK and TMS drive signals, bridges the reflector-boundary service bus between groups, and
+hosts one shared Actuation Module (AM) so a local carry / notch event can trigger the next 5-rotor
+group without Controller-side live servo control.
 
 * **Role:** Mechanical anchor and Power Injection for 5-rotor groups.
 * **Capacity:** Up to ×5 Extension boards in a full 30-rotor build (Rev A power budget). Rev A
@@ -32,6 +33,7 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 | FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Power: J7 → J5 (J2 power pins NC); ENC data: J3/J6 pass-through | §2 Connectivity; BOM J5 (ERF8-005), J3, J6 (ERM8/ERF8-010) |
 | FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) | §2 Connectivity; BOM J1–J3 (ERM8-005/010) |
 | FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) | §2 Connectivity; BOM J4–J6 (ERF8-005/010) |
+| FR-EXT-06 | Host one Actuation Module to regenerate an Extension-boundary carry event into one local servo step | J9 = AM power dock, J10 = AM trigger dock; local mechanical carry detector asserts `ACTUATE_REQUEST` into the AM | §2 Connectivity; BOM J9, J10 |
 
 #### Design Requirements
 
@@ -44,14 +46,19 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 | DR-EXT-05 | Buffer output pin assignment | TCK → J4 pin 2; TMS → J4 pin 4 (per DEC-018 pinout) | §2 Connectivity; Design_Log.md DEC-018 |
 | DR-EXT-06 | Buffer bypass capacitor | C6 = 100 nF 0402 within 2 mm of U1 VCC pin (L1) | §4 PCB Fabrication & Stackup; BOM C6 (100nF X7R) |
 | DR-EXT-07 | System quantity | Up to ×5 Extension boards per system (Rev A power budget); Rev A prototype uses ×1 | §1 Overview; System_Architecture.md |
+| DR-EXT-08 | Extension Port connector family | J7/J8 = Adam Tech BHR-20-VUA / 2BHR-20-VUA 20-pin 2×10 shrouded headers | §2 Connectivity; BOM J7, J8 |
+| DR-EXT-09 | Actuation Module power dock | J9 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J1 | §2 Connectivity; BOM J9 |
+| DR-EXT-10 | Actuation Module trigger dock | J10 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J2 | §2 Connectivity; BOM J10 |
+| DR-EXT-11 | Actuation Module host envelope | The Extension area beneath the installed AM shall be a no-component placement zone except for J9 / J10 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure walls that would trap heat or obstruct service access | §2 Connectivity; `Board_Layout.md` |
 
 ## 2. Connectivity
 
-* **Extension Port (J7 IN / J8 OUT):** 16-pin 2×8 shrouded box header.
+* **Extension Port (J7 IN / J8 OUT):** 20-pin 2×10 shrouded box header.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
-  > This board uses the mating connector on both J7 and J8 (Adam Tech BHR-16-VUA — see BOM).
-  > Authoritative pinout: Pin 1 = 3V3_ENIG, Pin 2 = SYS_RESET_N, Pins 3–8 = `ENC_OUT_REF[5:0]`,
-  > Pins 9–14 = `ENC_IN_REF[5:0]`, Pin 15 = TTD_RETURN, Pin 16 = GND.
+  > This board uses the mating connector on both J7 and J8 (Adam Tech BHR-20-VUA / 2BHR-20-VUA — see BOM).
+  > Authoritative pinout: pins 1-16 preserve the existing reflector-boundary service bus
+  > (`3V3_ENIG`, `SYS_RESET_N`, `ENC_OUT_REF[5:0]`, `ENC_IN_REF[5:0]`, `TTD_RETURN`, `GND`);
+  > pins 17-20 add grouped `5V_MAIN` and extra return capacity for the local Actuation Module supply path.
 * **Rotor Interface Connectors (3 per rotor-facing side × 2 sides = 6 connectors total):**
   The Extension board provides ERM8 male headers on the **input side** (J1–J3, plugging into the
   previous rotor group's last rotor J4/J5/J6 ERF8 output sockets) and ERF8 female sockets on the
@@ -71,9 +78,11 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 
   > **J2 power pins (3V3_ENIG and GND) are not connected to the board power plane.** J2 is present
   > for mechanical engagement with the upstream rotor group only. The Extension board's sole power
-  > entry is J7 (Extension Port IN, pin 1 = 3V3_ENIG, pin 16 = GND). This prevents a parallel power
+  > entry is J7 (Extension Port IN; `3V3_ENIG` on pin 1, `5V_MAIN` on pins 17/19, and returns on
+  > pins 16/18/20). This prevents a parallel power
   > path / ground loop between the rotor daisy-chain and the Extension Port ribbon. C1–C5 decouple
-  > at the J7 power entry. Power is passed to the downstream rotor group via J5 (driven from J7).
+  > at the J7 power entry. `3V3_ENIG` is passed to the downstream rotor group via J5 (driven from J7),
+  > while `5V_MAIN` is used locally for the Extension-mounted Actuation Module and forwarded to J8.
 
   **Note:** The ERM8/ERF8 0.8mm pitch is physically incompatible with 2.54mm connectors — label distinctly on silkscreen.
   Connector part numbers: ERM8-005 = Mouser 200-ERM8005050SDVKTR / DigiKey 612-ERM8-005-05.0-S-DV-K-TRCT-ND / JLCPCB C3649741;
@@ -98,7 +107,8 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   bond. J7/J8 pin 16 remains signal/power return only; the system's only galvanic GND ↔
   GND_CHASSIS bond is on the Power Module at the common power-entry point immediately before the
   eFuse.
-* **Power Injection:** Receives 3V3_ENIG and GND via Extension Port to prevent voltage sag across long stacks.
+* **Power Injection:** Receives `3V3_ENIG`, `5V_MAIN`, and return capacity via Extension Port to
+  prevent voltage sag across long stacks and to power the local Actuation Module.
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **JTAG TTD_RETURN / TDI:** TTD_RETURN (TDO chain return) is carried passively via Extension Port
   pin 15. TDI passes unbuffered board-to-board via BtB throughout the rotor stack — no series
@@ -111,6 +121,15 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
   `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
   TCK and TMS are actively re-buffered by U1 (see JTAG Signal Buffering above).
 * **SYS_RESET_N:** Received via Extension Port pin 2; broadcast to all local rotor CPLDs in this group.
+* **Actuation Module host docks:** The Extension provides two local host sockets for one shared
+  Actuation Module:
+  * **J9** - AM power dock (`5V_MAIN`, `3V3_ENIG`, `GND`)
+  * **J10** - AM trigger dock (`ACTUATE_REQUEST` + guards / returns)
+  * The mounted AM footprint on the Extension is a no-component zone apart from J9 / J10 themselves
+    and the routing / copper needed to reach them.
+  * The local mechanical carry detector at the Extension boundary is routed as the active-low
+    `ACTUATE_REQUEST` source for J10. Exact switch mounting geometry remains owned by the mechanical
+    design.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), `ENC_OUT_REF` / `ENC_IN_REF`, and
   JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
@@ -155,7 +174,9 @@ transparently between rotor groups via the Extension Port connectors (J7/J8).
 | J4 | Rotor group output — JTAG (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Rotor group output — Power (ERF8-005, 10-pin female, 0.8mm pitch) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Rotor group output — ENC Data (ERF8-010, 20-pin female, 0.8mm pitch) | Samtec ERF8-010-05.0-S-DV-K-TR | SMT | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
-| J7 | Extension Port IN header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded box | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
-| J8 | Extension Port OUT header | Adam Tech BHR-16-VUA — 16-pin 2×8 2.54mm shrouded box | 2.54mm | 737-BHR-16-VUA | 2057-BHR-16-VUA-ND | C17692295 |
+| J7 | Extension Port IN header | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded box | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
+| J8 | Extension Port OUT header | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded box | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
+| J9 | Actuation Module power dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J10 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |

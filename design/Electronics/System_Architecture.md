@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ---
 
@@ -14,8 +14,9 @@
 The Enigma-NG system comprises the following boards:
 
 - **Controller Board (CM5)** — Raspberry Pi CM5 carrier and the mechanical motherboard of the machine.
-  Hosts the external RJ45, Ethernet ESD/magnetics, PoE front-end, HDMI, USB 3.0, and the dock
-  interfaces to both the Power Module and the Stator.
+  Hosts the external RJ45, Ethernet ESD/magnetics, PoE front-end, HDMI, USB 3.0, the dock
+  interfaces to both the Power Module and the Stator, and the host dock for the primary Actuation
+  Module.
 - **Power Module** — Removable power-conditioning / UPS cartridge. Accepts local USB-C and battery
   inputs plus a regulated PoE-derived auxiliary feed from the Controller; generates `5V_MAIN` and
   `3V3_ENIG`, manages hold-up energy, and remains the only intentional `GND` ↔ `GND_CHASSIS` bond.
@@ -27,9 +28,12 @@ The Enigma-NG system comprises the following boards:
 - **Rotors (×30)** — Arranged in groups of 5, chaining directly output-to-input. An Extension Board sits
   between each group of 5 to re-buffer broadcast signals.
 - **Extension Board (up to ×5 within Rev A power budget)** — Bridges between rotor groups;
-  re-buffers TCK and TMS. Minimum configuration: Stator → [5 Rotors] → Reflector (0 Extensions,
+  re-buffers TCK and TMS, passes the reflector-boundary service harness, and hosts one local
+  Actuation Module. Minimum configuration: Stator → [5 Rotors] → Reflector (0 Extensions,
   5 rotors). Full build: 6 groups of 5 rotors separated by 5 Extension boards, terminated by the
   Reflector (30 rotors total).
+- **Actuation Module (×1 Controller-local + up to ×5 Extension-local)** — Shared service board that
+  performs local servo homing, one-shot request capture, and servo PWM generation.
 - **Reflector** — Mandatory end-of-chain turnaround board after the final rotor; provides the physical
   `ENC` return path and routes `TTD_RETURN` back to the Stator while the selected reflection map is
   applied by the Stator CPLD.
@@ -42,26 +46,26 @@ The Enigma-NG system comprises the following boards:
 
 ```text
           external RJ45 / HDMI / USB3
-                     |
+                         |
                 Controller Board
-                 /             \
-        J1/J2/J3         J4/J5
-               |                |
-          Power Module       Stator
-                                |
-                         J1–J3 Rotor 1
-                                ·
+                  /             \
+             J1/J2/J3          J4/J5
+                |                |
+           Power Module     Stator + AM
+                                 |
+                          J1–J3 Rotor 1
+                                 -
                              Rotor 5
-                                |
-                          Extension 1
-                                |
+                                 |
+                        Extension 1 + AM
+                                 |
                              Rotor 6
-                                ·
+                                 ·
                              Rotor 30
-                                |
-                            Reflector
-                                |
-                    TTD_RETURN -> Stator J10
+                                 |
+                             Reflector
+                                 |
+                             TTD_RETURN -> Stator J10
 ```
 
 The Power Module and Stator are both removable daughtercards. The Controller is the fixed

@@ -1,0 +1,420 @@
+{
+  "maintained_by": ".copilot\\agent-scripts\\generate_markdown_datasheets.py",
+  "lookup_order": [
+    "markdown datasheet",
+    "local PDF datasheet",
+    "online source only if local sources are missing or insufficient"
+  ],
+  "pdf_to_markdown": [
+    {
+      "pdf": "150060VS75000-datasheet.pdf",
+      "markdown": "150060VS75000-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "200MSP1T2B4M2QE-200-series-datasheet.pdf",
+      "markdown": "200MSP1T2B4M2QE-200-series-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "74HC_HCT157_Q100-datasheet.pdf",
+      "markdown": "74HC_HCT157_Q100-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "9774040151R-standoff-datasheet.pdf",
+      "markdown": "9774040151R-standoff-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "ABM8-Datasheet.pdf",
+      "markdown": "ABM8-Datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "ADCR-T02R7S-datasheet.pdf",
+      "markdown": "ADCR-T02R7S-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "AP2331-datasheet.pdf",
+      "markdown": "AP2331-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Adafruit-3350-datasheet.pdf",
+      "markdown": "Adafruit-3350-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Adafruit-4660-datasheet.pdf",
+      "markdown": "Adafruit-4660-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Amphenol-10164227-1004A1RLF-datasheet.pdf",
+      "markdown": "Amphenol-10164227-1004A1RLF-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "BSS138-onsemi-datasheet.pdf",
+      "markdown": "BSS138-onsemi-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Bourns-AC72ABD-datasheet.pdf",
+      "markdown": "Bourns-AC72ABD-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "CTS-Switches-DIP-219-Series-Datasheet.pdf",
+      "markdown": "CTS-Switches-DIP-219-Series-Datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "FT232H-datasheet.pdf",
+      "markdown": "FT232H-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Glenair_03232018_807_216-3045547-datasheet.pdf",
+      "markdown": "Glenair-807-216-datasheet.md",
+      "mapping_type": "manual"
+    },
+    {
+      "pdf": "Glenair_mighty-mouse-807-nw-connector_catalogue.pdf",
+      "markdown": "Glenair-807-216-datasheet.md",
+      "mapping_type": "manual"
+    },
+    {
+      "pdf": "INA219-datasheet.pdf",
+      "markdown": "INA219-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Intel_max2_cpld-handbook.pdf",
+      "markdown": "Intel_max2_cpld-handbook.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "JST-PH-Connector.datasheet.pdf",
+      "markdown": "JST-PH-Connector.datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "KEM_C1023_X7R_AUTO_SMD-datasheet.pdf",
+      "markdown": "KEM_C1023_X7R_AUTO_SMD-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Keystone-CoinCellRetainers-datasheet.pdf",
+      "markdown": "Keystone-CoinCellRetainers-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Kyocera-AVX-KGP-datasheet.pdf",
+      "markdown": "Kyocera-AVX-KGP-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "MCP121-datasheet.pdf",
+      "markdown": "MCP121-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "MCP23017-Datasheet.pdf",
+      "markdown": "MCP23017-Datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "MIC1555-datasheet.pdf",
+      "markdown": "MIC1555-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Molex-2195620015-datasheet.pdf",
+      "markdown": "Molex-2195620015-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Molex-2195620015-drawings.pdf",
+      "markdown": "Molex-2195620015-drawings.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Molex-2195630015-datasheet.pdf",
+      "markdown": "Molex-2195630015-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Molex-2195630015-drawings.pdf",
+      "markdown": "Molex-2195630015-drawings.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Molex-48406-0003-datasheet.pdf",
+      "markdown": "Molex-48406-0003-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Molex-ExtremeGuardianHD-2141130000-PS-000-specification.pdf",
+      "markdown": "Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Molex-PS-43650-datasheet.pdf",
+      "markdown": "Molex-PS-43650-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "NL27WZ14-D.pdf",
+      "markdown": "NL27WZ14-D.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "PCA9685-datasheet.pdf",
+      "markdown": "PCA9685-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Panasonic-ERA-datasheet.pdf",
+      "markdown": "Panasonic-ERA-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "RPi-cm5-datasheet.pdf",
+      "markdown": "RPi-cm5-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "SM04B-SRSS-TB-datasheet.pdf",
+      "markdown": "SM04B-SRSS-TB-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "T821126A1S100CEU-C3013501-datasheet.pdf",
+      "markdown": "T821126A1S100CEU-C3013501-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TDK-CGA_automotive-datasheet.pdf",
+      "markdown": "TDK-CGA_automotive-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TDK-CGA_mlcc_automotive-datasheet.pdf",
+      "markdown": "TDK-CGA_mlcc_automotive-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TE-1-1674231-1-datasheet.pdf",
+      "markdown": "TE-1-1674231-1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TE-1123684-7-datasheet.pdf",
+      "markdown": "TE-1123684-7-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TE-2007435-1-datasheet.pdf",
+      "markdown": "TE-2007435-1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TI-sn74lvc1g08-datasheet.pdf",
+      "markdown": "TI-sn74lvc1g08-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TI-sn74lvc1g175-datasheet.pdf",
+      "markdown": "TI-sn74lvc1g175-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TPS25980-datasheet.pdf",
+      "markdown": "TPS25980-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "WE-CMBNC-7448031002-datasheet.pdf",
+      "markdown": "WE-CMBNC-7448031002-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "WP154A4SEJ3VBDZGW-CA-datasheet.pdf",
+      "markdown": "WP154A4SEJ3VBDZGW-CA-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Wurth-7499111121A-datasheet.pdf",
+      "markdown": "Wurth-7499111121A-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.pdf",
+      "markdown": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.pdf",
+      "markdown": "amphenol_ffc_fpc_100mm_f52q_f52r-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "bat54-diotec-datasheet.pdf",
+      "markdown": "bat54-diotec-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "bhr-xx-vua-data-sheet.pdf",
+      "markdown": "bhr-xx-vua-data-sheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "coilcraft-poe600f-datasheet.pdf",
+      "markdown": "coilcraft-poe600f-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "csd17483f4-datasheet.pdf",
+      "markdown": "csd17483f4-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf",
+      "markdown": "erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf",
+      "markdown": "erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "fdc2112-datasheet.pdf",
+      "markdown": "fdc2112-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "keystone-1211-datasheet.pdf",
+      "markdown": "keystone-1211-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "lm74700-q1-datasheet.pdf",
+      "markdown": "lm74700-q1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "lmq61460-q1-datasheet.pdf",
+      "markdown": "lmq61460-q1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "ltc3350-datasheet.pdf",
+      "markdown": "ltc3350-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "omron-en-b3f-switch-datasheet.pdf",
+      "markdown": "omron-en-b3f-switch-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "omron-en-ss-switch-datasheet.pdf",
+      "markdown": "omron-en-ss-switch-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "pca9534a-datasheet.pdf",
+      "markdown": "pca9534a-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "ph1-xx-ua-data-sheet.pdf",
+      "markdown": "ph1-xx-ua-data-sheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "rs1-xx-g-datasheet.pdf",
+      "markdown": "rs1-xx-g-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "sn74lvc2g125-datasheet.pdf",
+      "markdown": "sn74lvc2g125-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "srp1265a-datasheet.pdf",
+      "markdown": "srp1265a-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "stm32g071.pdf",
+      "markdown": "stm32g071.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "stusb4500l-datasheet.pdf",
+      "markdown": "stusb4500l-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tpd1e10b06-q1-datasheet.pdf",
+      "markdown": "tpd1e10b06-q1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tpd2e2u06-datasheet.pdf",
+      "markdown": "tpd2e2u06-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tpd4e05u06-q1-datasheet.pdf",
+      "markdown": "tpd4e05u06-q1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tps2065c-datasheet.pdf",
+      "markdown": "tps2065c-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tps2372-datasheet.pdf",
+      "markdown": "tps2372-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tps23730-datasheet.pdf",
+      "markdown": "tps23730-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tps25751-datasheet.pdf",
+      "markdown": "tps25751-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "tps757-datasheet.pdf",
+      "markdown": "tps757-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "usb4135-datasheet.pdf",
+      "markdown": "usb4135-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "vishay-wsk2512-datasheet.pdf",
+      "markdown": "vishay-wsk2512-datasheet.md",
+      "mapping_type": "same_stem"
+    }
+  ],
+  "pdf_only": [],
+  "markdown_only": [
+    "Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md",
+    "SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md"
+  ]
+}

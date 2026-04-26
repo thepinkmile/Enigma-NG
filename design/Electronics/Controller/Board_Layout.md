@@ -122,10 +122,16 @@ rear / dock edge
 |                         |     Module      |                            |
 |                         | [ Low-Profile ] |                     [RJ45] |
 |                         | [    Area     ] |                     [USB3] |
-| [ SERVO controls ]      |_________________|                     [HDMI] |
+| [ ACTUATION MODULE ]    |_________________|                     [HDMI] |
 |________________________________________________________________________|
 left side / internal                                            right side
 ```
 
 The Controller is the only board that must be inserted as the enclosure reference part.
 The Power Module and Stator then dock into it as mechanically independent service modules.
+
+For the shared **Actuation Module**, the Controller shall reserve the mounted-module shadow as a
+**no-component placement zone** except for the two Samtec host sockets and the copper / vias needed to
+route them. This preserves the daughterboard clearance set by the Samtec stack, keeps the manual-fit
+loom / service headers accessible on the outward face of the inverted AM, and avoids creating a
+thermally enclosed pocket around the local controller.

@@ -122,8 +122,7 @@ board matrix.
 | ERF8-010 20-pin Samtec Female Socket 0.8 mm (ENC data) | — | — | 1 | — | — | 1 | 30 | — | 1 | — | — | 32 |
 | Adam Tech PH1-07-UA — 1×7 2.54mm male pin header, Rotor Board A H\_SW3 (Mouser 737-PH1-07-UA; DigiKey 2057-PH1-07-UA-ND; JLCPCB C3331618) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
 | Adam Tech RS1-07-G — 1×7 2.54mm female socket, Rotor Board B H\_SW3 (Mouser 737-RS1-07-G; DigiKey 2057-RS1-07-G-ND; JLCPCB C3321543) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
-| Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm (Mouser 737-BHR-20-VUA; DigiKey 2057-BHR-20-VUA-ND; JLCPCB C17340054 uses 2BHR-20-VUA MPN) | — | — | 6 | 1 | 6 | — | — | — | — | — | — | 12 |
-| Adam Tech BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm (Mouser 737-BHR-16-VUA; DigiKey 2057-BHR-16-VUA-ND; JLCPCB C17692295) | — | — | 1 | — | — | — | — | 1 | 2 | — | — | 4 |
+| Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm (Mouser 737-BHR-20-VUA; DigiKey 2057-BHR-20-VUA-ND; JLCPCB C17340054 uses 2BHR-20-VUA MPN) | — | — | 7 | 1 | 6 | — | — | 1 | 2 | — | — | 16 |
 | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header, JDB J1/Rotor H\_PWR+H\_JTAG(BrdB)+H\_SENS(BrdA) (Mouser 737-PH1-05-UA; DigiKey 2057-PH1-05-UA-ND; JLCPCB C5374051) | — | — | — | — | — | 3 | 90 | — | — | 1 | — | 91 |
 | Adam Tech RS1-05-G — 1×5 2.54mm female socket, CTL J\_JDB\_PWR/Rotor H\_PWR+H\_JTAG(BrdA)+H\_SENS(BrdB) (Mouser 737-RS1-05-G; DigiKey 2057-RS1-05-G-ND; JLCPCB C3321119) | — | 1 | — | — | — | 3 | 90 | — | — | — | — | 91 |
 | Adam Tech PH1-10-UA — 1×10 2.54mm male pin header, JDB J2 JTAG OUTPUT (Mouser 737-PH1-10-UA; DigiKey 2057-PH1-10-UA-ND; JLCPCB C3330527) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
@@ -263,17 +262,32 @@ SYS_RESET_N, spare GPIO. U8 @ 0x22: CPLD config output driver (SW1[3:0] + SW2[5:
 STATOR_CFG_RDY). J13 (6-pin JST PH) connects to Settings Board J1 and carries 3V3_ENIG,
 5V_MAIN (used as the Settings indicator rail), 2× GND, SDA, SCL.
 
-### Controller-local Servo Interface Components
+### Shared Actuation Module / Host Interface Components
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| J11 | Servo connector (3-pin JST PH 2.0mm) | JST B3B-PH-K-S(LF)(SN) | THT | 306-B3BPHKSLFSNP | 455-1705-ND | C131339 | 🔒 |
-| SW3 | SERVO_HOME homing switch (SPST NO momentary, PCB-mount) | Omron SS-01GL13 | THT | 653-SS-01GL13 | SS-01GL13-ND | — | 🔒 |
-| R4 | SERVO_HOME pull-up resistor (10kΩ) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 |
-| C12 | SERVO_HOME RC debounce capacitor (100nF X7R) | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+Rev A currently uses **two AM modules total**: one on the Controller and one on the single fitted
+Extension. A future full 30-rotor build would scale this to **six AM modules total** (Controller + 5
+Extensions), but the totals below follow the same **Rev A single-Extension** convention used elsewhere
+in this consolidated BOM.
 
-The servo motor itself (Miuzei Metal Gearbox 90) is a purchased mechanical item and is therefore not
-listed in the electronic BOM.
+| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf | Qty per board/module | Rev A total |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: | :---: | :---: |
+| J11 / J16 (Controller host) | Actuation Module host dock sockets (power + trigger) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | 🔒 | 2 per Controller | 2 |
+| J9 / J10 (Extension host) | Actuation Module host dock sockets (power + trigger) | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 | 🔒 | 2 per Extension | 2 |
+| J1 / J2 (AM module) | Actuation Module module-side dock headers (power + trigger) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 | 🔒 | 2 per AM | 4 |
+| J3 / J4 / J5 / J6 (AM module) | Manual-fit headers (servo + home switch + SWD + UART/bootloader service) | Adam Tech PH1-05-UA — 1×5 2.54mm male | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 | 🔒 | 4 per AM | 8 |
+| SW1 (AM module) | Local reset pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | 🔒 | 1 per AM | 2 |
+| SW2 (AM module) | Local `BOOT0` pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | 🔒 | 1 per AM | 2 |
+| C2-C3 (AM module) | STM32 local supply decoupling | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 2 per AM | 4 |
+| C4 (AM module) | `3V3_ENIG` local reservoir / entry filter | 4.7uF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 | 🔒 | 1 per AM | 2 |
+| C5 (AM module) | `5V_MAIN` local reservoir near servo power path | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 | 🔒 | 1 per AM | 2 |
+| D1-D3 (AM module) | Local diagnostic LEDs (`PWR`, `HOMED`, `ACT`) | Wurth 150060VS75000 — Green SMD LED | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 | 🔒 | 3 per AM | 6 |
+| R1-R3 (AM module) | LED current-limit resistors | 330Ω 1% 0402 | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 | 🔒 | 3 per AM | 6 |
+| R4 (AM module) | `ACTUATION_HOME` pull-up resistor | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 | 1 per AM | 2 |
+| C1 (AM module) | `ACTUATION_HOME` debounce capacitor | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 1 per AM | 2 |
+| U1 (AM module) | Local actuation controller | STMicroelectronics STM32G071K8T3TR | LQFP32 | 511-STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | Global sourcing / consignment only | 🔒 | 1 per AM | 2 |
+
+The servo motor and its local home switch remain off-board electromechanical items and are therefore
+not listed as PCB-fitted rows in the consolidated electronic BOM.
 
 ## 4d. Settings Board
 
@@ -352,7 +366,10 @@ high-current dock through the Stator to the Settings Board.
 
 ## 6. Backplane & Extension Components
 
-* **16-pin Inter-Board Link (Adam Tech BHR-16-VUA, 2×8, 2.54mm):** Used for J10 (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Correct connector for TTD_RETURN path.
+* **20-pin Inter-Board Link (Adam Tech BHR-20-VUA / 2BHR-20-VUA, 2×10, 2.54mm):** Used for J10
+  (Extension/Reflector link) on Stator, Extension (J7/J8), and Reflector (J4). Pins 1-16 preserve
+  the reflector-boundary service bus; pins 17-20 add grouped `5V_MAIN` and returns for the
+  Extension-local Actuation Module supply path.
 * See individual board BOMs: Rotor/Board_Layout.md, Stator/Board_Layout.md, Extension/Board_Layout.md, Reflector/Board_Layout.md for authoritative connector part numbers.
 * **Copper Shielding Tape:** 50mm (2.0") Conductive Adhesive (Manual cable wrap).
 
@@ -499,7 +516,9 @@ Product page links for all major components for design review and procurement ve
 | C_SC1–8 (PM) | ADCR-T02R7SA256MB — 25F 2.7V Supercapacitor, THT Radial Can | Abracon | [ADCR-T02R7S-datasheet.md](../Datasheets/ADCR-T02R7S-datasheet.md) |
 | SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.md](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.md) |
 | J4–J9 (STA), J2 (ENC) | BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.md](../Datasheets/bhr-xx-vua-data-sheet.md) |
-| J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-16-VUA — 16-pin 2×8 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.md](../Datasheets/bhr-xx-vua-data-sheet.md) |
+| J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.md](../Datasheets/bhr-xx-vua-data-sheet.md) |
+| J11/J16 (CTL), J9/J10 (EXT) | ERF8-005-05.0-S-DV-K-TR — 10-pin 2×5 0.8mm female socket | Samtec | [samtec-erm8-erf8-datasheet.md](../Datasheets/samtec-erm8-erf8-datasheet.md) |
+| J1/J2 (AM) | ERM8-005-05.0-S-DV-K-TR — 10-pin 2×5 0.8mm male header | Samtec | [samtec-erm8-erf8-datasheet.md](../Datasheets/samtec-erm8-erf8-datasheet.md) |
 | J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
 | J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
 | J12 (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.md](../Datasheets/rs1-xx-g-datasheet.md) |
