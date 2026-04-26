@@ -54,6 +54,20 @@ Main outcomes:
     physical keyboard and `CM5_KEY_DATA[5:0]` / `CM5_KEY_ACTIVE_N` stay aligned
   - `LBD_DEC` uses `ENC_ACTIVE_N` to blank all outputs when the selected keyboard source is idle
   - `design/Design_Log.md` records this connector and HID-blanking update as **DEC-042**
+- the Power Module battery-connector review now has a dedicated candidate-note document,
+  `design/Electronics/Power_Module/Millitary_Battery_Connection_Option.md`, which captures:
+  - Glenair candidate `807-216-00ZNU6-6DY`
+  - Heilind-only sourcing with JLCPCB **consignment-only** assembly expectation
+  - the provisional 6-pin vs 5-signal mapping caution
+  - confirmed `Y` keying as the standard battery keying intended to prevent mating with data-only
+    ports on standard in-service devices such as STAR-PAN and STAR-PAN NG
+  - the preferred PM-side **interposer / daughterboard** integration approach
+  - a separate prototype-only adapter board direction using the same female receptacle
+  - a linked combined markdown datasheet extraction at `design/Datasheets/Glenair-807-216-datasheet.md`
+    generated from the Glenair drawing PDF and the 807 NW catalogue PDF
+  - closure of the battery-connector review workstream at the candidate-document stage, with the
+    remaining connector specifics to be rechecked during the final deep-dive and manual review
+    before the design is considered a complete Version 1 release
 
 ## Documentation policy reminders
 - Do not update document `Version` metadata unless the user explicitly requests it.
@@ -68,9 +82,11 @@ Main outcomes:
 ## Remaining follow-up work
 These are still open design review items, but they are not yet committed design decisions:
 
-1. Review battery connector alternatives.
-2. Review how Extensions should be used mechanically, including whether interconnect choices for the
+1. Review how Extensions should be used mechanically, including whether interconnect choices for the
    Stator / Reflector / Extension chain should change.
-3. Review whether Extensions need additional servo circuitry to pass through notch rotations.
-4. Add and review board-level coupons and PAS-oriented test coverage.
-5. Rerun deep review agents after the next material design-doc change set.
+2. Review whether Extensions need additional servo circuitry to pass through notch rotations.
+3. Add and review board-level coupons and PAS-oriented test coverage.
+4. Rerun deep review agents after the next material design-doc change set.
+5. During the final deep-dive and manual review before declaring Version 1 complete, re-confirm the
+   chosen military battery connector details, especially the remaining 6-pin contact assignment,
+   `BATT_PRES_N` position, reserved/unused contact behaviour, cable selection, and interposer fit.

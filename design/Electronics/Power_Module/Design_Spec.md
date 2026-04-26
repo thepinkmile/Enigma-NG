@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-21
+**Last Updated:** 2026-04-26
 
 ## 1. Overview
 
@@ -108,6 +108,12 @@ Controller Board via dock connector `J1`.
   * Pin 5: `VBATT-`.
   * **BMS Charge Voltage:** Smart Battery BMS must be configured for a maximum charge voltage of **4.1V/cell (16.4V total for 4S)**. This provides a ≥0.5V margin to the TPS25980 eFuse 16.9V OVLO
   threshold, preventing nuisance latch-off at full charge. BMS configurations using 4.2V/cell (16.8V) are not compatible without OVLO re-specification.
+  * **Candidate replacement path:** a military / NetWarrior-style Glenair receptacle plus a small
+    PM-side interposer board is now being investigated as a possible replacement for the Molex part.
+    See `Millitary_Battery_Connection_Option.md`. This remains **pending** confirmation of the
+    6-pin contact map, cable availability, and interposer mechanics. The `Y` keying for the chosen
+    Glenair candidate is already verified as the standard battery keying intended to prevent mating
+    with data-only ports on standard in-service devices.
 * **Presence Logic:** Pin 4 (`BATT_PRES_N`) is pulled to **3V3_ENIG** via 10kΩ resistor (R6). For the selected Accutronics / Inspired Energy N205-family battery, the battery `T` pin presents
   **300Ω ±5% to `VBATT-`**, which is treated directly as battery-present.
   * Logic HIGH: Battery Disconnected.
@@ -469,7 +475,7 @@ Estimated PM-local power dissipation at system peak load:
 | C42 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R (CC1206KKX7R8BB106) | 1206 | 603-CC126KKX7R8BB106 | 311-1959-1-ND | C70462 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | C17468669 |
 | J1-J3 | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 |
-| J4 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
+| J4 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Candidate military / NetWarrior-style replacement under review: Glenair `807-216-00ZNU6-6DY` via Heilind / consignment-only; see `Millitary_Battery_Connection_Option.md`. | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
 | J5 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must protrude through the Power Module enclosure rear face in line with the global external-connector overhang rule; verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 |
 | L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |

@@ -28,20 +28,30 @@ The current active design docs now reflect:
 - the Stator ↔ Encoder 20-pin contract now assigns **pin 8** to the HID-local active-low
   `ENC_ACTIVE_N` sideband, with `KBD_ENC` driving activity, `LBD_DEC` using it for blanking, and
   the Stator muxing / monitoring the selected activity source under `DEC-042`
+- the Power Module battery-connector review now has a dedicated candidate-note document at
+  `design/Electronics/Power_Module/Millitary_Battery_Connection_Option.md`, capturing the
+  Glenair `807-216-00ZNU6-6DY` / Heilind / consignment-only option plus the preferred PM interposer
+  and prototype-adapter-board direction pending connector confirmation
+- the Glenair drawing PDF and 807 NW catalogue PDF now have a combined markdown extraction at
+  `design/Datasheets/Glenair-807-216-datasheet.md`, linked from the Power Module battery option note
+- the Glenair candidate's `Y` keying is now treated as confirmed standard battery keying for the
+  connector family rather than as an open question
+- the battery-connector review workstream is now closed at the candidate-document stage; the chosen
+  connector still requires explicit confirmation during the final deep-dive and manual review before
+  the design is treated as a complete Version 1 release
 
 Recent locked work:
 
 - `7829f8a` — `Normalize design document refdes`
 - `1c2a505` — `Reset doc metadata versions`
 - `4e36234` — `Close encoder split review`
-- the current working tree carries the HID-local `ENC_ACTIVE_N` sideband update across Stator /
-  Encoder design docs, CPLD logic requirements, and the design log
+- the current working tree carries the Power Module military-battery connector candidate note, the
+  generated Glenair datasheet markdown, and the repo-local state sync for battery-review closeout
 
 ---
 ## Current Open Workstreams
 | ID | Status | Scope |
 |----|--------|-------|
-| `battery-connector-review` | pending | Review battery connector alternatives and capture any resulting design-document updates |
 | `extension-mechanical-usage` | pending | Review how Extensions should be used mechanically, including whether interconnect choices for the Stator / Reflector / Extension chain should change |
 | `extension-notch-pass-through` | pending | Review whether Extensions need additional servo circuitry to pass through notch rotations |
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
@@ -67,10 +77,10 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/063-encoder-active-sideband.md`
-4. `.copilot/checkpoints/062-encoder-split-review-closed.md`
-5. `.copilot/checkpoints/061-encoder-epm570-and-logic-spec.md`
-6. `.copilot/checkpoints/060-datasheet-markdown-migration.md`
+3. `.copilot/checkpoints/064-battery-connector-candidate.md`
+4. `.copilot/checkpoints/063-encoder-active-sideband.md`
+5. `.copilot/checkpoints/062-encoder-split-review-closed.md`
+6. `.copilot/checkpoints/061-encoder-epm570-and-logic-spec.md`
 
 Then proceed into the next design-review task from the active `design/` docs rather than treating
 `.copilot/` content as design truth.
@@ -88,6 +98,9 @@ Then proceed into the next design-review task from the active `design/` docs rat
   programming rather than role-specific RC population.
 - Active HID-side Encoder connector contract: pin 8 is `ENC_ACTIVE_N`, idle state is HIGH, and the
   signal is intentionally local to the keyboard / lightboard path rather than the wider cipher path.
+- Active PM battery review state: Glenair `807-216-00ZNU6-6DY` is the documented candidate path,
+  `Y` keying is confirmed standard battery keying, and the remaining connector questions must be
+  rechecked during the final deep-dive and manual review before the design is marked complete V1.
 
 ### Refdes / naming state
 - Controller internal connectors are now normalized to numeric refs (`J9`-`J15`) in the active docs.
