@@ -43,6 +43,6 @@
 * [x] Setup Avalonia .NET 10.0 Project Template.
 * [ ] Implement I2C Wrapper for INA219 (Telemetry) — address 0x45 (rotor stack), 0x40 (power module); R_SHUNT=0.010Ω (CSS2H 10mΩ); CAL=0x0400; see Power_Management.md for driver code.
 * [ ] Create the "Enigma Path" SVG animation logic.
-* [ ] Integrate JTAG programming library for Intel MAX II EPM240T100I5N (×6 Encoder) and EPM570T100I5N (×31 Rotor+Stator) CPLDs.
+* [ ] Integrate JTAG programming library for Intel MAX II EPM570T100I5N CPLDs across Encoder (×6), Rotor (×30), and Stator (×1).
 * [ ] Design the Bilingual "Typewriter" UI Theme.
 * [ ] Finalize the "Time-to-Empty" Battery algorithm.

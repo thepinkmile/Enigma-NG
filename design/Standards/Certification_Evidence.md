@@ -241,7 +241,8 @@ inter-modulation products would appear at sum and difference frequencies, partia
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
-The 37 CPLDs (6× EPM240T100I5N [Encoder] + 31× EPM570T100I5N [Rotor ×30 + Stator]) share this rail as their VCCIO (I/O voltage reference).
+The 37 CPLDs (6× Encoder + 30× Rotor + 1× Stator, all `EPM570T100I5N`) share this rail as their
+VCCIO (I/O voltage reference).
 Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
 potential JTAG chain errors. A linear LDO provides high PSRR isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional
 filtering.
@@ -423,31 +424,35 @@ on the Controller using:
 This section records components that have active end-of-life (EOL) or product change notices (PCN) at the time of design. For each such component, the design team's acceptance rationale and any
 mitigation plan are documented.
 
-### 7.1 MAX II EPM240T100I5N (CPLD — Multiple Boards)
+### 7.1 MAX II EPM570T100I5N (CPLD — Encoder, Rotor, and Stator Boards)
 
 | Attribute | Detail |
 | --- | --- |
 | **Manufacturer** | Intel (formerly Altera) |
-| **Part Number** | EPM240T100I5N |
+| **Part Number** | EPM570T100I5N |
 | **Family** | MAX II |
-| **Function** | Encoder letter-substitution logic (6 Encoder boards only) |
-| **Quantity** | 6 devices (Encoder ×6 only) |
+| **Function** | Encoder sampled debounce + 64-to-6 / 6-to-64 conversion logic (Encoder ×6); rotor wiring-map lookup + mod-N adder + STGC/RBGC encoder decode (Rotor ×30); Stator routing matrix and reflector map application (Stator ×1) |
+| **Quantity** | 37 devices (Encoder ×6, Rotor ×30, Stator ×1) |
 | **EOL/PCN Status** | Active lifecycle notice issued by Intel |
 | **Notice Type** | Product Discontinuation / Last-Time-Buy notification |
+| **Supply** | 3.3 V (3V3_ENIG rail) |
+| **Package** | TQFP-100 (industrial, −40 °C to +100 °C) |
+| **JTAG** | All 37 devices in-system programmable via shared JTAG chain |
+| **Virtual JTAG** | Rotor CPLDs expose ALTERA_VIRTUAL_JTAG USER0 UDR for position readback (FR-ROT-09, DEC-027) |
 
 **Acceptance Rationale (Prototype Stage):**
 
-The MAX II EPM240T100I5N is accepted for use in the prototype design for the following reasons:
+The MAX II EPM570T100I5N is accepted for use in the prototype design for the following reasons:
 
-1. **Cost effectiveness:** These devices are significantly lower in cost than their recommended successors (MAX 10, Cyclone 10 LP), making them well-suited for prototype-stage development where
-
-   design changes are expected.
-2. **Developer tooling:** The designer holds a MAX II FPGA/CPLD development board, enabling direct verification of programming chains and JTAG connectivity prior to committing to PCB fabrication.
-3. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6–12 months) is considered acceptable,
-
+1. **Cost effectiveness:** These devices remain significantly lower in cost than their recommended
+   successors (MAX 10, Cyclone 10 LP). Although noted as "obsolete", they remain readily available
+   through established distribution channels and continue to be supported by Intel.
+2. **Architecture consolidation:** Using one MAX II device across Encoder, Rotor, and Stator boards simplifies bulk purchasing, programming workflows, and spare-holding during
+   prototype-stage development where design changes are expected.
+3. **Developer tooling:** The designer holds a MAX II FPGA/CPLD development board, enabling direct verification of programming chains and JTAG connectivity prior to committing to PCB fabrication.
+4. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6–12 months) is considered acceptable,
    particularly given the availability of remaining stock from reputable distributors.
-4. **Pin and feature compatibility:** The MAX II EPM240T100I5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising
-
+5. **Pin and feature compatibility:** The MAX II EPM570T100I5N in a TQFP-100 package has established tooling and documentation support in Quartus II Web Edition (perpetual free licence), minimising
    development risk.
 
 **Mitigation Plan (Production Stage):**
@@ -466,22 +471,6 @@ Any replacement CPLD must be verified for:
 - Operating temperature range: −40°C to +85°C minimum (IEC 60068-2 extended industrial range; selected conservatively to support future military certification assessment)
 
 > **Action item OA-04:** Review replacement CPLD options before prototype-to-production transition. Update this register with selected replacement part.
-
----
-
-### 7.2 Intel MAX II EPM570T100I5N (Rotor + Stator CPLDs)
-
-| Attribute | Detail |
-| --- | --- |
-| **Manufacturer** | Intel (formerly Altera) |
-| **Part Number** | EPM570T100I5N |
-| **Family** | MAX II |
-| **Quantity** | 31 devices (Rotor ×30 + Stator ×1) |
-| **Supply** | 3.3 V (3V3_ENIG rail) |
-| **Function** | Rotor wiring-map lookup + mod-N adder + STGC/RBGC encoder decode (Rotor ×30); Stator plugboard routing matrix (Stator ×1) |
-| **Package** | TQFP-100 (industrial, −40 °C to +100 °C) |
-| **JTAG** | All 31 devices in-system programmable via shared JTAG chain |
-| **Virtual JTAG** | Rotor CPLDs expose ALTERA_VIRTUAL_JTAG USER0 UDR for position readback (FR-ROT-09, DEC-027) |
 
 ---
 

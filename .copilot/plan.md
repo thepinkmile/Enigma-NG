@@ -20,6 +20,11 @@ The current active design docs now reflect:
 - document metadata version headers reset to `v.0.1.0` because the project is still in design phase
 - local PDF datasheets now have markdown companions under `design/Datasheets/`, with reviewed
   design-doc references retargeted from PDF links to the markdown versions
+- Encoder Modules now target the common `EPM570T100I5N`, with encode-role debounce moved into CPLD
+  logic and detailed logic requirements captured in `design/Software/CPLD_Logic/Encoder_Logic.md`
+- the Encoder board split review is now closed around the `EPM570` / weak-pull-up /
+  programming-defined-role baseline, with the rationale captured in the active design docs and
+  `DEC-041`
 
 Recent locked work:
 
@@ -32,7 +37,6 @@ Recent locked work:
 | ID | Status | Scope |
 |----|--------|-------|
 | `battery-connector-review` | pending | Review battery connector alternatives and capture any resulting design-document updates |
-| `encoder-board-split-review` | in_progress | Continue the Encoder split review and any remaining architecture/part-selection follow-up |
 | `extension-mechanical-usage` | pending | Review how Extensions should be used mechanically, including whether interconnect choices for the Stator / Reflector / Extension chain should change |
 | `extension-notch-pass-through` | pending | Review whether Extensions need additional servo circuitry to pass through notch rotations |
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
@@ -58,8 +62,10 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/060-datasheet-markdown-migration.md`
-4. `.copilot/checkpoints/059-version-metadata-and-state-sync.md`
+3. `.copilot/checkpoints/062-encoder-split-review-closed.md`
+4. `.copilot/checkpoints/061-encoder-epm570-and-logic-spec.md`
+5. `.copilot/checkpoints/060-datasheet-markdown-migration.md`
+6. `.copilot/checkpoints/059-version-metadata-and-state-sync.md`
 
 Then proceed into the next design-review task from the active `design/` docs rather than treating
 `.copilot/` content as design truth.
@@ -73,6 +79,8 @@ Then proceed into the next design-review task from the active `design/` docs rat
 - The current metadata baseline for active docs is `v.0.1.0`.
 - Design-doc datasheet references should point at the reviewed markdown datasheets, while each
   generated datasheet markdown file keeps its own source-PDF link.
+- Active Encoder baseline: `EPM570T100I5N`, digital debounce in CPLD logic, and role selected by
+  programming rather than role-specific RC population.
 
 ### Refdes / naming state
 - Controller internal connectors are now normalized to numeric refs (`J9`-`J15`) in the active docs.

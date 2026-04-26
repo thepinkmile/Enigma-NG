@@ -11,30 +11,30 @@
 
 ```text
 TOP VIEW (L1) - 4-Layer / 2oz Copper
- ____________________________________________________________________________
-|                                                                            |
-|   [ 64-LINE SPADE TERMINAL BANK ]  <--- External I/O Interface             |
-|   (single generic bank used as either inputs or outputs)                   |
-|                                                                            |
-|   [ SINGLE CPLD + OPTIONAL RC INPUT NETWORK ]                              |
-|   (EPM240T100I5N + encode-role pull-up/RC population area)                 |
-|                                                                            |
-|   [ DATA LINK HEADER ] <--- 20-pin Header (2x10, 2.54mm Pitch)             |
-|   (3V3_ENIG, ENC_DATA[5:0], JTAG, GND, 3V3_ENIG)                           |
-|                                                                            |
-|   [ DATA PLATE ] <--- Inverted White Silkscreen on L4                      |
-|____________________________________________________________________________|
+ __________________________________________________________________
+|                                                                  |
+|   [ 64-LINE SPADE TERMINAL BANK ]  <--- External I/O Interface   |
+|   (single generic bank used as either inputs or outputs)         |
+|                                                                  |
+|   [ SINGLE CPLD + DIGITAL DEBOUNCE / ROLE LOGIC ]                |
+|   (EPM570T100I5N + sampled encode/decode image implementation)   |
+|                                                                  |
+|   [ DATA LINK HEADER ] <--- 20-pin Header (2x10, 2.54mm Pitch)   |
+|   (3V3_ENIG, ENC_DATA[5:0], JTAG, GND, 3V3_ENIG)                 |
+|                                                                  |
+|   [ DATA PLATE ] <--- Inverted White Silkscreen on L4            |
+|__________________________________________________________________|
 ```
 
 ## 2. Simplified Layout
 
 ```text
-_____________________________________________________________________________
-|                                                                            |
-|   [ 64-LINE BANK ]      [ CPLD ]      [ DATA LINK ]                        |
-|                                                                            |
-|   (Generic I/O field)     (U1)      (20-pin ribbon bus)                    |
-|____________________________________________________________________________|
+____________________________________________________________
+|                                                           |
+|   [ 64-LINE BANK ]      [ CPLD ]      [ DATA LINK ]       |
+|                                                           |
+|   (Generic I/O field)     (U1)      (20-pin ribbon bus)   |
+|___________________________________________________________|
 ```
 
 ## 3. Data Link Pinout (20-Pin Connector)
@@ -70,17 +70,20 @@ the six matching headers on the Stator.
 | 20 | 3V3_ENIG | Stator->Encoder | Power supply |
 
 **Power capacity:** 2 × 3V3_ENIG pins × 1 A/pin = 2.0 A. One Encoder Module estimated load ~104 mA
-(1× EPM240 CPLD + 1× status LED + local margin) — substantial connector margin.
+(1× EPM570 CPLD + 1× status LED + local margin) — substantial connector margin.
 
 ---
 
 ## 4. U1 — Encoder CPLD Signal Map (Logical Pin Budget)
 
 > This is the board-authoritative **logical** signal map for U1. The local MAX II handbook confirms
-> `EPM240T100` package availability in TQFP-100, but it points printed device pin-outs to external
+> `EPM570T100` package availability in TQFP-100, but it points printed device pin-outs to external
 > package documentation rather than embedding a fixed package pin table. The map below therefore
 > freezes the required board-level connectivity while leaving the exact TQFP pad numbers to schematic
 > capture.
+>
+> Detailed role logic, sampled debounce requirements, and encoder/decoder behaviour are owned by
+> `design/Software/CPLD_Logic/Encoder_Logic.md`.
 
 ### 4.1 Dedicated device pins
 
@@ -118,7 +121,7 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) handles board load wi
 constraints. See `Global_Routing_Spec.md §1.1` for the full current-category table.
 
 **Encoder board current budget:**  
-1× EPM240T100I5N CPLD @ 50 mA; 1× status LED @ 4 mA; misc = ~50 mA; total worst-case:
+1× EPM570T100I5N CPLD @ 50 mA; 1× status LED @ 4 mA; misc = ~50 mA; total worst-case:
 **104 mA** from the 3V3_ENIG rail supplied via J2.
 
 ### 5.1 Trace Width Table

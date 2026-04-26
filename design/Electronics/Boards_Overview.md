@@ -56,7 +56,7 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
 | Board Name | Role | Stackup | Status |
 | :--- | :--- | :--- | :--- |
 | **Controller Board** | Fixed motherboard; CM5 host; external RJ45, Ethernet ESD/magnetics, PoE front-end, HDMI, USB 3.0, and service docks for PM + Stator | 6-Layer / 2oz | **In Review** |
-| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using 2x Intel MAX II EPM240T100I5N CPLD | 4-Layer / 2oz | **In Review** |
+| **Encoder Module** | Dual-use Keyboard / Plugboard / Lampboard logic using a single Intel MAX II EPM570T100I5N CPLD per board with role selected by programming | 4-Layer / 2oz | **In Review** |
 | **Extension Board** | Re-buffers TCK/TMS between 5-rotor groups; forwards/reinjects clean power and bridges `TTD_RETURN` between stacks | 4-Layer / 2oz | **Design Locked** |
 | **JTAG Daughterboard** | Internal FT232H-based hardware programmer | 4-Layer / 2oz | **Design Locked** |
 | **Power Module** | Removable power-conditioning / UPS cartridge with supercaps, eFuse, OR-ing, USB-C input, battery input, and PM-local status expander | 6-Layer / 2oz | **In Review** |

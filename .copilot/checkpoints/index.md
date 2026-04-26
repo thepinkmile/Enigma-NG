@@ -67,3 +67,5 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 58 | README architecture sync and handoff refresh | 058-readme-architecture-sync-and-handoff.md |
 | 59 | Version metadata reset and repo-local state sync | 059-version-metadata-and-state-sync.md |
 | 60 | Datasheet markdown migration | 060-datasheet-markdown-migration.md |
+| 61 | Encoder EPM570 upgrade and logic spec | 061-encoder-epm570-and-logic-spec.md |
+| 62 | Encoder split review closed | 062-encoder-split-review-closed.md |

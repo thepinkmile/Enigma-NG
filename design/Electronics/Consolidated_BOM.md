@@ -32,8 +32,7 @@ board matrix.
 
 | MPN / Description | PM | CTL | STA | ENC (×1) | ENC Total (×6) | ROT (×1) | ROT Total (×30) | REF | EXT | JDB | SBD | System Total |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| EPM240T100I5N — Intel MAX II CPLD (TQFP-100) | — | — | — | 1 | 6 | — | — | — | — | — | — | 6 |
-| EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; drop-in for EPM240; used on Stator and Rotor boards) | — | — | 1 | — | — | 1 | 30 | — | — | — | — | 31 |
+| EPM570T100I5N — Intel MAX II CPLD (TQFP-100; 570 LEs; common part across Encoder, Stator, and Rotor boards) | — | — | 1 | 1 | 6 | 1 | 30 | — | — | — | — | 37 |
 | INA219AIDR — Zero-Drift Power Monitor (SOIC-8) | 1 | — | 1 | — | — | — | — | — | — | — | — | 2 |
 | PCA9534APWR — I²C GPIO Expander 8-bit (TSSOP-16) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | FDC2114RGHR — 4-ch Capacitive Sensor IC, U2 Track A (bits[5:3] N=64; bits[3:0] N=26), Board A, addr 0x2A (16-VQFN) | — | — | — | — | — | 1 | 30 | — | — | — | — | 30 |
@@ -215,10 +214,8 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 * **Molex 2195620015:** Stator-side hybrid dock plug (`J11/J12`).
 * **Molex 2195630015:** Controller-side mating receptacle for the Stator hybrid dock (`J4/J5`).
 * **Samtec ERM8-010-05.0-S-DV-K-TR (Male, 20-pin):** Rotor J3, Reflector J3, Extension J3. JLCPCB: C374877
-* **Intel EPM240T100I5N:** 6 units (Encoder Module ×1 per board ×6 boards = 6).
-  DigiKey: 544-2276-ND · Mouser: 989-EPM240T100I5N · JLCPCB: C40067.
-* **Intel EPM570T100I5N:** 31 units (Stator ×1, Rotor ×1 per board ×30 boards = 30; total 31).
-  Same TQFP-100 footprint as EPM240; 570 LEs required for startup-loaded cipher/reflector map registers.
+* **Intel EPM570T100I5N:** 37 units (Encoder Module ×1 per board ×6 boards = 6, Stator ×1, Rotor
+  ×1 per board ×30 boards = 30; total 37). Common CPLD across Encoder, Stator, and Rotor boards.
   DigiKey: 544-2281-ND · Mouser: 989-EPM570T100I5N · JLCPCB: C27319.
 
 ## 4a. Encoder Module — Plugboard Jacks, Keyboard Switches & PCB Spade Terminals
@@ -476,8 +473,7 @@ Product page links for all major components for design review and procurement ve
 | U1 (EXT), U5 (JDB) | SN74LVC2G125DCUR — Dual 3-State Buffer | Texas Instruments | [sn74lvc2g125-datasheet.md](../Datasheets/sn74lvc2g125-datasheet.md) |
 | U4-U5 (STA) | 74HC157PW-Q100,118 — Automotive quad 2:1 mux | Nexperia | [74HC_HCT157_Q100-datasheet.md](../Datasheets/74HC_HCT157_Q100-datasheet.md) |
 | U1 (JDB) | FT232HL-REEL — USB 2.0 MPSSE Bridge | FTDI | [FT232H-datasheet.md](../Datasheets/FT232H-datasheet.md) |
-| U1 (ENC) | EPM240T100I5N — Intel MAX II CPLD 240 LE | Intel (Altera) | [Intel_max2_cpld-handbook.md](../Datasheets/Intel_max2_cpld-handbook.md) |
-| U1 (STA/ROT) | EPM570T100I5N — Intel MAX II CPLD 570 LE | Intel (Altera) | [Intel_max2_cpld-handbook.md](../Datasheets/Intel_max2_cpld-handbook.md) |
+| U1 (ENC/STA/ROT) | EPM570T100I5N — Intel MAX II CPLD 570 LE | Intel (Altera) | [Intel_max2_cpld-handbook.md](../Datasheets/Intel_max2_cpld-handbook.md) |
 | U2/U3/U4 (ROT) | FDC2114RGHR — 4-ch Capacitive Sensor IC ⚠️ MOQ 4500 at distributors; MOQ 2 at JLCPCB | Texas Instruments | [fdc2112-datasheet.md](../Datasheets/fdc2112-datasheet.md) *(FDC2x1x family datasheet covering FDC2114)* |
 | U1 (CTL) | CM5 — Raspberry Pi Compute Module 5 | Raspberry Pi Ltd | [RPi-cm5-datasheet.md](../Datasheets/RPi-cm5-datasheet.md) |
 | Q1–Q3 | CSD17483F4T — N-ch MOSFET 30V/10A, SON-8 | Texas Instruments | [csd17483f4-datasheet.md](../Datasheets/csd17483f4-datasheet.md) |

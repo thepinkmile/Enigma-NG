@@ -12,8 +12,9 @@ Use the active `design/` documents as the authoritative record:
 - relevant mechanical and software `Design_Spec.md` files
 - `design/Datasheets/` for preserved vendor and project-side reference material
 
-## 2026-04-25 session result
-The latest documentation review and cleanup phase is now reflected in the repository state.
+## 2026-04-26 session result
+The latest repository state now includes the Encoder CPLD consolidation and logic-spec capture in
+addition to the earlier documentation cleanup and datasheet migration work.
 
 Main outcomes:
 
@@ -32,6 +33,20 @@ Main outcomes:
 - local datasheet PDFs under `design/Datasheets/` now have generated markdown companions, those
   markdown datasheets were reviewed in category batches, and design-doc references were migrated
   from `.pdf` links to the corresponding `.md` datasheets
+- Encoder Modules now use the common `EPM570T100I5N` part, external per-line debounce RC networks
+  were retired from the active design, and role is selected by programming rather than by
+  role-specific PCB population
+- a new logic-spec document now exists at `design/Software/CPLD_Logic/Encoder_Logic.md` covering
+  sampled 64-bit debounce, 64-to-6 encode, and 6-to-64 decode requirements for later VHDL work
+- `design/Design_Log.md` now records this as **DEC-041**, which supersedes active Encoder-board
+  assumptions around `EPM240T100I5N` and external RC debounce
+- the active Encoder baseline now also explicitly records:
+  - MAX II **weak pull-up** as the intended input-bias baseline for encode-role pins
+  - internal/UFM oscillator use as the preferred debounce timebase
+  - 64-character keyboard mapping as the primary `KBD_ENC` definition, with 26-character and custom
+    educational keyboard mappings acknowledged as variant/follow-on work
+  - generic `ENCODER MODULE` board-identification silkscreen only; role-specific silkscreen labels
+    are no longer required
 
 ## Documentation policy reminders
 - Do not update document `Version` metadata unless the user explicitly requests it.
@@ -47,9 +62,8 @@ Main outcomes:
 These are still open design review items, but they are not yet committed design decisions:
 
 1. Review battery connector alternatives.
-2. Continue the Encoder board split review and any resulting architecture cleanup.
-3. Review how Extensions should be used mechanically, including whether interconnect choices for the
+2. Review how Extensions should be used mechanically, including whether interconnect choices for the
    Stator / Reflector / Extension chain should change.
-4. Review whether Extensions need additional servo circuitry to pass through notch rotations.
-5. Add and review board-level coupons and PAS-oriented test coverage.
-6. Rerun deep review agents after the next material design-doc change set.
+3. Review whether Extensions need additional servo circuitry to pass through notch rotations.
+4. Add and review board-level coupons and PAS-oriented test coverage.
+5. Rerun deep review agents after the next material design-doc change set.
