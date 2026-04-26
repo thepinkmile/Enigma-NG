@@ -68,6 +68,8 @@ Recent locked work:
 | ---- | -------- | ------- |
 | `extension-mechanical-usage` | pending | Mechanical Extension usage is now aligned to local AM-based carry regeneration, but detailed switch / linkage geometry still needs later mechanical design |
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
+| `battery-connector-final-review` | pending | Re-confirm the chosen military battery connector details during the final deep-dive/manual review, especially the 6-pin contact assignment, `BATT_PRES_N` position, reserved contact behavior, cable selection, and interposer fit |
+| `general-pin-mapping-schematic-capture` | pending | Create one shared schematic-capture workstream for unresolved exact package pin/pad assignments, AM service-header preservation, and bias-network details across the AM STM32, Stator mux U7, and the Encoder / Stator / Rotor CPLD packages, aligned with the planned KiCAD project and shared library setup |
 | `rerun-deep-reviews` | pending | Rerun deep review agents only after the next material design-doc change set |
 
 ---
@@ -140,6 +142,9 @@ Then proceed into the next design-review task from the active `design/` docs rat
 - The AM firmware specification now lives under
   `design/Software/Actuation_Module/Design_Spec.md`; the electronics AM spec keeps only a brief
   cross-reference to that software document.
+- A later shared schematic-capture workstream still needs to lock exact package pin/pad assignments for
+  the AM STM32, Stator mux U7, and the Encoder / Stator / Rotor CPLD parts; treat that as one combined
+  pin-mapping task so it can align with the planned KiCAD project and shared component-library setup.
 - Part-detail lookup order is: **reviewed markdown datasheet first**, then the preserved local **PDF
   datasheet**, and only then an **online source** if the local repository material is missing or
   insufficient.

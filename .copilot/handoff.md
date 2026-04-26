@@ -141,10 +141,13 @@ These are still open design review items, but they are not yet committed design 
 1. Review how Extensions should be used mechanically, including whether interconnect choices for the
    Stator / Reflector / Extension chain should change.
 2. Add and review board-level coupons and PAS-oriented test coverage.
-3. Rerun deep review agents after the next material design-doc change set.
-4. During the final deep-dive and manual review before declaring Version 1 complete, re-confirm the
+3. During later schematic capture, treat the remaining exact package pin/pad assignment work as one
+   combined pin-mapping task across the AM STM32, Stator mux U7, and the Encoder / Stator / Rotor CPLD
+   parts, aligned with the planned KiCAD project and shared component-library setup; this same
+   workstream also preserves the chosen external `J5` / `J6` pinouts, the local `SW1` / `SW2`
+   tactile pair on `NRST` / `BOOT0`, and the agreed logical signal roles while locking the exact
+   STM32 pad assignment and default `BOOT0` bias network behind them.
+4. Rerun deep review agents after the next material design-doc change set.
+5. During the final deep-dive and manual review before declaring Version 1 complete, re-confirm the
    chosen military battery connector details, especially the remaining 6-pin contact assignment,
    `BATT_PRES_N` position, reserved/unused contact behaviour, cable selection, and interposer fit.
-5. During later schematic capture, preserve the chosen external `J5` / `J6` pinouts, the local
-   SW1 / SW2 tactile pair on `NRST` / `BOOT0`, and confirm the exact STM32 pad assignment and default
-   `BOOT0` bias network behind them.
