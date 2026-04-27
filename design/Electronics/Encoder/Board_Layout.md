@@ -89,11 +89,11 @@ the six matching headers on the Stator.
 
 | Function | Source / destination | Notes |
 | :--- | :--- | :--- |
-| `TCK` | J2 pin 9 -> U1 | Dedicated JTAG clock input |
-| `TMS` | J2 pin 11 -> U1 | Dedicated JTAG mode input |
-| `TDI` | J2 pin 15 -> U1 | Dedicated JTAG serial input from the Stator-managed chain |
-| `TDO` | U1 -> R6 -> J2 pin 13 | Dedicated JTAG serial output back to the Stator-managed chain |
-| `DEV_CLRN` / reset input | J2 pin 17 (`SYS_RESET_N`) -> U1 | Active-low device reset; held high locally by R5 |
+| `TCK` | J2 pin 10 -> U1 | Dedicated JTAG clock input |
+| `TMS` | J2 pin 12 -> U1 | Dedicated JTAG mode input |
+| `TDI` | J2 pin 16 -> U1 | Dedicated JTAG serial input from the Stator-managed chain |
+| `TDO` | U1 -> R6 -> J2 pin 14 | Dedicated JTAG serial output back to the Stator-managed chain |
+| `DEV_CLRN` / reset input | J2 pin 18 (`SYS_RESET_N`) -> U1 | Active-low device reset; held high locally by R5 |
 
 ### 4.2 General-purpose signal groups
 
@@ -139,7 +139,7 @@ constraints. See `Global_Routing_Spec.md §1.1` for the full current-category ta
 
 * **JTAG CI traces:** 0.127 mm (5 mil) on L1 over the L2 GND plane achieves 50 Ω controlled
   impedance on the JLC04161H-7628 stackup (h = 0.087 mm, t = 0.035 mm, E_r = 4.4). Per DEC-016.
-* **Cable-output trace (U1 TDO -> R6 -> J2 pin 13):** R6 (75 Ω) is placed within 2 mm of U1 TDO;
+* **Cable-output trace (U1 TDO -> R6 -> J2 pin 14):** R6 (75 Ω) is placed within 2 mm of U1 TDO;
   the post-R6 trace to the J2 connector pad should be kept short.
 * **3V3_ENIG power entry (J2 pins 1 and 20):** both power pins connect to the same L3 copper pour
   via thermal vias; L1 traces from pins 1 and 20 to the via entry points at 0.50 mm minimum.

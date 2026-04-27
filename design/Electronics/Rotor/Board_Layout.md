@@ -58,6 +58,10 @@ Board A faces the input (upstream) side of the rotor stack.
 | U1 | EPM570T100I5N CPLD | Centre of board |
 | U2 | FDC2114RGHR | Track A capacitive encoder IC (I²C addr 0x2A); r~40mm |
 | U3 | FDC2114RGHR | STGC bit[4] sensor IC (I²C addr 0x2B); Board A, N=26 builds only — NOT POPULATED for N=64 |
+| L1–L4 | 18 µH shielded SMD inductor (Cat B, part TBD) | U2 CH0–CH3 resonant tank inductors — placed adjacent to U2, one per channel; pair with C20–C23 |
+| L5–L8 | 18 µH shielded SMD inductor — same part as L1–L4 (Cat B) | U3 CH0–CH3 resonant tank inductors (includes dummy LC for unused channels) — **N=26 only, NOT POPULATED for N=64** |
+| C20–C23 | 33 pF C0G/NP0 ±1% MLCC (Cat B, part TBD) | U2 CH0–CH3 resonant tank capacitors — in parallel with L1–L4 between INxA/INxB |
+| C24–C27 | 33 pF C0G/NP0 ±1% MLCC — same part as C20–C23 (Cat B) | U3 CH0–CH3 resonant tank capacitors — **N=26 only, NOT POPULATED for N=64** |
 | S0–S2 | Sensor electrodes (Track A) | Bare Cu pads at r=44mm, N=64 bits[5:3]; or S0–S4 for N=26 |
 | SW1 | 6-pos DIP — ring setting | Input side only |
 | SW2 | 6-pos DIP — forward map select | Input side |
@@ -105,6 +109,8 @@ Board B faces the output (downstream) side of the rotor stack.
 | Ref | Component | Notes |
 | :--- | :--- | :--- |
 | U4 | FDC2114RGHR | Track B capacitive encoder IC (I²C addr 0x2B); r~40mm; **not populated for N=26** |
+| L9–L12 | 18 µH shielded SMD inductor — same part as L1–L4 (Cat B) | U4 CH0–CH3 resonant tank inductors (includes dummy LC for unused channels) — **N=64 only, NOT POPULATED for N=26** |
+| C28–C31 | 33 pF C0G/NP0 ±1% MLCC — same part as C20–C23 (Cat B) | U4 CH0–CH3 resonant tank capacitors — **N=64 only, NOT POPULATED for N=26** |
 | S3–S5 | Sensor electrodes (Track B) | Bare Cu pads at r=44mm, N=64 bits[2:0]; not present for N=26 |
 | SW3 | 6-pos DIP — return map select | Output side |
 | J4 | ERF8-005 female | JTAG output (10-pin 2×5, 0.8mm pitch) |

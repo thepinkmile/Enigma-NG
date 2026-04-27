@@ -60,6 +60,11 @@ BOTTOM VIEW (L4 / header-maintenance side / exterior face)
 * C2-C3 should sit tight to the STM32 supply pins as local high-frequency decouplers. C4 should sit near
   the local `3V3_ENIG` entry / U1 supply region. C5 should sit near the `5V_MAIN` intake and servo loom
   region so the AM has a local short-burst current reservoir when the servo moves.
+* C6 (100 nF NRST filter cap) shall be placed adjacent to U1's NRST pin. Keep the trace from U1 NRST to
+  C6 and from C6 to GND as short as practicable to maximise noise suppression effectiveness.
+* R5 (10 kΩ BOOT0 series protection resistor) shall be placed on the signal path between the SW2 / J6-pin-5
+  shared node and the U1 BOOT0 pin. Place R5 in the J5/J6/SW1/SW2 service-header cluster so the service
+  interconnect remains compact.
 * Unlike the JDB, the AM is not purely a light logic daughterboard: it has both an MCU and a local servo
   power path. The AM therefore keeps the reduced daughterboard-capacitor approach, but adds an explicit
   5V local reservoir cap rather than relying only on upstream host-board bulk capacitance.

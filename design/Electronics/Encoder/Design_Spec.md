@@ -164,7 +164,7 @@ Each CPLD provides enough user I/O for one 64-line interface bank plus JTAG, sta
   - **TCK:** 10 kΩ pull-down to GND (R4)
   - **SYS_RESET_N:** 10 kΩ pull-up to 3V3_ENIG (R5)
 - **Termination:**
-  - **Cable Output (R6, 75 Ω):** series resistor placed within 2 mm of U1 TDO, before J2 pin 13.
+  - **Cable Output (R6, 75 Ω):** series resistor placed within 2 mm of U1 TDO, before J2 pin 14.
 - **Programming:** Supports in-system debugging via the CM5 GUI. Role is selected by the image
   programmed into the module based on it's known JTAG-chain position; no local role switch or role-specific RC
   population is part of the active design.
@@ -254,7 +254,7 @@ must preserve the generic one-CPLD module footprint and the unchanged 20-pin IDC
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6 | TDO output series R (U1 TDO -> J2 pin 13, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| R6 | TDO output series R (U1 TDO -> J2 pin 14, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
 
 **Quantity notes:**
 

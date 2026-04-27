@@ -160,7 +160,9 @@ group without Controller-side live servo control.
   > ⚠️ **U1 must never be removed.** The Extension board actively re-buffers TCK and TMS for
   > every 5-rotor group. Without U1, signal integrity in long rotor stacks will fail.
   > See FR-EXT-01, DR-EXT-04/05/06.
-* **ESD:** TVS diode on exposed signal lines; board relies on enclosure shielding.
+* **ESD:** Local TVS / ESD protection is required on the Extension board's exposed signal-line
+  boundary. Exact protected nets, device count, footprint, and sourced MPN remain owner-selected;
+  board otherwise relies on enclosure shielding.
 
 ## 6. Bill of Materials
 
@@ -168,6 +170,7 @@ group without Controller-side live servo control.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | 100nF X7R 50V bypass — U1 VCC | Samsung CL05B104KB5NNNC | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| D1 (owner-selected) | Extension exposed signal-line TVS / ESD protection required by §5 | Exact protected nets, device count, working voltage, package, and MPN **owner-selected** | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
 | J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |

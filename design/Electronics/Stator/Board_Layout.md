@@ -19,7 +19,7 @@ return path for the JTAG chain.
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
 | 1 | 3V3_ENIG | PM -> Reflector / Ext | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
-| 2 | SYS_RESET_N | CTRL->Ext | Active-low CPLD reset broadcast |
+| 2 | SYS_RESET_N | Stator -> Reflector / Ext | Active-low CPLD reset broadcast from Stator |
 | 3 | ENC_OUT_REF[0] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 0 |
 | 4 | ENC_OUT_REF[1] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 1 |
 | 5 | ENC_OUT_REF[2] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 2 |

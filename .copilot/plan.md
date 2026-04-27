@@ -70,7 +70,7 @@ Recent locked work:
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
 | `battery-connector-final-review` | pending | Re-confirm the chosen military battery connector details during the final deep-dive/manual review, especially the 6-pin contact assignment, `BATT_PRES_N` position, reserved contact behavior, cable selection, and interposer fit |
 | `general-pin-mapping-schematic-capture` | pending | Create one shared schematic-capture workstream for unresolved exact package pin/pad assignments, AM service-header preservation, and bias-network details across the AM STM32, Stator mux U7, and the Encoder / Stator / Rotor CPLD packages, aligned with the planned KiCAD project and shared library setup |
-| `rerun-deep-reviews` | pending | Rerun deep review agents only after the next material design-doc change set |
+| `rerun-deep-reviews` | pending | Run the final cross-discipline deep-review cycle only near Version 1 closeout, after the electrical, mechanical, and software design work is complete and each board has a full KiCAD project with production Gerbers exported |
 
 ---
 
@@ -96,10 +96,11 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/065-extension-am-bom-sync.md`
-4. `design/Electronics/Actuation_Module/Design_Spec.md`
-5. `design/Design_Log.md` (`DEC-043`)
-6. `.copilot/checkpoints/064-battery-connector-candidate.md`
+3. `.copilot/checkpoints/066-electronics-review-loop-clean.md`
+4. `.copilot/review-report.md`
+5. `design/Electronics/Actuation_Module/Design_Spec.md`
+6. `design/Design_Log.md` (`DEC-043`)
+7. `.copilot/checkpoints/064-battery-connector-candidate.md`
 
 Then proceed into the next design-review task from the active `design/` docs rather than treating
 `.copilot/` content as design truth.
@@ -142,6 +143,12 @@ Then proceed into the next design-review task from the active `design/` docs rat
 - The AM firmware specification now lives under
   `design/Software/Actuation_Module/Design_Spec.md`; the electronics AM spec keeps only a brief
   cross-reference to that software document.
+- The additive electronics deep-review loop is now closed for the current design-doc set after
+  **two consecutive clean passes** (Pass 16 and Pass 17 in `.copilot/review-report.md`); only the
+  intentionally deferred schematic-capture and owner-selected items remain open.
+- This does **not** close the repo-local `rerun-deep-reviews` workstream. That workstream remains the
+  final pre-V1 cross-discipline review gate to be rerun only after electrical, mechanical, and software
+  work are complete and each board has a full KiCAD project plus exported production Gerbers.
 - A later shared schematic-capture workstream still needs to lock exact package pin/pad assignments for
   the AM STM32, Stator mux U7, and the Encoder / Stator / Rotor CPLD parts; treat that as one combined
   pin-mapping task so it can align with the planned KiCAD project and shared component-library setup.

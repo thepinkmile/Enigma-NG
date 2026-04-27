@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-24
+**Last Updated:** 2026-04-26
 
 ---
 
@@ -52,12 +52,13 @@ daemon over I²C.
 | DR-SBD-01 | PCB stackup | 4-layer, 2oz finished copper (JLCPCB JLC04161H-7628) | §8 PCB Fabrication |
 | DR-SBD-02 | Switch + indicator type | 10× E-Switch 200MSP1T2B4M2QE panel-mount SPDT latching toggle switches plus 12× Kingbright WP154A4SEJ3VBDZGW/CA common-anode RGB through-hole LEDs; 10 LEDs mirror config bits and 2 LEDs indicate CM5-vs-user authority | §3 Configuration Bank Descriptions; BOM SW1-SW10, D1-D12 |
 | DR-SBD-03 | Switch input expander | U1 = MCP23017T-E/SO @ 0x23; SOIC-28; contiguous after the Stator expander block | §4 I²C Devices — U1; BOM U1 |
-| DR-SBD-04 | LED control expanders | U2 = MCP23017T-E/SO @ 0x24 (Bank 1); U3 = MCP23017T-E/SO @ 0x25 (Bank 2); SOIC-28; per-switch anodes plus shared RGB bank rails | §4 I²C Devices — U2, U3; §5 LED Control Logic; BOM U2, U3 |
+| DR-SBD-04 | LED control expanders | U2 = MCP23017T-E/SO @ 0x24 (Bank 1); U3 = MCP23017T-E/SO @ 0x25 (Bank 2); SOIC-28; per-indicator anodes plus shared RGB bank rails | §4 I²C Devices — U2, U3; §5 LED Control Logic; BOM U2, U3 |
 | DR-SBD-05 | LED colour-rail transistors | 6× BSS138 SOT-23 N-channel MOSFETs (`Q1-Q6`); gate driven via 1kΩ resistor; GPIO HIGH = transistor ON | §5 LED Control Logic; BOM Q1-Q6 |
-| DR-SBD-06 | LED power supply | `5V_MAIN` from the Stator via J1 pin 2; full RGB operation at 5V uses 150Ω red and 100Ω green/blue series resistors | §7 Interconnects — J1; BOM R18-R53 |
+| DR-SBD-06 | LED power supply | `5V_MAIN` from the Stator via J1 pin 2; full RGB operation at 5V uses 150Ω red and 100Ω green/blue series resistors; LED anodes connect to `5V_MAIN` via per-anode PMOS high-side switches (Q19–Q30) — see DR-SBD-10 | §7 Interconnects — J1; §5 LED Control Logic; BOM R18-R53, Q7-Q30, R54-R77 |
 | DR-SBD-07 | `CFG_APPLY_N` button | SW11 = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, active-low; mounted on the Settings Board and actuated through the enclosure by a mechanical plunger/cap; 10kΩ pull-up to 3V3_ENIG + 100nF debounce cap; U1 GPB[7] | §6 `CFG_APPLY_N` Button; BOM SW11, R11, C4 |
 | DR-SBD-08 | I²C connector | J1 = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`; harness to Stator J13 | §7 Interconnects; BOM J1 |
 | DR-SBD-09 | Switch input pull-downs | 10× 10kΩ 0603 pull-down resistors on all toggle-switch inputs to U1 (GPA[3:0], GPB[5:0]); HIGH when closed | §4 I²C Devices — U1; BOM R1-R10 |
+| DR-SBD-10 | Per-anode LED high-side switch | 12× two-stage per-anode high-side switch: MCP23017 GPIO → 1 kΩ gate resistor (R54–R65) → BSS138 NMOS pre-driver (Q7–Q18); BSS138 drain pulls PMOS gate low; 47 kΩ pull-up (R66–R77) from PMOS gate to `5V_MAIN`; PMOS source at `5V_MAIN`, drain to LED anode; GPIO HIGH → LED ON (non-inverted logic); this topology isolates the MCP23017 3.3 V GPIO from direct-driving 5 V LED anodes | §5 LED Control Logic; BOM Q7-Q30, R54-R77 |
 
 ---
 
@@ -148,7 +149,7 @@ override active (red).
 
 | Bit | Switch | Function |
 | :--- | :--- | :--- |
-| `CFG_REFMAP[5:0]` | SW_B2[5:0] | **6-bit map index** (0–63): selects which involutory map to load from CPLD UFM at configuration load; indices 0–20 are currently allocated |
+| `CFG_REFMAP[5:0]` | SW5-SW10 | **6-bit map index** (0–63): selects which involutory map to load from CPLD UFM at configuration load; indices 0–20 are currently allocated |
 
 Pull-down resistors R21–R26 on the Stator CPLD `CFG_REFMAP[5:0]` input pins hold each input at
 logic-0 when U8 is uninitialised (default map index = 0).
@@ -203,48 +204,61 @@ Reads the 10 toggle-switch states and the active-low `CFG_APPLY_N` momentary but
 >
 ### U2 — MCP23017T-E/SO @ 0x24
 
-Drives Bank 1 LED anodes (1 source-status LED + 4 config LEDs) and RGB color-rail low-side
-transistor gates.
+Drives Bank 1 LED high-side switch trigger signals (1 source-status LED + 4 config LEDs) via dedicated
+BSS138 NMOS pre-drivers (Q7–Q11), and Bank 1 RGB colour-rail low-side transistor gates (Q1–Q3).
 
 **Address:** 0x24 — MCP23017 base 0x20; A2=HIGH, A1=LOW, A0=LOW → 0x20 | 0b100 = 0x24
 
 | Port | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| GPA | [0] | LED_B1_SRC_A | Output | Bank 1 source-status LED anode; HIGH = LED source enabled |
-| GPA | [1] | LED_B1_0_A | Output | Bank 1 bit 0 LED anode; HIGH = LED source enabled |
-| GPA | [2] | LED_B1_1_A | Output | Bank 1 bit 1 LED anode; HIGH = LED source enabled |
-| GPA | [3] | LED_B1_2_A | Output | Bank 1 bit 2 LED anode; HIGH = LED source enabled |
-| GPA | [4] | LED_B1_3_A | Output | Bank 1 bit 3 LED anode; HIGH = LED source enabled |
+| GPA | [0] | LED_B1_SRC_A | Output | Bank 1 source-status LED high-side switch trigger; HIGH drives Q7 gate (BSS138 ON → Q19 PMOS ON → anode at 5V) |
+| GPA | [1] | LED_B1_0_A | Output | Bank 1 bit 0 LED high-side switch trigger; HIGH drives Q8 gate (BSS138 ON → Q20 PMOS ON → anode at 5V) |
+| GPA | [2] | LED_B1_1_A | Output | Bank 1 bit 1 LED high-side switch trigger; HIGH drives Q9 gate (BSS138 ON → Q21 PMOS ON → anode at 5V) |
+| GPA | [3] | LED_B1_2_A | Output | Bank 1 bit 2 LED high-side switch trigger; HIGH drives Q10 gate (BSS138 ON → Q22 PMOS ON → anode at 5V) |
+| GPA | [4] | LED_B1_3_A | Output | Bank 1 bit 3 LED high-side switch trigger; HIGH drives Q11 gate (BSS138 ON → Q23 PMOS ON → anode at 5V) |
 | GPA | [5] | BNK1_R | Output | Bank 1 red cathode rail; drives gate of Q1; HIGH = red rail active |
 | GPA | [6] | BNK1_G | Output | Bank 1 green cathode rail; drives gate of Q2; HIGH = green rail active |
 | GPA | [7] | BNK1_B | Output | Bank 1 blue cathode rail; drives gate of Q3; HIGH = blue rail active |
 | GPB | [7:0] | — | — | Spare (reserved future use) |
 
-> Individual LED anode outputs drive HIGH only for the bits that should be illuminated. Each LED's
-> red, green, and blue cathodes return through separate current-limiting resistors
-> (`R_LED_R` = 150Ω, `R_LED_G` = 100Ω, `R_LED_B` = 100Ω) to the shared bank colour rails. LEDs are
-> powered from the `5V_MAIN` feed delivered by the Stator `J13` harness.
+> LED anode signals drive the gates of BSS138 NMOS pre-drivers (Q7–Q11) through 1 kΩ gate resistors
+> (R54–R58). Each BSS138 drain pulls down the gate of a PMOS high-side switch (Q19–Q23); 47 kΩ pull-ups
+> (R66–R70) hold the PMOS gates HIGH when the BSS138 is OFF, keeping the PMOS OFF and the anode
+> floating. GPIO HIGH → BSS138 ON → PMOS gate ≈0 V → PMOS ON → LED anode driven to `5V_MAIN`. Each
+> LED's red, green, and blue cathodes return through current-limiting resistors (`R_LED_R` = 150Ω,
+> `R_LED_G` = 100Ω, `R_LED_B` = 100Ω) to the shared bank colour rails switched by Q1–Q3. On power-up,
+> Hi-Z GPIO defaults leave BSS138 gates floating; behaviour is consistent with Q1–Q6 and shall be
+> validated during system-level power-on testing.
 >
 ### U3 — MCP23017T-E/SO @ 0x25
 
-Drives Bank 2 LED anodes (1 source-status LED + 6 config LEDs) and RGB color-rail low-side
-transistor gates.
+Drives Bank 2 LED high-side switch trigger signals (1 source-status LED + 6 config LEDs) via dedicated
+BSS138 NMOS pre-drivers (Q12–Q18), and Bank 2 RGB colour-rail low-side transistor gates (Q4–Q6).
 
 **Address:** 0x25 — MCP23017 base 0x20; A2=HIGH, A1=LOW, A0=HIGH → 0x20 | 0b101 = 0x25
 
 | Port | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| GPA | [0] | LED_B2_SRC_A | Output | Bank 2 source-status LED anode; HIGH = LED source enabled |
-| GPA | [1] | LED_B2_0_A | Output | Bank 2 bit 0 LED anode; HIGH = LED source enabled |
-| GPA | [2] | LED_B2_1_A | Output | Bank 2 bit 1 LED anode; HIGH = LED source enabled |
-| GPA | [3] | LED_B2_2_A | Output | Bank 2 bit 2 LED anode; HIGH = LED source enabled |
-| GPA | [4] | LED_B2_3_A | Output | Bank 2 bit 3 LED anode; HIGH = LED source enabled |
-| GPA | [5] | LED_B2_4_A | Output | Bank 2 bit 4 LED anode; HIGH = LED source enabled |
-| GPA | [6] | LED_B2_5_A | Output | Bank 2 bit 5 LED anode; HIGH = LED source enabled |
+| GPA | [0] | LED_B2_SRC_A | Output | Bank 2 source-status LED high-side switch trigger; HIGH drives Q12 gate (BSS138 ON → Q24 PMOS ON → anode at 5V) |
+| GPA | [1] | LED_B2_0_A | Output | Bank 2 bit 0 LED high-side switch trigger; HIGH drives Q13 gate (BSS138 ON → Q25 PMOS ON → anode at 5V) |
+| GPA | [2] | LED_B2_1_A | Output | Bank 2 bit 1 LED high-side switch trigger; HIGH drives Q14 gate (BSS138 ON → Q26 PMOS ON → anode at 5V) |
+| GPA | [3] | LED_B2_2_A | Output | Bank 2 bit 2 LED high-side switch trigger; HIGH drives Q15 gate (BSS138 ON → Q27 PMOS ON → anode at 5V) |
+| GPA | [4] | LED_B2_3_A | Output | Bank 2 bit 3 LED high-side switch trigger; HIGH drives Q16 gate (BSS138 ON → Q28 PMOS ON → anode at 5V) |
+| GPA | [5] | LED_B2_4_A | Output | Bank 2 bit 4 LED high-side switch trigger; HIGH drives Q17 gate (BSS138 ON → Q29 PMOS ON → anode at 5V) |
+| GPA | [6] | LED_B2_5_A | Output | Bank 2 bit 5 LED high-side switch trigger; HIGH drives Q18 gate (BSS138 ON → Q30 PMOS ON → anode at 5V) |
 | GPA | [7] | BNK2_R | Output | Bank 2 red cathode rail; drives gate of Q4; HIGH = red rail active |
 | GPB | [0] | BNK2_G | Output | Bank 2 green cathode rail; drives gate of Q5; HIGH = green rail active |
 | GPB | [1] | BNK2_B | Output | Bank 2 blue cathode rail; drives gate of Q6; HIGH = blue rail active |
 | GPB | [2:7] | — | — | Spare (reserved future use) |
+
+> LED anode signals drive the gates of BSS138 NMOS pre-drivers (Q12–Q18) through 1 kΩ gate resistors
+> (R59–R65). Each BSS138 drain pulls down the gate of a PMOS high-side switch (Q24–Q30); 47 kΩ pull-ups
+> (R71–R77) hold the PMOS gates HIGH when the BSS138 is OFF. GPIO HIGH → BSS138 ON → PMOS gate ≈0 V →
+> PMOS ON → LED anode driven to `5V_MAIN`. Cathodes return through current-limiting resistors to the
+> shared Bank 2 colour rails switched by Q4–Q6. On power-up, Hi-Z GPIO defaults leave BSS138 gates
+> floating; behaviour is consistent with Q1–Q6 and shall be validated during system-level power-on
+> testing.
+>
 
 ---
 
@@ -378,13 +392,18 @@ automatic polling intervals.
 | Q4 | Bank 2 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | Q5 | Bank 2 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | Q6 | Bank 2 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q7–Q11 | Bank 1 per-anode LED NMOS pre-drivers (×5, one per Bank 1 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q12–Q18 | Bank 2 per-anode LED NMOS pre-drivers (×7, one per Bank 2 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q19–Q30 | Per-anode LED high-side PMOS switches (×12); source at `5V_MAIN`, drain to LED anode; gate driven by Q7–Q18 BSS138 pre-drivers | PMOS SOT-23 — Cat B, part TBD | SOT-23 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
 | R1-R4 | Bank 1 toggle input pull-downs (×4: `CFG_ROUTE[3:0]`) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R5-R10 | Bank 2 toggle input pull-downs (×6: `CFG_REFMAP[5:0]`) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R11 | `CFG_APPLY_N` pull-up resistor | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R12–R17 | MOSFET gate resistors (×6, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 |
-| R18-R29 | Per-switch red LED series resistors (×12) | 150Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 |
-| R30-R41 | Per-switch green LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
-| R42-R53 | Per-switch blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
+| R18-R29 | Per-indicator red LED series resistors (×12) | 150Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 |
+| R30-R41 | Per-indicator green LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
+| R42-R53 | Per-indicator blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
+| R54–R65 | BSS138 gate resistors for per-anode pre-drivers Q7–Q18 (×12) | 1kΩ (1%) — same part as R12-R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 |
+| R66–R77 | PMOS gate pull-up resistors for Q19–Q30 (×12); holds PMOS gate HIGH when BSS138 OFF | 47 kΩ provisional — Cat B, value TBD | 0402 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
 | SW1 | Bank 1 routing config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — common Bank 1/2 config-toggle part | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW2 | Bank 1 routing config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW3 | Bank 1 routing config bit 2 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
@@ -435,18 +454,22 @@ automatic polling intervals.
 | **Toggle Switches** | 10 | E-Switch 200MSP1T2B4M2QE — SPDT latching panel-mount |
 | **RGB LEDs** | 12 | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode THT |
 | **MCP23017 I²C Expanders** | 3 | U1, U2, U3 |
-| **BSS138 MOSFETs** | 6 | Q1/G/B, Q4/G/B — low-side color-rail switches |
+| **BSS138 MOSFETs (colour-rail low-side)** | 6 | Q1/G/B, Q4/G/B — shared colour-rail cathode switches |
+| **BSS138 MOSFETs (per-anode pre-driver)** | 12 | Q7–Q18 — one per LED anode; drives PMOS high-side gate |
+| **PMOS MOSFETs (per-anode high-side switch)** | 12 | Q19–Q30 — Cat B, part TBD; source at 5V_MAIN, drain to LED anode |
 | **0603 LED path resistors** | 36 | 12× red (150Ω), 12× green (100Ω), 12× blue (100Ω) |
 | **0603 Resistors (switch pull-down)** | 10 | 10kΩ pull-downs on all toggle-switch inputs |
-| **0402 Resistors (gate)** | 6 | 1kΩ MOSFET gate resistors |
-| **0603 Resistors (misc)** | 1 | R11: 10kΩ CFG_APPLY pull-up |
+| **0402 Resistors (colour-rail gate)** | 6 | R12–R17: 1kΩ colour-rail MOSFET gate resistors |
+| **0402 Resistors (per-anode gate)** | 12 | R54–R65: 1kΩ BSS138 pre-driver gate resistors |
+| **0402 Resistors (PMOS pull-up)** | 12 | R66–R77: 47kΩ provisional PMOS gate pull-ups — Cat B |
+| **0603 Resistors (misc)** | 1 | R11: 10kΩ `CFG_APPLY_N` pull-up |
 | **0402 Capacitors (decoupling)** | 3 | 100nF X7R for 3× MCP23017s |
-| **0402 Capacitors (debounce)** | 1 | C4: 100nF X7R CFG_APPLY debounce |
+| **0402 Capacitors (debounce)** | 1 | C4: 100nF X7R `CFG_APPLY_N` debounce |
 | **JST PH Connectors** | 1 | J1: 6-pin B6B-PH-K-S(LF)(SN) to Stator |
 | **Pushbutton Switch** | 1 | SW11 — Omron B3F-1070 SPST NO through-hole tactile switch |
 
-**Total unique part numbers:** ~15  
-**Total component count:** ~89
+**Total unique part numbers:** ~17 (excl. Cat B TBD)
+**Total component count:** ~113 (excl. Cat B TBD)
 
 ---
 
@@ -454,15 +477,27 @@ automatic polling intervals.
 
 ### LED Control Architecture
 
-The Settings Board uses a **shared color-rail topology** to minimize MOSFET count while preserving
-full RGB control under CM5 firmware:
+The Settings Board uses a **hybrid topology**: shared colour-rail low-side switches for RGB selection
+combined with per-anode high-side switches for individual LED illumination control:
 
-* Each LED has an **individual anode** controlled by U2 or U3 GPIO
-* All LEDs in a **bank share 3 cathode rails** (red, green, blue)
-* **6× BSS138 MOSFETs** (3 per bank) switch each active colour rail to GND
-* CM5 firmware selects the active colour per bank according to mode/state
+* **Colour-rail low-side stage (Q1–Q6):** 6× BSS138 N-channel MOSFETs switch each RGB cathode rail to
+  GND — 3 per bank (red, green, blue). MCP23017 GPIO drives gate directly through 1 kΩ resistors
+  (R12–R17). GPIO HIGH = transistor ON = colour rail active.
 
-This design uses only 6 MOSFETs for 12 RGB indicators instead of a per-LED transistor scheme.
+* **Per-anode high-side stage (Q7–Q30):** 12× two-stage circuits (one per LED anode) consisting of:
+  1. BSS138 NMOS pre-driver (Q7–Q18) — gate driven by MCP23017 GPIO through 1 kΩ resistor (R54–R65)
+  2. PMOS high-side switch (Q19–Q30) — gate held HIGH by 47 kΩ pull-up (R66–R77) to `5V_MAIN`;
+     BSS138 drain pulls gate LOW to enable PMOS. PMOS source at `5V_MAIN`, drain to LED anode.
+
+  GPIO HIGH → BSS138 ON → PMOS gate ≈0 V → PMOS ON → LED anode at `5V_MAIN`. Logic is non-inverted;
+  no firmware inversion required.
+
+* **Root cause note:** Kingbright WP154A4SEJ3VBDZGW/CA LEDs have typical Vf = 3.3 V (blue/green).
+  The MCP23017 GPIO output maximum is 3.3 V and cannot source current into a 5 V-supply anode directly.
+  The two-stage high-side topology resolves this without requiring firmware changes or rail compromise.
+
+* **Power-up behaviour:** MCP23017 Hi-Z default leaves BSS138 gates floating (consistent with Q1–Q6).
+  Validate that LED anodes remain de-energised on power-up during system-level testing.
 
 ### 5V Power Routing
 

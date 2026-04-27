@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-04-26
 
 ## 1. Overview
 
@@ -123,15 +123,23 @@ capacitive-to-digital converter, I²C, 3.3 V, 16-VQFN), but the second device di
 * **U2 (Board A)** — senses Track A (bits[5:3] for N=64; STGC bits[3:0] for N=26); I²C address 0x2A.
   Track A slots milled into the inner face of the shroud **dish** flange (Board A side).
 * **U3 (Board A, N=26 only)** — second FDC2114 for the N=26 variant, addr 0x2B. CH0 = STGC bit[4]; CH1–CH3 unused
-  (IN pins tied to GND via 100 kΩ). **U3 is not populated for N=64**. N=26 variant: U2
+  (each carries a dummy LC tank — same 18 µH + 33 pF **in parallel** between INxA/INxB — per TI app note;
+  GND-tie causes oscillation instability). **U3 is not populated for N=64**. N=26 variant: U2
   (addr 0x2A) reads STGC bits[3:0], U3 (addr 0x2B, Board A) reads STGC bit[4].
 * **U4 (Board B, N=64 only)** — senses Track B (bits[2:0] for N=64 only); I²C address 0x2B.
   Track B slots milled into the inner face of the shroud **cover** flange (Board B side).
-  **U4 is not populated for N=26 rotors.** Unused channels have their IN pins tied to GND
-  via 100 kΩ.
+  **U4 is not populated for N=26 rotors.** Unused channels carry a dummy LC tank (18 µH + 33 pF
+  **in parallel** between INxA/INxB) per TI app note; GND-tie causes oscillation instability.
 
 The CPLD implements a simple I²C master and polls U2 and U3 (N=26) or U2 and U4 (N=64) at power-up and after
 each detected position change. Each channel reports HIGH (solid aluminium) or LOW (milled slot).
+
+The local FDC2114 bus requires one external pull-up on `SDA` and one on `SCL` to `3V3_ENIG`; these
+are captured in the Board A BOM so the same pull-up pair serves the common local bus in both variants
+(`U2` + `U3` on Board A for N=26, or `U2` on Board A plus `U4` over `H_SENS` for N=64). Per the
+in-repo TI FDC2114 family datasheet power-supply recommendation, each populated FDC2114 also carries
+its own local `0.1 µF` + `1 µF` `VDD` bypass pair. These support parts are separate from the still-
+deferred resonant front-end / unused-channel support definition.
 
 #### CPLD Position Decode
 
@@ -160,6 +168,28 @@ Variant-specific track bit patterns and full decode tables are defined in:
 
 * `design/Electronics/Rotor/Rotor_26_Char_Design.md` §7
 * `design/Electronics/Rotor/Rotor_64_Char_Design.md` §7
+
+#### Resonant Front-End Topology
+
+Each active FDC2114 channel drives a resonant LC tank to detect the aluminium shroud segment. The
+tank consists of an **18 µH shielded SMD inductor** and a **33 pF C0G/NP0 ±1% capacitor** connected
+**in parallel** between the channel's INxA and INxB pins (single-ended mode; `CHx_FIN_SEL = 0b10`).
+Nominal resonant frequency: **~6.5 MHz**.
+
+* **Clock source:** CLKIN tied to GND — FDC2114 uses its internal oscillator (~43.35 MHz). No
+  external crystal required.
+* **IDRIVE baseline:** `0b01111` (register `DRIVE_CURRENT_CHx` = 0x7C00). Lab validation required;
+  see `design/Procedures/Lab_Tests.md` **LT-001**.
+* **Deglitch setting:** `0b101` = 10 MHz (register `MUX_CONFIG` deglitch field = 0x0005). Lab
+  validation required; see `design/Procedures/Lab_Tests.md` **LT-002**.
+* **Unused channels:** Each unused channel carries a **dummy LC tank** (same 18 µH + 33 pF in
+  parallel between INxA/INxB). Tying unused INx pins directly to GND causes oscillation
+  instability in active channels per TI application note; the dummy load is required.
+* **FDC2114 firmware:** None. The FDC2114 has no user-programmable firmware. All register
+  configuration is performed at runtime by the CPLD I²C master (VHDL bitstream). JTAG programs
+  the CPLD only. Full I²C register table in `design/Software/CPLD_Logic/Rotor_Logic.md`.
+
+Resonant front-end parts (`L1–L12`, `C20–C31`) are **Category B** pending part selection.
 
 ### 2.2 Logic & Transposition
 
@@ -495,6 +525,10 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C14 | U2 FDC2114 local `VDD` bypass (datasheet-recommended) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C15 | U2 FDC2114 local `VDD` reservoir (datasheet-recommended) | 1µF X7R MLCC, ≥6.3V — **user-selected MPN required** | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
+| C16 | U3 FDC2114 local `VDD` bypass (datasheet-recommended; N=26 only, not populated for N=64) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C17 | U3 FDC2114 local `VDD` reservoir (datasheet-recommended; N=26 only, not populated for N=64) | 1µF X7R MLCC, ≥6.3V — **user-selected MPN required** | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
 | J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
@@ -506,6 +540,7 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R6-R7 | Local FDC2114 I²C bus pull-ups (`SDA`, `SCL`) to `3V3_ENIG` | **Value TBD by owner** — external I²C pull-ups for the rotor-local `U2/U3/U4` sensor bus at 3.3V | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
 | U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; STGC bits[3:0] N=26); I²C addr 0x2A | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | U3 | FDC2114RGHR, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
@@ -516,6 +551,14 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| C18 | U4 FDC2114 local `VDD` bypass (datasheet-recommended; N=64 only, not populated for N=26) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C19 | U4 FDC2114 local `VDD` reservoir (datasheet-recommended; N=64 only, not populated for N=26) | 1µF X7R MLCC, ≥6.3V — **user-selected MPN required** | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
+| L1–L4 | U2 (Board A) FDC2114 CH0–CH3 resonant inductors — **one per active channel; in parallel with C20–C23 between INxA/INxB** | 18 µH shielded SMD — Cat B, part TBD | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
+| L5–L8 | U3 (Board A) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | 18 µH shielded SMD — same part as L1–L4 (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
+| L9–L12 | U4 (Board B) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=64 only, not populated for N=26** | 18 µH shielded SMD — same part as L1–L4 (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
+| C20–C23 | U2 (Board A) FDC2114 CH0–CH3 resonant capacitors — **in parallel with L1–L4 between INxA/INxB** | 33 pF C0G/NP0 ±1% — Cat B, part TBD | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
+| C24–C27 | U3 (Board A) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | 33 pF C0G/NP0 ±1% — same part as C20–C23 (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
+| C28–C31 | U4 (Board B) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=64 only, not populated for N=26** | 33 pF C0G/NP0 ±1% — same part as C20–C23 (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
 | J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
@@ -525,3 +568,7 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | U4 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
+
+> **Support-network scope note:** `R6/R7` and `C14-C19` capture the local I²C-bias and `VDD`-bypass
+> requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L12`, `C20–C31`)
+> are captured above as Category B pending part selection.

@@ -337,6 +337,8 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) rotor-stack shunt resistor. Stator R1 instance. (PM R12 + PM R23 are the first and second system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
 * **Interface:** I2C-1 Telemetry Bus (via `J5`, shared with the Power Module and Settings Board).
 * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
+* **Local bypassing:** C14-C20 provide one 100nF local VDD bypass capacitor for each Stator-local IC
+  U2-U8; U8 placement remains subject to `Stator/Board_Layout.md §6`.
 
 ## 6. EMI & Mechanical
 
@@ -361,7 +363,7 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 ## 8. Thermal & ESD
 
 * **Thermal:** No active cooling required. Low-power passive components only. Relies on chassis airflow.
-* **ESD:** TVS diode protection on external-facing signal lines. All connectors include GND guard pins per Samtec ERF8/ERM8 pinout.
+* **ESD:** Local TVS / ESD protection is required on the Stator board's exposed signal-line boundaries (`J10` reflector/extension service port, `J12` controller logic dock, and `J13` Settings harness). Exact protected nets, device count, working voltage, package, and sourced MPN remain owner-selected. The rotor-slot Samtec ERF8/ERM8 interfaces otherwise rely on their grounded guard contacts.
 
 ## 9. Bill of Materials
 
@@ -369,11 +371,13 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C14-C20 | Local VDD bypass (one per: U2, U3, U4, U5, U6, U7, U8) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | SMT 0.8mm pitch | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) |
 | J4-J9 | Encoder port connectors (×6 positions: `KBD_ENC`, `LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`) | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | through-hole | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
 | J10 | 20-pin Reflector/Extension port | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | through-hole | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
 | J11, J12 | Controller dock hybrid plugs (5V-biased + 3V3/JTAG/I2C) | Molex 2195620015 | 5 power + 15 signal hybrid plug | 538-219562-0015 | 900-2195620015-ND | Global sourcing / consignment |
 | J13 | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
+| D1 (owner-selected) | External signal-line TVS / ESD protection required by §8 (`J10`, `J12`, `J13`) | Exact protected nets, device count, working voltage, package, and MPN **owner-selected** | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ω @100 MHz, 4.0A | 1206 | 875-HI1206P121R-10 | 240-2410-1-ND | C2442103 |
 | R1 | Rotor-Stack Shunt Resistor (CSS2H — Stator R1; PM R12 LTC3350 RSENSE and PM R23 INA219 U12 are first and second system instances, total build qty: 3) | CSS2H-2512R-R010ELF (10mΩ ±1% 5A) | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |

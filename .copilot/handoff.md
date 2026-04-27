@@ -94,28 +94,30 @@ Main outcomes:
 - BOM audit pass: active board design-spec BOMs currently show no open `TBD` / empty-supplier placeholder
   rows apart from the intentional CM5 distributor-only entry, and the consolidated AM section now carries
   explicit per-board and Rev A total counts for the current two-module design
-- the AM firmware specification now lives at `design/Software/Actuation_Module/Design_Spec.md`, while
-  the AM hardware spec keeps only a software cross-reference
-- the selected AM controller is now **STMicroelectronics STM32G071K8T3TR**
-- approved supplier references for the AM controller are DigiKey `497-STM32G071K8T3TR-ND`, Mouser
-  `511-STM32G071K8T3TR`, and JLCPCB via global sourcing or consignment only
-- the Mouser product page for the selected AM controller is useful during later PCB work because it
-  exposes footprint and 3D-model links for the package
-- `design/Datasheets/stm32g071.md` now exists as the local markdown companion for
-  `design/Datasheets/stm32g071.pdf`, and the AM design spec now points to that markdown file as the
-  reviewed STM32 candidate-family reference
-- the Reflector / Extension harness has been widened from **16-pin BHR-16-VUA** to
-  **20-pin BHR-20-VUA**:
-  - pins 1-16 preserve the existing reflector-boundary service bus
-  - pins 17-20 add grouped `5V_MAIN` plus returns so an Extension-local AM can be powered without
-    inventing a second cable family
-- `design/Design_Log.md` records the AM architecture and widened harness as **DEC-043**
-- the active mechanical carry wording is now:
-  - purely mechanical within a contiguous 5-rotor group
-  - electrically regenerated across each Extension boundary by the local AM
-- the non-mechanical Extension notch pass-through review is now closed in repo-local state: the active
-  architectural answer is the shared AM baseline, and any remaining Extension follow-up is mechanical
-  linkage / geometry work rather than additional electrical pass-through circuitry
+- the additive senior-electronics deep-review loop for BOM/support-part completeness and connector
+  consistency is now complete for the current design-doc set:
+  - `.copilot/review-report.md` contains the full pass-by-pass audit through Pass 17
+  - Pass 16 and Pass 17 both completed **clean** by the agreed review definition
+  - the resulting design/BOM fixes remain intentionally uncommitted in the working tree
+  - only the previously known deferred schematic-capture and owner-selected selections remain open
+  - this does **not** close the repo-local `rerun-deep-reviews` workstream; that remains the final
+    pre-V1 cross-discipline review gate after electrical, mechanical, and software work are complete and
+    each board has a full KiCAD project with exported production Gerbers
+
+## Next return summary
+
+When resuming, use `.copilot/checkpoints/067-category-a-deep-review-fixes.md` first. It contains:
+
+- a summary of all Category A deep-review fixes applied and committed
+- the remaining Category B items (still open, not blocking)
+- AM firmware note (`design/Software/Actuation_Module/Design_Spec.md`) and AM controller
+  (**STM32G071K8T3TR**) with approved sourcing: DigiKey `497-STM32G071K8T3TR-ND`,
+  Mouser `511-STM32G071K8T3TR`, JLCPCB global sourcing/consignment
+- Rotor FDC2114 internal oscillator decision (DEC-044)
+- Settings Board two-stage NMOS/PMOS LED topology (Q7–Q30, R54–R77)
+- New files: `design/Software/CPLD_Logic/Rotor_Logic.md`,
+  `design/Procedures/Lab_Tests.md` (LT-001, LT-002)
+
 
 ## Documentation policy reminders
 
@@ -147,7 +149,6 @@ These are still open design review items, but they are not yet committed design 
    workstream also preserves the chosen external `J5` / `J6` pinouts, the local `SW1` / `SW2`
    tactile pair on `NRST` / `BOOT0`, and the agreed logical signal roles while locking the exact
    STM32 pad assignment and default `BOOT0` bias network behind them.
-4. Rerun deep review agents after the next material design-doc change set.
-5. During the final deep-dive and manual review before declaring Version 1 complete, re-confirm the
+4. During the final deep-dive and manual review before declaring Version 1 complete, re-confirm the
    chosen military battery connector details, especially the remaining 6-pin contact assignment,
    `BATT_PRES_N` position, reserved/unused contact behaviour, cable selection, and interposer fit.

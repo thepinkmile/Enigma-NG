@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
-**Last Updated:** 2026-04-25
+**Last Updated:** 2026-04-26
 
 ## Overview
 
@@ -22,8 +22,10 @@ This table shows the component count per board instance and system-wide totals, 
 ×6 Encoder Modules and ×30 Rotor boards in the complete system. The EXT column shows per-board
 quantities for one Extension board; Rev A uses ×1 Extension board, while the full 30-rotor build
 requires ×5 Extension boards (one between each pair of 5-rotor groups). System Total reflects
-the Rev A single-Extension configuration unless otherwise noted. Role-specific Encoder Module
-populations are broken out as dedicated static rows rather than range-valued quantity cells.
+the Rev A single-Extension configuration unless otherwise noted, and also includes the shared
+two-module Rev A Actuation Module passive support-part population frozen in §4c where the common
+summary rows below use the same sourced part. Active Encoder Module PCB
+populations are common across all six modules.
 Variant-dependent Rotor-only populations may use range-valued totals where the N=26 vs. N=64 build
 mix changes whether a part is stuffed. When a variant-specific rotor part is populated, it is
 fitted in complete rotor sets of **5, 10, 15, 20, 25, or 30** boards — never as a single loose
@@ -56,6 +58,8 @@ board matrix.
 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
+| UNSOURCED — Stator external signal-line TVS / ESD protection required by `Stator/Design_Spec.md §8` (`J10` / `J12` / `J13`; exact protected nets, device count, working voltage, package, and MPN owner-selected) | — | — | TBD | — | — | — | — | — | — | — | — | TBD |
+| UNSOURCED — Extension exposed signal-line TVS / ESD protection required by `Extension/Design_Spec.md §5` (exact protected nets, device count, working voltage, package, and MPN owner-selected) | — | — | — | — | — | — | — | — | TBD | — | — | TBD |
 | TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | 1 | 3 | — | — | — | — | — | — | — | — | — | 4 |
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -67,14 +71,16 @@ board matrix.
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 3 | 6 |
 | J9 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
-| 0.1 µF X7R 0402 decoupling cap — common fitted population | 15 | 1 | 9 | 8 | 48 | 8 | 240 | — | 1 | 4 | 4 | 322 |
-| 0.1 µF X7R 0402 encoder input RC filter cap — encode-role population only | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
-| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 5 | — | — | 200 |
+| 0.1 µF X7R 0402 decoupling cap — common fitted population | 20 | 1 | 15 | 8 | 48 | 10 | 300 | — | 1 | 4 | 4 | 399 |
+| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 5 | — | — | 202 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 13 | — | — | — | — | — | — | — | — | — | — | 13 |
 | 47 µF X7R 25 V 2220 buck output bulk cap (TDK CGA9N3X7R1E476M230KB) | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
-| 4.7 µF X7R 1210 entry filter (CGA6P3X7R1H475K250AD) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
+| 4.7 µF X7R 1210 entry filter (CGA6P3X7R1H475K250AD) | — | — | — | — | — | — | — | — | — | 1 | — | 3 |
 | 10 µF 16 V X7R 1206 monostable timing cap (CC1206KKX7R8BB106) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
+| UNSOURCED — Rotor FDC2114 local `VDD` reservoir capacitor (1 µF X7R MLCC, ≥6.3 V; footprint owner-selected) | — | — | — | — | — | 2 | 60 | — | — | — | — | 60 |
+| UNSOURCED — Rotor FDC2114 resonant tank inductor (18 µH shielded SMD; 4 per active FDC2114; Cat B, part TBD; N=26 build 8 per board, N=64 build 8 per board; per-board count includes dummy LC tanks for unused channels) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
+| UNSOURCED — Rotor FDC2114 resonant tank capacitor (33 pF C0G/NP0 ±1%; 4 per active FDC2114; Cat B, part TBD; count same as inductor) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
 | 10 µF 25 V X7R 1206 LDO input cap (C1206C106K3RACTU) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 10 nF X7R 50 V 0402 soft-start cap (CL05B103KB5NNNC) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10 nF 100 V X7R 0402 Bob Smith termination cap (C0402C103K1RACAUTO) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -83,17 +89,20 @@ board matrix.
 | 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 8 | — | — | — | — | — | — | — | — | — | — | 8 |
 | 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C14/C15 (Samsung CL32B226KAJNNNE) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | | | | | | | | | | | | | |
-| 10 kΩ 1% 0603 pull resistor (ERJ-3EKF1002V / C191124) | 6 | 2 | 16 | — | — | — | — | — | — | — | 13 | 37 |
-| 10 kΩ 1% 0402 pull resistor — common fitted population (ERJ-2RKF1002X / C191123) | 2 | — | 1 | 4 | 24 | 4 | 120 | — | — | 2 | — | 149 |
-| 10 kΩ 1% 0402 encoder input pull-up — encode-role population only (ERJ-2RKF1002X / C191123) | — | — | — | 64 | 192 | — | — | — | — | — | — | 192 |
-| 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 9 | — | — | — | — | — | — | — | — | 9 |
+| 10 kΩ 1% 0603 fitted resistor — pull / series population (ERJ-3EKF1002V / C191124) | 6 | 5 | 16 | — | — | — | — | — | — | — | 11 | 38 |
+| 10 kΩ 1% 0402 pull resistor — common fitted population (ERJ-2RKF1002X / C191123) | 7 | — | 0 | 4 | 24 | 4 | 120 | — | — | 2 | — | 155 |
+| 1 kΩ 1% 0402 gate resistor — common fitted population (ERJ-2RKF1001X) | 5 | — | — | — | — | — | — | — | — | — | 6 | 11 |
+| 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 18 | — | — | — | — | — | — | — | — | 18 |
 | 75 Ω 1% 0402 resistor (ERJ-2RKF75R0X / C413061) | — | 4 | — | 1 | 6 | — | — | — | — | — | — | 10 |
 | 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | — | — | — | — | — | — | — | — | — | — | — |
 | 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | — | — | — | — | — | — | 4 | — | 4 |
 | 22 Ω 0603 1% JTAG end-of-chain damping (ERJ-3EKF2200V) | — | — | — | — | — | — | — | 1 | — | — | — | 1 |
-| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 1 | 6 | — | — | — | — | — | — | 6 |
+| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 1 | 6 | — | — | — | — | — | — | 12 |
 | 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | — | 2 | — | — | — | — | — | — | — | — | — | 2 |
+| 150 Ω 1% 0603 LED current-limit resistor (ERJ-3EKF1500V / C400650) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
+| 100 Ω 1% 0603 LED current-limit resistor (ERJ-3EKF1000V / C193336) | — | — | — | — | — | — | — | — | — | — | 24 | 24 |
 | 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V / C192166) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| UNSOURCED — Rotor local FDC2114 I²C pull-up resistor (`SDA` / `SCL`, 3.3 V local bus, 1 per line; value/footprint owner-selected) | — | — | — | — | — | 2 | 60 | — | — | — | — | 60 |
 | 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C193336) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 20 mΩ 1% 1206 current-sense shunt (ERJ-6ENF20R0V / C123465) | — | — | — | — | — | — | — | — | — | — | — | — |
 | 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 2 | — | 1 | — | — | — | — | — | — | — | — | 3 |
@@ -143,7 +152,7 @@ board matrix.
 | Power Module RGB Metal Power Switch (Adafruit 4660) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | Power Module Momentary RGB Metal Pushbutton (Adafruit 3350) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | Power Module 2.8 mm PCB Male Quick-Fit Tabs (Keystone 1211; SW1 + SW2 harnesses) | 12 | — | — | — | — | — | — | — | — | — | — | 12 |
-| Settings Board SPDT Toggle Switch (E-Switch 200MSP1T2B4M2QE) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
+| Settings Board SPDT Toggle Switch (E-Switch 200MSP1T2B4M2QE) | — | — | — | — | — | — | — | — | — | — | 10 | 10 |
 | Settings Board Discrete RGB LED (Kingbright WP154A4SEJ3VBDZGW/CA) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
 | Green SMD LED 0402 (Würth 150060VS75000 / C6848499) | — | — | — | 1 | 6 | — | — | — | — | — | — | 6 |
 | 6.35 mm PCB Blade Terminal (Keystone 1285-ST) | — | — | — | 64 | 384 | — | — | — | — | — | — | 384 |
@@ -193,7 +202,7 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 | C16-C19 | LMQ61460-Q1 buck output bulk caps | TDK CGA9N3X7R1E476M230KB | 4× 47µF 25V X7R MLCC total (2 fitted at U2A OUT, 2 fitted at U2B OUT) | 2220 | 810-A9N3X7476M23KB |
 | C20 | LDO input cap (U7 VIN) | Kemet C1206C106K3RACTU | 10µF 25V X7R | 1206 | 80-C1206C106K3R |
 | C21-C23 | 1µF caps (Pi-filter mid-frequency legs and U11 timer) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
-| C24-C39 | 100nF caps (Pi-filter HF legs and IC VCC bypass network) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
+| C24-C39, C43-C46 | 100nF caps (Pi-filter HF legs and IC VCC bypass network, including PM U12 INA219 bypass and PM U17/U18/U19 local VCC bypass) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
 | C40 | SYNC SW-ringing low-pass filter (C_F1) | Kemet C0402C101K3RACAUTO | 100pF X7R 25V | 0402 | 80-C0402C101K3RAUTO |
 | C41 | SYNC 180° phase delay capacitor (C_DLY) | Samsung CL10B223KB8WPNC | 22nF X7R 25V | 0603 | 187-CL10B223KB8WPNC |
 | C42 | U15 MIC1555 one-shot timing cap | Yageo CC1206KKX7R8BB106 | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 |
@@ -240,11 +249,12 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
 | R16–R19 | SW1[3:0] CPLD config input pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
-| R20 | STATOR_CFG_RDY input pull-down (×1) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
+| R20 | `CFG_APPLY_N` pull-up resistor (×1) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
 | R21–R26 | SW2[5:0] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
 
-Pull-down resistors R16–R26 are retained on the Stator CPLD config input pins as power-up safe
-defaults (hold all inputs LOW when U8 is uninitialised). Physical switches SW1 and SW2 have
+Pull-down resistors R16–R19 and R21–R26 are retained on the Stator CPLD config input pins as
+power-up safe defaults (hold all inputs LOW when U8 is uninitialised). R20 keeps `CFG_APPLY_N`
+inactive HIGH until U8 actively asserts the Stator-local apply/reset pulse. Physical switches SW1 and SW2 have
 been removed and relocated to the Settings Board. See `Settings_Board/Design_Spec.md` for the
 full switch specifications and `Stator/Design_Spec.md §3 Panel Switch Configuration` for the
 configuration tables.
@@ -258,8 +268,8 @@ configuration tables.
 | J13 | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
 
 U6 @ 0x20: ENC_IN/ENC_OUT monitoring. U7 @ 0x21: virtual keypress injection, SOURCE_SEL,
-SYS_RESET_N, spare GPIO. U8 @ 0x22: CPLD config output driver (SW1[3:0] + SW2[5:0] +
-STATOR_CFG_RDY). J13 (6-pin JST PH) connects to Settings Board J1 and carries 3V3_ENIG,
+SYS_RESET_N, spare GPIO. U8 @ 0x22: CPLD config output driver (`CFG_ROUTE[3:0]` +
+`CFG_REFMAP[5:0]` + `CFG_APPLY_N`). J13 (6-pin JST PH) connects to Settings Board J1 and carries 3V3_ENIG,
 5V_MAIN (used as the Settings indicator rail), 2× GND, SDA, SCL.
 
 ### Shared Actuation Module / Host Interface Components
@@ -283,7 +293,9 @@ in this consolidated BOM.
 | D1-D3 (AM module) | Local diagnostic LEDs (`PWR`, `HOMED`, `ACT`) | Wurth 150060VS75000 — Green SMD LED | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 | 🔒 | 3 per AM | 6 |
 | R1-R3 (AM module) | LED current-limit resistors | 330Ω 1% 0402 | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 | 🔒 | 3 per AM | 6 |
 | R4 (AM module) | `ACTUATION_HOME` pull-up resistor | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 | 1 per AM | 2 |
+| R5 (AM module) | `BOOT0` series resistor (prevents contention when both J6 pin 5 and MCU BOOT0 drive simultaneously) | 10kΩ 1% 0402 — same part as R4 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 | 1 per AM | 2 |
 | C1 (AM module) | `ACTUATION_HOME` debounce capacitor | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 1 per AM | 2 |
+| C6 (AM module) | NRST filter capacitor (100nF X7R per STM32G071 datasheet Figure 23) | 100nF 50V X7R 0402 — same part as C2/C3/C1 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 1 per AM | 2 |
 | U1 (AM module) | Local actuation controller | STMicroelectronics STM32G071K8T3TR | LQFP32 | 511-STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | Global sourcing / consignment only | 🔒 | 1 per AM | 2 |
 
 The servo motor and its local home switch remain off-board electromechanical items and are therefore
@@ -302,23 +314,31 @@ specification.
 | U3 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x25 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 | 🔒 |
 | D1-D5 | Bank 1 discrete RGB indicator LEDs (×5) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
 | D6-D12 | Bank 2 discrete RGB indicator LEDs (×7) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 | ✅ |
-| SW11 | CFG_APPLY momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | ✅ |
+| SW11 | `CFG_APPLY_N` momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | ✅ |
 | J1 | I²C ribbon cable connector to Stator J13 | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 | 🔒 |
 | Q1, Q2, Q3, Q4, Q5, Q6 | Low-side colour-rail sink MOSFETs (×6 total; 3 per bank for RGB) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
 | R1-R10 | Switch input pull-down resistors (×10: 4 Bank 1 + 6 Bank 2) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
-| R11 | CFG_APPLY pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
+| R11 | `CFG_APPLY_N` pull-up resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
 | R12-R17 | MOSFET gate resistors (×6; 1 per MOSFET) | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 | 🔒 |
-| R18-R29 | Per-switch red LED series resistors (×12) | 150Ω 1% — 5V operation @ 20mA nominal (Vf_red ≈ 2.0V) | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 | 🔒 |
-| R30-R41 | Per-switch green LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_green ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
-| R42-R53 | Per-switch blue LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_blue ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
+| R18-R29 | Per-indicator red LED series resistors (×12) | 150Ω 1% — 5V operation @ 20mA nominal (Vf_red ≈ 2.0V) | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 | 🔒 |
+| R30-R41 | Per-indicator green LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_green ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
+| R42-R53 | Per-indicator blue LED series resistors (×12) | 100Ω 1% — 5V operation @ 20mA nominal (Vf_blue ≈ 3.0V) | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 | 🔒 |
 | SW1-SW4 | Bank 1 configuration toggle switches (×4: routing bits 0–3) | E-Switch 200MSP1T2B4M2QE — SPDT latching sub-mini toggle, T2 actuator, B4 bushing, M2 termination, Q silver contacts, epoxy sealed | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
 | SW5-SW10 | Bank 2 configuration toggle switches (×6: reflector bits 0–5) | E-Switch 200MSP1T2B4M2QE — same part as Bank 1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 | ✅ |
-| C4 | CFG_APPLY debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| C4 | `CFG_APPLY_N` debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 | C1 | VCC decoupling cap for U1 (MCP23017 @ 0x23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 | C2 | VCC decoupling cap for U2 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 | C3 | VCC decoupling cap for U3 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
+| Q7–Q11 | Bank 1 per-anode low-side NMOS (5 total; one per Bank 1 LED anode → drives PMOS gate) | BSS138 — same part as Q1–Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
+| Q12–Q18 | Bank 2 per-anode low-side NMOS (7 total; one per Bank 2 LED anode → drives PMOS gate) | BSS138 — same part as Q1–Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
+| Q19–Q23 | Bank 1 per-anode high-side PMOS (5 total; source = 5V_MAIN, drain = LED anode; controlled by Q7–Q11) | PMOS high-side switch — **Cat B, part TBD** | SOT-23 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
+| Q24–Q30 | Bank 2 per-anode high-side PMOS (7 total; source = 5V_MAIN, drain = LED anode; controlled by Q12–Q18) | PMOS high-side switch — same part as Q19–Q23 (**Cat B**) | SOT-23 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
+| R54–R58 | Bank 1 NMOS gate resistors (×5; one per Q7–Q11 gate) | 1kΩ 1% 0402 — same part as R12–R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 | 🔒 |
+| R59–R65 | Bank 2 NMOS gate resistors (×7; one per Q12–Q18 gate) | 1kΩ 1% 0402 — same part as R12–R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 | 🔒 |
+| R66–R70 | Bank 1 PMOS gate pull-up resistors to 5V_MAIN (×5; one per Q19–Q23 gate) | 47kΩ 1% 0402 — **Cat B, part TBD** | 0402 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
+| R71–R77 | Bank 2 PMOS gate pull-up resistors to 5V_MAIN (×7; one per Q24–Q30 gate) | 47kΩ 1% 0402 — same part as R66–R70 (**Cat B**) | 0402 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
 
-U1 @ 0x23: reads all 12 switch states + CFG_APPLY. U2 @ 0x24 and U3 @ 0x25:
+U1 @ 0x23: reads the 10 configuration toggle states (`CFG_ROUTE[3:0]` on GPA[3:0], `CFG_REFMAP[5:0]` on GPB[5:0]) plus `CFG_APPLY_N` on GPB[7]. U2 @ 0x24 and U3 @ 0x25:
 drive per-bit LED anodes and per-bank RGB colour-rail MOSFET sinks. All three share the Stator
 I²C-1 bus via the J1 → J13 ribbon cable. LEDs operate at 5V @ 20mA with 150Ω red and 100Ω
 green/blue series resistors. `5V_MAIN` is routed from the Controller via the `J4`
@@ -422,8 +442,8 @@ high-current dock through the Stator to the Settings Board.
 | U10 | TPS23730RMTR | WQFN-20 | **595-TPS23730RMTR** ✓ | **296-TPS23730RMCT-ND** ✓ | C3189530 | 🔒 ACF PoE+ DC-DC controller; PSR mode; 12V output; WQFN-20 package. ✅ Resolved (see §9.0 item 2). |
 | D2 | TPD2E2U06DRLR | SOT-553 (DRL) | **595-TPD2E2U06DRLR** ✓ | **296-38361-1-ND** ✓ | C1972959 | 🔒 DigiKey 1.4k in stock @ $0.41/1. Dual-channel SMBus ESD, 5.5V. Part confirmed to exist. Farnell stocked (3116500). |
 | Ethernet / PoE entry connector (Controller) | Würth 7499111121A | THT RJ45 | **710-7499111121A** ✓ | **1297-1070-5-ND** ✓ | C5523983 | 🔒 Controller-owned Ethernet / PoE entry connector. Mouser ~191, DigiKey ~879 in stock. ~$8.41/1 (Mouser), ~$8.41/1 (DigiKey). Farnell out of stock. JLCPCB C5523983 — hand-place or pre-fit. |
-| J3 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | 🔒 Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
-| J4 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 | 🔒 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. JLCPCB C5438410. |
+| J4 | Molex 0436500519 (43650-0519) | THT Micro-Fit 3.0 | 538-43650-0519 | WM14587-ND | C563849 | 🔒 Full Molex PN: 0436500519; short form 43650-0519. 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Farnell ~1143 in stock. JLCPCB C563849 confirmed. |
+| J5 | GCT USB4135-GF-A | SMT vertical 8.94×3.5mm | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 | 🔒 6-position USB Type-C receptacle (power only), 5A VBUS, CC1/CC2 included. Connects to STUSB4500 (U5) for 15V PD negotiation. JLCPCB C5438410. |
 | Q1, Q2, Q3 | TI CSD17483F4T (×3) | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 | 🔒 N-ch MOSFET, 30V, 10A, 8.4mΩ. Driven by LM74700-Q1 controllers **U6a/U6b/U6c** for triple-input ideal-diode OR-ing (PoE / USB-C / Battery). One controller + one MOSFET per input path. |
 | R14, R15 | Panasonic ERA-3ARB series | 0603 0.1% Thin-Film | See PN below | See PN below | — | 🔒 R14 (ERA-3ARB3012V, Mouser 667-ERA-3ARB3012V, DigiKey 10-ERA-3ARB3012VCT-ND, JLCPCB C1728516). R15 (ERA-3ARB103V, Mouser 667-ERA-3ARB103V, DigiKey P10KBDCT-ND, JLCPCB C465746). BACKUP pin voltage divider for LTC3350 (U3). R14=30.1kΩ, R15=10.0kΩ. Sets BACKUP trigger at 4.812V (312mV above MCP121T 4.50V — see DEC-030). |
 | R30 | ERA-2AEB3322X 33.2kΩ 1% 0402 | 0402 1% Thick-Film | 667-ERA-2AEB3322X | P33.2KDCCT-ND | C2087909 | 🔒 LTC3350 RT frequency-setting resistor — sets 400 kHz switching frequency (vs default 200 kHz with RT=INTVCC). Required for ≥4-cycle backup switchover window. See DEC-030. |

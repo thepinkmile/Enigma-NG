@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-05
+**Last Updated:** 2026-04-26
 
 This board implements our version of an Intel (Altera) USB Blaster II device for programming CPLDs.
 
@@ -21,8 +21,8 @@ TOP VIEW (L1) - 4-Layer (DEC-017) / 2oz Copper
 |   [ FT232H IC ] <--- High-Speed USB to MPSSE Bridge                         |
 |   (Main IC for JTAG Blaster, 12MHz Crystal Attached)                        |
 |                                                                             |
-|   [ JTAG HEADER ] <--- 10-Pin Shrouded Header (Asymmetrical)                |
-|   (Opposite Side, 2.54mm Pitch, 1:1 GND Shielding)                          |
+|   [ JTAG HEADER ] <--- 10-Pin Single-Row Open Header (1×10)                |
+|   (Opposite Side, 2.54mm Pitch, Interleaved GND Pinout)                    |
 |                                                                             |
 |   [ DATA PLATE ] <--- Inverted White Silkscreen on L4 (B.Silkscreen / exterior face)   |
 |   (Enigma Silhouette + JLC Serial)                                          |

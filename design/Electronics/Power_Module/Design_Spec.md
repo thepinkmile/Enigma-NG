@@ -473,6 +473,10 @@ Estimated PM-local power dissipation at system peak load:
 | C40 | SYNC delay chain SW-ringing low-pass filter (C_F1) | 100pF X7R 25V (C0402C101K3RACAUTO) | 0402 | 80-C0402C101K3RAUTO | 399-C0402C101K3RACAUTOCT-ND | C5272912 |
 | C41 | SYNC 180° phase delay capacitor (C_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 22nF X7R 25V (CL10B223KB8WPNC) | 0603 | 187-CL10B223KB8WPNC | 1276-6534-1-ND | C346197 |
 | C42 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R (CC1206KKX7R8BB106) | 1206 | 603-CC126KKX7R8BB106 | 311-1959-1-ND | C70462 |
+| C43 | U12 INA219 local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C44 | U17 SW2 signal-conditioner local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C45 | U18 SW2 shutdown-latch local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C46 | U19 SW2 red-blink gate local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | C17468669 |
 | J1-J3 | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 |
 | J4 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Candidate military / NetWarrior-style replacement under review: Glenair `807-216-00ZNU6-6DY` via Heilind / consignment-only; see `Millitary_Battery_Connection_Option.md`. | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
@@ -529,9 +533,9 @@ Estimated PM-local power dissipation at system peak load:
 | U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | NL27WZ14DFT2G-Q — AEC-Q100 dual Schmitt-trigger inverter, one gate used per SYNC stage | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 |
 | U15 | PWR_BUT shutdown one-shot timer | MIC1555YM5-TR — CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C42 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C38 (100nF). | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 |
 | U16 | PM-local GPIO expander | PCA9534APWR — 8-bit I²C GPIO expander @ 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`. `INT` exported as `PM_IO_INT_N`. | TSSOP-16 | 595-PCA9534APWR | 296-21760-1-ND | C2871127 |
-| U17 | SW2 hardware signal conditioner | NL27WZ14DFT2G-Q — automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 |
-| U18 | SW2 shutdown latch | SN74LVC1G175DBVR — single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. Latches shutdown active on `PWR_BUT` assertion and clears when `LED_nPWR` deasserts. | SOT-23-6 | 595-SN74LVC1G175DBVR | 296-17617-1-ND | C128412 |
-| U19 | SW2 red blink gate | SN74LVC1G08DBVR — single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. Gates the U11 1Hz oscillator into the SW2 red sink while the shutdown latch is set. | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 |
+| U17 | SW2 hardware signal conditioner | NL27WZ14DFT2G-Q — automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. VCC bypass: C44 (100nF). | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 |
+| U18 | SW2 shutdown latch | SN74LVC1G175DBVR — single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. Latches shutdown active on `PWR_BUT` assertion and clears when `LED_nPWR` deasserts. VCC bypass: C45 (100nF). | SOT-23-6 | 595-SN74LVC1G175DBVR | 296-17617-1-ND | C128412 |
+| U19 | SW2 red blink gate | SN74LVC1G08DBVR — single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. Gates the U11 1Hz oscillator into the SW2 red sink while the shutdown latch is set. VCC bypass: C46 (100nF). | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 |
 
 > **BOM Notes:**
 >
@@ -624,9 +628,9 @@ Estimated PM-local power dissipation at system peak load:
 > BOM total for CL32B226KAJNNNE is now **13 units** per PM: 6 positions × 2 + 1 single (C13).
 > C20 uses a different 10µF part.
 > DigiKey 1276-3392-1-ND; JLCPCB C309062 (confirmed — Samsung CL32B226KAJNNNE 22µF 25V X7R 1210).
-> * **C21–C42 timing/bypass caps** — C21/C22/C23 (1µF) share the same Kemet
+> * **C21–C46 timing/bypass caps** — C21/C22/C23 (1µF) share the same Kemet
 >   C0805C105K5RACTU as the Pi-filter mid-frequency bypass parts and U11 timer
->   cap. C24–C39 (100nF bypass / HF shunt) share the same Samsung
+>   cap. C24–C39 and C43–C46 (100nF bypass / HF shunt) share the same Samsung
 >   CL05B104KB5NNNC / C1525. C40 (100pF) and C41 (22nF) are the dedicated SYNC
 >   filter / delay capacitors; C42 is the dedicated U15 one-shot timing cap.
 > * **U13/U14 NL27WZ14DFT2G-Q** — AEC-Q100 dual Schmitt-trigger inverter in SC-88. One gate is used as U_INV1 (U13) and one as U_INV2 (U14) in the 180° SYNC interleaving delay chain.

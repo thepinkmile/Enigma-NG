@@ -72,3 +72,5 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 63 | Encoder HID activity sideband | 063-encoder-active-sideband.md |
 | 64 | Battery connector candidate documented | 064-battery-connector-candidate.md |
 | 65 | Extension review closed, AM BOM sync | 065-extension-am-bom-sync.md |
+| 66 | Electronics review loop clean closeout | 066-electronics-review-loop-clean.md |
+| 67 | Category A deep-review fixes implemented and committed | 067-category-a-deep-review-fixes.md |
