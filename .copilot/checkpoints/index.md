@@ -1,4 +1,5 @@
 # Checkpoint History
+
 Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, higher numbers are more recent.
 
 > Note: checkpoint files `034-settings-board-panel-switch-re.md` and
@@ -6,7 +7,7 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 > not present in the current repo-local `.copilot/checkpoints/` snapshot.
 
 | # | Title | File |
-|---|-------|------|
+| --- | ------- | ------ |
 | 1 | R26 fixes, DEC-020 rib bond, 2×3 supercap change | 001-r26-fixes-dec-020-rib-bond-2-3.md |
 | 2 | R27 fixes, Encoder architecture, 2×3 supercap | 002-r27-fixes-encoder-architecture.md |
 | 3 | R28–R32 fixes, session state in repo | 003-r28-r32-fixes-session-state-in.md |

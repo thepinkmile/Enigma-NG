@@ -118,7 +118,6 @@ When resuming, use `.copilot/checkpoints/067-category-a-deep-review-fixes.md` fi
 - New files: `design/Software/CPLD_Logic/Rotor_Logic.md`,
   `design/Procedures/Lab_Tests.md` (LT-001, LT-002)
 
-
 ## Documentation policy reminders
 
 - Do not update document `Version` metadata unless the user explicitly requests it.

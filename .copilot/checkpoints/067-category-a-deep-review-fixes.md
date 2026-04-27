@@ -13,6 +13,7 @@ design documents. The working tree is now clean.
 ## Files modified/created in this session
 
 ### Actuation Module (A1)
+
 - **`design/Electronics/Actuation_Module/Design_Spec.md`** — Added DR-AM-16 (C6 NRST filter
   cap, 100nF X7R per STM32G071 datasheet Figure 23) and DR-AM-17 (R5 BOOT0 10kΩ series
   resistor); updated J6/SW1/SW2/BOM rows.
@@ -21,6 +22,7 @@ design documents. The working tree is now clean.
 - **`design/Electronics/Actuation_Module/Board_Layout.md`** — Added C6 and R5 placement notes.
 
 ### Settings Board (A2)
+
 - **`design/Electronics/Settings_Board/Design_Spec.md`** — Added DR-SBD-10; rewrote U2/U3
   LED driver subsections for two-stage NMOS/PMOS hybrid topology; added Q7–Q30/R54–R77 BOM rows
   (Q19–Q30 and R66–R77 remain Cat B TBD).
@@ -28,6 +30,7 @@ design documents. The working tree is now clean.
   for two-stage hybrid topology.
 
 ### Rotor (A3)
+
 - **`design/Electronics/Rotor/Design_Spec.md`** — Corrected two U3/U4 unused-channel bullets
   (dummy LC tank wording per TI app note, replacing incorrect "GND via 100 kΩ"); added
   `#### Resonant Front-End Topology` subsection (LC tank 18 µH + 33 pF parallel, CLKIN→GND,
@@ -42,6 +45,7 @@ design documents. The working tree is now clean.
   and LT-002 (fSENSOR resonant frequency validation).
 
 ### Cross-cutting
+
 - **`design/Design_Log.md`** — Added DEC-044 "FDC2114 Internal Oscillator Selected (CLKIN → GND)";
   updated Last Updated date.
 - **`design/Electronics/Consolidated_BOM.md`** — Added C6/R5 to AM section; added Q7–Q18/
@@ -50,6 +54,7 @@ design documents. The working tree is now clean.
   updated Last Updated date.
 
 ### Review-loop files (13 pre-existing, committed in same set)
+
 All 13 files listed in checkpoint 066 carrying the electronics review-loop fixes.
 
 ## Category B items still open (not blocking)
@@ -67,6 +72,7 @@ All 13 files listed in checkpoint 066 carrying the electronics review-loop fixes
 ## Next session start
 
 Read in this order:
+
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
 3. `.copilot/checkpoints/index.md` (this checkpoint is #67)

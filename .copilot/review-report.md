@@ -40,22 +40,26 @@ not pick those parts autonomously.
 
 #### Pass 1 Findings
 
-**Scope summary**
+#### Scope summary
 
-Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md` files, connector-contract sections in related `Board_Layout.md` files, and `design/Software/Actuation_Module/Design_Spec.md`, with focus limited to BOM completeness for active circuits and connector mapping consistency. Physical placement/routing quality was not reviewed.
+Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md` files, connector-contract sections in related `Board_Layout.md` files, and
+`design/Software/Actuation_Module/Design_Spec.md`, with focus limited to BOM completeness for active circuits and connector mapping consistency. Physical placement/routing quality was not reviewed.
 
 ##### 1. Fixed by existing docs / no action
 
 - **Severity:** info  
   **Files:** `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`  
-  **Issue:** The 20-pin reflector / extension connector contract is internally consistent across the owning and consuming docs: `3V3_ENIG` on pin 1, `SYS_RESET_N` on pin 2, `TTD_RETURN` on pin 15, and grouped `5V_MAIN` / returns on pins 17-20.  
+  **Issue:** The 20-pin reflector / extension connector contract is internally consistent across the owning and consuming docs: `3V3_ENIG` on pin 1, `SYS_RESET_N` on pin 2, `TTD_RETURN` on pin 15,
+  and grouped `5V_MAIN` / returns on pins 17-20.  
   **Why it matters:** This is the shared cable contract for Reflector and Extension boards; a mismatch here would create immediate harness miswires.  
   **Recommended fix:** None.  
   **Status:** no action
 
 - **Severity:** info  
-  **Files:** `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Controller/Design_Spec.md`, `design/Electronics/Extension/Design_Spec.md`  
-  **Issue:** The Actuation Module service/host mapping is consistent at the document level: AM J6 pinout and SW1/SW2 ROM-boot sequence agree with the firmware spec, and the Controller / Extension host-dock descriptions match the AM power/trigger split.  
+  **Files:** `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Controller/Design_Spec.md`,
+  `design/Electronics/Extension/Design_Spec.md`  
+  **Issue:** The Actuation Module service/host mapping is consistent at the document level: AM J6 pinout and SW1/SW2 ROM-boot sequence agree with the firmware spec, and the Controller / Extension
+  host-dock descriptions match the AM power/trigger split.  
   **Why it matters:** Prevents a bring-up trap on the only STM32-based module that depends on both SWD and ROM-bootloader service paths.  
   **Recommended fix:** None.  
   **Status:** no action
@@ -64,42 +68,53 @@ Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronic
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
-  **Issue:** The AM documentation says the module provides local biasing for active-low `ACTUATE_REQUEST`, and normal boot assumes `BOOT0` is LOW at reset release, but the BOM only captures the home-input support network (`R4`, `C1`). There is no explicit documented support network for `ACTUATE_REQUEST`, `BOOT0`, or `NRST`.  
-  **Why it matters:** These nets define whether the STM32 boots normally and whether host-trigger input state is deterministic. If the design intends to rely on internal STM32 biasing, that dependency is not frozen anywhere in the active docs.  
-  **Recommended fix:** In a later fix pass, either document the intentional reliance on internal STM32 biasing, or add explicit AM support-part rows / refdes for the `ACTUATE_REQUEST`, `BOOT0`, and `NRST` networks.  
+  **Issue:** The AM documentation says the module provides local biasing for active-low `ACTUATE_REQUEST`, and normal boot assumes `BOOT0` is LOW at reset release, but the BOM only captures the
+  home-input support network (`R4`, `C1`). There is no explicit documented support network for `ACTUATE_REQUEST`, `BOOT0`, or `NRST`.  
+  **Why it matters:** These nets define whether the STM32 boots normally and whether host-trigger input state is deterministic. If the design intends to rely on internal STM32 biasing, that
+  dependency is not frozen anywhere in the active docs.  
+  **Recommended fix:** In a later fix pass, either document the intentional reliance on internal STM32 biasing, or add explicit AM support-part rows / refdes for the `ACTUATE_REQUEST`, `BOOT0`, and
+  `NRST` networks.  
   **Status:** deferred schematic capture
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Power_Module/Design_Spec.md`  
-  **Issue:** The Power Module spec requires INA219 U12 support parts (`0.1uF` decoupling plus RC filtering on `IN+` / `IN-`), but the BOM only identifies U12 and shunt R23. The capacitor groups listed for other ICs do not name U12, and no INA219 filter resistors/capacitors are refdes-assigned.  
-  **Why it matters:** INA219 accuracy and stability depend on its local bypassing and the sense-input filter network being captured consistently; right now those support parts are design intent only, not procurement-ready BOM content.  
+  **Issue:** The Power Module spec requires INA219 U12 support parts (`0.1uF` decoupling plus RC filtering on `IN+` / `IN-`), but the BOM only identifies U12 and shunt R23. The capacitor groups
+  listed for other ICs do not name U12, and no INA219 filter resistors/capacitors are refdes-assigned.  
+  **Why it matters:** INA219 accuracy and stability depend on its local bypassing and the sense-input filter network being captured consistently; right now those support parts are design intent only,
+  not procurement-ready BOM content.  
   **Recommended fix:** Add explicit U12 decoupling and input-filter rows/refdes to the Power Module BOM and roll them into the consolidated counts.  
   **Status:** pending fix pass
 
 - **Severity:** high  
   **Files:** `design/Electronics/Stator/Design_Spec.md`, `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Consolidated_BOM.md`  
-  **Issue:** Stator support-passive documentation is incomplete for non-CPLD ICs. The spec requires INA219 filtering on U2, and the board-layout doc explicitly requires local decoupling at U8, but the Stator BOM only lists `C1-C8` as "8 per CPLD" plus the bulk bank. That does not capture local bypassing for U2-U8 or the INA219 RC filter network.  
-  **Why it matters:** The Stator hosts the routing CPLD, three MCP23017s, one INA219, one logic gate, and two muxes. Missing support-passive rows here are a real manufacturing/procurement gap, not just wording.  
+  **Issue:** Stator support-passive documentation is incomplete for non-CPLD ICs. The spec requires INA219 filtering on U2, and the board-layout doc explicitly requires local decoupling at U8, but
+  the Stator BOM only lists `C1-C8` as "8 per CPLD" plus the bulk bank. That does not capture local bypassing for U2-U8 or the INA219 RC filter network.  
+  **Why it matters:** The Stator hosts the routing CPLD, three MCP23017s, one INA219, one logic gate, and two muxes. Missing support-passive rows here are a real manufacturing/procurement gap, not
+  just wording.  
   **Recommended fix:** Add explicit per-IC decoupling rows/refdes for U2-U8 and explicit INA219 sense-filter rows/refdes, then align the consolidated BOM.  
   **Status:** pending fix pass
 
 - **Severity:** high  
   **Files:** `design/Electronics/Settings_Board/Design_Spec.md`  
-  **Issue:** The Settings Board LED architecture is electrically underdefined/inconsistent. U2/U3 are documented as directly driving LED anodes HIGH, while the LEDs are also documented as common-anode parts powered from `5V_MAIN`, and only low-side BSS138 colour-rail sinks are present in the BOM. No high-side 5V anode driver stage is documented.  
-  **Why it matters:** A 3.3V MCP23017 output cannot be treated as a generic 5V high-side anode source without freezing the actual LED-drive topology and current path. As written, the board-level LED implementation is not fully realizable from the BOM alone.  
+  **Issue:** The Settings Board LED architecture is electrically underdefined/inconsistent. U2/U3 are documented as directly driving LED anodes HIGH, while the LEDs are also documented as
+  common-anode parts powered from `5V_MAIN`, and only low-side BSS138 colour-rail sinks are present in the BOM. No high-side 5V anode driver stage is documented.  
+  **Why it matters:** A 3.3V MCP23017 output cannot be treated as a generic 5V high-side anode source without freezing the actual LED-drive topology and current path. As written, the board-level LED
+  implementation is not fully realizable from the BOM alone.  
   **Recommended fix:** Freeze one topology in the docs/BOM: either a true 3.3V-anode implementation with recalculated currents/resistors, or a separate high-side 5V anode drive stage.  
   **Status:** deferred schematic capture
 
 - **Severity:** high  
   **Files:** `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Stator/Board_Layout.md`  
-  **Issue:** The Encoder board-layout JTAG signal-map table has incorrect connector pin numbers. `§3 Data Link Pinout` and the Stator-owned encoder-port contract place `TCK/TMS/TDO/TDI/SYS_RESET_N` on pins `10/12/14/16/18`, but `§4.1 Dedicated device pins` states `9/11/13/15/17`.  
+  **Issue:** The Encoder board-layout JTAG signal-map table has incorrect connector pin numbers. `§3 Data Link Pinout` and the Stator-owned encoder-port contract place `TCK/TMS/TDO/TDI/SYS_RESET_N`
+  on pins `10/12/14/16/18`, but `§4.1 Dedicated device pins` states `9/11/13/15/17`.  
   **Why it matters:** This is a real connector-map contradiction. If used during schematic capture or test-harness creation, it would shift JTAG/reset onto GND shield pins.  
   **Recommended fix:** Correct `Encoder/Board_Layout.md §4.1` to match the pin table and the Stator-owned connector contract.  
   **Status:** pending fix pass
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Consolidated_BOM.md`, `design/Electronics/Stator/Design_Spec.md`, `design/Electronics/Encoder/Design_Spec.md`  
-  **Issue:** The consolidated BOM still carries stale logic-support content from superseded designs: it lists `R20` as `STATOR_CFG_RDY` pull-down, while the active Stator spec uses `CFG_APPLY_N` pull-up, and it still describes encoder-side external pull-up / RC filter populations that the active Encoder spec explicitly omits.  
+  **Issue:** The consolidated BOM still carries stale logic-support content from superseded designs: it lists `R20` as `STATOR_CFG_RDY` pull-down, while the active Stator spec uses `CFG_APPLY_N`
+  pull-up, and it still describes encoder-side external pull-up / RC filter populations that the active Encoder spec explicitly omits.  
   **Why it matters:** Consolidated_BOM is procurement-facing. Stale support-part definitions can reintroduce removed networks or incorrect resistor intent during later BOM export.  
   **Recommended fix:** Update the consolidated BOM to match the current Stator `CFG_APPLY_N` implementation and current Encoder active design assumptions.  
   **Status:** pending fix pass
@@ -108,24 +123,28 @@ Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronic
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Rotor/Design_Spec.md`  
-  **Issue:** The Rotor docs lock the FDC2114 devices but do not fully capture the required front-end support network. The active text references FDC2114-based sensing and says unused channels are tied off, but the BOM does not freeze the resonant front-end parts or tie-off population needed to make the channels implementable.  
-  **Why it matters:** The FDC2114 is not a standalone sensor input; the channel front end is part of the circuit definition. Without a frozen support network, the rotor sensing chain remains design-intent only.  
-  **Recommended fix:** Complete the future schematic-capture definition for the FDC2114 channel support network, including the resonant front-end and all unused-channel tie-offs, then reflect that in the rotor BOM.  
+  **Issue:** The Rotor docs lock the FDC2114 devices but do not fully capture the required front-end support network. The active text references FDC2114-based sensing and says unused channels are
+  tied off, but the BOM does not freeze the resonant front-end parts or tie-off population needed to make the channels implementable.  
+  **Why it matters:** The FDC2114 is not a standalone sensor input; the channel front end is part of the circuit definition. Without a frozen support network, the rotor sensing chain remains
+  design-intent only.  
+  **Recommended fix:** Complete the future schematic-capture definition for the FDC2114 channel support network, including the resonant front-end and all unused-channel tie-offs, then reflect that in
+  the rotor BOM.  
   **Status:** needs user selection
 
 ##### Unsourced New Parts Requiring User Selection
 
-- Rotor FDC2114 channel front-end passive selection is not frozen in the active docs. If the intended resonant/support network requires new sourced inductors and/or trim capacitors, those parts need explicit user selection before BOM closure.
+- Rotor FDC2114 channel front-end passive selection is not frozen in the active docs. If the intended resonant/support network requires new sourced inductors and/or trim capacitors, those parts need
+explicit user selection before BOM closure.
 
 ##### Pass Result
 
-**Pass 1 result: not clean**
+#### Pass 1 result: not clean
 
 ### Pass 1 — Fix
 
 - **Status:** partial fix applied
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Power_Module/Design_Spec.md`
 - `design/Electronics/Stator/Design_Spec.md`
@@ -133,7 +152,7 @@ Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronic
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Fixes applied**
+#### Fixes applied
 
 - **Closed finding 3 — Encoder `Board_Layout.md` JTAG pin-number mismatch**
   - Updated `design/Electronics/Encoder/Board_Layout.md §4.1` so `TCK/TMS/TDO/TDI/SYS_RESET_N`
@@ -161,7 +180,7 @@ Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronic
   - Updated the common 100nF decoupling count row to reflect the newly explicit PM U12 and Stator
     U2-U8 bypass populations.
 
-**Unresolved / needs later review or user selection**
+#### Unresolved / needs later review or user selection
 
 - **Power Module INA219 input RC filter population remains unresolved.**
   Active docs require an INA219 `IN+` / `IN-` RC filter, but the repository does not yet freeze a
@@ -182,12 +201,12 @@ Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronic
 
 - **Status:** consolidated BOM count correction applied
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Fixes applied**
+#### Fixes applied
 
 - **Closed Pass 3 finding 1 — PM `0.1 µF` consolidated count lagged added `C43`**
   - Updated the `0.1 µF X7R 0402 decoupling cap — common fitted population` row in
@@ -197,7 +216,7 @@ Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronic
     after PM `C43` was added, leaving the procurement-facing summary undercounted by one fitted `0.1 µF`
     capacitor.
 
-**Unresolved / left unchanged**
+#### Unresolved / left unchanged
 
 - Rotor pull-up exact sourcing remains open.
 - Rotor FDC2114 `1 µF` bypass exact sourcing remains open.
@@ -210,7 +229,7 @@ Reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronic
 
 ### Pass 3 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md`
 files, related connector-contract / logical signal-map sections in `Board_Layout.md`, the AM firmware
@@ -290,7 +309,8 @@ physical placement/routing was not reviewed.
 ##### 3. Connector consistency check
 
 - **Severity:** info  
-  **Files:** `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`, `design/Electronics/Rotor/Design_Spec.md`, `design/Electronics/Settings_Board/Design_Spec.md`  
+  **Files:** `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`,
+  `design/Electronics/Rotor/Design_Spec.md`, `design/Electronics/Settings_Board/Design_Spec.md`  
   **Issue:** No new connector-mapping contradictions were found in the reviewed active connector
   contracts after Fix Pass 2. The previously corrected Encoder JTAG numbering remains aligned with the
   Stator-owned contract, and the reviewed Reflector / Extension / Rotor / Settings-board mappings remain
@@ -312,7 +332,7 @@ physical placement/routing was not reviewed.
 
 #### Pass Result
 
-**Pass 3 result: not clean**
+#### Pass 3 result: not clean
 
 Reason: one new evidence-backed consolidated-BOM count discrepancy remains (`0.1 µF` PM count / total),
 even though no new connector-map contradictions were found and all previously deferred/user-selection
@@ -320,7 +340,7 @@ items remain unchanged.
 
 ### Pass 2 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md`
 files, related connector-contract / logical signal-map sections in `Board_Layout.md`, the AM firmware
@@ -333,36 +353,48 @@ stale Consolidated_BOM Stator/Encoder content is cleaned up.
 #### Pass 2 Findings
 
 - **Severity:** info  
-  **Files:** `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`, `design/Electronics/Rotor/Design_Spec.md`  
-  **Issue:** No remaining connector pin-map contradictions were found in the reviewed active connector contracts after Fix Pass 1. The previously-broken Encoder JTAG numbering now matches the Stator-owned port definition, and the reviewed Reflector / Extension / Rotor-facing contracts remain internally consistent.  
+  **Files:** `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`,
+  `design/Electronics/Rotor/Design_Spec.md`  
+  **Issue:** No remaining connector pin-map contradictions were found in the reviewed active connector contracts after Fix Pass 1. The previously-broken Encoder JTAG numbering now matches the
+  Stator-owned port definition, and the reviewed Reflector / Extension / Rotor-facing contracts remain internally consistent.  
   **Why it matters:** This confirms the harness and board-to-board interface definitions are no longer carrying an obvious miswire trap in the reviewed docs.  
   **Recommended fix:** None.  
   **Status:** clean
 
 - **Severity:** high  
   **Files:** `design/Electronics/Rotor/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`, `design/Datasheets/fdc2112-datasheet.md`  
-  **Issue:** The Rotor local sensor I²C bus still has no explicit `SDA` / `SCL` pull-up population. The Rotor spec says the CPLD polls FDC2114 devices over a local I²C bus, including the Board A ↔ Board B `H_SENS` link, but the Rotor BOM only captures JTAG pull resistors (`R2-R5`) plus CPLD-only decoupling (`C1-C8`). The in-repo FDC2114 datasheet explicitly assumes external pull-up current on `SCL` / `SDA`. No Rotor or consolidated BOM row captures that network.  
-  **Why it matters:** Without a frozen pull-up network, the local sensor bus idle-high / ACK behavior is undocumented and can fail at bring-up. This is a real circuit-support omission, not just a wording issue.  
-  **Recommended fix:** Add explicit Rotor-local `SDA` / `SCL` pull-up rows / refdes for the FDC2114 bus and align the consolidated BOM, or explicitly document a different intended bias method if that is truly the approved design.  
+  **Issue:** The Rotor local sensor I²C bus still has no explicit `SDA` / `SCL` pull-up population. The Rotor spec says the CPLD polls FDC2114 devices over a local I²C bus, including the Board A ↔
+  Board B `H_SENS` link, but the Rotor BOM only captures JTAG pull resistors (`R2-R5`) plus CPLD-only decoupling (`C1-C8`). The in-repo FDC2114 datasheet explicitly assumes external pull-up current
+  on `SCL` / `SDA`. No Rotor or consolidated BOM row captures that network.  
+  **Why it matters:** Without a frozen pull-up network, the local sensor bus idle-high / ACK behavior is undocumented and can fail at bring-up. This is a real circuit-support omission, not just a
+  wording issue.  
+  **Recommended fix:** Add explicit Rotor-local `SDA` / `SCL` pull-up rows / refdes for the FDC2114 bus and align the consolidated BOM, or explicitly document a different intended bias method if that
+  is truly the approved design.  
   **Status:** pending fix pass
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Rotor/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`, `design/Datasheets/fdc2112-datasheet.md`  
-  **Issue:** The Rotor BOM still does not capture the FDC2114 local bypass network. Board A and Board B list no FDC-specific decoupling; the only 0402 decouplers called out are `C1-C8` "8 per CPLD", and the consolidated BOM still counts only 8 × `0.1 µF` caps per rotor. The in-repo FDC2114 datasheet recommends `0.1 µF` and `1 µF` bypass capacitors at `VDD` for each device.  
-  **Why it matters:** This leaves the populated sensing ICs without documented local supply support parts in the procurement-facing BOM set. It is a remaining BOM-completeness gap independent of the separately deferred resonant front-end definition.  
-  **Recommended fix:** Add explicit per-device FDC2114 local bypass rows / refdes for populated `U2` / `U3` / `U4` instances and roll those counts into the consolidated BOM. Keep this separate from the still-deferred resonant front-end / unused-channel support capture.  
+  **Issue:** The Rotor BOM still does not capture the FDC2114 local bypass network. Board A and Board B list no FDC-specific decoupling; the only 0402 decouplers called out are `C1-C8` "8 per CPLD",
+  and the consolidated BOM still counts only 8 × `0.1 µF` caps per rotor. The in-repo FDC2114 datasheet recommends `0.1 µF` and `1 µF` bypass capacitors at `VDD` for each device.  
+  **Why it matters:** This leaves the populated sensing ICs without documented local supply support parts in the procurement-facing BOM set. It is a remaining BOM-completeness gap independent of the
+  separately deferred resonant front-end definition.  
+  **Recommended fix:** Add explicit per-device FDC2114 local bypass rows / refdes for populated `U2` / `U3` / `U4` instances and roll those counts into the consolidated BOM. Keep this separate from
+  the still-deferred resonant front-end / unused-channel support capture.  
   **Status:** pending fix pass
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
-  **Issue:** The AM support-network gap for `ACTUATE_REQUEST` / `BOOT0` / `NRST` remains unresolved. Pass 2 found no new repository evidence that freezes those nets beyond the already-known deferred state.  
+  **Issue:** The AM support-network gap for `ACTUATE_REQUEST` / `BOOT0` / `NRST` remains unresolved. Pass 2 found no new repository evidence that freezes those nets beyond the already-known deferred
+  state.  
   **Why it matters:** These nets still determine normal boot behavior and deterministic request-input state on the only MCU-based module in the design.  
-  **Recommended fix:** Same as Pass 1: either document intentional reliance on internal STM32 biasing, or add explicit AM support-part rows / refdes for those networks during a later fix/schematic-capture pass.  
+  **Recommended fix:** Same as Pass 1: either document intentional reliance on internal STM32 biasing, or add explicit AM support-part rows / refdes for those networks during a later
+  fix/schematic-capture pass.  
   **Status:** deferred schematic capture
 
 - **Severity:** high  
   **Files:** `design/Electronics/Settings_Board/Design_Spec.md`  
-  **Issue:** The Settings Board LED-drive topology remains underdefined/internally inconsistent exactly as noted in Pass 1. Pass 2 found no new evidence resolving the 3.3V MCP23017-anode-drive versus `5V_MAIN` common-anode implementation conflict.  
+  **Issue:** The Settings Board LED-drive topology remains underdefined/internally inconsistent exactly as noted in Pass 1. Pass 2 found no new evidence resolving the 3.3V MCP23017-anode-drive versus
+  `5V_MAIN` common-anode implementation conflict.  
   **Why it matters:** The indicator circuit still is not fully realizable from the active docs/BOM alone.  
   **Recommended fix:** Freeze one LED-drive topology in the docs/BOM during a later schematic-capture pass.  
   **Status:** deferred schematic capture
@@ -376,7 +408,8 @@ stale Consolidated_BOM Stator/Encoder content is cleaned up.
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Power_Module/Design_Spec.md`, `design/Electronics/Stator/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
-  **Issue:** The INA219 input RC filter exact sourced parts remain unfrozen on both the Power Module and Stator. Fix Pass 1 closed the missing decoupling portions, but Pass 2 found no new evidence that freezes the `IN+` / `IN-` filter population to sourced BOM rows.  
+  **Issue:** The INA219 input RC filter exact sourced parts remain unfrozen on both the Power Module and Stator. Fix Pass 1 closed the missing decoupling portions, but Pass 2 found no new evidence
+  that freezes the `IN+` / `IN-` filter population to sourced BOM rows.  
   **Why it matters:** The telemetry filter network is still not procurement-closed even though the sensing IC and shunt selections are otherwise documented.  
   **Recommended fix:** Add the user-approved INA219 filter resistor/capacitor population and refdes to the per-board BOMs and consolidated counts in a later fix pass.  
   **Status:** needs user selection
@@ -391,19 +424,19 @@ stale Consolidated_BOM Stator/Encoder content is cleaned up.
 
 #### Pass Result
 
-**Pass 2 result: not clean**
+#### Pass 2 result: not clean
 
 ### Pass 2 — Fix
 
 - **Status:** targeted rotor documentation/BOM fix applied
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Rotor/Design_Spec.md`
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Fixes applied**
+#### Fixes applied
 
 - **Closed Pass 2 finding 1 — Rotor local FDC2114 I²C bus missing explicit `SDA` / `SCL` pull-up population**
   - Added explicit Rotor Board A BOM row `R6-R7` in `design/Electronics/Rotor/Design_Spec.md` for the
@@ -429,7 +462,7 @@ stale Consolidated_BOM Stator/Encoder content is cleaned up.
     resonant front-end / unused-channel support definition, so the fix does not over-claim closure of the
     front-end finding.
 
-**Unresolved / left for later review, user selection, or schematic capture**
+#### Unresolved / left for later review, user selection, or schematic capture
 
 - **Rotor pull-up exact sourcing remains open.** `R6-R7` are now documented as required population, but
   exact resistor value, package, and sourced MPN still require owner selection.
@@ -444,19 +477,19 @@ stale Consolidated_BOM Stator/Encoder content is cleaned up.
 - **Commits:** no commits were made.
 
 ### Pass 4 — Review
- 
-**Scope summary**
- 
+
+#### Scope summary
+
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md`
 files, related logical signal-map / connector-contract sections in `Board_Layout.md`, the AM firmware
 spec at `design/Software/Actuation_Module/Design_Spec.md`, and the current report after Fix Pass 3.
 Focus remained limited to BOM completeness for active circuitry support parts and connector-map
 consistency only; physical placement/routing was not reviewed.
- 
+
 #### Pass 4 Findings
- 
+
 ##### 1. New findings
- 
+
 - **Severity:** high  
   **Files:** `design/Electronics/Consolidated_BOM.md`, `design/Electronics/Power_Module/Design_Spec.md`  
   **Issue:** The consolidated BOM common summary still misses part of the Power Module SW1/SW2 LED
@@ -472,7 +505,7 @@ consistency only; physical placement/routing was not reviewed.
   capture the five fitted PM `1kΩ 0402` gate resistors in the consolidated summary and update the PM
   `10kΩ 0402` fitted count from `2` to `7`.  
   **Status:** pending fix pass
- 
+
 - **Severity:** medium  
   **Files:** `design/Electronics/Extension/Design_Spec.md`  
   **Issue:** The Extension spec still states `ESD: TVS diode on exposed signal lines` in §5, but the
@@ -484,7 +517,7 @@ consistency only; physical placement/routing was not reviewed.
   intended TVS / ESD device to the Extension BOM or remove / rewrite the stale ESD sentence if the
   approved design does not populate that protection locally.  
   **Status:** pending fix pass
- 
+
 - **Severity:** low  
   **Files:** `design/Electronics/JTAG_Daughterboard/Board_Layout.md`, `design/Electronics/JTAG_Daughterboard/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
   **Issue:** The JTAG Daughterboard layout doc still describes `J2` as a `10-Pin Shrouded Header
@@ -496,9 +529,9 @@ consistency only; physical placement/routing was not reviewed.
   **Recommended fix:** Update the JDB layout doc to describe `J2` as the locked single-row open
   `1×10` pin header so all docs match the approved MPN.  
   **Status:** pending fix pass
- 
+
 ##### 2. Unchanged known unresolved items
- 
+
 - **Severity:** medium  
   **Files:** `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
   **Issue:** The AM support-network definition for `ACTUATE_REQUEST` / `BOOT0` / `NRST` remains
@@ -508,7 +541,7 @@ consistency only; physical placement/routing was not reviewed.
   **Recommended fix:** Same as prior passes: either document intentional reliance on internal STM32
   biasing/filtering or add explicit support-part rows / refdes during later schematic-capture work.  
   **Status:** deferred schematic capture
- 
+
 - **Severity:** high  
   **Files:** `design/Electronics/Settings_Board/Design_Spec.md`  
   **Issue:** The Settings Board LED-drive topology remains underdefined/internally inconsistent; Pass 4
@@ -519,7 +552,7 @@ consistency only; physical placement/routing was not reviewed.
   **Recommended fix:** Freeze one LED-drive topology in the docs/BOM during later schematic-capture
   work.  
   **Status:** deferred schematic capture
- 
+
 - **Severity:** medium  
   **Files:** `design/Electronics/Rotor/Design_Spec.md`  
   **Issue:** The Rotor FDC2114 resonant front-end / unused-channel support network remains unfrozen;
@@ -529,7 +562,7 @@ consistency only; physical placement/routing was not reviewed.
   **Recommended fix:** Complete the future schematic-capture definition for the FDC2114 channel
   support network and reflect it in the Rotor BOM once the required parts are owner-selected.  
   **Status:** needs user selection
- 
+
 - **Severity:** medium  
   **Files:** `design/Electronics/Power_Module/Design_Spec.md`, `design/Electronics/Stator/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
   **Issue:** The INA219 input RC filter exact sourced parts remain unfrozen on both the Power Module
@@ -539,7 +572,7 @@ consistency only; physical placement/routing was not reviewed.
   **Recommended fix:** Add the user-approved INA219 filter resistor/capacitor populations and refdes to
   the per-board BOMs and consolidated counts in a later fix pass.  
   **Status:** needs user selection
- 
+
 - **Severity:** medium  
   **Files:** `design/Electronics/Rotor/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
   **Issue:** Rotor `R6-R7` I²C pull-ups and `C15/C17/C19` `1 µF` FDC2114 bypass capacitors remain
@@ -550,11 +583,12 @@ consistency only; physical placement/routing was not reviewed.
   **Recommended fix:** Leave as-is until the user selects the exact sourced parts, then roll those
   selections into the Rotor and consolidated BOMs.  
   **Status:** needs user selection
- 
+
 ##### 3. Connector consistency check
- 
+
 - **Severity:** info  
-  **Files:** `design/Electronics/Controller/Design_Spec.md`, `design/Electronics/Controller/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`, `design/Electronics/JTAG_Daughterboard/Design_Spec.md`, `design/Electronics/Rotor/Design_Spec.md`, `design/Electronics/Stator/Board_Layout.md`  
+  **Files:** `design/Electronics/Controller/Design_Spec.md`, `design/Electronics/Controller/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`,
+  `design/Electronics/JTAG_Daughterboard/Design_Spec.md`, `design/Electronics/Rotor/Design_Spec.md`, `design/Electronics/Stator/Board_Layout.md`  
   **Issue:** Pass 4 found no new connector pin-mapping contradictions in the reviewed active connector
   contracts. The new JDB `J2` finding above is a connector-description mismatch, not a pin-allocation
   mismatch.  
@@ -562,17 +596,17 @@ consistency only; physical placement/routing was not reviewed.
   still not carrying a newly introduced documented miswire trap.  
   **Recommended fix:** None.  
   **Status:** clean
- 
+
 #### Unsourced New Parts Requiring User Selection
- 
+
 - No newly proven required part was closed to a specific unsourced component by Pass 4 evidence alone.
 - Conditional unresolved item only: if `design/Electronics/Extension/Design_Spec.md §5` is intended to
   remain true, the missing Extension-board TVS / ESD protection device on exposed signal lines will
   require explicit user selection before BOM closure.
- 
+
 #### Pass Result
- 
-**Pass 4 result: not clean**
+
+#### Pass 4 result: not clean
 
 Reason: no new connector pin-mapping contradictions were found, but Pass 4 identified new
 evidence-backed BOM/spec inconsistencies in the active approved-state docs, so the clean-pass
@@ -580,13 +614,13 @@ definition is not met.
 
 ### Pass 4 — Fix
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Consolidated_BOM.md`
 - `design/Electronics/Extension/Design_Spec.md`
 - `design/Electronics/JTAG_Daughterboard/Board_Layout.md`
 
-**Exact fixes applied**
+#### Exact fixes applied
 
 - **Closed Pass 4 finding #1 (PM SW1/SW2 LED sink support resistor undercount).**
   - Updated `design/Electronics/Consolidated_BOM.md` common-passives matrix so the PM
@@ -615,7 +649,7 @@ definition is not met.
   - **Rationale:** removes the remaining footprint-family wording trap from the layout-facing JDB
     document.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
 - Extension-board TVS / ESD exact device count, protected-net allocation, footprint, and MPN remain
   owner-selected; no sourced part was added because the active docs still do not freeze those details.
@@ -692,7 +726,7 @@ Previously known owner-selection items remain unchanged:
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 5 found one new evidence-backed issue: a remaining connector-mapping contradiction in
 `design/Electronics/Encoder/Board_Layout.md §5.2` where the TDO routing note still references
@@ -707,12 +741,12 @@ Per the clean-pass definition:
 
 ### Pass 5 — Fix
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Encoder/Board_Layout.md`
 - `.copilot/review-report.md`
 
-**Exact fix applied**
+#### Exact fix applied
 
 - Updated `design/Electronics/Encoder/Board_Layout.md §5.2` so the routing note now reads
   `U1 TDO -> R6 -> J2 pin 14` instead of `J2 pin 13`.
@@ -720,7 +754,7 @@ Per the clean-pass definition:
   `J2 pin 14` as `TDO`; this removes the stale board-layout contradiction and closes the Pass 5
   review finding for the Encoder JTAG TDO connector mapping.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
 - AM `ACTUATE_REQUEST` / `BOOT0` / `NRST` support network
 - Settings Board LED topology
@@ -734,7 +768,7 @@ Per the clean-pass definition:
 
 ### Pass 6 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active
 `design/Electronics/*/Design_Spec.md` files, related logical signal-map / connector-contract sections in
@@ -770,7 +804,7 @@ No newly identified unsourced parts requiring user selection were found in Pass 
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 6 found:
 
@@ -786,14 +820,14 @@ Per the clean-pass definition:
 
 ### Pass 6 — Fix
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Encoder/Design_Spec.md`
 - `design/Electronics/Power_Module/Design_Spec.md`
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Exact fixes applied**
+#### Exact fixes applied
 
 - Closed Pass 6 finding 1 in `design/Electronics/Encoder/Design_Spec.md` by correcting both stale `R6`
   references from `J2 pin 13` to `J2 pin 14` in `§5 JTAG Chain Integrity` and the local BOM row. This
@@ -812,12 +846,14 @@ Per the clean-pass definition:
   0402 decoupling row from `PM 17 / System 390` to `PM 20 / System 393`, and by expanding the PM
   detailed capacitor capture from `C24-C39, C43` to `C24-C39, C43-C46`.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
-- `design/Electronics/Actuation_Module/Design_Spec.md`; `design/Software/Actuation_Module/Design_Spec.md` — AM support network for `ACTUATE_REQUEST` / `BOOT0` / `NRST` still deferred to schematic capture.
+- `design/Electronics/Actuation_Module/Design_Spec.md`; `design/Software/Actuation_Module/Design_Spec.md` — AM support network for `ACTUATE_REQUEST` / `BOOT0` / `NRST` still deferred to schematic
+capture.
 - `design/Electronics/Settings_Board/Design_Spec.md` — Settings Board LED topology still unresolved.
 - `design/Electronics/Rotor/Design_Spec.md` — Rotor FDC2114 resonant front-end / unused-channel support still deferred.
-- `design/Electronics/Power_Module/Design_Spec.md`; `design/Electronics/Stator/Design_Spec.md`; `design/Electronics/Consolidated_BOM.md` — PM / Stator INA219 input RC filter exact sourced parts still unresolved.
+- `design/Electronics/Power_Module/Design_Spec.md`; `design/Electronics/Stator/Design_Spec.md`; `design/Electronics/Consolidated_BOM.md` — PM / Stator INA219 input RC filter exact sourced parts still
+unresolved.
 - `design/Electronics/Rotor/Design_Spec.md`; `design/Electronics/Consolidated_BOM.md` — Rotor local I2C pull-up placeholders still owner-selected.
 - `design/Electronics/Rotor/Design_Spec.md`; `design/Electronics/Consolidated_BOM.md` — Rotor `1 µF` FDC2114 bypass / reservoir capacitor placeholders still owner-selected.
 - `design/Electronics/Extension/Design_Spec.md`; `design/Electronics/Consolidated_BOM.md` — Extension TVS / ESD implementation still owner-selected.
@@ -826,7 +862,7 @@ Per the clean-pass definition:
 
 ### Pass 7 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active
 `design/Electronics/*/Design_Spec.md` files, related logical signal-map / connector-contract sections in
@@ -876,7 +912,7 @@ Previously known unresolved user-selection items remain unchanged:
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 7 found:
 
@@ -892,29 +928,34 @@ Per the clean-pass definition:
 
 ### Pass 7 — Fix
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Settings_Board/Design_Spec.md`
 - `design/Electronics/Settings_Board/Board_Layout.md`
 - `design/Electronics/Consolidated_BOM.md`
 
-**Exact fix applied**
+#### Exact fix applied
 
 - Closed the Pass 7 Settings Board switch/GPIO-definition mismatch by aligning all three target files to the already-frozen 10-toggle architecture used by the active Settings/Stator design specs:
   - `CFG_ROUTE[3:0]` on `U1.GPA[3:0]`
   - `CFG_REFMAP[5:0]` on `U1.GPB[5:0]`
   - `U1.GPA[4:7]` spare, `U1.GPB[6]` spare
   - `CFG_APPLY_N` on `U1.GPB[7]`
-- `design/Electronics/Settings_Board/Board_Layout.md` was updated from the obsolete 12-toggle / bank-enable-switch description to the approved 10-toggle mapping, including the top-level overview, U1 GPIO table, U2/U3 source-status LED naming, and the switch/LED mapping table.
-- `design/Electronics/Consolidated_BOM.md` was updated so the Settings Board toggle-switch population now matches the frozen design (`10`, not `12`), and the descriptive summary now states the correct U1 GPIO allocation instead of "all 12 switch states".
-- Directly dependent bookkeeping wording was also aligned where this finding touched it: `CFG_APPLY_N` naming was normalized in the affected Settings Board/BOM rows, and the 12 LED resistor rows were relabeled as per-indicator rather than per-switch because the board has 10 toggles but 12 indicators.
-- `design/Electronics/Settings_Board/Design_Spec.md` already held the approved 10-toggle GPIO allocation; it was only adjusted for dependent wording/bookkeeping consistency (`SW5-SW10` naming for `CFG_REFMAP[5:0]`, per-indicator LED wording, and `CFG_APPLY_N` wording in the affected summary rows).
+- `design/Electronics/Settings_Board/Board_Layout.md` was updated from the obsolete 12-toggle / bank-enable-switch description to the approved 10-toggle mapping, including the top-level overview, U1
+GPIO table, U2/U3 source-status LED naming, and the switch/LED mapping table.
+- `design/Electronics/Consolidated_BOM.md` was updated so the Settings Board toggle-switch population now matches the frozen design (`10`, not `12`), and the descriptive summary now states the
+correct U1 GPIO allocation instead of "all 12 switch states".
+- Directly dependent bookkeeping wording was also aligned where this finding touched it: `CFG_APPLY_N` naming was normalized in the affected Settings Board/BOM rows, and the 12 LED resistor rows were
+relabeled as per-indicator rather than per-switch because the board has 10 toggles but 12 indicators.
+- `design/Electronics/Settings_Board/Design_Spec.md` already held the approved 10-toggle GPIO allocation; it was only adjusted for dependent wording/bookkeeping consistency (`SW5-SW10` naming for
+`CFG_REFMAP[5:0]`, per-indicator LED wording, and `CFG_APPLY_N` wording in the affected summary rows).
 
-**Rationale / finding closed**
+#### Rationale / finding closed
 
-- This closes Pass 7's major finding that the Settings Board switch population, pull-down population, and MCP23017 GPIO allocation were contradicted across `Design_Spec.md`, `Board_Layout.md`, and `Consolidated_BOM.md`.
+- This closes Pass 7's major finding that the Settings Board switch population, pull-down population, and MCP23017 GPIO allocation were contradicted across `Design_Spec.md`, `Board_Layout.md`, and
+`Consolidated_BOM.md`.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
 - Settings Board LED topology remains deferred schematic-capture work and was not changed in this fix.
 - All previously listed non-Settings-Board unresolved items remain unchanged.
@@ -923,7 +964,7 @@ Per the clean-pass definition:
 
 ### Pass 8 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active
 `design/Electronics/*/Design_Spec.md` files, related connector-contract / logical signal-map sections in
@@ -973,38 +1014,38 @@ changed their status.
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 8 found no new connector-mapping contradictions, but it did find one new evidence-backed
 spec/BOM contradiction on Stator interface protection. Therefore the clean-pass definition is not met.
 
 ### Pass 8 — Fix
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Stator/Design_Spec.md`
 - `design/Electronics/Consolidated_BOM.md`
 
-**Exact fix applied**
+#### Exact fix applied
 
 - Closed the Pass 8 Stator TVS / ESD spec-to-BOM contradiction by updating `Stator/Design_Spec.md §8`
   to state that local protection is required specifically at the documented exposed Stator signal-line
   boundaries (`J10`, `J12`, `J13`) while keeping the exact protected nets, device count, working
   voltage, package, and MPN explicitly owner-selected.
 - Added a matching unsourced placeholder BOM row to `Stator/Design_Spec.md §9`:
-  `D1 (owner-selected) | External signal-line TVS / ESD protection required by §8 (`J10`, `J12`, `J13`) | ...`
+  `D1 (owner-selected) | External signal-line TVS / ESD protection required by §8 (`J10`,`J12`,`J13`) | ...`
 - Added the dependent `design/Electronics/Consolidated_BOM.md` usage-summary placeholder row:
   `UNSOURCED — Stator external signal-line TVS / ESD protection required by Stator/Design_Spec.md §8 ...`
   so the consolidated BOM now captures the active Stator protection requirement instead of silently
   omitting it.
 
-**Rationale / finding closed**
+#### Rationale / finding closed
 
 - This closes Pass 8 finding `medium` at `design/Electronics/Stator/Design_Spec.md`; cross-check:
   `design/Electronics/Consolidated_BOM.md` about Stator TVS / ESD protection being claimed in the
   spec but absent from both the Stator BOM and consolidated BOM.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
 - Exact Stator TVS / ESD implementation details remain intentionally owner-selected (`protected nets`,
   `device count`, `working voltage`, `package`, `MPN`); this is now documented as an explicit
@@ -1015,7 +1056,7 @@ spec/BOM contradiction on Stator interface protection. Therefore the clean-pass 
 
 ### Pass 9 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active
 `design/Electronics/*/Design_Spec.md` files, related connector-contract / logical signal-map sections in
@@ -1066,12 +1107,12 @@ pass changed their status.
 
 - **Status:** fix applied
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Fixes applied**
+#### Fixes applied
 
 - **Closed Pass 15 finding 1 — `10 kΩ 0603` consolidated system total arithmetic drift**
   - Corrected the common `10 kΩ 1% 0603` fitted-resistor summary row system total from `41` to `38`.
@@ -1086,7 +1127,7 @@ pass changed their status.
   - This leaves the existing `100 Ω 0603 differential termination` row intact, while making the
     Settings Board indicator resistor population visible in the procurement-facing consolidated summary.
 
-**Unresolved / left unchanged**
+#### Unresolved / left unchanged
 
 - AM `ACTUATE_REQUEST` / `BOOT0` / `NRST` support network remains deferred schematic-capture work.
 - Settings Board LED topology remains deferred schematic-capture work.
@@ -1099,7 +1140,7 @@ pass changed their status.
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 9 found no new connector pin-number contradictions, but it still found one new evidence-backed
 consolidated-BOM omission and one Stator-owned connector source/direction inconsistency. The clean-pass
@@ -1107,13 +1148,13 @@ definition is therefore not met.
 
 ### Pass 9 — Fix
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Consolidated_BOM.md`
 - `design/Electronics/Stator/Board_Layout.md`
 - `.copilot/review-report.md`
 
-**Exact fixes applied**
+#### Exact fixes applied
 
 - Closed the Pass 9 Extension protection bookkeeping gap by adding the missing consolidated placeholder
   row to `design/Electronics/Consolidated_BOM.md`:
@@ -1126,7 +1167,7 @@ definition is therefore not met.
   CPLD reset broadcast from the Stator. This preserves the existing pin assignment and electrical intent
   while aligning the owner connector contract to the active architecture.
 
-**Rationale / findings closed**
+#### Rationale / findings closed
 
 - This closes the Pass 9 `medium` finding at
   `design/Electronics/Extension/Design_Spec.md`; cross-check:
@@ -1137,7 +1178,7 @@ definition is therefore not met.
   `design/Electronics/Reflector/Board_Layout.md` about `J10` pin 2 `SYS_RESET_N` source/direction
   wording still implying controller ownership instead of the documented Stator-managed broadcast.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
 - Exact Extension TVS / ESD implementation details remain intentionally owner-selected (`protected nets`,
   `device count`, `working voltage`, `package`, `MPN`); this fix only adds the missing consolidated BOM
@@ -1148,7 +1189,7 @@ definition is therefore not met.
 
 ### Pass 10 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active
 `design/Electronics/*/Design_Spec.md` files, related connector-contract / logical signal-map sections in
@@ -1193,7 +1234,7 @@ consistency. Physical PCB placement/routing was not reviewed.
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 10 found no new connector-mapping contradictions, but it did find a new evidence-backed
 procurement-summary mismatch in `design/Electronics/Consolidated_BOM.md`. The clean-pass definition is
@@ -1203,12 +1244,12 @@ therefore not met.
 
 - **Status:** consolidated resistor-summary bookkeeping fix applied
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Exact fixes applied**
+#### Exact fixes applied
 
 - **Closed Pass 10 finding 1 — consolidated resistor summary miscounts**
   - Updated `design/Electronics/Consolidated_BOM.md` `10 kΩ 1% 0603` row from `SBD=13` / `System Total=37`
@@ -1222,7 +1263,7 @@ therefore not met.
     to `STA=18` / `System Total=18`, matching the active Stator BOM evidence:
     `R7-R12`, `R27-R32`, and `R33-R38` in `design/Electronics/Stator/Design_Spec.md`.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
 - AM support network for `ACTUATE_REQUEST` / `BOOT0` / `NRST` remains deferred schematic-capture work.
 - Settings Board LED topology remains deferred schematic-capture work.
@@ -1237,7 +1278,7 @@ therefore not met.
 
 ### Pass 11 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active
 `design/Electronics/*/Design_Spec.md` files, the related logical signal-map / connector-contract
@@ -1283,7 +1324,7 @@ reviewed.
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 11 found no new connector-mapping contradictions, but it did find one new evidence-backed
 consolidated-BOM accounting omission affecting already-frozen Actuation Module support-part
@@ -1291,12 +1332,12 @@ populations. The clean-pass definition is therefore not met.
 
 ### Pass 11 — Fix
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Exact fixes applied**
+#### Exact fixes applied
 
 - Closed the Pass 11 shared Actuation Module support-part undercount in
   `design/Electronics/Consolidated_BOM.md` by updating the top `Component Usage Summary`
@@ -1312,13 +1353,13 @@ populations. The clean-pass definition is therefore not met.
   already frozen in §4c. This keeps the existing board-column layout intact while making the
   adjusted totals traceable.
 
-**Rationale / findings closed**
+#### Rationale / findings closed
 
 - This closes the Pass 11 `medium` finding at `design/Electronics/Consolidated_BOM.md`; cross-check:
   `design/Electronics/Actuation_Module/Design_Spec.md`, about the top procurement summary omitting
   already-frozen shared Actuation Module support-part counts from Rev A system totals.
 
-**Unresolved findings left unchanged**
+#### Unresolved findings left unchanged
 
 - AM support network for `ACTUATE_REQUEST` / `BOOT0` / `NRST` remains deferred schematic-capture work.
 - Settings Board LED topology remains deferred schematic-capture work.
@@ -1333,9 +1374,11 @@ populations. The clean-pass definition is therefore not met.
 
 ### Pass 12 — Review
 
-**Scope summary**
+#### Scope summary
 
-Re-reviewed design/Electronics/Consolidated_BOM.md, all active design/Electronics/*/Design_Spec.md files, the related logical signal-map / connector-contract sections in Board_Layout.md where needed, design/Software/Actuation_Module/Design_Spec.md, and the current report after Fix Pass 11. Focus remained limited to BOM completeness for active circuit-support parts and connector-mapping consistency only. Physical PCB placement/routing was not reviewed.
+Re-reviewed design/Electronics/Consolidated_BOM.md, all active design/Electronics/*/Design_Spec.md files, the related logical signal-map / connector-contract sections in Board_Layout.md where needed,
+design/Software/Actuation_Module/Design_Spec.md, and the current report after Fix Pass 11. Focus remained limited to BOM completeness for active circuit-support parts and connector-mapping
+consistency only. Physical PCB placement/routing was not reviewed.
 
 #### Remaining Findings — New in Pass 12
 
@@ -1372,13 +1415,14 @@ None. Pass 12 did not identify any new connector-mapping contradictions or any n
 
 #### Pass Result
 
-**Clean.**
+#### Clean
 
-Pass 12 found no new connector-mapping contradictions and no new evidence-backed BOM/spec omissions for already-frozen circuitry. The remaining open items are unchanged deferred schematic-capture or owner-selection items already documented in prior passes, so the clean-pass definition is met for this review pass.
+Pass 12 found no new connector-mapping contradictions and no new evidence-backed BOM/spec omissions for already-frozen circuitry. The remaining open items are unchanged deferred schematic-capture or
+owner-selection items already documented in prior passes, so the clean-pass definition is met for this review pass.
 
 ### Pass 13 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md`
 files, the related logical signal-map / connector-contract sections in `Board_Layout.md` where needed,
@@ -1423,7 +1467,7 @@ connector-mapping consistency only. Physical PCB placement/routing was not revie
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 13 did not find any new connector-mapping contradiction, but it did find one new evidence-backed
 Controller BOM/spec omission for already-frozen status-input protection circuitry. The design docs
@@ -1433,13 +1477,13 @@ therefore do **not** achieve a second consecutive clean pass yet.
 
 - **Status:** fix applied
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Controller/Design_Spec.md`
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Fixes applied**
+#### Fixes applied
 
 - **Closed Pass 13 finding 1 — Controller status-input series resistors missing from BOM capture**
   - Narrowed the Controller protection note in `design/Electronics/Controller/Design_Spec.md` from a
@@ -1454,7 +1498,7 @@ therefore do **not** achieve a second consecutive clean pass yet.
     fitted `10 kΩ 0603` pull / series population so the procurement summary now matches the active
     design usage.
 
-**Unresolved / left unchanged**
+#### Unresolved / left unchanged
 
 - AM `ACTUATE_REQUEST` / `BOOT0` / `NRST` support network remains deferred schematic-capture work.
 - Settings Board LED topology remains deferred schematic-capture work.
@@ -1467,7 +1511,7 @@ therefore do **not** achieve a second consecutive clean pass yet.
 
 ### Pass 14 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-reviewed `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md`
 files, the related logical signal-map / connector-contract sections in `Board_Layout.md` where needed,
@@ -1491,12 +1535,12 @@ owner-selection items below.
 
 - **Status:** fix applied
 
-**Files changed**
+#### Files changed
 
 - `design/Electronics/Consolidated_BOM.md`
 - `.copilot/review-report.md`
 
-**Fixes applied**
+#### Fixes applied
 
 - **Closed Pass 14 finding 1 — Controller 10 kΩ 0603 consolidated summary column undercount**
   - Corrected the consolidated common `10 kΩ 1% 0603` fitted-resistor summary row so the
@@ -1512,7 +1556,7 @@ owner-selection items below.
     battery connector = `J4`, USB-C power receptacle = `J5`.
   - Parts, sourcing, and descriptions were left unchanged; only the stale designators were corrected.
 
-**Unresolved / left unchanged**
+#### Unresolved / left unchanged
 
 - AM `ACTUATE_REQUEST` / `BOOT0` / `NRST` support network remains deferred schematic-capture work.
 - Settings Board LED topology remains deferred schematic-capture work.
@@ -1552,7 +1596,7 @@ owner-selection items below.
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Pass 14 found no new connector pin-allocation contradiction, but it did find two new evidence-backed
 cross-document / procurement-BOM inconsistencies: the Controller status-input resistor population is
@@ -1572,6 +1616,7 @@ designators are misaligned in the consolidated BOM. The clean-pass definition is
 ### Scope Summary
 
 Pass 14 applied two fixes to `Consolidated_BOM.md`:
+
 1. Controller 10 kΩ 0603 column corrected from 2 to 5 (R1, R3–R6); system total updated 38 → 41.
 2. Power Module connector designators corrected: battery J3 → J4, USB-C J4 → J5.
 
@@ -1624,18 +1669,20 @@ No new unsourced items identified in Pass 15. Existing owner-selected items (INA
 
 #### Pass Result
 
-**Not clean.**
+#### Not clean
 
 Two new evidence-backed procurement bookkeeping errors found:
 
 1. **P15-F1** — 10 kΩ 1% 0603 row system total is overcounted by 3 (consolidated shows 41; verified board-column sum is 38; no board or AM module accounts for the delta).
-2. **P15-F2** — Settings Board 36× LED series resistors (R18–R53: 12× 150 Ω 0603 ERJ-3EKF1500V + 24× 100 Ω 0603 ERJ-3EKF1000V) are absent from the consolidated BOM — one value has no row at all; the other value's row is missing the SBD column entry entirely.
+2. **P15-F2** — Settings Board 36× LED series resistors (R18–R53: 12× 150 Ω 0603 ERJ-3EKF1500V + 24× 100 Ω 0603 ERJ-3EKF1000V) are absent from the consolidated BOM — one value has no row at all; the
+other value's row is missing the SBD column entry entirely.
 
-Neither error was introduced by Pass 14. The total overcount is a residual ghost from the Pass 13/14 arithmetic chain; the LED resistor gap pre-dates the entire pass series. Both are procurement-blocking omissions requiring a targeted fix pass (Pass 16) before the consolidated BOM can serve as a complete build document.
+Neither error was introduced by Pass 14. The total overcount is a residual ghost from the Pass 13/14 arithmetic chain; the LED resistor gap pre-dates the entire pass series. Both are
+procurement-blocking omissions requiring a targeted fix pass (Pass 16) before the consolidated BOM can serve as a complete build document.
 
 ### Pass 15 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-checked `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md`
 files, related connector-contract / logical signal-map sections in `Board_Layout.md`, the AM firmware
@@ -1742,7 +1789,8 @@ reviewed.
 #### Connector consistency check
 
 - **Severity:** info  
-  **Files:** `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`, `design/Electronics/Settings_Board/Design_Spec.md`, `design/Electronics/Power_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`  
+  **Files:** `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`,
+  `design/Electronics/Settings_Board/Design_Spec.md`, `design/Electronics/Power_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`  
   **Issue:** No new connector-mapping contradictions were found in this pass. The previously corrected
   Encoder JTAG numbering remains aligned with the Stator-owned contract, the Settings Board `J1` mapping
   remains consistent with the Stator-side harness definition, the Reflector connector contract remains
@@ -1764,14 +1812,14 @@ reviewed.
 
 #### Pass Result
 
-**Pass 15 result: not clean**
+#### Pass 15 result: not clean
 
 Reason: no new connector-mapping contradictions were found, but two evidence-backed consolidated-BOM
 bookkeeping omissions remain for already-frozen circuitry, so the clean-pass definition is not met.
 
 ### Pass 16 — Review
 
-**Scope summary**
+#### Scope summary
 
 Re-checked `design/Electronics/Consolidated_BOM.md`, all active `design/Electronics/*/Design_Spec.md`
 files, related logical signal-map / connector-contract sections in `Board_Layout.md`, the AM firmware
@@ -1797,7 +1845,8 @@ Fix Pass 15 re-check:
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
-  **Issue:** The AM support-network definition for `ACTUATE_REQUEST`, `BOOT0`, and `NRST` remains unfrozen. The active AM docs still freeze the home-input RC support (`R4`, `C1`) but do not yet freeze the exact support treatment for the host request input and STM32 boot/reset service nets.  
+  **Issue:** The AM support-network definition for `ACTUATE_REQUEST`, `BOOT0`, and `NRST` remains unfrozen. The active AM docs still freeze the home-input RC support (`R4`, `C1`) but do not yet
+  freeze the exact support treatment for the host request input and STM32 boot/reset service nets.  
   **Why it matters:** These nets still determine deterministic request-input state and STM32 boot/reset behaviour.  
   **Recommended fix:** Freeze the intended support network and add the corresponding BOM rows / refdes during later schematic capture.  
   **Status:** deferred schematic capture
@@ -1854,8 +1903,12 @@ Fix Pass 15 re-check:
 #### Connector consistency check
 
 - **Severity:** info  
-  **Files:** `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`, `design/Electronics/Extension/Design_Spec.md`, `design/Electronics/Settings_Board/Design_Spec.md`, `design/Electronics/Settings_Board/Board_Layout.md`, `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Controller/Design_Spec.md`  
-  **Issue:** No new connector-mapping contradictions were found in this pass. The corrected Encoder JTAG numbering remains aligned with the Stator-owned contract, the Settings Board `J1` ↔ Stator `J13` harness remains consistent, the Reflector / Extension `J10` contract remains aligned with the Stator-owned definition, and the AM host / module dock split remains consistent across hardware and firmware docs.  
+  **Files:** `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`, `design/Electronics/Extension/Design_Spec.md`,
+  `design/Electronics/Settings_Board/Design_Spec.md`, `design/Electronics/Settings_Board/Board_Layout.md`, `design/Electronics/Actuation_Module/Design_Spec.md`,
+  `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Controller/Design_Spec.md`  
+  **Issue:** No new connector-mapping contradictions were found in this pass. The corrected Encoder JTAG numbering remains aligned with the Stator-owned contract, the Settings Board `J1` ↔ Stator
+  `J13` harness remains consistent, the Reflector / Extension `J10` contract remains aligned with the Stator-owned definition, and the AM host / module dock split remains consistent across hardware
+  and firmware docs.  
   **Why it matters:** Confirms this pass did not uncover a new documented miswire trap on the reviewed interfaces.  
   **Recommended fix:** None.  
   **Status:** clean
@@ -1872,7 +1925,7 @@ Fix Pass 15 re-check:
 
 #### Pass Result
 
-**Pass 16 result: clean**
+#### Pass 16 result: clean
 
 Reason: no new connector-mapping contradictions were found and no new evidence-backed BOM/spec
 omissions were found for already-frozen circuitry. The remaining open items are unchanged deferred
@@ -1881,7 +1934,7 @@ definition is met for this review pass.
 
 ### Pass 17 — Review
 
-**Scope summary**
+#### Scope summary
 
 Read-only confirmation review after clean Pass 16. Re-checked `design/Electronics/Consolidated_BOM.md`,
 all active `design/Electronics/*/Design_Spec.md` files, related logical signal-map / connector-contract
@@ -1902,7 +1955,8 @@ placement/routing was not reviewed.
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
-  **Issue:** The AM support-network definition for `ACTUATE_REQUEST`, `BOOT0`, and `NRST` remains unfrozen. The active AM docs still freeze the home-input RC support (`R4`, `C1`) but do not yet freeze the exact support treatment for the host request input and STM32 boot/reset service nets.  
+  **Issue:** The AM support-network definition for `ACTUATE_REQUEST`, `BOOT0`, and `NRST` remains unfrozen. The active AM docs still freeze the home-input RC support (`R4`, `C1`) but do not yet
+  freeze the exact support treatment for the host request input and STM32 boot/reset service nets.  
   **Why it matters:** These nets still determine deterministic request-input state and STM32 boot/reset behaviour.  
   **Recommended fix:** Freeze the intended support network and add the corresponding BOM rows / refdes during later schematic capture.  
   **Status:** deferred schematic capture
@@ -1916,14 +1970,16 @@ placement/routing was not reviewed.
 
 - **Severity:** medium  
   **Files:** `design/Electronics/Rotor/Design_Spec.md`  
-  **Issue:** Rotor FDC2114 resonant front-end / unused-channel support definition remains deferred. The BOM now captures the already-evidenced local `SDA` / `SCL` pull-up placeholders and `VDD` bypass parts, but the channel front-end / full unused-channel definition is still intentionally not frozen.  
+  **Issue:** Rotor FDC2114 resonant front-end / unused-channel support definition remains deferred. The BOM now captures the already-evidenced local `SDA` / `SCL` pull-up placeholders and `VDD`
+  bypass parts, but the channel front-end / full unused-channel definition is still intentionally not frozen.  
   **Why it matters:** The sensing chain is still not fully circuit-complete at the channel-support level.  
   **Recommended fix:** Complete the deferred support-network definition and add the resulting BOM content once approved.  
   **Status:** deferred schematic capture
 
 - **Severity:** low  
   **Files:** `design/Electronics/Power_Module/Design_Spec.md`, `design/Electronics/Stator/Design_Spec.md`, `design/Electronics/Consolidated_BOM.md`  
-  **Issue:** PM / Stator INA219 input RC filter exact sourced parts remain owner-selected. Both boards now capture local INA219 bypassing, but the exact `IN+` / `IN-` filter population is still not source-closed.  
+  **Issue:** PM / Stator INA219 input RC filter exact sourced parts remain owner-selected. Both boards now capture local INA219 bypassing, but the exact `IN+` / `IN-` filter population is still not
+  source-closed.  
   **Why it matters:** Those telemetry support networks are still not procurement-closed.  
   **Recommended fix:** Add the user-approved resistor/capacitor filter parts to the per-board and consolidated BOMs.  
   **Status:** needs user selection
@@ -1959,8 +2015,12 @@ placement/routing was not reviewed.
 ##### Connector consistency check
 
 - **Severity:** info  
-  **Files:** `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`, `design/Electronics/Settings_Board/Design_Spec.md`, `design/Electronics/Settings_Board/Board_Layout.md`, `design/Electronics/Actuation_Module/Design_Spec.md`, `design/Software/Actuation_Module/Design_Spec.md`  
-  **Issue:** No new connector-mapping contradictions were found in this pass. The corrected Encoder JTAG numbering remains aligned with the Stator-owned contract, the Settings Board `J1` ↔ Stator `J13` harness remains consistent, the Reflector / Extension `J10` contract remains aligned with the Stator-owned definition, and the AM `J6` / `SW1` / `SW2` bootloader path remains consistent across hardware and firmware docs.  
+  **Files:** `design/Electronics/Stator/Board_Layout.md`, `design/Electronics/Encoder/Board_Layout.md`, `design/Electronics/Reflector/Board_Layout.md`, `design/Electronics/Extension/Board_Layout.md`,
+  `design/Electronics/Settings_Board/Design_Spec.md`, `design/Electronics/Settings_Board/Board_Layout.md`, `design/Electronics/Actuation_Module/Design_Spec.md`,
+  `design/Software/Actuation_Module/Design_Spec.md`  
+  **Issue:** No new connector-mapping contradictions were found in this pass. The corrected Encoder JTAG numbering remains aligned with the Stator-owned contract, the Settings Board `J1` ↔ Stator
+  `J13` harness remains consistent, the Reflector / Extension `J10` contract remains aligned with the Stator-owned definition, and the AM `J6` / `SW1` / `SW2` bootloader path remains consistent
+  across hardware and firmware docs.  
   **Why it matters:** Confirms this pass did not uncover a new documented miswire trap on the reviewed interfaces.  
   **Recommended fix:** None.  
   **Status:** clean
@@ -1977,7 +2037,7 @@ placement/routing was not reviewed.
 
 #### Pass Result
 
-**Pass 17 result: clean**
+#### Pass 17 result: clean
 
 Reason: no new connector-mapping contradictions were found and no new evidence-backed BOM/spec
 omissions were found for already-frozen circuitry. The remaining open items are unchanged deferred

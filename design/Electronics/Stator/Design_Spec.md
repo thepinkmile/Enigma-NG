@@ -363,7 +363,8 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 ## 8. Thermal & ESD
 
 * **Thermal:** No active cooling required. Low-power passive components only. Relies on chassis airflow.
-* **ESD:** Local TVS / ESD protection is required on the Stator board's exposed signal-line boundaries (`J10` reflector/extension service port, `J12` controller logic dock, and `J13` Settings harness). Exact protected nets, device count, working voltage, package, and sourced MPN remain owner-selected. The rotor-slot Samtec ERF8/ERM8 interfaces otherwise rely on their grounded guard contacts.
+* **ESD:** Local TVS / ESD protection is required on the Stator board's exposed signal-line boundaries (`J10` reflector/extension service port, `J12` controller logic dock, and `J13` Settings harness).
+  Exact protected nets, device count, working voltage, package, and sourced MPN remain owner-selected. The rotor-slot Samtec ERF8/ERM8 interfaces otherwise rely on their grounded guard contacts.
 
 ## 9. Bill of Materials
 
