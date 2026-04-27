@@ -106,17 +106,16 @@ Main outcomes:
 
 ## Next return summary
 
-When resuming, use `.copilot/checkpoints/067-category-a-deep-review-fixes.md` first. It contains:
+When resuming, use `.copilot/checkpoints/068-copilot-markdown-lint-fixes.md` first. It contains:
 
-- a summary of all Category A deep-review fixes applied and committed
-- the remaining Category B items (still open, not blocking)
-- AM firmware note (`design/Software/Actuation_Module/Design_Spec.md`) and AM controller
-  (**STM32G071K8T3TR**) with approved sourcing: DigiKey `497-STM32G071K8T3TR-ND`,
-  Mouser `511-STM32G071K8T3TR`, JLCPCB global sourcing/consignment
-- Rotor FDC2114 internal oscillator decision (DEC-044)
-- Settings Board two-stage NMOS/PMOS LED topology (Q7–Q30, R54–R77)
-- New files: `design/Software/CPLD_Logic/Rotor_Logic.md`,
-  `design/Procedures/Lab_Tests.md` (LT-001, LT-002)
+- confirmation that all `.copilot/` markdown files are now lint-clean (MD036, MD013, MD026, MD060)
+- details of the lint fixes applied to `review-report.md`, `index.md`, `handoff.md`,
+  `checkpoints/067-*.md`, and `design/Electronics/Stator/Design_Spec.md`
+- commit `7b8f775` captures all these lint fixes
+
+For the next session: the Category B items from the deep-review cycle remain open. See
+`.copilot/checkpoints/067-category-a-deep-review-fixes.md` for the full state of Category A (done),
+Category B (deferred), and Category C (awaiting supplier responses).
 
 ## Documentation policy reminders
 
