@@ -104,18 +104,39 @@ Main outcomes:
     pre-V1 cross-discipline review gate after electrical, mechanical, and software work are complete and
     each board has a full KiCAD project with exported production Gerbers
 
+## 2025-05 size-down pass (checkpoint 073)
+
+Size-down pass from the electronics deep-review cycle is fully implemented and committed (`9927b8d`).
+
+Key changes:
+
+- All 1206 50V 10µF bulk caps (CL31B106KBHNNNE) replaced with 0805 25V equivalents
+  (Samsung CL21B106KAYQNNE) across AM, CTL, ENC, EXT, REF, ROT, STA
+  — voltage margins: 7.6× on 3V3\_ENIG, 5.0× on 5V\_MAIN (both exceed 2× mandatory derating)
+- Stator 0603 10kΩ resistors (R2–R41, ERJ-3EKF1002V) consolidated to 0402 ERJ-2RKF1002X
+- Stator 0603 75Ω resistors (R7–R38, ERJ-3EKF75R0V) consolidated to 0402 ERJ-2RKF75R0X;
+  ERJ-3EKF75R0V eliminated from system entirely
+- Consolidated BOM fully updated with corrected counts and supplier codes
+- `design/Standards/Global_Routing_Spec.md` §3 updated to 25V/0805 as standard bulk cap rule
+  with voltage margin notes
+- Samsung CL21B106KAYQNNE markdown datasheet generated and committed:
+  `design/Datasheets/Samsung-1276_CL21B1-datasheet.md`
+- D1/D2/D3 fixes committed (`da3df20`): AM GND ring retained (no isolation), ESD removed from
+  all internal connectors, switch debounce time set to 10ms
+
 ## Next return summary
 
-When resuming, use `.copilot/checkpoints/068-copilot-markdown-lint-fixes.md` first. It contains:
+When resuming, read `.copilot/checkpoints/073-size-down-pass-complete.md` for the current state.
 
-- confirmation that all `.copilot/` markdown files are now lint-clean (MD036, MD013, MD026, MD060)
-- details of the lint fixes applied to `review-report.md`, `index.md`, `handoff.md`,
-  `checkpoints/067-*.md`, and `design/Electronics/Stator/Design_Spec.md`
-- commit `7b8f775` captures all these lint fixes
+Remaining open work after the size-down pass:
 
-For the next session: the Category B items from the deep-review cycle remain open. See
-`.copilot/checkpoints/067-category-a-deep-review-fixes.md` for the full state of Category A (done),
-Category B (deferred), and Category C (awaiting supplier responses).
+- **Controller Board:** LED resistor BOM consolidation (check for suitable 0402 already in BOM),
+  PWR\_BUT → dedicated CM5 power button pin, VDD\_GPIO\_REF decoupling cap,
+  DSI display power per CM5 datasheet
+- **Category C:** battery connector sourcing (awaiting supplier email responses)
+- **New-component sourcing todo list:** size-down candidates and CRIT items from power module review
+
+Next checkpoint will be **074**.
 
 ## Documentation policy reminders
 

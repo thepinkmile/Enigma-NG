@@ -79,4 +79,5 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 69 | Category B parts sourced, datasheets generated, committed | 069-category-b-parts-sourced-datash.md |
 | 70 | Pass 18 fix pass complete — all critical/high/medium edits applied | 070-pass-18-fix-pass-complete.md |
 | 71 | INA219 RC filter BOM complete — PM R52/R53/C52, Stator R42/R43/C21 | 071-ina219-rc-filter-bom-complete.md |
-| 072 | D1/D2/D3 fix pass committed | da3df20 | All lint errors fixed; commit da3df20; F1-F6+D1-D3 cycle complete |
+| 72 | D1/D2/D3 fix pass committed | 072-d1-d2-d3-fix-pass-committed.md |
+| 73 | Size-down pass complete (bulk cap 1206→0805, Stator resistors 0603→0402) | 073-size-down-pass-complete.md |
