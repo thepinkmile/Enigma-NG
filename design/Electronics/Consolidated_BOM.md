@@ -43,7 +43,7 @@ board matrix.
 | SN74LVC2G125DCUR — Dual 3-State Buffer (VSSOP-8) | — | — | — | — | — | — | — | — | 1 | 1 | — | 2 |
 | 74HC157PW-Q100,118 — Automotive quad 2:1 mux (TSSOP-16) | — | — | 2 | — | — | — | — | — | — | — | — | 2 |
 | NL27WZ14DFT2G-Q — Automotive Dual Schmitt Inverter (SC-88; PM U13/U14 SYNC delay chain + U17 SW2 signal conditioner) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
-| FT232HL-REEL — USB 2.0 to MPSSE Bridge (QFN-56) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
+| FT232HL-REEL — USB 2.0 to MPSSE Bridge (LQFP-48) | — | — | — | — | — | — | — | — | — | 1 | — | 1 |
 | CM5 — Raspberry Pi Compute Module 5 | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | TPS75733KTTRG3 — 3.3 V LDO Regulator (TO-263 KTT 5-pin) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | TPS259804ONRGER — eFuse / Hot-Swap Controller (VQFN-24) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -58,8 +58,6 @@ board matrix.
 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| UNSOURCED — Stator external signal-line TVS / ESD protection required by `Stator/Design_Spec.md §8` (`J10` / `J12` / `J13`; exact protected nets, device count, working voltage, package, and MPN owner-selected) | — | — | TBD | — | — | — | — | — | — | — | — | TBD |
-| UNSOURCED — Extension exposed signal-line TVS / ESD protection required by `Extension/Design_Spec.md §5` (exact protected nets, device count, working voltage, package, and MPN owner-selected) | — | — | — | — | — | — | — | — | TBD | — | — | TBD |
 | TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | 1 | 3 | — | — | — | — | — | — | — | — | — | 4 |
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -71,8 +69,8 @@ board matrix.
 | MCP23017T-E/SO — I²C GPIO Expander 16-bit (SOIC-28) | — | — | 3 | — | — | — | — | — | — | — | 3 | 6 |
 | J9 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
-| 0.1 µF X7R 0402 decoupling cap — common fitted population | 20 | 1 | 15 | 8 | 48 | 10 | 300 | — | 1 | 4 | 4 | 399 |
-| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 5 | — | — | 202 |
+| 0.1 µF X7R 0402 decoupling cap — common fitted population | 20 | 1 | 15 | 8 | 48 | 10 | 300 | — | 1 | 8 | 4 | 403 |
+| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 10 | — | — | 207 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 13 | — | — | — | — | — | — | — | — | — | — | 13 |
 | 47 µF X7R 25 V 2220 buck output bulk cap (TDK CGA9N3X7R1E476M230KB) | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
 | 4.7 µF X7R 1210 entry filter (CGA6P3X7R1H475K250AD) | — | — | — | — | — | — | — | — | — | 1 | — | 3 |
@@ -90,7 +88,7 @@ board matrix.
 | 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C14/C15 (Samsung CL32B226KAJNNNE) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | | | | | | | | | | | | | |
 | 10 kΩ 1% 0603 fitted resistor — pull / series population (ERJ-3EKF1002V / C191124) | 6 | 5 | 19 | — | — | — | — | — | — | — | 11 | 41 |
-| 10 kΩ 1% 0402 pull resistor — common fitted population (ERJ-2RKF1002X / C191123) | 9 | — | 0 | 4 | 24 | 4 | 120 | — | — | 2 | 3 | 160 |
+| 10 kΩ 1% 0402 pull resistor — common fitted population (ERJ-2RKF1002X / C191123) | 9 | — | 0 | 4 | 24 | 4 | 120 | — | — | 3 | 3 | 161 |
 | 1 kΩ 1% 0402 gate resistor — common fitted population (ERJ-2RKF1001X) | 5 | — | — | — | — | — | — | — | — | — | 6 | 11 |
 | 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 18 | — | — | — | — | — | — | — | — | 18 |
 | 75 Ω 1% 0402 resistor (ERJ-2RKF75R0X / C413061) | — | 4 | — | 1 | 6 | — | — | — | — | — | — | 10 |
@@ -299,8 +297,10 @@ in this consolidated BOM.
 | R1-R3 (AM module) | LED current-limit resistors | 330Ω 1% 0402 | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 | 🔒 | 3 per AM | 6 |
 | R4 (AM module) | `ACTUATION_HOME` pull-up resistor | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 | 1 per AM | 2 |
 | R5 (AM module) | `BOOT0` series resistor (prevents contention when both J6 pin 5 and MCU BOOT0 drive simultaneously) | 10kΩ 1% 0402 — same part as R4 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 | 1 per AM | 2 |
-| C1 (AM module) | `ACTUATION_HOME` debounce capacitor | 100nF 50V X7R 0402 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 1 per AM | 2 |
+| R6 (AM module) | `ACTUATE_REQUEST` pull-up resistor (J2 pin 2 to 3V3_ENIG) — provides local biasing per DR-AM-18; same part as R4/R5 | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 | 1 per AM | 2 |
+| C1 (AM module) | `ACTUATION_HOME` debounce capacitor (10ms RC with R4 10kΩ) | 1µF X7R 50V 0805 | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 | 🔒 | 1 per AM | 2 |
 | C6 (AM module) | NRST filter capacitor (100nF X7R per STM32G071 datasheet Figure 23) | 100nF 50V X7R 0402 — same part as C2/C3/C1 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 1 per AM | 2 |
+| C7 (AM module) | STM32G071 VDDA supply decoupling (pin 31) — required per datasheet, separate cap from VDD domain caps C2-C3 | 100nF 50V X7R 0402 — same part as C2/C3/C1/C6 | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 1 per AM | 2 |
 | U1 (AM module) | Local actuation controller | STMicroelectronics STM32G071K8T3TR | LQFP32 | 511-STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | Global sourcing / consignment only | 🔒 | 1 per AM | 2 |
 
 The servo motor and its local home switch remain off-board electromechanical items and are therefore

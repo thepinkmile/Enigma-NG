@@ -27,20 +27,21 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-JDB-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §5 PCB Fabrication & Stackup |
-| DR-JDB-02 | USB-to-JTAG bridge | FTDI FT232H (U1) in MPSSE mode | §2 Core Logic; BOM U1 (FT232H QFN-56) |
+| DR-JDB-02 | USB-to-JTAG bridge | FTDI FT232H (U1) in MPSSE mode | §2 Core Logic; BOM U1 (FT232HL LQFP-48) |
 | DR-JDB-04 | TDI series damping at FT232H | R2 = 33 Ω 0402 at FT232H TDI output | §6 Electrical Requirements; BOM R2 |
 | DR-JDB-06 | JTAG chain device count | 37 devices total (1 Stator CPLD + 6 Encoder CPLDs + 30 Rotor CPLDs) | §2 Core Logic; BOM U1 (FT232H) |
 | DR-JDB-07 | USB interface | USB 2.0 Full Speed via CM5 internal USB port; D+/D− route via hat-header J1 | §3 Interface & Wiring; BOM J1 (5-pin INPUT header), Y1 (12MHz crystal) |
 | DR-JDB-08 | Power source | 5V_USB and 3V3_ENIG from Controller Board via hat-header J1; FT232H self-powered USB mode | §6 Electrical Requirements |
 | DR-JDB-09 | Hat-style connectors | J1 = 1×5 2.54mm male pin header (INPUT); J2 = 1×10 2.54mm male pin header (JTAG OUTPUT) | §3 Interface & Wiring; BOM J1, J2 |
 | DR-JDB-10 | GND_CHASSIS exemption | JDB is exempt from the local `GND_CHASSIS` net rule because it is a non-chassis-connected daughterboard; mounting holes tie to GND only | §3 Interface & Wiring |
-| DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4 per-IC decoupling + C5 4.7µF entry filter | §6 Electrical Requirements; BOM C1–C5 |
+| DR-JDB-11 | Bulk cap exception | JDB exempt from 5× bulk entry bank rule; C1–C4, C6–C9 = 8× 100nF per-IC decoupling (one per FT232H supply pin: VCCA, VCORE, VCCD, VCCIO×3, VPLL, VPHY) + C5 = 4.7µF 5V_USB entry filter | §6 Electrical Requirements; BOM C1–C9 |
 | DR-JDB-12 | JTAG buffer | U5 = SN74LVC2G125DCUR (VSSOP-8) dual-channel buffer for TCK and TMS; placed between FT232H and J2 header | §6 Electrical Requirements; BOM U5; DEC-024 |
 | DR-JDB-13 | TCK series damping after buffer | R6 = 33 Ω 0402 after U5 TCK output, before J2 pin 1 (TCK) | §6 Electrical Requirements; BOM R6; DEC-024 |
 | DR-JDB-14 | TMS series damping after buffer | R7 = 33 Ω 0402 after U5 TMS output, before J2 pin 7 (TMS) | §6 Electrical Requirements; BOM R7; DEC-024 |
 | DR-JDB-15 | TDI series damping before J2 | R8 = 33 Ω 0402 before J2 pin 3 (TDI) | §6 Electrical Requirements; BOM R8; DEC-024 |
 | DR-JDB-16 | TMS pull-up near J2 | R4 = 10 kΩ 0402 pull-up from TMS to 3V3_ENIG near J2 header; idle-state TAP control | §6 Electrical Requirements; BOM R4 |
 | DR-JDB-17 | TCK pull-down near J2 | R5 = 10 kΩ 0402 pull-down from TCK to GND near J2 header; idle-state TAP control | §6 Electrical Requirements; BOM R5 |
+| DR-JDB-18 | FT232H RESET# pull-up | R3 = 10 kΩ 0402 pull-up from FT232H RESET# (pin 34) to 3V3_ENIG; holds RESET# deasserted (HIGH) during normal operation per FTDI application note AN_108; absence of pull-up risks chip latching in reset | §6 Electrical Requirements; BOM R3 |
 
 ## 2. Core Logic
 
@@ -140,8 +141,13 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
   * CM5 enumerates the FT232H when Linux boots and ftdi_sio loads; no JDB-side power sequencing required.
   * Controller TPS2065C is the upstream current limiter; no additional current limiter on JDB.
 * **Bulk Capacitor Exception:** The JDB is exempt from the standard 5× bulk entry bank rule. The Controller
-  Board upstream provides a fully-bypassed power rail. Per-IC decoupling per FT232H datasheet (C1–C4)
-  plus a single 4.7µF entry filter (C5) on 5V_USB is sufficient.
+  Board upstream provides a fully-bypassed power rail. Per-IC decoupling per FT232H datasheet: C1–C4, C6–C9
+  = 8× 100nF (one per FT232H supply pin: VCCA, VCORE, VCCD, VCCIO×3, VPLL, VPHY) plus a single 4.7µF
+  entry filter (C5) on 5V_USB.
+* **FT232H RESET# Biasing:** R3 (10kΩ) pulls FT232H RESET# (pin 34) to 3V3_ENIG, ensuring the chip
+  remains deasserted (RESET# HIGH = normal operation) at all times during normal use. RESET# is active-low;
+  if left floating the pin may latch LOW and prevent the FT232H from operating. An external pull-up is
+  required per FTDI application note AN_108 when RESET# is not driven by the host (see DR-JDB-18).
 * **Clocking:** Dedicated 12MHz SMD crystal (Y1) for the FT232H reference clock. The FT232H internal PLL requires 12MHz; CM5 GPCLK
   option was considered and rejected — see DEC-022. Crystal load capacitors C10–C11 (33pF C0G) set the 20pF crystal load capacitance.
 * **JTAG Signal Integrity:**
@@ -181,15 +187,17 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C4 | Decoupling | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
+| C6-C9 | FT232H per-pin supply decoupling — VCCA (pin 37), VCORE (pin 38), VCCD (pin 39), VCCIO×3 (pins 12/24/46), VPLL (pin 8), VPHY (pin 3) — 4 additional caps to complete all 8 supply pins alongside C1-C4 | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | Adam Tech PH1-05-UA — 1×5 male pin header, 2.54mm | 2.54mm | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | J2 | JTAG OUTPUT header (10-pin interleaved GND) | Adam Tech PH1-10-UA — 1×10 male pin header, 2.54mm | 2.54mm | 737-PH1-10-UA | 2057-PH1-10-UA-ND | C3330527 |
 | R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
-| R4 | TMS pull-up to 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R3 | FT232H RESET# pull-up (pin 34 to 3V3_ENIG) — holds RESET# deasserted during normal operation per FTDI AN_108; DR-JDB-18 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R4 | TMS pull-upto 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R6 | TCK series damping after U5 buffer output, before J2 pin 1 (TCK) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
 | R7 | TMS series damping after U5 buffer output, before J2 pin 7 (TMS) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
 | R8 | TDI series damping before J2 pin 3 (TDI) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
-| U1 | FT232HL-REEL | USB 2.0 to MPSSE | QFN-56 | 895-FT232HL-REEL | 768-1101-1-ND | C51997 |
+| U1 | FT232HL-REEL | USB 2.0 to MPSSE | LQFP-48 | 895-FT232HL-REEL | 768-1101-1-ND | C51997 |
 | U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-024 | Dual 3-state buffer | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |
 | C10, C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 80-C0402C330J5GAUTO | 399-12979-1-ND | C2169327 |
 | Y1 | Crystal — FT232H reference clock (per DEC-022) | 12MHz 20pF ±20ppm | SMD3225-4P | 815-ABM8-12-B2-T | 535-9826-1-ND | C596894 |

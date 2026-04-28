@@ -49,16 +49,17 @@ diagnostics.
 | DR-AM-05 | Home-switch loom header | J4 = Adam Tech PH1-05-UA, manually fitted post-PCBA; twisted-pair wiring required for the active signal and return | §3.4; BOM J4 |
 | DR-AM-06 | Local controller architecture | U1 shall be a small 3.3V local controller with native hardware PWM, at least 2 digital inputs, at least 4 spare / LED-capable GPIOs, power-on reset, and a package suitable for low-profile service-module assembly | §4; BOM U1 |
 | DR-AM-07 | Diagnostics LED parts and placement | Reuse the existing green 0402 status LED and 330Ω 0402 resistor already used on Encoder boards, but place the LED footprints at the visible board edge on the PCBA side so their light remains observable when the AM is installed upside-down | BOM D1-D3, R1-R3; `Board_Layout.md` |
-| DR-AM-08 | Home-input biasing | `ACTUATION_HOME` uses a local 10kΩ pull-up to `3V3_ENIG` plus a 100nF local RC debounce capacitor | BOM R4, C1 |
+| DR-AM-08 | Home-input biasing | `ACTUATION_HOME` uses a local 10kΩ pull-up to `3V3_ENIG` plus a 1µF local RC debounce capacitor — RC time constant 10 ms | BOM R4, C1 |
 | DR-AM-09 | Mounting orientation | Module is intended to mount upside-down from the host board, similar to the JDB service-board approach | `Board_Layout.md` |
 | DR-AM-10 | SWD service connector | J5 = Adam Tech PH1-05-UA, manually fitted 1x5 2.54mm SWD header using the common compact 5-pin STM32/ST-LINK flying-lead order (`VTref`, `SWCLK`, `GND`, `SWDIO`, `NRST`) | §3.5; BOM J5 |
 | DR-AM-11 | Inter-board component envelope | All PCBA-fitted parts on the enclosed connector-facing side of the AM shall remain low profile and shall not exceed 2.0 mm installed height above the PCB; all manual-fit loom / service headers remain on the opposite side | `Board_Layout.md`; §4 |
 | DR-AM-12 | UART bootloader connector | J6 = Adam Tech PH1-05-UA, manually fitted 1x5 2.54mm UART bootloader header; pins 1-4 shall follow the common 3.3V TTL serial order (`GND`, `3V3`, `TX`, `RX`) and pin 5 shall expose `BOOT0` | §3.6; BOM J6 |
 | DR-AM-13 | Local reset button | SW1 = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, wired to pull `NRST` low momentarily and placed adjacent to J6 for convenient UART bootloader entry | §3.7; BOM SW1 |
 | DR-AM-14 | Local `BOOT0` button | SW2 = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, wired to assert `BOOT0` HIGH while pressed and placed adjacent to J6 / SW1 for convenient UART bootloader entry | §3.8; BOM SW2 |
-| DR-AM-15 | Local decoupling and reservoir caps | AM is exempt from the full 5x bulk-entry-bank rule used on larger boards, but it shall still include local STM32 supply decoupling plus compact 3V3/5V reservoir caps: C2-C3 = 100nF X7R 0402 at the STM32 supply domains, C4 = 4.7uF X7R on `3V3_ENIG`, C5 = 10uF X7R on `5V_MAIN` near the servo/power entry region | §4; BOM C2-C5; `Board_Layout.md` |
+| DR-AM-15 | Local decoupling and reservoir caps | AM is exempt from the full 5x bulk-entry-bank rule used on larger boards, but it shall still include local STM32 supply decoupling plus compact 3V3/5V reservoir caps: C2-C3 = 100nF X7R 0402 at the STM32 VDD supply domains (pins 1 and 32), C7 = 100nF X7R 0402 at STM32 VDDA (pin 31, separate cap required per datasheet), C4 = 4.7uF X7R on `3V3_ENIG`, C5 = 10uF X7R on `5V_MAIN` near the servo/power entry region | §4; BOM C2-C3, C5, C7; `Board_Layout.md` |
 | DR-AM-16 | NRST filter capacitor | An external 100 nF X7R filter capacitor (C6) shall be placed between the MCU NRST pin and GND per STM32G071 datasheet Figure 23 to suppress voltage spikes on the reset line | §3.7; BOM C6; `Board_Layout.md` |
 | DR-AM-17 | BOOT0 series protection resistor | A 10 kΩ series resistor (R5) shall be placed between the SW2 / J6 pin 5 shared node and the MCU BOOT0 pin to limit current during BOOT0 assertion and protect the pin from conflict when the external harness and SW2 are both driven | §3.8; BOM R5; `Board_Layout.md` |
+| DR-AM-18 | ACTUATE_REQUEST pull-up biasing | R6 = 10 kΩ 0402 pull-up from `ACTUATE_REQUEST` (J2 pin 2) to `3V3_ENIG`; provides the local biasing stated in §3.2 so the line is held HIGH when the host carry-detector switch is open and the AM is idle | §3.2; BOM R6 |
 
 ## 3. Connectivity
 
@@ -273,11 +274,12 @@ pinouts, mechanical constraints, and BOM.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1 | Home-input debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C1 | Home-input debounce capacitor (10ms RC with R4 10kΩ) | 1µF X7R 50V | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C2-C3 | STM32 local supply decoupling | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C4 | `3V3_ENIG` local reservoir / entry filter | 4.7uF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
 | C5 | `5V_MAIN` local reservoir near servo power path | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | NRST pin filter capacitor (datasheet-required per STM32G071 Figure 23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C7 | STM32G071 VDDA supply decoupling (pin 31) — required per datasheet, separate from VDD domain caps C2-C3 | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | D1-D3 | Local diagnostic LEDs (`PWR`, `HOMED`, `ACT`) | Wurth 150060VS75000 — Green SMD LED | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
 | J1 | Host power dock (module side) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Host trigger dock (module side) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
@@ -290,6 +292,7 @@ pinouts, mechanical constraints, and BOM.
 | R1-R3 | LED current-limit resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
 | R4 | Home-input pull-up resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R5 | BOOT0 series protection resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R6 | ACTUATE_REQUEST pull-up resistor (J2 pin 2 to 3V3_ENIG) — provides local biasing per DR-AM-18 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | U1 | Local actuation controller | STMicroelectronics STM32G071K8T3TR | LQFP32 | 511-STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | Global sourcing / consignment only |
 
 The servo motor and the home switch are off-board electromechanical items and are therefore specified

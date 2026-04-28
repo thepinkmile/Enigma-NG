@@ -170,6 +170,21 @@ To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Dat
 * **Language:** Bilingual German/English (e.g., `SICHERHEITS-PROBE [Safety Probe]`).
 * **Warning Labels:** High-voltage or high-energy zones must be demarcated with a 0.2mm border box.
 
+## 9. ESD and TVS Protection
+
+**ESD/TVS protection is only required on connectors that are directly accessible from outside the enclosure.**
+
+* **External connectors:** Any port that protrudes through or is directly accessible from the machine exterior (e.g., USB, HDMI,
+  panel-accessible connectors) must be protected with an appropriate TVS/ESD suppressor. The specific device, protected nets, working
+  voltage, package, and MPN shall be documented in the owning board design specification.
+* **Internal connectors:** Board-to-board connectors (Samtec ERM8/ERF8 BtB stacks), inter-board ribbon and harness connectors
+  (Extension Port BHR-20, encoder ribbons), Controller dock connectors, service headers (SWD, UART, JTAG), and any other connector
+  whose mating occurs exclusively inside the closed enclosure do **not** require TVS/ESD protection. Internal signal integrity relies
+  on enclosure shielding and the system GND plane.
+* **Do not add UNSOURCED ESD placeholders for internal-only boards.** Boards that carry only internal connectors shall state "No
+  TVS/ESD protection required — all connectors are internal to the enclosure, per `Global_Routing_Spec.md §9`" in their Thermal &
+  ESD section.
+
 ## 8. Vias & Teardrops
 
 These rules apply to all boards in the Enigma-NG system.

@@ -50,6 +50,7 @@ group without Controller-side live servo control.
 | DR-EXT-09 | Actuation Module power dock | J9 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J1 | §2 Connectivity; BOM J9 |
 | DR-EXT-10 | Actuation Module trigger dock | J10 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J2 | §2 Connectivity; BOM J10 |
 | DR-EXT-11 | Actuation Module host envelope | The Extension area beneath the installed AM shall be a no-component placement zone except for J9 / J10 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure walls that would trap heat or obstruct service access | §2 Connectivity; `Board_Layout.md` |
+| DR-EXT-12 | 5V_MAIN entry decoupling bank | C7–C11 (5× 10µF X7R 50V 1206) shall be placed at the 5V_MAIN entry point (J7 pins 17/19) using a star/spoke topology matching the 3V3_ENIG entry bank (C1–C5); both rails must be locally decoupled at the Extension Port entry | §2 Connectivity; §5 Thermal & ESD; BOM C7–C11 |
 
 ## 2. Connectivity
 
@@ -80,9 +81,12 @@ group without Controller-side live servo control.
   > for mechanical engagement with the upstream rotor group only. The Extension board's sole power
   > entry is J7 (Extension Port IN; `3V3_ENIG` on pin 1, `5V_MAIN` on pins 17/19, and returns on
   > pins 16/18/20). This prevents a parallel power
-  > path / ground loop between the rotor daisy-chain and the Extension Port ribbon. C1–C5 decouple
-  > at the J7 power entry. `3V3_ENIG` is passed to the downstream rotor group via J5 (driven from J7),
-  > while `5V_MAIN` is used locally for the Extension-mounted Actuation Module and forwarded to J8.
+  > path / ground loop between the rotor daisy-chain and the Extension Port ribbon. C1–C5 (10µF × 5,
+  > star/spoke) decouple `3V3_ENIG` at the J7 power entry. C7–C11 (10µF × 5, star/spoke) decouple
+  > `5V_MAIN` at the J7 power entry (pins 17/19), providing equivalent bulk buffering for both supply
+  > rails. `3V3_ENIG` is passed to the downstream rotor group via J5 (driven from J7), while `5V_MAIN`
+  > is used locally for the Extension-mounted Actuation Module and **forwarded to J8 pins 17/19** for
+  > the next Extension board in chain.
 
   **Note:** The ERM8/ERF8 0.8mm pitch is physically incompatible with 2.54mm connectors — label distinctly on silkscreen.
   Connector part numbers: ERM8-005 = Mouser 200-ERM8005050SDVKTR / DigiKey 612-ERM8-005-05.0-S-DV-K-TRCT-ND / JLCPCB C3649741;
@@ -160,9 +164,9 @@ group without Controller-side live servo control.
   > ⚠️ **U1 must never be removed.** The Extension board actively re-buffers TCK and TMS for
   > every 5-rotor group. Without U1, signal integrity in long rotor stacks will fail.
   > See FR-EXT-01, DR-EXT-04/05/06.
-* **ESD:** Local TVS / ESD protection is required on the Extension board's exposed signal-line
-  boundary. Exact protected nets, device count, footprint, and sourced MPN remain owner-selected;
-  board otherwise relies on enclosure shielding.
+* **ESD:** No TVS/ESD protection required. All Extension board connectors (J1–J6 BtB rotor interfaces, J7/J8 Extension Port ribbons,
+  J9/J10 AM docks) are internal to the enclosure and accessed only during board assembly or servicing. The board relies on enclosure
+  shielding for EMC protection. Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 6. Bill of Materials
 
@@ -170,7 +174,7 @@ group without Controller-side live servo control.
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | 100nF X7R 50V bypass — U1 VCC | Samsung CL05B104KB5NNNC | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| D1 (owner-selected) | Extension exposed signal-line TVS / ESD protection required by §5 | Exact protected nets, device count, working voltage, package, and MPN **owner-selected** | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
+| C7-C11 | 5V_MAIN entry decoupling bank (star/spoke) — J7 pins 17/19 | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
@@ -181,5 +185,4 @@ group without Controller-side live servo control.
 | J8 | Extension Port OUT header | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded box | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
 | J9 | Actuation Module power dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J10 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| R1 | GND plane isolating resistor (optional) | 0Ω or 10Ω | 0603 | 667-ERJ-3GEY0R00V | P0.0BYCT-ND | C25807 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |

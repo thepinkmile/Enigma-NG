@@ -365,8 +365,9 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 ## 8. Thermal & ESD
 
 * **Thermal:** No active cooling required. Low-power passive components only. Relies on chassis airflow.
-* **ESD:** Local TVS / ESD protection is required on the Stator board's exposed signal-line boundaries (`J10` reflector/extension service port, `J12` controller logic dock, and `J13` Settings harness).
-  Exact protected nets, device count, working voltage, package, and sourced MPN remain owner-selected. The rotor-slot Samtec ERF8/ERM8 interfaces otherwise rely on their grounded guard contacts.
+* **ESD:** No TVS/ESD protection required. All Stator connectors (J1–J3 rotor BtB slots, J4–J9 encoder ribbon ports, J10 Extension Port
+  ribbon, J11/J12 Controller dock, J13 Settings harness) are internal to the enclosure. The board relies on enclosure shielding for EMC
+  protection. Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 9. Bill of Materials
 
@@ -381,7 +382,6 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | J10 | 20-pin Reflector/Extension port | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | through-hole | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
 | J11, J12 | Controller dock hybrid plugs (5V-biased + 3V3/JTAG/I2C) | Molex 2195620015 | 5 power + 15 signal hybrid plug | 538-219562-0015 | 900-2195620015-ND | Global sourcing / consignment |
 | J13 | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
-| D1 (owner-selected) | External signal-line TVS / ESD protection required by §8 (`J10`, `J12`, `J13`) | Exact protected nets, device count, working voltage, package, and MPN **owner-selected** | TBD — owner-selected footprint | USER-SELECT REQUIRED | USER-SELECT REQUIRED | USER-SELECT REQUIRED |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ω @100 MHz, 4.0A | 1206 | 875-HI1206P121R-10 | 240-2410-1-ND | C2442103 |
 | R1 | Rotor-Stack Shunt Resistor (CSS2H — Stator R1; PM R12 LTC3350 RSENSE and PM R23 INA219 U12 are first and second system instances, total build qty: 3) | CSS2H-2512R-R010ELF (10mΩ ±1% 5A) | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
