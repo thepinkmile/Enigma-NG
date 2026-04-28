@@ -120,7 +120,7 @@ board matrix.
 | 33.2 kΩ 1% 0402 thick-film LTC3350 RT freq-set (ERA-2AEB3322X / C2087909) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 52.3 kΩ 1% 0402 thin-film buck FB top (ERJ-2RKF5232X) — PM U2A/U2B R\_FB\_TOP | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | 100 kΩ 1% 0402 thin-film pull-up (ERJ-2RKF1003X) — PM U2A/U2B EN×2 + PG×2 | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
-| 10 Ω 1% 0402 thin-film gate series (ERJ-2RKF10R0X) — PM U6a/U6b/U6c GATE | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
+| 10 Ω 1% 0402 thin-film (ERJ-2RKF10R0X) — PM LM74700 GATE R49/R50/R51 (×3) + PM INA219 U12 input filter RF1/RF2 R52/R53 (×2) + Stator INA219 U2 input filter RF1/RF2 R42/R43 (×2) | 5 | — | 2 | — | — | — | — | — | — | — | — | 7 |
 | 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 1 | — | — | 1 |
 | Ferrite bead 120 Ω @100 MHz 4.0 A 1206 (Laird HI1206P121R-10) | — | — | 4 | — | — | — | — | — | — | — | — | 4 |
 | | | | | | | | | | | | | |
@@ -205,7 +205,7 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 | C16-C19 | LMQ61460-Q1 buck output bulk caps | TDK CGA9N3X7R1E476M230KB | 4× 47µF 25V X7R MLCC total (2 fitted at U2A OUT, 2 fitted at U2B OUT) | 2220 | 810-A9N3X7476M23KB |
 | C20 | LDO input cap (U7 VIN) | Kemet C1206C106K3RACTU | 10µF 25V X7R | 1206 | 80-C1206C106K3R |
 | C21-C23 | 1µF caps (Pi-filter mid-frequency legs and U11 timer) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
-| C24-C30, C33-C39, C43-C50 | 100nF caps (Pi-filter HF legs and IC VCC bypass network, including PM U12 INA219 bypass, PM U17/U18/U19 local VCC bypass, C47/C48 LMQ61460A BST caps, and C49/C50 STUSB4500 CC1/CC2 filter caps) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
+| C24-C30, C33-C39, C43-C50, C52 | 100nF caps (Pi-filter HF legs and IC VCC bypass network, including PM U12 INA219 bypass, PM U17/U18/U19 local VCC bypass, C47/C48 LMQ61460A BST caps, C49/C50 STUSB4500 CC1/CC2 filter caps, and C52 INA219 U12 IN+/IN- differential filter) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
 | C40 | SYNC SW-ringing low-pass filter (C_F1) | Kemet C0402C101K3RACAUTO | 100pF X7R 25V | 0402 | 80-C0402C101K3RAUTO |
 | C41 | SYNC 180° phase delay capacitor (C_DLY) | Samsung CL10B223KB8WPNC | 22nF X7R 25V | 0603 | 187-CL10B223KB8WPNC |
 | C42 | U15 MIC1555 one-shot timing cap | Yageo CC1206KKX7R8BB106 | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 |

@@ -142,7 +142,9 @@ Controller Board via dock connector `J1`.
   * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) — PM R23 instance.
     (Stator R1 is the third system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
   * **Interface:** I2C-1 Telemetry Bus, directly accessible via `J3` to the Controller.
-  * **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for supply noise suppression.
+  * **Filtering:** 0.1µF VCC decoupling (C43) and RC input filter on IN+/IN-: R52 (10Ω RF1, series on IN+), R53 (10Ω RF2, series on IN-),
+    C52 (100nF CF, differential across IN+/IN-); f_3dB ≈ 80kHz (differential). Suppresses PM buck switching transients (400kHz and harmonics).
+    See INA219 datasheet Figure 14.
   * Satisfies FR-PM-05.
 * **Interrupt Bias:** 10kΩ (1%) pull-up (**R9**) on `PM_IO_INT_N` so the PM-local expander interrupt
   idles HIGH when U16 is quiescent.
@@ -482,6 +484,7 @@ Estimated PM-local power dissipation at system peak load:
 | C49 | STUSB4500 U5 CC1 pin filter capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C50 | STUSB4500 U5 CC2 pin filter capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C51 | TPS75733 U7 NR pin noise-reduction capacitor | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1008-1-ND | C15195 |
+| C52 | INA219 U12 IN+/IN- differential filter capacitor (CF) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | C17468669 |
 | J1-J3 | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 |
 | J4 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Candidate military / NetWarrior-style replacement under review: Glenair `807-216-00ZNU6-6DY` via Heilind / consignment-only; see `Millitary_Battery_Connection_Option.md`. | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
@@ -521,6 +524,8 @@ Estimated PM-local power dissipation at system peak load:
 | R49 | LM74700-Q1 U6a GATE series resistor | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | R50 | LM74700-Q1 U6b GATE series resistor | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | R51 | LM74700-Q1 U6c GATE series resistor | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
+| R52 | INA219 U12 IN+ series filter resistor (RF1) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
+| R53 | INA219 U12 IN- series filter resistor (RF2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
 | BT_SW1_1–BT_SW1_6, BT_SW2_1–BT_SW2_6 | PCB male spade tabs for SW1 / SW2 harnesses | Keystone 1211 — 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | THT Quick-Fit tab | 534-1211 | 36-1211-ND | C3029550 |
 | SW2 | CM5 Power Button + Hardware Power-State Indicator | Adafruit 3350 — panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press. Red / green LED channels are driven locally on the PM: green = CM5 powered from buffered `LED_nPWR`; red = 1Hz blink during shutdown latch while green remains ON. Blue channel not used. | Panel-mount 16mm metal switch | 485-3350 | 1528-2546-ND | Global sourcing / consignment |

@@ -336,7 +336,9 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
   * Minimum 15mm isolation from Intel MAX II EPM570T100I5N CPLD logic core.
 * **Shunt:** CSS2H-2512R-R010ELF (10mΩ ±1% 5A, 2512 Kelvin-sense) rotor-stack shunt resistor. Stator R1 instance. (PM R12 + PM R23 are the first and second system CSS2H; total build qty: 3 — see `Power_Budgets.md`.)
 * **Interface:** I2C-1 Telemetry Bus (via `J5`, shared with the Power Module and Settings Board).
-* **Filtering:** 0.1µF decoupling and RC filter on IN+/IN- for noise suppression from mechanical rotors.
+* **Filtering:** 0.1µF VCC decoupling (C14) and RC input filter on IN+/IN-: R42 (10Ω RF1, series on IN+), R43 (10Ω RF2, series on IN-),
+  C21 (100nF CF, differential across IN+/IN-); f_3dB ≈ 80kHz (differential). Suppresses electromechanical rotor noise at INA219 ADC sampling harmonics.
+  See INA219 datasheet Figure 14.
 * **Local bypassing:** C14-C20 provide one 100nF local VDD bypass capacitor for each Stator-local IC
   U2-U8; U8 placement remains subject to `Stator/Board_Layout.md §6`.
 
@@ -373,6 +375,7 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C14-C20 | Local VDD bypass (one per: U2, U3, U4, U5, U6, U7, U8) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C21 | INA219 U2 IN+/IN- differential filter capacitor (CF) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | SMT 0.8mm pitch | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) |
 | J4-J9 | Encoder port connectors (×6 positions: `KBD_ENC`, `LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`) | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | through-hole | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
 | J10 | 20-pin Reflector/Extension port | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | through-hole | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
@@ -398,6 +401,8 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | R39 | MCP23017 U6 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R40 | MCP23017 U7 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R41 | MCP23017 U8 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R42 | INA219 U2 IN+ series filter resistor (RF1) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
+| R43 | INA219 U2 IN- series filter resistor (RF2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | SW2 | Reflector map selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | U1 | Stator Management CPLD (routing matrix + reflector map application) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
