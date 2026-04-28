@@ -226,9 +226,9 @@ BSS138 NMOS pre-drivers (Q7–Q11), and Bank 1 RGB colour-rail low-side transist
 > (R66–R70) hold the PMOS gates HIGH when the BSS138 is OFF, keeping the PMOS OFF and the anode
 > floating. GPIO HIGH → BSS138 ON → PMOS gate ≈0 V → PMOS ON → LED anode driven to `5V_MAIN`. Each
 > LED's red, green, and blue cathodes return through current-limiting resistors (`R_LED_R` = 150Ω,
-> `R_LED_G` = 100Ω, `R_LED_B` = 100Ω) to the shared bank colour rails switched by Q1–Q3. On power-up,
-> Hi-Z GPIO defaults leave BSS138 gates floating; behaviour is consistent with Q1–Q6 and shall be
-> validated during system-level power-on testing.
+> `R_LED_G` = 100Ω, `R_LED_B` = 100Ω) to the shared bank colour rails switched by Q1–Q3.
+> 100 kΩ pull-down resistors (R87–R91 on Q7–Q11 gates; R81–R86 on Q1–Q6 gates) hold BSS138 gates LOW
+> during GPIO Hi-Z at power-up, preventing spurious transistor turn-on.
 >
 ### U3 — MCP23017T-E/SO @ 0x25
 
@@ -255,9 +255,9 @@ BSS138 NMOS pre-drivers (Q12–Q18), and Bank 2 RGB colour-rail low-side transis
 > (R59–R65). Each BSS138 drain pulls down the gate of a PMOS high-side switch (Q24–Q30); 47 kΩ pull-ups
 > (R71–R77) hold the PMOS gates HIGH when the BSS138 is OFF. GPIO HIGH → BSS138 ON → PMOS gate ≈0 V →
 > PMOS ON → LED anode driven to `5V_MAIN`. Cathodes return through current-limiting resistors to the
-> shared Bank 2 colour rails switched by Q4–Q6. On power-up, Hi-Z GPIO defaults leave BSS138 gates
-> floating; behaviour is consistent with Q1–Q6 and shall be validated during system-level power-on
-> testing.
+> shared Bank 2 colour rails switched by Q4–Q6.
+> 100 kΩ pull-down resistors (R92–R98 on Q12–Q18 gates; R81–R86 on Q1–Q6 gates) hold BSS138 gates LOW
+> during GPIO Hi-Z at power-up, preventing spurious transistor turn-on.
 >
 
 ---
@@ -383,6 +383,8 @@ automatic polling intervals.
 | C2 | VCC decoupling cap for U2 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C3 | VCC decoupling cap for U3 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C4 | `CFG_APPLY_N` debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-CL05B104KB5NNNCCT-ND | C960916 |
+| C5 | J1 entry bulk reservoir capacitor — `3V3_ENIG` (star point at J1 pin 1) | 10µF 25V X5R | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
+| C6 | J1 entry bulk reservoir capacitor — `5V_MAIN` (star point at J1 pin 2) | 10µF 25V X5R | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | D1-D5 | Bank 1 discrete RGB indicator LEDs (×5: 1 source-status + 4 config bits) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | D6-D12 | Bank 2 discrete RGB indicator LEDs (×7: 1 source-status + 6 config bits) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | J1 | I²C harness connector to Stator J13 | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
@@ -407,6 +409,9 @@ automatic polling intervals.
 | R78 | MCP23017 U1 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R79 | MCP23017 U2 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R80 | MCP23017 U3 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R81–R86 | BSS138 gate pull-downs for colour-rail sinks Q1–Q6 (×6); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
+| R87–R91 | BSS138 gate pull-downs for Bank 1 per-anode pre-drivers Q7–Q11 (×5); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
+| R92–R98 | BSS138 gate pull-downs for Bank 2 per-anode pre-drivers Q12–Q18 (×7); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
 | SW1 | Bank 1 routing config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — common Bank 1/2 config-toggle part | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW2 | Bank 1 routing config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW3 | Bank 1 routing config bit 2 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
@@ -465,14 +470,16 @@ automatic polling intervals.
 | **0402 Resistors (colour-rail gate)** | 6 | R12–R17: 1kΩ colour-rail MOSFET gate resistors |
 | **0402 Resistors (per-anode gate)** | 12 | R54–R65: 1kΩ BSS138 pre-driver gate resistors |
 | **0402 Resistors (PMOS pull-up)** | 12 | R66–R77: KOA Speer SG73S1ERTTP4702D 47 kΩ ±0.5% PMOS gate pull-ups |
+| **0402 Resistors (BSS138 gate pull-down)** | 18 | R81–R98: 100kΩ Panasonic ERJ-2RKF1003X — holds gates LOW at power-up Hi-Z |
 | **0603 Resistors (misc)** | 1 | R11: 10kΩ `CFG_APPLY_N` pull-up |
 | **0402 Capacitors (decoupling)** | 3 | 100nF X7R for 3× MCP23017s |
 | **0402 Capacitors (debounce)** | 1 | C4: 100nF X7R `CFG_APPLY_N` debounce |
+| **0805 Capacitors (bulk reservoir)** | 2 | C5–C6: 10µF 25V X5R Samsung CL21B106KAYQNNE — J1 `3V3_ENIG` and `5V_MAIN` entry bulk caps |
 | **JST PH Connectors** | 1 | J1: 6-pin B6B-PH-K-S(LF)(SN) to Stator |
 | **Pushbutton Switch** | 1 | SW11 — Omron B3F-1070 SPST NO through-hole tactile switch |
 
-**Total unique part numbers:** ~18
-**Total component count:** ~125
+**Total unique part numbers:** ~20
+**Total component count:** ~145
 
 ---
 
@@ -499,8 +506,9 @@ combined with per-anode high-side switches for individual LED illumination contr
   The MCP23017 GPIO output maximum is 3.3 V and cannot source current into a 5 V-supply anode directly.
   The two-stage high-side topology resolves this without requiring firmware changes or rail compromise.
 
-* **Power-up behaviour:** MCP23017 Hi-Z default leaves BSS138 gates floating (consistent with Q1–Q6).
-  Validate that LED anodes remain de-energised on power-up during system-level testing.
+* **Power-up behaviour:** 100 kΩ pull-down resistors (R81–R98) hold all 18 BSS138 gates LOW during
+  MCP23017 Hi-Z at power-up, preventing spurious transistor turn-on and ensuring LED anodes remain
+  de-energised until the CM5 drives the expanders.
 
 ### 5V Power Routing
 

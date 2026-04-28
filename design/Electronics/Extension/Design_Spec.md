@@ -33,7 +33,7 @@ group without Controller-side live servo control.
 | FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Power: J7 → J5 (J2 power pins NC); ENC data: J3/J6 pass-through | §2 Connectivity; BOM J5 (ERF8-005), J3, J6 (ERM8/ERF8-010) |
 | FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) | §2 Connectivity; BOM J1–J3 (ERM8-005/010) |
 | FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) | §2 Connectivity; BOM J4–J6 (ERF8-005/010) |
-| FR-EXT-06 | Host one Actuation Module to regenerate an Extension-boundary carry event into one local servo step | J9 = AM power dock, J10 = AM trigger dock; local mechanical carry detector asserts `ACTUATE_REQUEST` into the AM | §2 Connectivity; BOM J9, J10 |
+| FR-EXT-06 | Host one Actuation Module to regenerate an Extension-boundary carry event into one local servo step | J9 = AM power dock, J10 = AM trigger dock; non-homing switch (or CM5 GPIO) asserts `ACTUATE_REQUEST` into the AM | §2 Connectivity; BOM J9, J10 |
 
 #### Design Requirements
 
@@ -131,9 +131,9 @@ group without Controller-side live servo control.
   * **J10** - AM trigger dock (`ACTUATE_REQUEST` + guards / returns)
   * The mounted AM footprint on the Extension is a no-component zone apart from J9 / J10 themselves
     and the routing / copper needed to reach them.
-  * The local mechanical carry detector at the Extension boundary is routed as the active-low
-    `ACTUATE_REQUEST` source for J10. Exact switch mounting geometry remains owned by the mechanical
-    design.
+  * `ACTUATE_REQUEST` is an active-low GPIO signal sourced either from the CM5 on the Controller
+    Board or from the non-homing switch on the Extension Board itself. A 10kΩ pull-up to `3V3_ENIG`
+    is required on this line. Exact switch mounting geometry remains owned by the mechanical design.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), `ENC_OUT_REF` / `ENC_IN_REF`, and
   JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`

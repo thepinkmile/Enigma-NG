@@ -172,7 +172,7 @@ Variant-specific track bit patterns and full decode tables are defined in:
 #### Resonant Front-End Topology
 
 Each active FDC2114 channel drives a resonant LC tank to detect the aluminium shroud segment. The
-tank consists of an **18 µH shielded SMD inductor** and a **33 pF C0G/NP0 ±1% capacitor** connected
+tank consists of an **18 µH unshielded SMD inductor (Bourns CWF1610A-180K)** and a **33 pF C0G/NP0 ±1% capacitor** connected
 **in parallel** between the channel's INxA and INxB pins (single-ended mode; `CHx_FIN_SEL = 0b10`).
 Nominal resonant frequency: **~6.5 MHz**.
 
@@ -500,12 +500,12 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | :--- | :--- | :--- | :--- |
 | 1 | SDA | A→B | I²C data (CPLD master → U4 FDC2114 on Board B) |
 | 2 | SCL | A→B | I²C clock (CPLD master → U4 FDC2114 on Board B) |
-| 3 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
-| 4 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
-| 5 | NC / Reserved | — | Reserved for future Board B sensor-side support; not used in the current design |
+| 3 | GND | — | Ground return for I²C bus |
+| 4 | GND | — | Ground return |
+| 5 | GND | — | Ground return |
 
-> **Variant note:** N=64 builds populate U4 on Board B and use only SDA/SCL on this header. N=26
-> builds do not populate U4; pins 3–5 remain reserved/unused in both variants.
+> **Variant note:** N=64 builds populate U4 on Board B and use SDA/SCL plus the GND return pins.
+> N=26 builds do not populate U4; SDA/SCL and GND pins remain wired but unused in both variants.
 >
 ## 4. PCB Fabrication & Stackup
 
@@ -544,6 +544,10 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | U3 | FDC2114RGHR, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
 | SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
+| L1–L4 | U2 (Board A) FDC2114 CH0–CH3 resonant inductors — **one per active channel; in parallel with C20–C23 between INxA/INxB** | Bourns CWF1610A-180K — 18 µH ±10% unshielded 0603 chip inductor; SRF 28 MHz; Q=14@2.5 MHz; Irms 220 mA; DCR 2.90 Ω | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
+| L5–L8 | U3 (Board A) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
+| C20–C23 | U2 (Board A) FDC2114 CH0–CH3 resonant capacitors — **in parallel with L1–L4 between INxA/INxB** | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200; generic 0402 footprint | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
+| C24–C27 | U3 (Board A) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
 
 ### Board B BOM (Output Side — JLCPCB SMT outward face)
 
@@ -551,11 +555,7 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C18 | U4 FDC2114 local `VDD` bypass (datasheet-recommended; N=64 only, not populated for N=26) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C19 | U4 FDC2114 local `VDD` reservoir (datasheet-recommended; N=64 only, not populated for N=26) | Kyocera AVX KAM05CR71A105KH — same part as C15 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
-| L1–L4 | U2 (Board A) FDC2114 CH0–CH3 resonant inductors — **one per active channel; in parallel with C20–C23 between INxA/INxB** | Bourns CWF1610A-180K — 18 µH ±10% unshielded 0603 chip inductor; SRF 28 MHz; Q=14@2.5 MHz; Irms 220 mA; DCR 2.90 Ω | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| L5–L8 | U3 (Board A) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
 | L9–L12 | U4 (Board B) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=64 only, not populated for N=26** | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| C20–C23 | U2 (Board A) FDC2114 CH0–CH3 resonant capacitors — **in parallel with L1–L4 between INxA/INxB** | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200; generic 0402 footprint | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| C24–C27 | U3 (Board A) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
 | C28–C31 | U4 (Board B) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=64 only, not populated for N=26** | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
 | J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
@@ -571,3 +571,37 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 > requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L12`, `C20–C31`)
 > are fully sourced above (Bourns CWF1610A-180K 18 µH inductors and YAGEO AC0402FRNPO9BN330 33 pF
 > resonant capacitors; dummy LC tanks on all unused FDC2114 channels per TI application note).
+
+---
+
+## 6. Thermal & ESD
+
+### 6.1. ESD Protection — Samtec ERM8/ERF8 Connectors
+
+The Samtec ERM8/ERF8 rotor connectors (`J1`–`J3` on Board A, `J4`–`J6` on Board B) are external,
+hot-swappable interfaces per **DEC-045** (see `design/Design_Log.md`). All signal lines entering the
+board via these connectors must be ESD-protected with TVS arrays placed close to the connector body,
+before any series resistors or downstream logic (see `Global_Routing_Spec.md §9`).
+
+**Connectors requiring ESD protection:**
+
+| Connector | Board | Interface | Signal Lines Requiring TVS |
+| :--- | :---: | :--- | :--- |
+| J1 | A | JTAG input (ERM8-005 male) | `TCK`, `TMS`, `TDI`, `TDO` — 4 lines |
+| J2 | A | Power input (ERM8-005 male) | `3V3_ENIG` entry — rail TVS per `Global_Routing_Spec.md §9` |
+| J3 | A | Encoder data input (ERM8-010 male) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — up to 8 lines |
+| J4 | B | JTAG output (ERF8-005 female) | `TCK`, `TMS`, `TDI`, `TDO` — 4 lines |
+| J5 | B | Power output (ERF8-005 female) | `3V3_ENIG` pass-through — rail TVS per `Global_Routing_Spec.md §9` |
+| J6 | B | Encoder data output (ERF8-010 female) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — up to 8 lines |
+
+**ESD device requirements:**
+
+* Working voltage: ≥ 3.3 V (I/O signal lines) or ≥ 5 V (power rail TVS)
+* Clamping voltage: ≤ 6.0 V at rated peak current
+* IEC 61000-4-2 Level 4 capability (±8 kV contact, ±15 kV air)
+* Multi-line array preferred to minimise board area; SOT-363 or DHVQFN package acceptable
+* Place as close as physically possible to the relevant connector pad on the board edge
+
+**Part selection:** Pending final sourcing. Candidate: Nexperia PRTR5V0U10AZ (10-line, 5 V,
+DHVQFN14) or equivalent multi-channel TVS array rated for hot-swap/ESD events. Approved part and
+supplier part numbers to be confirmed and added to BOM prior to schematic completion.

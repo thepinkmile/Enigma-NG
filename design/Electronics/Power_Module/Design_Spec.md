@@ -25,7 +25,7 @@ Controller Board via dock connector `J1`.
   connectors: `J1` (regulated rails), `J2` (regulated PoE-derived auxiliary feed), and `J3`
   (low-speed control / telemetry).
   * **Provided to Controller:** `5V_MAIN`, `3V3_ENIG`, PM telemetry, `PWR_GD`, and `PWR_BUT`.
-  * **Received from Controller:** `VIN_POE_12V`, `I2C-1`, `PM_IO_INT_N` return path, `ROTOR_EN`, and `LED_nPWR`.
+  * **Received from Controller:** `VIN_POE_12V`, `I2C-1`, `PM_IO_INT_N` return path, `ROTOR_EN_N`, and `LED_nPWR`.
   * **Cross-ref:** See `Controller/Design_Spec.md` and `Controller/Board_Layout.md` for the active dock allocation.
   * **Reference datasheets:** [`TE-1123684-7-datasheet.md`](../../Datasheets/TE-1123684-7-datasheet.md),
     [`TE-1-1674231-1-datasheet.md`](../../Datasheets/TE-1-1674231-1-datasheet.md)
@@ -234,7 +234,9 @@ GND ──────┴──────────────────�
 ### 5. Protection & Logic
 
 * **External Handshake:** STUSB4500 (Standalone Sink) negotiates **15V/5A** (75W) from Wall adapter or USB-C PD source.
-* **Internal Handshake:** TPS25751 PD Emulator (U4) provides **5V/5A** "Clean PD" profile to CM5.
+* **Internal Handshake:** TPS25751 PD Emulator (U4) provides a **5V/5A** "Clean PD" profile to the CM5 USB-C port to prevent OS throttling.
+  U4 CC1/CC2 lines are routed through the Controller dock J1 power connector data-pin block to the CM5's CC pins on the Controller Board.
+  No separate USB-C connector on the PM is required for this path.
 * **Protection:** LM74700-Q1 controls the triple-input OR-ing network and drives Q1-Q3 PowerPAK ideal-diode FETs.
 * **OR-ing Priority:** The PM OR-ing stage sees three input sources:
   Controller-fed `VIN_POE_12V`, local USB-C, and local Battery. The Controller
@@ -277,11 +279,11 @@ GND ──────┴──────────────────�
   * The Power Module receives only the regulated auxiliary feed `VIN_POE_12V` on `J2`.
   * `VIN_POE_12V` is treated as the third OR-ing source alongside USB-C and Battery.
   * `POE_STAT` remains available to software through the PM-local `PCA9534A`.
-  * **LDO Enable (ROTOR_EN):**
-  * `ROTOR_EN` (3.3V drive from the Controller) drives the TPS75733 (U7) EN pin. The TPS75733 has an **active-LOW enable** (EN LOW = enabled, EN HIGH = shutdown) — no level-shifting required.
-  * A 10kΩ pull-down resistor from the EN pin to GND ensures the LDO is ON by default during power-up (EN=LOW=enabled).
-  * ROTOR_EN HIGH → LDO **disabled** → 3V3_ENIG off (all rotor and CPLD loads de-energised).
-  * ROTOR_EN LOW → LDO **enabled** → 3V3_ENIG present (CPLDs + rotor stack powered).
+  * **LDO Enable (ROTOR_EN_N — Active-LOW):**
+  * `ROTOR_EN_N` (3.3V drive from the Controller) drives the TPS75733 (U7) EN pin. The TPS75733 has an **active-LOW enable** (EN LOW = enabled, EN HIGH = shutdown) — no level-shifting required.
+  * A 10kΩ pull-**up** resistor (R10) from the EN pin to 3V3_ENIG holds the LDO **disabled** at startup (EN=HIGH=shutdown). This ensures the rotor stack remains de-energised while the CM5 is booting.
+  * ROTOR_EN_N asserted (LOW by CM5) → LDO **enabled** → 3V3_ENIG present (CPLDs + rotor stack powered).
+  * ROTOR_EN_N de-asserted (HIGH / released to pull-up) → LDO **disabled** → 3V3_ENIG off (all rotor and CPLD loads de-energised).
   * **Thermal Budget (TPS75733):**
     * V_dropout ≈ 0.18V (TPS75733 typical at 1.85A). Typical dissipation: **~0.33W** (1.85A load, Vdo≈0.18V).
     * At worst-case 2.05A load: P_diss ≈ 0.22V × 2.05A ≈ **~0.45W** worst-case.
@@ -402,7 +404,8 @@ The following sequence ensures the CM5 filesystem is clean and all loads are de-
    * **Manual:** User presses SW2 (tactile `PWR_BUT` button), issues OS shutdown command, or triggers
      via the Safe Shutdown Button interrupt path.
 2. **OS Shutdown:** CM5 OS saves state, syncs filesystems, and executes `halt`.
-3. **ROTOR_EN HIGH:** `ROTOR_EN` is asserted HIGH before halt completes, disabling the TPS75733 LDO (active-LOW EN: HIGH = shutdown) → 3V3_ENIG off (CPLDs and rotor stack de-energised).
+3. **ROTOR_EN_N de-asserted (HIGH):** `ROTOR_EN_N` is de-asserted (driven HIGH or released to R10 pull-up) before halt completes,
+   disabling the TPS75733 LDO (active-LOW EN: HIGH = shutdown) → 3V3_ENIG off (CPLDs and rotor stack de-energised).
 4. **CM5 PMIC halt:** CM5 internal PMIC drops 1.8V/3.3V rails. Total time from trigger to PMIC halt: ~10–15 seconds.
 5. **5V_MAIN sag:** 5V_MAIN begins to fall as CM5 load ceases. LTC3350 holds the rail up via supercap discharge for ≥33.5 seconds.
 6. **PWR_GD drop:** Once 5V_MAIN falls below 4.5V, MCP121T-450E deasserts PWR_GD.
@@ -462,7 +465,11 @@ Estimated PM-local power dissipation at system peak load:
 | C21, C22 | Pi-filter mid-freq bypass (C21 input leg, C22 output leg) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C24, C25 | Pi-filter HF bypass (C24 input leg, C25 output leg) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C26–C30 | IC VCC bypass (one per: U3, U4, U5, U6a, U8) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C26 | LTC3350 (U3) main VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C27 | TPS25751 (U4) VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C28 | STUSB4500 (U5) VDD bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C29 | LM74700-Q1 (U6a) VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C30 | MCP121T (U8) VDD bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_SC1–8 | Supercaps (8× cells, 2S4P) | Abracon ADCR-T02R7SA256MB / 25F 2.7V | THT Radial Can 16.0mm×25.0mm | 815-ADCRT02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | Global sourcing |
 | D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | C1972959 |
@@ -485,6 +492,11 @@ Estimated PM-local power dissipation at system peak load:
 | C50 | STUSB4500 U5 CC2 pin filter capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C51 | TPS75733 U7 NR pin noise-reduction capacitor | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1008-1-ND | C15195 |
 | C52 | INA219 U12 IN+/IN- differential filter capacitor (CF) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C53 | LTC3350 (U3) INTVCC (pin 29, 5V internal LDO output) bypass — min 1µF low ESR | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
+| C54 | LTC3350 (U3) DRVCC (pin 28, bottom gate driver supply — tied to INTVCC) bypass — min 2.2µF low ESR; 10µF used | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 | 311-1959-1-ND | C70462 |
+| C55 | LTC3350 (U3) VCC2P5 (pin 23, 2.5V internal logic LDO output) bypass — min 1µF low ESR | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
+| C56 | STUSB4500 (U5) VREG_1V2 (pin A3, 1.2V internal LDO output) bypass — typ 1µF (0.5µF min, 10µF max) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
+| C57 | STUSB4500 (U5) VREG_2V7 (pin A4, 2.7V internal LDO output) bypass — typ 1µF (0.5µF min, 10µF max) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | C17468669 |
 | J1-J3 | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 |
 | J4 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Candidate military / NetWarrior-style replacement under review: Glenair `807-216-00ZNU6-6DY` via Heilind / consignment-only; see `Millitary_Battery_Connection_Option.md`. | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
@@ -499,7 +511,7 @@ Estimated PM-local power dissipation at system peak load:
 | R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.70KHCT-ND | C192166 |
 | R9 | `PM_IO_INT_N` pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R10 | ROTOR_EN Pull-down (EN to GND) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R10 | ROTOR_EN_N Pull-up (to 3V3_ENIG — holds LDO disabled at startup until CM5 drives ROTOR_EN_N LOW) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | C403144 |
 | R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
 | R14 | LTC3350 BACKUP divider upper (R_TOP) — **REVISED (DEC-030): threshold raised to 4.812V for 312mV gap** | 30.1kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.812V → R_TOP/R_BOT=(4.812/1.2)−1=3.01 → R_BOT=10kΩ → R_TOP=30.1kΩ → E96=30.1kΩ → actual trigger: 4.812V, 312mV above MCP121T 4.50V threshold — see DEC-030] | 0603 | 667-ERA-3ARB3012V | 10-ERA-3ARB3012VCT-ND | C1728516 |
@@ -526,7 +538,7 @@ Estimated PM-local power dissipation at system peak load:
 | R51 | LM74700-Q1 U6c GATE series resistor | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | R52 | INA219 U12 IN+ series filter resistor (RF1) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | R53 | INA219 U12 IN- series filter resistor (RF2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
-| SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
+| SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. LED anode supply: `5V_MAIN`. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
 | BT_SW1_1–BT_SW1_6, BT_SW2_1–BT_SW2_6 | PCB male spade tabs for SW1 / SW2 harnesses | Keystone 1211 — 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | THT Quick-Fit tab | 534-1211 | 36-1211-ND | C3029550 |
 | SW2 | CM5 Power Button + Hardware Power-State Indicator | Adafruit 3350 — panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press. Red / green LED channels are driven locally on the PM: green = CM5 powered from buffered `LED_nPWR`; red = 1Hz blink during shutdown latch while green remains ON. Blue channel not used. | Panel-mount 16mm metal switch | 485-3350 | 1528-2546-ND | Global sourcing / consignment |
 | R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
@@ -602,7 +614,8 @@ Estimated PM-local power dissipation at system peak load:
 > * **U5 STUSB4500LQTR** — JLCPCB C506650 confirmed in stock (L-variant). Both are pin-compatible; non-L variant STUSB4500QTR has slightly higher Iq (~210µA vs 160µA).
 > * **U7 TPS75733KTTRG3** — Replaces the previous high-dissipation LDO. Fixed 3.3V output, 3A continuous, TO-263 (KTT) 5-pin 10.16×15.24mm package.
 >   **Active-LOW enable:** EN LOW = LDO enabled; EN HIGH = shutdown.
-> R10 changed to pull-down (10kΩ to GND) to ensure LDO is ON by default at power-up. Firmware must drive `ROTOR_EN` HIGH to disable the LDO (inverted vs the previous LDO's active-high enable logic).
+> R10 changed to pull-**up** (10kΩ to 3V3_ENIG) to hold LDO **disabled** (EN HIGH = shutdown) at power-up until CM5 asserts `ROTOR_EN_N` LOW.
+> Signal renamed `ROTOR_EN_N` (active-LOW: drive LOW to enable). This ensures the rotor stack is sequenced on only after the CM5 has fully booted.
 > Thermal dissipation greatly improved: ~0.33W typical (1.85A, Vdo≈0.18V) vs 3.1W with the previous part — ≥200mm² copper pour requirement removed.
 > Mouser: `595-TPS75733KTTRG3`; DigiKey: `296-50559-1-ND`; JLCPCB: `C3749924`.
 > * **U8 MCP121T-450E/LB** — Package updated to **SC70-3** (`/LB` suffix) from SOT-23-3 (`/TT`). Ensure PCB footprint uses SC70-3. If SOT-23-3 footprint is preferred, use `MCP121T-450E/TT` (Mouser
@@ -649,11 +662,12 @@ Estimated PM-local power dissipation at system peak load:
 > BOM total for CL32B226KAJNNNE is now **13 units** per PM: 6 positions × 2 + 1 single (C13).
 > C20 uses a different 10µF part.
 > DigiKey 1276-3392-1-ND; JLCPCB C309062 (confirmed — Samsung CL32B226KAJNNNE 22µF 25V X7R 1210).
-> * **C21–C46 timing/bypass caps** — C21/C22/C23 (1µF) share the same Kemet
->   C0805C105K5RACTU as the Pi-filter mid-frequency bypass parts and U11 timer
->   cap. C24–C39 and C43–C46 (100nF bypass / HF shunt) share the same Samsung
->   CL05B104KB5NNNC / C1525. C40 (100pF) and C41 (22nF) are the dedicated SYNC
->   filter / delay capacitors; C42 is the dedicated U15 one-shot timing cap.
+> * **Timing/bypass caps (C21–C57)** — C21/C22/C23 and C53/C55/C56/C57 (1µF) share the same Kemet
+>   C0805C105K5RACTU: Pi-filter mid-frequency bypass, U11 timer cap, LTC3350 INTVCC/VCC2P5 bypass,
+>   and STUSB4500 VREG_1V2/VREG_2V7 bypass. C24–C39, C43–C52 (100nF bypass / HF shunt) share
+>   Samsung CL05B104KB5NNNC / C1525. C40 (100pF) and C41 (22nF) are the dedicated SYNC filter /
+>   delay capacitors; C42 and C54 are 10µF 16V X7R 1206 (CC1206KKX7R8BB106) — C42 for U15
+>   one-shot timing and C54 for LTC3350 DRVCC bypass (min 2.2µF per datasheet).
 > * **U13/U14 NL27WZ14DFT2G-Q** — AEC-Q100 dual Schmitt-trigger inverter in SC-88. One gate is used as U_INV1 (U13) and one as U_INV2 (U14) in the 180° SYNC interleaving delay chain.
 >   Mouser: `863-NL27WZ14DFT2G-Q`; DigiKey: `488-NL27WZ14DFT2G-QCT-ND`; JLCPCB: `C24511261`.
 > * **R24–R27, C40–C41 SYNC sub-circuit** — Complete SYNC interleaving chain from U2A SW node to U2B FSET/SYNC pin.

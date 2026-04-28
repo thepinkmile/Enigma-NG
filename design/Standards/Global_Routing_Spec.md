@@ -174,14 +174,18 @@ To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Dat
 
 ## 9. ESD and TVS Protection
 
-**ESD/TVS protection is only required on connectors that are directly accessible from outside the enclosure.**
+**ESD/TVS protection is required on any connector that is directly accessible from outside the enclosure or that is mated/unmated during normal servicing.**
 
 * **External connectors:** Any port that protrudes through or is directly accessible from the machine exterior (e.g., USB, HDMI,
   panel-accessible connectors) must be protected with an appropriate TVS/ESD suppressor. The specific device, protected nets, working
   voltage, package, and MPN shall be documented in the owning board design specification.
-* **Internal connectors:** Board-to-board connectors (Samtec ERM8/ERF8 BtB stacks), inter-board ribbon and harness connectors
+* **Hot-swappable / service-accessible connectors:** Board-to-board connectors on assemblies that are inserted or removed during
+  servicing while the system may be powered (e.g., Rotor ERM8/ERF8 connectors for rotor hot-swap — see DEC-045) are treated as
+  equivalent to external connectors and **must** be protected with an appropriate TVS/ESD suppressor. The specific device, protected
+  nets, working voltage, package, and MPN shall be documented in the owning board design specification.
+* **Internal connectors:** Board-to-board connectors (Samtec ERM8/ERF8 BtB stacks **used in a non-hot-swappable context**), inter-board ribbon and harness connectors
   (Extension Port BHR-20, encoder ribbons), Controller dock connectors, service headers (SWD, UART, JTAG), and any other connector
-  whose mating occurs exclusively inside the closed enclosure do **not** require TVS/ESD protection. Internal signal integrity relies
+  whose mating occurs exclusively inside the closed enclosure during normal operation do **not** require TVS/ESD protection. Internal signal integrity relies
   on enclosure shielding and the system GND plane.
 * **Do not add UNSOURCED ESD placeholders for internal-only boards.** Boards that carry only internal connectors shall state "No
   TVS/ESD protection required — all connectors are internal to the enclosure, per `Global_Routing_Spec.md §9`" in their Thermal &

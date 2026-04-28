@@ -70,12 +70,12 @@ board matrix.
 | J9 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap — common fitted population | 20 | 1 | 15 | 8 | 48 | 10 | 300 | — | 1 | 8 | 4 | 403 |
-| 10 µF X7R 25 V 0805 bulk decoupling (CL21B106KAYQNNE) | — | 10 | 5 | 5 | 30 | 5 | 150 | 5 | 10 | — | — | 212 |
+| 10 µF X7R 25 V 0805 bulk decoupling (CL21B106KAYQNNE) | — | 10 | 5 | 5 | 30 | 5 | 150 | 5 | 10 | — | 2 | 214 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 13 | — | — | — | — | — | — | — | — | — | — | 13 |
 | 47 µF X7R 25 V 2220 buck output bulk cap (TDK CGA9N3X7R1E476M230KB) | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
 | 4.7 µF X7R 1210 entry filter (CGA6P3X7R1H475K250AD) | — | — | — | — | — | — | — | — | — | 1 | — | 3 |
-| 10 µF 16 V X7R 1206 monostable timing cap (CC1206KKX7R8BB106) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
+| 10 µF 16 V X7R 1206 monostable timing / LDO bypass (CC1206KKX7R8BB106) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
+| 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 7 | — | — | — | — | — | — | — | — | — | — | 7 |
 | Kyocera AVX KAM05CR71A105KH — 1 µF X7R ±10% 10V AEC-Q200 MLCC 0402; Mouser 581-KAM05CR71A105KH; DigiKey 478-KAM05CR71A105KHCT-ND; JLCPCB global sourcing / consignment only. (C15/C17/C19; 1 per populated FDC2114; 2 per rotor build; N=26 build: C15+C17; N=64 build: C15+C19) | — | — | — | — | — | 2 | 60 | — | — | — | — | 60 |
 | Bourns CWF1610A-180K — 18 µH ±10% unshielded 0603 chip inductor; SRF 28 MHz; Q=14@2.5 MHz; Irms 220 mA; DCR 2.90 Ω; Mouser 652-CWF1610A-180K; DigiKey 118-CWF1610A-180KCT-ND; JLCPCB global sourcing / consignment only. Footprint and 3D model available from Mouser product page. (L1–L12; 4 per active FDC2114; N=26 build 8 per board, N=64 build 8 per board; count includes dummy LC tanks for unused channels) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
 | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200 MLCC 0402; Mouser 603-0402FRNPO9BN330; DigiKey 13-AC0402FRNPO9BN330CT-ND; JLCPCB C1852937. Generic 0402 footprint. (C20–C31; 4 per active FDC2114; N=26 build 8 per board, N=64 build 8 per board; count includes dummy LC tanks for unused channels) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
@@ -94,7 +94,7 @@ board matrix.
 | 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | — | — | — | — | — | — | — | — | — | — | — |
 | 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | — | — | — | — | — | — | 4 | — | 4 |
 | 22 Ω 0603 1% JTAG end-of-chain damping (ERJ-3EKF2200V) | — | — | — | — | — | — | — | 1 | — | — | — | 1 |
-| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C105872) | — | — | — | 1 | 6 | — | — | — | — | — | — | 12 |
+| 330 Ω 1% 0402 LED current-limit resistor (ERJ-2RKF3300X / C278592) | — | — | — | 1 | 6 | — | — | — | — | — | — | 12 |
 | 330 Ω 1% 0603 Ethernet activity LED resistor (ERJ-3EKF3300V / C25803) | — | 2 | — | — | — | — | — | — | — | — | — | 2 |
 | 150 Ω 1% 0603 LED current-limit resistor (ERJ-3EKF1500V / C400650) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
 | 100 Ω 1% 0603 LED current-limit resistor (ERJ-3EKF1000V / C193336) | — | — | — | — | — | — | — | — | — | — | 24 | 24 |
@@ -116,7 +116,7 @@ board matrix.
 | 10.0 kΩ 0.1% 0603 thin-film supercap BACKUP R\_BOT (ERA-3ARB103V / C465746) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 33.2 kΩ 1% 0402 thick-film LTC3350 RT freq-set (ERA-2AEB3322X / C2087909) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 52.3 kΩ 1% 0402 thin-film buck FB top (ERJ-2RKF5232X) — PM U2A/U2B R\_FB\_TOP | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
-| 100 kΩ 1% 0402 thin-film pull-up (ERJ-2RKF1003X) — PM U2A/U2B EN×2 + PG×2 | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
+| 100 kΩ 1% 0402 thin-film pull-up (ERJ-2RKF1003X) — PM U2A/U2B EN×2 + PG×2; SB R81–R98 BSS138 gate pull-downs (×18) | 4 | — | — | — | — | — | — | — | — | — | 18 | 22 |
 | 10 Ω 1% 0402 thin-film (ERJ-2RKF10R0X) — PM LM74700 GATE R49/R50/R51 (×3) + PM INA219 U12 input filter RF1/RF2 R52/R53 (×2) + Stator INA219 U2 input filter RF1/RF2 R42/R43 (×2) | 5 | — | 2 | — | — | — | — | — | — | — | — | 7 |
 | 0 Ω 0603 bond / isolating resistor (ERJ-3GEY0R00V / C25807) | — | — | — | — | — | — | — | — | 1 | — | — | 1 |
 | Ferrite bead 120 Ω @100 MHz 4.0 A 1206 (Laird HI1206P121R-10) | — | — | 4 | — | — | — | — | — | — | — | — | 4 |
@@ -201,11 +201,11 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 | C5-C8, C9-C12, C13-C15 | Power-stage 22µF bulk caps (buck inputs, eFuse input/output, LDO output, backup bank) | Samsung CL32B226KAJNNNE | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE |
 | C16-C19 | LMQ61460-Q1 buck output bulk caps | TDK CGA9N3X7R1E476M230KB | 4× 47µF 25V X7R MLCC total (2 fitted at U2A OUT, 2 fitted at U2B OUT) | 2220 | 810-A9N3X7476M23KB |
 | C20 | LDO input cap (U7 VIN) | Kemet C1206C106K3RACTU | 10µF 25V X7R | 1206 | 80-C1206C106K3R |
-| C21-C23 | 1µF caps (Pi-filter mid-frequency legs and U11 timer) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
+| C21-C23, C53, C55-C57 | 1µF caps (Pi-filter mid-frequency legs, U11 timer, LTC3350 INTVCC/VCC2P5 bypass, STUSB4500 VREG_1V2/VREG_2V7 bypass) | Kemet C0805C105K5RACTU | 1µF 50V X7R | 0805 | 80-C0805C105K5R |
 | C24-C30, C33-C39, C43-C50, C52 | 100nF caps (Pi-filter HF legs and IC VCC bypass network, including PM U12 INA219 bypass, PM U17/U18/U19 local VCC bypass, C47/C48 LMQ61460A BST caps, C49/C50 STUSB4500 CC1/CC2 filter caps, and C52 INA219 U12 IN+/IN- differential filter) | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
 | C40 | SYNC SW-ringing low-pass filter (C_F1) | Kemet C0402C101K3RACAUTO | 100pF X7R 25V | 0402 | 80-C0402C101K3RAUTO |
 | C41 | SYNC 180° phase delay capacitor (C_DLY) | Samsung CL10B223KB8WPNC | 22nF X7R 25V | 0603 | 187-CL10B223KB8WPNC |
-| C42 | U15 MIC1555 one-shot timing cap | Yageo CC1206KKX7R8BB106 | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 |
+| C42, C54 | 10µF 16V X7R 1206: C42 = U15 MIC1555 one-shot timing cap; C54 = LTC3350 DRVCC bypass (min 2.2µF, 10µF used) | Yageo CC1206KKX7R8BB106 | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 |
 | CTL C12 | Controller `VDD_GPIO_REF` decoupling capacitor | Samsung CL05B104KB5NNNC | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC |
 | CTL C24 | Controller PoE front-end TPS23730 soft-start cap (U10 C_SS) | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
 | C51 | PM TPS75733 U7 NR pin noise-reduction capacitor | Samsung CL05B103KB5NNNC | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC |
@@ -358,7 +358,9 @@ high-current dock through the Stator to the Settings Board.
 
 * **TPS2065CDBVR:** USB Power Distribution Switch (SOT-23-5) (1.6A Limit).
 * **AP2331W-7:** HDMI Current Limiter (SOT-23-5) (50mA Limit).
-* **TPD4E05U06QDQARQ1:** 4-channel ESD array, U-DFN-10. DigiKey: `296-40696-1-ND`; Mouser: `595-PD4E05U06QDQARQ1`; JLCPCB: `C81353`.
+* **TPD4E05U06QDQARQ1:** 4-channel ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, U-DFN-10.
+  CTL usage: U4 (USB/HDMI), U5 (GbE pair AB), U6 (GbE pair CD).
+  DigiKey: `296-40696-1-ND`; Mouser: `595-PD4E05U06QDQARQ1`; JLCPCB: `C81353`.
 
 ### Controller Board — Power Entry Decoupling
 >
