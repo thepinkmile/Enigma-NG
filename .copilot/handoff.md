@@ -140,20 +140,39 @@ Key changes:
 - Orphaned `Kyocera-AVX-KGP-datasheet.{md,pdf}` deleted (KGP stack cap, zero BOM references)
 - `.copilot/checkpoints/057-size-down-pass-complete.md` fully removed from git index
 
+## 2025-05 electronics deep-review cycle complete (checkpoint 075)
+
+All accumulated electronics deep-review findings committed as one coherent set (`41b6d07`).
+
+Key changes:
+
+- **Power Module:** ROTOR\_EN→ROTOR\_EN\_N rename; TPS25751/PD topology note added;
+  C53–C57 internal-reg bypass caps added (LTC3350 INTVCC/DRVCC/VCC2P5,
+  STUSB4500 VREG\_1V2/VREG\_2V7); BOM note updated to C21–C57;
+  Consolidated BOM: PM 1µF 0805 count 3→7, PM 10µF 1206 count 1→2
+- **Controller:** U5/U6 GbE ESD arrays (TPD4E05U06QDQARQ1, pair AB + pair CD)
+  added — same part as U4, placed before J8 magnetics; resolves CTL-M2
+- **Rotor:** Section 6 Thermal & ESD added; DEC-042 unshielded variant confirmed;
+  ROT-04 header pin descriptions corrected
+- **Settings Board:** R81–R98 (18× 1kΩ gate pull-downs), C5/C6 (2× 10µF 0805) added
+- **Stator:** J5–J12 connector name fixes applied
+- **Extension:** FR-EXT-06 ACTUATE\_REQUEST pull-up corrected to 3V3\_ENIG
+- **Design Log:** DEC-045 (Samtec ERM8/ERF8 ESD for external rotor connectors)
+- **Standards:** Global\_Routing\_Spec §9 hot-swap ESD exception clause added
+- **Consolidated BOM:** CL21B106KAYQNNE SBD +2; ERJ-2RKF1003X SBD +18;
+  330Ω JLCPCB part corrected to C278592; TPD4E05U06 note updated with U4/U5/U6 roles
+
+Open items not yet actioned:
+
+- **CTL-H1:** explicitly deferred by user
+- **Rotor ESD TVS (PRTR5V0U10AZ):** pending final sourcing; Section 6 placeholder retained
+- **Category C:** battery connector sourcing (awaiting supplier email responses)
+
 ## Next return summary
 
-When resuming, read `.copilot/checkpoints/074-datasheet-hygiene-complete.md` for current state.
+When resuming, read `.copilot/checkpoints/075-deep-review-cycle-complete-comm.md` for current state.
 
-Remaining open work:
-
-- **Controller Board:** LED resistor BOM consolidation (check for suitable 0402 already in BOM),
-  PWR\_BUT → dedicated CM5 power button pin, VDD\_GPIO\_REF decoupling cap,
-  DSI display power per CM5 datasheet
-- **Category C:** battery connector sourcing (awaiting supplier email responses)
-- **Extension/Reflector/AM/JDB review findings:** agents produced results; need actioning
-- **New-component sourcing todo list:** size-down candidates and CRIT items from power module review
-
-Next checkpoint will be **075**.
+Next checkpoint will be **076**.
 
 
 ## Documentation policy reminders
