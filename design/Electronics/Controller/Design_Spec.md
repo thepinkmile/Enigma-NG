@@ -207,6 +207,12 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **7** | **PWR_GD** | Input | 3.3V | Direct PM rail-health telemetry only — HIGH while `5V_MAIN` ≥ 4.50V; does NOT trigger shutdown. Routed on `J3`. |
 | **8** | **ACTUATE_REQUEST** | Output | 3.3V | Active-low request pulse into the Controller-local Actuation Module trigger dock (`J16`). |
 
+> **GPIO matrix scope note:** `PWR_BUT` and `LED_nPWR` are **not** CM5 GPIO signals and are
+> deliberately absent from this table. `PWR_BUT` connects directly to the CM5 PMIC dedicated
+> hardware power-key input pin (internal 10 kΩ pull-up; brief GND press initiates orderly shutdown).
+> `LED_nPWR` is a dedicated CM5 hardware output (pin 95) that drives the PM SW2 green LED circuit
+> over J3. Neither signal requires GPIO direction, pull, or interrupt configuration.
+
 ## 7. Protection & EMI
 
 * **External Links:** The CM5-facing status inputs `PM_IO_INT_N`, `USB_FAULT`, and `PWR_GD` each include
@@ -431,6 +437,7 @@ Estimated Controller-local power dissipation at system peak load:
 | C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C12 | `VDD_GPIO_REF` decoupling capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
 | J1-J3 | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |

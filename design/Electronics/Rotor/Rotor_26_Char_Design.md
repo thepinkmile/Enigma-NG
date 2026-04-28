@@ -127,7 +127,7 @@ are on **Board A only**. Board B has no encoder electrodes for the N=26 rotor, a
   on the shroud). Aluminium (solid) = high capacitance; milled slot = low capacitance. Sensed
   by FDC2114RGHR U2 and U3 on Board A:
   * **U2 (Board A, addr 0x2A):** CH0–CH3 = STGC bits[3:0]
-  * **U3 (Board A, addr 0x2B):** CH0 = STGC bit[4]; CH1–CH3 tied to GND via 100 kΩ
+  * **U3 (Board A, addr 0x2B):** CH0 = STGC bit[4]; CH1–CH3 each carry a dummy LC tank (18 µH + 33 pF in parallel between INxA/INxB per TI app note unused-channel rule; BOM refs L5–L8, C24–C27)
   * U3 is an additional FDC2114RGHR populated on Board A for N=26 builds only.
 * **Shroud:** Must remain electrically **floating** (bearing isolation — ceramic or nylon
   rolling elements). Not connected to circuit ground.

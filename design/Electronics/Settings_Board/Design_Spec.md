@@ -404,6 +404,9 @@ automatic polling intervals.
 | R42-R53 | Per-indicator blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
 | R54–R65 | BSS138 gate resistors for per-anode pre-drivers Q7–Q18 (×12) | 1kΩ (1%) — same part as R12-R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 |
 | R66–R77 | PMOS gate pull-up resistors for Q19–Q30 (×12); holds PMOS gate HIGH when BSS138 OFF | KOA Speer SG73S1ERTTP4702D — 47 kΩ ±0.5% thick film anti-sulfuration 0402; AEC-Q200; DigiKey MOQ 10000, JLCPCB MOQ 40 | 0402 | 660-SG73S1ERTTP4702D | 2019-SG73S1ERTTP4702DTR-ND ⚠️ MOQ 10000 | C5915648 ⚠️ MOQ 40 |
+| R78 | MCP23017 U1 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R79 | MCP23017 U2 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R80 | MCP23017 U3 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | SW1 | Bank 1 routing config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — common Bank 1/2 config-toggle part | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW2 | Bank 1 routing config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW3 | Bank 1 routing config bit 2 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |

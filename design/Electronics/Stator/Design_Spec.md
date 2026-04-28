@@ -395,6 +395,9 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | R20 | `CFG_APPLY_N` pull-up to 3V3_ENIG (keeps the Stator-only apply/reset pulse inactive HIGH until U8 actively asserts LOW) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R21-R26 | `CFG_REFMAP[5:0]` CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R27-R32 | TDI chain series resistors: CPLD->J4->J5->J6->J7->J8->J9 (×6 driven segments) | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
+| R39 | MCP23017 U6 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R40 | MCP23017 U7 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R41 | MCP23017 U8 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | SW2 | Reflector map selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | U1 | Stator Management CPLD (routing matrix + reflector map application) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |

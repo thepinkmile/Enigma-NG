@@ -189,8 +189,6 @@ Nominal resonant frequency: **~6.5 MHz**.
   configuration is performed at runtime by the CPLD I²C master (VHDL bitstream). JTAG programs
   the CPLD only. Full I²C register table in `design/Software/CPLD_Logic/Rotor_Logic.md`.
 
-Resonant front-end parts (`L1–L12`, `C20–C31`) are **Category B** pending part selection.
-
 ### 2.2 Logic & Transposition
 
 * **Logic:** The **Intel MAX II EPM570T100I5N CPLD** performs real-time cipher substitution for
@@ -571,4 +569,5 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 
 > **Support-network scope note:** `R6/R7` and `C14-C19` capture the local I²C-bias and `VDD`-bypass
 > requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L12`, `C20–C31`)
-> are captured above as Category B pending part selection.
+> are fully sourced above (Bourns CWF1610A-180K 18 µH inductors and YAGEO AC0402FRNPO9BN330 33 pF
+> resonant capacitors; dummy LC tanks on all unused FDC2114 channels per TI application note).

@@ -460,7 +460,7 @@ Estimated PM-local power dissipation at system peak load:
 | C21, C22 | Pi-filter mid-freq bypass (C21 input leg, C22 output leg) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C24, C25 | Pi-filter HF bypass (C24 input leg, C25 output leg) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C26-C32 | IC VCC bypass (one per: U3, U4, U5, U6a, U8, U9, U10) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C26–C30 | IC VCC bypass (one per: U3, U4, U5, U6a, U8) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C_SC1–8 | Supercaps (8× cells, 2S4P) | Abracon ADCR-T02R7SA256MB / 25F 2.7V | THT Radial Can 16.0mm×25.0mm | 815-ADCRT02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | Global sourcing |
 | D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
 | D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | C1972959 |
@@ -477,6 +477,11 @@ Estimated PM-local power dissipation at system peak load:
 | C44 | U17 SW2 signal-conditioner local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C45 | U18 SW2 shutdown-latch local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C46 | U19 SW2 red-blink gate local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C47 | LMQ61460A U2A BST pin bootstrap capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C48 | LMQ61460A U2B BST pin bootstrap capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C49 | STUSB4500 U5 CC1 pin filter capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C50 | STUSB4500 U5 CC2 pin filter capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C51 | TPS75733 U7 NR pin noise-reduction capacitor | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1008-1-ND | C15195 |
 | F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | C17468669 |
 | J1-J3 | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 |
 | J4 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Candidate military / NetWarrior-style replacement under review: Glenair `807-216-00ZNU6-6DY` via Heilind / consignment-only; see `Millitary_Battery_Connection_Option.md`. | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
@@ -505,6 +510,17 @@ Estimated PM-local power dissipation at system peak load:
 | R34-R36 | Runtime RGB gate pull-down resistors for Q6/Q7/Q8 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R37, R38 | SW2 LED sink gate resistors for Q9/Q10 | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
 | R39, R40 | SW2 LED sink gate pull-down resistors for Q9/Q10 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R41 | LMQ61460A U2A feedback divider R_FB_TOP | 52.3kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF5232X | P52.3KLCT-ND | Global sourcing / consignment |
+| R42 | LMQ61460A U2B feedback divider R_FB_TOP | 52.3kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF5232X | P52.3KLCT-ND | Global sourcing / consignment |
+| R43 | LMQ61460A U2A feedback divider R_FB_BOT | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R44 | LMQ61460A U2B feedback divider R_FB_BOT | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R45 | LMQ61460A U2A EN pin pull-up to VIN | 100kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
+| R46 | LMQ61460A U2B EN pin pull-up to VIN | 100kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
+| R47 | LMQ61460A U2A PG pin pull-up to 5V_MAIN | 100kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
+| R48 | LMQ61460A U2B PG pin pull-up to 5V_MAIN | 100kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
+| R49 | LM74700-Q1 U6a GATE series resistor | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
+| R50 | LM74700-Q1 U6b GATE series resistor | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
+| R51 | LM74700-Q1 U6c GATE series resistor | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
 | BT_SW1_1–BT_SW1_6, BT_SW2_1–BT_SW2_6 | PCB male spade tabs for SW1 / SW2 harnesses | Keystone 1211 — 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | THT Quick-Fit tab | 534-1211 | 36-1211-ND | C3029550 |
 | SW2 | CM5 Power Button + Hardware Power-State Indicator | Adafruit 3350 — panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press. Red / green LED channels are driven locally on the PM: green = CM5 powered from buffered `LED_nPWR`; red = 1Hz blink during shutdown latch while green remains ON. Blue channel not used. | Panel-mount 16mm metal switch | 485-3350 | 1528-2546-ND | Global sourcing / consignment |
@@ -647,8 +663,10 @@ Estimated PM-local power dissipation at system peak load:
 > * **R1 ERJ-3EKF2323V (232kΩ)** — Corrected from 732kΩ (calculation error). R1 = 28700 × (11/1.21 − 1) = 232kΩ
 > for 11V UVLO threshold with R2 = 28.7kΩ. E96 standard value 232kΩ. Panasonic ERJ-3EKF series 1% thick-film.
 > Mouser 667-ERJ-3EKF2323V / DigiKey P232KHCT-ND / JLCPCB C403086.
-> * **R1–R3, R4–R13 ERJ-3EKF series** — All eFuse programming resistors (R1–R3) and general resistors (R4–R13) are Panasonic **1% thick-film** (ERJ-3EKF). The IC UVLO reference tolerance (±1.7%) dominates
+> * **R1–R2, R4–R13 ERJ-3EKF series** — eFuse programming resistors R1/R2 and general resistors (R4–R13) are Panasonic **1% thick-film** (ERJ-3EKF). The IC UVLO reference tolerance (±1.7%) dominates
 > the UVLO accuracy budget; 1% vs 0.1% resistors are indistinguishable in practice. For pull-ups, LED limiters, and charge current set resistors, 1% tolerance is fully adequate.
+> * **R3 ERA-3VEB2100V (210Ω, 0.1% Thin-Film)** — R3 is the eFuse ILIM resistor. Unlike R1/R2 (UVLO divider), ILIM accuracy directly sets the overcurrent trip threshold;
+> 0.1% Thin-Film (ERA-3VEB series) is required. R3 must NOT be substituted with 1% Thick-Film.
 > * **R12 CSS2H-2512R-R010ELF** — **Critical PN correction**: the original `L100ELF` suffix codes 100µΩ (L-prefix = µΩ range); for 10mΩ (0.010Ω) the correct Bourns code is `R010ELF` (R-prefix = Ω
 > range). Mouser: 652-CSS2H-2512R-R010ELF; DigiKey: CSS2H-2512R-R010ELF-ND.
 > * **L1/L2 WE-CMBNC 7448031002** — Both L1 and L2 use the same Würth nanocrystalline CMC. L2 was originally Laird CM5022 but that part is **discontinued** (Laird EMC passives absorbed by TE
