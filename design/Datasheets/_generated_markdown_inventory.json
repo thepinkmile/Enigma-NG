@@ -440,6 +440,41 @@
       "pdf": "vishay-wsk2512-datasheet.pdf",
       "markdown": "vishay-wsk2512-datasheet.md",
       "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf",
+      "markdown": "erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf",
+      "markdown": "erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Samsung-1276_CL21B1-datasheet.pdf",
+      "markdown": "Samsung-1276_CL21B1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "KAM05CR71A105KH-Datasheet.pdf",
+      "markdown": "KAM05CR71A105KH-Datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.pdf",
+      "markdown": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TDK-CGA_mlcc_automotive-datasheet.pdf",
+      "markdown": "TDK-CGA_mlcc_automotive-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "TDK-CGA_automotive-datasheet.pdf",
+      "markdown": "TDK-CGA_automotive-datasheet.md",
+      "mapping_type": "same_stem"
     }
   ],
   "pdf_only": [],

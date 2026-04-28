@@ -81,3 +81,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 71 | INA219 RC filter BOM complete — PM R52/R53/C52, Stator R42/R43/C21 | 071-ina219-rc-filter-bom-complete.md |
 | 72 | D1/D2/D3 fix pass committed | 072-d1-d2-d3-fix-pass-committed.md |
 | 73 | Size-down pass complete (bulk cap 1206→0805, Stator resistors 0603→0402) | 073-size-down-pass-complete.md |
+| 74 | Datasheet hygiene: fix Samtec links, add 5 BOM §11 entries, remove orphaned KGP | 074-datasheet-hygiene-complete.md |

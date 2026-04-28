@@ -124,19 +124,37 @@ Key changes:
 - D1/D2/D3 fixes committed (`da3df20`): AM GND ring retained (no isolation), ESD removed from
   all internal connectors, switch debounce time set to 10ms
 
+## 2025-05 datasheet hygiene pass (checkpoint 074)
+
+Datasheet coverage audit and hygiene pass completed and committed.
+
+Key changes:
+
+- `design/Electronics/Consolidated_BOM.md` §11 Samtec links fixed:
+  `samtec-erm8-erf8-datasheet.md` (combined, non-existent) replaced with
+  `erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md` and
+  `erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md` (both confirmed present)
+- BOM §11: 5 new entries added: Samsung CL21B106KAYQNNE, KAM05CR71A105KH,
+  CC1206KKX7R8BB106, TDK CGA9N3X7R1E476M230KB, TDK CGA6P3X7R1H475K250AD
+- `design/Datasheets/_generated_markdown_inventory.json`: 7 new `pdf_to_markdown` entries
+- Orphaned `Kyocera-AVX-KGP-datasheet.{md,pdf}` deleted (KGP stack cap, zero BOM references)
+- `.copilot/checkpoints/057-size-down-pass-complete.md` fully removed from git index
+
 ## Next return summary
 
-When resuming, read `.copilot/checkpoints/073-size-down-pass-complete.md` for the current state.
+When resuming, read `.copilot/checkpoints/074-datasheet-hygiene-complete.md` for current state.
 
-Remaining open work after the size-down pass:
+Remaining open work:
 
 - **Controller Board:** LED resistor BOM consolidation (check for suitable 0402 already in BOM),
   PWR\_BUT → dedicated CM5 power button pin, VDD\_GPIO\_REF decoupling cap,
   DSI display power per CM5 datasheet
 - **Category C:** battery connector sourcing (awaiting supplier email responses)
+- **Extension/Reflector/AM/JDB review findings:** agents produced results; need actioning
 - **New-component sourcing todo list:** size-down candidates and CRIT items from power module review
 
-Next checkpoint will be **074**.
+Next checkpoint will be **075**.
+
 
 ## Documentation policy reminders
 

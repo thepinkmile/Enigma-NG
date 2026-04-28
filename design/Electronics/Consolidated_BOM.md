@@ -541,8 +541,8 @@ Product page links for all major components for design review and procurement ve
 | SW1/SW2/SW3 (ROT) | 219-6LPSTR — 6-position DIP switch, 2.54mm THT | CTS | [CTS-Switches-DIP-219-Series-Datasheet.md](../Datasheets/CTS-Switches-DIP-219-Series-Datasheet.md) |
 | J4–J9 (STA), J2 (ENC) | BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.md](../Datasheets/bhr-xx-vua-data-sheet.md) |
 | J10 (STA), J4 (REF), J7/J8 (EXT) | BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 shrouded box header, 2.54mm | Adam Tech | [bhr-xx-vua-data-sheet.md](../Datasheets/bhr-xx-vua-data-sheet.md) |
-| J11/J16 (CTL), J9/J10 (EXT) | ERF8-005-05.0-S-DV-K-TR — 10-pin 2×5 0.8mm female socket | Samtec | [samtec-erm8-erf8-datasheet.md](../Datasheets/samtec-erm8-erf8-datasheet.md) |
-| J1/J2 (AM) | ERM8-005-05.0-S-DV-K-TR — 10-pin 2×5 0.8mm male header | Samtec | [samtec-erm8-erf8-datasheet.md](../Datasheets/samtec-erm8-erf8-datasheet.md) |
+| J11/J16 (CTL), J9/J10 (EXT) | ERF8-005-05.0-S-DV-K-TR — 10-pin 2×5 0.8mm female socket | Samtec | [erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md](../Datasheets/erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md) |
+| J1/J2 (AM) | ERM8-005-05.0-S-DV-K-TR — 10-pin 2×5 0.8mm male header | Samtec | [erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md](../Datasheets/erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md) |
 | J1 (JDB) | PH1-05-UA — 1×5 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
 | J2 (JDB) | PH1-10-UA — 1×10 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
 | J12 (CTL) | RS1-05-G — 1×5 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.md](../Datasheets/rs1-xx-g-datasheet.md) |
@@ -550,3 +550,8 @@ Product page links for all major components for design review and procurement ve
 | H_SW3 Board A (ROT) | PH1-07-UA — 1×7 2.54mm male pin header | Adam Tech | [ph1-xx-ua-data-sheet.md](../Datasheets/ph1-xx-ua-data-sheet.md) |
 | H_SW3 Board B (ROT) | RS1-07-G — 1×7 2.54mm female socket | Adam Tech | [rs1-xx-g-datasheet.md](../Datasheets/rs1-xx-g-datasheet.md) |
 | SW1-40 (ENC/HID) | uxcell-style DPDT 6-pin momentary push button switch | gadgetskingdom (eBay) | [Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md](../Datasheets/Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md) |
+| C_bulk (all boards) | CL21B106KAYQNNE — 10µF 25V X7R 0805 bulk decoupling cap | Samsung Electro-Mechanics | [Samsung-1276_CL21B1-datasheet.md](../Datasheets/Samsung-1276_CL21B1-datasheet.md) |
+| C_FDC (ROT) | KAM05CR71A105KH — 1µF 10V X7R 0402 AEC-Q200 FDC decoupling cap | Kyocera AVX | [KAM05CR71A105KH-Datasheet.md](../Datasheets/KAM05CR71A105KH-Datasheet.md) |
+| C42 (PM) | CC1206KKX7R8BB106 — 10µF 16V X7R 1206 MIC1555 timing cap | Yageo | [Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.md](../Datasheets/Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.md) |
+| C16–C19 (PM) | CGA9N3X7R1E476M230KB — 47µF 25V X7R 2220 buck output cap | TDK | [TDK-CGA_mlcc_automotive-datasheet.md](../Datasheets/TDK-CGA_mlcc_automotive-datasheet.md) |
+| C5 (JDB), C4 (AM) | CGA6P3X7R1H475K250AD — 4.7µF 50V X7R 1210 entry filter cap | TDK | [TDK-CGA_automotive-datasheet.md](../Datasheets/TDK-CGA_automotive-datasheet.md) |
