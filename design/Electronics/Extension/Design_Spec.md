@@ -172,9 +172,9 @@ group without Controller-side live servo control.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C1-C5 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C6 | 100nF X7R 50V bypass — U1 VCC | Samsung CL05B104KB5NNNC | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7-C11 | 5V_MAIN entry decoupling bank (star/spoke) — J7 pins 17/19 | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C7-C11 | 5V_MAIN entry decoupling bank (star/spoke) — J7 pins 17/19 | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | J1 | Rotor group input — JTAG (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Rotor group input — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Rotor group input — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Samtec ERM8-010-05.0-S-DV-K-TR | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |

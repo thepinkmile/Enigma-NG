@@ -522,7 +522,7 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C14 | U2 FDC2114 local `VDD` bypass (datasheet-recommended) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C15 | U2 FDC2114 local `VDD` reservoir (datasheet-recommended) | Kyocera AVX KAM05CR71A105KH — 1µF X7R ±10% 10V AEC-Q200 0402 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
 | C16 | U3 FDC2114 local `VDD` bypass (datasheet-recommended; N=26 only, not populated for N=64) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |

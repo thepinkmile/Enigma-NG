@@ -242,7 +242,7 @@ must preserve the generic one-CPLD module footprint and the unchanged 20-pin IDC
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | BT1-BT64 | PCB spade blade terminals — one row × 64 | Keystone 1285-ST — 6.35 mm (1/4") straight vertical PCB-mount male blade tab. Used as either 64 driven outputs (decode role) or 64 sensed inputs (encode role). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
 | J1 (x64 per plugboard pass) | Stecker jack sockets | 6.35 mm (1/4") mono switched panel-mount jack — off-board mechanical part used only by plugboard assemblies | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | D1 | Status LED (active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |

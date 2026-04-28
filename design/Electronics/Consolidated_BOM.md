@@ -70,7 +70,7 @@ board matrix.
 | J9 — DSI1 FPC 15-pin 1.0mm ZIF connector (Amphenol F52Q-1A7H1-11015) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | | | | | | | | | | | | | |
 | 0.1 µF X7R 0402 decoupling cap — common fitted population | 20 | 1 | 15 | 8 | 48 | 10 | 300 | — | 1 | 8 | 4 | 403 |
-| 10 µF X7R 50 V 1206 bulk decoupling (CL31B106KBHNNNE) | — | 5 | 5 | 5 | 30 | 5 | 150 | 5 | 10 | — | — | 207 |
+| 10 µF X7R 25 V 0805 bulk decoupling (CL21B106KAYQNNE) | — | 10 | 5 | 5 | 30 | 5 | 150 | 5 | 10 | — | — | 212 |
 | 22 µF X7R 25 V 1210 bulk cap (CL32B226KAJNNNE) | 13 | — | — | — | — | — | — | — | — | — | — | 13 |
 | 47 µF X7R 25 V 2220 buck output bulk cap (TDK CGA9N3X7R1E476M230KB) | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
 | 4.7 µF X7R 1210 entry filter (CGA6P3X7R1H475K250AD) | — | — | — | — | — | — | — | — | — | 1 | — | 3 |
@@ -87,11 +87,10 @@ board matrix.
 | 25 F / 2.7 V Supercapacitor (Abracon ADCR-T02R7SA256MB) | 8 | — | — | — | — | — | — | — | — | — | — | 8 |
 | 22 µF 25 V X7R 1210 5V_MAIN backup bulk cap C14/C15 (Samsung CL32B226KAJNNNE) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | | | | | | | | | | | | | |
-| 10 kΩ 1% 0603 fitted resistor — pull / series population (ERJ-3EKF1002V / C191124) | 6 | 5 | 19 | — | — | — | — | — | — | — | 11 | 41 |
-| 10 kΩ 1% 0402 pull resistor — common fitted population (ERJ-2RKF1002X / C191123) | 9 | — | 0 | 4 | 24 | 4 | 120 | — | — | 3 | 3 | 161 |
+| 10 kΩ 1% 0603 fitted resistor — pull / series population (ERJ-3EKF1002V / C191124) | 6 | 5 | 0 | — | — | — | — | — | — | — | 11 | 22 |
+| 10 kΩ 1% 0402 pull resistor — common fitted population (ERJ-2RKF1002X / C191123) | 9 | — | 19 | 4 | 24 | 4 | 120 | — | — | 3 | 3 | 180 |
 | 1 kΩ 1% 0402 gate resistor — common fitted population (ERJ-2RKF1001X) | 5 | — | — | — | — | — | — | — | — | — | 6 | 11 |
-| 75 Ω 1% 0603 series resistor (ERJ-3EKF75R0V / C105905) | — | — | 18 | — | — | — | — | — | — | — | — | 18 |
-| 75 Ω 1% 0402 resistor (ERJ-2RKF75R0X / C413061) | — | 4 | — | 1 | 6 | — | — | — | — | — | — | 10 |
+| 75 Ω 1% 0402 resistor (ERJ-2RKF75R0X / C413061) | — | 4 | 18 | 1 | 6 | — | — | — | — | — | — | 28 |
 | 33 Ω 1% 0603 series resistor (ERJ-3EKF33R0V / C25819) | — | — | — | — | — | — | — | — | — | — | — | — |
 | 33 Ω 1% 0402 series resistor (ERJ-2RKF33R0X / C25808) | — | — | — | — | — | — | — | — | — | 4 | — | 4 |
 | 22 Ω 0603 1% JTAG end-of-chain damping (ERJ-3EKF2200V) | — | — | — | — | — | — | — | 1 | — | — | — | 1 |
@@ -179,8 +178,8 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 ## 2. Common Passives
 
 * **0.1uF Decoupling:** Samsung CL05B104KB5NNNC (0402).
-* **10uF Bulk:** Samsung CL31B106KBHNNNE (1206).
-* **10k Pull-ups:** Panasonic ERJ-3EKF1002V (0603).
+* **10uF Bulk:** Samsung CL21B106KAYQNNE (0805, 25V X7R); Mouser 187-CL21B106KAYQNNE; DigiKey 1276-CL21B106KAYQNNECT-ND; JLCPCB C3039694.
+* **10k Pull:** Panasonic ERJ-2RKF1002X (0402) — dominant fitted population; ERJ-3EKF1002V (0603) — CTL, PM, SBD only.
 
 ## 3. Logic Passives  (0603 1% Thick-Film unless otherwise noted)
 
@@ -251,9 +250,9 @@ and **40 switches per Keyboard Assembly (40 system total)**.
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # | Conf |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :---: |
-| R16–R19 | SW1[3:0] CPLD config input pull-down resistors (×4) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
-| R20 | `CFG_APPLY_N` pull-up resistor (×1) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
-| R21–R26 | SW2[5:0] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0603 | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 | 🔒 |
+| R16–R19 | SW1[3:0] CPLD config input pull-down resistors (×4) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 |
+| R20 | `CFG_APPLY_N` pull-up resistor (×1) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 |
+| R21–R26 | SW2[5:0] CPLD config input pull-down resistors (×6) | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 |
 
 Pull-down resistors R16–R19 and R21–R26 are retained on the Stator CPLD config input pins as
 power-up safe defaults (hold all inputs LOW when U8 is uninitialised). R20 keeps `CFG_APPLY_N`
@@ -292,7 +291,7 @@ in this consolidated BOM.
 | SW2 (AM module) | Local `BOOT0` pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 | 🔒 | 1 per AM | 2 |
 | C2-C3 (AM module) | STM32 local supply decoupling | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 | 2 per AM | 4 |
 | C4 (AM module) | `3V3_ENIG` local reservoir / entry filter | 4.7uF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 | 🔒 | 1 per AM | 2 |
-| C5 (AM module) | `5V_MAIN` local reservoir near servo power path | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 | 🔒 | 1 per AM | 2 |
+| C5 (AM module) | `5V_MAIN` local reservoir near servo power path | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 | 🔒 | 1 per AM | 2 |
 | D1-D3 (AM module) | Local diagnostic LEDs (`PWR`, `HOMED`, `ACT`) | Wurth 150060VS75000 — Green SMD LED | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 | 🔒 | 3 per AM | 6 |
 | R1-R3 (AM module) | LED current-limit resistors | 330Ω 1% 0402 | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 | 🔒 | 3 per AM | 6 |
 | R4 (AM module) | `ACTUATION_HOME` pull-up resistor | 10kΩ 1% 0402 | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 | 🔒 | 1 per AM | 2 |

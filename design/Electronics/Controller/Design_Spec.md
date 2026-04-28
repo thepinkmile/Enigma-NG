@@ -434,9 +434,9 @@ Estimated Controller-local power dissipation at system peak load:
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C12 | `VDD_GPIO_REF` decoupling capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |

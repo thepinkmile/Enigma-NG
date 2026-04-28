@@ -374,7 +374,7 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C14-C20 | Local VDD bypass (one per: U2, U3, U4, U5, U6, U7, U8) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C21 | INA219 U2 IN+/IN- differential filter capacitor (CF) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | SMT 0.8mm pitch | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) |
@@ -384,23 +384,23 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | J13 | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
 | L1-L4 | Rotor rail ferrite bead bank | 120 Ω @100 MHz, 4.0A | 1206 | 875-HI1206P121R-10 | 240-2410-1-ND | C2442103 |
 | R1 | Rotor-Stack Shunt Resistor (CSS2H — Stator R1; PM R12 LTC3350 RSENSE and PM R23 INA219 U12 are first and second system instances, total build qty: 3) | CSS2H-2512R-R010ELF (10mΩ ±1% 5A) | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
-| R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R3 | TMS pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R5 | TCK pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R7-R12 | TCK series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R33-R38 | TMS series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R16 | `CFG_ROUTE[0]` pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R17 | `CFG_ROUTE[1]` pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R18 | `CFG_ROUTE[2]` pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R19 | `CFG_ROUTE[3]` pull-down to GND | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R20 | `CFG_APPLY_N` pull-up to 3V3_ENIG (keeps the Stator-only apply/reset pulse inactive HIGH until U8 actively asserts LOW) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R21-R26 | `CFG_REFMAP[5:0]` CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R27-R32 | TDI chain series resistors: CPLD->J4->J5->J6->J7->J8->J9 (×6 driven segments) | 75Ω (1%) | 0603 | 667-ERJ-3EKF75R0V | P75.0HCT-ND | C403349 |
-| R39 | MCP23017 U6 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R40 | MCP23017 U7 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R41 | MCP23017 U8 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R3 | TMS pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R5 | TCK pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R7-R12 | TCK series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| R33-R38 | TMS series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| R16 | `CFG_ROUTE[0]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R17 | `CFG_ROUTE[1]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R18 | `CFG_ROUTE[2]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R19 | `CFG_ROUTE[3]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R20 | `CFG_APPLY_N` pull-up to 3V3_ENIG (keeps the Stator-only apply/reset pulse inactive HIGH until U8 actively asserts LOW) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R21-R26 | `CFG_REFMAP[5:0]` CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R27-R32 | TDI chain series resistors: CPLD->J4->J5->J6->J7->J8->J9 (×6 driven segments) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| R39 | MCP23017 U6 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R40 | MCP23017 U7 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R41 | MCP23017 U8 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R42 | INA219 U2 IN+ series filter resistor (RF1) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | R43 | INA219 U2 IN- series filter resistor (RF2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
 | SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |

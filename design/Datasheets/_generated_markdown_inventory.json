@@ -207,6 +207,11 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "Samsung-1276_CL21B1-datasheet.pdf",
+      "markdown": "Samsung-1276_CL21B1-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "T821126A1S100CEU-C3013501-datasheet.pdf",
       "markdown": "T821126A1S100CEU-C3013501-datasheet.md",
       "mapping_type": "same_stem"

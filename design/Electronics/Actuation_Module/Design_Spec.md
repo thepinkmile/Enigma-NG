@@ -277,7 +277,7 @@ pinouts, mechanical constraints, and BOM.
 | C1 | Home-input debounce capacitor (10ms RC with R4 10kΩ) | 1µF X7R 50V | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
 | C2-C3 | STM32 local supply decoupling | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C4 | `3V3_ENIG` local reservoir / entry filter | 4.7uF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
-| C5 | `5V_MAIN` local reservoir near servo power path | 10uF X7R 50V | 1206 | 187-CL31B106KBHNNNE | 1276-6767-1-ND | C89632 |
+| C5 | `5V_MAIN` local reservoir near servo power path | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C6 | NRST pin filter capacitor (datasheet-required per STM32G071 Figure 23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C7 | STM32G071 VDDA supply decoupling (pin 31) — required per datasheet, separate from VDD domain caps C2-C3 | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | D1-D3 | Local diagnostic LEDs (`PWR`, `HOMED`, `ACT`) | Wurth 150060VS75000 — Green SMD LED | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
