@@ -78,3 +78,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 68 | Markdown lint fixes for .copilot/ and Stator spec | 068-copilot-markdown-lint-fixes.md |
 | 69 | Category B parts sourced, datasheets generated, committed | 069-category-b-parts-sourced-datash.md |
 | 70 | Pass 18 fix pass complete — all critical/high/medium edits applied | 070-pass-18-fix-pass-complete.md |
+| 71 | INA219 RC filter BOM complete — PM R52/R53/C52, Stator R42/R43/C21 | 071-ina219-rc-filter-bom-complete.md |
