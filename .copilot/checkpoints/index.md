@@ -76,3 +76,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 66 | Electronics review loop clean closeout | 066-electronics-review-loop-clean.md |
 | 67 | Category A deep-review fixes implemented and committed | 067-category-a-deep-review-fixes.md |
 | 68 | Markdown lint fixes for .copilot/ and Stator spec | 068-copilot-markdown-lint-fixes.md |
+| 69 | Category B parts sourced, datasheets generated, committed | 069-category-b-parts-sourced-datash.md |

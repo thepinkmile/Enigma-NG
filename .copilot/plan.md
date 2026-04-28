@@ -96,14 +96,11 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/066-electronics-review-loop-clean.md`
-4. `.copilot/review-report.md`
-5. `design/Electronics/Actuation_Module/Design_Spec.md`
-6. `design/Design_Log.md` (`DEC-043`)
-7. `.copilot/checkpoints/064-battery-connector-candidate.md`
+3. `.copilot/checkpoints/069-category-b-parts-sourced-datash.md`
 
-Then proceed into the next design-review task from the active `design/` docs rather than treating
-`.copilot/` content as design truth.
+Category C sourcing items are still pending supplier email responses. No other sourcing work is
+outstanding. The next active tasks are either Category C follow-up (when supplier responses arrive)
+or beginning the KiCAD schematic-capture workstream.
 
 ---
 

@@ -125,6 +125,23 @@ def normalize_text(text: str) -> str:
     return text.strip()
 
 
+_BARE_URL_RE = re.compile(
+    r"(?<![(<`\"])"
+    r"((?:https?://|www\.)\S+|[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,})"
+)
+
+
+def escape_snippet(text: str, max_len: int = 195) -> str:
+    """Escape raw PDF snippet text for safe rendering as a markdown bullet."""
+    text = text.replace("\\", "\\\\")
+    text = text.replace("*", "\\*")
+    text = text.replace("_", "\\_")
+    text = _BARE_URL_RE.sub(r"<\1>", text)
+    if len(text) > max_len:
+        text = text[:max_len - 1] + "…"
+    return text
+
+
 def wrap_text_block(text: str, width: int = 100) -> str:
     if not text.strip():
         return ""
@@ -182,10 +199,18 @@ def pick_title(pages: list[PageExtraction], fallback: str) -> str:
             continue
         cleaned.append(candidate)
 
+    TRAILING_PUNCT = set(".,;:!?")
+    _CONTACT_RE = re.compile(r"www\.|fax:|tel:|phone:|@|\d{3}[\-.\s]\d{3,}", re.I)
     for candidate in cleaned:
-        if ":" in candidate:
-            return candidate
-    return cleaned[0] if cleaned else fallback
+        if ":" in candidate and not _CONTACT_RE.search(candidate):
+            return candidate.rstrip("".join(TRAILING_PUNCT))
+    for candidate in cleaned:
+        if not _CONTACT_RE.search(candidate):
+            result = candidate
+            break
+    else:
+        result = cleaned[0] if cleaned else fallback
+    return result.rstrip("".join(TRAILING_PUNCT))
 
 
 def find_snippets(lines: Iterable[str], keywords: list[str], window: int = 2, limit: int = 20) -> list[str]:
@@ -249,9 +274,11 @@ def build_markdown(pdf_path: Path) -> str:
     md_lines.append("## Extracted Technical Index")
     md_lines.append("")
     md_lines.append(
-        "This markdown datasheet is meant to reduce the need to reopen the PDF during design work. "
-        "It preserves design-relevant extracted snippets first, followed by page-by-page text so the "
-        "source content remains locally searchable."
+        "This markdown datasheet is meant to reduce the need to reopen the PDF during design work."
+    )
+    md_lines.append(
+        "It preserves design-relevant extracted snippets first, followed by page-by-page text "
+        "so the source content remains locally searchable."
     )
     md_lines.append("")
 
@@ -261,7 +288,8 @@ def build_markdown(pdf_path: Path) -> str:
         md_lines.append("")
         if snippets:
             for snippet in snippets:
-                md_lines.append(f"- {snippet.replace(chr(10), ' / ')}")
+                escaped = escape_snippet(snippet.replace(chr(10), ' / '))
+                md_lines.append(f"- {escaped}")
         else:
             md_lines.append("- No reliable text snippet was automatically extracted for this category. Review the raw page text below.")
         md_lines.append("")
@@ -272,7 +300,9 @@ def build_markdown(pdf_path: Path) -> str:
         md_lines.append(f"### Page {page.page_number}")
         md_lines.append("")
         if page.text.strip():
-            md_lines.append(wrap_text_block(page.text))
+            md_lines.append("```text")
+            md_lines.append(page.text)
+            md_lines.append("```")
         else:
             md_lines.append("_No text could be extracted from this page with the current local extractor._")
         md_lines.append("")

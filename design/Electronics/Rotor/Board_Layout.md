@@ -36,7 +36,8 @@ Board A faces the input (upstream) side of the rotor stack.
       |     [SW2] forward map select DIP                     |
       |                                                      |
       |              [ U1: CPLD EPM570T100I5N ]              |
-      |                    (centre)                          |
+      |                  (( NPTH Ø10mm ))                    |
+      |                  (centre keep-out r≥6mm)             |
       |                                                      |
       |   [S0][S1][S2]  <-- Track A sensor electrodes        |
       |   (bare Cu pads at r=44mm, Board A face)             |
@@ -90,7 +91,8 @@ Board B faces the output (downstream) side of the rotor stack.
         /                                                   \
        /    [SW3] return map select DIP                      \
       |                                                      |
-      |                                                      |
+      |                  (( NPTH Ø10mm ))                    |
+      |                  (centre keep-out r≥6mm)             |
       |                                                      |
       |   [S3][S4][S5]  <-- Track B sensor electrodes        |
       |   (bare Cu pads at r=44mm, Board B face)             |
@@ -134,12 +136,16 @@ Board B faces the output (downstream) side of the rotor stack.
   ERM8 male  |<--Ø92mm PCB-->|<--4 headers->|<--Ø92mm PCB-->|  ERF8 female
              |               |  22p total   |               |
              |<---------------  ~15mm total  -------------->|
+             |       |                              |       |
+             +---[SHAFT Ø10mm NPTH]---[SHAFT Ø10mm NPTH]---+
+                 (board centre, keep-out r≥6mm each board)
 
   Aluminium shroud (Ø100mm outer, Ø92mm inner, 4mm radial wall)
   Shroud dish flange (Board A side): Track A Gray code slots milled on inner face
   Shroud cover flange (Board B side): Track B Gray code slots milled on inner face (N=64 only)
   Rolling-pin cylindrical bearings (ceramic or nylon) around circumference — electrically isolating
   Shroud outer cylindrical face: characters engraved at r=50mm
+  Central metal shaft: passes through both PCBs; NPTH + copper keep-out; shaft electrically isolated from all PCB nets
 ```
 
 **Dimensions summary:**
@@ -154,6 +160,8 @@ Board B faces the output (downstream) side of the rotor stack.
 | Total rotor thickness | ~15mm |
 | Sensor electrode radius | r=44mm |
 | Shroud–electrode gap | 0.5mm ±0.15mm |
+| Central shaft hole (NPTH, both PCBs) | Ø10mm nominal (8–12mm TBD) |
+| Central copper keep-out zone | r ≥ 6mm from board centre |
 
 ---
 
@@ -279,3 +287,25 @@ IPC calculation for worst-case 1.65 A at 2oz external: 1.65 × 0.15 mm = 0.25 mm
 * **3V3_ENIG power rail:** The L3 copper pour is the primary current path. L1 surface traces at
   0.80 mm connect J2/J5 connector pads to the L3 pour via thermal vias. All 30 rotor boards share
   the same PCB layout — the 1.65 A worst-case sizing ensures safe operation at every stack position.
+
+---
+
+## 8. PCB Keep-Out Zones
+
+### 8.1 Central Shaft Keep-Out
+
+A central NPTH (non-plated through-hole) of Ø10mm nominal (8–12mm TBD) is required at the board
+centre of **both** Board A and Board B to accommodate the rotor support shaft.
+
+| Zone | Radius from centre | Constraint |
+| :--- | :--- | :--- |
+| Shaft hole | 0–5mm | NPTH — no copper barrel, no plating |
+| Keep-out (clearance) | 5–6mm | No copper, pads, vias, or silkscreen |
+| Routing may begin | r > 6mm | Components and traces permitted outside this boundary |
+
+**Rationale:** The shaft is a metal rod and must remain electrically isolated from all PCB nets.
+The NPTH construction with copper keep-out ensures no galvanic continuity between shaft and
+board. The L2 GND plane and L3 3V3\_ENIG pour must both be voided around this zone on all layers.
+
+> **Cross-reference:** `design/Mechanical/Rotor/Design_Spec.md §7` for full shaft support
+> rationale, mechanical tolerance, and electrical isolation requirements.

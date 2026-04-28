@@ -394,7 +394,7 @@ automatic polling intervals.
 | Q6 | Bank 2 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | Q7–Q11 | Bank 1 per-anode LED NMOS pre-drivers (×5, one per Bank 1 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | Q12–Q18 | Bank 2 per-anode LED NMOS pre-drivers (×7, one per Bank 2 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q19–Q30 | Per-anode LED high-side PMOS switches (×12); source at `5V_MAIN`, drain to LED anode; gate driven by Q7–Q18 BSS138 pre-drivers | PMOS SOT-23 — Cat B, part TBD | SOT-23 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
+| Q19–Q30 | Per-anode LED high-side PMOS switches (×12); source at `5V_MAIN`, drain to LED anode; gate driven by Q7–Q18 BSS138 pre-drivers | Vishay SQ2319ADS-T1_BE3 — P-Ch TrenchFET SOT-23; Vds=−40V, Vgs(max)=±20V, Vgs(th)=−2.5V max, Rds(on)=145mΩ @ Vgs=−4.5V; AEC-Q101; Mouser 78-SQ2319ADS-T1_BE3; DigiKey 742-SQ2319ADS-T1_BE3CT-ND; JLCPCB C3280190 | SOT-23 | 78-SQ2319ADS-T1_BE3 | 742-SQ2319ADS-T1_BE3CT-ND | C3280190 |
 | R1-R4 | Bank 1 toggle input pull-downs (×4: `CFG_ROUTE[3:0]`) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R5-R10 | Bank 2 toggle input pull-downs (×6: `CFG_REFMAP[5:0]`) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R11 | `CFG_APPLY_N` pull-up resistor | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
@@ -403,7 +403,7 @@ automatic polling intervals.
 | R30-R41 | Per-indicator green LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
 | R42-R53 | Per-indicator blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
 | R54–R65 | BSS138 gate resistors for per-anode pre-drivers Q7–Q18 (×12) | 1kΩ (1%) — same part as R12-R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 |
-| R66–R77 | PMOS gate pull-up resistors for Q19–Q30 (×12); holds PMOS gate HIGH when BSS138 OFF | 47 kΩ provisional — Cat B, value TBD | 0402 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) |
+| R66–R77 | PMOS gate pull-up resistors for Q19–Q30 (×12); holds PMOS gate HIGH when BSS138 OFF | KOA Speer SG73S1ERTTP4702D — 47 kΩ ±0.5% thick film anti-sulfuration 0402; AEC-Q200; DigiKey MOQ 10000, JLCPCB MOQ 40 | 0402 | 660-SG73S1ERTTP4702D | 2019-SG73S1ERTTP4702DTR-ND ⚠️ MOQ 10000 | C5915648 ⚠️ MOQ 40 |
 | SW1 | Bank 1 routing config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — common Bank 1/2 config-toggle part | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW2 | Bank 1 routing config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW3 | Bank 1 routing config bit 2 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
@@ -456,20 +456,20 @@ automatic polling intervals.
 | **MCP23017 I²C Expanders** | 3 | U1, U2, U3 |
 | **BSS138 MOSFETs (colour-rail low-side)** | 6 | Q1/G/B, Q4/G/B — shared colour-rail cathode switches |
 | **BSS138 MOSFETs (per-anode pre-driver)** | 12 | Q7–Q18 — one per LED anode; drives PMOS high-side gate |
-| **PMOS MOSFETs (per-anode high-side switch)** | 12 | Q19–Q30 — Cat B, part TBD; source at 5V_MAIN, drain to LED anode |
+| **PMOS MOSFETs (per-anode high-side switch)** | 12 | Q19–Q30 — Vishay SQ2319ADS-T1_BE3; source at 5V_MAIN, drain to LED anode |
 | **0603 LED path resistors** | 36 | 12× red (150Ω), 12× green (100Ω), 12× blue (100Ω) |
 | **0603 Resistors (switch pull-down)** | 10 | 10kΩ pull-downs on all toggle-switch inputs |
 | **0402 Resistors (colour-rail gate)** | 6 | R12–R17: 1kΩ colour-rail MOSFET gate resistors |
 | **0402 Resistors (per-anode gate)** | 12 | R54–R65: 1kΩ BSS138 pre-driver gate resistors |
-| **0402 Resistors (PMOS pull-up)** | 12 | R66–R77: 47kΩ provisional PMOS gate pull-ups — Cat B |
+| **0402 Resistors (PMOS pull-up)** | 12 | R66–R77: KOA Speer SG73S1ERTTP4702D 47 kΩ ±0.5% PMOS gate pull-ups |
 | **0603 Resistors (misc)** | 1 | R11: 10kΩ `CFG_APPLY_N` pull-up |
 | **0402 Capacitors (decoupling)** | 3 | 100nF X7R for 3× MCP23017s |
 | **0402 Capacitors (debounce)** | 1 | C4: 100nF X7R `CFG_APPLY_N` debounce |
 | **JST PH Connectors** | 1 | J1: 6-pin B6B-PH-K-S(LF)(SN) to Stator |
 | **Pushbutton Switch** | 1 | SW11 — Omron B3F-1070 SPST NO through-hole tactile switch |
 
-**Total unique part numbers:** ~17 (excl. Cat B TBD)
-**Total component count:** ~113 (excl. Cat B TBD)
+**Total unique part numbers:** ~18
+**Total component count:** ~125
 
 ---
 

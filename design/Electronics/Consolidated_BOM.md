@@ -78,9 +78,9 @@ board matrix.
 | 4.7 µF X7R 1210 entry filter (CGA6P3X7R1H475K250AD) | — | — | — | — | — | — | — | — | — | 1 | — | 3 |
 | 10 µF 16 V X7R 1206 monostable timing cap (CC1206KKX7R8BB106) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 1 µF X7R 50 V 0805 (C0805C105K5RACTU) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
-| UNSOURCED — Rotor FDC2114 local `VDD` reservoir capacitor (1 µF X7R MLCC, ≥6.3 V; footprint owner-selected) | — | — | — | — | — | 2 | 60 | — | — | — | — | 60 |
-| UNSOURCED — Rotor FDC2114 resonant tank inductor (18 µH shielded SMD; 4 per active FDC2114; Cat B, part TBD; N=26 build 8 per board, N=64 build 8 per board; per-board count includes dummy LC tanks for unused channels) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
-| UNSOURCED — Rotor FDC2114 resonant tank capacitor (33 pF C0G/NP0 ±1%; 4 per active FDC2114; Cat B, part TBD; count same as inductor) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
+| Kyocera AVX KAM05CR71A105KH — 1 µF X7R ±10% 10V AEC-Q200 MLCC 0402; Mouser 581-KAM05CR71A105KH; DigiKey 478-KAM05CR71A105KHCT-ND; JLCPCB global sourcing / consignment only. (C15/C17/C19; 1 per populated FDC2114; 2 per rotor build; N=26 build: C15+C17; N=64 build: C15+C19) | — | — | — | — | — | 2 | 60 | — | — | — | — | 60 |
+| Bourns CWF1610A-180K — 18 µH ±10% unshielded 0603 chip inductor; SRF 28 MHz; Q=14@2.5 MHz; Irms 220 mA; DCR 2.90 Ω; Mouser 652-CWF1610A-180K; DigiKey 118-CWF1610A-180KCT-ND; JLCPCB global sourcing / consignment only. Footprint and 3D model available from Mouser product page. (L1–L12; 4 per active FDC2114; N=26 build 8 per board, N=64 build 8 per board; count includes dummy LC tanks for unused channels) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
+| YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200 MLCC 0402; Mouser 603-0402FRNPO9BN330; DigiKey 13-AC0402FRNPO9BN330CT-ND; JLCPCB C1852937. Generic 0402 footprint. (C20–C31; 4 per active FDC2114; N=26 build 8 per board, N=64 build 8 per board; count includes dummy LC tanks for unused channels) | — | — | — | — | — | 8 | 240 | — | — | — | — | 240 |
 | 10 µF 25 V X7R 1206 LDO input cap (C1206C106K3RACTU) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 10 nF X7R 50 V 0402 soft-start cap (CL05B103KB5NNNC) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 10 nF 100 V X7R 0402 Bob Smith termination cap (C0402C103K1RACAUTO) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
@@ -102,7 +102,7 @@ board matrix.
 | 150 Ω 1% 0603 LED current-limit resistor (ERJ-3EKF1500V / C400650) | — | — | — | — | — | — | — | — | — | — | 12 | 12 |
 | 100 Ω 1% 0603 LED current-limit resistor (ERJ-3EKF1000V / C193336) | — | — | — | — | — | — | — | — | — | — | 24 | 24 |
 | 4.7 kΩ 1% 0603 I²C pull-up (ERJ-3EKF4701V / C192166) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
-| UNSOURCED — Rotor local FDC2114 I²C pull-up resistor (`SDA` / `SCL`, 3.3 V local bus, 1 per line; value/footprint owner-selected) | — | — | — | — | — | 2 | 60 | — | — | — | — | 60 |
+| KOA Speer SG73S1ERTTP4701F — 4.7 kΩ ±1% thick film anti-sulfuration AEC-Q200 0402; Mouser 660-SG73S1ERTTP4701F; DigiKey 2019-SG73S1ERTTP4701FTR-ND ⚠️ MOQ 10000; JLCPCB C6483673 ⚠️ MOQ 49. (R6/R7; FDC2114 I²C SDA/SCL pull-ups to 3V3_ENIG; 2 per rotor) | — | — | — | — | — | 2 | 60 | — | — | — | — | 60 |
 | 100 Ω 1% 0603 differential termination (ERJ-3EKF1000V / C193336) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | 20 mΩ 1% 1206 current-sense shunt (ERJ-6ENF20R0V / C123465) | — | — | — | — | — | — | — | — | — | — | — | — |
 | 10 mΩ ±1% 5 A 2512 Kelvin shunt (CSS2H-2512R-R010ELF) | 2 | — | 1 | — | — | — | — | — | — | — | — | 3 |
@@ -331,12 +331,12 @@ specification.
 | C3 | VCC decoupling cap for U3 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 | 🔒 |
 | Q7–Q11 | Bank 1 per-anode low-side NMOS (5 total; one per Bank 1 LED anode → drives PMOS gate) | BSS138 — same part as Q1–Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
 | Q12–Q18 | Bank 2 per-anode low-side NMOS (7 total; one per Bank 2 LED anode → drives PMOS gate) | BSS138 — same part as Q1–Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 | 🔒 |
-| Q19–Q23 | Bank 1 per-anode high-side PMOS (5 total; source = 5V_MAIN, drain = LED anode; controlled by Q7–Q11) | PMOS high-side switch — **Cat B, part TBD** | SOT-23 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
-| Q24–Q30 | Bank 2 per-anode high-side PMOS (7 total; source = 5V_MAIN, drain = LED anode; controlled by Q12–Q18) | PMOS high-side switch — same part as Q19–Q23 (**Cat B**) | SOT-23 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
+| Q19–Q23 | Bank 1 per-anode high-side PMOS (5 total; source = 5V_MAIN, drain = LED anode; controlled by Q7–Q11) | Vishay SQ2319ADS-T1_BE3 — P-Ch TrenchFET SOT-23; Vds=−40V, Vgs(max)=±20V; AEC-Q101; Mouser 78-SQ2319ADS-T1_BE3; DigiKey 742-SQ2319ADS-T1_BE3CT-ND; JLCPCB C3280190 | SOT-23 | 78-SQ2319ADS-T1_BE3 | 742-SQ2319ADS-T1_BE3CT-ND | C3280190 | — |
+| Q24–Q30 | Bank 2 per-anode high-side PMOS (7 total; source = 5V_MAIN, drain = LED anode; controlled by Q12–Q18) | Vishay SQ2319ADS-T1_BE3 — same part as Q19–Q23 | SOT-23 | 78-SQ2319ADS-T1_BE3 | 742-SQ2319ADS-T1_BE3CT-ND | C3280190 | — |
 | R54–R58 | Bank 1 NMOS gate resistors (×5; one per Q7–Q11 gate) | 1kΩ 1% 0402 — same part as R12–R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 | 🔒 |
 | R59–R65 | Bank 2 NMOS gate resistors (×7; one per Q12–Q18 gate) | 1kΩ 1% 0402 — same part as R12–R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 | 🔒 |
-| R66–R70 | Bank 1 PMOS gate pull-up resistors to 5V_MAIN (×5; one per Q19–Q23 gate) | 47kΩ 1% 0402 — **Cat B, part TBD** | 0402 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
-| R71–R77 | Bank 2 PMOS gate pull-up resistors to 5V_MAIN (×7; one per Q24–Q30 gate) | 47kΩ 1% 0402 — same part as R66–R70 (**Cat B**) | 0402 | TBD (Cat B) | TBD (Cat B) | TBD (Cat B) | Cat B |
+| R66–R70 | Bank 1 PMOS gate pull-up resistors to 5V_MAIN (×5; one per Q19–Q23 gate) | KOA Speer SG73S1ERTTP4702D — 47 kΩ ±0.5% thick film anti-sulfuration AEC-Q200 0402; Mouser 660-SG73S1ERTTP4702D; DigiKey 2019-SG73S1ERTTP4702DTR-ND ⚠️ MOQ 10000; JLCPCB C5915648 ⚠️ MOQ 40 | 0402 | 660-SG73S1ERTTP4702D | 2019-SG73S1ERTTP4702DTR-ND | C5915648 | — |
+| R71–R77 | Bank 2 PMOS gate pull-up resistors to 5V_MAIN (×7; one per Q24–Q30 gate) | KOA Speer SG73S1ERTTP4702D — same part as R66–R70 | 0402 | 660-SG73S1ERTTP4702D | 2019-SG73S1ERTTP4702DTR-ND ⚠️ MOQ 10000 | C5915648 ⚠️ MOQ 40 | — |
 
 U1 @ 0x23: reads the 10 configuration toggle states (`CFG_ROUTE[3:0]` on GPA[3:0], `CFG_REFMAP[5:0]` on GPB[5:0]) plus `CFG_APPLY_N` on GPB[7]. U2 @ 0x24 and U3 @ 0x25:
 drive per-bit LED anodes and per-bank RGB colour-rail MOSFET sinks. All three share the Stator

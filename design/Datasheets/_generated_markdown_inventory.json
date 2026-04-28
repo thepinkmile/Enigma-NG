@@ -67,6 +67,11 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "Bourns-cwf1610a-datasheet.pdf",
+      "markdown": "Bourns-cwf1610a-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "CTS-Switches-DIP-219-Series-Datasheet.pdf",
       "markdown": "CTS-Switches-DIP-219-Series-Datasheet.md",
       "mapping_type": "same_stem"
@@ -102,8 +107,18 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "KAM05CR71A105KH-Datasheet.pdf",
+      "markdown": "KAM05CR71A105KH-Datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "KEM_C1023_X7R_AUTO_SMD-datasheet.pdf",
       "markdown": "KEM_C1023_X7R_AUTO_SMD-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "KOA-SG73S-RT-Datasheet.pdf",
+      "markdown": "KOA-SG73S-RT-Datasheet.md",
       "mapping_type": "same_stem"
     },
     {
@@ -249,6 +264,11 @@
     {
       "pdf": "Wurth-7499111121A-datasheet.pdf",
       "markdown": "Wurth-7499111121A-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "YAGEO-AC_NP0X7RX7S-datasheet.pdf",
+      "markdown": "YAGEO-AC_NP0X7RX7S-datasheet.md",
       "mapping_type": "same_stem"
     },
     {
@@ -404,6 +424,11 @@
     {
       "pdf": "usb4135-datasheet.pdf",
       "markdown": "usb4135-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "vishay-sq2319ads-datasheet.pdf",
+      "markdown": "vishay-sq2319ads-datasheet.md",
       "mapping_type": "same_stem"
     },
     {

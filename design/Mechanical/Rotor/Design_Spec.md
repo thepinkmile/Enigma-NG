@@ -36,6 +36,8 @@ Total outer diameter matches the original Enigma machine (~100mm) for authentic 
 | Internal board gap | ~11.8mm | Between inner faces of boards |
 | Character engraving radius | r=50mm | On outer cylindrical face of shroud |
 | Capacitive sensor electrode radius | r=44mm | On PCB flat face |
+| Central shaft hole diameter (both PCBs) | Ø10mm nominal (TBD) | Through-hole, 8–12mm range; confirmed once rotor actuation shaft diameter is fixed |
+| Central keep-out zone radius (both PCBs) | r ≥ 6mm | No copper, components, or traces within 6mm of board centre; driven by shaft clearance |
 
 ---
 
@@ -57,6 +59,8 @@ All mechanical parts must be manufactured to the tolerances specified below.
 | Character engraving depth | 0.4mm | ±0.1mm | Milled on shroud outer cylindrical face |
 | Character engraving width | per-character | ±0.1mm | CNC |
 | Rolling element diameter | TBD | ±0.01mm | Matched set required for even load |
+| Central shaft hole diameter (each PCB) | Ø10mm nominal (TBD) | ±0.2mm | NPTH (non-plated through-hole); final size confirmed once shaft diameter fixed |
+| Central shaft hole position | Board centre | ±0.1mm | Must be concentric with PCB outer diameter |
 
 > **Note on capacitive gap:** The FDC2114RGHR sensor sensitivity must be validated across the
 > full tolerance range (0.35mm minimum to 0.65mm maximum gap). Bearing precision directly
@@ -147,7 +151,41 @@ components).
 
 ---
 
-## 7. Component Height Constraints
+## 7. Central Shaft Support
+
+Each rotor PCB pair carries the full mechanical weight of all rotors in the stack on a central metal
+rod (shaft) that passes through **both** Board A and Board B via an NPTH centre hole.
+
+**Design intent:**
+
+* The rotor stack connectors (J1–J6 ERM8/ERF8 series) are signal/power connectors and must **not**
+  be used as the primary mechanical weight-bearing interface between rotors. The central shaft is the
+  sole weight-bearing support.
+* The shaft passes through the full rotor stack; all rotors within a group slide onto the shaft and
+  are retained by the same shaft mechanism (design TBD — pending Rotor Actuation Assembly spec).
+
+**PCB hole specification:**
+
+| Parameter | Value | Notes |
+| :--- | :--- | :--- |
+| Hole type | NPTH (non-plated through-hole) | Shaft must be electrically isolated from PCB copper |
+| Nominal diameter | Ø10mm TBD | Final size confirmed once actuation shaft diameter is fixed (8–12mm range) |
+| Location | Board centre (0,0) | Concentric with PCB outer diameter |
+| Keep-out zone | r ≥ 6mm from centre | No copper, components, traces, or vias within this zone |
+
+**Electrical isolation:**
+
+The shaft is a metal rod. It must be electrically isolated from the PCB ground and power planes.
+The NPTH construction (no copper barrel) with the copper keep-out zone ensures no continuity between
+the shaft and any PCB net. Do not add a mounting pad ring or grounded copper pour extending into the
+keep-out zone.
+
+> **Cross-reference:** `design/Mechanical/Rotor_Actuation_Assembly/Design_Spec.md` for shaft
+> diameter, material, retention mechanism, and inter-rotor spacing along the shaft axis.
+
+---
+
+## 8. Component Height Constraints
 
 | Zone | Max component height | Notes |
 | :--- | :--- | :--- |
@@ -158,7 +196,7 @@ components).
 
 ---
 
-## 8. Cross-References
+## 9. Cross-References
 
 | Document | Description |
 | :--- | :--- |
@@ -166,4 +204,5 @@ components).
 | `design/Electronics/Rotor/Board_Layout.md` | PCB layout, component placement, ASCII diagrams |
 | `design/Electronics/Rotor/Rotor_26_Char_Design.md` | N=26 encoder track pattern and geometry |
 | `design/Electronics/Rotor/Rotor_64_Char_Design.md` | N=64 encoder track pattern and geometry |
+| `design/Mechanical/Rotor_Actuation_Assembly/Design_Spec.md` | Shaft diameter, retention, and inter-rotor spacing |
 | `design/Design_Log.md` | DEC-026 (capacitive encoder), DEC-028 (split-board architecture) |
