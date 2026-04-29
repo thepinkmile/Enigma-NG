@@ -2664,13 +2664,14 @@ connector families.
 ### Impact
 
 - `design/Standards/Global_Routing_Spec.md §9`: Added hot-swappable/service-accessible connector clause.
-- `design/Electronics/Rotor/Design_Spec.md §5`: Thermal & ESD section to document TVS/ESD arrays for ERM8/ERF8 interfaces.
-- `design/Electronics/Consolidated_BOM.md`: ESD suppressor parts to be added when specific device is selected.
+- `design/Electronics/Rotor/Design_Spec.md §6`: ESD arrays documented. Selected device: TPD4E05U06QDQARQ1 (U5–U10);
+  U5–U7 protect Board A connectors J1 and J3; U8–U10 protect Board B connectors J4 and J6. 6 per rotor pair × 30 = 180 system total.
+- `design/Electronics/Consolidated_BOM.md`: TPD4E05U06QDQARQ1 row updated — ROT (×1) = 6, ROT Total (×30) = 180, System Total = 184.
 
 ### Cross-ref
 
 `design/Standards/Global_Routing_Spec.md §9`,
-`design/Electronics/Rotor/Design_Spec.md §5`.
+`design/Electronics/Rotor/Design_Spec.md §6`.
 
 ---
 

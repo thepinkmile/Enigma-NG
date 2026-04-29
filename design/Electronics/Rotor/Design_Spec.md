@@ -548,6 +548,9 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | L5–L8 | U3 (Board A) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
 | C20–C23 | U2 (Board A) FDC2114 CH0–CH3 resonant capacitors — **in parallel with L1–L4 between INxA/INxB** | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200; generic 0402 footprint | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
 | C24–C27 | U3 (Board A) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
+| U5 | JTAG entry ESD array — J1 protection (`TCK`, `TMS`, `TDI`, `TDO`) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U6 | Encoder data entry ESD array — J3 low half (`ENC_DATA[3:0]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U7 | Encoder data entry ESD array — J3 high half (`ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 
 ### Board B BOM (Output Side — JLCPCB SMT outward face)
 
@@ -566,11 +569,16 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | U4 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
+| U8 | JTAG exit ESD array — J4 protection (`TCK`, `TMS`, `TDI`, `TDO`) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U9 | Encoder data exit ESD array — J6 low half (`ENC_DATA[3:0]`) | TPD4E05U06QDQARQ1 — same as U8 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U10 | Encoder data exit ESD array — J6 high half (`ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK`) | TPD4E05U06QDQARQ1 — same as U8 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 
 > **Support-network scope note:** `R6/R7` and `C14-C19` capture the local I²C-bias and `VDD`-bypass
 > requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L12`, `C20–C31`)
 > are fully sourced above (Bourns CWF1610A-180K 18 µH inductors and YAGEO AC0402FRNPO9BN330 33 pF
 > resonant capacitors; dummy LC tanks on all unused FDC2114 channels per TI application note).
+> ESD protection arrays `U5`–`U10` (TPD4E05U06QDQARQ1) are sourced above; 3 per board, placed close
+> to connector body per DEC-045 and `Global_Routing_Spec.md §9`.
 
 ---
 
@@ -579,29 +587,41 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 ### 6.1. ESD Protection — Samtec ERM8/ERF8 Connectors
 
 The Samtec ERM8/ERF8 rotor connectors (`J1`–`J3` on Board A, `J4`–`J6` on Board B) are external,
-hot-swappable interfaces per **DEC-045** (see `design/Design_Log.md`). All signal lines entering the
-board via these connectors must be ESD-protected with TVS arrays placed close to the connector body,
-before any series resistors or downstream logic (see `Global_Routing_Spec.md §9`).
+hot-swappable interfaces per **DEC-045** (see `design/Design_Log.md`). All signal lines entering or
+leaving the board via these connectors must be ESD-protected with TVS arrays placed close to the
+connector body, before any series resistors or downstream logic (see `Global_Routing_Spec.md §9`).
 
 **Connectors requiring ESD protection:**
 
 | Connector | Board | Interface | Signal Lines Requiring TVS |
 | :--- | :---: | :--- | :--- |
 | J1 | A | JTAG input (ERM8-005 male) | `TCK`, `TMS`, `TDI`, `TDO` — 4 lines |
-| J2 | A | Power input (ERM8-005 male) | `3V3_ENIG` entry — rail TVS per `Global_Routing_Spec.md §9` |
-| J3 | A | Encoder data input (ERM8-010 male) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — up to 8 lines |
+| J3 | A | Encoder data input (ERM8-010 male) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — 8 lines |
 | J4 | B | JTAG output (ERF8-005 female) | `TCK`, `TMS`, `TDI`, `TDO` — 4 lines |
-| J5 | B | Power output (ERF8-005 female) | `3V3_ENIG` pass-through — rail TVS per `Global_Routing_Spec.md §9` |
-| J6 | B | Encoder data output (ERF8-010 female) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — up to 8 lines |
+| J6 | B | Encoder data output (ERF8-010 female) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — 8 lines |
+
+> Power rail connectors `J2` (Board A) and `J5` (Board B) do not require dedicated TVS devices;
+> board-level bulk decoupling capacitors (C9–C13) provide adequate `3V3_ENIG` rail protection.
 
 **ESD device requirements:**
 
-* Working voltage: ≥ 3.3 V (I/O signal lines) or ≥ 5 V (power rail TVS)
+* Working voltage: ≥ 3.3 V (signal lines operate on `3V3_ENIG` only — no `5V_MAIN` on Rotor)
 * Clamping voltage: ≤ 6.0 V at rated peak current
-* IEC 61000-4-2 Level 4 capability (±8 kV contact, ±15 kV air)
-* Multi-line array preferred to minimise board area; SOT-363 or DHVQFN package acceptable
-* Place as close as physically possible to the relevant connector pad on the board edge
+* IEC 61000-4-2 Level 4 capability (±8 kV contact, ±15 kV air discharge)
+* Multi-line array preferred to minimise board area; low capacitance (≤ 1 pF/ch) to preserve signal integrity
+* Place as close as physically possible to the connector body, before any series resistors or downstream logic
 
-**Part selection:** Pending final sourcing. Candidate: Nexperia PRTR5V0U10AZ (10-line, 5 V,
-DHVQFN14) or equivalent multi-channel TVS array rated for hot-swap/ESD events. Approved part and
-supplier part numbers to be confirmed and added to BOM prior to schematic completion.
+**Selected device:** Texas Instruments **TPD4E05U06QDQARQ1** — 4-channel, 0.5 pF/ch, ±15 kV
+IEC 61000-4-2 Level 4, USON-10 (U-DFN-10). Same part as `D3` (PM) and `U4`–`U6` (CTL);
+no new part numbers required. Placement per `Global_Routing_Spec.md §9` with DEC-045 hot-swap exception.
+
+**Device placement — 6× per rotor pair (3 Board A + 3 Board B), 180× system total:**
+
+| Ref | Board | Protects | Channels used |
+| :--- | :---: | :--- | :--- |
+| U5 | A | J1 JTAG input | `TCK`, `TMS`, `TDI`, `TDO` |
+| U6 | A | J3 encoder input (low half) | `ENC_DATA[3:0]` |
+| U7 | A | J3 encoder input (high half) | `ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK` |
+| U8 | B | J4 JTAG output | `TCK`, `TMS`, `TDI`, `TDO` |
+| U9 | B | J6 encoder output (low half) | `ENC_DATA[3:0]` |
+| U10 | B | J6 encoder output (high half) | `ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK` |

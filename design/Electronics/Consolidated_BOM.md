@@ -58,7 +58,7 @@ board matrix.
 | MIC1555YM5-TR — CMOS Timer / LED Oscillator (SOT-23-5) | 2 | — | — | — | — | — | — | — | — | — | — | 2 |
 | TPS2065C — USB Power Distribution Switch (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
 | AP2331W — HDMI Current Limiter (SOT-23-5) | — | 1 | — | — | — | — | — | — | — | — | — | 1 |
-| TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | 1 | 3 | — | — | — | — | — | — | — | — | — | 4 |
+| TPD4E05U06QDQARQ1 — 4-Channel ESD Array (U-DFN-10) | 1 | 3 | — | — | — | 6 | 180 | — | — | — | — | 184 |
 | TPD1E10B06DYARQ1 — Single-Channel ESD (SOD-523) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | TPD2E2U06DRLR — Dual-Channel SMBus ESD (SOT-553) | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | CSD17483F4T — 30 V 10 A N-ch OR-ing MOSFET (SON-8) | 3 | — | — | — | — | — | — | — | — | — | — | 3 |
@@ -360,6 +360,7 @@ high-current dock through the Stator to the Settings Board.
 * **AP2331W-7:** HDMI Current Limiter (SOT-23-5) (50mA Limit).
 * **TPD4E05U06QDQARQ1:** 4-channel ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, U-DFN-10.
   CTL usage: U4 (USB/HDMI), U5 (GbE pair AB), U6 (GbE pair CD).
+  ROT usage: U5 (J1 JTAG Board A), U6–U7 (J3 encoder Board A), U8 (J4 JTAG Board B), U9–U10 (J6 encoder Board B) — 6 per rotor pair × 30 = 180.
   DigiKey: `296-40696-1-ND`; Mouser: `595-PD4E05U06QDQARQ1`; JLCPCB: `C81353`.
 
 ### Controller Board — Power Entry Decoupling
@@ -509,7 +510,7 @@ Product page links for all major components for design review and procurement ve
 | U13, U14, U17 | NL27WZ14DFT2G-Q — Automotive Dual Schmitt Inverter | onsemi | [NL27WZ14-D.md](../Datasheets/NL27WZ14-D.md) |
 | U2 (CTL) | TPS2065CDBVR — USB Power Switch 1.6A | Texas Instruments | [tps2065c-datasheet.md](../Datasheets/tps2065c-datasheet.md) |
 | U3 (CTL) | AP2331W-7 — HDMI Current Limiter | Diodes Inc. | [AP2331-datasheet.md](../Datasheets/AP2331-datasheet.md) |
-| D3 (PM); U4-U6 (CTL) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | [tpd4e05u06-q1-datasheet.md](../Datasheets/tpd4e05u06-q1-datasheet.md) |
+| D3 (PM); U4-U6 (CTL); U5-U10 (ROT) | TPD4E05U06QDQARQ1 — 4-Channel ESD Array | Texas Instruments | [tpd4e05u06-q1-datasheet.md](../Datasheets/tpd4e05u06-q1-datasheet.md) |
 | D2 | TPD2E2U06DRLR — Dual 5.5V SMBus ESD | Texas Instruments | [tpd2e2u06-datasheet.md](../Datasheets/tpd2e2u06-datasheet.md) |
 | D1 | TPD1E10B06DYARQ1 — Single-ch 10V TVS ESD, SOD-523 | Texas Instruments | [tpd1e10b06-q1-datasheet.md](../Datasheets/tpd1e10b06-q1-datasheet.md) |
 | C25 (CTL), C40 (PM) | C0402C103K1RACAUTO / C0402C101K3RACAUTO — KEMET automotive X7R MLCC family | KEMET | [KEM_C1023_X7R_AUTO_SMD-datasheet.md](../Datasheets/KEM_C1023_X7R_AUTO_SMD-datasheet.md) |
