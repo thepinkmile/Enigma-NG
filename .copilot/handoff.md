@@ -168,12 +168,40 @@ Open items not yet actioned:
 - **Rotor ESD TVS (PRTR5V0U10AZ):** pending final sourcing; Section 6 placeholder retained
 - **Category C:** battery connector sourcing (awaiting supplier email responses)
 
+## 2026-04-29 second deep-review cycle resolved (checkpoint 076)
+
+All outstanding findings from the second electronics deep-review cycle resolved and committed.
+
+Key changes:
+
+- **DEC-046** written: 50V bypass/decoupling cap rating retained on all non-PM boards (no approved
+  25V equivalents; cost delta negligible; PM input-side caps require 50V for derating margin)
+- **Controller:** R1 (stale reset pull-up) and R2 (stale 100Ω differential termination) removed;
+  R3–R6 renumbered to R1–R4 with no gaps
+- **Rotor:** ESD section rewritten — phantom signals removed; U5–U12 array count corrected;
+  `ENC_IN[5:0]` / `ENC_OUT[5:0]` now correctly listed
+- **Power Module:** PM-H5 removed from spec body (not a design item; review suppression in handoff);
+  ODU added as alternate military battery socket supplier alongside Glenair
+- **Encoder:** "no longer a silkscreen requirement" → "is not a silkscreen requirement"
+- **Stator:** retired servo requirements removed; FR-STA-13 typo fixed; requirements renumbered
+- **Consolidated BOM:** 100Ω CTL termination row removed; 10kΩ CTL count 5→4 (total 22→21)
+
 ## Next return summary
 
-When resuming, read `.copilot/checkpoints/075-deep-review-cycle-complete-comm.md` for current state.
+When resuming, read `.copilot/checkpoints/076-second-deep-review-resolved-c.md` for current state.
 
-Next checkpoint will be **076**.
+Next checkpoint will be **077**.
 
+
+## Review suppression notes
+
+The following items are intentionally suppressed from automated review cycles. Do not raise them
+as findings until the referenced pre-condition is complete.
+
+- **PM-H5 — battery connector suitability review:** The Molex 43650-0519 versus Glenair/ODU
+  military replacement review is ongoing; supplier responses are still pending. Do not flag this
+  as an issue until the connector review is complete and a decision is recorded in the Design Log.
+  See `design/Electronics/Power_Module/Millitary_Battery_Connection_Option.md` for background.
 
 ## Documentation policy reminders
 

@@ -2094,6 +2094,13 @@ create a second galvanic bond to system ground.
 - Controller PoE / Ethernet ownership moves out of the Power Module docs and BOM ownership.
 - Servo motor electrical ownership moves from the Stator to the Controller so the actuation hardware
   remains co-located with the rotor depression bar in the vertical-Stator enclosure layout.
+  The following Stator requirements were retired as a result (IDs at time of retirement; the active
+  spec has since been renumbered to close the gaps):
+  - **FR-STA-11** (servo PWM output, original numbering) — superseded by Controller-local direct CM5 GPIO PWM.
+  - **FR-STA-12** (SERVO\_HOME sensing, original numbering) — superseded by Controller-local home-switch input.
+  - **DR-STA-13** (I²C PWM driver, original numbering) — servo PWM generation moved to direct CM5 GPIO.
+  - **DR-STA-14** (servo connector, original numbering) — connector ownership moved to the Controller.
+  - **DR-STA-15** (SERVO\_HOME switch, original numbering) — home-switch ownership moved to the Controller.
 - PM GPIO / SW1 RGB runtime control moves to `PCA9534APWR @ 0x3F`.
 - Power-budget and overview documents must stop referencing Samtec Link-Alpha / Link-Beta as active
   PM/Stator bottlenecks.
@@ -2664,14 +2671,85 @@ connector families.
 ### Impact
 
 - `design/Standards/Global_Routing_Spec.md §9`: Added hot-swappable/service-accessible connector clause.
-- `design/Electronics/Rotor/Design_Spec.md §6`: ESD arrays documented. Selected device: TPD4E05U06QDQARQ1 (U5–U10);
-  U5–U7 protect Board A connectors J1 and J3; U8–U10 protect Board B connectors J4 and J6. 6 per rotor pair × 30 = 180 system total.
-- `design/Electronics/Consolidated_BOM.md`: TPD4E05U06QDQARQ1 row updated — ROT (×1) = 6, ROT Total (×30) = 180, System Total = 184.
+- `design/Electronics/Rotor/Design_Spec.md §6`: ESD arrays documented. Selected device: TPD4E05U06QDQARQ1 (U5–U12);
+  U5–U8 protect Board A connectors J1 and J3; U9–U12 protect Board B connectors J4 and J6. 8 per rotor pair × 30 = 240 system total.
+  JTAG signals corrected: J1 Board A = TDI/TMS/TCK (3 lines, 1 spare); J4 Board B = TDO/TMS/TCK (3 lines, 1 spare); nTRST not routed.
+  Encoder signals corrected: J3/J6 carry ENC_IN[5:0] + ENC_OUT[5:0] (12 lines) — phantom signals ENC_ACTIVE_N and ENC_CLK removed.
+- `design/Electronics/Consolidated_BOM.md`: TPD4E05U06QDQARQ1 row updated — ROT (×1) = 8, ROT Total (×30) = 240, System Total = 244.
 
 ### Cross-ref
 
 `design/Standards/Global_Routing_Spec.md §9`,
 `design/Electronics/Rotor/Design_Spec.md §6`.
+
+---
+
+## DEC-046 — Bypass/Decoupling Capacitor Voltage Rating: 50V Retained on All Non-PM Boards
+
+- **Status:** Decided
+- **Date:** 2026-04-29
+- **Category:** Component Selection / Passive Derating
+- **Area:** All boards (Rotor, Stator, Controller, Extension, JDB, Encoder, AM, Settings Board)
+- **Author:** Izzyonstage & GitHub Copilot
+
+### Summary
+
+Standard bypass and decoupling capacitors across all non-PM boards are retained at their current
+50V voltage rating. No down-specification to 25V is required or warranted.
+
+### Problem
+
+A design review (CTL-L2) flagged that bulk reservoir caps on some boards were specified at 50V while
+the highest non-PM rail is 5V_MAIN (5V). Bulk reservoir caps were subsequently down-specced to 25V
+(Samsung CL21B106KAYQNNE). The question then arose: should the smaller bypass and decoupling
+capacitors also be down-specced for cost savings?
+
+### Decision
+
+Retain 50V-rated bypass and decoupling capacitors as the approved standard across all non-PM boards.
+The Power Module retains 50V for all capacitors on its input/battery path, which sees up to 16.9V.
+
+### Rationale
+
+**Power Module (input-side caps):** 50V is required. The PM input rail reaches ~16.9V; 50V provides
+>3× voltage margin, meeting the X7R DC bias derating requirement. A 25V cap would give only 1.5×
+margin — insufficient for X7R ceramics.
+
+**All other boards (bypass/decoupling caps):** 25V is technically sufficient (5V_MAIN gives 5×
+margin at 25V). However:
+
+1. The standard approved parts (`CL05B104KB5NNNC` 100nF 0402, `C0805C105K5RACTU` 1µF 0805) are
+   already approved, priced, and used consistently across every board. Changing them requires
+   sourcing and approving new part numbers.
+2. No existing approved 25V part matches these capacitance values — the approved 25V parts
+   (`CL21B106KAYQNNE` 10µF 0805, `CL32B226KAJNNNE` 22µF 1210, etc.) are all different values used
+   for bulk/reservoir purposes.
+3. The 100nF 0402 bypass cap is one of the cheapest passive components in the design (~£0.002–0.003
+   each at JLCPCB volumes). The cost delta between 25V and 50V variants is negligible — fractions of
+   a penny per unit — and the total BOM saving across even a 500-unit build would be immaterial.
+4. Consistency across the design has positive value: a single approved bypass cap part used
+   everywhere reduces procurement complexity and qualification overhead.
+
+### Alternatives Considered
+
+| Alternative | Reason rejected |
+| :--- | :--- |
+| Down-spec 100nF 0402 to 25V across all boards | Requires new part approval; cost saving negligible; no existing approved 25V equivalent at this value |
+| Down-spec 1µF 0805 to 25V on non-PM boards | Same reasoning; only ~10 placements total, saving immaterial |
+| Mixed 25V/50V bypass depending on board | Creates two approved bypass cap standards; procurement complexity outweighs any saving |
+
+### Impact
+
+No document changes required. This decision records the rationale for the existing 50V specification
+to prevent future reviews from re-raising it as an issue.
+
+- `design/Electronics/Consolidated_BOM.md`: No change — existing 50V parts remain the standard.
+- `design/Standards/Global_Routing_Spec.md`: No change.
+
+### Cross-ref
+
+`design/Electronics/Power_Module/Design_Spec.md §7.4` (50V derating note for PM input rails),
+`design/Electronics/Consolidated_BOM.md` (approved 50V bypass/decoupling cap parts).
 
 ---
 

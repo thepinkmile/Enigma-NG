@@ -50,7 +50,7 @@ group without Controller-side live servo control.
 | DR-EXT-09 | Actuation Module power dock | J9 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J1 | §2 Connectivity; BOM J9 |
 | DR-EXT-10 | Actuation Module trigger dock | J10 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J2 | §2 Connectivity; BOM J10 |
 | DR-EXT-11 | Actuation Module host envelope | The Extension area beneath the installed AM shall be a no-component placement zone except for J9 / J10 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure walls that would trap heat or obstruct service access | §2 Connectivity; `Board_Layout.md` |
-| DR-EXT-12 | 5V_MAIN entry decoupling bank | C7–C11 (5× 10µF X7R 50V 1206) shall be placed at the 5V_MAIN entry point (J7 pins 17/19) using a star/spoke topology matching the 3V3_ENIG entry bank (C1–C5); both rails must be locally decoupled at the Extension Port entry | §2 Connectivity; §5 Thermal & ESD; BOM C7–C11 |
+| DR-EXT-12 | 5V_MAIN entry decoupling bank | C7–C11 (5× 10µF X7R 25V 0805) shall be placed at the 5V_MAIN entry point (J7 pins 17/19) using a star/spoke topology matching the 3V3_ENIG entry bank (C1–C5); both rails must be locally decoupled at the Extension Port entry | §2 Connectivity; §5 Thermal & ESD; BOM C7–C11 |
 
 ## 2. Connectivity
 
@@ -133,7 +133,7 @@ group without Controller-side live servo control.
     and the routing / copper needed to reach them.
   * `ACTUATE_REQUEST` is an active-low GPIO signal sourced either from the CM5 on the Controller
     Board or from the non-homing switch on the Extension Board itself. A 10kΩ pull-up to `3V3_ENIG`
-    is required on this line. Exact switch mounting geometry remains owned by the mechanical design.
+    is implemented on the Actuation Module (AM R6). Exact switch mounting geometry remains owned by the mechanical design.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), `ENC_OUT_REF` / `ENC_IN_REF`, and
   JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`

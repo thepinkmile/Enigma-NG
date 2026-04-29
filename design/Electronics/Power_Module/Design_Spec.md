@@ -108,12 +108,13 @@ Controller Board via dock connector `J1`.
   * Pin 5: `VBATT-`.
   * **BMS Charge Voltage:** Smart Battery BMS must be configured for a maximum charge voltage of **4.1V/cell (16.4V total for 4S)**. This provides a ≥0.5V margin to the TPS25980 eFuse 16.9V OVLO
   threshold, preventing nuisance latch-off at full charge. BMS configurations using 4.2V/cell (16.8V) are not compatible without OVLO re-specification.
-  * **Candidate replacement path:** a military / NetWarrior-style Glenair receptacle plus a small
-    PM-side interposer board is now being investigated as a possible replacement for the Molex part.
-    See `Millitary_Battery_Connection_Option.md`. This remains **pending** confirmation of the
+  * **Candidate replacement path:** a military / NetWarrior-style Glenair or ODU receptacle plus a
+    small PM-side interposer board is now being investigated as a possible replacement for the Molex
+    part. See `Millitary_Battery_Connection_Option.md`. This remains **pending** confirmation of the
     6-pin contact map, cable availability, and interposer mechanics. The `Y` keying for the chosen
     Glenair candidate is already verified as the standard battery keying intended to prevent mating
-    with data-only ports on standard in-service devices.
+    with data-only ports on standard in-service devices. ODU offers a compatible alternative socket
+    matching the Glenair form; supplier responses are pending.
 * **Presence Logic:** Pin 4 (`BATT_PRES_N`) is pulled to **3V3_ENIG** via 10kΩ resistor (R6). For the selected Accutronics / Inspired Energy N205-family battery, the battery `T` pin presents
   **300Ω ±5% to `VBATT-`**, which is treated directly as battery-present.
   * Logic HIGH: Battery Disconnected.

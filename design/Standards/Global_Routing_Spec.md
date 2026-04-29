@@ -73,7 +73,9 @@ Internal signal traces: use 2.5× the external minimum width for equivalent ther
 These rules apply to all boards in the Enigma-NG system unless a board's design spec explicitly documents an exemption.
 
 * **CPLD Decoupling Rule:** All Intel MAX II TQFP-100 CPLDs (EPM240T100I5N and EPM570T100I5N) require **8× 100nF (0.1µF) X7R** decoupling capacitors, one per VCC pin, placed within 2 mm of each pin.
-* **Bulk Entry Bank Rule:** All boards must place **5× 10µF X7R 25V (0805)** bulk decoupling capacitors at each power-entry connector in a **Symmetrical Star/Spoke pattern**.
+* **Bulk Entry Bank Rule:** All boards must place **5× 10µF X7R 25V (0805)** bulk decoupling
+  capacitors **per board, per power rail** (one 5-cap bank per distinct power rail present on the
+  board), placed at the rail entry point in a **Symmetrical Star/Spoke pattern**.
   Standard part: Samsung CL21B106KAYQNNE (10µF ±10% X7R 25V 0805; Mouser 187-CL21B106KAYQNNE; DigiKey 1276-CL21B106KAYQNNECT-ND; JLCPCB C3039694).
   Voltage derating: 25V ÷ 3.3V ≈ 7.6× (3V3\_ENIG) and 25V ÷ 5.0V = 5.0× (5V\_MAIN) — both exceed the mandatory 2× minimum.
   * Exception: The JTAG Daughterboard is exempt from this rule — see `JTAG_Daughterboard/Design_Spec.md` DR-JDB-11.

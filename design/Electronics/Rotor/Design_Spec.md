@@ -548,9 +548,10 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | L5–L8 | U3 (Board A) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
 | C20–C23 | U2 (Board A) FDC2114 CH0–CH3 resonant capacitors — **in parallel with L1–L4 between INxA/INxB** | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200; generic 0402 footprint | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
 | C24–C27 | U3 (Board A) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| U5 | JTAG entry ESD array — J1 protection (`TCK`, `TMS`, `TDI`, `TDO`) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U6 | Encoder data entry ESD array — J3 low half (`ENC_DATA[3:0]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U7 | Encoder data entry ESD array — J3 high half (`ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U5 | JTAG entry ESD array — J1 protection (`TDI`, `TMS`, `TCK`; 1 spare channel) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U6 | Encoder input ESD array — J3 protection, array 1 of 3 (`ENC_IN[3:0]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U7 | Encoder input ESD array — J3 protection, array 2 of 3 (`ENC_IN[5:4]`, `ENC_OUT[1:0]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U8 | Encoder input ESD array — J3 protection, array 3 of 3 (`ENC_OUT[5:2]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 
 ### Board B BOM (Output Side — JLCPCB SMT outward face)
 
@@ -569,15 +570,16 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 | H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | U4 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
 | SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
-| U8 | JTAG exit ESD array — J4 protection (`TCK`, `TMS`, `TDI`, `TDO`) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U9 | Encoder data exit ESD array — J6 low half (`ENC_DATA[3:0]`) | TPD4E05U06QDQARQ1 — same as U8 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U10 | Encoder data exit ESD array — J6 high half (`ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK`) | TPD4E05U06QDQARQ1 — same as U8 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U9 | JTAG exit ESD array — J4 protection (`TDO`, `TMS`, `TCK`; 1 spare channel) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U10 | Encoder output ESD array — J6 protection, array 1 of 3 (`ENC_IN[3:0]`) | TPD4E05U06QDQARQ1 — same as U9 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U11 | Encoder output ESD array — J6 protection, array 2 of 3 (`ENC_IN[5:4]`, `ENC_OUT[1:0]`) | TPD4E05U06QDQARQ1 — same as U9 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U12 | Encoder output ESD array — J6 protection, array 3 of 3 (`ENC_OUT[5:2]`) | TPD4E05U06QDQARQ1 — same as U9 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 
 > **Support-network scope note:** `R6/R7` and `C14-C19` capture the local I²C-bias and `VDD`-bypass
 > requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L12`, `C20–C31`)
 > are fully sourced above (Bourns CWF1610A-180K 18 µH inductors and YAGEO AC0402FRNPO9BN330 33 pF
 > resonant capacitors; dummy LC tanks on all unused FDC2114 channels per TI application note).
-> ESD protection arrays `U5`–`U10` (TPD4E05U06QDQARQ1) are sourced above; 3 per board, placed close
+> ESD protection arrays `U5`–`U12` (TPD4E05U06QDQARQ1) are sourced above; 4 per board, placed close
 > to connector body per DEC-045 and `Global_Routing_Spec.md §9`.
 
 ---
@@ -595,10 +597,10 @@ connector body, before any series resistors or downstream logic (see `Global_Rou
 
 | Connector | Board | Interface | Signal Lines Requiring TVS |
 | :--- | :---: | :--- | :--- |
-| J1 | A | JTAG input (ERM8-005 male) | `TCK`, `TMS`, `TDI`, `TDO` — 4 lines |
-| J3 | A | Encoder data input (ERM8-010 male) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — 8 lines |
-| J4 | B | JTAG output (ERF8-005 female) | `TCK`, `TMS`, `TDI`, `TDO` — 4 lines |
-| J6 | B | Encoder data output (ERF8-010 female) | `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, `ENC_CLK` — 8 lines |
+| J1 | A | JTAG input (ERM8-005 male) | `TDI`, `TMS`, `TCK` — 3 lines |
+| J3 | A | Encoder data input (ERM8-010 male) | `ENC_IN[5:0]`, `ENC_OUT[5:0]` — 12 lines |
+| J4 | B | JTAG output (ERF8-005 female) | `TDO`, `TMS`, `TCK` — 3 lines |
+| J6 | B | Encoder data output (ERF8-010 female) | `ENC_IN[5:0]`, `ENC_OUT[5:0]` — 12 lines |
 
 > Power rail connectors `J2` (Board A) and `J5` (Board B) do not require dedicated TVS devices;
 > board-level bulk decoupling capacitors (C9–C13) provide adequate `3V3_ENIG` rail protection.
@@ -615,13 +617,15 @@ connector body, before any series resistors or downstream logic (see `Global_Rou
 IEC 61000-4-2 Level 4, USON-10 (U-DFN-10). Same part as `D3` (PM) and `U4`–`U6` (CTL);
 no new part numbers required. Placement per `Global_Routing_Spec.md §9` with DEC-045 hot-swap exception.
 
-**Device placement — 6× per rotor pair (3 Board A + 3 Board B), 180× system total:**
+**Device placement — 8× per rotor pair (4 Board A + 4 Board B), 240× system total:**
 
 | Ref | Board | Protects | Channels used |
 | :--- | :---: | :--- | :--- |
-| U5 | A | J1 JTAG input | `TCK`, `TMS`, `TDI`, `TDO` |
-| U6 | A | J3 encoder input (low half) | `ENC_DATA[3:0]` |
-| U7 | A | J3 encoder input (high half) | `ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK` |
-| U8 | B | J4 JTAG output | `TCK`, `TMS`, `TDI`, `TDO` |
-| U9 | B | J6 encoder output (low half) | `ENC_DATA[3:0]` |
-| U10 | B | J6 encoder output (high half) | `ENC_DATA[5:4]`, `ENC_ACTIVE_N`, `ENC_CLK` |
+| U5 | A | J1 JTAG input | `TDI`, `TMS`, `TCK` (1 spare channel) |
+| U6 | A | J3 encoder input (array 1 of 3) | `ENC_IN[3:0]` |
+| U7 | A | J3 encoder input (array 2 of 3) | `ENC_IN[5:4]`, `ENC_OUT[1:0]` |
+| U8 | A | J3 encoder input (array 3 of 3) | `ENC_OUT[5:2]` |
+| U9 | B | J4 JTAG output | `TDO`, `TMS`, `TCK` (1 spare channel) |
+| U10 | B | J6 encoder output (array 1 of 3) | `ENC_IN[3:0]` |
+| U11 | B | J6 encoder output (array 2 of 3) | `ENC_IN[5:4]`, `ENC_OUT[1:0]` |
+| U12 | B | J6 encoder output (array 3 of 3) | `ENC_OUT[5:2]` |

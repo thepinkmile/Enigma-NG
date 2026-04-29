@@ -223,6 +223,8 @@ must preserve the generic one-CPLD module footprint and the unchanged 20-pin IDC
 
 - **Thermal:** vias under the Intel MAX II EPM570T100I5N CPLD power pins / thermal area as required
   by layout review.
+- **ESD:** No ESD protection arrays required — all signal interfaces are internal IDC ribbon
+  connections within the sealed enclosure. Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 9. PCB Fabrication & Stackup
 
@@ -231,8 +233,8 @@ must preserve the generic one-CPLD module footprint and the unchanged 20-pin IDC
 - **Aesthetics:** dark green solder mask; typewriter font (all-caps German where applicable).
 - **Placement:** one CPLD centred behind the 64-line terminal bank; J2 kept on the service edge for
   direct ribbon access.
-- **Board Identification (Silkscreen):** the PCB should identify itself as `ENCODER MODULE`. Encode
-  vs decode role identification is no longer a silkscreen requirement because role is defined by the
+- **Board Identification (Silkscreen):** the PCB **shall** identify itself as `ENCODER MODULE`. Encode
+  vs decode role identification is not a silkscreen requirement because role is defined by the
   programmed CPLD image.
 
 ---

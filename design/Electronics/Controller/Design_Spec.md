@@ -161,6 +161,11 @@ the Stator over `J5`.
 | 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |
 | 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
 
+> **MCP23017 configuration cross-reference:** Full GPIO pin assignments, port-function tables, and
+> address-selection wiring for U6 (0x20), U7 (0x21), and U8 (0x22) are defined in
+> `design/Electronics/Stator/Design_Spec.md §3` and the Stator BOM. This table lists I²C addresses
+> and high-level functions only.
+
 ## 5. RTC Backup Battery
 
 The CM5's MXL7704 PMIC contains an integrated RTC. To maintain timekeeping through power cycles,
@@ -219,9 +224,9 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
   a 10kΩ series resistor to limit transient current into the GPIO bank.
 * **Voltage:** 5V signals are strictly forbidden on: CM5 GPIO pins, I²C SDA/SCL lines, JTAG (TDI/TDO/TCK/TMS), and all low-speed PM / Stator dock signals.
 * **ESD Protection:** [TPD4E05U06](https://www.ti.com) (U4 — USB/HDMI ESD arrays; U5/U6 — GbE ESD arrays, pair AB and CD respectively) on Layer 1.
-* **5V_MAIN Bulk Entry:** 5× 10µF X7R 50V at the `J1` `5V_MAIN` entry region per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule.
+* **5V_MAIN Bulk Entry:** 5× 10µF X7R 25V at the `J1` `5V_MAIN` entry region per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule.
 * **3V3_ENIG Tap Decoupling:** The `J1` `3V3_ENIG` entry on the Controller shall follow the
-  global bulk-entry bank rule: **5× 10uF X7R 50V** placed at the tap node in a
+  global bulk-entry bank rule: **5× 10uF X7R 25V** placed at the tap node in a
   **symmetrical star/spoke pattern** per `design/Standards/Global_Routing_Spec.md §3`.
   This applies because `3V3_ENIG` is the Controller's canonical logic rail; the
   CM5-local `CM5 3V3` rail is not used as the board logic reference.
@@ -300,13 +305,13 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 | Pin | Signal | Direction | Description |
 | :--- | :--- | :--- | :--- |
-| 1 | TCK | JDB → CTRL | JTAG clock (buffered via U5) |
+| 1 | TCK | JDB → CTRL | JTAG clock (buffered via U5 on the JDB) |
 | 2 | GND | — | Ground |
 | 3 | TDI | JDB → CTRL | JTAG data in |
 | 4 | GND | — | Ground |
 | 5 | TDO | CTRL → JDB | JTAG data out (TTD_RETURN) |
 | 6 | GND | — | Ground |
-| 7 | TMS | JDB → CTRL | JTAG mode select (buffered via U5) |
+| 7 | TMS | JDB → CTRL | JTAG mode select (buffered via U5 on the JDB) |
 | 8 | GND | — | Ground |
 | 9 | VREF (3V3_ENIG) | CTRL → JDB | Voltage reference for JTAG logic |
 | 10 | GND | — | Ground |
@@ -438,7 +443,8 @@ Estimated Controller-local power dissipation at system peak load:
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C12 | `VDD_GPIO_REF` decoupling capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C25 | RJ45 Bob Smith termination capacitor (Y1-class proxy; EMC GbE ESD discharge path to chassis GND) | 10nF 100V X7R | 0402 | 80-C0402C103K1RAUTO | 399-C0402C103K1RACAUTOCT-ND | C19862710 |
+| C24 | PoE IC bypass capacitors (U9 TPS2372-4RGWR and U10 TPS23730RMTR; full PoE front-end tracked in Consolidated_BOM.md) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C25 | RJ45 Bob Smith termination capacitor(Y1-class proxy; EMC GbE ESD discharge path to chassis GND) | 10nF 100V X7R | 0402 | 80-C0402C103K1RAUTO | 399-C0402C103K1RACAUTOCT-ND | C19862710 |
 | BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
 | J1-J3 | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
@@ -455,12 +461,10 @@ Estimated Controller-local power dissipation at system peak load:
 | J15 | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | J16 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | MH1–MH4 | CM5 brass standoff M2.5 × 4.0mm SMT (Würth 9774040151R) × 4 | M2.5 × 4.0mm | SMT | 710-9774040151R | 732-7089-1-ND | C5182034 |
-| R1 | Pull-up for reset | 10kΩ | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R2 | Termination for differential | 100Ω | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
-| R3 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R4 | `PM_IO_INT_N` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R5 | `USB_FAULT` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R6 | `PWR_GD` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R1 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R2 | `PM_IO_INT_N` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R3 | `USB_FAULT` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| R4 | `PWR_GD` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | U1 | Raspberry Pi Compute Module 5 (CM5) — multiple acceptable non-Lite variants; minimum 4GB RAM / 8GB eMMC; Wi-Fi optional | N/A | CM5 (SO-DIMM) | various CM5 SKUs | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065CDBVR | SOT-23-5 | 595-TPS2065CDBVR | 296-39353-1-ND | C353882 |
 | U3 | HDMI power switch | AP2331W-7 | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C460346 |
