@@ -48,7 +48,7 @@ is `v.0.1.0`.
 - Do not raise package-family or footprint-size differences as blocking issues until the user
   explicitly says schematic capture and layout have started. They are irrelevant at the pre-layout stage.
 - Connector and mechanical-drawing datasheet markdowns can remain lightweight; fuller detail can
-  wait until the initial KiCAD library generation phase.
+  wait until the initial KiCAD library generation or mechanical modeling phases.
 
 ---
 
