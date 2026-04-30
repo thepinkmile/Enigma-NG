@@ -1,4 +1,4 @@
-# Consolidated Bill of Materials
+﻿# Consolidated Bill of Materials
 
 <!-- markdownlint-disable MD013 MD055 MD056 -->
 
@@ -132,6 +132,7 @@
 | Stator | U3 | SN74LVC1G08DBVR | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | — | Single AND gate SOT-23-5 | Logic gate [Texas Instruments] | Yes | Pending |
 | Stator | U4,U5 | 74HC157PW-Q100,118 | 1727-74HC157PW-Q100,118CT-ND | 771-74HC157PWQ100118 | C546614 | — | Quad 2-to-1 mux TSSOP-16 | Signal multiplexer [Nexperia] | Yes | Pending |
 | Stator | U6-U8 | MCP23017T-E/SO | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | — | I²C GPIO expander SOIC-28 | GPIO expanders (0x20/0x21/0x22) [Microchip Technology] | Yes | Pending |
+| Stator | U9–U12 | TPD4E05U06QDQARQ1 | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | 4-ch bidirectional ESD array USON-10 | J1 JTAG (×1) + J3 ENC (×3) ESD protection [Texas Instruments] | Yes | Pending |
 | Rotor (Board A) | C1-C8,C14,C16 | CL05B104KB5NNNC | 1276-1009-1-ND | 187-CL05B104KB5NNNC | C1525 | — | 100nF X7R 50V 0402 | Bypass decoupling [Samsung] | Yes | Pending |
 | Rotor (Board A) | C9-C13 | CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | 10µF X7R 25V 0805 | Bulk decoupling [Samsung] | Yes | Pending |
 | Rotor (Board A) | C15,C17 | KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | 581-KAM05CR71A105KH | — | Global sourcing | 1µF X7R ±10% 10V AEC-Q200 0402 | Decoupling (AEC-Q200) [Kyocera AVX] | Yes | Pending |
@@ -188,11 +189,13 @@
 | Extension | J7,J8 | BHR-20-VUA | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | 20-pin 2x10 2.54mm shrouded box THT | Rotor group JTAG headers [Adam Tech] | Yes | Pending |
 | Extension | J9,J10 | ERF8-005-05.0-S-DV-K-TR | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | 10-pin 2x5 0.8mm female SMT | Actuation Module dock connectors [Samtec] | Yes | Pending |
 | Extension | U1 | SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | — | Dual 3-state buffer VSSOP-8 | JTAG TCK/TMS buffer [Texas Instruments] | Yes | Pending |
+| Extension | U2–U9 | TPD4E05U06QDQARQ1 | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | 4-ch bidirectional ESD array USON-10 | J1/J3 input (×4) + J4/J6 output (×4) ESD protection [Texas Instruments] | Yes | Pending |
 | Reflector | C1-C5 | CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | 10µF X7R 25V 0805 | Bulk decoupling [Samsung] | Yes | Pending |
 | Reflector | J1,J2 | ERM8-005-05.0-S-DV-K-TR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | — | 10-pin 2x5 0.8mm male SMT | Input dock connectors [Samtec] | Yes | Pending |
 | Reflector | J3 | ERM8-010-05.0-S-DV-K-TR | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | — | 20-pin 2x10 0.8mm male SMT | Input dock connector (power/JTAG) [Samtec] | Yes | Pending |
 | Reflector | J4 | BHR-20-VUA | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | 20-pin 2x10 2.54mm shrouded THT | Reflector JTAG header [Adam Tech] | Yes | Pending |
 | Reflector | R1 | ERJ-3EKF2200V | P220HCT-ND | 667-ERJ-3EKF2200V | C403073 | — | 22Ω 1% 0603 | JTAG termination resistor [Panasonic] | Yes | Pending |
+| Reflector | U1–U4 | TPD4E05U06QDQARQ1 | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | 4-ch bidirectional ESD array USON-10 | J1 JTAG (×1) + J3 ENC (×3) ESD protection [Texas Instruments] | Yes | Pending |
 | Encoder | C1-C8 | CL05B104KB5NNNC | 1276-1009-1-ND | 187-CL05B104KB5NNNC | C1525 | — | 100nF X7R 50V 0402 | Bypass decoupling [Samsung] | Yes | Pending |
 | Encoder | C9-C13 | CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | 10µF X7R 25V 0805 | Bulk decoupling [Samsung] | Yes | Pending |
 | Encoder | BT1-BT64 | 1285-ST | 36-1285-ST-ND | 534-1285-ST | C5370868 | — | 6.35mm PCB spade blade terminals THT vertical | Plugboard jack connection terminals (x64) [Keystone Electronics] | Yes | Pending |
@@ -248,7 +251,7 @@ Per-Unit Total = one instance of every board type. Actual system totals depend o
 | 10 | CL05B103KB5NNNC | Samsung | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 11 | TPD1E10B06DYARQ1 | Texas Instruments | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 12 | TPD2E2U06DRLR | Texas Instruments | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
-| 13 | TPD4E05U06QDQARQ1 | Texas Instruments | 1 | 3 | — | 4 | 4 | — | — | — | — | — | — | 12 |
+| 13 | TPD4E05U06QDQARQ1 | Texas Instruments | 1 | 3 | 4 | 4 | 4 | — | 8 | 4 | — | — | — | 28 |
 | 14 | BAT54 | Vishay | 2 | 1 | — | — | — | — | — | — | — | — | — | 3 |
 | 15 | AC72ABD | Bourns | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 16 | 1123684-7 | TE Connectivity | 3 | — | — | — | — | — | — | — | — | — | — | 3 |

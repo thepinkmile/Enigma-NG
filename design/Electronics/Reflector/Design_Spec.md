@@ -1,4 +1,4 @@
-# Reflector Board (V1.0) Design Specification
+﻿# Reflector Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -25,6 +25,7 @@ second CPLD on the Reflector itself.
 | FR-REF-02 | Provide the mandatory physical turnaround path at the end of the rotor/extension chain while the selected reflection map is applied by the Stator CPLD | Passive turnaround board — no local CPLD required | §2 Architecture; BOM J1–J4 |
 | FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H | §3 JTAG & Logic Hub; BOM J4 (20-pin), R1 (22Ω) |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
+| FR-REF-05 | Protect the J1 (JTAG) and J3 (ENC) rotor-facing BtB connector interfaces from ESD events during live rotor swap | J1 and J3 are exposed to operator handling during rotor insertion/removal; TVS/ESD arrays required on both connectors per DEC-048 | §5 Thermal & ESD; BOM U1–U4 |
 
 #### Design Requirements
 
@@ -35,6 +36,7 @@ second CPLD on the Reflector itself.
 | DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J10); `TTD_RETURN` on J4 pin 15; pins 17-20 reserved for grouped `5V_MAIN` / returns in the shared reflector / extension harness contract | §3 JTAG & Logic Hub; BOM J4 (20-pin 2×10 shrouded) |
 | DR-REF-04 | End-of-chain damping | R1 = 22 Ω, 0603, on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive turnaround board only; reflector-map selection remains Stator-owned | §2 Architecture |
+| DR-REF-06 | ESD protection — rotor-facing BtB connectors | U1 (J1 JTAG, 1× TPD4E05U06QDQARQ1 covering TCK, TMS, TTD, SYS_RESET_N) + U2–U4 (J3 ENC, 3× TPD4E05U06QDQARQ1 covering ENC_IN[5:0] + ENC_OUT[5:0]); placed within 3mm of connector mating edge per DEC-048 | §5 Thermal & ESD; BOM U1–U4 |
 
 ## 2. Architecture
 
@@ -135,7 +137,19 @@ defined on the Power Module at the common power-entry point immediately before t
 pin 16 is treated as signal/power return only and must not be bridged locally to chassis on the
 Reflector.
 
-## 5. Monitoring & Branding
+## 5. Thermal & ESD
+
+* **Thermal:** No active cooling required. Passive-only board. Relies on chassis airflow.
+* **ESD — rotor-facing connectors (TVS required):**
+  J1 (JTAG, ERM8-005) and J3 (ENC, ERM8-010) are exposed to operator handling during live rotor insertion and removal.
+  Per DEC-045 and DEC-048, TVS/ESD protection is mandatory on both connector interfaces:
+  * **U1** — 1× TPD4E05U06QDQARQ1 on J1 (JTAG); channels: TCK, TMS, TTD, SYS_RESET_N.
+  * **U2, U3, U4** — 3× TPD4E05U06QDQARQ1 on J3 (ENC); 12 channels: ENC_IN[5:0] + ENC_OUT[5:0].
+  All arrays shall be placed within 3mm of their respective connector mating edge on L1.
+* **ESD — all other connectors (no TVS required):**
+  * J2 (Power, ERM8-005): power rail (3V3_ENIG / GND) only — no signal protection required.
+  * J4 (TTD_RETURN ribbon, BHR-20-VUA): internal ribbon connector; not accessible during live rotor swap.
+  Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 6. PCB Fabrication & Stackup
 
@@ -159,4 +173,9 @@ Reflector.
 | J2 | Rotor 30 output interface — Power (ERM8-005, 10-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J5 (ERF8-005 female) | SMT | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J3 | Rotor 30 output interface — ENC Data (ERM8-010, 20-pin **male**, 0.8mm pitch) | Plugs into Rotor 30 J6 (ERF8-010 female) | SMT | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
 | J4 | Interconnect header | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
+| R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P220HCT-ND | C403073 |
+| U1 | ESD protection array — J1 JTAG rotor connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U2 | ESD protection array — J3 ENC rotor connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U3 | ESD protection array — J3 ENC rotor connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U4 | ESD protection array — J3 ENC rotor connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P220HCT-ND | C403073 |

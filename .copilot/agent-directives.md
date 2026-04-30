@@ -19,6 +19,21 @@ These are correct. Do not "fix" them.
 
 ---
 
+## SECONDARY DIRECTIVE - Git Commits
+
+**NEVER perform a git commit without explicit user confirmation.**
+
+All changes made to any files in the repository must be reviewed and acceptaed by the user before
+they can be commited into the repository.
+Possible user confirmation promts include:
+
+- "Let's lock this in"
+- "Save state"
+
+When using these prompts, you should create a new checkpoint following the "Repo-Local State Rules" before performing the commit.
+
+---
+
 ## Component Data Lookup Order
 
 When researching any component, always use sources in this order:

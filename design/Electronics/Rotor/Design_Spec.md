@@ -1,4 +1,4 @@
-# Rotor Board (V1.0) Design Specification
+﻿# Rotor Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -138,8 +138,8 @@ The local FDC2114 bus requires one external pull-up on `SDA` and one on `SCL` to
 are captured in the Board A BOM so the same pull-up pair serves the common local bus in both variants
 (`U2` + `U3` on Board A for N=26, or `U2` on Board A plus `U4` over `H_SENS` for N=64). Per the
 in-repo TI FDC2114 family datasheet power-supply recommendation, each populated FDC2114 also carries
-its own local `0.1 µF` + `1 µF` `VDD` bypass pair. These support parts are separate from the still-
-deferred resonant front-end / unused-channel support definition.
+its own local `0.1 µF` + `1 µF` `VDD` bypass pair. These support parts are separate from the resonant
+front-end and unused-channel support components, which are fully specified in §2.1 (Resonant Front-End Topology).
 
 #### CPLD Position Decode
 

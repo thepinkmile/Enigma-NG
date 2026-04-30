@@ -1,4 +1,4 @@
-# Stator Board (V1.0) Design Specification
+﻿# Stator Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -33,6 +33,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-10 | Provide I²C GPIO expansion for CM5 virtual keypress injection, HID activity selection/monitoring, ENC service-bus monitoring, SYS_RESET_N management, and CPLD configuration driving | Via three MCP23017 expanders: U6 @ 0x20, U7 @ 0x21, U8 @ 0x22 on shared I²C-1 bus | §4 I²C Devices; BOM U6, U7, U8 |
 | FR-STA-11 | Select between the physical keyboard source and CM5 virtual key source before the cipher pipeline, including both the 6-bit bus and the HID activity sideband | External 7-channel 2:1 mux implementation at the `KBD_ENC` (`J4`) entry point; `KEY_CM5_ACTIVE` chooses the source, `CM5_KEY_DATA[5:0]` carries the CM5 value, `CM5_KEY_ACTIVE_N` carries the CM5 activity state, and the mux enable pin(s) are tied LOW so the selected path is always driven while the board is powered | §3 External Keyboard Source Mux |
 | FR-STA-12 | Connect to Settings Board via I²C-1 bus for user-intent configuration, `CFG_APPLY_N`, and LED status output | J13 = 6-pin JST PH 2.0mm connector (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`); Settings Board expanders 0x23 (user-intent input), 0x24 (Bank 1 LED), and 0x25 (Bank 2 LED) share the Stator I²C-1 bus | §4.2 I²C-1 Bus Devices; BOM J13 |
+| FR-STA-13 | Protect the J1 (JTAG) and J3 (ENC) rotor-facing BtB connector interfaces from ESD events during live rotor swap | J1 and J3 are operator-accessible during hot-swap; TVS/ESD arrays required on both connectors per DEC-048 | §8 Thermal & ESD; BOM U9–U12 |
 
 #### Design Requirements
 
@@ -53,6 +54,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-13 | U8 specification | U8 = MCP23017T-E/SO @ 0x22; SOIC-28; A2=LOW, A1=HIGH, A0=LOW; GPA[3:0] = `CFG_ROUTE[3:0]` outputs; GPA[4] = active-low `CFG_APPLY_N` Stator-only apply/reset output; GPB[5:0] = `CFG_REFMAP[5:0]` outputs | BOM U8 |
 | DR-STA-14 | J13 connector | J13 = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`; connects to Settings Board J1 via 6-wire harness. `5V_MAIN` is derived from the Controller-fed `J11` branch. | BOM J13 |
 | DR-STA-15 | `CFG_APPLY_N` signal | `CFG_APPLY_N` = active-low Stator-only apply/reset pulse from U8 GPA[4]; combined with `SYS_RESET_N` through U3 (`SN74LVC1G08DBVR`) so either signal can assert the Stator CPLD reset path; forcing `CFG_APPLY_N` LOW reloads `CFG_ROUTE[3:0]` and `CFG_REFMAP[5:0]` without resetting the wider system | BOM U8, U3; §3 Configuration Bank 1 (Routing) |
+| DR-STA-16 | ESD protection — rotor-facing BtB connectors | U9 (J1 JTAG, 1× TPD4E05U06QDQARQ1 covering TCK, TMS, TTD, SYS_RESET_N) + U10–U12 (J3 ENC, 3× TPD4E05U06QDQARQ1 covering ENC_IN[5:0] + ENC_OUT[5:0]); placed within 3mm of connector mating edge per DEC-048 | §8 Thermal & ESD; BOM U9–U12 |
 
 ## 2. Core Features
 
@@ -360,9 +362,18 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 ## 8. Thermal & ESD
 
 * **Thermal:** No active cooling required. Low-power passive components only. Relies on chassis airflow.
-* **ESD:** No TVS/ESD protection required. All Stator connectors (J1–J3 rotor BtB slots, J4–J9 encoder ribbon ports, J10 Extension Port
-  ribbon, J11/J12 Controller dock, J13 Settings harness) are internal to the enclosure. The board relies on enclosure shielding for EMC
-  protection. Per `design/Standards/Global_Routing_Spec.md §9`.
+* **ESD — rotor-facing connectors (TVS required):** J1 (JTAG, ERF8-005) and J3 (ENC, ERF8-010) are exposed to operator handling during live rotor insertion and removal.
+  Per DEC-045 and DEC-048, TVS/ESD protection is mandatory on both connector interfaces:
+  * **U9** — 1× TPD4E05U06QDQARQ1 on J1 (JTAG); channels: TCK, TMS, TTD, SYS_RESET_N.
+  * **U10, U11, U12** — 3× TPD4E05U06QDQARQ1 on J3 (ENC); 12 channels: ENC_IN[5:0] + ENC_OUT[5:0].
+  All arrays shall be placed within 3mm of their respective connector mating edge on L1.
+* **ESD — all other connectors (no TVS required):**
+  * J2 (Power, ERF8-005): power rail (3V3_ENIG / GND) only — no signal protection required.
+  * J4–J9 (Encoder ribbon IDC ports): internal connectors; not accessible during live rotor swap.
+  * J10 (Extension Port ribbon, BHR-20-VUA): internal; not accessible during live rotor swap.
+  * J11, J12 (Controller dock, Molex 2195620015): blind-mate dock; not operator-accessible under live conditions.
+  * J13 (Settings harness, JST PH): internal harness; not accessible during live rotor swap.
+  Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 9. Bill of Materials
 
@@ -407,4 +418,9 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | U4-U5 | Keyboard-source mux (`KEY_CM5_ACTIVE`; physical keyboard vs `CM5_KEY_DATA[5:0]`) | 74HC157PW-Q100,118 | TSSOP-16 | 771-74HC157PWQ100118 | 1727-74HC157PW-Q100,118CT-ND | C546614 |
 | U6 | MCP23017 I²C GPIO Expander (ENC monitoring) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U7 | MCP23017 I²C GPIO Expander (virtual key data, SOURCE_SEL, SYS_RESET_N) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U8 | MCP23017 I²C GPIO Expander (config output driver + `CFG_APPLY_N`) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| U9 | ESD protection array — J1 JTAG rotor connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U10 | ESD protection array — J3 ENC rotor connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U11 | ESD protection array — J3 ENC rotor connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U12 | ESD protection array — J3 ENC rotor connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | U8 | MCP23017 I²C GPIO Expander (config output driver + `CFG_APPLY_N`) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |

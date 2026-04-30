@@ -1,4 +1,4 @@
-# Extension Board (V1.0) Design Specification
+﻿# Extension Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -34,6 +34,7 @@ group without Controller-side live servo control.
 | FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) | §2 Connectivity; BOM J1–J3 (ERM8-005/010) |
 | FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) | §2 Connectivity; BOM J4–J6 (ERF8-005/010) |
 | FR-EXT-06 | Host one Actuation Module to regenerate an Extension-boundary carry event into one local servo step | J9 = AM power dock, J10 = AM trigger dock; non-homing switch (or CM5 GPIO) asserts `ACTUATE_REQUEST` into the AM | §2 Connectivity; BOM J9, J10 |
+| FR-EXT-07 | Protect rotor-facing BtB connectors (J1/J3 in, J4/J6 out) from ESD during live rotor swap | TVS/ESD arrays on all 4 rotor-facing connectors per DEC-048 | §5 Thermal & ESD; BOM U2–U9 |
 
 #### Design Requirements
 
@@ -51,6 +52,7 @@ group without Controller-side live servo control.
 | DR-EXT-10 | Actuation Module trigger dock | J10 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J2 | §2 Connectivity; BOM J10 |
 | DR-EXT-11 | Actuation Module host envelope | The Extension area beneath the installed AM shall be a no-component placement zone except for J9 / J10 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure walls that would trap heat or obstruct service access | §2 Connectivity; `Board_Layout.md` |
 | DR-EXT-12 | 5V_MAIN entry decoupling bank | C7–C11 (5× 10µF X7R 25V 0805) shall be placed at the 5V_MAIN entry point (J7 pins 17/19) using a star/spoke topology matching the 3V3_ENIG entry bank (C1–C5); both rails must be locally decoupled at the Extension Port entry | §2 Connectivity; §5 Thermal & ESD; BOM C7–C11 |
+| DR-EXT-13 | ESD protection — rotor-facing BtB connectors | U2–U5 (J1/J3 in) + U6–U9 (J4/J6 out); 8× TPD4E05U06QDQARQ1 within 3mm of mating edge per DEC-048 | §5 Thermal & ESD; BOM U2–U9 |
 
 ## 2. Connectivity
 
@@ -164,9 +166,19 @@ group without Controller-side live servo control.
   > ⚠️ **U1 must never be removed.** The Extension board actively re-buffers TCK and TMS for
   > every 5-rotor group. Without U1, signal integrity in long rotor stacks will fail.
   > See FR-EXT-01, DR-EXT-04/05/06.
-* **ESD:** No TVS/ESD protection required. All Extension board connectors (J1–J6 BtB rotor interfaces, J7/J8 Extension Port ribbons,
-  J9/J10 AM docks) are internal to the enclosure and accessed only during board assembly or servicing. The board relies on enclosure
-  shielding for EMC protection. Per `design/Standards/Global_Routing_Spec.md §9`.
+* **ESD — rotor-facing connectors (TVS required):**
+  J1/J3 (input side, ERM8 male) and J4/J6 (output side, ERF8 female) are exposed to operator handling during live rotor
+  insertion and removal. Both sides of every hot-swap BtB interface are protected per DEC-045 and DEC-048:
+  * **U2** — 1× TPD4E05U06QDQARQ1 on J1 (JTAG in); channels: TCK, TMS, TTD, SYS_RESET_N.
+  * **U3, U4, U5** — 3× TPD4E05U06QDQARQ1 on J3 (ENC in); 12 channels: ENC_IN[5:0] + ENC_OUT[5:0].
+  * **U6** — 1× TPD4E05U06QDQARQ1 on J4 (JTAG out); channels: TCK, TMS, TTD, SYS_RESET_N.
+  * **U7, U8, U9** — 3× TPD4E05U06QDQARQ1 on J6 (ENC out); 12 channels: ENC_IN[5:0] + ENC_OUT[5:0].
+  All arrays shall be placed within 3mm of their respective connector mating edge on L1.
+* **ESD — all other connectors (no TVS required):**
+  * J2 (Power in, ERM8-005) and J5 (Power out, ERF8-005): power rail (3V3_ENIG / GND) only — no signal protection required.
+  * J7, J8 (Extension Port ribbons, BHR-20-VUA): internal IDC connectors; not accessible during live rotor swap.
+  * J9, J10 (AM service docks, ERF8-005): service-only; not operator-swapped under live conditions (explicitly outside DEC-048 scope).
+  Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 6. Bill of Materials
 
@@ -186,3 +198,11 @@ group without Controller-side live servo control.
 | J9 | Actuation Module power dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J10 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |
+| U2 | ESD protection array — J1 JTAG input connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U3 | ESD protection array — J3 ENC input connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U4 | ESD protection array — J3 ENC input connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U5 | ESD protection array — J3 ENC input connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U6 | ESD protection array — J4 JTAG output connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U7 | ESD protection array — J6 ENC output connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U8 | ESD protection array — J6 ENC output connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U9 | ESD protection array — J6 ENC output connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |

@@ -1,4 +1,4 @@
-# Electronics Review Report
+﻿# Electronics Review Report
 
 ## Objective
 
@@ -2043,3 +2043,61 @@ Reason: no new connector-mapping contradictions were found and no new evidence-b
 omissions were found for already-frozen circuitry. The remaining open items are unchanged deferred
 schematic-capture or owner-selection items already documented in prior passes, so the clean-pass
 definition is met again. This is the second consecutive clean review pass after clean Pass 16.
+
+### Pass 18 — ESD Extension Implementation Verification
+
+- **Status:** complete
+- **Date:** 2026-04-30
+- **Scope:** Verify DEC-048 ESD extension implementation across Stator, Extension, Reflector
+
+#### Pass 18 Findings
+
+**Previously open deep-review items — all confirmed resolved:**
+
+| Item | Resolution |
+| :--- | :--- |
+| Settings Board LED topology (5V_MAIN via corrected resistors) | Resolved in prior session — DR-SBD updated, BOM corrected |
+| AM ACTUATE_REQUEST / BOOT0 / NRST | Resolved — SW1 (NRST), SW2 (BOOT0), J6 BOOT0 header pin; DEC-043/044 captured |
+| FDC2114 resonant front-end topology | Resolved — fully specified in Rotor §2.1 (FR/DR added, BOM populated) |
+| INA219 input RC filter (Stator + PM) | Resolved — PM R14/R15/C26/C27, Stator R42/R43/C22-C26 specified |
+| Rotor FDC2114 I²C pull-ups | Resolved — R13/R14 4.7kΩ ERJ-2RKF4701X per DR-ROT-21 |
+| FDC2114 VDD bypass caps | Resolved — C18–C22 100nF CL05B104KB5NNNC per DR-ROT-22 |
+| Extension/Stator/Reflector TVS/ESD (host-side connectors) | **Resolved this pass — DEC-048 implemented** |
+
+**DEC-048 implementation verification:**
+
+| Board | Connectors protected | Arrays added | RefDes | Status |
+| :--- | :--- | :--- | :--- | :--- |
+| Stator | J1 (JTAG ERF8-005) + J3 (ENC ERF8-010) | 4× TPD4E05U06QDQARQ1 | U9–U12 | ✅ |
+| Extension | J1/J4 (JTAG) + J3/J6 (ENC) — both sides | 8× TPD4E05U06QDQARQ1 | U2–U9 | ✅ |
+| Reflector | J1 (JTAG ERM8-005) + J3 (ENC ERM8-010) | 4× TPD4E05U06QDQARQ1 | U1–U4 | ✅ |
+
+**Scope confirmations:**
+
+- Power-only BtB connector pairs (J2/J5 on any board) — explicitly no TVS ✅
+- Extension J7/J8 (BHR-20-VUA IDC ribbons) — explicitly no TVS ✅
+- Extension J9/J10 (AM service docks) — explicitly excluded from DEC-048 scope ✅
+- Reflector J4 (TTD_RETURN ribbon) — explicitly no TVS ✅
+- Stator J4–J13 (IDC encoder ports, Controller dock, Settings harness) — explicitly no TVS ✅
+
+**Other changes verified:**
+
+- Rotor stale prose fixed: §2.1 cross-reference replaces "still-deferred" wording
+- FR/DR tables updated: FR-STA-13, DR-STA-16; FR-EXT-07, DR-EXT-13; FR-REF-05, DR-REF-06
+- Reflector §5 renamed from empty "Monitoring & Branding" to "Thermal & ESD" with full content
+- DEC-048 added to `design/Design_Log.md`
+- Consolidated_BOM Section 1 rows added for STA U9–U12, EXT U2–U9, REF U1–U4
+- Consolidated_BOM Section 2 row 13 updated: STA=4, EXT=8, REF=4, Per-Unit Total=28
+
+#### Unsourced New Parts Requiring User Selection
+
+- None newly identified in Pass 18.
+- Existing deferred items (owner-selection, schematic-capture) remain unchanged from prior passes.
+
+#### Pass Result
+
+#### Pass 18 result: clean
+
+All outstanding deep-review items are now resolved. DEC-048 implementation verified across all three
+host boards. No new BOM omissions or connector-mapping contradictions found. All prior open items
+from the deep-review cycle are closed. Ready for commit.
