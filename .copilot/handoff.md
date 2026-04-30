@@ -209,7 +209,7 @@ Key changes:
 
 When resuming, read `.copilot/checkpoints/077-bom-rebuilt-csd17578q5a-corrected.md` for current state.
 
-Next checkpoint will be **078**.
+Next checkpoint will be **079**.
 
 
 ## Standing Directives
