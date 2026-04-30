@@ -86,3 +86,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 76 | Second deep-review cycle resolved and committed | 076-second-deep-review-resolved-c.md |
 | 77 | BOM rebuilt, CSD17578Q5A corrected | 077-bom-rebuilt-csd17578q5a-corrected.md |
 | 78 | Agent directives file created, operational rules consolidated | 078-agent-directives-created-rules-consolidated.md |
+| 79 | DEC-048: ESD protection extended to Stator, Extension, Reflector host-side BtB connectors | 079-esd-extension-dec-048-complete.md |
