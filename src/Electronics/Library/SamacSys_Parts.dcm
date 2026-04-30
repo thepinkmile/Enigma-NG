@@ -1,0 +1,165 @@
+EESchema-DOCLIB  Version 2.0
+#
+$CMP NE555DR
+D Single Precision Timer
+K
+F http://www.ti.com/lit/ds/symlink/ne555.pdf
+$ENDCMP
+#
+$CMP EPM570T100I5N
+D CPLD - Complex Programmable Logic Devices CPLD - MAX II 440 Macro 76 IOs
+K
+F https://www.intel.com/content/dam/www/programmable/us/en/pdfs/literature/dp/max2/epm570.pdf
+$ENDCMP
+#
+$CMP STM32G071K8T3TR
+D Mainstream Arm Cortex-M0+ MCU with 64 Kbytes of Flash memory, 36 Kbytes RAM, 64 MHz CPU, 4x USART, timers, ADC, DAC, comm. I/F, 1.7-3.6V
+K
+F https://www.st.com/resource/en/datasheet/stm32g071c8.pdf
+$ENDCMP
+#
+$CMP FT232HL-REEL
+D USB 2.0 to UART/FIFO Interface, LQFP48 FTDI Chip FT232HL-REEL Universal Asynchronous Receiver & Transmitter RS232, RS422, RS485 UART 12Mbit/s, 1.8 V, 3.3 V
+K
+F http://www.ftdichip.com/Support/Documents/DataSheets/ICs/DS_FT232H.pdf
+$ENDCMP
+#
+$CMP MCP23017T-E_SO
+D Interface - I/O Expanders 16bit Input/Output Exp I2C interface
+K
+F http://ww1.microchip.com/downloads/en/DeviceDoc/20001952C.pdf
+$ENDCMP
+#
+$CMP PCA9534APWR
+D Remote 8-Bit I2C and Low-Power I/O Expander With Interrupt Output and Configuration Registers
+K
+F http://www.ti.com/lit/gpn/pca9534a
+$ENDCMP
+#
+$CMP INA219AIDR
+D 26-V, Bidirectional, Zero-Drift, High-Side, I2C Out Current/Power Monitor
+K
+F http://www.ti.com/lit/gpn/ina219
+$ENDCMP
+#
+$CMP FDC2114RGHR
+D Proximity Sensors Noise-immune Capacitive Sensing Solution for Proximity Sensing 16-WQFN -40 to 125
+K
+F http://www.ti.com/lit/ds/snoscz5a/snoscz5a.pdf
+$ENDCMP
+#
+$CMP SN74LVC2G125DCUR
+D Dual Bus Buffer Gate With 3-State Outputs, VSSOP8
+K
+F http://www.ti.com/lit/ds/symlink/sn74lvc2g125.pdf
+$ENDCMP
+#
+$CMP 74HC157PW-Q100,118
+D 74HC(T)157-Q100 - Quad 2-input multiplexer@en-us
+K
+F https://assets.nexperia.com/documents/data-sheet/74HC_HCT157_Q100.pdf
+$ENDCMP
+#
+$CMP NL27WZ14DFT2G-Q
+D Designed for 1.65 V to 5.5 V VCC Operation; Over Voltage Tolerant Inputs and Outputs; LVTTL Compatible - Interface Capability with 5 V TTL Logic with VCC=3 V; LVCMOS Compatible; 24 mA Balanced Output Sink and Source Capability; Near Zero Static Supply Current (10 ?A) Substantially Reduces System Power Requirements; Current Drive Capability is 24 mA at the Outputs; Chip Complexity: FET = 72; Pb-Free Packages are Available
+K
+F https://www.onsemi.com/pub/Collateral/NL27WZ14-D.PDF
+$ENDCMP
+#
+$CMP SN74LVC1G175DBVR
+D Single D-Type Flip-Flop with Asynchronous Clear
+K
+F http://www.ti.com/lit/ds/symlink/sn74lvc1g175.pdf
+$ENDCMP
+#
+$CMP SN74LVC1G08DBVR
+D SN74LVC1G08 Single 2-Input Positive-AND Gate
+K
+F http://www.ti.com/lit/ds/symlink/sn74lvc1g08.pdf
+$ENDCMP
+#
+$CMP TPS259804ONRGER
+D Hot Swap Voltage Controllers 2.7-V to 24-V, 8-A, 3-mO smart eFuse with adjustable transient fault management
+K
+F https://www.ti.com/lit/gpn/tps25980?HQS=ti-null-null-sf-df-pf-sep-wwe&DCM=yes
+$ENDCMP
+#
+$CMP LMQ61460AFSQRJRRQ1
+D Conv DC-DC 3V to 36V Synchronous Step Down Single-Out 1V to 34.2V 6A Automotive T/R
+K
+F https://www.ti.com/lit/ds/symlink/lmq61460-q1.pdf?ts=1608153802890&ref_url=https%253A%252F%252Fwww.ti.com%252Fproduct%252FLMQ61460-Q1
+$ENDCMP
+#
+$CMP LTC3350EUHF#PBF
+D High Current Supercapacitor Backup Controller and System Monitor
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/DKDS41/DSANUWW0025879.pdf
+$ENDCMP
+#
+$CMP TPS25751DREFR
+D USB Interface IC USB Type-C and USB Power Delivery (PD) controller with integrated power switches , 3V ~ 3.6V, 4.9V ~ 5.5V, 4V ~ 22V , -40C ~ 125C (TJ) , 3mA , 38-WQFN (4x6)
+K
+F https://www.ti.com/lit/gpn/TPS25751
+$ENDCMP
+#
+$CMP STUSB4500LQTR
+D USB Interface IC Standalone USB Type-C port controller for power sinking devices
+K
+F https://www.st.com/resource/en/datasheet/stusb4500l.pdf
+$ENDCMP
+#
+$CMP LM74700QDBVRQ1
+D Low Iq, ideal diode controller
+K
+F http://www.ti.com/lit/gpn/LM74700-Q1
+$ENDCMP
+#
+$CMP MIC1555YM5-TR
+D Standard Timer Single, Oscillator 5MHz
+K
+F http://ww1.microchip.com/downloads/en/DeviceDoc/20005730A.pdf
+$ENDCMP
+#
+$CMP TPS2372-4RGWR
+D Power Switch ICs - POE / LAN IEEE 802.3bt PoE High-Power PD Interface with Automatic MPS & Autoclass 20-VQFN -40 to 125
+K
+F http://www.ti.com/lit/ds/symlink/tps2372.pdf
+$ENDCMP
+#
+$CMP TPS23730RMTR
+D Power Switch ICs - POE / LAN IEEE 802.3bt type-3 class 1-6 PoE 2 PD with high efficiency DC-DC controller 45-VQFN -40 to 125
+K
+F https://www.ti.com/lit/ds/symlink/tps23730.pdf?ts=1627453549331&ref_url=https%253A%252F%252Fcomponentsearchengine.com%252F
+$ENDCMP
+#
+$CMP TPS2065CDBVR
+D Single Channel, Current-Limited USB Power Distribution Switch
+K
+F http://www.ti.com/lit/gpn/TPS2065C
+$ENDCMP
+#
+$CMP AP2331W-7
+D DiodesZetex AP2331W-7 Load Switch IC, Load Switch, 0.2A, 2.7  5.2V, 3-Pin, SC-59
+K
+F https://www.diodes.com//assets/Datasheets/AP2331.pdf
+$ENDCMP
+#
+$CMP TPD4E05U06QDQARQ1
+D Automotive 4-Channel ESD Protection Solution for SuperSpeed (up to 5 Gbps) Interface
+K
+F http://www.ti.com/lit/gpn/tpd4e05u06-q1
+$ENDCMP
+#
+$CMP TPD1E10B06DYARQ1
+D ESD Suppressors / TVS Diodes Automotive 12-pF, +/-5.5V +/-30-kV ESD protection diode in 0402 Package
+K
+F https://www.ti.com/lit/ds/symlink/tpd1e10b06-q1.pdf?ts=1647960520558&ref_url=https%253A%252F%252Fwww.ti.com%252Fstore%252Fti%252Fen%252Fp%252Fproduct%252F%253Fp%253DTPD1E10B06DYARQ1%2526keyMatch%253DTPD1E10B06DYARQ1%2526tisearch%253Dsearch-everything%2526
+$ENDCMP
+#
+$CMP TPD2E2U06DRLR
+D Dual-Channel High-Speed ESD Protection
+K
+F https://g.componentsearchengine.com/ga/PL-AL5030-3R3
+$ENDCMP
+#
+#End Doc Library
