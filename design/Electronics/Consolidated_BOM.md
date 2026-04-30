@@ -13,7 +13,6 @@
 
 ## Notes and Conventions
 
-- **PRIMARY DIRECTIVE:** Do not modify any MPN or supplier part number without explicit user confirmation.
 - Manufacturer shown in Description/Usage column as `[Manufacturer]`.
 - Board codes: PM = Power Module · CTL = Controller · STA = Stator · ROT-A = Rotor Board A · ROT-B = Rotor Board B · SBD = Settings Board · EXT = Extension · REF = Reflector · ENC = Encoder · AM = Actuation Module · JDB = JTAG Daughterboard.
 - **Footprint Downloaded** column: user-maintained. Replace "Pending" with tick once the footprint is added to the shared KiCAD library.

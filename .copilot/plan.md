@@ -1,8 +1,8 @@
 # Enigma-NG Session Plan
 
 > Canonical state: `.copilot/plan.md` in the repository root (tracked in git).
-> At the start of a new session, read this file, `.copilot/handoff.md`, and the latest relevant
-> checkpoint(s) in `.copilot/checkpoints/`.
+> At the start of a new session, read this file, `.copilot/handoff.md`,
+> `.copilot/agent-directives.md`, and the latest relevant checkpoint(s) in `.copilot/checkpoints/`.
 
 ---
 
@@ -106,6 +106,10 @@ or beginning the KiCAD schematic-capture workstream.
 
 ## Critical Notes
 
+> Standing operational rules (PRIMARY DIRECTIVE, data-lookup order, version-metadata policy,
+> BOM authority, review suppression) are in `.copilot/agent-directives.md`. Read that file at
+> session start.
+
 ### Documentation policy
 
 - Use the active `design/` documents as the source of truth for design state.
@@ -149,12 +153,6 @@ or beginning the KiCAD schematic-capture workstream.
 - A later shared schematic-capture workstream still needs to lock exact package pin/pad assignments for
   the AM STM32, Stator mux U7, and the Encoder / Stator / Rotor CPLD parts; treat that as one combined
   pin-mapping task so it can align with the planned KiCAD project and shared component-library setup.
-- Part-detail lookup order is: **reviewed markdown datasheet first**, then the preserved local **PDF
-  datasheet**, and only then an **online source** if the local repository material is missing or
-  insufficient.
-- Repo-local helper scripts that should persist across sessions belong under `.copilot/agent-scripts/`;
-  the datasheet generator now lives there and `_generated_markdown_inventory.json` should be treated as
-  a full datasheet index, not a partial single-run artifact.
 
 ### Refdes / naming state
 
@@ -162,13 +160,6 @@ or beginning the KiCAD schematic-capture workstream.
 - Stator Settings-board connector refdes is `J13`.
 - Settings Board component refs are now numeric in the active docs and BOM (`J1`, `U1`-`U3`,
   `Q1`-`Q6`, `SW1`-`SW11`, `D1`-`D12`, `R1`-`R53`, `C1`-`C4`).
-
-### Component / MPN discipline
-
-- Never change a component MPN without a matching local datasheet review in `design/Datasheets/`.
-- Never modify confirmed supplier part numbers without checking with the user first.
-- Do not treat package-family differences as blocking while the project remains pre-schematic /
-  pre-layout unless the user explicitly says packaging now matters.
 
 ### Repo-local state rules
 

@@ -212,32 +212,12 @@ When resuming, read `.copilot/checkpoints/077-bom-rebuilt-csd17578q5a-corrected.
 Next checkpoint will be **078**.
 
 
-## Review suppression notes
+## Standing Directives
 
-The following items are intentionally suppressed from automated review cycles. Do not raise them
-as findings until the referenced pre-condition is complete.
-
-- **PM-H5 — battery connector suitability review:** The Molex 43650-0519 versus Glenair/ODU
-  military replacement review is ongoing; supplier responses are still pending. Do not flag this
-  as an issue until the connector review is complete and a decision is recorded in the Design Log.
-  See `design/Electronics/Power_Module/Millitary_Battery_Connection_Option.md` for background.
-
-## Documentation policy reminders
-
-- Do not update document `Version` metadata unless the user explicitly requests it.
-- Do not infer version bumps from the size or perceived significance of a change.
-- Keep `.copilot/` synchronized with meaningful design-state changes, but treat it as handoff
-  material rather than design truth.
-- Connector/mechanical-drawing datasheet markdown can remain lightweight for now; fuller detail can
-  wait until initial KiCAD library generation.
-- Design docs should reference the markdown datasheets, but the generated datasheet markdown files
-  should continue to link back to their source PDFs.
-- Part-detail lookup order is: **reviewed markdown datasheet first**, then the preserved local **PDF
-  datasheet**, and only then an **online source** if the local repository material is missing or
-  insufficient.
-- Repo-local helper scripts that should persist across sessions belong under `.copilot/agent-scripts/`;
-  the datasheet generator now lives there and `_generated_markdown_inventory.json` should be treated as
-  a full datasheet index, not a partial single-run artifact.
+All standing operational rules, the PRIMARY DIRECTIVE on part number protection, data-lookup order,
+version-metadata policy, BOM authority rules, and review suppression notes are consolidated in
+`.copilot/agent-directives.md`. Read that file at session start — it takes precedence over any
+general defaults.
 
 ## Remaining follow-up work
 
