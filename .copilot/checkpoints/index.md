@@ -84,3 +84,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 74 | Datasheet hygiene: fix Samtec links, add 5 BOM §11 entries, remove orphaned KGP | 074-datasheet-hygiene-complete.md |
 | 75 | Electronics deep-review cycle complete and committed | 075-deep-review-cycle-complete-comm.md |
 | 76 | Second deep-review cycle resolved and committed | 076-second-deep-review-resolved-c.md |
+| 77 | BOM rebuilt, CSD17578Q5A corrected | 077-bom-rebuilt-csd17578q5a-corrected.md |

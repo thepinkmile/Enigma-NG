@@ -186,11 +186,30 @@ Key changes:
 - **Stator:** retired servo requirements removed; FR-STA-13 typo fixed; requirements renumbered
 - **Consolidated BOM:** 100Ω CTL termination row removed; 10kΩ CTL count 5→4 (total 22→21)
 
+## 2025-07-05 BOM rebuild and part correction (checkpoint 077)
+
+Consolidated BOM fully rebuilt from individual board Design_Spec.md files and CSD17578Q5A part
+correction committed.
+
+Key changes:
+
+- **`design/Electronics/Consolidated_BOM.md`**: Completely rebuilt from `all_boards_bom.json`
+  (sourced from all 10 board specs). 200 component rows, 115 unique MPNs. Both Section 1 (full
+  table with all supplier PNs) and Section 2 (MPN quantity summary) present. Passes lint clean.
+- **CSD17483F4T → CSD17578Q5A correction**: Q1/Q2/Q3 on Power Module were incorrectly specified
+  as CSD17483F4T (1.5A FemtoFET PICOSTAR 3-pin). Correct part is CSD17578Q5A (30V/25A/5.9mΩ
+  SON 5×6mm). DigiKey `296-48512-1-ND`, Mouser `595-CSD17578Q5A`, JLCPCB `C2871447`.
+- **`design/Electronics/Power_Module/Design_Spec.md`**: Q1/Q2/Q3 row and design notes updated.
+- **`design/Electronics/all_boards_bom.json`**: CSD17483F4T → CSD17578Q5A row corrected.
+- **`design/Design_Log.md`**: DEC-047 written for CSD17578Q5A correction.
+- Nexperia vs NXP: `74HC157PW-Q100,118` now correctly shows **Nexperia** in the consolidated BOM.
+- LMQ61460AFSQRJRRQ1 Mouser PN `595-Q61460AFSQRJRRQ1` confirmed correct (Mouser drops "LM" prefix).
+
 ## Next return summary
 
-When resuming, read `.copilot/checkpoints/076-second-deep-review-resolved-c.md` for current state.
+When resuming, read `.copilot/checkpoints/077-bom-rebuilt-csd17578q5a-corrected.md` for current state.
 
-Next checkpoint will be **077**.
+Next checkpoint will be **078**.
 
 
 ## Review suppression notes

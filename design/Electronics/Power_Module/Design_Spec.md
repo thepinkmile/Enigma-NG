@@ -505,7 +505,7 @@ Estimated PM-local power dissipation at system peak load:
 | L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |
 | L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND | C840531 |
-| Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17483F4T — 30V V_DSS, 10A I_D continuous, R_ds(on)=8.4mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON-8 3.3×3.3mm | 595-CSD17483F4T | 296-37781-1-ND | C2871105 |
+| Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17578Q5A — 30V V_DSS, 25A I_D continuous, R_ds(on)=5.9mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON 5×6mm | 595-CSD17578Q5A | 296-48512-1-ND | C2871447 |
 | R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 1% Thick-Film (ERJ-3EKF2323V) | 0603 | 667-ERJ-3EKF2323V | P232KHCT-ND | C403086 |
 | R2 | eFuse UVLO lower resistor | 28.7kΩ 1% Thick-Film (ERJ-3EKF2872V) | 0603 | 667-ERJ-3EKF2872V | P28.7KHCT-ND | C403135 |
 | R3 | eFuse ILIM set resistor | 210Ω 0.1% Thin-Film | 0603 | 667-ERA-3VEB2100V | 10-ERA-3VEB2100VCT-ND | C1861624 |
@@ -623,7 +623,7 @@ Estimated PM-local power dissipation at system peak load:
 > 579-MCP121T-450ETTDITR) instead. JLCPCB `C625189` confirmed.
 > * **U11 MIC1555YM5-TR** — CMOS timer (Microchip). Timing components: R16=10.0kΩ (R_A), R17=715kΩ (R_B), C23=1µF (C_OSC) → 1Hz, ~50% duty cycle via formula f=1.44/((R_A+2R_B)×C). VCC bypass: C33
 > (100nF). R17 verified as ERJ-3EKF7153V with Mouser 667-ERJ-3EKF7153V / DigiKey P715KHCT-ND / JLCPCB C403339.
-> * **Q1–Q3 CSD17483F4T** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery).
+> * **Q1–Q3 CSD17578Q5A** — N-channel MOSFET for LM74700-Q1 ideal-diode OR-ing. One per power input (PoE, USB-C, Battery).
 > Three LM74700-Q1 instances (U6a, U6b, U6c) are required — one IC per MOSFET for correct per-channel ideal-diode gate drive
 > (+7V above source via internal charge pump). Confirm U6a/U6b/U6c footprints at schematic capture.
 > * **J1/J2/J3 = TE 1123684-7 (PM) mating with Controller 1-1674231-1** — three 10-position 2.5 mm board-to-board dock connectors.
