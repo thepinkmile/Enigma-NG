@@ -162,15 +162,52 @@ Stator-only `CFG_APPLY_N` pulse under CM5 firmware control.
 
 ---
 
-## 7. U1 — Stator CPLD Signal Map (Logical Pin Budget)
+## 7. U6 / U7 — MCP23017 I²C GPIO Expanders (CM5 Interface)
 
-> This is the board-authoritative **logical** signal map for U1. The local MAX II handbook confirms
+**Component:** MCP23017T-E/SO, SOIC-28 (both).  
+**Placement:** Near Controller dock connectors J11/J12; within 20 mm of each other. Decoupling caps
+within 1 mm of each VDD pin.
+
+- **U6** (I²C address 0x20) — Encoder-bus activity monitoring: reads `ENC_ACTIVE_N` sidebands from
+  all six encoder ports (J4–J9) and presents them to the CM5 over I²C.
+- **U7** (I²C address 0x21) — Virtual key injection, keyboard source selection, and system reset:
+  drives `CM5_KEY_DATA[5:0]`, `KEY_CM5_ACTIVE_N` (keyboard source select), and `SYS_RESET_N`
+  broadcast to the CPLD and all downstream boards.
+
+---
+
+## 8. U4 / U5 — Keyboard Source MUX
+
+**Component:** 74HC157PW-Q100,118, TSSOP-16 (both).  
+**Placement:** Near U7 (they share the `KEY_CM5_ACTIVE_N` select line) and near U1 CPLD input pins
+for the selected keyboard bus.
+
+A pair of quad 2-to-1 multiplexers that select between the physical keyboard encoder input
+(`ENC_IN_KBD[5:0]` from J4) and the CM5-driven virtual key data (`CM5_KEY_DATA[5:0]` from U7) and
+presents the selected 6-bit bus to the CPLD U1 encryption entry point.
+
+---
+
+## 9. U2 — INA219 3V3\_ENIG Current / Voltage Monitor
+
+**Component:** INA219AIDR, SOIC-8.  
+**Placement:** In series on the 3V3\_ENIG entry trace between J12 (Controller dock) and the local
+shunt resistor R1; within 10 mm of the shunt. Decoupling cap within 1 mm of VS pin.
+
+Provides real-time 3V3\_ENIG voltage and current telemetry to the CM5 over I²C. The shunt resistor
+R1 is on the 3V3\_ENIG entry trace; INA219 differential voltage sense pins straddle R1.
+
+---
+
+## 10. U1 — Stator CPLD Signal Map (Logical Pin Budget)
+
+> This is the board-authoritative **logical** signal map for U1.The local MAX II handbook confirms
 > `EPM570T100` package availability in TQFP-100, but it explicitly points printed device pin-outs to
 > the vendor package documentation rather than providing a fixed package pin table in the handbook.
 > The grouping below therefore freezes **what U1 must connect to**, while the exact TQFP pad numbers
 > remain a schematic-capture task.
 
-### 7.1 Dedicated device pins
+### 10.1 Dedicated device pins
 
 | Function | Source / destination | Notes |
 | :--- | :--- | :--- |
@@ -180,7 +217,7 @@ Stator-only `CFG_APPLY_N` pulse under CM5 firmware control.
 | `TDO` | U1 -> Stator JTAG chain -> `J4` | First JTAG chain output; continues through encoder ports, then the rotor stack |
 | `DEV_CLRN` | `U3` (`SYS_RESET_N AND CFG_APPLY_N`) -> U1 | Dedicated device clear; not counted as a general-purpose routing I/O |
 
-### 7.2 General-purpose signal groups
+### 10.2 General-purpose signal groups
 
 | Signal group | Pins | U1 direction | Notes |
 | :--- | :---: | :--- | :--- |
@@ -207,13 +244,13 @@ shared `ENC_ACTIVE_N` source-select path is added. `U7 GPA[7]` is allocated to `
 
 ---
 
-## 8. Routing — Trace Width Specifications
+## 11. Routing — Trace Width Specifications
 
 **Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).  
 L1 = signal (JTAG/routing); L2 = GND plane; L3 = 3V3_ENIG power pour; L4 = secondary routing / data
 plate.
 
-### 8.1 Trace Width Table
+### 11.1 Trace Width Table
 
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -225,10 +262,10 @@ plate.
 | 3V3_ENIG distribution (inner power pour) | 2.05 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Solid GND reference plane |
 
-### 8.2 Notes
+### 11.2 Notes
 
-* **JTAG CI traces:** 0.127 mm (5 mil) on L1 over the L2 GND plane achieves 50 Ω controlled
+- **JTAG CI traces:** 0.127 mm (5 mil) on L1 over the L2 GND plane achieves 50 Ω controlled
   impedance on the JLC04161H-7628 stackup.
-* **Encoder-port terminations:** provide one TCK and one TMS series resistor per encoder port plus
+- **Encoder-port terminations:** provide one TCK and one TMS series resistor per encoder port plus
   one TDI-chain series resistor for each Stator-driven cable segment in the six-module chain.
-* **3V3_ENIG entry trace:** 0.80 mm remains the canonical trunk width for the 2.05 A design budget.
+- **3V3_ENIG entry trace:** 0.80 mm remains the canonical trunk width for the 2.05 A design budget.

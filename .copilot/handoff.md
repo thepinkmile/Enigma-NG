@@ -207,9 +207,40 @@ Key changes:
 
 ## Next return summary
 
-When resuming, read `.copilot/checkpoints/077-bom-rebuilt-csd17578q5a-corrected.md` for current state.
+When resuming, read `.copilot/checkpoints/082-pass1-committed-pass2-launched.md` for current state.
 
-Next checkpoint will be **079**.
+Next checkpoint will be **083**.
+
+**Immediate next action:** Pass 2 review cycle is running. Await results from all three batches, then run the single fix agent.
+
+## 2026-05-xx Pass 1 review cycle complete (checkpoint 081)
+
+Full electronics deep-review Pass 1 is complete. 42 findings resolved across all 11 boards
+plus integration. All user decisions D-1 through D-7 actioned. No uncommitted design debt.
+
+Key changes (summary — see checkpoint 081 for full detail):
+
+- **Agent directives:** SECONDARY DIRECTIVE; review cycle process; global read-first rule;
+  general MOQ blanket suppression rule added
+- **Standards:** `Global_Routing_Spec.md` §3.2 Per-IC Bypass Capacitors rule added
+  (100nF Samsung CL05B104KB5NNNC / JLCPCB C1525 as standard)
+- **Power Module:** D4 TVS added — Bourns SMBJ18A-Q (DO-214AA; 18V standoff; 600W;
+  Mouser `652-SMBJ18A-Q`; DigiKey `118-SMBJ18A-QCT-ND`; JLCPCB `C1979859` Extended)
+- **Controller:** DR-CTL-16 added; C26/C27 100nF bypass caps for U2/U3 (CL05B104KB5NNNC)
+- **JTAG Daughterboard:** Y1 crystal changed to CTS 435F12012IET (12MHz, 20pF, ±20ppm,
+  −40 to +85°C; DigiKey `110-435F12012IETTR-ND`; Mouser `774-435F12012IET`; JLCPCB `C19766404`)
+- **JDB:** RESET# → RESET_N throughout; DR-JDB IDs renumbered 01–16; ESD statement fixed;
+  inverted stackup cross-reference note added
+- **Actuation Module:** DR-AM-18 removed; R6 BOM row removed; ACTUATE_REQUEST_N/ACTUATION_HOME_N
+  signal renames; Thermal & ESD §7 added; no-external-pull-up note added to firmware spec
+- **Rotor Board_Layout:** U5–U8 (Board A) and U9–U12 (Board B) ESD array entries added
+- **Extension / Reflector / Settings Board:** DEC-045 cross-refs; stackup strings standardised;
+  Thermal & ESD sections added; structural section renumbering for Settings Board
+- **Stator Board_Layout:** U5/U6 mux, U7 I²C, U8 JTAG header sections added as functional entries
+- **Design_Log:** DEC-043 supersession note; QUE-002 amended to record supersession
+- **New datasheets:** `bourns-smbj-q-datasheet.md` and `CTS-crystals-435-datasheet.md`
+- **Consolidated BOM:** D4 TVS, C26/C27 bypass, Y1 crystal, AM R4/R5 range, and other row
+  corrections applied
 
 
 ## Standing Directives

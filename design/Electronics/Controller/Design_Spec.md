@@ -70,6 +70,7 @@ source is active.
 | DR-CTL-13 | Actuation Module trigger dock | J16 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating dock for the AM trigger connector; carries active-low `ACTUATE_REQUEST` plus guard / return pins | §8 Connectivity; BOM J16 |
 | DR-CTL-14 | Actuation-request GPIO usage | `ACTUATE_REQUEST` uses CM5 GPIO 8 as an active-low host control output. The former direct `SERVO_PWM` / `SERVO_HOME` CM5 ownership is retired in favour of the shared Actuation Module architecture. | §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-15 | Actuation Module host envelope | The Controller area beneath the installed AM shall be a no-component placement zone except for J11 / J16 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure features that would trap heat or block service access | §8.6; §8.7; `Board_Layout.md` |
+| DR-CTL-16 | Power switch Vcc bypass capacitors | U2 (TPS2065CDBVR) and U3 (AP2331W-7) shall each have a dedicated 100nF X7R 50V 0402 bypass capacitor on their Vcc pin, placed within 1mm of the IC per `Global_Routing_Spec.md §3.2` | BOM: C26 (U2 bypass), C27 (U3 bypass) |
 
 ## 2. Dock Interfaces
 
@@ -285,7 +286,6 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 * **Part:** Adam Tech RS1-05-G (Female Socket, 1×5, 2.54mm pitch, vertical THT). Mouser 737-RS1-05-G, DigiKey 2057-RS1-05-G-ND, JLCPCB C3321119.
 * **Mating Part (JDB J1):** Adam Tech PH1-05-UA — 1×5 2.54mm male pin header (JLCPCB C5374051). See `JTAG_Daughterboard/Design_Spec.md §3`.
-* **Full Pin Table:** See `Controller/Board_Layout.md` JDB Hat Connectors section for the authoritative pinout.
 * **Pin Summary:**
 
 | Pin | Signal | Direction | Description |
@@ -300,7 +300,6 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 * **Part:** Adam Tech RS1-10-G (Female Socket, 1×10, 2.54mm pitch, vertical THT). Mouser 737-RS1-10-G, DigiKey 2057-RS1-10-G-ND, JLCPCB C3320525.
 * **Mating Part (JDB J2):** Adam Tech PH1-10-UA — 1×10 2.54mm male pin header (JLCPCB C3330527). See `JTAG_Daughterboard/Design_Spec.md §3`.
-* **Full Pin Table:** See `Controller/Board_Layout.md` JDB Hat Connectors section for the authoritative pinout.
 * **Pin Summary:**
 
 | Pin | Signal | Direction | Description |
@@ -471,6 +470,8 @@ Estimated Controller-local power dissipation at system peak load:
 | U4 | USB/HDMI ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF, ±15kV IEC 61000-4-2; covers USB 3.0 and HDMI differential pairs | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | U5 | GbE ESD — pair AB (DA+/DA−, DB+/DB−); place between J8 RJ45 and integrated magnetics | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, supports up to 6 Gbps; same part as U4 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | U6 | GbE ESD — pair CD (DC+/DC−, DD+/DD−); place between J8 RJ45 and integrated magnetics | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, supports up to 6 Gbps; same part as U4 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| C26 | U2 (TPS2065CDBVR) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C27 | U3 (AP2331W-7) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 
 ### BOM Notes
 

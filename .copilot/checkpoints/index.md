@@ -2,89 +2,146 @@
 
 Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, higher numbers are more recent.
 
-> Note: checkpoint files `034-settings-board-panel-switch-re.md` and
-> `035-settings-board-dsi-provision-b.md` are referenced by later local session material but are
-> not present in the current repo-local `.copilot/checkpoints/` snapshot.
-
 | # | Title | File |
-| --- | ------- | ------ |
-| 1 | R26 fixes, DEC-020 rib bond, 2×3 supercap change | 001-r26-fixes-dec-020-rib-bond-2-3.md |
-| 2 | R27 fixes, Encoder architecture, 2×3 supercap | 002-r27-fixes-encoder-architecture.md |
-| 3 | R28–R32 fixes, session state in repo | 003-r28-r32-fixes-session-state-in.md |
-| 4 | R33–R38 fixes, shutdown deferred decision | 004-r33-r38-fixes-shutdown-deferre.md |
-| 5 | R39–R42 fixes, DEC format standardisation, DEC-025 | 005-r39-r42-fixes-dec-format-stand.md |
-| 6 | R43–R47 fixes, review cycle continuing | 006-r43-r47-fixes-review-cycle-con.md |
-| 7 | R47–R48 fixes, Extension buffer restored | 007-r47-r48-fixes-extension-buffer.md |
-| 8 | JTAG topology clarified, R49 discarded | 008-jtag-topology-clarified-r49-discarded.md |
-| 9 | Encoder phase complete (R56+R57 clean) | 009-encoder-phase-complete.md |
-| 10 | Power Module PWR_GD flaw analysis & resolution | 010-power-module-pwr-gd-flaw-analysis.md |
-| 11 | PWR_BUT circuit, SW2 fix, PMIC_EN glitch resolved | 011-pwr-but-sw2-fix-pmic-glitch.md |
-| 12 | Controller sanity check, ENC_IN direction fix | 012-controller-sanity-enc-in-fix.md |
-| 13 | Stator CPLD routing matrix, DIP switch config | 013-stator-cpld-routing-dip-switch.md |
-| 14 | Rotor sanity check, clarifications identified | 014-rotor-sanity-clarifications.md |
-| 15 | Rotor CPLD upgrade, DIP switch architecture finalised | 015-rotor-cpld-upgrade-dip-switch.md |
-| 16 | Stator reflector map, position encoder open | 016-stator-reflector-map-enc-open.md |
-| 17 | Capacitive encoder design, Virtual JTAG readback | 017-capacitive-encoder-virtual-jtag.md |
-| 18 | Rotor encoder finalised; JLCPCB single-side open | 018-rotor-single-side-jlcpcb-open.md |
-| 19 | Rotor review cycle complete, mechanical specs added | 019-rotor-review-cycle-complete.md |
-| 20 | Full system review complete (R8+R9 clean, 9 rounds, 90 fixes) | 020-full-system-review-complete-r8.md |
-| 21 | Full system review complete, eFuse and R1 corrections | 021-full-system-review-complete-ef.md |
-| 22 | Master parts list, FDC2114RGHR, PN corrections | 022-master-parts-list-fdc2114rghr.md |
-| 23 | Parts verification connectors, ESD, supercap search | 023-parts-verification-connectors.md |
-| 24 | Session start | 024-session-start.md |
-| 25 | Abracon supercap selected, DIP switch Item C pending | 025-abracon-supercap-selected-dip.md |
-| 26 | Connector MPNs confirmed, J_INT redesign in progress | 026-connector-mpns-confirmed-j-int.md |
-| 27 | J_INT redesign, POS_B naming, full deep-dive clean | 027-j-int-redesign-pos-b-clean-review.md |
-| 28 | DEC-029 supercap hold-up spec; eFuse & Extension U1 root causes fixed | 028-dec029-supercap-efuse-root-causes.md |
-| 29 | DEC-029 supercap 2S4P upgrade, 15W load correction | 029-dec-029-supercap-2s4p-upgrade.md |
-| 30 | C35 transient fix (DEC-030), 2S4P cascade confirmed | 030-c35-transient-fix-2s4p-cascade.md |
-| 31 | C35 confirmed 2×22µF, 2S4P cascade complete | 031-c35-confirmed-2-22-f-2s4p-casc.md |
-| 32 | CM5 key injection and servo design confirmed | 032-cm5-key-injection-and-servo-de.md |
-| 33 | Mechanical restructure + CM5 virtual keyboard feature | 033-mechanical-restructure-cm5-virtual-kb.md |
-| 34 | Settings Board panel switch requirements gathering | 034-settings-board-panel-switch-re.md |
-| 35 | Settings Board, DSI provision, BOM audit launched | 035-settings-board-dsi-provision-b.md |
-| 36 | Settings Board layout, BOM audit complete, switch unification | 036-settings-board-layout-bom-audit.md |
-| 37 | Remove .copilot/ from git tracking (gitignore fix) | 037-copilot-untracked-gitignore-fix.md |
-| 38 | R2 review fixes, BOM 🔒 markers, Required Specs column | 038-r2-review-fixes-bom-lock-specs.md |
-| 39 | R3–R5 review fixes | 039-r3-r5-review-fixes.md |
-| 40 | R6–R13 review fixes, clean pass #1 of 2 (R14 pending) | 040-r6-r13-review-fixes-clean-pass-1.md |
-| 41 | Session resync, component table normalized, R14 relaunch pending | 041-session-resync-components-table-r14.md |
-| 42 | Electronics review agent created, Boards Overview eFuse wording fixed, review cycle complete | 042-electronics-review-agent-r15-clean.md |
-| 43 | Electronics review agent simulated successfully, session handoff synced | 043-electronics-review-agent-simulated-session-handoff.md |
-| 44 | Electronics agent tested successfully, review cycle process formalized | 044-electronics-agent-tested-review-cycle-defined.md |
-| 45 | Components todo coverage sync, connector verification state captured | 045-components-todo-coverage-sync.md |
-| 46 | Copilot handoff sanitized for version control and sync rules tightened | 046-copilot-sanitized-for-version-control.md |
-| 47 | Repository review cleanup, two clean passes | 047-repository-review-cleanup-two-clean-passes.md |
-| 48 | Settings Board 5V RGB upgrade complete | 004-settings-board-5v-rgb-upgrade.md |
-| 49 | First component batch locked; HID layout and pseudo datasheet synced | 049-first-component-batch-hid-layout-lock.md |
-| 50 | Post-audit architecture sync and Link-Beta rebalance locked | 050-post-audit-link-beta-lock-and-review-rerun.md |
-| 51 | Final review fixes locked and rerun prepared | 051-final-review-fixes-locked-and-rerun.md |
-| 52 | DSI confirmed and topology cleanup locked | 052-dsi-confirmed-and-topology-cleanup.md |
-| 53 | BHR verified and review fixes locked | 053-bhr-verified-and-review-fixes.md |
-| 54 | Final propagation and datasheet tracking sync | 054-final-propagation-and-datasheet-tracking.md |
-| 55 | LINK-BETA DEC-037 pin remap | 055-link-beta-dec037-pin-remap.md |
-| 56 | Component closeout and handoff consolidation | 056-component-closeout-and-handoff-consolidation.md |
-| 57 | Power-doc sync and session handoff refresh | 057-power-doc-sync-and-session-handoff.md |
-| 58 | README architecture sync and handoff refresh | 058-readme-architecture-sync-and-handoff.md |
-| 59 | Version metadata reset and repo-local state sync | 059-version-metadata-and-state-sync.md |
-| 60 | Datasheet markdown migration | 060-datasheet-markdown-migration.md |
-| 61 | Encoder EPM570 upgrade and logic spec | 061-encoder-epm570-and-logic-spec.md |
-| 62 | Encoder split review closed | 062-encoder-split-review-closed.md |
-| 63 | Encoder HID activity sideband | 063-encoder-active-sideband.md |
-| 64 | Battery connector candidate documented | 064-battery-connector-candidate.md |
-| 65 | Extension review closed, AM BOM sync | 065-extension-am-bom-sync.md |
-| 66 | Electronics review loop clean closeout | 066-electronics-review-loop-clean.md |
-| 67 | Category A deep-review fixes implemented and committed | 067-category-a-deep-review-fixes.md |
-| 68 | Markdown lint fixes for .copilot/ and Stator spec | 068-copilot-markdown-lint-fixes.md |
-| 69 | Category B parts sourced, datasheets generated, committed | 069-category-b-parts-sourced-datash.md |
-| 70 | Pass 18 fix pass complete — all critical/high/medium edits applied | 070-pass-18-fix-pass-complete.md |
-| 71 | INA219 RC filter BOM complete — PM R52/R53/C52, Stator R42/R43/C21 | 071-ina219-rc-filter-bom-complete.md |
-| 72 | D1/D2/D3 fix pass committed | 072-d1-d2-d3-fix-pass-committed.md |
-| 73 | Size-down pass complete (bulk cap 1206→0805, Stator resistors 0603→0402) | 073-size-down-pass-complete.md |
-| 74 | Datasheet hygiene: fix Samtec links, add 5 BOM §11 entries, remove orphaned KGP | 074-datasheet-hygiene-complete.md |
-| 75 | Electronics deep-review cycle complete and committed | 075-deep-review-cycle-complete-comm.md |
-| 76 | Second deep-review cycle resolved and committed | 076-second-deep-review-resolved-c.md |
-| 77 | BOM rebuilt, CSD17578Q5A corrected | 077-bom-rebuilt-csd17578q5a-corrected.md |
-| 78 | Agent directives file created, operational rules consolidated | 078-agent-directives-created-rules-consolidated.md |
-| 79 | DEC-048: ESD protection extended to Stator, Extension, Reflector host-side BtB connectors | 079-esd-extension-dec-048-complete.md |
-| 80 | Review report removed (cycle complete); agent directives updated with review cycle process | 080-review-report-removed-directives-updated.md |
+|---|-------|------|
+| 1 | Deep-review open items triage | 001-deep-review-open-items-triage.md |
+| 2 | Open items research in progress | 002-open-items-research-in-progres.md |
+| 3 | A-item open decisions research complete | 003-a-item-open-decisions-research.md |
+| 4 | A-item research complete, undelivered | 004-a-item-research-complete-undel.md |
+| 5 | A-item decisions received, implementation pending | 005-a-item-decisions-received-impl.md |
+| 6 | A-item file reading complete | 006-a-item-file-reading-complete.md |
+| 7 | A-item decisions complete, pre-implementation | 007-a-item-decisions-complete-pre.md |
+| 8 | A-item implementation ready | 008-a-item-implementation-ready.md |
+| 9 | A-item implementation starting | 009-a-item-implementation-starting.md |
+| 10 | A-item implementation ready to begin | 010-a-item-implementation-ready-to.md |
+| 11 | A-item implementation ready to begin | 011-a-item-implementation-ready-to.md |
+| 12 | A-item fixes partially implemented | 012-a-item-fixes-partially-impleme.md |
+| 13 | Settings Board topology edits complete | 013-settings-board-topology-edits.md |
+| 14 | Rotor files and new docs complete | 014-rotor-files-and-new-docs-compl.md |
+| 15 | Category A deep-review fixes complete | 015-category-a-deep-review-fixes-c.md |
+| 16 | Linting .copilot markdown files | 016-linting-copilot-markdown-files.md |
+| 17 | Markdown lint fixes committed | 017-markdown-lint-fixes-committed.md |
+| 18 | Category B inductor sourcing in progress | 018-category-b-inductor-sourcing-i.md |
+| 19 | Rotor inductor sourcing and shaft hole docs | 019-rotor-inductor-sourcing-and-sh.md |
+| 20 | Inductor approved, capacitor sourcing started | 020-inductor-approved-capacitor-so.md |
+| 21 | Rotor Category B caps and resistors sourced | 021-rotor-category-b-caps-and-resi.md |
+| 22 | Settings Board PMOS sourcing in progress | 022-settings-board-pmos-sourcing-i.md |
+| 23 | Datasheet markdowns pending commit | 023-datasheet-markdowns-pending-co.md |
+| 24 | Datasheet markdowns lint fix pending | 024-datasheet-markdowns-lint-fix-p.md |
+| 25 | Datasheet script fix in progress | 025-datasheet-script-fix-in-progre.md |
+| 26 | Datasheet script fixed, ready to commit | 026-datasheet-script-fixed-ready-t.md |
+| 27 | Deep-review round planned, agents pending | 027-deep-review-round-planned-agen.md |
+| 28 | Deep-review pass 18 in progress | 028-deep-review-pass-18-in-progres.md |
+| 29 | Deep-review pass 18 user feedback | 029-deep-review-pass-18-user-feedb.md |
+| 30 | Deep-review pass 18 fix pass pending | 030-deep-review-pass-18-fix-pass-p.md |
+| 31 | Deep-review pass 18 fix pass ready | 031-deep-review-pass-18-fix-pass-r.md |
+| 32 | Pass 18 fix pass ready | 032-pass-18-fix-pass-ready.md |
+| 33 | Pass 18 fix pass ready | 033-pass-18-fix-pass-ready.md |
+| 34 | Pass 18 fix pass ready | 034-pass-18-fix-pass-ready.md |
+| 35 | Pass 18 fix pass ready | 035-pass-18-fix-pass-ready.md |
+| 36 | Pass 18 fix pass ready | 036-pass-18-fix-pass-ready.md |
+| 37 | Pass 18 fix pass ready | 037-pass-18-fix-pass-ready.md |
+| 38 | Pass 18 pre-edit verification complete | 038-pass-18-pre-edit-verification.md |
+| 39 | Pass 18 fix pass complete | 039-pass-18-fix-pass-complete.md |
+| 40 | INA219 RC filter investigation started | 040-ina219-rc-filter-investigation.md |
+| 41 | INA219 RC filter BOM values | 041-ina219-rc-filter-bom-values.md |
+| 42 | INA219 RC filter BOM complete | 042-ina219-rc-filter-bom-complete.md |
+| 43 | Extension Reflector AM JDB review prep | 043-extension-reflector-am-jdb-rev.md |
+| 44 | Extension Reflector AM JDB review agents dispatched | 044-extension-reflector-am-jdb-rev.md |
+| 45 | Size-down analysis prep, agents complete unread | 045-size-down-analysis-prep-agents.md |
+| 46 | Agent review results read, triage pending | 046-agent-review-results-read-tria.md |
+| 47 | Ext/Reflector + AM/JDB review triage complete | 047-ext-reflector-am-jdb-review-tr.md |
+| 48 | Extension/AM/JDB review triage ready | 048-extension-am-jdb-review-triage.md |
+| 49 | Extension AM JDB fixes implemented | 049-extension-am-jdb-fixes-impleme.md |
+| 50 | Consolidated BOM F1-F6 updates complete | 050-consolidated-bom-f1-f6-updates.md |
+| 51 | D1-D3 decisions received pre-implementation | 051-d1-d3-decisions-received-pre-i.md |
+| 52 | D1-D3 decisions applied pre-lint | 052-d1-d3-decisions-applied-pre-li.md |
+| 53 | Size-down analysis in progress | 053-size-down-analysis-in-progress.md |
+| 54 | Size-down analysis data gathered | 054-size-down-analysis-data-gather.md |
+| 55 | Size-down analysis, MPN verification pending | 055-size-down-analysis-mpn-verific.md |
+| 56 | Size-down MPN verification in progress | 056-size-down-mpn-verification-in.md |
+| 57 | Size-down prep complete, edits pending | 057-size-down-prep-complete-edits.md |
+| 58 | Size-down spec edits in progress | 058-size-down-spec-edits-in-progre.md |
+| 59 | Size-down pass committed, checkpoint fix needed | 059-size-down-pass-committed-check.md |
+| 60 | Datasheet coverage audit in progress | 060-datasheet-coverage-audit-in-pr.md |
+| 61 | Datasheet coverage audit complete | 061-datasheet-coverage-audit-compl.md |
+| 62 | Datasheet hygiene: fix Samtec links, add BOM entries | 062-datasheet-hygiene-fix-samtec-l.md |
+| 63 | Deep-dive review cycle started | 063-deep-dive-review-cycle-started.md |
+| 64 | Deep-dive review cycle findings complete | 064-deep-dive-review-cycle-finding.md |
+| 65 | Rotor BOM/layout fixes, review findings pending | 065-rotor-bom-layout-fixes-review.md |
+| 66 | 330Ω PN fix, PM/CTL decisions in progress | 066-330-pn-fix-pm-ctl-decisions-in.md |
+| 67 | PM/CTL/Rotor review decisions resolved | 067-pm-ctl-rotor-review-decisions.md |
+| 68 | All review decisions resolved, fix pass pending | 068-all-review-decisions-resolved.md |
+| 69 | Fix pass in progress, ROT-04 and EXT M-3 complete | 069-fix-pass-in-progress-rot-04-an.md |
+| 70 | ROTOR_EN_N fix, DEC-045, ESD policy update | 070-rotor-en-n-fix-dec-045-esd-pol.md |
+| 71 | Fix pass continuation: Settings, Stator, PM, Rotor ESD | 071-fix-pass-continuation-settings.md |
+| 72 | Fix pass: Settings, Stator, CTL, Rotor ESD pending | 072-fix-pass-settings-stator-ctl-r.md |
+| 73 | Fix pass: Settings, Stator, CTL, Rotor ESD applied | 073-fix-pass-settings-stator-ctl-r.md |
+| 74 | BOM SBD qty updates, PM caps investigation | 074-bom-sbd-qty-updates-pm-caps-in.md |
+| 75 | PM cap expansion investigation complete | 075-pm-cap-expansion-investigation.md |
+| 76 | PM bypass caps added, CTL ESD pending | 076-pm-bypass-caps-added-ctl-esd-p.md |
+| 77 | Deep-review cycle complete, committed | 077-deep-review-cycle-complete-com.md |
+| 78 | Rotor ESD part selection confirmed | 078-rotor-esd-part-selection-confi.md |
+| 79 | Rotor ESD BOM rows added, Section 6 pending | 079-rotor-esd-bom-rows-added-secti.md |
+| 80 | Rotor ESD committed, review cycle launched | 080-rotor-esd-committed-review-cyc.md |
+| 81 | Full review collected, triage complete, fixes pending | 081-full-review-collected-triage-c.md |
+| 82 | Review triage complete, fixes pending | 082-review-triage-complete-fixes-p.md |
+| 83 | All fixes ready, pending ROT/CTL-M1/STA-L2 confirmation | 083-all-fixes-ready-pending-rot-ct.md |
+| 84 | Review fixes applied, ROT ESD pending | 084-review-fixes-applied-rot-esd-p.md |
+| 85 | ROT ESD rewrite confirmed, pending apply | 085-rot-esd-rewrite-confirmed-pend.md |
+| 86 | ROT ESD rewrite pending apply | 086-rot-esd-rewrite-pending-apply.md |
+| 87 | Session fbc2318d | 087-session-fbc2318d.md |
+| 88 | Stator spec cleanup, requirement renumbering pending | 088-stator-spec-cleanup-requiremen.md |
+| 89 | Second review cycle fixes complete | 089-second-review-cycle-fixes-comp.md |
+| 90 | CTL-L2 resolved, DEC-046 pending | 090-ctl-l2-resolved-dec-046-pendin.md |
+| 91 | DEC-046 written, CTL-H1 investigation started | 091-dec-046-written-ctl-h1-investi.md |
+| 92 | CTL-H1 R1/R2 investigation | 092-ctl-h1-r1-r2-investigation.md |
+| 93 | CTL-H1 R1/R2 stale placeholder audit | 093-ctl-h1-r1-r2-stale-placeholder.md |
+| 94 | CTL-H1 resolved, resistors renumbered, commit ready | 094-ctl-h1-resolved-resistors-renu.md |
+| 95 | KiCAD library prep started | 095-kicad-library-prep-started.md |
+| 96 | BOM fully read, component list pending | 096-bom-fully-read-component-list.md |
+| 97 | BOM component list compiling | 097-bom-component-list-compiling.md |
+| 98 | BOM supplier PN audit and KiCAD footprint tracking | 098-bom-supplier-pn-audit-and-kica.md |
+| 99 | BOM supplier PN audit in progress | 099-bom-supplier-pn-audit-in-progr.md |
+| 100 | BOM full audit, PN gaps identified | 100-bom-full-audit-pn-gaps-identif.md |
+| 101 | BOM audit, CSD17483F4T error found | 101-bom-audit-csd17483f4t-error-fo.md |
+| 102 | BOM audit, web search rule enforced | 102-bom-audit-web-search-rule-enfo.md |
+| 103 | BOM missing PNs compiled | 103-bom-missing-pns-compiled.md |
+| 104 | BOM PN deletions discovered | 104-bom-pn-deletions-discovered.md |
+| 105 | BOM PN audit — no true deletions confirmed | 105-bom-pn-audit-no-true-deletions.md |
+| 106 | BOM full audit read complete | 106-bom-full-audit-read-complete.md |
+| 107 | BOM extraction from board specs complete | 107-bom-extraction-from-board-spec.md |
+| 108 | BOM JSON extraction complete, rebuild pending | 108-bom-json-extraction-complete-r.md |
+| 109 | BOM generation script ready to run | 109-bom-generation-script-ready-to.md |
+| 110 | BOM rebuilt, CSD17578Q5A corrected | 110-bom-rebuilt-csd17578q5a-correc.md |
+| 111 | Agent directives file creation | 111-agent-directives-file-creation.md |
+| 112 | Review-report outstanding items catalogued | 112-review-report-outstanding-item.md |
+| 113 | Outstanding items verification in progress | 113-outstanding-items-verification.md |
+| 114 | TVS/ESD mating connector extension planning | 114-tvs-esd-mating-connector-exten.md |
+| 115 | ESD mating-connector extension planning | 115-esd-mating-connector-extension.md |
+| 116 | ESD extension implementation started | 116-esd-extension-implementation-s.md |
+| 117 | ESD extension implementation in progress | 117-esd-extension-implementation-i.md |
+| 118 | ESD extension Stator Extension Reflector complete | 118-esd-extension-stator-extension.md |
+| 119 | Lint fixes complete, ready to commit | 119-lint-fixes-complete-ready-to-c.md |
+| 120 | Review cycle Pass 1 launched | 120-review-cycle-pass-1-launched.md |
+| 121 | Review cycle Pass 1 Batch 2 complete | 121-review-cycle-pass-1-batch-2-co.md |
+| 122 | Review cycle Pass 1 complete | 122-review-cycle-pass-1-complete.md |
+| 123 | Pass 1 decisions implementation in progress | 123-pass-1-decisions-implementatio.md |
+| 124 | Pass 1 fix decisions in progress | 124-pass-1-fix-decisions-in-progre.md |
+| 125 | Pass 1 decisions fix prep — D-2 TVS blocker found | 125-pass-1-decisions-fix-prep-d-2.md |
+| 126 | Pass 1 fixes prep — D-2 TVS blocker confirmed | 126-pass-1-fixes-prep-d-2-tvs-bloc.md |
+| 127 | D-2/D-3 pre-fix research complete | 127-d-2-d-3-pre-fix-research-compl.md |
+| 128 | D-2 D-3 blockers identified, unblocked fixes ready | 128-d-2-d-3-blockers-identified-un.md |
+| 129 | D-2 SMBJ18A-Q confirmed, D-3 pending | 129-d-2-smbj18a-q-confirmed-d-3-pe.md |
+| 130 | SMBJ18A-Q confirmed, datasheet generation | 130-smbj18a-q-confirmed-datasheet.md |
+| 131 | CTS crystal D-3 review | 131-cts-crystal-d-3-review.md |
+| 132 | CTS 435F12012IET D-3 verification | 132-cts-435f12012iet-d-3-verificat.md |
+| 133 | D-3 CTS crystal confirmed, datasheet generation | 133-d-3-cts-crystal-confirmed-data.md |
+| 134 | Pass 1 fixes ready to launch | 134-pass-1-fixes-ready-to-launch.md |
+| 135 | Pass 1 fix agent ready | 135-pass-1-fix-agent-ready.md |
+| 136 | Pre-fix-agent item resolution | 136-pre-fix-agent-item-resolution.md |
+| 137 | Pre-fix-agent false positive resolution | 137-pre-fix-agent-false-positive-r.md |
+| 138 | Fix agent launch ready | 138-fix-agent-launch-ready.md |
+| 139 | Pass 1 fix agent — post-run corrections pending | 139-pass-1-fix-agent-post-run-corr.md |
+| 140 | Pass 1 review cycle complete | 140-pass-1-review-cycle-complete.md |
+| 141 | Pass 1 committed; Pass 2 launched | 082-pass1-committed-pass2-launched.md |

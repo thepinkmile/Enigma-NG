@@ -44,9 +44,10 @@
 | Power Module | D1 | TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | 595-TPD1E10B06DYARQ1 | C3013901 | — | ESD SOD-523 | ESD protection diode [Texas Instruments] | Yes | Pending |
 | Power Module | D2 | TPD2E2U06DRLR | 296-38361-1-ND | 595-TPD2E2U06DRLR | C1972959 | — | ESD SOT-553 | Dual ESD protection [Texas Instruments] | Yes | Pending |
 | Power Module | D3 | TPD4E05U06QDQARQ1 | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | 4-ch ESD ±15kV U-DFN-10 | 4-channel ESD array [Texas Instruments] | Yes | Pending |
+| Power Module | D4 | SMBJ18A-Q | 118-SMBJ18A-QCT-ND | 652-SMBJ18A-Q | C1979859 (Extended) | — | 18V 600W unidirectional TVS SMB (DO-214AA) | VBATT TVS at J4 battery connector [Bourns] | Yes | Pending |
 | Power Module | D6,D7 | BAT54 | 4878-BAT54CT-ND | 637-BAT54 | C49435667 | — | Schottky SOT-23 | Schottky diode [Vishay] | Yes | Pending |
 | Power Module | F1 | AC72ABD | AC72ABD-ND | 652-AC72ABD | C17468669 | — | 72°C SMD Thermal Cutoff | Thermal cutoff fuse [Bourns] | Yes | Pending |
-| Power Module | J1-J3 | 1123684-7 | A114780-ND | 571-1123684-7 | C3683043 | — | 10-pos 2.5mm RA plug | Link-Alpha power/telemetry right-angle plugs [TE Connectivity] | Yes | Pending |
+| Power Module | J1-J3 | 1123684-7 | A114780-ND | 571-1123684-7 | C3683043 (consignment — see BOM Notes) | — | 10-pos 2.5mm RA plug | Link-Alpha power/telemetry right-angle plugs [TE Connectivity] | Yes | Pending |
 | Power Module | J4 | 0436500519 | WM14587-ND | 538-43650-0519 | C563849 | — | 5-pin Micro-Fit 3.0 THT vertical | Internal power connector [Molex] | Yes | Pending |
 | Power Module | J5 | USB4135-GF-A | 2073-USB4135-GF-ACT-ND | 640-USB4135-GF-A | C5438410 | — | USB-C right-angle SMT | USB-C input (PD only) [GCT] | Yes | Pending |
 | Power Module | L1,L2 | 7448031002 | 732-5584-ND | 710-7448031002 | C1519839 | — | 10A 2mH nanocrystalline CMC THT | Common mode choke [Würth Elektronik] | Yes | Pending |
@@ -94,7 +95,7 @@
 | Power Module | U18 | SN74LVC1G175DBVR | 296-17617-1-ND | 595-SN74LVC1G175DBVR | C128412 | — | D-type flip-flop shutdown latch SOT-23-6 | Shutdown latch [Texas Instruments] | Yes | Pending |
 | Power Module | U19 | SN74LVC1G08DBVR | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | — | Single AND gate SOT-23-5 | Blink gate [Texas Instruments] | Yes | Pending |
 | Controller | C1-C5,C7-C11 | CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | 10µF X7R 25V 0805 | Bulk decoupling [Samsung] | Yes | Pending |
-| Controller | C6,C12,C24 | CL05B104KB5NNNC | 1276-1009-1-ND | 187-CL05B104KB5NNNC | C1525 | — | 100nF X7R 50V 0402 | Bypass decoupling [Samsung] | Yes | Pending |
+| Controller | C6,C12,C24,C26,C27 | CL05B104KB5NNNC | 1276-1009-1-ND | 187-CL05B104KB5NNNC | C1525 | — | 100nF X7R 50V 0402 | Bypass decoupling [Samsung] | Yes | Pending |
 | Controller | C25 | C0402C103K1RACAUTO | 399-C0402C103K1RACAUTOCT-ND | 80-C0402C103K1RAUTO | C19862710 | — | 10nF 100V X7R 0402 | Filter cap [Kemet] | Yes | Pending |
 | Controller | BT1 | 3034TR | 36-3034CT-ND | 534-3034TR | C5213768 | — | CR2032 holder THT horizontal | RTC battery holder [Keystone Electronics] | Yes | Pending |
 | Controller | D1 | BAT54 | 4878-BAT54CT-ND | 637-BAT54 | C49435667 | — | Schottky SOT-23 | Schottky diode [Vishay] | Yes | Pending |
@@ -186,13 +187,13 @@
 | Extension | J3 | ERM8-010-05.0-S-DV-K-TR | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | — | 20-pin 2x10 0.8mm male SMT | Input dock connector (power/JTAG) [Samtec] | Yes | Pending |
 | Extension | J4,J5 | ERF8-005-05.0-S-DV-K-TR | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | 10-pin 2x5 0.8mm female SMT | Output dock connectors [Samtec] | Yes | Pending |
 | Extension | J6 | ERF8-010-05.0-S-DV-K-TR | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | — | 20-pin 2x10 0.8mm female SMT | Output dock connector (power/JTAG) [Samtec] | Yes | Pending |
-| Extension | J7,J8 | BHR-20-VUA | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | 20-pin 2x10 2.54mm shrouded box THT | Rotor group JTAG headers [Adam Tech] | Yes | Pending |
+| Extension | J7,J8 | BHR-20-VUA | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | 20-pin 2x10 2.54mm shrouded box THT | Extension service port connectors (J7 = IN from Stator, J8 = OUT to next stage) [Adam Tech] | Yes | Pending |
 | Extension | J9,J10 | ERF8-005-05.0-S-DV-K-TR | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | 10-pin 2x5 0.8mm female SMT | Actuation Module dock connectors [Samtec] | Yes | Pending |
 | Extension | U1 | SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | — | Dual 3-state buffer VSSOP-8 | JTAG TCK/TMS buffer [Texas Instruments] | Yes | Pending |
 | Extension | U2–U9 | TPD4E05U06QDQARQ1 | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | 4-ch bidirectional ESD array USON-10 | J1/J3 input (×4) + J4/J6 output (×4) ESD protection [Texas Instruments] | Yes | Pending |
 | Reflector | C1-C5 | CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | 10µF X7R 25V 0805 | Bulk decoupling [Samsung] | Yes | Pending |
 | Reflector | J1,J2 | ERM8-005-05.0-S-DV-K-TR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | — | 10-pin 2x5 0.8mm male SMT | Input dock connectors [Samtec] | Yes | Pending |
-| Reflector | J3 | ERM8-010-05.0-S-DV-K-TR | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | — | 20-pin 2x10 0.8mm male SMT | Input dock connector (power/JTAG) [Samtec] | Yes | Pending |
+| Reflector | J3 | ERM8-010-05.0-S-DV-K-TR | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | — | 20-pin 2x10 0.8mm male SMT | ENC data BtB input connector [Samtec] | Yes | Pending |
 | Reflector | J4 | BHR-20-VUA | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | 20-pin 2x10 2.54mm shrouded THT | Reflector JTAG header [Adam Tech] | Yes | Pending |
 | Reflector | R1 | ERJ-3EKF2200V | P220HCT-ND | 667-ERJ-3EKF2200V | C403073 | — | 22Ω 1% 0603 | JTAG termination resistor [Panasonic] | Yes | Pending |
 | Reflector | U1–U4 | TPD4E05U06QDQARQ1 | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | 4-ch bidirectional ESD array USON-10 | J1 JTAG (×1) + J3 ENC (×3) ESD protection [Texas Instruments] | Yes | Pending |
@@ -216,7 +217,7 @@
 | Actuation Module | J2 | ERM8-005-05.0-S-DV-K-TR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | — | Trigger dock male 2x5 0.8mm SMT | Trigger dock connector [Samtec] | Yes | Pending |
 | Actuation Module | J3-J6 | PH1-05-UA | 2057-PH1-05-UA-ND | 737-PH1-05-UA | C5374051 | — | 1x5 2.54mm male THT | Manual-fit output headers [Adam Tech] | Yes | Pending |
 | Actuation Module | R1-R3 | ERJ-2RKF3300X | P330LCT-ND | 667-ERJ-2RKF3300X | C278592 | — | 330Ω 1% 0402 | LED current limit [Panasonic] | Yes | Pending |
-| Actuation Module | R4-R6 | ERJ-2RKF1002X | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | 10kΩ 1% 0402 | Pull-up/protection resistors [Panasonic] | Yes | Pending |
+| Actuation Module | R4, R5 | ERJ-2RKF1002X | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | 10kΩ 1% 0402 | Pull-up/protection resistors [Panasonic] | Yes | Pending |
 | Actuation Module | SW1,SW2 | B3F-1070 | SW406-ND | 653-B3F-1070 | C726011 | — | SPST NO tactile THT | NRST/BOOT0 pushbuttons [Omron] | Yes | Pending |
 | Actuation Module | U1 | STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | 511-STM32G071K8T3TR | — | Global sourcing | Local actuation controller LQFP32 | STM32G071 MCU — JLCPCB consignment only [STMicroelectronics] | Yes | Pending |
 | JTAG Daughterboard | C1-C4,C6-C9 | CL05B104KB5NNNC | 1276-1009-1-ND | 187-CL05B104KB5NNNC | C1525 | — | 100nF X7R 50V 0402 | FT232H per-pin bypass [Samsung] | Yes | Pending |
@@ -224,12 +225,12 @@
 | JTAG Daughterboard | C10,C11 | C0402C330J5GAUTO | 399-12979-1-ND | 80-C0402C330J5GAUTO | C2169327 | — | 33pF C0G/NP0 crystal load 0402 | Crystal load caps — only C0G in system [Kemet] | Yes | Pending |
 | JTAG Daughterboard | J1 | PH1-05-UA | 2057-PH1-05-UA-ND | 737-PH1-05-UA | C5374051 | — | 1x5 2.54mm male INPUT header THT | Input header [Adam Tech] | Yes | Pending |
 | JTAG Daughterboard | J2 | PH1-10-UA | 2057-PH1-10-UA-ND | 737-PH1-10-UA | C3330527 | — | 1x10 2.54mm male JTAG OUTPUT header THT | JTAG output header [Adam Tech] | Yes | Pending |
-| JTAG Daughterboard | R2,R3 | ERJ-2RKF33R0X | P33.0LCT-ND | 667-ERJ-2RKF33R0X | C278594 | — | 33Ω 1% 0402 | TDI series damping [Panasonic] | Yes | Pending |
+| JTAG Daughterboard | R2 | ERJ-2RKF33R0X | P33.0LCT-ND | 667-ERJ-2RKF33R0X | C278594 | — | 33Ω 1% 0402 | TDI series damping [Panasonic] | Yes | Pending |
 | JTAG Daughterboard | R3-R5 | ERJ-2RKF1002X | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | 10kΩ 1% 0402 | RESET/TMS/TCK pull resistors [Panasonic] | Yes | Pending |
 | JTAG Daughterboard | R6-R8 | ERJ-2RKF33R0X | P33.0LCT-ND | 667-ERJ-2RKF33R0X | C278594 | — | 33Ω 1% 0402 | TCK/TMS/TDI series damping [Panasonic] | Yes | Pending |
 | JTAG Daughterboard | U1 | FT232HL-REEL | 768-1101-1-ND | 895-FT232HL-REEL | C51997 | — | USB 2.0 to MPSSE bridge LQFP-48 | USB-JTAG bridge IC [FTDI Chip] | Yes | Pending |
 | JTAG Daughterboard | U5 | SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | — | Dual 3-state buffer VSSOP-8 | JTAG TCK/TMS buffer [Texas Instruments] | Yes | Pending |
-| JTAG Daughterboard | Y1 | ABM8-12-B2-T | 535-9826-1-ND | 815-ABM8-12-B2-T | C596894 | — | 12MHz 20pF ±20ppm crystal SMD3225-4P | FT232H clock crystal [Abracon] | Yes | Pending |
+| JTAG Daughterboard | Y1 | 435F12012IET | 110-435F12012IETTR-ND | 774-435F12012IET | C19766404 (Extended) | — | 12MHz 20pF ±20ppm crystal SMD-3225 | FT232H clock crystal [CTS] | Yes | Pending |
 
 ---
 
@@ -243,7 +244,7 @@ Per-Unit Total = one instance of every board type. Actual system totals depend o
 | 2 | CGA9N3X7R1E476M230KB | TDK | 4 | — | — | — | — | — | — | — | — | — | — | 4 |
 | 3 | CL21B106KAYQNNE | Samsung | 1 | 10 | 10 | 5 | — | 2 | 10 | 5 | 5 | 1 | — | 49 |
 | 4 | C0805C105K5RACTU | Kemet | 7 | — | — | — | — | — | — | — | — | 1 | — | 8 |
-| 5 | CL05B104KB5NNNC | Samsung | 26 | 3 | 16 | 10 | 1 | 4 | 1 | — | 8 | 4 | 8 | 81 |
+| 5 | CL05B104KB5NNNC | Samsung | 26 | 5 | 16 | 10 | 1 | 4 | 1 | — | 8 | 4 | 8 | 83 |
 | 6 | C0402C101K3RACAUTO | Kemet | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
 | 7 | ADCR-T02R7SA256MB | Abracon | 8 | — | — | — | — | — | — | — | — | — | — | 8 |
 | 8 | CL10B223KB8WPNC | Samsung | 1 | — | — | — | — | — | — | — | — | — | — | 1 |
@@ -353,4 +354,5 @@ Per-Unit Total = one instance of every board type. Actual system totals depend o
 | 112 | PH1-10-UA | Adam Tech | — | — | — | — | — | — | — | — | — | — | 1 | 1 |
 | 113 | ERJ-2RKF33R0X | Panasonic | — | — | — | — | — | — | — | — | — | — | 5 | 5 |
 | 114 | FT232HL-REEL | FTDI Chip | — | — | — | — | — | — | — | — | — | — | 1 | 1 |
-| 115 | ABM8-12-B2-T | Abracon | — | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| 115 | 435F12012IET | CTS | — | — | — | — | — | — | — | — | — | — | 1 | 1 |
+| 116 | SMBJ18A-Q | Bourns | 1 | — | — | — | — | — | — | — | — | — | — | 1 |

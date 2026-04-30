@@ -72,8 +72,18 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "Bourns-smbj-q-datasheet.pdf",
+      "markdown": "Bourns-smbj-q-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "CTS-Switches-DIP-219-Series-Datasheet.pdf",
       "markdown": "CTS-Switches-DIP-219-Series-Datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "CTS-crystals-435-datasheet.pdf",
+      "markdown": "CTS-crystals-435-datasheet.md",
       "mapping_type": "same_stem"
     },
     {
@@ -124,11 +134,6 @@
     {
       "pdf": "Keystone-CoinCellRetainers-datasheet.pdf",
       "markdown": "Keystone-CoinCellRetainers-datasheet.md",
-      "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "Kyocera-AVX-KGP-datasheet.pdf",
-      "markdown": "Kyocera-AVX-KGP-datasheet.md",
       "mapping_type": "same_stem"
     },
     {
@@ -440,44 +445,11 @@
       "pdf": "vishay-wsk2512-datasheet.pdf",
       "markdown": "vishay-wsk2512-datasheet.md",
       "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf",
-      "markdown": "erf8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md",
-      "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.pdf",
-      "markdown": "erm8-xxx-xx.x-xxx-dv-xxxx-xx-mkt-datasheet.md",
-      "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "Samsung-1276_CL21B1-datasheet.pdf",
-      "markdown": "Samsung-1276_CL21B1-datasheet.md",
-      "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "KAM05CR71A105KH-Datasheet.pdf",
-      "markdown": "KAM05CR71A105KH-Datasheet.md",
-      "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.pdf",
-      "markdown": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.md",
-      "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "TDK-CGA_mlcc_automotive-datasheet.pdf",
-      "markdown": "TDK-CGA_mlcc_automotive-datasheet.md",
-      "mapping_type": "same_stem"
-    },
-    {
-      "pdf": "TDK-CGA_automotive-datasheet.pdf",
-      "markdown": "TDK-CGA_automotive-datasheet.md",
-      "mapping_type": "same_stem"
     }
   ],
-  "pdf_only": [],
+  "pdf_only": [
+    "TI-csd17578q5a-datasheet.pdf"
+  ],
   "markdown_only": [
     "Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md",
     "SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md"

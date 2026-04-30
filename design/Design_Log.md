@@ -2555,9 +2555,16 @@ DEC-038, `design/Electronics/Actuation_Module/Design_Spec.md`,
 `design/Electronics/Extension/Design_Spec.md`,
 `design/Mechanical/Rotor_Actuation_Assembly/Design_Spec.md`.
 
+> **QUE-002 supersession note:** DEC-043 supersedes the pin count stated in QUE-002 Question 3.
+> QUE-002 Q3 referenced "Stator J10 (16-pin 2×8)" — that was the pre-DEC-043 connector width.
+> J10 is now a **20-pin 2×10 BHR-20-VUA** shrouded box header. The mating connectors on Extension
+> (J7/J8) and Reflector (J4) are identical 20-pin 2×10 BHR-20-VUA headers. Standard 20-wire 2.54mm
+> IDC ribbon cable assemblies are suitable for all three; no break-off PCB coupons are required for
+> these links (QUE-002 coupons apply only to Samtec ERF8/ERM8 0.8mm-pitch connectors).
+
 ---
 
-## DEC-044 — FDC2114 Internal Oscillator Selected (CLKIN → GND)
+## DEC-044— FDC2114 Internal Oscillator Selected (CLKIN → GND)
 
 - **Status:** Decided
 - **Date:** 2026-04-26
@@ -2993,6 +3000,14 @@ designators and signal assignments are considered stable (pending QUE-002 resolu
 family change is required for prototype cabling, the affected documents are:
 `Stator/Design_Spec.md`, `Extension/Design_Spec.md`, `Reflector/Design_Spec.md`, `Rotor/Design_Spec.md`,
 `Consolidated_BOM.md`, and the Design_Log connector inventory.
+
+> **Amendment — DEC-043:** Question 3 referenced "Stator J10 (16-pin 2×8)" — this is stale.
+> J10 was widened to **20-pin 2×10 BHR-20-VUA** by DEC-043. The Reflector/Extension link connectors
+> (Stator J10, Extension J7/J8, Reflector J4) are all 2.54mm-pitch shrouded IDC BHR-20-VUA headers
+> for which standard 20-wire IDC ribbon cable assemblies are commercially available. These connectors
+> are **not** Samtec ERF8/ERM8 0.8mm-pitch connectors; they do **not** require break-off PCB coupons
+> and are outside the scope of the ERF8/ERM8 bench-test coupon strategy. Cable lengths and sourcing
+> for these links can be confirmed at prototype procurement — no design-phase action required.
 
 ---
 

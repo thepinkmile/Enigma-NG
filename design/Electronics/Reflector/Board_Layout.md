@@ -73,7 +73,7 @@ PIN | SIGNAL          | DESCRIPTION
 
 ## 4. Routing — Trace Width Specifications
 
-**Board specs:** 4-layer / 2oz finished copper (JLC04161H-7628).
+**Board specs:** 4-Layer / 2oz Copper (JLC04161H-7628).
 L1 = signal (JTAG/routing); L2 = GND plane; L3 = 3V3_ENIG power pour; L4 = secondary routing / data plate.
 
 **IPC-2221A basis (2oz copper, external, 10°C rise, 25°C ambient):**

@@ -94,6 +94,21 @@ with discrete low-side devices.
 * **Board-local scope:** LED anode routing, series-resistor values, bank grouping, and any parallel
   hardware override path remain board-specific and must be documented in the owning board design.
 
+### 3.2. Per-IC Bypass Capacitors
+
+Every IC shall have a dedicated local 100nF X7R 50V 0402 bypass capacitor on its Vcc/supply pin,
+placed within 1mm of the IC on the same layer.
+
+* **Standard part:** Samsung CL05B104KB5NNNC (Mouser: 187-CL05B104KB5NNNC,
+  DigiKey: 1276-1009-1-ND, JLCPCB: C1525) — same as the RTC bypass capacitors in the Controller BOM.
+* **Placement:** Within 1mm of the IC supply pin on the same layer; connect directly to the Vcc
+  pad with the shortest possible trace before joining the power plane.
+* **Shared bypass:** Two adjacent ICs whose Vcc pins are ≤2mm apart may share one capacitor;
+  otherwise each IC requires a dedicated capacitor.
+* **Board-local scope:** Where a board design spec does not explicitly list per-IC bypass
+  capacitors for a given IC, the design requirement table for that board shall cite this rule and
+  list the specific capacitors added.
+
 ## 4. Mechanical Grounding
 
 * **Mounting Holes:** 3.2mm PTH for M3 screws.

@@ -40,7 +40,7 @@ second CPLD on the Reflector itself.
 
 ## 2. Architecture
 
-* **PCB:** 4-Layer (JLC04161H-7628) / 2oz Finished Copper / ENIG Gold / 2.0mm Filleted Corners.
+* **PCB:** 4-Layer / 2oz Copper (JLC04161H-7628) / ENIG Gold / 2.0mm Filleted Corners.
 * **Standard:** Includes Inverted White Data Plate on bottom layer.
 
 ### System Role: The "Turnaround"
@@ -153,7 +153,7 @@ Reflector.
 
 ## 6. PCB Fabrication & Stackup
 
-* **Stackup:** 4-Layer (JLC04161H-7628) / 2oz Finished Copper.
+* **Stackup:** 4-Layer / 2oz Copper (JLC04161H-7628).
 * **Layer Mapping:** L1: Signal (JTAG/routing) | L2: GND | L3: 3V3_ENIG | L4: Signal (Data Plate).
 * **Contacts:** ERM8-005 (×2, 10-pin, JTAG and Power) + ERM8-010 (×1, 20-pin, ENC Data) — male headers on J1–J3.
 * **Fillets:** 2.0mm Rounded PCB corners for consistent "Museum-Grade" enclosure fit.
@@ -178,4 +178,3 @@ Reflector.
 | U2 | ESD protection array — J3 ENC rotor connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | U3 | ESD protection array — J3 ENC rotor connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | U4 | ESD protection array — J3 ENC rotor connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P220HCT-ND | C403073 |

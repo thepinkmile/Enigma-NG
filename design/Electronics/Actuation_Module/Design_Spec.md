@@ -16,7 +16,7 @@ servo-driven single-step actuation cycle without continuous CM5 supervision. The
 * once on each **Extension** to regenerate a group-boundary carry event into a local single-step
   actuation of the next 5-rotor group
 
-The host board only provides power and a single active-low `ACTUATE_REQUEST` line. The AM owns the
+The host board only provides power and a single active-low `ACTUATE_REQUEST_N` line. The AM owns the
 power-up homing sequence, request latching / one-shot behaviour, servo PWM generation, and local LED
 diagnostics.
 
@@ -27,7 +27,7 @@ diagnostics.
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | FR-AM-01 | Accept a local power feed from a host board | Host provides `5V_MAIN`, `3V3_ENIG`, and multiple `GND` returns | §3 Connectivity; BOM J1 |
-| FR-AM-02 | Accept a single active-low `ACTUATE_REQUEST` input from the host board | Same electrical contract works for a CM5-driven request on the Controller and a switch-derived request on an Extension | §3 Connectivity; BOM J2 |
+| FR-AM-02 | Accept a single active-low `ACTUATE_REQUEST_N` input from the host board | Same electrical contract works for a CM5-driven request on the Controller and a switch-derived request on an Extension | §3 Connectivity; BOM J2 |
 | FR-AM-03 | Auto-home the local servo on power-up without host feedback wires | Host waits a fixed startup window; AM shows local LED state only | §4 Local control behaviour; BOM J4, D1-D3 |
 | FR-AM-04 | Convert each valid request into exactly one complete servo cycle | Held request inputs must not retrigger until the current cycle completes and the input has released | §4 Local control behaviour; BOM U1 |
 | FR-AM-05 | Drive one external hobby servo through a local loom connection | Servo is mechanically mounted near the actuation bar, not on the AM PCB | §3 Connectivity; BOM J3 |
@@ -49,7 +49,7 @@ diagnostics.
 | DR-AM-05 | Home-switch loom header | J4 = Adam Tech PH1-05-UA, manually fitted post-PCBA; twisted-pair wiring required for the active signal and return | §3.4; BOM J4 |
 | DR-AM-06 | Local controller architecture | U1 shall be a small 3.3V local controller with native hardware PWM, at least 2 digital inputs, at least 4 spare / LED-capable GPIOs, power-on reset, and a package suitable for low-profile service-module assembly | §4; BOM U1 |
 | DR-AM-07 | Diagnostics LED parts and placement | Reuse the existing green 0402 status LED and 330Ω 0402 resistor already used on Encoder boards, but place the LED footprints at the visible board edge on the PCBA side so their light remains observable when the AM is installed upside-down | BOM D1-D3, R1-R3; `Board_Layout.md` |
-| DR-AM-08 | Home-input biasing | `ACTUATION_HOME` uses a local 10kΩ pull-up to `3V3_ENIG` plus a 1µF local RC debounce capacitor — RC time constant 10 ms | BOM R4, C1 |
+| DR-AM-08 | Home-input biasing | `ACTUATION_HOME_N` uses a local 10kΩ pull-up to `3V3_ENIG` plus a 1µF local RC debounce capacitor — RC time constant 10 ms | BOM R4, C1 |
 | DR-AM-09 | Mounting orientation | Module is intended to mount upside-down from the host board, similar to the JDB service-board approach | `Board_Layout.md` |
 | DR-AM-10 | SWD service connector | J5 = Adam Tech PH1-05-UA, manually fitted 1x5 2.54mm SWD header using the common compact 5-pin STM32/ST-LINK flying-lead order (`VTref`, `SWCLK`, `GND`, `SWDIO`, `NRST`) | §3.5; BOM J5 |
 | DR-AM-11 | Inter-board component envelope | All PCBA-fitted parts on the enclosed connector-facing side of the AM shall remain low profile and shall not exceed 2.0 mm installed height above the PCB; all manual-fit loom / service headers remain on the opposite side | `Board_Layout.md`; §4 |
@@ -59,7 +59,6 @@ diagnostics.
 | DR-AM-15 | Local decoupling and reservoir caps | AM is exempt from the full 5x bulk-entry-bank rule used on larger boards, but it shall still include local STM32 supply decoupling plus compact 3V3/5V reservoir caps: C2-C3 = 100nF X7R 0402 at the STM32 VDD supply domains (pins 1 and 32), C7 = 100nF X7R 0402 at STM32 VDDA (pin 31, separate cap required per datasheet), C4 = 4.7uF X7R on `3V3_ENIG`, C5 = 10uF X7R on `5V_MAIN` near the servo/power entry region | §4; BOM C2-C3, C5, C7; `Board_Layout.md` |
 | DR-AM-16 | NRST filter capacitor | An external 100 nF X7R filter capacitor (C6) shall be placed between the MCU NRST pin and GND per STM32G071 datasheet Figure 23 to suppress voltage spikes on the reset line | §3.7; BOM C6; `Board_Layout.md` |
 | DR-AM-17 | BOOT0 series protection resistor | A 10 kΩ series resistor (R5) shall be placed between the SW2 / J6 pin 5 shared node and the MCU BOOT0 pin to limit current during BOOT0 assertion and protect the pin from conflict when the external harness and SW2 are both driven | §3.8; BOM R5; `Board_Layout.md` |
-| DR-AM-18 | ACTUATE_REQUEST pull-up biasing | R6 = 10 kΩ 0402 pull-up from `ACTUATE_REQUEST` (J2 pin 2) to `3V3_ENIG`; provides the local biasing stated in §3.2 so the line is held HIGH when the host carry-detector switch is open and the AM is idle | §3.2; BOM R6 |
 
 ## 3. Connectivity
 
@@ -86,13 +85,14 @@ diagnostics.
 **Module-side part:** Samtec **ERM8-005-05.0-S-DV-K-TR** (male, 2x5, 0.8mm pitch)  
 **Host-side mating part:** Samtec **ERF8-005-05.0-S-DV-K-TR** (female, 2x5, 0.8mm pitch)
 
-`ACTUATE_REQUEST` is **active-low**. The AM provides the local biasing; the host asserts a request by
-pulling the line LOW.
+`ACTUATE_REQUEST_N` is **active-low**. The host asserts a request by pulling the line LOW. The idle-HIGH
+bias is provided by the STM32 internal GPIO pull-up (PUPDR = `0b01`) configured in firmware — no external
+pull-up resistor is fitted on the AM hardware.
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
 | 1 | GND | — | Return / guard |
-| 2 | ACTUATE_REQUEST | Host -> AM | Active-low request input |
+| 2 | ACTUATE_REQUEST_N | Host -> AM | Active-low request input |
 | 3 | GND | — | Return / guard |
 | 4 | GND | — | Reserved as guard |
 | 5 | GND | — | Reserved as guard |
@@ -120,7 +120,7 @@ pulling the line LOW.
 
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
-| 1 | ACTUATION_HOME | Active-low home-switch input |
+| 1 | ACTUATION_HOME_N | Active-low home-switch input |
 | 2 | GND | Twisted-pair return with pin 1 |
 | 3 | GND | Spare return |
 | 4 | NC | Reserved |
@@ -206,7 +206,7 @@ The AM is intentionally **host-light** and **mechanically local**:
 2. On power-up, U1 boots from local non-volatile memory and performs a homing sequence using the
    external home switch on J4.
 3. Until homing completes, further actuation requests are ignored.
-4. Once homed, each valid low-going `ACTUATE_REQUEST` event is latched and converted into one complete
+4. Once homed, each valid low-going `ACTUATE_REQUEST_N` event is latched and converted into one complete
    servo cycle.
 5. A held request input must not cause repeated cycles; the request must release before the next cycle
    can be accepted.
@@ -292,8 +292,17 @@ pinouts, mechanical constraints, and BOM.
 | R1-R3 | LED current-limit resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
 | R4 | Home-input pull-up resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R5 | BOOT0 series protection resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6 | ACTUATE_REQUEST pull-up resistor (J2 pin 2 to 3V3_ENIG) — provides local biasing per DR-AM-18 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+
 | U1 | Local actuation controller | STMicroelectronics STM32G071K8T3TR | LQFP32 | 511-STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | Global sourcing / consignment only |
 
 The servo motor and the home switch are off-board electromechanical items and are therefore specified
 by the host mechanical assembly rather than as AM PCB-fitted BOM rows.
+
+## 7. Thermal & ESD
+
+* **Thermal:** No active cooling required on the AM. U1 (STM32G071K8T3TR LQFP-32) dissipates well below 100 mW; no heatsinking required.
+* **ESD — J1, J2 (ERM8-005 power and trigger docks, no TVS required):** J1 and J2 are service-only docks that mate to the host board (Extension J9/J10 or Controller equivalent).
+  These are not operator-accessible during live rotor swap and are explicitly outside DEC-048 scope per `Extension/Design_Spec.md §5`.
+  No TVS required per `design/Standards/Global_Routing_Spec.md §9`.
+* **ESD — J3–J6 (manual-fit loom/service headers, no TVS required):** All remaining connectors (Adam Tech PH1-05-UA) are internal assembly headers; not accessible under live conditions.
+  No TVS required per `design/Standards/Global_Routing_Spec.md §9`.

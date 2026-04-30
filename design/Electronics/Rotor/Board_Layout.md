@@ -73,6 +73,10 @@ Board A faces the input (upstream) side of the rotor stack.
 | H_PWR | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
 | H_JTAG | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
 | H_SENS | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| U5 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J1 JTAG entry ESD; channels: TDI, TMS, TCK (1 spare) |
+| U6 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J3 ENC input ESD, array 1 of 3; ENC_IN[3:0] |
+| U7 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J3 ENC input ESD, array 2 of 3; ENC_IN[5:4], ENC_OUT[1:0] |
+| U8 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J3 ENC input ESD, array 3 of 3; ENC_OUT[5:2] |
 
 ---
 
@@ -122,6 +126,10 @@ Board B faces the output (downstream) side of the rotor stack.
 | H_PWR | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
 | H_JTAG | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
 | H_SENS | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| U9 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J4 JTAG exit ESD; channels: TDO, TMS, TCK (1 spare) |
+| U10 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J6 ENC output ESD, array 1 of 3; ENC_IN[3:0] |
+| U11 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J6 ENC output ESD, array 2 of 3; ENC_IN[5:4], ENC_OUT[1:0] |
+| U12 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J6 ENC output ESD, array 3 of 3; ENC_OUT[5:2] |
 
 ---
 

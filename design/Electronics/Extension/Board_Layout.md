@@ -116,3 +116,14 @@ All Extension boards share an identical PCB layout; traces must be sized for the
 * **3V3_ENIG pass-through:** The 0.80 mm is the canonical system-wide minimum for all 3V3_ENIG
   surface traces (Global_Routing_Spec §1.1). IPC calculation for worst-case 1.43 A at 2oz external:
   1.43 × 0.15 mm = 0.21 mm → **0.80 mm** canonical width provides 6.8× margin above IPC minimum.
+
+---
+
+## 7. Thermal & ESD
+
+> **ESD detail:** See `Design_Spec.md §5 — Thermal & ESD` for the full ESD protection scheme applicable to this board.
+
+* **Rotor-facing connectors (TVS required):** All Samtec ERM8/ERF8 connectors (J1–J6) require TPD4E05U06QDQARQ1 ESD arrays within 3mm of the mating edge per DEC-045 and DEC-048.
+  Arrays are assigned to U2–U9 (see `Design_Spec.md §5`).
+* **Internal connectors (no TVS required):** J7, J8 (Extension Port BHR-20-VUA shrouded box) and J9, J10 (AM dock ERF8-005) are not operator-accessible during live rotor swap.
+  No TVS required per `design/Standards/Global_Routing_Spec.md §9`.

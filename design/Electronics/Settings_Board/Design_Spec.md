@@ -375,7 +375,15 @@ automatic polling intervals.
 
 ---
 
-## 9. Bill of Materials
+## 9. Thermal & ESD
+
+* **Thermal:** No active cooling required on the Settings Board. No high-power components are fitted; thermal dissipation is well within passive limits.
+* **ESD:** All connectors on the Settings Board are internal. J1 (JST PH 3-pin harness) is a PCB-to-harness connection to a local LED panel; it is not operator-accessible during live operation.
+  No TVS protection is required per `design/Standards/Global_Routing_Spec.md §9`.
+
+---
+
+## 10. Bill of Materials
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -429,7 +437,7 @@ automatic polling intervals.
 
 ---
 
-## 10. Power Budget
+## 11. Power Budget
 
 ### 3V3_ENIG (Logic Rail)
 

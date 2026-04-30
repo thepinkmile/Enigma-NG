@@ -59,6 +59,9 @@ Recent locked work:
 - `4e36234` — `Close encoder split review`
 - the current working tree carries the Power Module military-battery connector candidate note, the
   generated Glenair datasheet markdown, and the repo-local state sync for battery-review closeout
+- **Pass 1 review cycle complete** — 42 findings resolved across all 11 boards + integration;
+  all user decisions D-1 through D-7 actioned; new datasheets for Bourns SMBJ18A-Q and
+  CTS 435F12012IET generated; two new markdown datasheets; all files lint-clean
 
 ---
 
@@ -66,6 +69,7 @@ Recent locked work:
 
 | ID | Status | Scope |
 | ---- | -------- | ------- |
+| `review-cycle-pass2` | **in progress** | Pass 2 review agents running after Pass 1 commit |
 | `extension-mechanical-usage` | pending | Mechanical Extension usage is now aligned to local AM-based carry regeneration, but detailed switch / linkage geometry still needs later mechanical design |
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
 | `battery-connector-final-review` | pending | Re-confirm the chosen military battery connector details during the final deep-dive/manual review, especially the 6-pin contact assignment, `BATT_PRES_N` position, reserved contact behavior, cable selection, and interposer fit |
@@ -78,15 +82,16 @@ Recent locked work:
 
 | Board | Status |
 | ------- | -------- |
-| Power Module | In Review |
-| Stator | In Review |
-| Reflector | In Review |
-| Extension | In Review |
-| JDB | In Review |
-| Controller | In Review |
+| Power Module | In Review (Pass 1 fixes applied) |
+| Stator | In Review (Pass 1 fixes applied) |
+| Reflector | In Review (Pass 1 fixes applied) |
+| Extension | In Review (Pass 1 fixes applied) |
+| JDB | In Review (Pass 1 fixes applied) |
+| Controller | In Review (Pass 1 fixes applied) |
 | Encoder | In Review |
-| Rotor | In Review |
-| Settings Board | In Review |
+| Rotor | In Review (Pass 1 fixes applied) |
+| Settings Board | In Review (Pass 1 fixes applied) |
+| Actuation Module | In Review (Pass 1 fixes applied) |
 
 ---
 
@@ -96,11 +101,10 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/069-category-b-parts-sourced-datash.md`
+3. `.copilot/checkpoints/082-pass1-committed-pass2-launched.md`
 
-Category C sourcing items are still pending supplier email responses. No other sourcing work is
-outstanding. The next active tasks are either Category C follow-up (when supplier responses arrive)
-or beginning the KiCAD schematic-capture workstream.
+Pass 1 review cycle is complete, committed, and Pass 2 is underway.
+Read `.copilot/review-report.md` for the running audit trail.
 
 ---
 

@@ -118,6 +118,14 @@ When the cycle is complete and all items are resolved, the file may be deleted.
 
 Each cycle comprises two complementary review types:
 
+> **IMPORTANT — Global Routing Rules first:** Before reviewing any board's `Design_Spec.md` or
+> `Board_Layout.md`, every review agent **must** first read
+> `design/Standards/Global_Routing_Spec.md`. Board-level specs and layouts only document
+> **exceptions** to global rules, not restatements of them. A board that omits a value covered
+> by a global rule is correct, not incomplete. Only raise a finding if a board explicitly claims
+> to be exempt from a rule (and the exemption is missing or wrong), or if a board's inline value
+> **contradicts** the global rule.
+
 1. **Stand-alone board reviews** — each board's `Design_Spec.md` and `Board_Layout.md` are reviewed
    in isolation for internal consistency, completeness, FR/DR coverage, BOM accuracy, and correct
    component values.
@@ -170,3 +178,11 @@ as findings until the referenced pre-condition is complete.
   military replacement review is ongoing; supplier responses are still pending. Do not flag this
   as an issue until the connector review is complete and a decision is recorded in the Design Log.
   See `design/Electronics/Power_Module/Millitary_Battery_Connection_Option.md` for background.
+
+- **MOQ — Minimum Order Quantity:** MOQ values are informational only. Do not raise minimum order
+  quantity as a review finding at any severity level. MOQ constraints are addressed at procurement
+  time, not design time.
+
+- **ROT-MOQ — Rotor R6/R7 pull-up resistors:** KOA Speer SG73S1ERTTP4701F 4.7kΩ carries Mouser
+  MOQ 10,000 and JLCPCB MOQ 49. Accepted for the current batch-build plan. Do not raise as a
+  BOM-MOQ finding.

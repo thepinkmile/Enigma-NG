@@ -62,7 +62,8 @@ group without Controller-side live servo control.
   > Authoritative pinout: pins 1-16 preserve the existing reflector-boundary service bus
   > (`3V3_ENIG`, `SYS_RESET_N`, `ENC_OUT_REF[5:0]`, `ENC_IN_REF[5:0]`, `TTD_RETURN`, `GND`);
   > pins 17-20 add grouped `5V_MAIN` and extra return capacity for the local Actuation Module supply path.
-* **Rotor Interface Connectors (3 per rotor-facing side × 2 sides = 6 connectors total):**
+  > **Per DEC-043:** The Extension Port was widened from 16-pin to 20-pin to add `5V_MAIN` on pins 17–20.
+* **Rotor Interface Connectors(3 per rotor-facing side × 2 sides = 6 connectors total):**
   The Extension board provides ERM8 male headers on the **input side** (J1–J3, plugging into the
   previous rotor group's last rotor J4/J5/J6 ERF8 output sockets) and ERF8 female sockets on the
   **output side** (J4–J6, receiving the next rotor group's first rotor J1/J2/J3 ERM8 male headers).
@@ -173,9 +174,10 @@ group without Controller-side live servo control.
   * **U3, U4, U5** — 3× TPD4E05U06QDQARQ1 on J3 (ENC in); 12 channels: ENC_IN[5:0] + ENC_OUT[5:0].
   * **U6** — 1× TPD4E05U06QDQARQ1 on J4 (JTAG out); channels: TCK, TMS, TTD, SYS_RESET_N.
   * **U7, U8, U9** — 3× TPD4E05U06QDQARQ1 on J6 (ENC out); 12 channels: ENC_IN[5:0] + ENC_OUT[5:0].
-  All arrays shall be placed within 3mm of their respective connector mating edge on L1.
+  Per DEC-045, all Samtec ERM8/ERF8 rotor-facing connectors require TPD4E05U06QDQARQ1 arrays.
+  All arrays shall be placedwithin 3mm of their respective connector mating edge on L1.
 * **ESD — all other connectors (no TVS required):**
-  * J2 (Power in, ERM8-005) and J5 (Power out, ERF8-005): power rail (3V3_ENIG / GND) only — no signal protection required.
+  * J2 (Power in, ERM8-005) and J5 (Power out, ERF8-005): power rail (3V3_ENIG / GND) only — no signal protection required (explicitly outside DEC-048 scope — power-only rails, no signal data).
   * J7, J8 (Extension Port ribbons, BHR-20-VUA): internal IDC connectors; not accessible during live rotor swap.
   * J9, J10 (AM service docks, ERF8-005): service-only; not operator-swapped under live conditions (explicitly outside DEC-048 scope).
   Per `design/Standards/Global_Routing_Spec.md §9`.
