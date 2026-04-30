@@ -99,6 +99,68 @@ is `v.0.1.0`.
 
 ---
 
+## Deep-Dive Review Cycle
+
+### When to run
+
+Run the deep-dive review cycle when:
+
+- The user explicitly requests it with **"Let's run a review cycle"**, or
+- A new major design phase or design todo item is about to be marked complete.
+
+### Review report file
+
+At the start of each review cycle, create `.copilot/review-report.md`. This file is the running
+audit log for the entire cycle. It is append-only — each pass adds a new entry; nothing is deleted.
+When the cycle is complete and all items are resolved, the file may be deleted.
+
+### Scope of review
+
+Each cycle comprises two complementary review types:
+
+1. **Stand-alone board reviews** — each board's `Design_Spec.md` and `Board_Layout.md` are reviewed
+   in isolation for internal consistency, completeness, FR/DR coverage, BOM accuracy, and correct
+   component values.
+2. **Integration review** — all boards are reviewed together to verify:
+   - All inter-board connector pin-maps are consistent on both sides
+   - Signal names and directions are agreed end-to-end
+   - Rail names and voltages match across connector interfaces
+   - `design/Electronics/Consolidated_BOM.md` is complete, accurate, and consistent with all
+     board-level BOMs
+
+### Agent execution model
+
+- Launch all planned review agents in parallel batches of **maximum 4 agents at a time**.
+- Each agent is given a specific review scope (e.g. one board, or one cross-board interface pair).
+- All planned review batches must complete before any fixes are applied. Running the fix agent
+  mid-cycle would leave the design in a potentially misaligned state while findings from later
+  batches are still outstanding.
+- Once **all** review batches have completed, run a single **fix agent** that:
+  - Attempts to resolve all findings that are **simple, mechanical fixes** based on confirmed design
+    details already in the specs (e.g. correcting a cross-reference, filling in a known value,
+    fixing a lint error, aligning a BOM row with the board spec).
+  - Does **not** fix anything that requires user input, involves a design decision not yet taken,
+    or is not definitively resolved in the existing design documentation.
+  - Flags all unfixed items clearly so the user can provide decisions.
+- After the fix agent completes, run the full set of review batches again as a new pass.
+- Repeat (all review batches → single fix agent) until **two consecutive complete review runs
+  produce zero findings** at any severity level (HIGH, MEDIUM, or LOW), except for items
+  explicitly flagged as requiring user input.
+- **The SECONDARY DIRECTIVE applies throughout the entire review cycle.** No git commit may be
+  made at any point during a review cycle without explicit user confirmation. All changes
+  accumulated during the cycle — including all fix-agent edits — must be presented to the user
+  for approval before anything is committed.
+
+### Pass result format
+
+Each review pass entry in `review-report.md` must end with one of:
+
+- `#### Pass N result: clean` — zero findings at any severity
+- `#### Pass N result: N findings` — with a categorised table of HIGH / MEDIUM / LOW items and
+  which were fixed, which are deferred to user, and which carry over to the next pass
+
+---
+
 ## Review Suppression
 
 The following items are intentionally suppressed from automated review cycles. Do not raise them
