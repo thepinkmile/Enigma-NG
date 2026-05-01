@@ -94,15 +94,15 @@ Main outcomes:
 - BOM audit pass: active board design-spec BOMs currently show no open `TBD` / empty-supplier placeholder
   rows apart from the intentional CM5 distributor-only entry, and the consolidated AM section now carries
   explicit per-board and Rev A total counts for the current two-module design
-- the additive senior-electronics deep-review loop for BOM/support-part completeness and connector
-  consistency is now complete for the current design-doc set:
-  - `.copilot/review-report.md` contains the full pass-by-pass audit through Pass 17
-  - Pass 16 and Pass 17 both completed **clean** by the agreed review definition
-  - the resulting design/BOM fixes remain intentionally uncommitted in the working tree
-  - only the previously known deferred schematic-capture and owner-selected selections remain open
-  - this does **not** close the repo-local `rerun-deep-reviews` workstream; that remains the final
-    pre-V1 cross-discipline review gate after electrical, mechanical, and software work are complete and
-    each board has a full KiCAD project with exported production Gerbers
+- Pass 2 electronics review is complete. All findings F-42–F-66 have been resolved, applied, or
+  deferred per user decisions. The fix agent applied the bulk of changes; the orchestrator corrected
+  a critical agent error (SET-MAJ-1: bulk caps mis-specified as bypass caps) and three findings that
+  were missed (PM-MAJ-2, PM-MIN-2, REF-MIN-1). Audit trail (F-42–F-66) appended to
+  `.copilot/review-report.md`. All Pass 2 design changes remain uncommitted, awaiting user "Let's lock
+  this in."
+- this does **not** close the repo-local `rerun-deep-reviews` workstream; that remains the final
+  pre-V1 cross-discipline review gate after electrical, mechanical, and software work are complete and
+  each board has a full KiCAD project with exported production Gerbers
 
 ## 2025-05 size-down pass (checkpoint 073)
 

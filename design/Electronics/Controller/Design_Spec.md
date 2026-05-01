@@ -49,7 +49,7 @@ source is active.
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
 | FR-CTL-07 | Route power, JTAG, and I²C between the Controller and the Stator board | Via `J4/J5` hybrid docks | §2 Dock Interfaces; BOM J4/J5 |
 | FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J9) on Controller Board; display add-on board to be designed separately | §8 Connectivity; BOM J9 |
-| FR-CTL-09 | Host one shared Actuation Module for the main depression-bar actuation path | Controller provides AM power and a single active-low `ACTUATE_REQUEST` control line; homing, PWM generation, and diagnostics are local to the AM | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM J11, J16 |
+| FR-CTL-09 | Host one shared Actuation Module for the main depression-bar actuation path | Controller provides AM power and a single active-low `ACTUATE_REQUEST_N` control line; homing, PWM generation, and diagnostics are local to the AM | §6 CM5 GPIO Mapping Matrix; §8 Connectivity; BOM J11, J16 |
 
 #### Design Requirements
 
@@ -67,10 +67,10 @@ source is active.
 | DR-CTL-10 | OS/firmware configuration | All firmware configuration requirements (including RTC charging disable) are specified in the Linux OS design spec. See `design/Software/Linux_OS/`. | design/Software/Linux_OS/ |
 | DR-CTL-11 | DSI1 connector | J9 = Amphenol F52Q-1A7H1-11015, 15-pin 1.0mm pitch right-angle ZIF/FPC connector; DSI1 4-lane: CLK+/−, D0+/−, D1+/−, D2+/−, D3+/− = 10 differential signals; 100 Ω differential impedance; route on L3 (stripline, same as HDMI); capacitive touch I²C may share the existing I²C-1 controller interface when the deferred display add-on is defined | §8 Connectivity; BOM J9 |
 | DR-CTL-12 | Actuation Module power dock | J11 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating dock for the AM power connector; carries grouped `5V_MAIN`, `3V3_ENIG`, and `GND` returns | §8 Connectivity; BOM J11 |
-| DR-CTL-13 | Actuation Module trigger dock | J16 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating dock for the AM trigger connector; carries active-low `ACTUATE_REQUEST` plus guard / return pins | §8 Connectivity; BOM J16 |
-| DR-CTL-14 | Actuation-request GPIO usage | `ACTUATE_REQUEST` uses CM5 GPIO 8 as an active-low host control output. The former direct `SERVO_PWM` / `SERVO_HOME` CM5 ownership is retired in favour of the shared Actuation Module architecture. | §6 CM5 GPIO Mapping Matrix |
+| DR-CTL-13 | Actuation Module trigger dock | J16 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating dock for the AM trigger connector; carries active-low `ACTUATE_REQUEST_N` plus guard / return pins | §8 Connectivity; BOM J16 |
+| DR-CTL-14 | Actuation-request GPIO usage | `ACTUATE_REQUEST_N` uses CM5 GPIO 8 as an active-low host control output. The former direct `SERVO_PWM` / `SERVO_HOME` CM5 ownership is retired in favour of the shared Actuation Module architecture. | §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-15 | Actuation Module host envelope | The Controller area beneath the installed AM shall be a no-component placement zone except for J11 / J16 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure features that would trap heat or block service access | §8.6; §8.7; `Board_Layout.md` |
-| DR-CTL-16 | Power switch Vcc bypass capacitors | U2 (TPS2065CDBVR) and U3 (AP2331W-7) shall each have a dedicated 100nF X7R 50V 0402 bypass capacitor on their Vcc pin, placed within 1mm of the IC per `Global_Routing_Spec.md §3.2` | BOM: C26 (U2 bypass), C27 (U3 bypass) |
+| DR-CTL-16 | Power switch Vcc bypass capacitors | U2 (TPS2065CDBVR) and U3 (AP2331W-7) shall each have a dedicated 100nF X7R 50V 0402 bypass capacitor on their Vcc pin, placed within 1mm of the IC per `Global_Routing_Spec.md §3.2` | BOM: C13 (U2 bypass), C14 (U3 bypass) |
 
 ## 2. Dock Interfaces
 
@@ -211,7 +211,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | **5** | **PM_IO_INT_N** | Input | 3.3V | Optional interrupt input from the PM-local `PCA9534A @ 0x3F`, used to wake the power-management daemon for PM status changes. |
 | **6** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **7** | **PWR_GD** | Input | 3.3V | Direct PM rail-health telemetry only — HIGH while `5V_MAIN` ≥ 4.50V; does NOT trigger shutdown. Routed on `J3`. |
-| **8** | **ACTUATE_REQUEST** | Output | 3.3V | Active-low request pulse into the Controller-local Actuation Module trigger dock (`J16`). |
+| **8** | **ACTUATE_REQUEST_N** | Output | 3.3V | Active-low request pulse into the Controller-local Actuation Module trigger dock (`J16`). |
 
 > **GPIO matrix scope note:** `PWR_BUT` and `LED_nPWR` are **not** CM5 GPIO signals and are
 > deliberately absent from this table. `PWR_BUT` connects directly to the CM5 PMIC dedicated
@@ -364,7 +364,7 @@ The JTAG Daughterboard mounts as a hat on the Controller via two 2.54mm headers.
 
 * **Part:** Samtec ERF8-005-05.0-S-DV-K-TR — 10-pin 2x5 female 0.8mm Edge Rate socket.
 * **Function:** Host-side mating connector for the shared Actuation Module `J2` trigger dock.
-* **Control path:** CM5 GPIO 8 provides an active-low `ACTUATE_REQUEST` pulse to this connector.
+* **Control path:** CM5 GPIO 8 provides an active-low `ACTUATE_REQUEST_N` pulse to this connector.
   The Actuation Module performs local homing, one-shot latching, and servo PWM generation.
 * **Pin policy:** One active trigger pin plus generous `GND` / guard allocation, matching the
   serviceability requirement.
@@ -414,7 +414,7 @@ Estimated Controller-local power dissipation at system peak load:
 
 | Component | Normal Dissipation | Worst Case | Notes |
 | :--- | :--- | :--- | :--- |
-| U9 TPS2372-4 + U10 TPS23730 + T2 POE600F-12L | ~5.1W | ~5.7W | Controller-owned PoE front-end. Loss is dominated by the PoE ACF stage / transformer path at ~51-57W PoE load; see `Electronics/Investigations/PoE_Investigation.md §3.5`. |
+| U9 TPS2372-4 + U10 TPS23730 + T1 POE600F-12L | ~5.1W | ~5.7W | Controller-owned PoE front-end. Loss is dominated by the PoE ACF stage / transformer path at ~51-57W PoE load; see `Electronics/Investigations/PoE_Investigation.md §3.5`. |
 | **Total** | **~5.1W** | **~5.7W** | Fixed Controller-local dissipation only; excludes the CM5 SOM and any optional fan load because those depend on the fitted module SKU and runtime workload. |
 
 * **PM Dock Power Entry:** `J1` carries the grouped regulated rail entry for the Controller. Add a **"Caution: High Current"** silkscreen label adjacent to the PM dock cluster.
@@ -438,13 +438,16 @@ Estimated Controller-local power dissipation at system peak load:
 
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
 | C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C12 | `VDD_GPIO_REF` decoupling capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C24 | PoE IC bypass capacitors (U9 TPS2372-4RGWR and U10 TPS23730RMTR; full PoE front-end tracked in Consolidated_BOM.md) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C25 | RJ45 Bob Smith termination capacitor(Y1-class proxy; EMC GbE ESD discharge path to chassis GND) | 10nF 100V X7R | 0402 | 80-C0402C103K1RAUTO | 399-C0402C103K1RACAUTOCT-ND | C19862710 |
-| BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
+| C13 | U2 (TPS2065CDBVR) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C14 | U3 (AP2331W-7) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C15 | U9 (TPS2372-4RGWR) VCC bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C16 | U10 (TPS23730RMTR) VCC bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C17 | RJ45 Bob Smith termination capacitor(Y1-class proxy; EMC GbE ESD discharge path to chassis GND) | 10nF 100V X7R | 0402 | 80-C0402C103K1RAUTO | 399-C0402C103K1RACAUTOCT-ND | C19862710 |
 | D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
 | J1-J3 | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
 | J4, J5 | Stator dock hybrid receptacles (×2) | Molex 2195630015 | 5 power + 15 signal press-fit receptacle | 538-219563-0015 | 900-2195630015-ND | Global sourcing / consignment |
@@ -456,22 +459,21 @@ Estimated Controller-local power dissipation at system peak load:
 | J11 | Actuation Module power dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | J12 | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
 | J13 | JDB hat JTAG header (female socket) | Adam Tech RS1-10-G — 1×10 2.54mm female | THT | 737-RS1-10-G | 2057-RS1-10-G-ND | C3320525 |
-| J14 | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
-| J15 | Amphenol 100-pin B2B socket 4.0mm height (DigiKey: 609-10164227-1004A1RLFCT-ND, Mouser: 649-101642271004RLF) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
+| J14-J15 | Amphenol 100-pin B2B socket 4.0mm height (×2, for CM5 module) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
 | J16 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | MH1–MH4 | CM5 brass standoff M2.5 × 4.0mm SMT (Würth 9774040151R) × 4 | M2.5 × 4.0mm | SMT | 710-9774040151R | 732-7089-1-ND | C5182034 |
 | R1 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R2 | `PM_IO_INT_N` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R3 | `USB_FAULT` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
 | R4 | `PWR_GD` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
+| T1 | PoE transformer (1500V isolation) | POE600F-12L | 12-pin SMT | 673-POE600F-12L | 553-POE600F-12LCT-ND | Global sourcing / consignment |
 | U1 | Raspberry Pi Compute Module 5 (CM5) — multiple acceptable non-Lite variants; minimum 4GB RAM / 8GB eMMC; Wi-Fi optional | N/A | CM5 (SO-DIMM) | various CM5 SKUs | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
 | U2 | USB power switch | TPS2065CDBVR | SOT-23-5 | 595-TPS2065CDBVR | 296-39353-1-ND | C353882 |
 | U3 | HDMI power switch | AP2331W-7 | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C460346 |
 | U4 | USB/HDMI ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF, ±15kV IEC 61000-4-2; covers USB 3.0 and HDMI differential pairs | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U5 | GbE ESD — pair AB (DA+/DA−, DB+/DB−); place between J8 RJ45 and integrated magnetics | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, supports up to 6 Gbps; same part as U4 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U6 | GbE ESD — pair CD (DC+/DC−, DD+/DD−); place between J8 RJ45 and integrated magnetics | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, supports up to 6 Gbps; same part as U4 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| C26 | U2 (TPS2065CDBVR) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C27 | U3 (AP2331W-7) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| U5-U6 | GbE ESD — pairs AB+CD (DA+/DA−, DB+/DB−, DC+/DC−, DD+/DD−) ×2; place between J8 RJ45 and integrated magnetics | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, supports up to 6 Gbps; same part as U4 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U9 | PoE PD interface and signature controller | TPS2372-4RGWR | VQFN-24 4×4mm | 595-TPS2372-4RGWR | 296-45285-1-ND | Global sourcing / consignment |
+| U10 | PoE auxiliary controller | TPS23730RMTR | WSON-10 3×3mm | 595-TPS23730RMTR | 296-TPS23730RMTRCT-ND | Global sourcing / consignment |
 
 ### BOM Notes
 
@@ -480,7 +482,6 @@ decoupling capacitor placement rules are detailed in §7. Dock-connector ownersh
 specifications are in §8. The matching PM dock plugs are `TE 1123684-7`; the matching Stator dock plugs
 are `Molex 2195620015`.
 
-The Controller also owns the Ethernet / PoE front-end (`TPS2372-4RGWR`, `TPS23730RMTR`, `POE600F-12L`, and
+The Controller also owns the Ethernet / PoE front-end (`TPS2372-4RGWR` U9, `TPS23730RMTR` U10, `POE600F-12L` T1, and
 the Ethernet-entry ESD arrays U5/U6 — TPD4E05U06QDQARQ1, one per pair of GbE differential pairs, placed between J8 and the integrated magnetics). Those parts are tracked as Controller-owned in
-`design/Electronics/Consolidated_BOM.md`; only the externally visible connector and generic local ESD
-rows are repeated here until the Controller schematic refdes are frozen.
+`design/Electronics/Consolidated_BOM.md`; connector and local ESD rows are also repeated here for completeness.

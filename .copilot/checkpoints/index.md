@@ -145,3 +145,8 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 139 | Pass 1 fix agent — post-run corrections pending | 139-pass-1-fix-agent-post-run-corr.md |
 | 140 | Pass 1 review cycle complete | 140-pass-1-review-cycle-complete.md |
 | 141 | Pass 1 committed; Pass 2 launched | 082-pass1-committed-pass2-launched.md |
+| 142 | Pass 2 review complete | 083-pass2-review-complete.md |
+| 143 | Pass 2 audit complete | 084-pass2-audit-complete.md |
+| 144 | FB1 formalisation complete | 032-fb1-formalisation-complete.md |
+| 146 | Rotor J11–J14 renumber and BOM rewrite complete | 051-rotor-j11-j14-renumber-bom-rewrite-complete.md |
+| 147 | Rotor J7–J14 renumber and J_INT header fix complete | 056-rotor-j-renumber-complete.md |

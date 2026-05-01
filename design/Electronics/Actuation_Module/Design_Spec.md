@@ -56,9 +56,11 @@ diagnostics.
 | DR-AM-12 | UART bootloader connector | J6 = Adam Tech PH1-05-UA, manually fitted 1x5 2.54mm UART bootloader header; pins 1-4 shall follow the common 3.3V TTL serial order (`GND`, `3V3`, `TX`, `RX`) and pin 5 shall expose `BOOT0` | §3.6; BOM J6 |
 | DR-AM-13 | Local reset button | SW1 = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, wired to pull `NRST` low momentarily and placed adjacent to J6 for convenient UART bootloader entry | §3.7; BOM SW1 |
 | DR-AM-14 | Local `BOOT0` button | SW2 = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, wired to assert `BOOT0` HIGH while pressed and placed adjacent to J6 / SW1 for convenient UART bootloader entry | §3.8; BOM SW2 |
-| DR-AM-15 | Local decoupling and reservoir caps | AM is exempt from the full 5x bulk-entry-bank rule used on larger boards, but it shall still include local STM32 supply decoupling plus compact 3V3/5V reservoir caps: C2-C3 = 100nF X7R 0402 at the STM32 VDD supply domains (pins 1 and 32), C7 = 100nF X7R 0402 at STM32 VDDA (pin 31, separate cap required per datasheet), C4 = 4.7uF X7R on `3V3_ENIG`, C5 = 10uF X7R on `5V_MAIN` near the servo/power entry region | §4; BOM C2-C3, C5, C7; `Board_Layout.md` |
+| DR-AM-15 | Local decoupling and reservoir caps | AM is exempt from the full 5x bulk-entry-bank rule used on larger boards, but it shall still include local STM32 supply decoupling plus compact 3V3/5V reservoir caps: C2-C3 = 100nF X7R 0402 at the STM32 VDD/VDDA supply domain (pin 4, combined VDD/VDDA in LQFP-32), C7 = 100nF X7R 0402 also at STM32 VDD/VDDA (pin 4, combined VDD/VDDA in LQFP-32; multiple caps per datasheet decoupling guidance), C4 = 4.7uF X7R on `3V3_ENIG`, C5 = 10uF X7R on `5V_MAIN` near the servo/power entry region | §4; BOM C2-C3, C5, C7; `Board_Layout.md` |
 | DR-AM-16 | NRST filter capacitor | An external 100 nF X7R filter capacitor (C6) shall be placed between the MCU NRST pin and GND per STM32G071 datasheet Figure 23 to suppress voltage spikes on the reset line | §3.7; BOM C6; `Board_Layout.md` |
 | DR-AM-17 | BOOT0 series protection resistor | A 10 kΩ series resistor (R5) shall be placed between the SW2 / J6 pin 5 shared node and the MCU BOOT0 pin to limit current during BOOT0 assertion and protect the pin from conflict when the external harness and SW2 are both driven | §3.8; BOM R5; `Board_Layout.md` |
+| DR-AM-18 | `ACTUATE_REQUEST_N` pull-up policy | The `ACTUATE_REQUEST_N` signal on `J2` shall be held HIGH by the STM32G071K8T3TR internal GPIO pull-up (PUPDR = `0b01`) only; no external pull-up resistor shall be fitted on the AM hardware | §3.5 J2; BOM (no external pull-up component) |
+| DR-AM-19 | STM32G071K8T3TR LQFP-32 supply topology | The LQFP-32 package has a single combined VDD/VDDA pin (pin 4); all decoupling caps C2, C3, and C7 shall target pin 4 exclusively; no separate VDDA pin exists in this package | §4; BOM C2-C3, C7 |
 
 ## 3. Connectivity
 
@@ -279,7 +281,7 @@ pinouts, mechanical constraints, and BOM.
 | C4 | `3V3_ENIG` local reservoir / entry filter | 4.7uF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
 | C5 | `5V_MAIN` local reservoir near servo power path | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | C6 | NRST pin filter capacitor (datasheet-required per STM32G071 Figure 23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7 | STM32G071 VDDA supply decoupling (pin 31) — required per datasheet, separate from VDD domain caps C2-C3 | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C7 | STM32G071 VDD/VDDA supply decoupling (pin 4, combined VDD/VDDA in LQFP-32) — required per datasheet, multiple caps per decoupling guidance | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | D1-D3 | Local diagnostic LEDs (`PWR`, `HOMED`, `ACT`) | Wurth 150060VS75000 — Green SMD LED | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
 | J1 | Host power dock (module side) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
 | J2 | Host trigger dock (module side) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
@@ -287,12 +289,11 @@ pinouts, mechanical constraints, and BOM.
 | J4 | Home-switch loom header - manual fit | Adam Tech PH1-05-UA — 1x5 2.54mm male header | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | J5 | SWD programming / service header - manual fit | Adam Tech PH1-05-UA — 1x5 2.54mm male header | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | J6 | UART bootloader / service header - manual fit | Adam Tech PH1-05-UA — 1x5 2.54mm male header | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| SW1 | Local reset pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
-| SW2 | Local `BOOT0` pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
 | R1-R3 | LED current-limit resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
 | R4 | Home-input pull-up resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R5 | BOOT0 series protection resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-
+| SW1 | Local reset pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
+| SW2 | Local `BOOT0` pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
 | U1 | Local actuation controller | STMicroelectronics STM32G071K8T3TR | LQFP32 | 511-STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | Global sourcing / consignment only |
 
 The servo motor and the home switch are off-board electromechanical items and are therefore specified

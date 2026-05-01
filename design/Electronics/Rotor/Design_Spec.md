@@ -14,8 +14,8 @@ where the internal scrambled wiring is emulated by a dedicated logic chip on eac
 
 Each rotor assembly consists of **two circular PCBs** (Board A and Board B), each **Ø92mm**,
 inside an aluminium shroud (Ø100mm outer face, 4mm radial wall). The two boards are separated
-by an ~11.8mm gap and connected by four single-row 2.54mm THT headers (H_SW3 1×7, H_PWR 1×5,
-H_JTAG 1×5, H_SENS 1×5; 22 pins total; mixed gender for physical keying) on
+by an ~11.8mm gap and connected by four single-row 2.54mm THT headers (J7 1×5, J8 1×5,
+J9 1×5, J10 1×7; 22 pins total; mixed gender for physical keying) on
 their inner (facing) surfaces. Total rotor thickness is ~15mm, matching original Enigma rotor
 proportions. These internal headers are manually assembled post-JLCPCB SMT pick-and-place.
 
@@ -73,7 +73,7 @@ not be used as a local chassis-bond point.
 | FR-ROT-07 | Store 21 forward cipher maps in CPLD UFM; SW2 (input side) and SW3 (output side) each independently select map index [4:0] and direction bit [5] (0=forward, 1=reverse), giving 42 effective configurations per side without reprogramming | Same mechanism and switch count for both variants | §2.2 Logic & Transposition; BOM U1 (EPM570T100I5N), SW2, SW3 |
 | FR-ROT-08 | Implement ring setting via SW1 (6 switches, Board A input side only); CPLD sums SW1[5:0] with decoded position (mod N) to determine notch/turnover trigger position | Input side only; N=26 for 26-char variant, N=64 for 64-char variant | §2.3 Mechanical Details; BOM SW1; cross-ref: design/Mechanical/Rotor/Design_Spec.md |
 | FR-ROT-09 | Expose effective rotor position (decoded position + SW1 ring offset, mod N) via Intel Virtual JTAG (ALTERA_VIRTUAL_JTAG megafunction, USER0 instruction) as a 6-bit UDR; readable by JDB FT232H without interrupting cipher operation | 26-char variant: bits [4:0] valid, bit [5]=0; 64-char: all 6 bits; cipher logic operates independently on CPLD system clock | §2.2 Logic & Transposition; §3.3 Signal Integrity; cross-ref: DEC-027, JDB Design_Spec |
-| FR-ROT-10 | The rotor boards shall be assembled by JLCPCB SMT (one side each, outward-facing); the internal headers (H_SW3/H_PWR/H_JTAG/H_SENS) shall be manually assembled post-SMT | Mixed-gender header arrangement (H_SW3/H_SENS male on Board A, H_PWR/H_JTAG female on Board A; inverse on Board B) provides physical keying | §3.4 Connector Pinouts; BOM H_SW3/H_PWR/H_JTAG/H_SENS |
+| FR-ROT-10 | The rotor boards shall be assembled by JLCPCB SMT (one side each, outward-facing); the internal headers (J7–J14) shall be manually assembled post-SMT | Mixed-gender header arrangement (J11/J14 male on Board A, J7/J8 female on Board A; J12/J13 male on Board B, J9/J10 female on Board B) provides physical keying | §3.4 Connector Pinouts; BOM J7–J14 |
 
 #### Design Requirements
 
@@ -89,7 +89,8 @@ not be used as a local chassis-bond point.
 | DR-ROT-08 | Mechanical retention | 2× M2.5 alignment holes; 8mm solid metal support rod (non-threaded) through all 30 rotors for alignment and connector stress relief; stack is horizontal | §2.3 Mechanical Details |
 | DR-ROT-09 | Ring setting DIP switches (SW1) | 6-position DIP switch on input side only; SW1[5:0] summed mod N with CPLD STGC-decoded position to yield effective rotor position | §2.3 Mechanical Details; BOM SW1 |
 | DR-ROT-10 | Map selection DIP switches (SW2 / SW3) | 6-position DIP on each face: bits [4:0] = map index (0–20 valid), bit [5] = direction (0=forward, 1=reverse); identical mechanism on both variants | §2.2 Logic & Transposition; BOM SW2, SW3 |
-| DR-ROT-11 | Internal connectors (H_SW3/H_PWR/H_JTAG/H_SENS) | Four single-row 2.54mm THT headers on inner face of both boards (H_SW3: 1×7, H_PWR: 1×5, H_JTAG: 1×5, H_SENS: 1×5; total 22 pins); mixed gender between boards provides physical keying; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM H_SW3/H_PWR/H_JTAG/H_SENS |
+| DR-ROT-11 | Internal connectors (J7–J14) | Eight single-row 2.54mm THT headers on inner face of both boards (four per board; J7: 1×5 female RS1-05-G on Board A; J8: 1×5 female RS1-05-G on Board A; J9: 1×5 female RS1-05-G on Board B; J10: 1×7 female RS1-07-G on Board B; J11: 1×5 male PH1-05-UA on Board A; J12: 1×5 male PH1-05-UA on Board B; J13: 1×5 male PH1-05-UA on Board B; J14: 1×7 male PH1-07-UA on Board A; 44 total pins); mixed gender between boards provides physical keying; manually assembled post-JLCPCB SMT | §3.4 Connector Pinouts; BOM J7–J14 |
+| DR-ROT-12 | Two-PCB assembly | Board A and Board B together constitute one logical rotor board; all BOM entries, reference designators, and design rules apply to the combined two-PCB assembly | §1 Overview |
 
 ## 2. Core Design
 
@@ -136,7 +137,7 @@ each detected position change. Each channel reports HIGH (solid aluminium) or LO
 
 The local FDC2114 bus requires one external pull-up on `SDA` and one on `SCL` to `3V3_ENIG`; these
 are captured in the Board A BOM so the same pull-up pair serves the common local bus in both variants
-(`U2` + `U3` on Board A for N=26, or `U2` on Board A plus `U4` over `H_SENS` for N=64). Per the
+(`U2` + `U3` on Board A for N=26, or `U2` on Board A plus `U4` over `J11` for N=64). Per the
 in-repo TI FDC2114 family datasheet power-supply recommendation, each populated FDC2114 also carries
 its own local `0.1 µF` + `1 µF` `VDD` bypass pair. These support parts are separate from the resonant
 front-end and unused-channel support components, which are fully specified in §2.1 (Resonant Front-End Topology).
@@ -431,23 +432,24 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 > ENC_OUT carries the CPLD SW2-map forward-pass substitution result downstream; ENC_IN receives return-pass data from downstream for SW3-map processing.
 > Both directions are applied by the CPLD — this is NOT a pass-through. The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
 >
-#### J_INT — Board A ↔ Board B Internal Interconnect (4× single-row 2.54mm THT headers, 22 pins total)
+#### J_INT — Board A ↔ Board B Internal Interconnect (8× single-row 2.54mm THT headers, 44 pins total)
 
 Fitted on the **inner (facing) surface** of both Board A and Board B. Physical keying is achieved
-by **mixed gender** — Board A carries H_SW3 and H_SENS as male (PH1-UA) and H_PWR and H_JTAG as
-female (RS1-G); Board B carries the inverse. The unique 7-pin footprint of H_SW3 makes incorrect
-board orientation geometrically impossible. All 4 headers are **manually soldered/assembled AFTER
-JLCPCB SMT pick-and-place** and are NOT part of the JLCPCB SMT order.
+by **mixed gender** — Board A carries J11 and J14 as male (PH1-UA) and J7 and J8 as
+female (RS1-G); Board B carries the inverse, with J12 and J13 as male (PH1-UA) and J9 and
+J10 as female (RS1-G). The unique 7-pin footprint of J10/J14 makes incorrect board orientation
+geometrically impossible. All 8 headers are **manually soldered/assembled AFTER JLCPCB SMT
+pick-and-place** and are NOT part of the JLCPCB SMT order.
 
 Placement: equally spaced around the inner face at a radius halfway between the outer Samtec
 connectors and the PCB edge, to maximise mechanical rigidity of the two-board assembly.
 
-> **Assembly note:** Four connectors per rotor assembly (30 rotors × 4 = 120 total connectors
-> across the full stack; 60 on Board A, 60 on Board B).
+> **Assembly note:** Eight connectors per rotor assembly (4 per board × 2 boards = 8; 30 rotors
+> × 8 = 240 total connectors across the full stack; 120 on Board A, 120 on Board B).
 >
-##### H_SW3 — Return Map Select (1×7, 7-pin)
+##### J10/J14 — Return Map Select (1×7, 7-pin)
 
-Board A: **PH1-07-UA** (male) · Board B: **RS1-07-G** (female)
+Board B (J10): **RS1-07-G** (female) · Board A (J14): **PH1-07-UA** (male)
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
@@ -459,12 +461,12 @@ Board A: **PH1-07-UA** (male) · Board B: **RS1-07-G** (female)
 | 6 | SW3[5] | B→A | Map direction bit (Board B SW3 → Board A CPLD) |
 | 7 | GND | — | Ground reference |
 
-> **SW3 bit coverage note:** All 6 SW3 DIP switch bits reach the CPLD on Board A via H_SW3:
+> **SW3 bit coverage note:** All 6 SW3 DIP switch bits reach the CPLD on Board A via J14:
 > pins 1–4 carry SW3[3:0]; pins 5–6 carry SW3[4:5].
 >
-##### H_PWR — Power Distribution (1×5, 5-pin)
+##### J7/J12 — Power Distribution (1×5, 5-pin)
 
-Board A: **RS1-05-G** (female) · Board B: **PH1-05-UA** (male)
+Board A (J7): **RS1-05-G** (female) · Board B (J12): **PH1-05-UA** (male)
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
@@ -474,9 +476,9 @@ Board A: **RS1-05-G** (female) · Board B: **PH1-05-UA** (male)
 | 4 | 3V3_ENIG | A→B | Power |
 | 5 | GND | — | Ground |
 
-##### H_JTAG — JTAG Pass-Through (1×5, 5-pin)
+##### J8/J13 — JTAG Pass-Through (1×5, 5-pin)
 
-Board A: **RS1-05-G** (female) · Board B: **PH1-05-UA** (male)
+Board A (J8): **RS1-05-G** (female) · Board B (J13): **PH1-05-UA** (male)
 
 Compact internal transfer of the four JTAG/reset nets plus one shared ground between Board A and Board B.
 
@@ -488,9 +490,9 @@ Compact internal transfer of the four JTAG/reset nets plus one shared ground bet
 | 4 | SYS_RESET_N | A→B | Active-low reset forwarded to Board B and onward to J4 pin 8 |
 | 5 | TTD | A→B | JTAG serial data (Board A J1 pin 6 input → Board B J4 pin 6 output path) |
 
-##### H_SENS — Board B Sensor Interface (1×5, 5-pin)
+##### J9/J11 — Board B Sensor Interface (1×5, 5-pin)
 
-Board A: **PH1-05-UA** (male) · Board B: **RS1-05-G** (female)
+Board B (J9): **RS1-05-G** (female) · Board A (J11): **PH1-05-UA** (male)
 
 Carries the local I²C link used by the Board A CPLD to poll FDC2114 U4 on Board B. U4 measurement
 results return over I²C; no dedicated POS_B parallel readback wires are required. The remaining pins
@@ -517,63 +519,38 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 
 ## 5. Bill of Materials
 
-### Board A BOM (Input Side — JLCPCB SMT outward face)
-
 | Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C14 | U2 FDC2114 local `VDD` bypass (datasheet-recommended) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C15 | U2 FDC2114 local `VDD` reservoir (datasheet-recommended) | Kyocera AVX KAM05CR71A105KH — 1µF X7R ±10% 10V AEC-Q200 0402 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
-| C16 | U3 FDC2114 local `VDD` bypass (datasheet-recommended; N=26 only, not populated for N=64) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C17 | U3 FDC2114 local `VDD` reservoir (datasheet-recommended; N=26 only, not populated for N=64) | Kyocera AVX KAM05CR71A105KH — same part as C15 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
-| J1 | JTAG Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
-| J2 | Power Interface Connector (MALE header — mates with ERF8-005 female socket on Stator) | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
-| J3 | Encoder Data Interface Connector (MALE header — mates with ERF8-010 female socket on Stator) | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
-| H_SW3 | Board A↔B internal interconnect, inner face, return map select — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-07-UA — 1×7 2.54mm male pin header | Through-hole | 737-PH1-07-UA | 2057-PH1-07-UA-ND | C3331618 |
-| H_PWR | Board A↔B internal interconnect, inner face, power distribution — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| H_JTAG | Board A↔B internal interconnect, inner face, JTAG pass-through — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6-R7 | Local FDC2114 I²C bus pull-ups (`SDA`, `SCL`) to `3V3_ENIG` | KOA Speer SG73S1ERTTP4701F — 4.7 kΩ ±1% thick film anti-sulfuration 0402; AEC-Q200 | 0402 | 660-SG73S1ERTTP4701F | 2019-SG73S1ERTTP4701FTR-ND ⚠️ MOQ 10000 | C6483673 ⚠️ MOQ 49 |
-| U1 | Intel MAX II CPLD (570 LEs; startup-loads UFM map into registers at power-up) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
-| U2 | FDC2114 capacitive sensor IC — Track A (bits[5:3] N=64; STGC bits[3:0] N=26); I²C addr 0x2A | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| U3 | FDC2114RGHR, 4-ch Capacitive Sensor IC, Board A, addr 0x2B, CH0 = STGC bit[4] (N=26 only), CH1–CH3 tied off. NOT POPULATED for N=64. | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| SW1 | Ring setting DIP switch (Board A input side only; SW1[5:0] summed with decoded position for notch/turnover) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
-| SW2 | Forward-pass map selection (Board A input side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
-| L1–L4 | U2 (Board A) FDC2114 CH0–CH3 resonant inductors — **one per active channel; in parallel with C20–C23 between INxA/INxB** | Bourns CWF1610A-180K — 18 µH ±10% unshielded 0603 chip inductor; SRF 28 MHz; Q=14@2.5 MHz; Irms 220 mA; DCR 2.90 Ω | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| L5–L8 | U3 (Board A) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| C20–C23 | U2 (Board A) FDC2114 CH0–CH3 resonant capacitors — **in parallel with L1–L4 between INxA/INxB** | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200; generic 0402 footprint | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| C24–C27 | U3 (Board A) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=26 only, not populated for N=64** | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| U5 | JTAG entry ESD array — J1 protection (`TDI`, `TMS`, `TCK`; 1 spare channel) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U6 | Encoder input ESD array — J3 protection, array 1 of 3 (`ENC_IN[3:0]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U7 | Encoder input ESD array — J3 protection, array 2 of 3 (`ENC_IN[5:4]`, `ENC_OUT[1:0]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U8 | Encoder input ESD array — J3 protection, array 3 of 3 (`ENC_OUT[5:2]`) | TPD4E05U06QDQARQ1 — same as U5 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-
-### Board B BOM (Output Side — JLCPCB SMT outward face)
-
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C18 | U4 FDC2114 local `VDD` bypass (datasheet-recommended; N=64 only, not populated for N=26) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C19 | U4 FDC2114 local `VDD` reservoir (datasheet-recommended; N=64 only, not populated for N=26) | Kyocera AVX KAM05CR71A105KH — same part as C15 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
-| L9–L12 | U4 (Board B) FDC2114 CH0–CH3 resonant inductors — includes dummy LC for CH1–CH3 — **N=64 only, not populated for N=26** | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| C28–C31 | U4 (Board B) FDC2114 CH0–CH3 resonant capacitors — includes dummy LC for CH1–CH3 — **N=64 only, not populated for N=26** | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| J4 | JTAG Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J1 or Reflector J1) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J5 | Power Interface Output Connector (FEMALE socket — mates with ERM8-005 male header on next Rotor J2 or Reflector J2) | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J6 | Encoder Data Interface Output Connector (FEMALE socket — mates with ERM8-010 male header on next Rotor J3 or Reflector J3) | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
-| H_SW3 | Board A↔B internal interconnect, inner face, return map select — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-07-G — 1×7 2.54mm female socket | Through-hole | 737-RS1-07-G | 2057-RS1-07-G-ND | C3321543 |
-| H_PWR | Board A↔B internal interconnect, inner face, power distribution — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| H_JTAG | Board A↔B internal interconnect, inner face, JTAG pass-through — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| H_SENS | Board A↔B internal interconnect, inner face, Board B sensor interface (I²C + reserved pins) — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| U4 | FDC2114 capacitive sensor IC — Track B (bits[2:0] N=64 only); I²C addr 0x2B — **Not populated for N=26 rotor** | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| SW3 | Return-pass map selection (Board B output side; bits [4:0] = map index 0–20, bit [5] = direction 0/1) | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
-| U9 | JTAG exit ESD array — J4 protection (`TDO`, `TMS`, `TCK`; 1 spare channel) | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U10 | Encoder output ESD array — J6 protection, array 1 of 3 (`ENC_IN[3:0]`) | TPD4E05U06QDQARQ1 — same as U9 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U11 | Encoder output ESD array — J6 protection, array 2 of 3 (`ENC_IN[5:4]`, `ENC_OUT[1:0]`) | TPD4E05U06QDQARQ1 — same as U9 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U12 | Encoder output ESD array — J6 protection, array 3 of 3 (`ENC_OUT[5:2]`) | TPD4E05U06QDQARQ1 — same as U9 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| C1–C8 | Decoupling capacitor | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C9–C13 | Bulk decoupling capacitor | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
+| C14 | Decoupling capacitor | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C15 | Reservoir capacitor | Kyocera AVX KAM05CR71A105KH — 1µF X7R ±10% 10V AEC-Q200 0402 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
+| C16 | Decoupling capacitor; N=26 only, not populated for N=64 | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C17 | Reservoir capacitor; N=26 only, not populated for N=64 | Kyocera AVX KAM05CR71A105KH — same part as C15 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
+| C18 | Decoupling capacitor; N=64 only, not populated for N=26 | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C19 | Reservoir capacitor; N=64 only, not populated for N=26 | Kyocera AVX KAM05CR71A105KH — same part as C15 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
+| C20–C23 | Resonant tank capacitor | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200; generic 0402 footprint | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
+| C24–C27 | Resonant tank capacitor; N=26 only, not populated for N=64 | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
+| C28–C31 | Resonant tank capacitor; N=64 only, not populated for N=26 | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
+| J1–J2 | Samtec ERM8-005 male B2B connector | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
+| J3 | Samtec ERM8-010 male B2B connector | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
+| J4–J5 | Samtec ERF8-005 female B2B connector | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
+| J6 | Samtec ERF8-010 female B2B connector | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
+| J7–J9 | Adam Tech RS1-05-G female socket, 1×5 — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
+| J10 | Adam Tech RS1-07-G female socket, 1×7 — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-07-G — 1×7 2.54mm female socket | Through-hole | 737-RS1-07-G | 2057-RS1-07-G-ND | C3321543 |
+| J11–J13 | Adam Tech PH1-05-UA male header, 1×5 — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
+| J14 | Adam Tech PH1-07-UA male header, 1×7 — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-07-UA — 1×7 2.54mm male pin header | Through-hole | 737-PH1-07-UA | 2057-PH1-07-UA-ND | C3331618 |
+| L1–L4 | Chip inductor, 18 µH | Bourns CWF1610A-180K — 18 µH ±10% unshielded 0603 chip inductor; SRF 28 MHz; Q=14@2.5 MHz; Irms 220 mA; DCR 2.90 Ω | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
+| L5–L8 | Chip inductor, 18 µH; N=26 only, not populated for N=64 | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
+| L9–L12 | Chip inductor, 18 µH; N=64 only, not populated for N=26 | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
+| R2–R5 | Resistor, 10 kΩ | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R6–R7 | Resistor, 4.7 kΩ | KOA Speer SG73S1ERTTP4701F — 4.7 kΩ ±1% thick film anti-sulfuration 0402; AEC-Q200 | 0402 | 660-SG73S1ERTTP4701F | 2019-SG73S1ERTTP4701FTR-ND ⚠️ MOQ 10000 | C6483673 ⚠️ MOQ 49 |
+| SW1–SW3 | DIP switch, 6-position | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
+| U1 | Intel MAX II CPLD | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
+| U2 | FDC2114 capacitive sensor IC | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
+| U3 | FDC2114 capacitive sensor IC; N=26 only, not populated for N=64 | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
+| U4 | FDC2114 capacitive sensor IC; N=64 only, not populated for N=26 | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
+| U5–U12 | ESD protection array, 4-channel | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 
 > **Support-network scope note:** `R6/R7` and `C14-C19` capture the local I²C-bias and `VDD`-bypass
 > requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L12`, `C20–C31`)

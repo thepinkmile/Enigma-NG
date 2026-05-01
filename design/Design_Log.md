@@ -1177,8 +1177,10 @@ operates continuously and independently of JTAG state.
 ### Decision
 
 The rotor is split into two circular PCBs (Board A input side, Board B output side), each
-Ø92mm, connected by four single-row 2.54mm THT headers (H_SW3 1×7, H_PWR 1×5, H_JTAG 1×5,
-H_SENS 1×5; 22 pins total; mixed gender for physical keying). This resolves the
+Ø92mm, connected by eight single-row 2.54mm THT headers (four per board face: Board A J7/J8
+1×5 female RS1-05-G, J11 1×5 male PH1-05-UA, J14 1×7 male PH1-07-UA; Board B J9 1×5 female
+RS1-05-G, J10 1×7 female RS1-07-G, J12/J13 1×5 male PH1-05-UA; 44 pins total; mixed
+gender for physical keying).This resolves the
 JLCPCB single-side SMT assembly constraint and simultaneously defines the rotor physical
 thickness (~15mm with an 11.8mm board gap). Board A carries the CPLD (U1 EPM570T100I5N),
 FDC2114 U2 (Track A encoder, bits[5:3] for N=64 or all 5 sensors for N=26), SW1 (ring
@@ -1225,15 +1227,16 @@ populated.
 
 - `design/Electronics/Rotor/Design_Spec.md`: §1 (two-board architecture, Ø92mm PCBs, shroud
   description), §2.1 (rewritten for capacitive encoder with milled shroud flanges), §3.4
-  (J_INT internal headers H_SW3/H_PWR/H_JTAG/H_SENS added), BOM split into Board A / Board B, FR/DR updated.
+  (J_INT internal headers J7–J10 Board A, J11–J14 Board B added), BOM unified into single table, FR/DR updated.
 - `design/Electronics/Rotor/Board_Layout.md`: rewritten for Board A and Board B with
   stacking cross-section; all Ø100mm references updated to Ø92mm.
 - `design/Electronics/Rotor/Rotor_64_Char_Design.md`: de Bruijn track replaced by 3+3
   dual-track reflected Gray code; XOR-chain decode; geometry updated to r=44mm / Ø92mm.
 - `design/Electronics/Rotor/Rotor_26_Char_Design.md`: single-track all-on-Board-A confirmed;
   geometry updated to r=44mm / Ø92mm; U3 not-populated note added.
-- `design/Electronics/Consolidated_BOM.md`: J_INT internal headers (H_SW3 PH1-07-UA/RS1-07-G, H_PWR PH1-05-UA/RS1-05-G, H_JTAG PH1-05-UA/RS1-05-G, H_SENS PH1-05-UA/RS1-05-G) added,
-  4 headers per rotor assembly (120 total for 30 rotors).
+- `design/Electronics/Consolidated_BOM.md`: J_INT internal headers (Board A J7/J8 RS1-05-G female,
+  J11 PH1-05-UA male, J14 PH1-07-UA male; Board B J9 RS1-05-G female, J10 RS1-07-G female,
+  J12/J13 PH1-05-UA male) added, 8 headers per rotor assembly (240 total for 30 rotors).
 
 ---
 

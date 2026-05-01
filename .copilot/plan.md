@@ -69,7 +69,7 @@ Recent locked work:
 
 | ID | Status | Scope |
 | ---- | -------- | ------- |
-| `review-cycle-pass2` | **in progress** | Pass 2 review agents running after Pass 1 commit |
+| `review-cycle-pass2` | **complete** | Pass 2 board + integration reviews complete; all findings F-42–F-66 resolved or deferred; audit trail appended to review-report.md; checkpoint 083 created; awaiting "Let's lock this in" |
 | `extension-mechanical-usage` | pending | Mechanical Extension usage is now aligned to local AM-based carry regeneration, but detailed switch / linkage geometry still needs later mechanical design |
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
 | `battery-connector-final-review` | pending | Re-confirm the chosen military battery connector details during the final deep-dive/manual review, especially the 6-pin contact assignment, `BATT_PRES_N` position, reserved contact behavior, cable selection, and interposer fit |
@@ -82,16 +82,16 @@ Recent locked work:
 
 | Board | Status |
 | ------- | -------- |
-| Power Module | In Review (Pass 1 fixes applied) |
-| Stator | In Review (Pass 1 fixes applied) |
-| Reflector | In Review (Pass 1 fixes applied) |
-| Extension | In Review (Pass 1 fixes applied) |
-| JDB | In Review (Pass 1 fixes applied) |
-| Controller | In Review (Pass 1 fixes applied) |
+| Power Module | In Review (Pass 2 fixes applied) |
+| Stator | In Review (Pass 2 fixes applied) |
+| Reflector | In Review (Pass 2 fixes applied) |
+| Extension | In Review (Pass 2 fixes applied) |
+| JDB | In Review (Pass 2 fixes applied) |
+| Controller | In Review (Pass 2 fixes applied) |
 | Encoder | In Review |
-| Rotor | In Review (Pass 1 fixes applied) |
-| Settings Board | In Review (Pass 1 fixes applied) |
-| Actuation Module | In Review (Pass 1 fixes applied) |
+| Rotor | In Review (Pass 2 fixes applied) |
+| Settings Board | In Review (Pass 2 fixes applied) |
+| Actuation Module | In Review (Pass 2 fixes applied) |
 
 ---
 
@@ -101,9 +101,14 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/082-pass1-committed-pass2-launched.md`
+3. `.copilot/checkpoints/084-pass2-audit-complete.md`
 
-Pass 1 review cycle is complete, committed, and Pass 2 is underway.
+Pass 2 review and audit trail are complete. Before Pass 3:
+
+- Await user "Let's lock this in" to commit Pass 2 changes
+- After Pass 2 commit: apply `Settings_Board` → `User_Settings_Module` rename (scope already defined in plan)
+- Run Review Pass 3 after the rename commit
+
 Read `.copilot/review-report.md` for the running audit trail.
 
 ---
@@ -131,7 +136,7 @@ Read `.copilot/review-report.md` for the running audit trail.
   and the remaining connector questions must be rechecked during the final deep-dive and manual
   review before the design is marked complete V1.
 - Active actuation baseline: use the shared **Actuation Module (AM)** on the Controller and on each
-  Extension; CM5 GPIO 8 is now `ACTUATE_REQUEST`, the Controller no longer owns direct servo PWM,
+  Extension; CM5 GPIO 8 is now `ACTUATE_REQUEST_N`, the Controller no longer owns direct servo PWM,
   and the Reflector / Extension link is now a 20-pin `BHR-20-VUA` service harness so `5V_MAIN` can
   feed Extension-local actuation.
 - The AM now reserves separate local **J5 SWD** and **J6 UART/bootloader** headers plus local **SW1
@@ -148,9 +153,9 @@ Read `.copilot/review-report.md` for the running audit trail.
 - The AM firmware specification now lives under
   `design/Software/Actuation_Module/Design_Spec.md`; the electronics AM spec keeps only a brief
   cross-reference to that software document.
-- The additive electronics deep-review loop is now closed for the current design-doc set after
-  **two consecutive clean passes** (Pass 16 and Pass 17 in `.copilot/review-report.md`); only the
-  intentionally deferred schematic-capture and owner-selected items remain open.
+- Pass 2 electronics review complete. All findings F-42–F-66 resolved or deferred per user decisions.
+  Awaiting user "Let's lock this in" confirmation before committing. Pass 3 will follow after the
+  `Settings_Board` → `User_Settings_Module` rename commit.
 - This does **not** close the repo-local `rerun-deep-reviews` workstream. That workstream remains the
   final pre-V1 cross-discipline review gate to be rerun only after electrical, mechanical, and software
   work are complete and each board has a full KiCAD project plus exported production Gerbers.

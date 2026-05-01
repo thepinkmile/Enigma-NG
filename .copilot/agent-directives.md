@@ -8,7 +8,7 @@ Read this file at session start alongside `.copilot/plan.md` and `.copilot/hando
 
 ---
 
-## PRIMARY DIRECTIVE — Part Number Protection
+## PRIMARY DIRECTIVE — Part Number and Component Protection
 
 **NEVER modify any component MPN or supplier part number (Mouser SKU, DigiKey PN, JLCPCB C-number,
 or any Alternative Supplier code) without explicit user confirmation.**
@@ -16,6 +16,13 @@ or any Alternative Supplier code) without explicit user confirmation.**
 Every approved code in the design files and BOM is intentional and has been verified by the user.
 Mouser in particular uses non-obvious abbreviations (e.g. dropping leading letters from TI MPNs).
 These are correct. Do not "fix" them.
+
+**NEVER add a new component reference (new RefDes, new BOM row, or a named component in spec text
+such as "FB1" or "U5") without explicit user review and approval.** Adding a new component is
+equivalent to modifying the BOM and requires the same level of user confirmation as changing an
+existing MPN. This prohibition includes "placeholder" or "TBD" component entries — they must not
+be inserted into spec text or BOM tables until the user has approved the addition and confirmed
+the component type. Any such placeholder inserted without approval must be removed.
 
 ---
 
@@ -31,6 +38,38 @@ Possible user confirmation promts include:
 - "Save state"
 
 When using these prompts, you should create a new checkpoint following the "Repo-Local State Rules" before performing the commit.
+
+---
+
+## TERTIARY DIRECTIVE — File Deletion
+
+**NEVER permanently delete any file from the repository.**
+
+If a file needs to be removed, **move it to `.recycle-bin/`** at the repo root and inform the user
+that it has been placed there. Permanent deletion is a user-only action. The `.recycle-bin/`
+folder is listed in `.gitignore` (its contents are never committed), so moved files will not
+appear in git history.
+
+---
+
+## QUATERNARY DIRECTIVE — Review Sub-Agent Constraints
+
+**Review sub-agents launched during a review cycle are strictly READ-ONLY.**
+
+A review sub-agent must:
+
+- Read design files, datasheets, standards, and any other referenced documents.
+- Report findings back to the orchestrating session as structured text output.
+
+A review sub-agent must **NOT**:
+
+- Write, create, modify, or delete any file in the repository.
+- Create checkpoint files or index entries in `.copilot/checkpoints/`.
+- Modify `.copilot/plan.md`, `.copilot/handoff.md`, or `.copilot/review-report.md`.
+- Modify `.copilot/agent-directives.md` or any other `.copilot/` artifact.
+
+Only the primary orchestrating session is authorised to write files or create checkpoints.
+Any finding that requires a file change must be returned as a finding and actioned by the orchestrator.
 
 ---
 
@@ -64,6 +103,19 @@ is `v.0.1.0`.
   explicitly says schematic capture and layout have started. They are irrelevant at the pre-layout stage.
 - Connector and mechanical-drawing datasheet markdowns can remain lightweight; fuller detail can
   wait until the initial KiCAD library generation or mechanical modeling phases.
+
+---
+
+## Banned Manufacturers
+
+The following manufacturers are **banned from the Enigma-NG BOM entirely**. Do not recommend,
+suggest, or add any component from these manufacturers under any circumstances:
+
+- **Murata** (includes all Murata product families: GRM, GCM, BLM, DMR, etc.)
+
+When searching for or recommending components, exclude these manufacturers from all suggestions.
+If an existing BOM entry is discovered to carry a banned manufacturer's MPN, flag it as a finding
+for user review rather than silently substituting an alternative.
 
 ---
 

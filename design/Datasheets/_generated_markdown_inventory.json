@@ -247,6 +247,11 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "TE-DS_1773178-3_A3-datasheet.pdf",
+      "markdown": "TE-DS_1773178-3_A3-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "TI-sn74lvc1g08-datasheet.pdf",
       "markdown": "TI-sn74lvc1g08-datasheet.md",
       "mapping_type": "same_stem"
@@ -452,6 +457,7 @@
   ],
   "markdown_only": [
     "Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md",
+    "Intel-EPM570T100I5N-datasheet.md",
     "SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md"
   ]
 }

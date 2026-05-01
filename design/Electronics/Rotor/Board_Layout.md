@@ -15,8 +15,8 @@ For mechanical tolerances and shroud assembly details, see
 ## 1. Split Board Architecture Overview
 
 Each rotor assembly consists of two circular PCBs (Board A and Board B), each Ø92mm, separated
-by an 11.8mm gap and connected by four single-row 2.54mm THT headers (H_SW3 1×7, H_PWR 1×5,
-H_JTAG 1×5, H_SENS 1×5; 22 pins total; mixed gender for keying). The two boards are mechanically
+by an 11.8mm gap and connected by four single-row 2.54mm THT headers (J7 1×5, J8 1×5,
+J9 1×5, J10 1×7; 22 pins total; mixed gender for keying).The two boards are mechanically
 retained inside the aluminium shroud (Ø100mm outer face, 4mm radial wall, Ø92mm inner). Total
 rotor thickness is ~15mm.
 
@@ -48,7 +48,7 @@ Board A faces the input (upstream) side of the rotor stack.
         \___________________________________________________/
 
                     BOTTOM (inner face, faces Board B)
-          [ H_SW3 M ]  [ H_PWR F ]  [ H_JTAG F ]  [ H_SENS M ]
+          [ J14 M ]  [ J7 F ]  [ J8 F ]  [ J11 M ]
                          (manually assembled post-SMT)
 ```
 
@@ -69,11 +69,11 @@ Board A faces the input (upstream) side of the rotor stack.
 | J1 | ERM8-005 male | JTAG input (10-pin 2×5, 0.8mm pitch) |
 | J2 | ERM8-005 male | Power input (10-pin 2×5, 0.8mm pitch) |
 | J3 | ERM8-010 male | ENC data input (20-pin 2×10, 0.8mm pitch) |
-| H_SW3 | Adam Tech PH1-07-UA (male 1×7) | Inner face; manually assembled post-JLCPCB SMT; H_SW3/H_SENS male on Board A |
-| H_PWR | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
-| H_JTAG | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
-| H_SENS | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
-| U5 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J1 JTAG entry ESD; channels: TDI, TMS, TCK (1 spare) |
+| J7 | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| J8 | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| J11 | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| J14 | Adam Tech PH1-07-UA (male 1×7) | Inner face; manually assembled post-JLCPCB SMT |
+| U5 | TPD4E05U06QDQARQ1— 4-ch ESD array | J1 JTAG entry ESD; channels: TDI, TMS, TCK (1 spare) |
 | U6 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J3 ENC input ESD, array 1 of 3; ENC_IN[3:0] |
 | U7 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J3 ENC input ESD, array 2 of 3; ENC_IN[5:4], ENC_OUT[1:0] |
 | U8 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J3 ENC input ESD, array 3 of 3; ENC_OUT[5:2] |
@@ -88,7 +88,7 @@ Board B faces the output (downstream) side of the rotor stack.
 4-Layer / 2oz Copper / ENIG / Circular Ø92mm — BOARD B (OUTPUT SIDE)
 
                     TOP (inner face, faces Board A)
-          [ H_SW3 F ]  [ H_PWR M ]  [ H_JTAG M ]  [ H_SENS F ]
+          [ J10 F ]  [ J12 M ]  [ J13 M ]  [ J9 F ]
                          (manually assembled post-SMT)
 
          ___________________________________________________
@@ -122,10 +122,10 @@ Board B faces the output (downstream) side of the rotor stack.
 | J4 | ERF8-005 female | JTAG output (10-pin 2×5, 0.8mm pitch) |
 | J5 | ERF8-005 female | Power output (10-pin 2×5, 0.8mm pitch) |
 | J6 | ERF8-010 female | ENC data output (20-pin 2×10, 0.8mm pitch) |
-| H_SW3 | Adam Tech RS1-07-G (female 1×7) | Inner face; manually assembled post-JLCPCB SMT; H_SW3/H_SENS female on Board B |
-| H_PWR | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
-| H_JTAG | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
-| H_SENS | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| J9 | Adam Tech RS1-05-G (female 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| J10 | Adam Tech RS1-07-G (female 1×7) | Inner face; manually assembled post-JLCPCB SMT |
+| J12 | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
+| J13 | Adam Tech PH1-05-UA (male 1×5) | Inner face; manually assembled post-JLCPCB SMT |
 | U9 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J4 JTAG exit ESD; channels: TDO, TMS, TCK (1 spare) |
 | U10 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J6 ENC output ESD, array 1 of 3; ENC_IN[3:0] |
 | U11 | TPD4E05U06QDQARQ1 — 4-ch ESD array | J6 ENC output ESD, array 2 of 3; ENC_IN[5:4], ENC_OUT[1:0] |
@@ -220,11 +220,11 @@ rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Roto
 
 | Function | Source / destination | Notes |
 | :--- | :--- | :--- |
-| `TCK` | J1 pin 2 / H_JTAG pin 1 -> U1 | Dedicated JTAG clock input; forwarded to Board B and onwards to J4 |
-| `TMS` | J1 pin 4 / H_JTAG pin 3 -> U1 | Dedicated JTAG mode input; forwarded to Board B and onwards to J4 |
+| `TCK` | J1 pin 2 / J8 pin 1 -> U1 | Dedicated JTAG clock input; forwarded to Board B and onwards to J4 |
+| `TMS` | J1 pin 4 / J8 pin 3 -> U1 | Dedicated JTAG mode input; forwarded to Board B and onwards to J4 |
 | `TDI` | J1 pin 6 (`TTD`) -> U1 | Incoming serial JTAG data from the previous stage; connector name stays `TTD` for stack clarity |
-| `TDO` | U1 -> H_JTAG pin 5 / J4 pin 6 (`TTD`) | Outgoing serial JTAG data to the next stage |
-| `DEV_CLRN` / reset input | J1 pin 8 (`SYS_RESET_N`) / H_JTAG pin 4 -> U1 | Active-low device reset; held high locally by R5 |
+| `TDO` | U1 -> J8 pin 5 / J4 pin 6 (`TTD`) | Outgoing serial JTAG data to the next stage |
+| `DEV_CLRN` / reset input | J1 pin 8 (`SYS_RESET_N`) / J8 pin 4 -> U1 | Active-low device reset; held high locally by R5 |
 
 ### 6.2 General-purpose signal groups
 
@@ -236,14 +236,14 @@ rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Roto
 | `J3 ENC_OUT[5:0]` | 6 | Output | Return-path cipher result back to the upstream stage |
 | `SW1[5:0]` | 6 | Input | Ring-setting switch bank on Board A |
 | `SW2[5:0]` | 6 | Input | Forward-map select switch bank on Board A |
-| `SW3[5:0]` | 6 | Input | Return-map select switch bank brought from Board B via `H_SW3` |
-| Local `SDA`, `SCL` | 2 | Bidirectional | CPLD I2C master for U2/U3/U4 position sensors; `H_SENS` extends the same bus to Board B U4 |
+| `SW3[5:0]` | 6 | Input | Return-map select switch bank brought from Board B via `J14` |
+| Local `SDA`, `SCL` | 2 | Bidirectional | CPLD I2C master for U2/U3/U4 position sensors; `J11` extends the same bus to Board B U4 |
 
 **Logical budget summary:** 44 general-purpose signal connections total = **30 inputs + 12 outputs + 2
 bidirectional I2C lines**, plus the dedicated JTAG / reset pins above.
 
 **Variant / reserve policy:** `ENC[5]` remains physically routed for the shared 20-pin connector pinout
-even on N=26 builds where that bit is logically unused. `H_SENS` pins 3-5 stay reserved and are not
+even on N=26 builds where that bit is logically unused. `J11` pins 3-5 stay reserved and are not
 currently tied into U1. Virtual JTAG position export uses the dedicated JTAG infrastructure and does
 not consume extra board-level I/O pins.
 

@@ -162,4 +162,10 @@ K
 F https://g.componentsearchengine.com/ga/PL-AL5030-3R3
 $ENDCMP
 #
+$CMP CSD17578Q5A
+D CSD17578Q5A 30 V N-Channel NexFET&#153; Power MOSFET
+K
+F http://www.ti.com/lit/gpn/csd17578q5a
+$ENDCMP
+#
 #End Doc Library

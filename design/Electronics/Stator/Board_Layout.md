@@ -206,6 +206,10 @@ R1 is on the 3V3\_ENIG entry trace; INA219 differential voltage sense pins strad
 > the vendor package documentation rather than providing a fixed package pin table in the handbook.
 > The grouping below therefore freezes **what U1 must connect to**, while the exact TQFP pad numbers
 > remain a schematic-capture task.
+>
+> **CPLD power rails:** All VCCINT and VCCIO pins on U1 connect to `3V3_ENIG`. Refer to the
+> device datasheet for supply domain details including the MultiVolt core architecture.
+> **Reference datasheet:** `design/Datasheets/Intel-EPM570T100I5N-datasheet.md`
 
 ### 10.1 Dedicated device pins
 

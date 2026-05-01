@@ -33,7 +33,7 @@ group without Controller-side live servo control.
 | FR-EXT-03 | Pass 3V3_ENIG power and encoder data bus transparently between rotor groups | Power: J7 → J5 (J2 power pins NC); ENC data: J3/J6 pass-through | §2 Connectivity; BOM J5 (ERF8-005), J3, J6 (ERM8/ERF8-010) |
 | FR-EXT-04 | Connect on the input side to a Stator or upstream rotor group | J1–J3 (ERM8 male input headers) | §2 Connectivity; BOM J1–J3 (ERM8-005/010) |
 | FR-EXT-05 | Connect on the output side to a downstream rotor group | J4–J6 (ERF8 female output sockets) | §2 Connectivity; BOM J4–J6 (ERF8-005/010) |
-| FR-EXT-06 | Host one Actuation Module to regenerate an Extension-boundary carry event into one local servo step | J9 = AM power dock, J10 = AM trigger dock; non-homing switch (or CM5 GPIO) asserts `ACTUATE_REQUEST` into the AM | §2 Connectivity; BOM J9, J10 |
+| FR-EXT-06 | Host one Actuation Module to regenerate an Extension-boundary carry event into one local servo step | J9 = AM power dock, J10 = AM trigger dock; non-homing switch (or CM5 GPIO) asserts `ACTUATE_REQUEST_N` into the AM | §2 Connectivity; BOM J9, J10 |
 | FR-EXT-07 | Protect rotor-facing BtB connectors (J1/J3 in, J4/J6 out) from ESD during live rotor swap | TVS/ESD arrays on all 4 rotor-facing connectors per DEC-048 | §5 Thermal & ESD; BOM U2–U9 |
 
 #### Design Requirements
@@ -131,12 +131,13 @@ group without Controller-side live servo control.
 * **Actuation Module host docks:** The Extension provides two local host sockets for one shared
   Actuation Module:
   * **J9** - AM power dock (`5V_MAIN`, `3V3_ENIG`, `GND`)
-  * **J10** - AM trigger dock (`ACTUATE_REQUEST` + guards / returns)
+  * **J10** - AM trigger dock (`ACTUATE_REQUEST_N` + guards / returns)
   * The mounted AM footprint on the Extension is a no-component zone apart from J9 / J10 themselves
     and the routing / copper needed to reach them.
-  * `ACTUATE_REQUEST` is an active-low GPIO signal sourced either from the CM5 on the Controller
-    Board or from the non-homing switch on the Extension Board itself. A 10kΩ pull-up to `3V3_ENIG`
-    is implemented on the Actuation Module (AM R6). Exact switch mounting geometry remains owned by the mechanical design.
+  * `ACTUATE_REQUEST_N` is an active-low GPIO signal sourced either from the CM5 on the Controller
+    Board or from the non-homing switch on the Extension Board itself. The line is held HIGH by the
+    STM32G071K8T3TR internal GPIO pull-up on the Actuation Module (no external pull-up resistor is
+    fitted). Exact switch mounting geometry remains owned by the mechanical design.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), `ENC_OUT_REF` / `ENC_IN_REF`, and
   JTAG TTD_RETURN lines used for reflector loopback/plugboard mapping, See:
   * `Stator/Design_Spec.md`
@@ -201,10 +202,6 @@ group without Controller-side live servo control.
 | J10 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
 | U1 | JTAG TCK/TMS dual buffer for output rotor group | SN74LVC2G125DCUR | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |
 | U2 | ESD protection array — J1 JTAG input connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U3 | ESD protection array — J3 ENC input connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U4 | ESD protection array — J3 ENC input connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U5 | ESD protection array — J3 ENC input connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U3-U5 | ESD protection arrays — J3 ENC input connector (all 6 channels ENC_IN[5:0] + ENC_OUT[5:0], ×3) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
 | U6 | ESD protection array — J4 JTAG output connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U7 | ESD protection array — J6 ENC output connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U8 | ESD protection array — J6 ENC output connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U9 | ESD protection array — J6 ENC output connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U7-U9 | ESD protection arrays — J6 ENC output connector (all 6 channels ENC_IN[5:0] + ENC_OUT[5:0], ×3) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |

@@ -397,19 +397,16 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | R5 | TCK pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R7-R12 | TCK series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R33-R38 | TMS series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R16 | `CFG_ROUTE[0]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R16 |`CFG_ROUTE[0]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R17 | `CFG_ROUTE[1]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R18 | `CFG_ROUTE[2]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R19 | `CFG_ROUTE[3]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R20 | `CFG_APPLY_N` pull-up to 3V3_ENIG (keeps the Stator-only apply/reset pulse inactive HIGH until U8 actively asserts LOW) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R21-R26 | `CFG_REFMAP[5:0]` CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R27-R32 | TDI chain series resistors: CPLD->J4->J5->J6->J7->J8->J9 (×6 driven segments) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R39 | MCP23017 U6 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R40 | MCP23017 U7 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R41 | MCP23017 U8 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R42 | INA219 U2 IN+ series filter resistor (RF1) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | C413044 |
-| R43 | INA219 U2 IN- series filter resistor (RF2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | C413044 |
+| R33-R38 | TMS series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| R39-R41 | MCP23017 U6/U7/U8 `~RESET` pull-up to 3V3_ENIG (×3) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
+| R42-R43 | INA219 U2 IN+/IN− series filter resistors (RF1, RF2) (×2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | C413044 |
 | SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | SW2 | Reflector map selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
 | U1 | Stator Management CPLD (routing matrix + reflector map application) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
@@ -419,7 +416,4 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | U6 | MCP23017 I²C GPIO Expander (ENC monitoring) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U7 | MCP23017 I²C GPIO Expander (virtual key data, SOURCE_SEL, SYS_RESET_N) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U8 | MCP23017 I²C GPIO Expander (config output driver + `CFG_APPLY_N`) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| U9 | ESD protection array — J1 JTAG rotor connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U10 | ESD protection array — J3 ENC rotor connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U11 | ESD protection array — J3 ENC rotor connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U12 | ESD protection array — J3 ENC rotor connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U9–U12 | ESD protection array, 4-channel | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |

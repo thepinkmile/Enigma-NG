@@ -11,7 +11,7 @@
 
 This document defines the CPLD logic requirements and FDC2114 register configuration for the
 Rotor Board capacitive position sensing subsystem. The Intel MAX II `EPM570T100I5N` CPLD acts as
-the I²C master on the H_SENS bus and is responsible for configuring all FDC2114 devices at
+the I²C master on the J9 bus and is responsible for configuring all FDC2114 devices at
 power-up and reading their conversion results to produce the Gray-coded position output.
 
 Board-level connector ownership, physical placement, and BOM authority remain in:
@@ -29,7 +29,7 @@ programming header is present on the Rotor board. The JTAG daisy-chain programs 
 
 ## 2. FDC2114 Register Configuration
 
-The CPLD initialises each FDC2114 on the H_SENS bus immediately after power-up via I²C. All
+The CPLD initialises each FDC2114 on the J9 bus immediately after power-up via I²C. All
 multi-channel devices (U2, and where populated U3/U4) receive the same baseline register map.
 
 ### 2.1 Register Map (Baseline)
@@ -65,14 +65,14 @@ Design decision recorded in `design/Design_Log.md` as **DEC-044**.
 
 ---
 
-## 3. H_SENS I²C Bus
+## 3. J9 I²C Bus
 
-The H_SENS bus spans Board A and Board B via the 1×5 inner-face header pair (H_SENS M on Board A,
-H_SENS F on Board B). Pin 3 = SCL, Pin 4 = SDA (3.3V logic levels, pulled up via R6/R7 on Board A).
+The J9 bus spans Board A and Board B via the 1×5 inner-face header pair (J9 [Board A] male,
+J9 [Board B] female). Pin 3 = SCL, Pin 4 = SDA (3.3V logic levels, pulled up via R6/R7 on Board A).
 I²C addresses: U2 = 0x2A, U3 = 0x2B (Board A, N=26 only), U4 = 0x2B (Board B, N=64 only).
 
 > U3 and U4 share address 0x2B but reside on electrically separate boards. The CPLD manages
-> Bus direction via the H_SENS header; U3 and U4 are never simultaneously addressable.
+> Bus direction via the J9 header; U3 and U4 are never simultaneously addressable.
 
 ### 3.1 CPLD I²C Master Behaviour
 

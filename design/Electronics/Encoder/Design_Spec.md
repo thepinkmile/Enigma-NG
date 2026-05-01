@@ -246,17 +246,17 @@ must preserve the generic one-CPLD module footprint and the unchanged 20-pin IDC
 | C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | BT1-BT64 | PCB spade blade terminals — one row × 64 | Keystone 1285-ST — 6.35 mm (1/4") straight vertical PCB-mount male blade tab. Used as either 64 driven outputs (decode role) or 64 sensed inputs (encode role). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
-| J1 (x64 per plugboard pass) | Stecker jack sockets | 6.35 mm (1/4") mono switched panel-mount jack — off-board mechanical part used only by plugboard assemblies | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | D1 | Status LED (active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
+| J1 (x64 per plugboard pass) | Stecker jack sockets | 6.35 mm (1/4") mono switched panel-mount jack — off-board mechanical part used only by plugboard assemblies | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
 | J2 | Data Link Connector | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded box header | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
-| SW1-SW40 | Keyboard switches | uxcell-style DPDT 6-pin momentary push button — assembly-level part used only by the Keyboard Assembly | Panel-mount | — (eBay: gadgetskingdom item 365271584375, 2 per pack) | — | — |
-| U1 | Intel MAX II CPLD | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 | R1 | LED current limiting resistor | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
 | R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
 | R6 | TDO output series R (U1 TDO -> J2 pin 14, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
+| SW1-SW40 | Keyboard switches | uxcell-style DPDT 6-pin momentary push button — assembly-level part used only by the Keyboard Assembly | Panel-mount | — (eBay: gadgetskingdom item 365271584375, 2 per pack) | — | — |
+| U1 | Intel MAX II CPLD | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
 
 **Quantity notes:**
 

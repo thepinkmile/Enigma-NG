@@ -98,7 +98,7 @@ The exact STM32 pad mapping may still be finalized during schematic capture, but
 shall preserve these logical roles exactly.
 
 > **`ACTUATE_REQUEST_N` pull-up configuration:** The `ACTUATE_REQUEST_N` pull-up is provided solely by the
-> STM32 internal GPIO pull-up (PUPDR = `0b01`). No external pull-up resistor (R6) is fitted on the
+> STM32 internal GPIO pull-up (PUPDR = `0b01`). No external pull-up resistor is fitted on the
 > hardware — the internal pull-up is the authoritative pull-up source. The firmware shall enable the
 > internal pull-up (PUPDR register = `0b01`) before the GPIO is sampled or the debounce routine starts.
 

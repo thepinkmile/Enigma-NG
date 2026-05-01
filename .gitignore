@@ -398,6 +398,10 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+# Repo-local recycle bin (agent safe-delete destination — contents never committed)
+.recycle-bin/*
+!.recycle-bin/.gitkeep
+
 # VS Code files for those working on multiple tools
 .vscode/*
 !.vscode/settings.json

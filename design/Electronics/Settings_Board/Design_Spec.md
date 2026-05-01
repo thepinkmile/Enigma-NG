@@ -378,7 +378,7 @@ automatic polling intervals.
 ## 9. Thermal & ESD
 
 * **Thermal:** No active cooling required on the Settings Board. No high-power components are fitted; thermal dissipation is well within passive limits.
-* **ESD:** All connectors on the Settings Board are internal. J1 (JST PH 3-pin harness) is a PCB-to-harness connection to a local LED panel; it is not operator-accessible during live operation.
+* **ESD:** All connectors on the Settings Board are internal. J1 (JST PH 6-pin harness to Stator J13) is a PCB-to-harness connection; it is not operator-accessible during live operation.
   No TVS protection is required per `design/Standards/Global_Routing_Spec.md §9`.
 
 ---
@@ -391,17 +391,12 @@ automatic polling intervals.
 | C2 | VCC decoupling cap for U2 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C3 | VCC decoupling cap for U3 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C4 | `CFG_APPLY_N` debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-CL05B104KB5NNNCCT-ND | C960916 |
-| C5 | J1 entry bulk reservoir capacitor — `3V3_ENIG` (star point at J1 pin 1) | 10µF 25V X5R | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C6 | J1 entry bulk reservoir capacitor — `5V_MAIN` (star point at J1 pin 2) | 10µF 25V X5R | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
+| C5-C9 | Power-entry bulk capacitors — `3V3_ENIG` (5× 10µF at J1 pin 1 power-entry node; satisfies §3 bulk-entry bank rule) | 10µF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
+| C10-C14 | Power-entry bulk capacitors — `5V_MAIN` (5× 10µF at J1 pin 2 power-entry node; satisfies §3 bulk-entry bank rule) | 10µF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
 | D1-D5 | Bank 1 discrete RGB indicator LEDs (×5: 1 source-status + 4 config bits) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | D6-D12 | Bank 2 discrete RGB indicator LEDs (×7: 1 source-status + 6 config bits) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
 | J1 | I²C harness connector to Stator J13 | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
-| Q1 | Bank 1 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q2 | Bank 1 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q3 | Bank 1 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q4 | Bank 2 red colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q5 | Bank 2 green colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q6 | Bank 2 blue colour-rail sink MOSFET | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
+| Q1-Q6 | Bank 1+2 colour-rail sink MOSFETs (×6: R/G/B per bank) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | Q7–Q11 | Bank 1 per-anode LED NMOS pre-drivers (×5, one per Bank 1 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | Q12–Q18 | Bank 2 per-anode LED NMOS pre-drivers (×7, one per Bank 2 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
 | Q19–Q30 | Per-anode LED high-side PMOS switches (×12); source at `5V_MAIN`, drain to LED anode; gate driven by Q7–Q18 BSS138 pre-drivers | Vishay SQ2319ADS-T1_BE3 — P-Ch TrenchFET SOT-23; Vds=−40V, Vgs(max)=±20V, Vgs(th)=−2.5V max, Rds(on)=145mΩ @ Vgs=−4.5V; AEC-Q101; Mouser 78-SQ2319ADS-T1_BE3; DigiKey 742-SQ2319ADS-T1_BE3CT-ND; JLCPCB C3280190 | SOT-23 | 78-SQ2319ADS-T1_BE3 | 742-SQ2319ADS-T1_BE3CT-ND | C3280190 |
@@ -420,16 +415,7 @@ automatic polling intervals.
 | R81–R86 | BSS138 gate pull-downs for colour-rail sinks Q1–Q6 (×6); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
 | R87–R91 | BSS138 gate pull-downs for Bank 1 per-anode pre-drivers Q7–Q11 (×5); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
 | R92–R98 | BSS138 gate pull-downs for Bank 2 per-anode pre-drivers Q12–Q18 (×7); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
-| SW1 | Bank 1 routing config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — common Bank 1/2 config-toggle part | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW2 | Bank 1 routing config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW3 | Bank 1 routing config bit 2 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW4 | Bank 1 routing config bit 3 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW5 | Bank 2 reflector config bit 0 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW6 | Bank 2 reflector config bit 1 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW7 | Bank 2 reflector config bit 2 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW8 | Bank 2 reflector config bit 3 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW9 | Bank 2 reflector config bit 4 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW10 | Bank 2 reflector config bit 5 toggle switch | E-Switch 200MSP1T2B4M2QE — same part as SW1 | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
+| SW1-SW10 | Bank 1+2 config toggle switches (×10: 4 routing + 6 reflector) | E-Switch 200MSP1T2B4M2QE | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
 | SW11 | `CFG_APPLY_N` momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
 | U1 | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x23 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
 | U2 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x24 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
@@ -482,12 +468,12 @@ automatic polling intervals.
 | **0603 Resistors (misc)** | 1 | R11: 10kΩ `CFG_APPLY_N` pull-up |
 | **0402 Capacitors (decoupling)** | 3 | 100nF X7R for 3× MCP23017s |
 | **0402 Capacitors (debounce)** | 1 | C4: 100nF X7R `CFG_APPLY_N` debounce |
-| **0805 Capacitors (bulk reservoir)** | 2 | C5–C6: 10µF 25V X5R Samsung CL21B106KAYQNNE — J1 `3V3_ENIG` and `5V_MAIN` entry bulk caps |
+| **0805 Capacitors (power-entry bulk)** | 10 | C5–C14: 10µF X7R 25V Samsung CL21B106KAYQNNE — 5× on `3V3_ENIG`, 5× on `5V_MAIN` power-entry nodes; satisfies §3 bulk-entry bank rule |
 | **JST PH Connectors** | 1 | J1: 6-pin B6B-PH-K-S(LF)(SN) to Stator |
 | **Pushbutton Switch** | 1 | SW11 — Omron B3F-1070 SPST NO through-hole tactile switch |
 
 **Total unique part numbers:** ~20
-**Total component count:** ~145
+**Total component count:** ~153
 
 ---
 

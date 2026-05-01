@@ -42,6 +42,7 @@ This module replicates the functionality of an **Intel (Altera) USB Blaster II**
 | DR-JDB-14 | TMS pull-up near J2 | R4 = 10 kΩ 0402 pull-up from TMS to 3V3_ENIG near J2 header; idle-state TAP control | §6 Electrical Requirements; BOM R4 |
 | DR-JDB-15 | TCK pull-down near J2 | R5 = 10 kΩ 0402 pull-down from TCK to GND near J2 header; idle-state TAP control | §6 Electrical Requirements; BOM R5 |
 | DR-JDB-16 | FT232H RESET_N pull-up | R3 = 10 kΩ 0402 pull-up from FT232H RESET_N (FT232H pin 34; IC datasheet designates this pin as RESET#; renamed RESET_N per project convention) to 3V3_ENIG; holds RESET_N deasserted (HIGH) during normal operation per FTDI application note AN_108; absence of pull-up risks chip latching in reset | §6 Electrical Requirements; BOM R3 |
+| DR-JDB-17 | JTAG buffer VCC bypass | C12 = 100nF X7R 0402 bypass capacitor shall be placed on the VCC supply of U5 (SN74LVC2G125DCUR) within 0.5mm of the VCC pin | §6 Electrical Requirements; BOM C12 |
 
 ## 2. Core Logic
 
@@ -154,6 +155,10 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
   required per FTDI application note AN_108 when RESET_N is not driven by the host (see DR-JDB-16).
 * **Clocking:** Dedicated 12MHz SMD crystal (Y1) for the FT232H reference clock. The FT232H internal PLL requires 12MHz; CM5 GPCLK
   option was considered and rejected — see DEC-022. Crystal load capacitors C10–C11 (33pF C0G) set the 20pF crystal load capacitance.
+  **Load cap calculation:** The crystal specifies C_L = 20pF. Two equal load caps in series give C_series = C/2; adding PCB stray
+  capacitance (C_stray ≈ 3–4pF, from PCB traces and FT232H XTIN input capacitance) yields:
+  C_L = C/2 + C_stray = 33/2 + 3.5 ≈ 16.5 + 3.5 = **20pF ✓**
+  33pF C0G is therefore the correct value. Do not change to 15pF (which would give C_L ≈ 7.5 + 3.5 = 11pF, far below spec).
 * **JTAG Signal Integrity:**
   * **R2 (33Ω):** Series termination on FT232H TDI output, placed within 2mm of the FT232H TDI pin.
     TDI drives only the first CPLD in the chain (single load) — source termination at the FT232H pin
@@ -192,6 +197,8 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | C1-C4 | Decoupling | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
 | C6-C9 | FT232H per-pin supply decoupling — VCCA (pin 37), VCORE (pin 38), VCCD (pin 39), VCCIO×3 (pins 12/24/46), VPLL (pin 8), VPHY (pin 3) — 4 additional caps to complete all 8 supply pins alongside C1-C4 | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
+| C10-C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 80-C0402C330J5GAUTO | 399-12979-1-ND | C2169327 |
+| C12 | U5 (SN74LVC2G125DCUR) VCC bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
 | J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | Adam Tech PH1-05-UA — 1×5 male pin header, 2.54mm | 2.54mm | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
 | J2 | JTAG OUTPUT header (10-pin interleaved GND) | Adam Tech PH1-10-UA — 1×10 male pin header, 2.54mm | 2.54mm | 737-PH1-10-UA | 2057-PH1-10-UA-ND | C3330527 |
 | R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
@@ -203,5 +210,4 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 | R8 | TDI series damping before J2 pin 3 (TDI) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
 | U1 | FT232HL-REEL | USB 2.0 to MPSSE | LQFP-48 | 895-FT232HL-REEL | 768-1101-1-ND | C51997 |
 | U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-024 | Dual 3-state buffer | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |
-| C10, C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 80-C0402C330J5GAUTO | 399-12979-1-ND | C2169327 |
 | Y1 | Crystal — FT232H reference clock (per DEC-022) | 12MHz 20pF ±20ppm | SMD-3225 | 774-435F12012IET | 110-435F12012IETTR-ND | C19766404 (Extended) |

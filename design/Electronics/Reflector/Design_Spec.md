@@ -146,6 +146,9 @@ Reflector.
   * **U1** — 1× TPD4E05U06QDQARQ1 on J1 (JTAG); channels: TCK, TMS, TTD, SYS_RESET_N.
   * **U2, U3, U4** — 3× TPD4E05U06QDQARQ1 on J3 (ENC); 12 channels: ENC_IN[5:0] + ENC_OUT[5:0].
   All arrays shall be placed within 3mm of their respective connector mating edge on L1.
+  * **Working voltage note:** The TPD4E05U06QDQARQ1 maximum continuous working voltage is **5.5V**
+    per datasheet. On the `5V_MAIN` rail (5.0V ±2% = max 5.1V), all U1–U4 devices are within
+    operating range with a ≥0.4V margin to the rated limit.
 * **ESD — all other connectors (no TVS required):**
   * J2 (Power, ERM8-005): power rail (3V3_ENIG / GND) only — no signal protection required.
   * J4 (TTD_RETURN ribbon, BHR-20-VUA): internal ribbon connector; not accessible during live rotor swap.
@@ -175,6 +178,4 @@ Reflector.
 | J4 | Interconnect header | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
 | R1 | JTAG termination | 22Ω | 0603 | 667-ERJ-3EKF2200V | P220HCT-ND | C403073 |
 | U1 | ESD protection array — J1 JTAG rotor connector (TCK, TMS, TTD, SYS_RESET_N) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U2 | ESD protection array — J3 ENC rotor connector (ENC_IN[1:0] + ENC_OUT[1:0]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U3 | ESD protection array — J3 ENC rotor connector (ENC_IN[3:2] + ENC_OUT[3:2]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U4 | ESD protection array — J3 ENC rotor connector (ENC_IN[5:4] + ENC_OUT[5:4]) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| U2-U4 | ESD protection arrays — J3 ENC rotor connector (all 6 channels ENC_IN[5:0] + ENC_OUT[5:0], ×3) | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
