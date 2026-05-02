@@ -32,7 +32,7 @@ Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams
 
 | ID | Description | Status | Ref | Source |
 | --- | --- | --- | --- | --- |
-| `ctlh1-deferred` | Controller CTL-H1 finding: explicitly deferred by user during Pass 2 review cycle | pending | — | `handoff.md` note; Pass 2 deep-review |
+| `ctlh1-deferred` | Controller CTL-H1 finding: explicitly deferred by user during Pass 2 review cycle | ✅ DONE | — | Resolved checkpoint 076: R1/R2 stale placeholders removed; R3–R6 renumbered R1–R4 |
 | `rotor-esd-tvs` | Rotor ESD TVS (PRTR5V0U10AZ): Section 6 placeholder retained; final sourcing pending. Depends on: `rotor-variant-refdes-schematic` | pending | — | `design/Electronics/Rotor/Design_Spec.md §6` |
 | `rotor-variant-refdes-schematic` | Rotor N=26 vs N=64 variant U3/U4 placement in KiCAD: U3 and U4 are the same part in different board positions depending on variant; investigate KiCAD board variant / DNF flag approach so bypass caps (C6–C11) follow same variant logic | pending | — | This session (2026-05-01); deferred until schematic capture |
 | `display-addon-board` | 🚫 **DEFERRED TO V2.0.** Display add-on board design: J9 (Amphenol F52Q) on Controller is the only fixed connector; display power, touch wiring, and auxiliary harness remain deferred with the add-on board definition | blocked | DEC-033 | `design/Electronics/Controller/Design_Spec.md §8` |
@@ -145,7 +145,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('general-pin-mapping-schematic-capture', 'General pin mapping / schematic capture',  'done'),
 ('rerun-deep-reviews',                'Final pre-V1 deep review cycle',               'pending'),
 -- Electronics Deferrals
-('ctlh1-deferred',                    'Controller CTL-H1 deferred finding',           'pending'),
+('ctlh1-deferred',                    'Controller CTL-H1 deferred finding',           'done'),
 ('rotor-esd-tvs',                     'Rotor ESD TVS (PRTR5V0U10AZ) sourcing',       'pending'),
 ('rotor-variant-refdes-schematic',    'Rotor variant U3/U4 KiCAD DNF approach',       'pending'),
 ('display-addon-board',               'Display add-on board (v2.0)',                  'blocked'),
