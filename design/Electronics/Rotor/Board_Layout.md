@@ -44,8 +44,8 @@ Board A faces the input (upstream) side of the rotor stack.
       |         [ U2: FDC2114 ] (at r~40mm)                  |
       |                                                      |
       | [J1 ERM8]  [J2 ERM8]  [J3 ERM8]                      |
-       \   (JTAG)   (Power)  (ENC Data)   equally spaced     /
-        \___________________________________________________/
+       \   (JTAG)   (Power)  (ENC Data)   equally spaced    /
+        \__________________________________________________/
 
                     BOTTOM (inner face, faces Board B)
           [ J14 M ]  [ J7 F ]  [ J8 F ]  [ J11 M ]
@@ -58,11 +58,11 @@ Board A faces the input (upstream) side of the rotor stack.
 | :--- | :--- | :--- |
 | U1 | EPM570T100I5N CPLD | Centre of board |
 | U2 | FDC2114RGHR | Track A capacitive encoder IC (I²C addr 0x2A); r~40mm |
-| U3 | FDC2114RGHR | STGC bit[4] sensor IC (I²C addr 0x2B); Board A, N=26 builds only — NOT POPULATED for N=64 |
-| L1–L4 | Bourns CWF1610A-180K — 18 µH unshielded 0603 chip inductor | U2 CH0–CH3 resonant tank inductors — placed adjacent to U2, one per channel; pair with C20–C23 |
-| L5–L8 | Bourns CWF1610A-180K — same part as L1–L4 | U3 CH0–CH3 resonant tank inductors (includes dummy LC for unused channels) — **N=26 only, NOT POPULATED for N=64** |
-| C20–C23 | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% MLCC | U2 CH0–CH3 resonant tank capacitors — in parallel with L1–L4 between INxA/INxB |
-| C24–C27 | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | U3 CH0–CH3 resonant tank capacitors — **N=26 only, NOT POPULATED for N=64** |
+| U3A | FDC2114RGHR | STGC bit[4] sensor IC (I²C addr 0x2B); Board A, N=26 builds only — NOT POPULATED for N=64 |
+| L1–L4 | Bourns CWF1610A-180K — 18 µH unshielded 0603 chip inductor | U2 CH0–CH3 resonant tank inductors — placed adjacent to U2, one per channel; pair with C18–C21 |
+| L5A–L8A | Bourns CWF1610A-180K — same part as L1–L4 | U3A CH0–CH3 resonant tank inductors (includes dummy LC for unused channels) — **N=26 only, NOT POPULATED for N=64** |
+| C18–C21 | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% MLCC | U2 CH0–CH3 resonant tank capacitors — in parallel with L1–L4 between INxA/INxB |
+| C22A–C25A | YAGEO AC0402FRNPO9BN330 — same part as C18–C21 | U3A CH0–CH3 resonant tank capacitors — **N=26 only, NOT POPULATED for N=64** |
 | S0–S2 | Sensor electrodes (Track A) | Bare Cu pads at r=44mm, N=64 bits[5:3]; or S0–S4 for N=26 |
 | SW1 | 6-pos DIP — ring setting | Input side only |
 | SW2 | 6-pos DIP — forward map select | Input side |
@@ -94,16 +94,16 @@ Board B faces the output (downstream) side of the rotor stack.
          ___________________________________________________
         /                                                   \
        /    [SW3] return map select DIP                      \
-      |                                                      |
-      |                  (( NPTH Ø10mm ))                    |
-      |                  (centre keep-out r≥6mm)             |
-      |                                                      |
-      |   [S3][S4][S5]  <-- Track B sensor electrodes        |
-      |   (bare Cu pads at r=44mm, Board B face)             |
-      |         [ U4: FDC2114 ] (at r~40mm)                  |
-      |         (NOT POPULATED for N=26 rotor)               |
-      |                                                      |
-      | [J4 ERF8]  [J5 ERF8]  [J6 ERF8]                      |
+      |                                                       |
+      |                  (( NPTH Ø10mm ))                     |
+      |                  (centre keep-out r≥6mm)              |
+      |                                                       |
+      |   [S3][S4][S5]  <-- Track B sensor electrodes         |
+      |   (bare Cu pads at r=44mm, Board B face)              |
+      |         [ U3B: FDC2114 ] (at r~40mm)                  |
+      |         (NOT POPULATED for N=26 rotor)                |
+      |                                                       |
+      | [J4 ERF8]  [J5 ERF8]  [J6 ERF8]                       |
        \   (JTAG)   (Power)  (ENC Data)   equally spaced     /
         \___________________________________________________/
 
@@ -114,9 +114,9 @@ Board B faces the output (downstream) side of the rotor stack.
 
 | Ref | Component | Notes |
 | :--- | :--- | :--- |
-| U4 | FDC2114RGHR | Track B capacitive encoder IC (I²C addr 0x2B); r~40mm; **not populated for N=26** |
-| L9–L12 | Bourns CWF1610A-180K — same part as L1–L4 | U4 CH0–CH3 resonant tank inductors (includes dummy LC for unused channels) — **N=64 only, NOT POPULATED for N=26** |
-| C28–C31 | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | U4 CH0–CH3 resonant tank capacitors — **N=64 only, NOT POPULATED for N=26** |
+| U3B | FDC2114RGHR | Track B capacitive encoder IC (I²C addr 0x2B); r~40mm; **not populated for N=26** |
+| L5B–L8B | Bourns CWF1610A-180K — same part as L1–L4 | U3B CH0–CH3 resonant tank inductors (includes dummy LC for unused channels) — **N=64 only, NOT POPULATED for N=26** |
+| C22B–C25B | YAGEO AC0402FRNPO9BN330 — same part as C18–C21 | U3B CH0–CH3 resonant tank capacitors — **N=64 only, NOT POPULATED for N=26** |
 | S3–S5 | Sensor electrodes (Track B) | Bare Cu pads at r=44mm, N=64 bits[2:0]; not present for N=26 |
 | SW3 | 6-pos DIP — return map select | Output side |
 | J4 | ERF8-005 female | JTAG output (10-pin 2×5, 0.8mm pitch) |
@@ -237,7 +237,7 @@ rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Roto
 | `SW1[5:0]` | 6 | Input | Ring-setting switch bank on Board A |
 | `SW2[5:0]` | 6 | Input | Forward-map select switch bank on Board A |
 | `SW3[5:0]` | 6 | Input | Return-map select switch bank brought from Board B via `J14` |
-| Local `SDA`, `SCL` | 2 | Bidirectional | CPLD I2C master for U2/U3/U4 position sensors; `J11` extends the same bus to Board B U4 |
+| Local `SDA`, `SCL` | 2 | Bidirectional | CPLD I2C master for U2/U3A/U3B position sensors; `J11` extends the same bus to Board B U3B |
 
 **Logical budget summary:** 44 general-purpose signal connections total = **30 inputs + 12 outputs + 2
 bidirectional I2C lines**, plus the dedicated JTAG / reset pins above.
@@ -259,7 +259,7 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) handles bus current w
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Rotor power analysis (pass-through sizing):**
-Each rotor draws 50 mA (EPM570) + 2 × 2.1 mA (FDC2114 pair U2/U4 or U2/U3) = **54.2 mA ≈ 55 mA** locally.
+Each rotor draws 50 mA (EPM570) + 2 × 2.1 mA (FDC2114 pair U2/U3B or U2/U3A) = **54.2 mA ≈ 55 mA** locally.
 The J2 power input connector daisy-chains 3V3_ENIG through J5 to the next rotor. All 30 rotor PCBs
 are **identical**, so traces must be sized for the worst case — **Rotor 1**, which receives
 Using the 55 mA design budget, Rotor 1 carries **1.65 A** through its J2 connector and passes

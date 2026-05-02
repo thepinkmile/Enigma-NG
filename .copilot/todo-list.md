@@ -33,8 +33,9 @@ Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams
 | ID | Description | Status | Ref | Source |
 | --- | --- | --- | --- | --- |
 | `ctlh1-deferred` | Controller CTL-H1 finding: explicitly deferred by user during Pass 2 review cycle | ✅ DONE | — | Resolved checkpoint 076: R1/R2 stale placeholders removed; R3–R6 renumbered R1–R4 |
+| `rotor-power-analysis-ministack` | Recalculate Rotor `Board_Layout.md §7` power analysis for mini-stack architecture. Currently assumes a single daisy-chain of 30 rotors (worst-case J2 input 1.65 A at Rotor 1). Architecture uses mini-stacks of max 5 rotors with an Extension Board re-introducing clean 3V3_ENIG at each mini-stack start — worst case is now 5 × 55 mA = 275 mA. Update: worked example, inline table (Rotor 1/15/30 rows), trace width table §7.1, and §7.2 notes. Also verify Extension Board power re-injection connector sizing. | pending | — | `design/Electronics/Rotor/Board_Layout.md §7` |
 | `rotor-esd-tvs` | Rotor ESD TVS (PRTR5V0U10AZ): Section 6 placeholder retained; final sourcing pending. Depends on: `rotor-variant-refdes-schematic` | pending | — | `design/Electronics/Rotor/Design_Spec.md §6` |
-| `rotor-variant-refdes-schematic` | Rotor N=26 vs N=64 variant U3/U4 placement in KiCAD: U3 and U4 are the same part in different board positions depending on variant; investigate KiCAD board variant / DNF flag approach so bypass caps (C6–C11) follow same variant logic | pending | — | This session (2026-05-01); deferred until schematic capture |
+| `rotor-variant-refdes-schematic` | ✅ **DONE.** Rotor variant A/B suffix convention agreed and implemented: U3→U3A, U4→U3B; all associated bypass caps (C16A/C17A/C16B/C17B) and resonant-tank components (C22A–C25A/C22B–C25B, L5A–L8A/L5B–L8B) renamed throughout Design_Spec.md, Board_Layout.md, Rotor_26_Char_Design.md, Rotor_64_Char_Design.md, and Consolidated_BOM.md. DEC-052 logged. KiCAD schematic will use U3A/U3B as unique RefDes with N26/N64 project variants selecting DNP flags. | ✅ DONE | DEC-052 | This session (2026-05-01); deferred until schematic capture |
 | `display-addon-board` | 🚫 **DEFERRED TO V2.0.** Display add-on board design: J9 (Amphenol F52Q) on Controller is the only fixed connector; display power, touch wiring, and auxiliary harness remain deferred with the add-on board definition | blocked | DEC-033 | `design/Electronics/Controller/Design_Spec.md §8` |
 | `cpld-production-replacement` | 🚫 **DEFERRED TO V2.0.** Review replacement CPLD for production stage (current MAX II EPM570 is a prototype-grade selection); update Certification Evidence §7.1 when confirmed | blocked | OA-04 | `design/Standards/Certification_Evidence.md` |
 | `connector-thermal-verification` | **✅ DONE.** Thermal / current-capacity verification of active PM and Stator dock connectors (TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015`); full derating analysis documented in Certification Evidence §5.1. Temperature exception noted for TE connector (−20°C continuous vs DEFSTAN −40°C target); thermal shock test to −40°C cited as supporting evidence. Formal TE confirmation recommended before DEFSTAN submission. | done | OA-05 | `design/Standards/Certification_Evidence.md §5.1` |
@@ -90,7 +91,7 @@ Top-level milestones that gate v1.0 release. Descriptions TBD — to be confirme
 
 | ID | Description | Status | Depends on |
 | --- | --- | --- | --- |
-| `prototype-pcb-manufacturing` | Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | — |
+| `prototype-pcb-manufacturing` | Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | `rerun-deep-reviews` |
 | `prototype-system-complete` | Verification of full system and issuing all design documents, test procedures and guides as version 1.0 complete | pending | All SW & Mech deferrals, `rerun-deep-reviews` |
 | `release-candidate-production` | Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as `prototype-pcb-manufacturing`: (1) Generate manufacturing pack; (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | `prototype-system-complete`, `compliance-testing` |
 | `version-one-complete` | All version 1.0 documents issued. Conduct lessons learned from v1.0 and create a new todo-list to refine the design for a version 2.0 machine | pending | `da-01`, `da-02`, `da-03`, `da-04`, `release-candidate-production` |
@@ -122,8 +123,9 @@ rotor-variant-refdes-schematic
 v2.0 deferred (blocked): display-addon-board, display-aperture, cpld-production-replacement
 Currently ready (no pending deps): connector-thermal-verification, coupon-testing-review,
   ctlh1-deferred, extension-mechanical-usage,
-  prototype-pcb-manufacturing, rotor-variant-refdes-schematic
+  rotor-variant-refdes-schematic
   [battery-connector-final-review excluded — 🔒 blocked awaiting supplier response]
+  [prototype-pcb-manufacturing excluded — depends on rerun-deep-reviews]
   [release-candidate-production excluded — now depends on compliance-testing]
 ```
 
@@ -146,6 +148,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('rerun-deep-reviews',                'Final pre-V1 deep review cycle',               'pending'),
 -- Electronics Deferrals
 ('ctlh1-deferred',                    'Controller CTL-H1 deferred finding',           'done'),
+('rotor-power-analysis-ministack',    'Recalculate Rotor Board_Layout §7 power analysis for mini-stack (max 5 rotors per stack)', 'pending'),
 ('rotor-esd-tvs',                     'Rotor ESD TVS (PRTR5V0U10AZ) sourcing',       'pending'),
 ('rotor-variant-refdes-schematic',    'Rotor variant U3/U4 KiCAD DNF approach',       'pending'),
 ('display-addon-board',               'Display add-on board (v2.0)',                  'blocked'),
@@ -182,7 +185,8 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ```sql
 INSERT OR IGNORE INTO todo_deps (todo_id, depends_on) VALUES
 -- rotor chain
-('rotor-esd-tvs',               'rotor-variant-refdes-schematic'),
+('rotor-power-analysis-ministack',  'rotor-variant-refdes-schematic'),
+('rotor-esd-tvs',                   'rotor-variant-refdes-schematic'),
 -- full-pn-review prerequisites (all 6 must complete first)
 ('full-pn-review',              'connector-thermal-verification'),
 ('full-pn-review',              'extension-mechanical-usage'),
@@ -238,6 +242,8 @@ INSERT OR IGNORE INTO todo_deps (todo_id, depends_on) VALUES
 ('compliance-testing',          'da-02'),
 ('compliance-testing',          'da-03'),
 ('compliance-testing',          'da-04'),
+-- prototype-pcb-manufacturing depends on rerun-deep-reviews
+('prototype-pcb-manufacturing', 'rerun-deep-reviews'),
 -- release-candidate-production depends on prototype-system-complete + compliance-testing
 ('release-candidate-production', 'prototype-system-complete'),
 ('release-candidate-production', 'compliance-testing'),

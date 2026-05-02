@@ -99,3 +99,5 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 93 | Settings Board rename to User Settings Module complete | 093-settings-board-rename-complete.md |
 | 94 | Milestone descriptions & compliance-testing todo complete | 094-milestone-descriptions-compliance-complete.md |
 | 95 | Connector derating analysis complete | 095-connector-derating-complete.md |
+| 96 | Rotor variant RefDes renames complete | 096-rotor-variant-refdes-complete.md |
+| 97 | Rotor RefDes consecutive renumber complete | 097-rotor-refdes-consecutive-renumber.md |
