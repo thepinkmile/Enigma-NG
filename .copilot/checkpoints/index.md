@@ -85,74 +85,16 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 79 | Rotor ESD BOM rows added, Section 6 pending | 079-rotor-esd-bom-rows-added-secti.md |
 | 80 | Rotor ESD committed, review cycle launched | 080-rotor-esd-committed-review-cyc.md |
 | 81 | Full review collected, triage complete, fixes pending | 081-full-review-collected-triage-c.md |
-| 82 | Review triage complete, fixes pending | 082-review-triage-complete-fixes-p.md |
-| 83 | All fixes ready, pending ROT/CTL-M1/STA-L2 confirmation | 083-all-fixes-ready-pending-rot-ct.md |
-| 84 | Review fixes applied, ROT ESD pending | 084-review-fixes-applied-rot-esd-p.md |
-| 85 | ROT ESD rewrite confirmed, pending apply | 085-rot-esd-rewrite-confirmed-pend.md |
-| 86 | ROT ESD rewrite pending apply | 086-rot-esd-rewrite-pending-apply.md |
-| 87 | Session fbc2318d | 087-session-fbc2318d.md |
-| 88 | Stator spec cleanup, requirement renumbering pending | 088-stator-spec-cleanup-requiremen.md |
-| 89 | Second review cycle fixes complete | 089-second-review-cycle-fixes-comp.md |
-| 90 | CTL-L2 resolved, DEC-046 pending | 090-ctl-l2-resolved-dec-046-pendin.md |
-| 91 | DEC-046 written, CTL-H1 investigation started | 091-dec-046-written-ctl-h1-investi.md |
-| 92 | CTL-H1 R1/R2 investigation | 092-ctl-h1-r1-r2-investigation.md |
-| 93 | CTL-H1 R1/R2 stale placeholder audit | 093-ctl-h1-r1-r2-stale-placeholder.md |
-| 94 | CTL-H1 resolved, resistors renumbered, commit ready | 094-ctl-h1-resolved-resistors-renu.md |
-| 95 | KiCAD library prep started | 095-kicad-library-prep-started.md |
-| 96 | BOM fully read, component list pending | 096-bom-fully-read-component-list.md |
-| 97 | BOM component list compiling | 097-bom-component-list-compiling.md |
-| 98 | BOM supplier PN audit and KiCAD footprint tracking | 098-bom-supplier-pn-audit-and-kica.md |
-| 99 | BOM supplier PN audit in progress | 099-bom-supplier-pn-audit-in-progr.md |
-| 100 | BOM full audit, PN gaps identified | 100-bom-full-audit-pn-gaps-identif.md |
-| 101 | BOM audit, CSD17483F4T error found | 101-bom-audit-csd17483f4t-error-fo.md |
-| 102 | BOM audit, web search rule enforced | 102-bom-audit-web-search-rule-enfo.md |
-| 103 | BOM missing PNs compiled | 103-bom-missing-pns-compiled.md |
-| 104 | BOM PN deletions discovered | 104-bom-pn-deletions-discovered.md |
-| 105 | BOM PN audit — no true deletions confirmed | 105-bom-pn-audit-no-true-deletions.md |
-| 106 | BOM full audit read complete | 106-bom-full-audit-read-complete.md |
-| 107 | BOM extraction from board specs complete | 107-bom-extraction-from-board-spec.md |
-| 108 | BOM JSON extraction complete, rebuild pending | 108-bom-json-extraction-complete-r.md |
-| 109 | BOM generation script ready to run | 109-bom-generation-script-ready-to.md |
-| 110 | BOM rebuilt, CSD17578Q5A corrected | 110-bom-rebuilt-csd17578q5a-correc.md |
-| 111 | Agent directives file creation | 111-agent-directives-file-creation.md |
-| 112 | Review-report outstanding items catalogued | 112-review-report-outstanding-item.md |
-| 113 | Outstanding items verification in progress | 113-outstanding-items-verification.md |
-| 114 | TVS/ESD mating connector extension planning | 114-tvs-esd-mating-connector-exten.md |
-| 115 | ESD mating-connector extension planning | 115-esd-mating-connector-extension.md |
-| 116 | ESD extension implementation started | 116-esd-extension-implementation-s.md |
-| 117 | ESD extension implementation in progress | 117-esd-extension-implementation-i.md |
-| 118 | ESD extension Stator Extension Reflector complete | 118-esd-extension-stator-extension.md |
-| 119 | Lint fixes complete, ready to commit | 119-lint-fixes-complete-ready-to-c.md |
-| 120 | Review cycle Pass 1 launched | 120-review-cycle-pass-1-launched.md |
-| 121 | Review cycle Pass 1 Batch 2 complete | 121-review-cycle-pass-1-batch-2-co.md |
-| 122 | Review cycle Pass 1 complete | 122-review-cycle-pass-1-complete.md |
-| 123 | Pass 1 decisions implementation in progress | 123-pass-1-decisions-implementatio.md |
-| 124 | Pass 1 fix decisions in progress | 124-pass-1-fix-decisions-in-progre.md |
-| 125 | Pass 1 decisions fix prep — D-2 TVS blocker found | 125-pass-1-decisions-fix-prep-d-2.md |
-| 126 | Pass 1 fixes prep — D-2 TVS blocker confirmed | 126-pass-1-fixes-prep-d-2-tvs-bloc.md |
-| 127 | D-2/D-3 pre-fix research complete | 127-d-2-d-3-pre-fix-research-compl.md |
-| 128 | D-2 D-3 blockers identified, unblocked fixes ready | 128-d-2-d-3-blockers-identified-un.md |
-| 129 | D-2 SMBJ18A-Q confirmed, D-3 pending | 129-d-2-smbj18a-q-confirmed-d-3-pe.md |
-| 130 | SMBJ18A-Q confirmed, datasheet generation | 130-smbj18a-q-confirmed-datasheet.md |
-| 131 | CTS crystal D-3 review | 131-cts-crystal-d-3-review.md |
-| 132 | CTS 435F12012IET D-3 verification | 132-cts-435f12012iet-d-3-verificat.md |
-| 133 | D-3 CTS crystal confirmed, datasheet generation | 133-d-3-cts-crystal-confirmed-data.md |
-| 134 | Pass 1 fixes ready to launch | 134-pass-1-fixes-ready-to-launch.md |
-| 135 | Pass 1 fix agent ready | 135-pass-1-fix-agent-ready.md |
-| 136 | Pre-fix-agent item resolution | 136-pre-fix-agent-item-resolution.md |
-| 137 | Pre-fix-agent false positive resolution | 137-pre-fix-agent-false-positive-r.md |
-| 138 | Fix agent launch ready | 138-fix-agent-launch-ready.md |
-| 139 | Pass 1 fix agent — post-run corrections pending | 139-pass-1-fix-agent-post-run-corr.md |
-| 140 | Pass 1 review cycle complete | 140-pass-1-review-cycle-complete.md |
-| 141 | Pass 1 committed; Pass 2 launched | 082-pass1-committed-pass2-launched.md |
-| 142 | Pass 2 review complete | 083-pass2-review-complete.md |
-| 143 | Pass 2 audit complete | 084-pass2-audit-complete.md |
-| 144 | FB1 formalisation complete | 032-fb1-formalisation-complete.md |
-| 146 | Rotor J11–J14 renumber and BOM rewrite complete | 051-rotor-j11-j14-renumber-bom-rewrite-complete.md |
-| 147 | Rotor J7–J14 renumber and J_INT header fix complete | 056-rotor-j-renumber-complete.md |
-| 148 | BOM strip all complete — awaiting commit | 090-bom-strip-all-complete.md |
-| 149 | BT→J rename complete, todo-list.md created | 099-bt-to-j-rename-todo-list-created.md |
-| 150 | Datasheet design-content cleanup | 100-datasheet-design-content-clean.md |
-| 151 | BOM encoding, merge review, C20 correction complete | 101-bom-encoding-and-merge-review-.md |
-| 152 | BOM supplier PN corruption fixes complete | 152-bom-supplier-pn-corruption-fixes.md |
-| 153 | Settings Board rename to User Settings Module complete | 153-settings-board-rename-complete.md |
+| 82 | Pass 1 committed; Pass 2 launched | 082-pass1-committed-pass2-launched.md |
+| 83 | Pass 2 review complete | 083-pass2-review-complete.md |
+| 84 | Pass 2 audit complete | 084-pass2-audit-complete.md |
+| 85 | FB1 formalisation complete | 085-fb1-formalisation-complete.md |
+| 86 | Rotor J11–J14 renumber and BOM rewrite complete | 086-rotor-j11-j14-renumber-bom-rewrite-complete.md |
+| 87 | Rotor J7–J14 renumber and J_INT header fix complete | 087-rotor-j-renumber-complete.md |
+| 88 | BOM strip all complete — awaiting commit | 088-bom-strip-all-complete.md |
+| 89 | BT→J rename complete, todo-list.md created | 089-bt-to-j-rename-todo-list-created.md |
+| 90 | Datasheet design-content cleanup | 090-datasheet-design-content-clean.md |
+| 91 | BOM encoding, merge review, C20 correction complete | 091-bom-encoding-and-merge-review-.md |
+| 92 | BOM supplier PN corruption fixes complete | 092-bom-supplier-pn-corruption-fixes.md |
+| 93 | Settings Board rename to User Settings Module complete | 093-settings-board-rename-complete.md |
+| 94 | Milestone descriptions & compliance-testing todo complete | 094-milestone-descriptions-compliance-complete.md |

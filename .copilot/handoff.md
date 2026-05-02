@@ -254,6 +254,13 @@ All deferred work items, TBDs, and open certification actions are tracked in `.c
 Consult that file rather than re-scanning the repo. Update it when new items are identified or
 existing items are closed.
 
+**SQL todo tracking:** At the start of each session, the in-session SQLite database (`todos`,
+`todo_deps`) must be populated from `todo-list.md`. Use the INSERT statements in the
+"SQL Reconstruction Reference" section at the bottom of that file. Use `INSERT OR IGNORE` so the
+script is safe to re-run. This session SQL is ephemeral (does not survive across sessions); the
+`todo-list.md` file is the canonical record and must be updated whenever statuses or dependencies
+change.
+
 ## Remaining follow-up work
 
 These are still open design review items, but they are not yet committed design decisions:

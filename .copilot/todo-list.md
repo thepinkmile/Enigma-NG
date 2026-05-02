@@ -5,8 +5,12 @@
 >
 > **Design Log Open Questions** are tracked separately in `design/Design_Log.md` under `## Open Questions`.
 > Do not duplicate them here — that file is the authoritative source for formally raised design questions.
+>
+> **SQL tracking:** At the start of each session, populate the local SQLite `todos` and `todo_deps` tables
+> from the SQL Reconstruction Reference section at the bottom of this file. That section is the authoritative
+> dependency source; the in-session SQL is a convenience tracker only and does not persist across sessions.
 
-Last updated: 2026-05-02
+Last updated: 2026-05-02 (dependency graph added)
 
 ---
 
@@ -14,61 +18,233 @@ Last updated: 2026-05-02
 
 Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams table.
 
-| ID | Description | Source |
-| --- | --- | --- |
-| `extension-mechanical-usage` | Detailed switch/linkage geometry for Extension boundary carry is still needed; architectural answer (shared AM) is locked but physical linkage spec is not | `plan.md` |
-| `coupon-testing-review` | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware | `plan.md` |
-| `battery-connector-final-review` | Re-confirm Glenair `807-216-00ZNU6-6DY` contact assignment, `BATT_PRES_N` position, reserved-contact behaviour, cable selection, and interposer fit; check ODU AMC NP lead before closing | `plan.md` |
-| `general-pin-mapping-schematic-capture` | Lock exact package pin/pad assignments for AM STM32, Stator mux U7, Encoder / Stator / Rotor CPLD packages — treat as one combined workstream aligned with KiCAD project and shared component library | `plan.md` |
-| `rerun-deep-reviews` | Final pre-V1 cross-discipline deep-review cycle — run only once electrical, mechanical, and software work are complete and each board has a full KiCAD project with exported production Gerbers | `plan.md` |
+| ID | Description | Status | Source |
+| --- | --- | --- | --- |
+| `extension-mechanical-usage` | Detailed switch/linkage geometry for Extension boundary carry is still needed; architectural answer (shared AM) is locked but physical linkage spec is not | pending | `plan.md` |
+| `coupon-testing-review` | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware | pending | `plan.md` |
+| `battery-connector-final-review` | Re-confirm Glenair `807-216-00ZNU6-6DY` contact assignment, `BATT_PRES_N` position, reserved-contact behaviour, cable selection, and interposer fit; check ODU AMC NP lead before closing | **🔒 blocked** — awaiting external supplier response | `plan.md` |
+| ~~`general-pin-mapping-schematic-capture`~~ | ✅ **COMPLETE** — Footprints now available in KiCAD library; schematic capture can begin | done | `plan.md` |
+| `rerun-deep-reviews` | Final pre-V1 cross-discipline deep-review cycle — run only once electrical, mechanical, and software work are complete and each board has a full KiCAD project with exported production Gerbers | pending | `plan.md` |
 
 ---
 
 ## Electronics Deferrals
 
-| ID | Description | Ref | Source |
-| --- | --- | --- | --- |
-| `ctlh1-deferred` | Controller CTL-H1 finding: explicitly deferred by user during Pass 2 review cycle | — | `handoff.md` note; Pass 2 deep-review |
-| `rotor-esd-tvs` | Rotor ESD TVS (PRTR5V0U10AZ): Section 6 placeholder retained; final sourcing pending | — | `design/Electronics/Rotor/Design_Spec.md §6` |
-| `rotor-variant-refdes-schematic` | Rotor N=26 vs N=64 variant U3/U4 placement in KiCAD: U3 and U4 are the same part in different board positions depending on variant; investigate KiCAD board variant / DNF flag approach so bypass caps (C6–C11) follow same variant logic | — | This session (2026-05-01); deferred until schematic capture |
-| `display-addon-board` | Display add-on board design: J9 (Amphenol F52Q) on Controller is the only fixed connector; display power, touch wiring, and auxiliary harness remain deferred with the add-on board definition | DEC-033 | `design/Electronics/Controller/Design_Spec.md §8` |
-| `cpld-production-replacement` | Review replacement CPLD for production stage (current MAX II EPM570 is a prototype-grade selection); update Certification Evidence §7.1 when confirmed | OA-04 | `design/Standards/Certification_Evidence.md` |
-| `connector-thermal-verification` | Thermal / current-capacity verification of active PM and Stator dock connectors (TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015`); document final derating rule for Certification Evidence §5 | OA-05 | `design/Standards/Certification_Evidence.md` |
-| `full-pn-review` | Full supplier PN review of all BOM entries before schematic capture — a prior session that reduced component package sizes appears to have corrupted supplier PNs on at least two components (ERJ-2RKF1001X, CL05B104KB5NNNC), substituting codes pointing to entirely different parts. A sweep of all DigiKey / Mouser / JLCPCB PNs against their MPNs is required before KiCAD work begins | — | 2026-05-02 supplier PN audit |
-| `footprint-requests-pending` | Footprints requested but not yet received; update BOM and library when each arrives: **BAT54** (Diotec SOT-23) — requested, **AC72ABD** (72°C SMD thermal cutoff) — requested, **BMC-Q2AY0600M** (TE 600Ω 0805 AEC-Q200 ferrite bead) — requested, **TPS75733KTTRG3** (Texas Instruments 3.3V LDO TO-263-5) — ⚠️ footprint ready, no 3D model yet — download on next session, **MCP121T-450E/LB** (Microchip 4.5V supervisor SC70-3) — ⚠️ footprint ready, no 3D model yet — download on next session. Add further pending requests here as they arise | — | 2026-05-02 |
+| ID | Description | Status | Ref | Source |
+| --- | --- | --- | --- | --- |
+| `ctlh1-deferred` | Controller CTL-H1 finding: explicitly deferred by user during Pass 2 review cycle | pending | — | `handoff.md` note; Pass 2 deep-review |
+| `rotor-esd-tvs` | Rotor ESD TVS (PRTR5V0U10AZ): Section 6 placeholder retained; final sourcing pending. Depends on: `rotor-variant-refdes-schematic` | pending | — | `design/Electronics/Rotor/Design_Spec.md §6` |
+| `rotor-variant-refdes-schematic` | Rotor N=26 vs N=64 variant U3/U4 placement in KiCAD: U3 and U4 are the same part in different board positions depending on variant; investigate KiCAD board variant / DNF flag approach so bypass caps (C6–C11) follow same variant logic | pending | — | This session (2026-05-01); deferred until schematic capture |
+| `display-addon-board` | 🚫 **DEFERRED TO V2.0.** Display add-on board design: J9 (Amphenol F52Q) on Controller is the only fixed connector; display power, touch wiring, and auxiliary harness remain deferred with the add-on board definition | blocked | DEC-033 | `design/Electronics/Controller/Design_Spec.md §8` |
+| `cpld-production-replacement` | 🚫 **DEFERRED TO V2.0.** Review replacement CPLD for production stage (current MAX II EPM570 is a prototype-grade selection); update Certification Evidence §7.1 when confirmed | blocked | OA-04 | `design/Standards/Certification_Evidence.md` |
+| `connector-thermal-verification` | Thermal / current-capacity verification of active PM and Stator dock connectors (TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015`); document final derating rule for Certification Evidence §5 | pending | OA-05 | `design/Standards/Certification_Evidence.md` |
+| `full-pn-review` | Full supplier PN review of all BOM entries before schematic capture — a prior session that reduced component package sizes appears to have corrupted supplier PNs on at least two components (ERJ-2RKF1001X, CL05B104KB5NNNC), substituting codes pointing to entirely different parts. A sweep of all DigiKey / Mouser / JLCPCB PNs against their MPNs is required before KiCAD work begins. Depends on: `connector-thermal-verification`, `extension-mechanical-usage`, `battery-connector-final-review`, `ctlh1-deferred`, `rotor-esd-tvs`, `coupon-testing-review` | pending | — | 2026-05-02 supplier PN audit |
+| `footprint-requests-pending` | Footprints requested but not yet received; update BOM and library when each arrives: **BAT54** (Diotec SOT-23) — requested, **AC72ABD** (72°C SMD thermal cutoff) — requested, **BMC-Q2AY0600M** (TE 600Ω 0805 AEC-Q200 ferrite bead) — requested, **TPS75733KTTRG3** (Texas Instruments 3.3V LDO TO-263-5) — ⚠️ footprint ready, no 3D model yet — download on next session, **MCP121T-450E/LB** (Microchip 4.5V supervisor SC70-3) — ⚠️ footprint ready, no 3D model yet — download on next session. Add further pending requests here as they arise. Depends on: `full-pn-review` | pending | — | 2026-05-02 |
 
 ---
 
 ## Mechanical Deferrals
 
-| ID | Description | Source |
-| --- | --- | --- |
-| `rotor-shaft-diameter` | Central shaft hole diameter for Rotor PCBs: Ø10mm nominal; final size TBD once Rotor Actuation Assembly shaft diameter is fixed (8–12mm range) | `design/Mechanical/Rotor/Design_Spec.md`; `design/Electronics/Rotor/Board_Layout.md` |
-| `rotor-rolling-element` | Rolling element diameter: TBD; matched set required for even load (±0.01mm) | `design/Mechanical/Rotor/Design_Spec.md` |
-| `rotor-alloy-grade` | Rotor disc aluminium alloy grade: TBD — 6061-T6 suggested for machinability; confirm before manufacture | `design/Mechanical/Rotor/Design_Spec.md` |
-| `rotor-shaft-mechanism` | Rotor shaft retention mechanism: TBD — pending Rotor Actuation Assembly spec | `design/Mechanical/Rotor/Design_Spec.md` |
-| `display-aperture` | Main enclosure display aperture dimensions: TBD pending display size selection (up to 10" supported via DSI1); deferred display auxiliary hinge space also unresolved | `design/Mechanical/Main_Enclosure/Design_Spec.md` |
-| `system-assembly-harnesses` | Complete System Assembly cable harness definitions: TBD — 20-pin encoder IDC ribbons, reflector cable, fan cable, User Settings Module I²C ribbon, switch / battery harnesses | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` |
-| `system-assembly-connectors` | Complete System Assembly connector list: TBD — TE PM dock, Molex Stator dock, ERF8/ERM8 rotor-family BtB, JST PH servo, JST SH fan, 20-pin IDC encoder, etc. | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` |
+Depends on: `prototype-pcb-manufacturing`, `ltc3350-telemetry`, `cpld-timing-load` (all three must be done before any mechanical work can be closed).
+
+| ID | Description | Status | Source |
+| --- | --- | --- | --- |
+| `rotor-shaft-diameter` | Central shaft hole diameter for Rotor PCBs: Ø10mm nominal; final size TBD once Rotor Actuation Assembly shaft diameter is fixed (8–12mm range) | pending | `design/Mechanical/Rotor/Design_Spec.md`; `design/Electronics/Rotor/Board_Layout.md` |
+| `rotor-rolling-element` | Rolling element diameter: TBD; matched set required for even load (±0.01mm) | pending | `design/Mechanical/Rotor/Design_Spec.md` |
+| `rotor-alloy-grade` | Rotor disc aluminium alloy grade: TBD — 6061-T6 suggested for machinability; confirm before manufacture | pending | `design/Mechanical/Rotor/Design_Spec.md` |
+| `rotor-shaft-mechanism` | Rotor shaft retention mechanism: TBD — pending Rotor Actuation Assembly spec | pending | `design/Mechanical/Rotor/Design_Spec.md` |
+| `display-aperture` | 🚫 **DEFERRED TO V2.0.** Main enclosure display aperture dimensions: TBD pending display size selection (up to 10" supported via DSI1); deferred display auxiliary hinge space also unresolved | blocked | `design/Mechanical/Main_Enclosure/Design_Spec.md` |
+| `system-assembly-harnesses` | Complete System Assembly cable harness definitions: TBD — 20-pin encoder IDC ribbons, reflector cable, fan cable, User Settings Module I²C ribbon, switch / battery harnesses | pending | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` |
+| `system-assembly-connectors` | Complete System Assembly connector list: TBD — TE PM dock, Molex Stator dock, ERF8/ERM8 rotor-family BtB, JST PH servo, JST SH fan, 20-pin IDC encoder, etc. | pending | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` |
 
 ---
 
 ## Software Deferrals
 
-| ID | Description | Ref | Source |
-| --- | --- | --- | --- |
-| `ltc3350-telemetry` | LTC3350 I²C telemetry support in Linux OS power-management driver: deferred to Software PoC stage, pending hardware availability | DEC-025 | `design/Software/Linux_OS/Power_Management.md §2` |
-| `cpld-timing-load` | CPLD Encoder Logic timing and electrical load characterisation (propagation delays, fanout, drive current): deferred until first prototype boards exist for measurement | — | `design/Software/CPLD_Logic/Encoder_Logic.md §2` |
+Depends on: `rerun-deep-reviews` + `prototype-pcb-manufacturing` (both required before SW deferrals can be actioned).
+
+| ID | Description | Status | Ref | Source |
+| --- | --- | --- | --- | --- |
+| `ltc3350-telemetry` | LTC3350 I²C telemetry support in Linux OS power-management driver: deferred to Software PoC stage, pending hardware availability | pending | DEC-025 | `design/Software/Linux_OS/Power_Management.md §2` |
+| `cpld-timing-load` | CPLD Encoder Logic timing and electrical load characterisation (propagation delays, fanout, drive current): deferred until first prototype boards exist for measurement | pending | — | `design/Software/CPLD_Logic/Encoder_Logic.md §2` |
 
 ---
 
 ## Standards & Certification Actions
 
-Items from `design/Standards/Certification_Evidence.md §8`.
+Items from `design/Standards/Certification_Evidence.md §8`. All depend on `prototype-system-complete`.
 
-| ID | Description | Priority | Status |
+| SQL ID | DA Ref | Description | Priority | Status |
+| --- | --- | --- | --- | --- |
+| `da-01` | DA-01 | If coupon-based diagnostic access is introduced, exposed ENIG pads require dedicated ESD protection or documented justification before production release and classroom deployment | Post-coupon design | open |
+| `da-02` | DA-02 | ESD policy for classroom deployment variant: define which internal BtB-accessible connections require additional ESD protection in educational / student-access configuration | Pre-production | open |
+| `da-03` | DA-03 | Full consistency documentation pass: legacy Link-Alpha / Link-Beta references must remain historical-only after DEC-038; verify any new docs added use TE PM dock / Molex Stator dock naming | Ongoing | open |
+| `da-04` | DA-04 | Update Consolidated BOM with all locked Power Module components *(may be superseded by the 2026-05 BOM restructure — verify against current `Consolidated_BOM.md` before actioning)* | Post-eFuse lock | review needed |
+| `compliance-testing` | — | Sending final review prototype for Environmental and EMC testing to get required certification documentation | Pre-production | pending |
+
+---
+
+## Project Milestones
+
+Top-level milestones that gate v1.0 release. Descriptions TBD — to be confirmed with user before closing.
+
+| ID | Description | Status | Depends on |
 | --- | --- | --- | --- |
-| DA-01 | If coupon-based diagnostic access is introduced, exposed ENIG pads require dedicated ESD protection or documented justification before production release and classroom deployment | Post-coupon design | Open |
-| DA-02 | ESD policy for classroom deployment variant: define which internal BtB-accessible connections require additional ESD protection in educational / student-access configuration | Pre-production | Open |
-| DA-03 | Full consistency documentation pass: legacy Link-Alpha / Link-Beta references must remain historical-only after DEC-038; verify any new docs added use TE PM dock / Molex Stator dock naming | Ongoing | Open |
-| DA-04 | Update Consolidated BOM with all locked Power Module components *(may be superseded by the 2026-05 BOM restructure — verify against current `Consolidated_BOM.md` before actioning)* | Post-eFuse lock | Review needed |
+| `prototype-pcb-manufacturing` | Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | — |
+| `prototype-system-complete` | Verification of full system and issuing all design documents, test procedures and guides as version 1.0 complete | pending | All SW & Mech deferrals, `rerun-deep-reviews` |
+| `release-candidate-production` | Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as `prototype-pcb-manufacturing`: (1) Generate manufacturing pack; (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | `prototype-system-complete`, `compliance-testing` |
+| `version-one-complete` | All version 1.0 documents issued. Conduct lessons learned from v1.0 and create a new todo-list to refine the design for a version 2.0 machine | pending | `da-01`, `da-02`, `da-03`, `da-04`, `release-candidate-production` |
+
+---
+
+## Dependency Overview
+
+```
+rotor-variant-refdes-schematic
+  └─> rotor-esd-tvs
+        └─> full-pn-review (also needs: extension-mechanical-usage,
+              │              battery-connector-final-review [🔒 blocked],
+              │              ctlh1-deferred, coupon-testing-review,
+              │              connector-thermal-verification)
+              └─> footprint-requests-pending
+                    └─> rerun-deep-reviews ──┐
+                          │                  │
+                          ├─> ltc3350-telemetry (also needs: prototype-pcb-manufacturing)
+                          └─> cpld-timing-load  (also needs: prototype-pcb-manufacturing)
+                                └─> [all mechanical deferrals] (also need: prototype-pcb-manufacturing)
+                                      └─> prototype-system-complete
+                                            └─> da-01, da-02, da-03, da-04
+                                                  └─> compliance-testing
+                                                        └─> release-candidate-production
+                                                              └─> version-one-complete
+                                                                    (also needs: da-01–da-04)
+
+v2.0 deferred (blocked): display-addon-board, display-aperture, cpld-production-replacement
+Currently ready (no pending deps): connector-thermal-verification, coupon-testing-review,
+  ctlh1-deferred, extension-mechanical-usage,
+  prototype-pcb-manufacturing, rotor-variant-refdes-schematic
+  [battery-connector-final-review excluded — 🔒 blocked awaiting supplier response]
+  [release-candidate-production excluded — now depends on compliance-testing]
+```
+
+---
+
+## SQL Reconstruction Reference
+
+At session start, run these INSERT statements to reconstruct the `todos` and `todo_deps` tracking tables.
+Use `INSERT OR IGNORE` to make the script idempotent (re-runnable without error).
+
+### Todos
+
+```sql
+INSERT OR IGNORE INTO todos (id, title, status) VALUES
+-- Open Workstreams
+('extension-mechanical-usage',        'Extension mechanical linkage spec',             'pending'),
+('coupon-testing-review',             'Board-level coupon & PAS test coverage',        'pending'),
+('battery-connector-final-review',    'Battery connector final review',                'blocked'),
+('general-pin-mapping-schematic-capture', 'General pin mapping / schematic capture',  'done'),
+('rerun-deep-reviews',                'Final pre-V1 deep review cycle',               'pending'),
+-- Electronics Deferrals
+('ctlh1-deferred',                    'Controller CTL-H1 deferred finding',           'pending'),
+('rotor-esd-tvs',                     'Rotor ESD TVS (PRTR5V0U10AZ) sourcing',       'pending'),
+('rotor-variant-refdes-schematic',    'Rotor variant U3/U4 KiCAD DNF approach',       'pending'),
+('display-addon-board',               'Display add-on board (v2.0)',                  'blocked'),
+('cpld-production-replacement',       'CPLD production replacement review (v2.0)',    'blocked'),
+('connector-thermal-verification',    'Connector thermal/current derating',           'pending'),
+('full-pn-review',                    'Full supplier PN sweep pre-schematic',         'pending'),
+('footprint-requests-pending',        'Outstanding footprint requests / downloads',   'pending'),
+-- Mechanical Deferrals
+('rotor-shaft-diameter',              'Rotor PCB shaft hole diameter',                'pending'),
+('rotor-rolling-element',             'Rotor rolling element diameter spec',          'pending'),
+('rotor-alloy-grade',                 'Rotor disc alloy grade selection',             'pending'),
+('rotor-shaft-mechanism',             'Rotor shaft retention mechanism',              'pending'),
+('display-aperture',                  'Main enclosure display aperture (v2.0)',       'blocked'),
+('system-assembly-harnesses',         'System Assembly harness definitions',          'pending'),
+('system-assembly-connectors',        'System Assembly connector list',               'pending'),
+-- Software Deferrals
+('ltc3350-telemetry',                 'LTC3350 I2C telemetry Linux driver',           'pending'),
+('cpld-timing-load',                  'CPLD timing & load characterisation',          'pending'),
+-- Standards & Certification
+('da-01',                             'DA-01: Coupon ESD protection requirement',     'pending'),
+('da-02',                             'DA-02: Classroom deployment ESD policy',       'pending'),
+('da-03',                             'DA-03: Connector naming consistency pass',     'pending'),
+('da-04',                             'DA-04: Consolidated BOM PM component update',  'pending'),
+('compliance-testing',               'Sending final review prototype for Environmental and EMC testing to get required certification documentation.', 'pending'),
+-- Project Milestones
+('prototype-pcb-manufacturing',       'Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing',        'pending'),
+('prototype-system-complete',         'Verification of full system and issuing all design documents, test procedures and guides as version 1.0 complete.',          'pending'),
+('release-candidate-production',      'Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as prototype-pcb-manufacturing: (1) Generate manufacturing pack (gerber, pick & place, BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing.',       'pending'),
+('version-one-complete',              'All version 1.0 documents issued. Conduct lessons learned from v1.0 and create a new todo-list to refine the design for a version 2.0 machine.',              'pending');
+```
+
+### Dependencies
+
+```sql
+INSERT OR IGNORE INTO todo_deps (todo_id, depends_on) VALUES
+-- rotor chain
+('rotor-esd-tvs',               'rotor-variant-refdes-schematic'),
+-- full-pn-review prerequisites (all 6 must complete first)
+('full-pn-review',              'connector-thermal-verification'),
+('full-pn-review',              'extension-mechanical-usage'),
+('full-pn-review',              'battery-connector-final-review'),
+('full-pn-review',              'ctlh1-deferred'),
+('full-pn-review',              'rotor-esd-tvs'),
+('full-pn-review',              'coupon-testing-review'),
+-- footprint gated by full-pn-review
+('footprint-requests-pending',  'full-pn-review'),
+-- deep reviews gated by footprints
+('rerun-deep-reviews',          'footprint-requests-pending'),
+-- software deferrals need deep reviews + prototype hardware
+('ltc3350-telemetry',           'rerun-deep-reviews'),
+('ltc3350-telemetry',           'prototype-pcb-manufacturing'),
+('cpld-timing-load',            'rerun-deep-reviews'),
+('cpld-timing-load',            'prototype-pcb-manufacturing'),
+-- mechanical deferrals need prototype hardware + both SW deferrals
+('rotor-shaft-diameter',        'prototype-pcb-manufacturing'),
+('rotor-shaft-diameter',        'ltc3350-telemetry'),
+('rotor-shaft-diameter',        'cpld-timing-load'),
+('rotor-rolling-element',       'prototype-pcb-manufacturing'),
+('rotor-rolling-element',       'ltc3350-telemetry'),
+('rotor-rolling-element',       'cpld-timing-load'),
+('rotor-alloy-grade',           'prototype-pcb-manufacturing'),
+('rotor-alloy-grade',           'ltc3350-telemetry'),
+('rotor-alloy-grade',           'cpld-timing-load'),
+('rotor-shaft-mechanism',       'prototype-pcb-manufacturing'),
+('rotor-shaft-mechanism',       'ltc3350-telemetry'),
+('rotor-shaft-mechanism',       'cpld-timing-load'),
+('system-assembly-harnesses',   'prototype-pcb-manufacturing'),
+('system-assembly-harnesses',   'ltc3350-telemetry'),
+('system-assembly-harnesses',   'cpld-timing-load'),
+('system-assembly-connectors',  'prototype-pcb-manufacturing'),
+('system-assembly-connectors',  'ltc3350-telemetry'),
+('system-assembly-connectors',  'cpld-timing-load'),
+-- prototype-system-complete needs all SW and Mech deferrals + deep reviews
+('prototype-system-complete',   'rerun-deep-reviews'),
+('prototype-system-complete',   'ltc3350-telemetry'),
+('prototype-system-complete',   'cpld-timing-load'),
+('prototype-system-complete',   'rotor-shaft-diameter'),
+('prototype-system-complete',   'rotor-rolling-element'),
+('prototype-system-complete',   'rotor-alloy-grade'),
+('prototype-system-complete',   'rotor-shaft-mechanism'),
+('prototype-system-complete',   'system-assembly-harnesses'),
+('prototype-system-complete',   'system-assembly-connectors'),
+-- DA actions depend on prototype-system-complete
+('da-01',                       'prototype-system-complete'),
+('da-02',                       'prototype-system-complete'),
+('da-03',                       'prototype-system-complete'),
+('da-04',                       'prototype-system-complete'),
+-- compliance-testing depends on all DA actions
+('compliance-testing',          'da-01'),
+('compliance-testing',          'da-02'),
+('compliance-testing',          'da-03'),
+('compliance-testing',          'da-04'),
+-- release-candidate-production depends on prototype-system-complete + compliance-testing
+('release-candidate-production', 'prototype-system-complete'),
+('release-candidate-production', 'compliance-testing'),
+-- version-one-complete needs all DA actions + release candidate
+('version-one-complete',        'da-01'),
+('version-one-complete',        'da-02'),
+('version-one-complete',        'da-03'),
+('version-one-complete',        'da-04'),
+('version-one-complete',        'release-candidate-production');
+```
