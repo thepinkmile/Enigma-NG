@@ -15,6 +15,28 @@
 - Materials / plating: black nylon housing UL94V-0, copper-alloy contacts, nickel underplate, gold on contact area, and tin on lead area.
 - Special note: the laser-marking position is called out for 1-1674231-1 only.
 
+## Electrical and Environmental Ratings (Source: Product Spec 108-5775)
+
+> These ratings apply to the full 2.5 mm battery connector family and are sourced from TE Product
+> Specification 108-5775 Rev. B2 (18 JUL 2019). See
+> [TE-108-5775-product-specification.md](TE-108-5775-product-specification.md) for the full specification.
+
+| Parameter | Rating |
+| --- | --- |
+| Voltage Rating | 30V DC max |
+| **Current Rating** | **6A per contact** |
+| **Operating Temperature** | **−20°C to +80°C** |
+| Thermal shock qualification | −40°C / 30 min ↔ +85°C / 30 min × 5 cycles — passes (ΔR ≤ 20 mΩ) |
+| Temperature rise at rated current | 30°C max at 6A |
+| Contact resistance — initial | 30 mΩ max |
+| Contact resistance — ΔR after tests | 20 mΩ max |
+| Dielectric withstanding voltage | 1 kVAC for 1 min; leakage ≤ 0.5 mA |
+| Insulation resistance | 1,000 MΩ min (initial); 100 MΩ min (after tests) |
+
+> **DEFSTAN temperature note:** The operating rating lower bound (−20°C) does not cover the
+> DEFSTAN design target (−40°C). The thermal shock test to −40°C is cited as supporting evidence.
+> See `Certification_Evidence.md §5.1` for the full exception record.
+
 ## Extraction Notes
 
 - Native extraction was empty; OCR text was inserted so the title block and drawing notes are searchable locally.

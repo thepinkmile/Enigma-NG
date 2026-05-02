@@ -98,3 +98,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 92 | BOM supplier PN corruption fixes complete | 092-bom-supplier-pn-corruption-fixes.md |
 | 93 | Settings Board rename to User Settings Module complete | 093-settings-board-rename-complete.md |
 | 94 | Milestone descriptions & compliance-testing todo complete | 094-milestone-descriptions-compliance-complete.md |
+| 95 | Connector derating analysis complete | 095-connector-derating-complete.md |
