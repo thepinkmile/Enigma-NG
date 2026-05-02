@@ -1,4 +1,4 @@
-# Settings Board (V1.0) Design Specification
+# User Settings Module (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -11,14 +11,14 @@
 
 ## 1. Overview
 
-The Settings Board is a panel-mount PCB providing user-accessible hardware configuration controls
+The User Settings Module is a panel-mount PCB providing user-accessible hardware configuration controls
 for the Enigma-NG system. It replaces the DIP switches previously located on the Stator Board with
 10 sub-miniature SPDT toggle switches plus 12 discrete RGB status LEDs, mounted through the right
 side of the enclosure top face near the rotors. A momentary active-low `CFG_APPLY_N` pushbutton
 captures the user's configuration intent; the CM5 firmware then mirrors that request onto the
 Stator-side apply/reset path.
 
-The Settings Board communicates with the Stator Board exclusively via a 6-wire I²C harness
+The User Settings Module communicates with the Stator Board exclusively via a 6-wire I²C harness
 (J1 → Stator J13), sharing the Stator I²C-1 bus. It hosts three MCP23017 GPIO expanders:
 
 * **U1 (@ 0x23):** Reads the 10 toggle-switch states and the `CFG_APPLY_N` momentary button.
@@ -55,7 +55,7 @@ daemon over I²C.
 | DR-SBD-04 | LED control expanders | U2 = MCP23017T-E/SO @ 0x24 (Bank 1); U3 = MCP23017T-E/SO @ 0x25 (Bank 2); SOIC-28; per-indicator anodes plus shared RGB bank rails | §4 I²C Devices — U2, U3; §5 LED Control Logic; BOM U2, U3 |
 | DR-SBD-05 | LED colour-rail transistors | 6× BSS138 SOT-23 N-channel MOSFETs (`Q1-Q6`); gate driven via 1kΩ resistor; GPIO HIGH = transistor ON | §5 LED Control Logic; BOM Q1-Q6 |
 | DR-SBD-06 | LED power supply | `5V_MAIN` from the Stator via J1 pin 2; full RGB operation at 5V uses 150Ω red and 100Ω green/blue series resistors; LED anodes connect to `5V_MAIN` via per-anode PMOS high-side switches (Q19–Q30) — see DR-SBD-10 | §7 Interconnects — J1; §5 LED Control Logic; BOM R18-R53, Q7-Q30, R54-R77 |
-| DR-SBD-07 | `CFG_APPLY_N` button | SW11 = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, active-low; mounted on the Settings Board and actuated through the enclosure by a mechanical plunger/cap; 10kΩ pull-up to 3V3_ENIG + 100nF debounce cap; U1 GPB[7] | §6 `CFG_APPLY_N` Button; BOM SW11, R11, C4 |
+| DR-SBD-07 | `CFG_APPLY_N` button | SW11 = Omron B3F-1070 or equivalent SPST NO through-hole tactile switch, active-low; mounted on the User Settings Module and actuated through the enclosure by a mechanical plunger/cap; 10kΩ pull-up to 3V3_ENIG + 100nF debounce cap; U1 GPB[7] | §6 `CFG_APPLY_N` Button; BOM SW11, R11, C4 |
 | DR-SBD-08 | I²C connector | J1 = 6-pin JST PH 2.0mm B6B-PH-K-S(LF)(SN); pins: `3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`; harness to Stator J13 | §7 Interconnects; BOM J1 |
 | DR-SBD-09 | Switch input pull-downs | 10× 10kΩ 0603 pull-down resistors on all toggle-switch inputs to U1 (GPA[3:0], GPB[5:0]); HIGH when closed | §4 I²C Devices — U1; BOM R1-R10 |
 | DR-SBD-10 | Per-anode LED high-side switch | 12× two-stage per-anode high-side switch: MCP23017 GPIO → 1 kΩ gate resistor (R54–R65) → BSS138 NMOS pre-driver (Q7–Q18); BSS138 drain pulls PMOS gate low; 47 kΩ pull-up (R66–R77) from PMOS gate to `5V_MAIN`; PMOS source at `5V_MAIN`, drain to LED anode; GPIO HIGH → LED ON (non-inverted logic); this topology isolates the MCP23017 3.3 V GPIO from direct-driving 5 V LED anodes | §5 LED Control Logic; BOM Q7-Q30, R54-R77 |
@@ -85,7 +85,7 @@ daemon over I²C.
 
 ### GND_CHASSIS Single-Point Bond
 
-Per `design/Standards/Global_Routing_Spec.md §5`, the Settings Board implements a local
+Per `design/Standards/Global_Routing_Spec.md §5`, the User Settings Module implements a local
 `GND_CHASSIS` net tied to its mounting holes and any panel-contact mechanical features, but it does
 **not** implement a local GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS
 bond is defined on the Power Module at the common power-entry point immediately before the eFuse.
@@ -103,7 +103,7 @@ routing case from 16 configurations synthesised into the Stator CPLD fabric. `CF
 encode **Plugboard Pass 1** (`J6/J7`) insertion position; `CFG_ROUTE[3:2]` encode **Plugboard Pass
 2** (`J8/J9`) insertion position.
 
-The CM5 daemon decides whether the applied `CFG_ROUTE[3:0]` value is the forwarded Settings Board
+The CM5 daemon decides whether the applied `CFG_ROUTE[3:0]` value is the forwarded User Settings Module
 user-intent image or a CM5-defined override. `CFG_ROUTE_CM5_ACTIVE` is the CM5-owned status state
 used to colour the Bank 1 indicators: LOW = user-intent forwarded (green), HIGH = CM5-defined
 override active (red).
@@ -142,7 +142,7 @@ Bank 2 provides a 6-bit user-intent image of the logical `CFG_REFMAP[5:0]` bus u
 CPLD to select the reflector-map index. The physical Reflector board remains mandatory and always
 provides the electrical turnaround at the end of the rotor/extension chain.
 
-The CM5 daemon decides whether the applied `CFG_REFMAP[5:0]` value is the forwarded Settings Board
+The CM5 daemon decides whether the applied `CFG_REFMAP[5:0]` value is the forwarded User Settings Module
 user-intent image or a CM5-defined override. `CFG_REFMAP_CM5_ACTIVE` is the CM5-owned status state
 used to colour the Bank 2 indicators: LOW = user-intent forwarded (green), HIGH = CM5-defined
 override active (red).
@@ -170,7 +170,7 @@ boundary while the physical Reflector board remains in the active ENC signal pat
 
 ## 4. I²C Devices
 
-All Settings Board I²C devices share the Stator I²C-1 bus via J1 → Stator J13.
+All User Settings Module I²C devices share the Stator I²C-1 bus via J1 → Stator J13.
 
 ### U1 — MCP23017T-E/SO @ 0x23
 
@@ -270,7 +270,7 @@ Full RGB capability with software-selectable colors per bank:
 
 | CM5_ACTIVE State | Primary Colour | Meaning |
 | :--- | :--- | :--- |
-| LOW (`CFG_*_CM5_ACTIVE` deasserted) | Green (BNKx_G transistor ON) | Configuration source = Settings Board user intent |
+| LOW (`CFG_*_CM5_ACTIVE` deasserted) | Green (BNKx_G transistor ON) | Configuration source = User Settings Module user intent |
 | HIGH (`CFG_*_CM5_ACTIVE` asserted) | Red (BNKx_R transistor ON) | Configuration source = CM5 firmware / GUI override |
 | Special modes | Blue (BNKx_B transistor ON) | Future use: status, bootloader, error states |
 
@@ -299,7 +299,7 @@ CM5-defined (red).
 The six colour-rail sink stages on this board (`BNK1_R/G/B`, `BNK2_R/G/B`) follow the common RGB
 sink-stage rule defined in `design/Standards/Global_Routing_Spec.md §3.1`.
 
-On the Settings Board this pattern is applied as one `BSS138` low-side sink per bank colour rail,
+On the User Settings Module this pattern is applied as one `BSS138` low-side sink per bank colour rail,
 with gates driven by `U2` / `U3`.
 
 Each LED uses three dedicated series resistors: one in each red, green, and blue cathode path.
@@ -322,7 +322,7 @@ simple plunger or cap to mechanically actuate the switch through the panel openi
 * **Operation:** CM5 enigma daemon polls GPB[7] during its main loop. On detecting LOW (button
   pressed, after debounce), the daemon:
   1. Reads U1 (full 16-bit state).
-  2. Determines whether each bank should forward Settings Board user intent or apply a CM5 override.
+  2. Determines whether each bank should forward User Settings Module user intent or apply a CM5 override.
   3. Writes final configuration to U8 GPA[3:0] and GPB[5:0] on the Stator Board.
   4. Pulses the Stator-side `CFG_APPLY_N` output (U8 GPA[4]) LOW then HIGH to trigger a
      Stator-only configuration reload.
@@ -339,9 +339,9 @@ automatic polling intervals.
 
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | Power from Stator; powers Settings Board logic (MCP23017 ICs) |
+| 1 | 3V3_ENIG | Power from Stator; powers User Settings Module logic (MCP23017 ICs) |
 | 2 | 5V_MAIN | Indicator power supply from Stator; powers LED anodes only |
-| 3 | GND | Logic ground return only; no local GND_CHASSIS bond on Settings Board |
+| 3 | GND | Logic ground return only; no local GND_CHASSIS bond on User Settings Module |
 | 4 | SDA | I²C data; shared Stator I²C-1 bus |
 | 5 | SCL | I²C clock; shared Stator I²C-1 bus |
 | 6 | GND | LED cathode ground return; high-current return path |
@@ -371,14 +371,14 @@ automatic polling intervals.
 * **Surface finish:** ENIG
 * **Min trace/space:** 0.1mm / 0.1mm
 * **Min drill:** 0.2mm
-* **JTAG chain:** None — Settings Board is not in any JTAG chain.
+* **JTAG chain:** None — User Settings Module is not in any JTAG chain.
 
 ---
 
 ## 9. Thermal & ESD
 
-* **Thermal:** No active cooling required on the Settings Board. No high-power components are fitted; thermal dissipation is well within passive limits.
-* **ESD:** All connectors on the Settings Board are internal. J1 (JST PH 6-pin harness to Stator J13) is a PCB-to-harness connection; it is not operator-accessible during live operation.
+* **Thermal:** No active cooling required on the User Settings Module. No high-power components are fitted; thermal dissipation is well within passive limits.
+* **ESD:** All connectors on the User Settings Module are internal. J1 (JST PH 6-pin harness to Stator J13) is a PCB-to-harness connection; it is not operator-accessible during live operation.
   No TVS protection is required per `design/Standards/Global_Routing_Spec.md §9`.
 
 ---
@@ -425,9 +425,9 @@ automatic polling intervals.
 | Bank 2 LEDs (7× @ 20mA) | 84 | 140 | Typical assumes ~12mA per LED average; max = 7 × 20mA = 140mA with one active colour rail |
 | **Total indicator rail** | **144 mA** | **240 mA** | Definitive max = 100mA + 140mA; one active colour per bank, all 12 LEDs illuminated |
 
-**Settings Board 5V_MAIN Allocation:**
+**User Settings Module 5V_MAIN Allocation:**
 
-* Settings Board indicator rail: **240mA max**
+* User Settings Module indicator rail: **240mA max**
 * This board uses `5V_MAIN` only for LED anode power.
 
 ---
@@ -464,7 +464,7 @@ automatic polling intervals.
 
 ### LED Control Architecture
 
-The Settings Board uses a **hybrid topology**: shared colour-rail low-side switches for RGB selection
+The User Settings Module uses a **hybrid topology**: shared colour-rail low-side switches for RGB selection
 combined with per-anode high-side switches for individual LED illumination control:
 
 * **Colour-rail low-side stage (Q1–Q6):** 6× BSS138 N-channel MOSFETs switch each RGB cathode rail to
@@ -491,11 +491,11 @@ combined with per-anode high-side switches for individual LED illumination contr
 
 Indicator power is provided on `J1` pin 2 as `5V_MAIN` from the Stator `J13` harness.
 
-On the Settings Board, this rail powers the LED anodes only (240mA max) and is not used by the
+On the User Settings Module, this rail powers the LED anodes only (240mA max) and is not used by the
 logic supply, which remains on `3V3_ENIG`.
 
 ### I²C Address Selection
 
-The Settings Board uses the contiguous `0x23`-`0x25` block immediately after the Stator's
+The User Settings Module uses the contiguous `0x23`-`0x25` block immediately after the Stator's
 `0x20`-`0x22` expanders. This keeps the shared Settings/Stator GPIO devices grouped together on the
 bus. The authoritative full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.

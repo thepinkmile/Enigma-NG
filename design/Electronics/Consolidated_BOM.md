@@ -1,4 +1,4 @@
-﻿# Consolidated Bill of Materials
+# Consolidated Bill of Materials
 
 <!-- markdownlint-disable MD013 MD055 MD056 -->
 
@@ -14,7 +14,7 @@
 ## Notes and Conventions
 
 - Manufacturer shown in Description/Usage column as `[Manufacturer]`.
-- Board codes: PM = Power Module · CTL = Controller · STA = Stator · ROT = Rotor · SBD = Settings Board · EXT = Extension · REF = Reflector · ENC = Encoder · AM = Actuation Module · JDB = JTAG Daughterboard.
+- Board codes: PM = Power Module · CTL = Controller · STA = Stator · ROT = Rotor · USM = User Settings Module · EXT = Extension · REF = Reflector · ENC = Encoder · AM = Actuation Module · JDB = JTAG Daughterboard.
 - **Footprint Downloaded** column: user-maintained. Replace "Pending" with tick once the footprint is added to the shared KiCAD library.
 - **CSD17578Q5A replaces CSD17483F4T:** OR-ing MOSFET corrected from the incorrectly specified CSD17483F4T (1.5A FemtoFET) to CSD17578Q5A (30V 25A 5.9mΩ SON 5×6mm). DigiKey: 296-48512-1-ND, Mouser: 595-CSD17578Q5A, JLCPCB: C2871447.
 - **LMQ61460AFSQRJRRQ1 Mouser PN:** `595-Q61460AFSQRJRRQ1` drops the "LM" prefix — confirmed correct Mouser convention.
@@ -24,12 +24,12 @@
 
 ## Section 1 — Full Component Table
 
-| Board (RefDes) | MPN | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | PM Qty | CTL Qty | JDB Qty | SBD Qty | ENC Qty | AM Qty | STA Qty | REF Qty | EXT Qty | ROT-26 Qty | ROT-64 Qty | System Qty | Notes | Footprint Available | Footprint Downloaded |
+| Board (RefDes) | MPN | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | PM Qty | CTL Qty | JDB Qty | USM Qty | ENC Qty | AM Qty | STA Qty | REF Qty | EXT Qty | ROT-26 Qty | ROT-64 Qty | System Qty | Notes | Footprint Available | Footprint Downloaded |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | PM: C1-C15 | CL32B226KAJNNNE | 1276-3392-1-ND | 187-CL32B226KAJNNNE | C309062 | — | 15 | — | — | — | — | — | — | — | — | — | — | 15 | 22µF 25V X7R 1210 [Samsung] | Yes | Pending |
 | PM: C16-C19 | CGA9N3X7R1E476M230KB | 445-174773-1-ND | 810-A9N3X7476M23KB | C2182815 | — | 4 | — | — | — | — | — | — | — | — | — | — | 4 | 47µF 25V X7R 2220 [TDK] | Yes | Pending |
 | PM: C21-C23,C53,C55-C57; AM: C1 | C0805C105K5RACTU | 399-C0805C105K5RACTUCT-ND | 80-C0805C105K5R | C3018567 | — | 7 | — | — | — | — | 1 | — | — | — | — | — | 8 | 1µF 50V X7R 0805 [Kemet] | Yes | Pending |
-| PM: C24-C30,C33-C39,C43-C50,C52,C58; CTL: C6,C12-C16; JDB: C1-C4,C6-C9,C12; SBD: C1-C4; ENC: C1-C8; AM: C2,C3,C6,C7; STA: C1-C8,C14-C21; EXT: C6; ROT-26: C1-C8,C14,C16; ROT-64: C1-C8,C14,C18 | CL05B104KB5NNNC | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | 24 | 6 | 9 | 4 | 8 | 4 | 16 | — | 1 | 10 | 10 | 92 | 100nF 50V X7R 0402 [Samsung] | Yes | Pending |
+| PM: C24-C30,C33-C39,C43-C50,C52,C58; CTL: C6,C12-C16; JDB: C1-C4,C6-C9,C12; USM: C1-C4; ENC: C1-C8; AM: C2,C3,C6,C7; STA: C1-C8,C14-C21; EXT: C6; ROT-26: C1-C8,C14,C16; ROT-64: C1-C8,C14,C18 | CL05B104KB5NNNC | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | 24 | 6 | 9 | 4 | 8 | 4 | 16 | — | 1 | 10 | 10 | 92 | 100nF 50V X7R 0402 [Samsung] | Yes | Pending |
 | PM: C40 | C0402C101K3RACAUTO | 399-C0402C101K3RACAUTOCT-ND | 80-C0402C101K3RAUTO | C5272912 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 100pF X7R 25V 0402 [Kemet] | Yes | Pending |
 | PM: C_SC1-C_SC8 | ADCR-T02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | 815-ADCRT02R7SA256MB | — | Global sourcing | 8 | — | — | — | — | — | — | — | — | — | — | 8 | 25F 2.7V supercap THT Radial 16x25mm [Abracon] | Yes | Pending |
 | PM: C41 | CL10B223KB8WPNC | 1276-6534-1-ND | 187-CL10B223KB8WPNC | C346197 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 22nF X7R 25V 0603 [Samsung] | Yes | Pending |
@@ -48,11 +48,11 @@
 | PM: L1,L2 | 7448031002 | 732-5584-ND | 710-7448031002 | C1519839 | — | 2 | — | — | — | — | — | — | — | — | — | — | 2 | 10A 2mH nanocrystalline CMC THT [Würth Elektronik] | Yes | Pending |
 | PM: L3 | SRP1265A-100M | SRP1265A-100MCT-ND | 652-SRP1265A-100M | C840531 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 10µH 15.5A Isat shielded SMT 13.5x12.5x6.2mm [Bourns] | Yes | Pending |
 | PM: Q1-Q3 | CSD17578Q5A | 296-48512-1-ND | 595-CSD17578Q5A | C2871447 | — | 3 | — | — | — | — | — | — | — | — | — | — | 3 | N-ch MOSFET 30V 10A SON-8 3.3x3.3mm [Texas Instruments] | Yes | ✔ |
-| PM: Q4-Q10; SBD: Q1-Q18 | BSS138 | BSS138CT-ND | 512-BSS138 | C52895 | — | 7 | — | — | 18 | — | — | — | — | — | — | — | 25 | N-ch MOSFET 50V 200mA SOT-23 [onsemi] | Yes | Pending |
+| PM: Q4-Q10; USM: Q1-Q18 | BSS138 | BSS138CT-ND | 512-BSS138 | C52895 | — | 7 | — | — | 18 | — | — | — | — | — | — | — | 25 | N-ch MOSFET 50V 200mA SOT-23 [onsemi] | Yes | Pending |
 | PM: R1 | ERJ-3EKF2323V | P232KHCT-ND | 667-ERJ-3EKF2323V | C403086 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 232kΩ 1% 0603 [Panasonic] | Yes | Pending |
 | PM: R2 | ERJ-3EKF2872V | P28.7KHCT-ND | 667-ERJ-3EKF2872V | C403135 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 28.7kΩ 1% 0603 [Panasonic] | Yes | Pending |
 | PM: R3 | ERA-3VEB2100V | 10-ERA-3VEB2100VCT-ND | 667-ERA-3VEB2100V | C1861624 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 210Ω 0.1% 0603 [Panasonic] | Yes | Pending |
-| PM: R6,R9,R10,R16,R22,R29; CTL: R1-R4; SBD: R1-R11 | ERJ-3EKF1002V | P10.0KHCT-ND | 667-ERJ-3EKF1002V | C191124 | — | 6 | 4 | — | 11 | — | — | — | — | — | — | — | 21 | 10kΩ 1% 0603 [Panasonic] | Yes | Pending |
+| PM: R6,R9,R10,R16,R22,R29; CTL: R1-R4; USM: R1-R11 | ERJ-3EKF1002V | P10.0KHCT-ND | 667-ERJ-3EKF1002V | C191124 | — | 6 | 4 | — | 11 | — | — | — | — | — | — | — | 21 | 10kΩ 1% 0603 [Panasonic] | Yes | Pending |
 | PM: R7,R8 | ERJ-3EKF4701V | P4.70KHCT-ND | 667-ERJ-3EKF4701V | C192166 | — | 2 | — | — | — | — | — | — | — | — | — | — | 2 | 4.7kΩ 1% 0603 [Panasonic] | Yes | Pending |
 | PM: R11 | ERJ-3EKF3010V | P301HCT-ND | 667-ERJ-3EKF3010V | C403144 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 301Ω 1% 0603 [Panasonic] | Yes | Pending |
 | PM: R12,R23; STA: R1 | CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | 652-CSS2H-2512R-R010ELF | — | — | 2 | — | — | — | — | — | 1 | — | — | — | — | 3 | 10mΩ ±1% 5A 2512 Kelvin shunt; no JLCPCB stock [Bourns] | Yes | Pending |
@@ -60,13 +60,13 @@
 | PM: R15 | ERA-3ARB103V | P10KBDCT-ND | 667-ERA-3ARB103V | C465746 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 10.0kΩ 0.1% 0603 [Panasonic] | Yes | Pending |
 | PM: R17 | ERJ-3EKF7153V | P715KHCT-ND | 667-ERJ-3EKF7153V | C403339 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 715kΩ 1% 0603 [Panasonic] | Yes | Pending |
 | PM: R24 | ERJ-3EKF8662V | P86.6KHCT-ND | 667-ERJ-3EKF8662V | C403381 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 86.6kΩ 1% 0603 [Panasonic] | Yes | Pending |
-| PM: R25,R27,R34-R36,R39,R40,R43,R44; JDB: R3-R5; SBD: R78-R80; ENC: R2-R5; AM: R4,R5; STA: R2-R6,R16-R26,R39-R41; ROT-26: R2-R5; ROT-64: R2-R5 | ERJ-2RKF1002X | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | 9 | — | 3 | 3 | 4 | 2 | 19 | — | — | 4 | 4 | 48 | 10kΩ 1% 0402 [Panasonic] | Yes | Pending |
+| PM: R25,R27,R34-R36,R39,R40,R43,R44; JDB: R3-R5; USM: R78-R80; ENC: R2-R5; AM: R4,R5; STA: R2-R6,R16-R26,R39-R41; ROT-26: R2-R5; ROT-64: R2-R5 | ERJ-2RKF1002X | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | 9 | — | 3 | 3 | 4 | 2 | 19 | — | — | 4 | 4 | 48 | 10kΩ 1% 0402 [Panasonic] | Yes | Pending |
 | PM: R26 | ERJ-2RKF8202X | P82.0KLCT-ND | 667-ERJ-2RKF8202X | C400641 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 82.0kΩ 1% 0402 [Panasonic] | Yes | Pending |
 | PM: R28 | ERJ-3EKF2743V | P274KHCT-ND | 667-ERJ-3EKF2743V | C403126 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 274kΩ 1% 0603 [Panasonic] | Yes | Pending |
 | PM: R30 | ERA-2AEB3322X | P33.2KDCCT-ND | 667-ERA-2AEB3322X | C2087909 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 33.2kΩ 1% 0402 [Panasonic] | Yes | Pending |
-| PM: R31-R33,R37,R38; SBD: R12-R17,R54-R65 | ERJ-2RKF1001X | P1.00KLCT-ND | 667-ERJ-2RKF1001X | C242161 | — | 5 | — | — | 18 | — | — | — | — | — | — | — | 23 | 1kΩ 1% Thick-Film 0402 [Panasonic] | Yes | Pending |
+| PM: R31-R33,R37,R38; USM: R12-R17,R54-R65 | ERJ-2RKF1001X | P1.00KLCT-ND | 667-ERJ-2RKF1001X | C242161 | — | 5 | — | — | 18 | — | — | — | — | — | — | — | 23 | 1kΩ 1% Thick-Film 0402 [Panasonic] | Yes | Pending |
 | PM: R41,R42 | ERJ-2RKF5232X | P52.3KLCT-ND | 667-ERJ-2RKF5232X | — | Global sourcing | 2 | — | — | — | — | — | — | — | — | — | — | 2 | 52.3kΩ 1% 0402 [Panasonic] | Yes | Pending |
-| PM: R45-R48; SBD: R81-R98 | ERJ-2RKF1003X | P100KLCT-ND | 667-ERJ-2RKF1003X | — | Global sourcing | 4 | — | — | 18 | — | — | — | — | — | — | — | 22 | 100kΩ 1% 0402; no JLCPCB stock [Panasonic] | Yes | Pending |
+| PM: R45-R48; USM: R81-R98 | ERJ-2RKF1003X | P100KLCT-ND | 667-ERJ-2RKF1003X | — | Global sourcing | 4 | — | — | 18 | — | — | — | — | — | — | — | 22 | 100kΩ 1% 0402; no JLCPCB stock [Panasonic] | Yes | Pending |
 | PM: R49-R53; STA: R42,R43 | ERJ-2RKF10R0X | P10.0LCT-ND | 667-ERJ-2RKF10R0X | C413044 | — | 5 | — | — | — | — | — | 2 | — | — | — | — | 7 | 10Ω 1% Thin-Film 0402 [Panasonic] | Yes | Pending |
 | PM: SW1 | 4660 | 1528-4660-ND | 485-4660 | — | Global sourcing | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 16mm panel latching RGB metal switch [Adafruit] | Yes | Pending |
 | PM: SW2 | 3350 | 1528-2546-ND | 485-3350 | — | Global sourcing | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 16mm panel momentary RGB metal switch [Adafruit] | Yes | Pending |
@@ -87,7 +87,7 @@
 | PM: U19; STA: U3 | SN74LVC1G08DBVR | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | — | 1 | — | — | — | — | — | 1 | — | — | — | — | 2 | Single AND gate SOT-23-5 [Texas Instruments] | Yes | Pending |
 | CTL: BT1 | 3034TR | 36-3034CT-ND | 534-3034TR | C5213768 | — | — | 1 | — | — | — | — | — | — | — | — | — | 1 | CR2032 holder THT horizontal [Keystone Electronics] | Yes | Pending |
 | CTL: C17 | C0402C103K1RACAUTO | 399-C0402C103K1RACAUTOCT-ND | 80-C0402C103K1RAUTO | C19862710 | — | — | 1 | — | — | — | — | — | — | — | — | — | 1 | 10nF 100V X7R 0402 [Kemet] | Yes | Pending |
-| PM: C20; CTL: C1-C5,C7-C11; SBD: C5-C14; ENC: C9-C13; AM: C5; STA: C9-C13,C22-C26; REF: C1-C5; EXT: C1-C5,C7-C11; ROT-26: C9-C13; ROT-64: C9-C13 | CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | 1 | 10 | — | 10 | 5 | 1 | 10 | 5 | 10 | 5 | 5 | 62 | 10µF X7R 25V 0805 [Samsung] | Yes | Pending |
+| PM: C20; CTL: C1-C5,C7-C11; USM: C5-C14; ENC: C9-C13; AM: C5; STA: C9-C13,C22-C26; REF: C1-C5; EXT: C1-C5,C7-C11; ROT-26: C9-C13; ROT-64: C9-C13 | CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | 1 | 10 | — | 10 | 5 | 1 | 10 | 5 | 10 | 5 | 5 | 62 | 10µF X7R 25V 0805 [Samsung] | Yes | Pending |
 | CTL: J1-J3 | 1-1674231-1 | A119250-ND | 571-1-1674231-1 | C3683260 | — | — | 3 | — | — | — | — | — | — | — | — | — | 3 | 10-pos 2.5mm receptacle vertical [TE Connectivity] | Yes | Pending |
 | CTL: J4,J5 | 2195630015 | 900-2195630015-ND | 538-219563-0015 | — | Global sourcing | — | 2 | — | — | — | — | — | — | — | — | — | 2 | 5-pwr+15-sig press-fit receptacle hybrid [Molex] | Yes | Pending |
 | CTL: J6 | 48406-0003 | WM10420-ND | 538-48406-0003 | C565298 | — | — | 1 | — | — | — | — | — | — | — | — | — | 1 | USB 3.0 Type-A dual-stack [Molex] | Yes | Pending |
@@ -114,15 +114,15 @@
 | JDB: U1 | FT232HL-REEL | 768-1101-1-ND | 895-FT232HL-REEL | C51997 | — | — | — | 1 | — | — | — | — | — | — | — | — | 1 | USB 2.0 to MPSSE bridge LQFP-48 [FTDI Chip] | Yes | Pending |
 | JDB: U5; EXT: U1 | SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | — | — | — | 1 | — | — | — | — | — | 1 | — | — | 2 | Dual 3-state buffer VSSOP-8 [Texas Instruments] | Yes | Pending |
 | JDB: Y1 | 435F12012IET | 110-435F12012IETTR-ND | 774-435F12012IET | C19766404 (Extended) | — | — | — | 1 | — | — | — | — | — | — | — | — | 1 | 12MHz 20pF ±20ppm crystal SMD-3225; see DEC-022 [CTS] | Yes | Pending |
-| SBD: D1-D12 | WP154A4SEJ3VBDZGW/CA | 754-2029-ND | 604-WP154A43VBDZGWCA | C7151795 | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | 5mm common-anode RGB THT [Kingbright] | Yes | Pending |
-| SBD: J1; STA: J13 | B6B-PH-K-S(LF)(SN) | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | — | — | — | — | 1 | — | — | 1 | — | — | — | — | 2 | 6-pin JST PH 2.0mm THT [JST] | Yes | Pending |
-| SBD: Q19-Q30 | SQ2319ADS-T1_BE3 | 742-SQ2319ADS-T1_BE3CT-ND | 78-SQ2319ADS-T1_BE3 | C3280190 | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | P-MOSFET AEC-Q101 SOT-23 [Vishay] | Yes | Pending |
-| SBD: R18-R29 | ERJ-3EKF1500V | P150HCT-ND | 667-ERJ-3EKF1500V | C400650 | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | 150Ω 1% 0603 [Panasonic] | Yes | Pending |
-| SBD: R30-R53 | ERJ-3EKF1000V | P100HCT-ND | 667-ERJ-3EKF1000V | C193336 | — | — | — | — | 24 | — | — | — | — | — | — | — | 24 | 100Ω 1% 0603 [Panasonic] | Yes | Pending |
-| SBD: R66-R77 | SG73S1ERTTP4702D | 2019-SG73S1ERTTP4702DTR-ND | 660-SG73S1ERTTP4702D | C5915648 (MOQ 40) | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | 47kΩ ±0.5% AEC-Q200 0402; JLCPCB MOQ 40 [KOA Speer] | Yes | Pending |
-| SBD: SW1-SW10 | 200MSP1T2B4M2QE | EG5525-ND | 612-200MSP1T2B4M2QE | C5491263 | — | — | — | — | 10 | — | — | — | — | — | — | — | 10 | SPDT latching toggle panel-mount THT [E-Switch] | Yes | Pending |
-| SBD: SW11; AM: SW1,SW2 | B3F-1070 | SW406-ND | 653-B3F-1070 | C726011 | — | — | — | — | 1 | — | 2 | — | — | — | — | — | 3 | SPST NO tactile THT [Omron] | Yes | Pending |
-| SBD: U1-U3; STA: U6-U8 | MCP23017T-E/SO | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | — | — | — | — | 3 | — | — | 3 | — | — | — | — | 6 | I²C GPIO expander SOIC-28 [Microchip Technology] | Yes | Pending |
+| USM: D1-D12 | WP154A4SEJ3VBDZGW/CA | 754-2029-ND | 604-WP154A43VBDZGWCA | C7151795 | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | 5mm common-anode RGB THT [Kingbright] | Yes | Pending |
+| USM: J1; STA: J13 | B6B-PH-K-S(LF)(SN) | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | — | — | — | — | 1 | — | — | 1 | — | — | — | — | 2 | 6-pin JST PH 2.0mm THT [JST] | Yes | Pending |
+| USM: Q19-Q30 | SQ2319ADS-T1_BE3 | 742-SQ2319ADS-T1_BE3CT-ND | 78-SQ2319ADS-T1_BE3 | C3280190 | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | P-MOSFET AEC-Q101 SOT-23 [Vishay] | Yes | Pending |
+| USM: R18-R29 | ERJ-3EKF1500V | P150HCT-ND | 667-ERJ-3EKF1500V | C400650 | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | 150Ω 1% 0603 [Panasonic] | Yes | Pending |
+| USM: R30-R53 | ERJ-3EKF1000V | P100HCT-ND | 667-ERJ-3EKF1000V | C193336 | — | — | — | — | 24 | — | — | — | — | — | — | — | 24 | 100Ω 1% 0603 [Panasonic] | Yes | Pending |
+| USM: R66-R77 | SG73S1ERTTP4702D | 2019-SG73S1ERTTP4702DTR-ND | 660-SG73S1ERTTP4702D | C5915648 (MOQ 40) | — | — | — | — | 12 | — | — | — | — | — | — | — | 12 | 47kΩ ±0.5% AEC-Q200 0402; JLCPCB MOQ 40 [KOA Speer] | Yes | Pending |
+| USM: SW1-SW10 | 200MSP1T2B4M2QE | EG5525-ND | 612-200MSP1T2B4M2QE | C5491263 | — | — | — | — | 10 | — | — | — | — | — | — | — | 10 | SPDT latching toggle panel-mount THT [E-Switch] | Yes | Pending |
+| USM: SW11; AM: SW1,SW2 | B3F-1070 | SW406-ND | 653-B3F-1070 | C726011 | — | — | — | — | 1 | — | 2 | — | — | — | — | — | 3 | SPST NO tactile THT [Omron] | Yes | Pending |
+| USM: U1-U3; STA: U6-U8 | MCP23017T-E/SO | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | — | — | — | — | 3 | — | — | 3 | — | — | — | — | 6 | I²C GPIO expander SOIC-28 [Microchip Technology] | Yes | Pending |
 | ENC: J3-J66 | 1285-ST | 36-1285-ST-ND | 534-1285-ST | C5370868 | — | — | — | — | — | 64 | — | — | — | — | — | — | 64 | 6.35mm PCB spade blade terminals THT vertical [Keystone Electronics] | Yes | Pending |
 | ENC: D1; AM: D1-D3 | 150060VS75000 | 732-4980-1-ND | 710-150060VS75000 | C6848499 | — | — | — | — | — | 1 | 3 | — | — | — | — | — | 4 | Green SMD LED VfÔëê2.0V 0402 [Würth Elektronik] | Yes | Pending |
 | ENC: J1 | (no standard MPN) | — | — | — | eBay SaiBuy.Ltd | — | — | — | — | 1 | — | — | — | — | — | — | 1 | 6.35mm mono jack sockets panel-mount [generic]; eBay SaiBuy.Ltd | N/A | N/A |

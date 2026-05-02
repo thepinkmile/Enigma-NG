@@ -155,3 +155,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 150 | Datasheet design-content cleanup | 100-datasheet-design-content-clean.md |
 | 151 | BOM encoding, merge review, C20 correction complete | 101-bom-encoding-and-merge-review-.md |
 | 152 | BOM supplier PN corruption fixes complete | 152-bom-supplier-pn-corruption-fixes.md |
+| 153 | Settings Board rename to User Settings Module complete | 153-settings-board-rename-complete.md |

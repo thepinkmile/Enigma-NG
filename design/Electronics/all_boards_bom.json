@@ -1609,7 +1609,7 @@
     "description": "ESD protection arrays"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "C1-C3",
     "mpn": "CL05B104KB5NNNC",
     "manufacturer": "Samsung",
@@ -1621,7 +1621,7 @@
     "description": "Bypass decoupling"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "C4",
     "mpn": "CL05B104KB5NNNC",
     "manufacturer": "Samsung",
@@ -1633,7 +1633,7 @@
     "description": "Debounce cap (different qualified JLCPCB source C960916)"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "C5,C6",
     "mpn": "CL21B106KAYQNNE",
     "manufacturer": "Samsung",
@@ -1645,7 +1645,7 @@
     "description": "Bulk decoupling"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "D1-D12",
     "mpn": "WP154A4SEJ3VBDZGW/CA",
     "manufacturer": "Kingbright",
@@ -1657,7 +1657,7 @@
     "description": "RGB LED indicators"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "J1",
     "mpn": "B6B-PH-K-S(LF)(SN)",
     "manufacturer": "JST",
@@ -1669,7 +1669,7 @@
     "description": "I2C/power connector"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "Q1-Q18",
     "mpn": "BSS138",
     "manufacturer": "onsemi",
@@ -1681,7 +1681,7 @@
     "description": "Low-side LED drive transistors"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "Q19-Q30",
     "mpn": "SQ2319ADS-T1_BE3",
     "manufacturer": "Vishay",
@@ -1693,7 +1693,7 @@
     "description": "High-side LED drive transistors"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "R1-R11",
     "mpn": "ERJ-3EKF1002V",
     "manufacturer": "Panasonic",
@@ -1705,7 +1705,7 @@
     "description": "Pull-up/down resistors"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "R12-R17,R54-R65",
     "mpn": "ERJ-2RKF1001X",
     "manufacturer": "Panasonic",
@@ -1717,7 +1717,7 @@
     "description": "Gate/current limit resistors"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "R18-R29",
     "mpn": "ERJ-3EKF1500V",
     "manufacturer": "Panasonic",
@@ -1729,7 +1729,7 @@
     "description": "LED current limit resistors"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "R30-R53",
     "mpn": "ERJ-3EKF1000V",
     "manufacturer": "Panasonic",
@@ -1741,7 +1741,7 @@
     "description": "LED series resistors"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "R66-R77",
     "mpn": "SG73S1ERTTP4702D",
     "manufacturer": "KOA Speer",
@@ -1753,7 +1753,7 @@
     "description": "Bias resistors (JLCPCB MOQ 40)"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "R78-R80",
     "mpn": "ERJ-2RKF1002X",
     "manufacturer": "Panasonic",
@@ -1765,7 +1765,7 @@
     "description": "MCP23017 ~RESET pull-ups"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "R81-R98",
     "mpn": "ERJ-2RKF1003X",
     "manufacturer": "Panasonic",
@@ -1777,7 +1777,7 @@
     "description": "Pull-up/down resistors (no JLCPCB stock)"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "SW1-SW10",
     "mpn": "200MSP1T2B4M2QE",
     "manufacturer": "E-Switch",
@@ -1789,7 +1789,7 @@
     "description": "Enigma rotary setting switches"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "SW11",
     "mpn": "B3F-1070",
     "manufacturer": "Omron",
@@ -1801,7 +1801,7 @@
     "description": "Tactile pushbutton"
   },
   {
-    "board": "Settings Board",
+    "board": "User Settings Module",
     "refdes": "U1-U3",
     "mpn": "MCP23017T-E/SO",
     "manufacturer": "Microchip Technology",

@@ -154,9 +154,9 @@ the Stator over `J5`.
 | 0x20 | MCP23017 (U6) | Stator | ENC_IN/ENC_OUT monitoring (16 GPIO) |
 | 0x21 | MCP23017 (U7) | Stator | Virtual keypress injection, SOURCE_SEL, SYS_RESET_N, spare GPIO |
 | 0x22 | MCP23017 (U8) | Stator | CPLD config output driver (DEC-032) |
-| 0x23 | MCP23017 (U1) | Settings Board | Switch input reader (DEC-032) |
-| 0x24 | MCP23017 (U2) | Settings Board | Bank 1 LED controller: 5× anodes + RGB bank-rail drivers (DEC-034) |
-| 0x25 | MCP23017 (U3) | Settings Board | Bank 2 LED controller: 7× anodes + RGB bank-rail drivers (DEC-034) |
+| 0x23 | MCP23017 (U1) | User Settings Module | Switch input reader (DEC-032) |
+| 0x24 | MCP23017 (U2) | User Settings Module | Bank 1 LED controller: 5× anodes + RGB bank-rail drivers (DEC-034) |
+| 0x25 | MCP23017 (U3) | User Settings Module | Bank 2 LED controller: 7× anodes + RGB bank-rail drivers (DEC-034) |
 | 0x28 | STUSB4500 | Power Module | USB-C PD controller |
 | 0x3F | PCA9534A (U16) | Power Module | PM-local status inputs + SW1 RGB handoff control |
 | 0x40 | INA219 (U12) | Power Module | 5V_MAIN current/power telemetry |

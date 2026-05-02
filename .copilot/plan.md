@@ -13,11 +13,11 @@ phase.
 
 The current active design docs now reflect:
 
-- board-local ownership cleanup between Controller, Stator, and Settings Board
+- board-local ownership cleanup between Controller, Stator, and User Settings Module
 - removal of stale diagnostics / probe wording from active design specs and board layouts
 - normalized board-layout heading numbering so `§` is reserved for cross-document references
 - Reflector simplified-layout cleanup, including removal of the duplicate Data Plate label
-- Stator Settings-board connector normalization from `J_CFG` to `J13`
+- Stator User Settings Module connector normalization from `J_CFG` to `J13`
 - wiki-sync exclusion of `design/Datasheets`
 - numeric component refdes normalization across active design docs and the consolidated BOM
 - document metadata version headers reset to `v.0.1.0` because the project is still in design phase
@@ -91,7 +91,7 @@ Recent locked work:
 | Controller | In Review (Pass 2 fixes applied) |
 | Encoder | In Review |
 | Rotor | In Review (Pass 2 fixes applied) |
-| Settings Board | In Review (Pass 2 fixes applied) |
+| User Settings Module | In Review (Pass 2 fixes applied) |
 | Actuation Module | In Review (Pass 2 fixes applied) |
 
 ---
@@ -103,13 +103,12 @@ Start the next clean session by reading:
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
 3. `.copilot/todo-list.md` — canonical deferred-work and open-action tracker for the project
-4. `.copilot/checkpoints/099-bt-to-j-rename-todo-list-created.md` (latest checkpoint)
+4. `.copilot/checkpoints/153-settings-board-rename-complete.md` (latest checkpoint)
 
-BOM restructure and RefDes cleanup (BOM phase) is complete pending commit authorisation.
+`Settings_Board` → `User_Settings_Module` rename complete and committed (DEC-051).
 Before next steps:
 
-- Await user "Let's lock this in" to commit outstanding BOM / RefDes changes
-- After commit: decide on next workstream (Pass 3 review, KiCAD library prep, Settings Board rename, etc.)
+- Begin Pass 3 electronics review
 
 Read `.copilot/review-report.md` for the running audit trail.
 
@@ -159,8 +158,8 @@ Read `.copilot/review-report.md` for the running audit trail.
   `design/Software/Actuation_Module/Design_Spec.md`; the electronics AM spec keeps only a brief
   cross-reference to that software document.
 - Pass 2 electronics review complete. All findings F-42–F-66 resolved or deferred per user decisions.
-  Awaiting user "Let's lock this in" confirmation before committing. Pass 3 will follow after the
-  `Settings_Board` → `User_Settings_Module` rename commit.
+  `Settings_Board` → `User_Settings_Module` rename complete (DEC-051). Pass 3 will follow after
+  the current outstanding changes are committed.
 - This does **not** close the repo-local `rerun-deep-reviews` workstream. That workstream remains the
   final pre-V1 cross-discipline review gate to be rerun only after electrical, mechanical, and software
   work are complete and each board has a full KiCAD project plus exported production Gerbers.
@@ -171,8 +170,8 @@ Read `.copilot/review-report.md` for the running audit trail.
 ### Refdes / naming state
 
 - Controller internal connectors are now normalized to numeric refs (`J9`-`J15`) in the active docs.
-- Stator Settings-board connector refdes is `J13`.
-- Settings Board component refs are now numeric in the active docs and BOM (`J1`, `U1`-`U3`,
+- Stator User Settings Module connector refdes is `J13`.
+- User Settings Module component refs are now numeric in the active docs and BOM (`J1`, `U1`-`U3`,
   `Q1`-`Q6`, `SW1`-`SW11`, `D1`-`D12`, `R1`-`R53`, `C1`-`C4`).
 
 ### Repo-local state rules

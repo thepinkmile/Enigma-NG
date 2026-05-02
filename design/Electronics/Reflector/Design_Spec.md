@@ -1,4 +1,4 @@
-﻿# Reflector Board (V1.0) Design Specification
+# Reflector Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -48,7 +48,7 @@ second CPLD on the Reflector itself.
 * **Logic Type:** Passive turnaround.
 * **Routing Logic:** All signal mapping is handled remotely by the **Intel MAX II EPM570T100I5N CPLD**
   located on the Stator Board. The active reflection-map configuration is selected via the Settings
-  Board panel switches (Bank 2, SW_B2[5:0]) read by Settings Board `U1` @ 0x23 and driven to
+  Board panel switches (Bank 2, SW_B2[5:0]) read by User Settings Module `U1` @ 0x23 and driven to
   the Stator CPLD by `U8` @ 0x22 — see DEC-032.
 * **CPLD support:** None on this PCB; the board only provides the mandatory return path.
 * **Signal Path:** Final rotor/extension outputs → Reflector J1–J3 (ERM8 male) → passive turnaround traces

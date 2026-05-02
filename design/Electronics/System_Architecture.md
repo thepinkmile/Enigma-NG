@@ -23,7 +23,7 @@ The Enigma-NG system comprises the following boards:
 - **Stator** — Removable vertical daughterboard mounted from the enclosure wall. Receives power and
   logic from the Controller through two hybrid blind-mate connectors; fans power and JTAG into the
   rotor stack and hosts the routing / reflector CPLD.
-- **Settings Board** — Panel-mount switch and RGB indicator board on the shared Stator `I2C-1` bus;
+- **User Settings Module** — Panel-mount switch and RGB indicator board on the shared Stator `I2C-1` bus;
   provides user-facing routing/reflector configuration input.
 - **Rotors (×30)** — Arranged in groups of 5, chaining directly output-to-input. An Extension Board sits
   between each group of 5 to re-buffer broadcast signals.
@@ -226,9 +226,9 @@ All system management devices remain on the single shared `I2C-1` bus:
 | 0x20 | MCP23017 | Stator | ENC monitoring |
 | 0x21 | MCP23017 | Stator | Virtual keypress + SOURCE_SEL + SYS_RESET_N |
 | 0x22 | MCP23017 | Stator | CPLD config output driver |
-| 0x23 | MCP23017 | Settings Board | Switch input reader |
-| 0x24 | MCP23017 | Settings Board | Bank 1 LED controller |
-| 0x25 | MCP23017 | Settings Board | Bank 2 LED controller |
+| 0x23 | MCP23017 | User Settings Module | Switch input reader |
+| 0x24 | MCP23017 | User Settings Module | Bank 1 LED controller |
+| 0x25 | MCP23017 | User Settings Module | Bank 2 LED controller |
 
 The PM-local expander uses the address block adjacent to the PM INA219 so PM devices remain grouped in
 `i2cdetect` output.

@@ -37,15 +37,15 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
 - `I2C1` (`SCL`/`SDA`) originates on the Controller and fans out in parallel:
   - Controller -> Power Module over `J3`
   - Controller -> Stator over `J5`
-  - Stator -> Settings Board over `J13`
+  - Stator -> User Settings Module over `J13`
   - `0x09`: LTC3350 supercap charger / monitor (Power Module)
   - `0x0B`: Smart Battery / SMBus monitor (Power Module)
   - `0x20`: MCP23017 U6 (Stator ENC monitoring)
   - `0x21`: MCP23017 U7 (Stator virtual keypress / SOURCE_SEL / SYS_RESET_N)
   - `0x22`: MCP23017 U8 (Stator CPLD config output driver)
-  - `0x23`: MCP23017 U1 (Settings Board switch input)
-  - `0x24`: MCP23017 U2 (Settings Board Bank 1 LED controller)
-  - `0x25`: MCP23017 U3 (Settings Board Bank 2 LED controller)
+  - `0x23`: MCP23017 U1 (User Settings Module switch input)
+  - `0x24`: MCP23017 U2 (User Settings Module Bank 1 LED controller)
+  - `0x25`: MCP23017 U3 (User Settings Module Bank 2 LED controller)
   - `0x28`: STUSB4500 USB PD controller (Power Module)
   - `0x3F`: PCA9534APWR PM-local GPIO expander (Power Module)
   - `0x40`: INA219 (Power Module)
@@ -62,7 +62,7 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
 | **Power Module** | Removable power-conditioning / UPS cartridge with supercaps, eFuse, OR-ing, USB-C input, battery input, and PM-local status expander | 6-Layer / 2oz | **In Review** |
 | **Reflector Board** | Mandatory terminating turnaround board for the rotor stack return path | 4-Layer / 2oz | **Design Locked** |
 | **Rotor Module** | Smart encryption units (30x) with MAX II EPM570T100I5N CPLDs | 4-Layer / 2oz | **Architecture Set** |
-| **Settings Board** | Panel-mount switch and RGB LED configuration interface on the shared Stator `I2C-1` bus | 4-Layer / 2oz | **In Review** |
+| **User Settings Module** | Panel-mount switch and RGB LED configuration interface on the shared Stator `I2C-1` bus | 4-Layer / 2oz | **In Review** |
 | **Stator Board** | Removable vertical daughterboard; rotor-stack backplane and CPLD routing hub | 4-Layer / 2oz | **In Review** |
 
 ## 6. Notes

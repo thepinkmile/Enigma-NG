@@ -146,7 +146,7 @@ self-describing.
 
 ---
 
-## 5. J13 — Settings Board I²C Connector
+## 5. J13 — User Settings Module I²C Connector
 
 **Component:** JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm THT (JLCPCB: C131342).  
 **Placement:** Board edge facing the enclosure panel, accessible without rotor stack removal.

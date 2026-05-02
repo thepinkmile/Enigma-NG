@@ -47,7 +47,7 @@ Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams
 | `rotor-alloy-grade` | Rotor disc aluminium alloy grade: TBD — 6061-T6 suggested for machinability; confirm before manufacture | `design/Mechanical/Rotor/Design_Spec.md` |
 | `rotor-shaft-mechanism` | Rotor shaft retention mechanism: TBD — pending Rotor Actuation Assembly spec | `design/Mechanical/Rotor/Design_Spec.md` |
 | `display-aperture` | Main enclosure display aperture dimensions: TBD pending display size selection (up to 10" supported via DSI1); deferred display auxiliary hinge space also unresolved | `design/Mechanical/Main_Enclosure/Design_Spec.md` |
-| `system-assembly-harnesses` | Complete System Assembly cable harness definitions: TBD — 20-pin encoder IDC ribbons, reflector cable, fan cable, Settings Board I²C ribbon, switch / battery harnesses | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` |
+| `system-assembly-harnesses` | Complete System Assembly cable harness definitions: TBD — 20-pin encoder IDC ribbons, reflector cable, fan cable, User Settings Module I²C ribbon, switch / battery harnesses | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` |
 | `system-assembly-connectors` | Complete System Assembly connector list: TBD — TE PM dock, Molex Stator dock, ERF8/ERM8 rotor-family BtB, JST PH servo, JST SH fan, 20-pin IDC encoder, etc. | `design/Mechanical/Complete_System_Assembly/Design_Spec.md` |
 
 ---

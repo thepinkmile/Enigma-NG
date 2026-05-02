@@ -7,7 +7,7 @@
 ## Scope
 
 - **Stand-alone board reviews:** Power Module, Controller, Stator, Rotor, Extension, Reflector,
-  Encoder, Actuation Module, Settings Board, JTAG Daughterboard
+  Encoder, Actuation Module, User Settings Module, JTAG Daughterboard
 - **Integration reviews:** Inter-board connectivity (pin-maps, signal names, rail names);
   Consolidated BOM accuracy vs all board BOMs
 
@@ -15,7 +15,7 @@
 
 - Batch 1: Power Module, Controller, Stator, Rotor
 - Batch 2: Extension, Reflector, Encoder, Actuation Module
-- Batch 3: Settings Board, JTAG Daughterboard, Integration-Connectivity, Integration-BOM
+- Batch 3: User Settings Module, JTAG Daughterboard, Integration-Connectivity, Integration-BOM
 
 ---
 
@@ -48,7 +48,7 @@
 | Severity | Ref | Finding | Detail |
 | :--- | :--- | :--- | :--- |
 | HIGH | BOM-U8 | Duplicate BOM entry for U8 | U8 (MCP23017 I²C GPIO Expander) appears twice in the BOM table. Both entries are identical. One must be removed. |
-| HIGH | FR-STA-08 | Incorrect I²C device reference | FR-STA-08 states "CM5 reads U1 @ 0x23" but U1 is the CPLD (EPM570T100I5N), which is not I²C-addressable. Address 0x23 belongs to the Settings Board. The requirement text needs correction. |
+| HIGH | FR-STA-08 | Incorrect I²C device reference | FR-STA-08 states "CM5 reads U1 @ 0x23" but U1 is the CPLD (EPM570T100I5N), which is not I²C-addressable. Address 0x23 belongs to the User Settings Module. The requirement text needs correction. |
 | MEDIUM | LAYOUT-PLACEMENT | Missing component placement zones in Board_Layout.md | Board_Layout.md is titled "Master Pinout" but only U8 (§6) and J13 (§5) have explicit placement specifications. The remaining 40+ designators (C1-C26, J1-J12, L1-L4, R1-R43, U1-U7, U9-U12) have no placement zones, height constraints, orientation, or thermal notes. |
 
 ### Batch 1 — Rotor (review-rot)
@@ -101,7 +101,7 @@ Encoder — No findings.
 
 **Batch 2 subtotal: 4 HIGH · 10 MEDIUM · 1 LOW**
 
-### Batch 3 — Settings Board (review-sbd)
+### Batch 3 — User Settings Module (review-sbd)
 
 | Severity | Ref | Finding | Detail |
 | :--- | :--- | :--- | :--- |
@@ -160,7 +160,7 @@ Integration-Connectivity — No findings. All critical interfaces verified: Link
 | F-02 | Controller/Design_Spec.md | Removed 2× broken "Full Pin Table" cross-references (J12, J13) |
 | F-03 | Controller/Board_Layout.md | `ROTOR_EN` → `ROTOR_EN_N` in J3 table |
 | F-04 | Stator/Design_Spec.md | Removed duplicate U8 BOM row |
-| F-05 | Stator/Design_Spec.md | FR-STA-08: corrected I²C reference from `U1 @ 0x23` to `Settings Board U1 @ 0x23` |
+| F-05 | Stator/Design_Spec.md | FR-STA-08: corrected I²C reference from `U1 @ 0x23` to `User Settings Module U1 @ 0x23` |
 | F-06 | Rotor/Design_Spec.md | DR-ROT-11 reordered to correct sequential position after DR-ROT-10 |
 | F-07 | Extension/Design_Spec.md | Added DEC-045 cross-reference to Thermal & ESD section |
 | F-08 | Extension/Design_Spec.md | Added DEC-043 traceability note to J7/J8 description |
@@ -168,7 +168,7 @@ Integration-Connectivity — No findings. All critical interfaces verified: Link
 | F-10 | Reflector/Design_Spec.md | Removed duplicate R1 BOM row |
 | F-11 | Actuation_Module/Design_Spec.md + Software/Actuation_Module/Design_Spec.md | `ACTUATE_REQUEST` → `ACTUATE_REQUEST_N`; `ACTUATION_HOME` → `ACTUATION_HOME_N` throughout both files |
 | F-12 | Actuation_Module/Design_Spec.md | Added `## 7. Thermal & ESD` section (no TVS — all connectors internal) |
-| F-13 | Settings_Board/Design_Spec.md | Inserted `## 9. Thermal & ESD` section; BOM → §10; Power Budget → §11 |
+| F-13 | User_Settings_Module/Design_Spec.md | Inserted `## 9. Thermal & ESD` section; BOM → §10; Power Budget → §11 |
 | F-14 | JTAG_Daughterboard/Design_Spec.md | Fixed misleading ESD statement; replaced with no-TVS internal-connector statement |
 | F-15 | JTAG_Daughterboard/Design_Spec.md | Added inverted stackup cross-reference note |
 | F-16 | JTAG_Daughterboard/Board_Layout.md | Clarified JTAG trace impedance compliance note for L2 traces |
@@ -274,7 +274,7 @@ All 42 Pass 1 findings resolved. All user decisions D-1 through D-7 actioned. Ze
 ## Scope
 
 - **Stand-alone board reviews:** Power Module, Controller, Stator, Reflector, Extension, Encoder,
-  JTAG Daughterboard, Rotor, Settings Board, Actuation Module
+  JTAG Daughterboard, Rotor, User Settings Module, Actuation Module
 - **Integration reviews:** Inter-board connectivity (signal names, rail names, refdes consistency);
   Consolidated BOM vs all board BOMs
 - **Prerequisite:** Each review agent read `design/Standards/Global_Routing_Spec.md` before
@@ -284,7 +284,7 @@ All 42 Pass 1 findings resolved. All user decisions D-1 through D-7 actioned. Ze
 
 - Batch 1: Power Module, Controller, Stator, Encoder
 - Batch 2: Reflector, Extension, JTAG Daughterboard, Rotor
-- Batch 3: Settings Board, Actuation Module, Integration-Connectivity, Integration-BOM
+- Batch 3: User Settings Module, Actuation Module, Integration-Connectivity, Integration-BOM
 
 ---
 
@@ -346,14 +346,14 @@ No new stand-alone findings in Pass 2 beyond integration items captured under IN
 | CRITICAL | ROT-CRIT-1 | Board A and Board B not documented as a single logical unit | Board A and Board B are always populated and operated together as one logical encoder assembly, but this relationship is not documented. Risk: Board B incorrectly treated as independently reviewable, causing false GRS §3 bulk-cap violations on Board B (whose bulk caps reside on Board A). |
 | HIGH | ROT-MAJ-1 | **DISMISSED — resolved by ROT-CRIT-1** | Once DR-ROT-12 (Board A+B logical unit) is applied, Board B is an extension of Board A and its bulk-cap absence is explicitly exempted. No separate fix needed. |
 
-### Batch 3 — Settings Board (review-set)
+### Batch 3 — User Settings Module (review-set)
 
 | Severity | Ref | Finding | Detail |
 | :--- | :--- | :--- | :--- |
-| HIGH | SET-MAJ-1 | Bulk-entry capacitor banks missing for both input rails | Settings Board receives 3V3_ENIG and 5V_MAIN. GRS §3 requires ≥5× 10µF bulk-entry caps per rail on all consumer boards. No bulk-entry banks existed. C5–C9 (3V3_ENIG) and C10–C14 (5V_MAIN) must be added. |
+| HIGH | SET-MAJ-1 | Bulk-entry capacitor banks missing for both input rails | User Settings Module receives 3V3_ENIG and 5V_MAIN. GRS §3 requires ≥5× 10µF bulk-entry caps per rail on all consumer boards. No bulk-entry banks existed. C5–C9 (3V3_ENIG) and C10–C14 (5V_MAIN) must be added. |
 | HIGH | SET-MAJ-2 | No ESD protection on panel-facing switches SW1–SW5 | J1 panel switches are user-accessible. No TVS/ESD array is present on these lines. **DEFERRED per user D-8** — to evaluate during pre-prototype switch testing; switch mechanical construction may make ESD components irrelevant. |
 | LOW | SET-MIN-1 | Samsung CL21B106KAYQNNE specified with X5R dielectric — should be X7R | CL21B106KAYQNNE is an X7R dielectric; the spec description was incorrect. |
-| LOW | SET-MIN-2 | **DISMISSED — false positive** | Review agent claimed Board_Layout.md did not exist for Settings Board. `design/Electronics/Settings_Board/Board_Layout.md` exists and is correctly populated. |
+| LOW | SET-MIN-2 | **DISMISSED — false positive** | Review agent claimed Board_Layout.md did not exist for User Settings Module. `design/Electronics/User_Settings_Module/Board_Layout.md` exists and is correctly populated. |
 | LOW | SET-MIN-3 | J1 connector description incomplete | J1 (panel switch connector) description did not specify JST PH 2.0mm pitch or pin count. |
 
 ### Batch 3 — Actuation Module (review-am)
@@ -392,9 +392,9 @@ No new stand-alone findings in Pass 2 beyond integration items captured under IN
 | F-52 | `JTAG_Daughterboard/Design_Spec.md` | Added C12: EPM240 U5 bypass 100nF CL05B104KB5NNNC 0402; added DR-JDB-17 |
 | F-53 | `JTAG_Daughterboard/Design_Spec.md` | Added §6 cross-reference: `See Board_Layout.md §7.1` |
 | F-54 | `Rotor/Design_Spec.md` | Added DR-ROT-12: Board A and Board B shall be treated as a single logical board; Board B bulk-cap absence explicitly exempted |
-| F-55a | `Settings_Board/Design_Spec.md` | Added C5–C14 entries — **incorrect (100nF bypass); see orchestrator correction F-55b** |
-| F-56 | `Settings_Board/Design_Spec.md` | Corrected CL21B106KAYQNNE dielectric description: X5R → X7R |
-| F-57 | `Settings_Board/Design_Spec.md` | Corrected J1 connector description to specify 6-pin JST PH 2.0mm pitch |
+| F-55a | `User_Settings_Module/Design_Spec.md` | Added C5–C14 entries — **incorrect (100nF bypass); see orchestrator correction F-55b** |
+| F-56 | `User_Settings_Module/Design_Spec.md` | Corrected CL21B106KAYQNNE dielectric description: X5R → X7R |
+| F-57 | `User_Settings_Module/Design_Spec.md` | Corrected J1 connector description to specify 6-pin JST PH 2.0mm pitch |
 | F-58 | `Actuation_Module/Design_Spec.md` | Updated DR-AM-15: explicit restriction to VDD pin 4 only; pin 16 VDD_USB left unconnected |
 | F-59 | `Actuation_Module/Design_Spec.md` | Added SW2 supply rail note to DR-AM-15: SW2 pull-up supply = 3V3_ENIG |
 | F-60 | `Actuation_Module/Design_Spec.md` | Added GRS §3 exemption cross-reference to DR-AM-15 (daughterboard, no directly-received rails) |
@@ -414,8 +414,8 @@ No new stand-alone findings in Pass 2 beyond integration items captured under IN
 | F-44 | `Power_Module/Board_Layout.md` | PM-MIN-1 compliance-marker cross-references — unverified at audit time; no definitive failure found; carries to Pass 3 as low-severity |
 | F-45 | `Power_Module/Design_Spec.md` | Updated §6 Single-Point GND Bond: assigned RefDes FB1 (ferrite bead or 0Ω link, value TBD at layout) |
 | F-51 | `Reflector/Design_Spec.md` | Added working voltage note for TPD4E05U06QDQARQ1 to §5: max 5.5V; 5V_MAIN (≤5.1V) within range with ≥0.4V margin |
-| F-55b | `Settings_Board/Design_Spec.md` | Corrected fix-agent error: C5–C14 changed from 100nF bypass to 10µF X7R 25V 0805 Samsung CL21B106KAYQNNE (GRS §3 requires ≥5× 10µF bulk-entry caps per rail) |
-| F-55c | `Consolidated_BOM.md` | Settings Board C5–C14 row corrected to match orchestrator correction |
+| F-55b | `User_Settings_Module/Design_Spec.md` | Corrected fix-agent error: C5–C14 changed from 100nF bypass to 10µF X7R 25V 0805 Samsung CL21B106KAYQNNE (GRS §3 requires ≥5× 10µF bulk-entry caps per rail) |
+| F-55c | `Consolidated_BOM.md` | User Settings Module C5–C14 row corrected to match orchestrator correction |
 
 ### User decisions recorded in Pass 2
 

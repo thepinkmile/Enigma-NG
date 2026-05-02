@@ -1,4 +1,4 @@
-# Settings Board V1.0 Layout & Pinout
+# User Settings Module V1.0 Layout & Pinout
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -11,7 +11,7 @@
 
 ## 1. Board Overview
 
-The Settings Board is a landscape-orientation panel-mount PCB. The switch bodies mount through the
+The User Settings Module is a landscape-orientation panel-mount PCB. The switch bodies mount through the
 enclosure top-face panel cutouts, while the PCB sits directly behind the panel and connects back to
 the Stator via a 6-wire harness on `J1`.
 
@@ -224,7 +224,7 @@ CM5 firmware normally selects one colour rail per bank at a time:
 
 | Document | Description |
 | :--- | :--- |
-| `design/Electronics/Settings_Board/Design_Spec.md` | Full electrical specification and BOM |
+| `design/Electronics/User_Settings_Module/Design_Spec.md` | Full electrical specification and BOM |
 | `design/Electronics/Stator/Design_Spec.md` | `J13` definition and CPLD configuration ownership |
 | `design/Electronics/Stator/Board_Layout.md` | Mating connector definition for `J13` |
 | `design/Mechanical/Main_Enclosure/Design_Spec.md` | Panel cutout and actuator constraints |

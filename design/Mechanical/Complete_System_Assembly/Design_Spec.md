@@ -37,8 +37,8 @@ The following table lists every component category present in the assembled mach
 | Main Enclosure | 1 | Chassis, panels, cable routing, EMI bonding, fan | `Main_Enclosure/Design_Spec.md` |
 | Servo Motor | 1-6 | Miuzei Metal Gearbox 90 (5V, 3-pin), one per fitted Actuation Module | `Rotor_Actuation_Assembly/Design_Spec.md` |
 | Actuation Home Switch | 1-6 | SPST NO momentary (Omron SS-01GL13 or equivalent), one per fitted Actuation Module | `design/Electronics/Actuation_Module/Design_Spec.md` |
-| Settings Board | 1 | Panel-mount configuration switch PCB (12× SPDT toggles, 12× discrete RGB indicators, + CFG_APPLY button); mounts to right side top face of Main Enclosure; connects to Stator via I²C ribbon | `Settings_Board/Design_Spec.md` (Electronics) |
-| Cable Harnesses | TBD | 20-pin encoder IDC ribbons, reflector cable, fan cable, Settings Board I²C ribbon, switch / battery harnesses | Each sub-assembly doc |
+| User Settings Module | 1 | Panel-mount configuration switch PCB (12× SPDT toggles, 12× discrete RGB indicators, + CFG_APPLY button); mounts to right side top face of Main Enclosure; connects to Stator via I²C ribbon | `User_Settings_Module/Design_Spec.md` (Electronics) |
+| Cable Harnesses | TBD | 20-pin encoder IDC ribbons, reflector cable, fan cable, User Settings Module I²C ribbon, switch / battery harnesses | Each sub-assembly doc |
 | Connectors | TBD | TE PM dock, Molex Stator dock, ERF8/ERM8 rotor-family BtB, JST PH servo, JST SH fan, 20-pin IDC encoder, etc. | Per sub-assembly BOM |
 
 ## Assembly Sequence Overview
@@ -59,7 +59,7 @@ steps are detailed in each referenced document; this section defines integration
 | 9 | Reflector | Install the mandatory passive Reflector sub-assembly at the far end of the final rotor group. Connect the 20-pin cable to Stator J10. Reflection-map selection remains Stator-CPLD-owned. |
 | 10 | Extension (if used) | Insert each Extension between 5-rotor groups: `Stator -> 5 rotors -> [Extension -> 5 rotors]* -> Reflector`. Each Extension reinjects clean `3V3_ENIG`, carries the reflector-boundary service harness including grouped `5V_MAIN`, and hosts one local Actuation Module for the next group-boundary carry handoff. |
 | 11 | Controller Board + JDB Hat | Install JDB hat on Controller. Mount Controller in Main Enclosure. Engage the TE PM dock cluster (`J1/J2/J3`) to the Power Module, then mate the Molex Stator dock pair (`J4/J5` ↔ `J11/J12`). |
-| 12 | Settings Board | Mount Settings Board PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J13. Verify `U1`, `U2`, and `U3` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
+| 12 | User Settings Module | Mount User Settings Module PCB to Main Enclosure right side top panel. Route the 6-wire harness (`3V3_ENIG`, `5V_MAIN`, `GND`, `SDA`, `SCL`, `GND`) to Stator J13. Verify `U1`, `U2`, and `U3` appear on the shared I²C bus, then run a functional check that reads switch-state changes and drives each bank's RGB indicator rails before final panel closure. |
 | 13 | Main Enclosure final assembly | Route all cable harnesses. Install panels. Fit fan. Secure EMI bonding. Final torque fasteners. |
 
 > **Note on the JTAG Daughterboard (JDB):** The JDB is a PCB hat that mounts directly on the
@@ -80,14 +80,14 @@ steps are detailed in each referenced document; this section defines integration
 | Power Module | `Power_Module/Design_Spec.md` | Draft |
 | Extension | `Extension/Design_Spec.md` | Draft |
 | Reflector | `Reflector/Design_Spec.md` | Draft |
-| Settings Board | `design/Electronics/Settings_Board/Design_Spec.md` | Draft |
+| User Settings Module | `design/Electronics/User_Settings_Module/Design_Spec.md` | Draft |
 
 ## Cross-References
 
 | Document | Description |
 | :--- | :--- |
-| `design/Electronics/Settings_Board/Design_Spec.md` | Settings Board electrical specification — panel switches, LED expanders, I²C interface |
-| `design/Electronics/Stator/Design_Spec.md` | Stator Board electrical specification — J13 I²C connector to Settings Board |
-| `design/Mechanical/Main_Enclosure/Design_Spec.md` | Main Enclosure — Settings Board panel cutout requirements |
+| `design/Electronics/User_Settings_Module/Design_Spec.md` | User Settings Module electrical specification — panel switches, LED expanders, I²C interface |
+| `design/Electronics/Stator/Design_Spec.md` | Stator Board electrical specification — J13 I²C connector to User Settings Module |
+| `design/Mechanical/Main_Enclosure/Design_Spec.md` | Main Enclosure — User Settings Module panel cutout requirements |
 | `design/Guides/Maintenance_Guide.md` | Maintenance procedures referencing assembly steps |
 | `design/Guides/User_Manual.md` | User-facing assembly and operation guide |
