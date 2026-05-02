@@ -519,41 +519,34 @@ are reserved so the same 1×5 keyed header footprint can be retained across both
 
 ## 5. Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1–C8 | Decoupling capacitor | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C9–C13 | Bulk decoupling capacitor | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C14 | Decoupling capacitor | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C15 | Reservoir capacitor | Kyocera AVX KAM05CR71A105KH — 1µF X7R ±10% 10V AEC-Q200 0402 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
-| C16 | Decoupling capacitor; N=26 only, not populated for N=64 | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C17 | Reservoir capacitor; N=26 only, not populated for N=64 | Kyocera AVX KAM05CR71A105KH — same part as C15 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
-| C18 | Decoupling capacitor; N=64 only, not populated for N=26 | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C19 | Reservoir capacitor; N=64 only, not populated for N=26 | Kyocera AVX KAM05CR71A105KH — same part as C15 | 0402 | 581-KAM05CR71A105KH | 478-KAM05CR71A105KHCT-ND | Global sourcing / consignment only |
-| C20–C23 | Resonant tank capacitor | YAGEO AC0402FRNPO9BN330 — 33 pF C0G/NP0 ±1% 50V AEC-Q200; generic 0402 footprint | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| C24–C27 | Resonant tank capacitor; N=26 only, not populated for N=64 | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| C28–C31 | Resonant tank capacitor; N=64 only, not populated for N=26 | YAGEO AC0402FRNPO9BN330 — same part as C20–C23 | 0402 | 603-0402FRNPO9BN330 | 13-AC0402FRNPO9BN330CT-ND | C1852937 |
-| J1–J2 | Samtec ERM8-005 male B2B connector | ERM8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
-| J3 | Samtec ERM8-010 male B2B connector | ERM8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERM8010050SDVKTR | SAM8610CT-ND | C374877 |
-| J4–J5 | Samtec ERF8-005 female B2B connector | ERF8-005-05.0-S-DV-K-TR | 10-pin (2×5) 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J6 | Samtec ERF8-010 female B2B connector | ERF8-010-05.0-S-DV-K-TR | 20-pin (2×10) 0.8mm pitch | 200-ERF8010050SDVKTR | SAM8618CT-ND | C3646170 |
-| J7–J9 | Adam Tech RS1-05-G female socket, 1×5 — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-05-G — 1×5 2.54mm female socket | Through-hole | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| J10 | Adam Tech RS1-07-G female socket, 1×7 — **manually assembled post-JLCPCB SMT** | Adam Tech RS1-07-G — 1×7 2.54mm female socket | Through-hole | 737-RS1-07-G | 2057-RS1-07-G-ND | C3321543 |
-| J11–J13 | Adam Tech PH1-05-UA male header, 1×5 — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-05-UA — 1×5 2.54mm male pin header | Through-hole | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| J14 | Adam Tech PH1-07-UA male header, 1×7 — **manually assembled post-JLCPCB SMT** | Adam Tech PH1-07-UA — 1×7 2.54mm male pin header | Through-hole | 737-PH1-07-UA | 2057-PH1-07-UA-ND | C3331618 |
-| L1–L4 | Chip inductor, 18 µH | Bourns CWF1610A-180K — 18 µH ±10% unshielded 0603 chip inductor; SRF 28 MHz; Q=14@2.5 MHz; Irms 220 mA; DCR 2.90 Ω | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| L5–L8 | Chip inductor, 18 µH; N=26 only, not populated for N=64 | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| L9–L12 | Chip inductor, 18 µH; N=64 only, not populated for N=26 | Bourns CWF1610A-180K — same part as L1–L4 | 0603 | 652-CWF1610A-180K | 118-CWF1610A-180KCT-ND | Global sourcing / consignment only |
-| R2–R5 | Resistor, 10 kΩ | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6–R7 | Resistor, 4.7 kΩ | KOA Speer SG73S1ERTTP4701F — 4.7 kΩ ±1% thick film anti-sulfuration 0402; AEC-Q200 | 0402 | 660-SG73S1ERTTP4701F | 2019-SG73S1ERTTP4701FTR-ND ⚠️ MOQ 10000 | C6483673 ⚠️ MOQ 49 |
-| SW1–SW3 | DIP switch, 6-position | CTS 219-6LPSTR — 6-position DIP switch, 2.54mm THT | Through-hole | 774-2196LPSTR | 119-219-6LPSTRCT-ND | C2842671 |
-| U1 | Intel MAX II CPLD | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
-| U2 | FDC2114 capacitive sensor IC | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| U3 | FDC2114 capacitive sensor IC; N=26 only, not populated for N=64 | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| U4 | FDC2114 capacitive sensor IC; N=64 only, not populated for N=26 | FDC2114RGHR | 16-VQFN | 595-FDC2114RGHR ⚠️ MOQ 4500 at distributors | FDC2114RGHR-ND ⚠️ MOQ 4500 | C2652079 (MOQ 2) |
-| U5–U12 | ESD protection array, 4-channel | TPD4E05U06QDQARQ1 — 4-ch ESD, 0.5 pF/ch, ±15 kV IEC 61000-4-2 L4 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C1–C8,C14 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 9 |
+| C9–C13 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 5 |
+| C15 | 1µF X7R ±10% 10V AEC-Q200 0402 | KAM05CR71A105KH | Kyocera AVX | 478-KAM05CR71A105KHCT-ND | 581-KAM05CR71A105KH | — | Global sourcing | — | Yes | Pending | 1 |
+| C20–C23 | 33pF C0G/NP0 ±1% 50V AEC-Q200 0402 | AC0402FRNPO9BN330 | YAGEO | 13-AC0402FRNPO9BN330CT-ND | 603-0402FRNPO9BN330 | C1852937 | — | — | Yes | Pending | 4 |
+| J1–J2 | 10-pin 2×5 0.8mm male SMT | ERM8-005-05.0-S-DV-K-TR | Samtec | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | — | — | Yes | Pending | 2 |
+| J3 | 20-pin 2×10 0.8mm male SMT | ERM8-010-05.0-S-DV-K-TR | Samtec | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | — | — | Yes | Pending | 1 |
+| J4–J5 | 10-pin 2×5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | — | Yes | Pending | 2 |
+| J6 | 20-pin 2×10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | — | — | Yes | Pending | 1 |
+| J7–J9 | 1×5 2.54mm female socket THT | RS1-05-G | Adam Tech | 2057-RS1-05-G-ND | 737-RS1-05-G | C3321119 | — | manually-fit | Yes | Pending | 3 |
+| J10 | 1×7 2.54mm female socket THT | RS1-07-G | Adam Tech | 2057-RS1-07-G-ND | 737-RS1-07-G | C3321543 | — | manually-fit | Yes | Pending | 1 |
+| J11–J13 | 1×5 2.54mm male pin header THT | PH1-05-UA | Adam Tech | 2057-PH1-05-UA-ND | 737-PH1-05-UA | C5374051 | — | manually-fit | Yes | Pending | 3 |
+| J14 | 1×7 2.54mm male pin header THT | PH1-07-UA | Adam Tech | 2057-PH1-07-UA-ND | 737-PH1-07-UA | C3331618 | — | manually-fit | Yes | Pending | 1 |
+| L1–L4 | 18µH ±10% SRF 28MHz 0603 | CWF1610A-180K | Bourns | 118-CWF1610A-180KCT-ND | 652-CWF1610A-180K | — | Global sourcing | — | Yes | Pending | 4 |
+| R2–R5 | 10kΩ ±1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | — | Yes | Pending | 4 |
+| R6–R7 | 4.7kΩ ±1% AEC-Q200 0402 | SG73S1ERTTP4701F | KOA Speer | 2019-SG73S1ERTTP4701FTR-ND | 660-SG73S1ERTTP4701F | C6483673 | — | — | Yes | Pending | 2 |
+| SW1–SW3 | 6-pos DIP switch 2.54mm THT | 219-6LPSTR | CTS | 119-219-6LPSTRCT-ND | 774-2196LPSTR | C2842671 | — | — | Yes | Pending | 3 |
+| U1 | MAX II 570 LEs CPLD TQFP-100 | EPM570T100I5N | Intel (Altera) | 544-2281-ND | 989-EPM570T100I5N | C27319 | — | — | Yes | Pending | 1 |
+| U2 | 4-ch cap sensor I²C 0x2A 16-VQFN | FDC2114RGHR | Texas Instruments | FDC2114RGHR-ND | 595-FDC2114RGHR | C2652079 | — | JLCPCB MOQ 2 | Yes | Pending | 1 |
+| U5–U12 | 4-ch ESD ±15kV USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | — | Yes | Pending | 8 |
 
-> **Support-network scope note:** `R6/R7` and `C14-C19` capture the local I²C-bias and `VDD`-bypass
-> requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L12`, `C20–C31`)
+> **Variant-specific components:** N=26 rotor variant components (C16, C17, C24–C27, L5–L8, U3) are
+> listed in **`design/Electronics/Rotor/Rotor_26_Char_Design.md`** §8. N=64 rotor variant components
+> (C18, C19, C28–C31, L9–L12, U4) are listed in **`design/Electronics/Rotor/Rotor_64_Char_Design.md`** §8.
+>
+> **Support-network scope note:** `R6/R7` and `C14-C15` capture the local I²C-bias and `VDD`-bypass
+> requirements for the populated FDC2114 devices. Resonant front-end parts (`L1–L4`, `C20–C23`)
 > are fully sourced above (Bourns CWF1610A-180K 18 µH inductors and YAGEO AC0402FRNPO9BN330 33 pF
 > resonant capacitors; dummy LC tanks on all unused FDC2114 channels per TI application note).
 > ESD protection arrays `U5`–`U12` (TPD4E05U06QDQARQ1) are sourced above; 4 per board, placed close

@@ -57,14 +57,14 @@ board based on its known JTAG-chain position.
 - No role-specific RC population is required on the PCB.
 - Assembly identity is provided by:
   - the board's installed location
-  - the harness connected to `BT1`-`BT64`
+  - the harness connected to `J3`-`J66`
   - the CPLD image programmed into that board
 
 ## 4. Common Electrical Conventions
 
 ### 4.1 Signal bank
 
-- `BT1`-`BT64` is always treated as a **64-bit logical bank** in the CPLD.
+- `J3`-`J66` is always treated as a **64-bit logical bank** in the CPLD.
 - Logical bank ordering must stay stable between encode and decode images.
 - The VHDL implementation shall preserve a one-to-one mapping between bank bit index and external
   terminal number.
@@ -246,7 +246,7 @@ For plugboard encode images:
 ### 7.1 Core function
 
 The decode image shall accept `ENC_DATA[5:0]` and generate a one-of-64 output selection across
-`BT1`-`BT64`.
+`J3`-`J66`.
 
 ### 7.2 Output rules
 

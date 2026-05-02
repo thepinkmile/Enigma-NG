@@ -250,6 +250,10 @@ version-metadata policy, BOM authority rules, and review suppression notes are c
 `.copilot/agent-directives.md`. Read that file at session start — it takes precedence over any
 general defaults.
 
+All deferred work items, TBDs, and open certification actions are tracked in `.copilot/todo-list.md`.
+Consult that file rather than re-scanning the repo. Update it when new items are identified or
+existing items are closed.
+
 ## Remaining follow-up work
 
 These are still open design review items, but they are not yet committed design decisions:

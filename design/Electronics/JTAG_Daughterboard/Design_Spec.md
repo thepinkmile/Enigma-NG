@@ -192,22 +192,17 @@ assembly on L1 is consistent with JLCPCB SMT assembly requirements.
 
 ## 8. Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C4 | Decoupling | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C5 | 5V_USB power-entry filter (hat-header J1 Pin 1, close to FT232H VCC) | 4.7µF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
-| C6-C9 | FT232H per-pin supply decoupling — VCCA (pin 37), VCORE (pin 38), VCCD (pin 39), VCCIO×3 (pins 12/24/46), VPLL (pin 8), VPHY (pin 3) — 4 additional caps to complete all 8 supply pins alongside C1-C4 | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C10-C11 | Crystal load capacitors — **C0G/NP0 exception approved** (zero tempco mandatory for crystal load accuracy; X7R exhibits ≥5% capacitance shift with temperature, directly degrading oscillator frequency stability — this is the sole C0G exception in the design) | 33pF C0G/NP0 0402 | 0402 | 80-C0402C330J5GAUTO | 399-12979-1-ND | C2169327 |
-| C12 | U5 (SN74LVC2G125DCUR) VCC bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| J1 | INPUT header — 5V_USB, 3V3_ENIG, D+, D−, GND | Adam Tech PH1-05-UA — 1×5 male pin header, 2.54mm | 2.54mm | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| J2 | JTAG OUTPUT header (10-pin interleaved GND) | Adam Tech PH1-10-UA — 1×10 male pin header, 2.54mm | 2.54mm | 737-PH1-10-UA | 2057-PH1-10-UA-ND | C3330527 |
-| R2 | Series termination on FT232H TDI output (TDI not buffered) — DEC-016 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
-| R3 | FT232H RESET_N pull-up (pin 34 to 3V3_ENIG) — holds RESET_N deasserted during normal operation per FTDI AN_108; DR-JDB-16 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R4 | TMS pull-upto 3V3_ENIG near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R5 | TCK pull-down to GND near J2 header — holds JTAG TAP in defined idle state per §6 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6 | TCK series damping after U5 buffer output, before J2 pin 1 (TCK) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
-| R7 | TMS series damping after U5 buffer output, before J2 pin 7 (TMS) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
-| R8 | TDI series damping before J2 pin 3 (TDI) — DEC-024 | 33Ω 1% | 0402 | 667-ERJ-2RKF33R0X | P33.0LCT-ND | C278594 |
-| U1 | FT232HL-REEL | USB 2.0 to MPSSE | LQFP-48 | 895-FT232HL-REEL | 768-1101-1-ND | C51997 |
-| U5 | SN74LVC2G125DCUR — dual-channel 3-state buffer for TCK and TMS drive (37-device chain load) — DEC-024 | Dual 3-state buffer | VSSOP-8 | 595-SN74LVC2G125DCUR | 296-SN74LVC2G125DCURCT-ND | C21404 |
-| Y1 | Crystal — FT232H reference clock (per DEC-022) | 12MHz 20pF ±20ppm | SMD-3225 | 774-435F12012IET | 110-435F12012IETTR-ND | C19766404 (Extended) |
+<!-- markdownlint-disable MD013 MD055 MD056 -->
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C1-C4, C6-C9, C12 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 9 |
+| C5 | 4.7µF X7R 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | — | — | Yes | Pending | 1 |
+| C10-C11 | 33pF C0G/NP0 crystal load 0402 | C0402C330J5GAUTO | Kemet | 399-12979-1-ND | 80-C0402C330J5GAUTO | C2169327 | — | C0G/NP0 exception approved — only C0G in system | Yes | Pending | 2 |
+| J1 | 1x5 2.54mm male INPUT header THT | PH1-05-UA | Adam Tech | 2057-PH1-05-UA-ND | 737-PH1-05-UA | C5374051 | — | — | Yes | Pending | 1 |
+| J2 | 1x10 2.54mm male JTAG OUTPUT header THT | PH1-10-UA | Adam Tech | 2057-PH1-10-UA-ND | 737-PH1-10-UA | C3330527 | — | — | Yes | Pending | 1 |
+| R2, R6-R8 | 33Ω 1% 0402 | ERJ-2RKF33R0X | Panasonic | P33.0LCT-ND | 667-ERJ-2RKF33R0X | C278594 | — | see DEC-016; see DEC-024 | Yes | Pending | 4 |
+| R3-R5 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | — | Yes | Pending | 3 |
+| U1 | USB 2.0 to MPSSE bridge LQFP-48 | FT232HL-REEL | FTDI Chip | 768-1101-1-ND | 895-FT232HL-REEL | C51997 | — | — | Yes | Pending | 1 |
+| U5 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | — | — | Yes | Pending | 1 |
+| Y1 | 12MHz 20pF ±20ppm crystal SMD-3225 | 435F12012IET | CTS | 110-435F12012IETTR-ND | 774-435F12012IET | C19766404 (Extended) | — | see DEC-022 | Yes | Pending | 1 |
+<!-- markdownlint-enable MD013 MD055 MD056 -->

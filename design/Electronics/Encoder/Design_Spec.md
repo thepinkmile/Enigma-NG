@@ -144,7 +144,7 @@ Each CPLD provides enough user I/O for one 64-line interface bank plus JTAG, sta
 - **Keyboard Switches:** see `design/Mechanical/Keyboard_Assembly/Design_Spec.md`.
 - **Lightboard Harness:** see `design/Mechanical/Lightboard_Assembly/Design_Spec.md`.
 - **Plugboard Jack Sockets:** see `design/Mechanical/Plugboard_Assembly/Design_Spec.md`.
-- **PCB Spade Terminal Bank (BT1–BT64):** 6.35 mm (1/4") straight vertical PCB-mount male blade
+- **PCB Spade Terminal Bank (J3–J66):** 6.35 mm (1/4") straight vertical PCB-mount male blade
   tabs.
   - **Decode role:** wired to lightboard lamps or to plugboard jack Tip + Switch terminals.
   - **Encode role:** wired to keyboard switch outputs or to plugboard jack Sleeve terminals.
@@ -241,26 +241,23 @@ must preserve the generic one-CPLD module footprint and the unchanged 20-pin IDC
 
 ## 10. Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| BT1-BT64 | PCB spade blade terminals — one row × 64 | Keystone 1285-ST — 6.35 mm (1/4") straight vertical PCB-mount male blade tab. Used as either 64 driven outputs (decode role) or 64 sensed inputs (encode role). | Through-hole vertical | 534-1285-ST | 36-1285-ST-ND | C5370868 |
-| D1 | Status LED (active-low) | Green SMD LED, **V_f = 2.0V @ 10mA (≈1.9V @ 4mA)** | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
-| J1 (x64 per plugboard pass) | Stecker jack sockets | 6.35 mm (1/4") mono switched panel-mount jack — off-board mechanical part used only by plugboard assemblies | Panel-mount | — (eBay: SaiBuy.Ltd item 334364197440, £1.66/unit) | — | — |
-| J2 | Data Link Connector | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded box header | 2.54mm | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
-| R1 | LED current limiting resistor | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
-| R2 | TMS pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R3 | TDI pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R4 | TCK pull-down to GND | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R5 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6 | TDO output series R (U1 TDO -> J2 pin 14, ribbon cable drive) | 75Ω 1% | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| SW1-SW40 | Keyboard switches | uxcell-style DPDT 6-pin momentary push button — assembly-level part used only by the Keyboard Assembly | Panel-mount | — (eBay: gadgetskingdom item 365271584375, 2 per pack) | — | — |
-| U1 | Intel MAX II CPLD | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| J3-J66 | 6.35mm PCB spade blade terminals THT vertical | 1285-ST | Keystone Electronics | 36-1285-ST-ND | 534-1285-ST | C5370868 | — | — | Yes | Pending | 64 |
+| C1-C8 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 8 |
+| C9-C13 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 5 |
+| D1 | Green SMD LED Vf≈2.0V 0402 | 150060VS75000 | Würth Elektronik | 732-4980-1-ND | 710-150060VS75000 | C6848499 | — | — | Yes | Pending | 1 |
+| J1 | 6.35mm mono jack sockets panel-mount | — | generic | — | — | — | eBay SaiBuy.Ltd | eBay sourcing only | N/A | N/A | 1 |
+| J2 | 20-pin 2×10 2.54mm shrouded THT | BHR-20-VUA | Adam Tech | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | Yes | Pending | 1 |
+| R1 | 330Ω 1% 0402 | ERJ-2RKF3300X | Panasonic | P330LCT-ND | 667-ERJ-2RKF3300X | C278592 | — | — | Yes | Pending | 1 |
+| R2-R5 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | — | Yes | Pending | 4 |
+| R6 | 75Ω 1% 0402 | ERJ-2RKF75R0X | Panasonic | P75.0LCT-ND | 667-ERJ-2RKF75R0X | C413061 | — | — | Yes | Pending | 1 |
+| SW1-SW40 | DPDT 6-pin momentary switches panel-mount | — | generic | — | — | — | eBay gadgetskingdom | eBay sourcing only | N/A | N/A | 40 |
+| U1 | MAX II 570 LEs CPLD TQFP-100 | EPM570T100I5N | Intel (Altera) | 544-2281-ND | 989-EPM570T100I5N | C27319 | — | — | Yes | Pending | 1 |
 
 **Quantity notes:**
 
-- **Common fitted PCB population:** C1-C13, BT1-BT64, D1, J2, U1, and R1-R6 are fitted on every
+- **Common fitted PCB population:** C1-C13, J3-J66, D1, J2, U1, and R1-R6 are fitted on every
   Encoder Module (**6 boards total**).
 - **Role selection:** on-board fitted population is common across all six Encoder Modules.
   Encode-vs-decode behaviour is selected by the programmed CPLD image rather than an

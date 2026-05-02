@@ -70,6 +70,7 @@ Recent locked work:
 | ID | Status | Scope |
 | ---- | -------- | ------- |
 | `review-cycle-pass2` | **complete** | Pass 2 board + integration reviews complete; all findings F-42–F-66 resolved or deferred; audit trail appended to review-report.md; checkpoint 083 created; awaiting "Let's lock this in" |
+| `bom-description-strip` | **complete** | All 11 board spec Component columns stripped; Consolidated_BOM.md 205 Description/Usage cells stripped + 4 new Rotor N=26 rows + Section 2 ROT-A/B→ROT-26/64 rename + 5 qty corrections; all_boards_bom.json 201 descriptions stripped + Rotor board field rename; all files lint-clean; checkpoint 090 written; awaiting "Let's lock this in" |
 | `extension-mechanical-usage` | pending | Mechanical Extension usage is now aligned to local AM-based carry regeneration, but detailed switch / linkage geometry still needs later mechanical design |
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
 | `battery-connector-final-review` | pending | Re-confirm the chosen military battery connector details during the final deep-dive/manual review, especially the 6-pin contact assignment, `BATT_PRES_N` position, reserved contact behavior, cable selection, and interposer fit |
@@ -101,13 +102,14 @@ Start the next clean session by reading:
 
 1. `.copilot/plan.md`
 2. `.copilot/handoff.md`
-3. `.copilot/checkpoints/084-pass2-audit-complete.md`
+3. `.copilot/todo-list.md` — canonical deferred-work and open-action tracker for the project
+4. `.copilot/checkpoints/099-bt-to-j-rename-todo-list-created.md` (latest checkpoint)
 
-Pass 2 review and audit trail are complete. Before Pass 3:
+BOM restructure and RefDes cleanup (BOM phase) is complete pending commit authorisation.
+Before next steps:
 
-- Await user "Let's lock this in" to commit Pass 2 changes
-- After Pass 2 commit: apply `Settings_Board` → `User_Settings_Module` rename (scope already defined in plan)
-- Run Review Pass 3 after the rename commit
+- Await user "Let's lock this in" to commit outstanding BOM / RefDes changes
+- After commit: decide on next workstream (Pass 3 review, KiCAD library prep, Settings Board rename, etc.)
 
 Read `.copilot/review-report.md` for the running audit trail.
 
@@ -118,6 +120,9 @@ Read `.copilot/review-report.md` for the running audit trail.
 > Standing operational rules (PRIMARY DIRECTIVE, data-lookup order, version-metadata policy,
 > BOM authority, review suppression) are in `.copilot/agent-directives.md`. Read that file at
 > session start.
+>
+> All deferred items, TBDs, and open certification actions are tracked in `.copilot/todo-list.md`.
+> Do not re-derive them from a repo grep — update that file when new items are found or items are closed.
 
 ### Documentation policy
 

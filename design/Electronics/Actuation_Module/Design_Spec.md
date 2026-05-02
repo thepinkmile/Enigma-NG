@@ -274,27 +274,19 @@ pinouts, mechanical constraints, and BOM.
 
 ## 6. Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1 | Home-input debounce capacitor (10ms RC with R4 10kΩ) | 1µF X7R 50V | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C2-C3 | STM32 local supply decoupling | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C4 | `3V3_ENIG` local reservoir / entry filter | 4.7uF X7R (CGA6P3X7R1H475K250AD) | 1210 | 810-CGA6P3X7R1H475KD | 445-10040-1-ND | C3877549 |
-| C5 | `5V_MAIN` local reservoir near servo power path | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C6 | NRST pin filter capacitor (datasheet-required per STM32G071 Figure 23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7 | STM32G071 VDD/VDDA supply decoupling (pin 4, combined VDD/VDDA in LQFP-32) — required per datasheet, multiple caps per decoupling guidance | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| D1-D3 | Local diagnostic LEDs (`PWR`, `HOMED`, `ACT`) | Wurth 150060VS75000 — Green SMD LED | 0402 | 710-150060VS75000 | 732-4980-1-ND | C6848499 |
-| J1 | Host power dock (module side) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
-| J2 | Host trigger dock (module side) | Samtec ERM8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERM8005050SDVKTR | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | C3649741 |
-| J3 | Servo loom header - manual fit | Adam Tech PH1-05-UA — 1x5 2.54mm male header | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| J4 | Home-switch loom header - manual fit | Adam Tech PH1-05-UA — 1x5 2.54mm male header | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| J5 | SWD programming / service header - manual fit | Adam Tech PH1-05-UA — 1x5 2.54mm male header | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| J6 | UART bootloader / service header - manual fit | Adam Tech PH1-05-UA — 1x5 2.54mm male header | THT | 737-PH1-05-UA | 2057-PH1-05-UA-ND | C5374051 |
-| R1-R3 | LED current-limit resistors | 330Ω 1% | 0402 | 667-ERJ-2RKF3300X | P330LCT-ND | C278592 |
-| R4 | Home-input pull-up resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R5 | BOOT0 series protection resistor | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| SW1 | Local reset pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
-| SW2 | Local `BOOT0` pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
-| U1 | Local actuation controller | STMicroelectronics STM32G071K8T3TR | LQFP32 | 511-STM32G071K8T3TR | 497-STM32G071K8T3TR-ND | Global sourcing / consignment only |
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C1 | 1µF X7R 50V 0805 | C0805C105K5RACTU | Kemet | 399-C0805C105K5RACTUCT-ND | 80-C0805C105K5R | C3018567 | — | — | Yes | Pending | 1 |
+| C2-C3, C6-C7 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 4 |
+| C4 | 4.7µF X7R 3V3 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | — | — | Yes | Pending | 1 |
+| C5 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 1 |
+| D1-D3 | Green SMD LED diagnostic 0402 | 150060VS75000 | Würth Elektronik | 732-4980-1-ND | 710-150060VS75000 | C6848499 | — | — | Yes | Pending | 3 |
+| J1-J2 | Male 2x5 0.8mm pitch SMT | ERM8-005-05.0-S-DV-K-TR | Samtec | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | — | — | Yes | Pending | 2 |
+| J3-J6 | 1x5 2.54mm male THT | PH1-05-UA | Adam Tech | 2057-PH1-05-UA-ND | 737-PH1-05-UA | C5374051 | — | manually-fit | Yes | Pending | 4 |
+| R1-R3 | 330Ω 1% 0402 | ERJ-2RKF3300X | Panasonic | P330LCT-ND | 667-ERJ-2RKF3300X | C278592 | — | — | Yes | Pending | 3 |
+| R4-R5 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | — | Yes | Pending | 2 |
+| SW1-SW2 | SPST NO tactile THT | B3F-1070 | Omron | SW406-ND | 653-B3F-1070 | C726011 | — | — | Yes | Pending | 2 |
+| U1 | Local actuation controller LQFP32 | STM32G071K8T3TR | STMicroelectronics | 497-STM32G071K8T3TR-ND | 511-STM32G071K8T3TR | — | Global sourcing | JLCPCB consignment only | Yes | Pending | 1 |
 
 The servo motor and the home switch are off-board electromechanical items and are therefore specified
 by the host mechanical assembly rather than as AM PCB-fitted BOM rows.

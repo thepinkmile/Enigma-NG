@@ -634,7 +634,7 @@
     "jlcpcb": "C2878936",
     "alt_supplier": "",
     "spec": "eFuse 16.9V fixed OVLO VQFN-24 4x4mm",
-    "description": "Input eFuse — variant-locked do not change"
+    "description": "Input eFuse"
   },
   {
     "board": "Power Module",
@@ -1162,7 +1162,7 @@
     "jlcpcb": "",
     "alt_supplier": "",
     "spec": "10mΩ ±1% 5A 2512 Kelvin shunt",
-    "description": "Current sense shunt — no JLCPCB stock"
+    "description": "Current sense shunt"
   },
   {
     "board": "Stator",
@@ -1261,7 +1261,7 @@
     "description": "GPIO expanders (0x20/0x21/0x22)"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "C1-C8,C14,C16",
     "mpn": "CL05B104KB5NNNC",
     "manufacturer": "Samsung",
@@ -1273,7 +1273,7 @@
     "description": "Bypass decoupling"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "C9-C13",
     "mpn": "CL21B106KAYQNNE",
     "manufacturer": "Samsung",
@@ -1285,7 +1285,7 @@
     "description": "Bulk decoupling"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "C15,C17",
     "mpn": "KAM05CR71A105KH",
     "manufacturer": "Kyocera AVX",
@@ -1297,7 +1297,7 @@
     "description": "Decoupling (AEC-Q200)"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "C20-C27",
     "mpn": "AC0402FRNPO9BN330",
     "manufacturer": "YAGEO",
@@ -1309,7 +1309,7 @@
     "description": "Capacitive sensor circuit caps"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "J1,J2",
     "mpn": "ERM8-005-05.0-S-DV-K-TR",
     "manufacturer": "Samtec",
@@ -1321,7 +1321,7 @@
     "description": "Input dock connectors"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "J3",
     "mpn": "ERM8-010-05.0-S-DV-K-TR",
     "manufacturer": "Samtec",
@@ -1333,7 +1333,7 @@
     "description": "Input dock connector (power/JTAG)"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "H_SW3",
     "mpn": "PH1-07-UA",
     "manufacturer": "Adam Tech",
@@ -1345,7 +1345,7 @@
     "description": "DIP switch header (Board A side)"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "H_PWR,H_JTAG",
     "mpn": "RS1-05-G",
     "manufacturer": "Adam Tech",
@@ -1357,7 +1357,7 @@
     "description": "Power/JTAG inter-board headers"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "H_SENS",
     "mpn": "PH1-05-UA",
     "manufacturer": "Adam Tech",
@@ -1369,7 +1369,7 @@
     "description": "Sensor inter-board header"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "L1-L8",
     "mpn": "CWF1610A-180K",
     "manufacturer": "Bourns",
@@ -1381,7 +1381,7 @@
     "description": "Capacitive sensor inductors"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "R2-R5",
     "mpn": "ERJ-2RKF1002X",
     "manufacturer": "Panasonic",
@@ -1393,7 +1393,7 @@
     "description": "Pull-up/down resistors"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "R6,R7",
     "mpn": "SG73S1ERTTP4701F",
     "manufacturer": "KOA Speer",
@@ -1405,7 +1405,7 @@
     "description": "Sensor bias resistors"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "SW1,SW2",
     "mpn": "219-6LPSTR",
     "manufacturer": "CTS",
@@ -1417,7 +1417,7 @@
     "description": "Rotor address DIP switches"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "U1",
     "mpn": "EPM570T100I5N",
     "manufacturer": "Intel (Altera)",
@@ -1429,7 +1429,7 @@
     "description": "Rotor logic CPLD"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "U2",
     "mpn": "FDC2114RGHR",
     "manufacturer": "Texas Instruments",
@@ -1441,7 +1441,7 @@
     "description": "Capacitive sensor IC (MOQ 4500 at distributors; JLCPCB MOQ 2)"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "U3 (N=26 only)",
     "mpn": "FDC2114RGHR",
     "manufacturer": "Texas Instruments",
@@ -1453,7 +1453,7 @@
     "description": "Capacitive sensor IC — N=26 variant only (MOQ 4500 at distributors; JLCPCB MOQ 2)"
   },
   {
-    "board": "Rotor (Board A)",
+    "board": "Rotor (N=26)",
     "refdes": "U5-U8",
     "mpn": "TPD4E05U06QDQARQ1",
     "manufacturer": "Texas Instruments",
@@ -1477,7 +1477,7 @@
     "description": "Bypass decoupling (N=64 only)"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "C19",
     "mpn": "KAM05CR71A105KH",
     "manufacturer": "Kyocera AVX",
@@ -1489,7 +1489,7 @@
     "description": "Decoupling (N=64 only)"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "C28-C31",
     "mpn": "AC0402FRNPO9BN330",
     "manufacturer": "YAGEO",
@@ -1501,7 +1501,7 @@
     "description": "Capacitive sensor caps (N=64 only)"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "L9-L12",
     "mpn": "CWF1610A-180K",
     "manufacturer": "Bourns",
@@ -1513,7 +1513,7 @@
     "description": "Capacitive sensor inductors (N=64 only)"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "J4,J5",
     "mpn": "ERF8-005-05.0-S-DV-K-TR",
     "manufacturer": "Samtec",
@@ -1525,7 +1525,7 @@
     "description": "Output dock connectors"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "J6",
     "mpn": "ERF8-010-05.0-S-DV-K-TR",
     "manufacturer": "Samtec",
@@ -1537,7 +1537,7 @@
     "description": "Output dock connector (power/JTAG)"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "H_SW3",
     "mpn": "RS1-07-G",
     "manufacturer": "Adam Tech",
@@ -1549,7 +1549,7 @@
     "description": "DIP switch header (Board B side — mates with Board A PH1-07-UA)"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "H_PWR,H_JTAG",
     "mpn": "PH1-05-UA",
     "manufacturer": "Adam Tech",
@@ -1561,7 +1561,7 @@
     "description": "Power/JTAG inter-board headers"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "H_SENS",
     "mpn": "RS1-05-G",
     "manufacturer": "Adam Tech",
@@ -1573,7 +1573,7 @@
     "description": "Sensor inter-board header"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "SW3",
     "mpn": "219-6LPSTR",
     "manufacturer": "CTS",
@@ -1585,7 +1585,7 @@
     "description": "Rotor address DIP switch"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "U4 (N=64 only)",
     "mpn": "FDC2114RGHR",
     "manufacturer": "Texas Instruments",
@@ -1597,7 +1597,7 @@
     "description": "Capacitive sensor IC — N=64 variant only (MOQ 4500 at distributors; JLCPCB MOQ 2)"
   },
   {
-    "board": "Rotor (Board B)",
+    "board": "Rotor (N=64)",
     "refdes": "U9-U12",
     "mpn": "TPD4E05U06QDQARQ1",
     "manufacturer": "Texas Instruments",

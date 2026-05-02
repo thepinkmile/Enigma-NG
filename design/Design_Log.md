@@ -1177,10 +1177,8 @@ operates continuously and independently of JTAG state.
 ### Decision
 
 The rotor is split into two circular PCBs (Board A input side, Board B output side), each
-Ø92mm, connected by eight single-row 2.54mm THT headers (four per board face: Board A J7/J8
-1×5 female RS1-05-G, J11 1×5 male PH1-05-UA, J14 1×7 male PH1-07-UA; Board B J9 1×5 female
-RS1-05-G, J10 1×7 female RS1-07-G, J12/J13 1×5 male PH1-05-UA; 44 pins total; mixed
-gender for physical keying).This resolves the
+Ø92mm, connected by four single-row 2.54mm THT headers (H_SW3 1×7, H_PWR 1×5, H_JTAG 1×5,
+H_SENS 1×5; 22 pins total; mixed gender for physical keying). This resolves the
 JLCPCB single-side SMT assembly constraint and simultaneously defines the rotor physical
 thickness (~15mm with an 11.8mm board gap). Board A carries the CPLD (U1 EPM570T100I5N),
 FDC2114 U2 (Track A encoder, bits[5:3] for N=64 or all 5 sensors for N=26), SW1 (ring
@@ -1227,16 +1225,15 @@ populated.
 
 - `design/Electronics/Rotor/Design_Spec.md`: §1 (two-board architecture, Ø92mm PCBs, shroud
   description), §2.1 (rewritten for capacitive encoder with milled shroud flanges), §3.4
-  (J_INT internal headers J7–J10 Board A, J11–J14 Board B added), BOM unified into single table, FR/DR updated.
+  (J_INT internal headers H_SW3/H_PWR/H_JTAG/H_SENS added), BOM split into Board A / Board B, FR/DR updated.
 - `design/Electronics/Rotor/Board_Layout.md`: rewritten for Board A and Board B with
   stacking cross-section; all Ø100mm references updated to Ø92mm.
 - `design/Electronics/Rotor/Rotor_64_Char_Design.md`: de Bruijn track replaced by 3+3
   dual-track reflected Gray code; XOR-chain decode; geometry updated to r=44mm / Ø92mm.
 - `design/Electronics/Rotor/Rotor_26_Char_Design.md`: single-track all-on-Board-A confirmed;
   geometry updated to r=44mm / Ø92mm; U3 not-populated note added.
-- `design/Electronics/Consolidated_BOM.md`: J_INT internal headers (Board A J7/J8 RS1-05-G female,
-  J11 PH1-05-UA male, J14 PH1-07-UA male; Board B J9 RS1-05-G female, J10 RS1-07-G female,
-  J12/J13 PH1-05-UA male) added, 8 headers per rotor assembly (240 total for 30 rotors).
+- `design/Electronics/Consolidated_BOM.md`: J_INT internal headers (H_SW3 PH1-07-UA/RS1-07-G, H_PWR PH1-05-UA/RS1-05-G, H_JTAG PH1-05-UA/RS1-05-G, H_SENS PH1-05-UA/RS1-05-G) added,
+  4 headers per rotor assembly (120 total for 30 rotors).
 
 ---
 
@@ -2878,6 +2875,85 @@ to the host-side connector faces closes the remaining ESD risk at minimal BOM co
 
 DEC-045 (Rotor ESD), `design/Electronics/Stator/Design_Spec.md §8`,
 `design/Electronics/Extension/Design_Spec.md §5`, `design/Electronics/Reflector/Design_Spec.md §5`.
+
+---
+
+## DEC-049 — Rotor Internal Headers Renamed to J-Convention; Connector Count Updated to 8; BOM Unified
+
+- **Status:** Accepted
+- **Date:** 2026-05-01
+- **Category:** Hardware
+- **Area:** Rotor Board — Internal Interconnect; BOM Structure
+- **Amends:** DEC-028 (original internal header definition)
+
+### Decision
+
+The four internal rotor interconnect headers previously designated H_SW3, H_PWR, H_JTAG, and
+H_SENS are renamed to J7–J14 to follow the established J-prefix convention for all connectors
+across the project. The configuration is updated to **eight connectors** (four per board face):
+Board A J7/J8 1×5 female RS1-05-G, J11 1×5 male PH1-05-UA, J14 1×7 male PH1-07-UA;
+Board B J9 1×5 female RS1-05-G, J10 1×7 female RS1-07-G, J12/J13 1×5 male PH1-05-UA;
+**44 pins total**. The Rotor BOM is unified into a single table (rather than split Board A /
+Board B) to reflect that rotor boards are manufactured as a single v-scored panel.
+
+### Rationale
+
+- H_SW3/H_PWR/H_JTAG/H_SENS naming was functional rather than positional and inconsistent with all other connector RefDes conventions in the project.
+- Enumerating connectors as J7–J14 aligns with the J-prefix standard and makes RefDes unambiguous in BOMs and schematics.
+- The connector count of 8 (4 per board face) correctly reflects the physical geometry: each board face independently connects to its mating face, requiring its own set of male/female headers.
+- A unified BOM table accurately represents the manufacturing reality: the two halves are produced as a single v-scored panel at JLCPCB, separated only during mechanical assembly.
+
+### Impact
+
+- `design/Electronics/Rotor/Design_Spec.md`: §3.4 J_INT headers updated from H_SW3/H_PWR/H_JTAG/H_SENS to J7–J14 with revised pinouts; BOM unified into single table, FR/DR updated.
+- `design/Electronics/Consolidated_BOM.md`: Internal headers updated to J7/J8 RS1-05-G female
+  (Board A), J11 PH1-05-UA male, J14 PH1-07-UA male, J9 RS1-05-G female (Board B),
+  J10 RS1-07-G female, J12/J13 PH1-05-UA male; 8 headers per rotor assembly (240 total for
+  30 rotors).
+
+### Cross-ref
+
+DEC-028 (original split-board architecture and header definition).
+
+---
+
+## DEC-050 — Encoder Blade Terminal RefDes Corrected from BT to J Convention
+
+- **Status:** Active
+- **Date:** 2026-05-01
+- **Category:** Electrical
+- **Area:** Encoder Board
+
+### Decision
+
+The 64 PCB spade blade terminals (Keystone 1285-ST) on the Encoder board have been
+renamed from `BT1`–`BT64` to `J3`–`J66`.
+
+### Rationale
+
+`BT` is the IPC/EDA standard reference designator prefix for **batteries**. Using it for
+PCB-mount blade/spade terminals was non-standard and created ambiguity with the Controller
+board's `BT1` (CR2032 holder). All connectors and interface terminals in this project use
+the `J` prefix (connector/jack convention). J1 and J2 are already assigned on the Encoder
+board (J1 = plugboard jack sockets off-board, J2 = IDC service connector), so the blade
+terminal bank begins at J3.
+
+### Alternatives Considered
+
+- `XT` (external terminal) — used by some EDA conventions but `J` is more widely recognised
+  and consistent with all other connector RefDes in this project.
+- Retain `BT` — rejected: collides with the IPC battery prefix and conflicts with `BT1` on
+  the Controller board.
+
+### Impact
+
+- `design/Electronics/Encoder/Design_Spec.md` — BOM row and §4 interconnects text updated.
+- `design/Electronics/Encoder/Board_Layout.md` — signal group table updated.
+- `design/Software/CPLD_Logic/Encoder_Logic.md` — all `BT1`–`BT64` references updated.
+- `design/Electronics/Consolidated_BOM.md` — Encoder row RefDes updated.
+- `design/Datasheets/SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md` — system-level
+  wiring notes updated; decode-half now references `J3`–`J66` on the decode Encoder board
+  and encode-half references `J3`–`J66` on the encode Encoder board.
 
 ---
 

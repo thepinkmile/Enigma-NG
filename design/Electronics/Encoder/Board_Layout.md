@@ -99,7 +99,7 @@ the six matching headers on the Stator.
 
 | Signal group | Pins | U1 direction | Notes |
 | :--- | :---: | :--- | :--- |
-| `BT1`-`BT64` 64-line bank | 64 | Role-dependent | Encode-role population reads one asserted line; decode-role population drives one-of-64 output |
+| `J3`-`J66` 64-line bank | 64 | Role-dependent | Encode-role population reads one asserted line; decode-role population drives one-of-64 output |
 | `ENC_DATA[5:0]` | 6 | Role-dependent | Encode role drives the 6-bit service bus back to the Stator; decode role consumes it |
 | `ENC_ACTIVE_N` | 1 | Role-dependent | `KBD_ENC` drives keyboard activity LOW when a debounced key is active; `LBD_DEC` consumes it to blank outputs when idle; other roles keep it inactive |
 | `D1` status LED | 1 | Output | Active-low debug LED: U1 drives LOW to illuminate |

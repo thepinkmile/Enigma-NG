@@ -377,43 +377,23 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 
 ## 9. Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C8 | Decoupling (8 per CPLD) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C9-C13 | Bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C14-C20 | Local VDD bypass (one per: U2, U3, U4, U5, U6, U7, U8) | 0.1µF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C21 | INA219 U2 IN+/IN- differential filter capacitor (CF) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C22-C26 | 5V_MAIN bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| J1-J3 | Rotor 1 interface sockets (1 slot × 3 connectors: JTAG ERF8-005, Power ERF8-005, ENC ERF8-010) — cross-ref Rotor/Design_Spec.md §3.4 | ERF8-005 (J1+J2) / ERF8-010 (J3) | SMT 0.8mm pitch | 200-ERF8005050SDVKTR (J1+J2) / 200-ERF8010050SDVKTR (J3) | SAM13517CT-ND (J1+J2 CT) / SAM8618CT-ND (J3 CT) | C7273978 (J1+J2) / C3646170 (J3) |
-| J4-J9 | Encoder port connectors (×6 positions: `KBD_ENC`, `LBD_DEC`, `PLG_PASS1_DEC`, `PLG_PASS1_ENC`, `PLG_PASS2_DEC`, `PLG_PASS2_ENC`) | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | through-hole | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
-| J10 | 20-pin Reflector/Extension port | Adam Tech BHR-20-VUA / 2BHR-20-VUA — 20-pin 2×10 2.54mm shrouded | through-hole | 737-BHR-20-VUA | 2057-BHR-20-VUA-ND | C17340054 |
-| J11, J12 | Controller dock hybrid plugs (5V-biased + 3V3/JTAG/I2C) | Molex 2195620015 | 5 power + 15 signal hybrid plug | 538-219562-0015 | 900-2195620015-ND | Global sourcing / consignment |
-| J13 | Settings Board I²C connector (6-pin JST PH 2.0mm) | JST B6B-PH-K-S(LF)(SN) | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
-| L1-L4 | Rotor rail ferrite bead bank | 120 Ω @100 MHz, 4.0A | 1206 | 875-HI1206P121R-10 | 240-2410-1-ND | C2442103 |
-| R1 | Rotor-Stack Shunt Resistor (CSS2H — Stator R1; PM R12 LTC3350 RSENSE and PM R23 INA219 U12 are first and second system instances, total build qty: 3) | CSS2H-2512R-R010ELF (10mΩ ±1% 5A) | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — |
-| R2 | JTAG TTD_RETURN pull-up | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R3 | TMS pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R4 | TDI pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R5 | TCK pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R6 | SYS_RESET_N pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R7-R12 | TCK series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R16 |`CFG_ROUTE[0]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R17 | `CFG_ROUTE[1]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R18 | `CFG_ROUTE[2]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R19 | `CFG_ROUTE[3]` pull-down to GND | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R20 | `CFG_APPLY_N` pull-up to 3V3_ENIG (keeps the Stator-only apply/reset pulse inactive HIGH until U8 actively asserts LOW) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R21-R26 | `CFG_REFMAP[5:0]` CPLD config input pull-down resistors (×6) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R27-R32 | TDI chain series resistors: CPLD->J4->J5->J6->J7->J8->J9 (×6 driven segments) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R33-R38 | TMS series resistors -> J4/J5/J6/J7/J8/J9 encoder ports (×6) | 75Ω (1%) | 0402 | 667-ERJ-2RKF75R0X | P75.0LCT-ND | C413061 |
-| R39-R41 | MCP23017 U6/U7/U8 `~RESET` pull-up to 3V3_ENIG (×3) | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R42-R43 | INA219 U2 IN+/IN− series filter resistors (RF1, RF2) (×2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | C413044 |
-| SW1 | Routing configuration selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
-| SW2 | Reflector map selector | ~~Removed — relocated to Settings Board~~ | — | — | — | — |
-| U1 | Stator Management CPLD (routing matrix + reflector map application) | EPM570T100I5N | TQFP-100 | 989-EPM570T100I5N | 544-2281-ND | C27319 |
-| U2 | 3V3_ENIG Current/Voltage Sensing | INA219AIDR | **SOIC-8** | 595-INA219AIDR | 296-23978-1-ND | C138706 |
-| U3 | Stator reset/apply gate (`SYS_RESET_N` AND `CFG_APPLY_N` -> CPLD `DEV_CLRN`) | SN74LVC1G08DBVR | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 |
-| U4-U5 | Keyboard-source mux (`KEY_CM5_ACTIVE`; physical keyboard vs `CM5_KEY_DATA[5:0]`) | 74HC157PW-Q100,118 | TSSOP-16 | 771-74HC157PWQ100118 | 1727-74HC157PW-Q100,118CT-ND | C546614 |
-| U6 | MCP23017 I²C GPIO Expander (ENC monitoring) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| U7 | MCP23017 I²C GPIO Expander (virtual key data, SOURCE_SEL, SYS_RESET_N) | MCP23017T-E/SO | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| U8 | MCP23017 I²C GPIO Expander (config output driver + `CFG_APPLY_N`) | MCP23017T-E/SO @ 0x22 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| U9–U12 | ESD protection array, 4-channel | TPD4E05U06QDQARQ1 | USON-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C1-C8, C14-C21 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 16 |
+| C9-C13, C22-C26 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 10 |
+| J1, J2 | 10-pin 2x5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | — | Yes | Pending | 2 |
+| J3 | 20-pin 2x10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | — | — | Yes | Pending | 1 |
+| J4-J10 | 20-pin 2x10 2.54mm shrouded THT | BHR-20-VUA | Adam Tech | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | Yes | Pending | 7 |
+| J11, J12 | 5 power + 15 signal hybrid plug | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | — | Global sourcing | — | Yes | Pending | 2 |
+| J13 | 6-pin JST PH 2.0mm THT | B6B-PH-K-S(LF)(SN) | JST | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | — | — | Yes | Pending | 1 |
+| L1-L4 | 120Ω @100MHz 4.0A 1206 | HI1206P121R-10 | Laird Performance Materials | 240-2410-1-ND | 875-HI1206P121R-10 | C2442103 | — | — | Yes | Pending | 4 |
+| R1 | 10mΩ ±1% 5A 2512 Kelvin shunt | CSS2H-2512R-R010ELF | Bourns | CSS2H-2512R-R010ELF-ND | 652-CSS2H-2512R-R010ELF | — | — | no JLCPCB stock | Yes | Pending | 1 |
+| R2-R6, R16-R26, R39-R41 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | — | Yes | Pending | 19 |
+| R7-R12, R27-R38 | 75Ω 1% 0402 | ERJ-2RKF75R0X | Panasonic | P75.0LCT-ND | 667-ERJ-2RKF75R0X | C413061 | — | — | Yes | Pending | 18 |
+| R42, R43 | 10Ω 1% Thin-Film 0402 | ERJ-2RKF10R0X | Panasonic | P10.0LCT-ND | 667-ERJ-2RKF10R0X | C413044 | — | — | Yes | Pending | 2 |
+| U1 | MAX II 570 LEs CPLD TQFP-100 | EPM570T100I5N | Intel (Altera) | 544-2281-ND | 989-EPM570T100I5N | C27319 | — | — | Yes | Pending | 1 |
+| U2 | Current monitor I²C 0x45 SOIC-8 | INA219AIDR | Texas Instruments | 296-23978-1-ND | 595-INA219AIDR | C138706 | — | — | Yes | Pending | 1 |
+| U3 | Single AND gate SOT-23-5 | SN74LVC1G08DBVR | Texas Instruments | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | — | — | Yes | Pending | 1 |
+| U4, U5 | Quad 2-to-1 mux TSSOP-16 | 74HC157PW-Q100,118 | Nexperia | 1727-74HC157PW-Q100,118CT-ND | 771-74HC157PWQ100118 | C546614 | — | — | Yes | Pending | 2 |
+| U6-U8 | I²C GPIO expander SOIC-28 | MCP23017T-E/SO | Microchip Technology | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | — | — | Yes | Pending | 3 |
+| U9-U12 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | — | Yes | Pending | 4 |

@@ -208,7 +208,7 @@ GND ──────┴──────────────────�
 * **L3** — Bourns `SRP1265A-100M`: 10µH, 15.5A I_sat, 10A I_rms, DCR = 16.5mΩ max, 13.5×12.5×6.2mm shielded molded SMD.
 * **C1-C15** — 22µF, 25V, X7R, 1210 (Samsung CL32B226KAJNNNE or equiv).
 * **C16-C19** — 47µF, 25V, X7R, 2220 (TDK CGA9N3X7R1E476M230KB).
-* **C20** — 10µF, 25V, X7R, 1206 (Kemet C1206C106K3RACTU or equiv).
+* **C20** — 10µF, 25V, X7R, 0805 (Samsung CL21B106KAYQNNE).
 * **C21-C23** — 1µF, 50V, X7R, 0805 (Kemet C0805C105K5RACTU or equiv).
 * **C24-C39** — 100nF, 50V, X7R, 0402 (Samsung CL05B104KB5NNNC or equiv).
 
@@ -460,119 +460,69 @@ Estimated PM-local power dissipation at system peak load:
 
 ## 5. Bill of Materials
 
-| Ref | Component | Value/Part | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1-C4 | Pi-filter bulk cap bank (C1/C2 at filter input, C3/C4 at filter output) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C5-C8 | 5V Buck input bulk caps (C5/C6 at U2A IN, C7/C8 at U2B IN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C9, C10 | eFuse input bulk cap pair (U1 VIN) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C11, C12 | eFuse output bulk cap pair (U1 VOUT) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C13 | LDO output cap (U7 VOUT — 3V3_ENIG) | 22µF 25V X7R | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C14, C15 | 5V_MAIN backup switchover bulk cap pair (see DEC-030) | Samsung CL32B226KAJNNNE, 22µF 25V X7R 1210 | 1210 | 187-CL32B226KAJNNNE | 1276-3392-1-ND | C309062 |
-| C16-C19 | 5V Buck output bulk caps (C16/C17 at U2A OUT, C18/C19 at U2B OUT) | TDK CGA9N3X7R1E476M230KB — 47µF 25V X7R MLCC | 2220 | 810-A9N3X7476M23KB | 445-174773-1-ND | C2182815 |
-| C20 | LDO input cap (U7 VIN from 5V_MAIN) | 10µF 25V X7R | 1206 | 80-C1206C106K3R | 399-C1206C106K3RACTUCT-ND | C2168111 |
-| C21, C22 | Pi-filter mid-freq bypass (C21 input leg, C22 output leg) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C23 | MIC1555 timing capacitor (C_OSC, 1Hz) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C24, C25 | Pi-filter HF bypass (C24 input leg, C25 output leg) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C26 | LTC3350 (U3) main VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C27 | TPS25751 (U4) VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C28 | STUSB4500 (U5) VDD bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C29 | LM74700-Q1 (U6a) VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C30 | MCP121T (U8) VDD bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C_SC1–8 | Supercaps (8× cells, 2S4P) | Abracon ADCR-T02R7SA256MB / 25F 2.7V | THT Radial Can 16.0mm×25.0mm | 815-ADCRT02R7SA256MB | 535-ADCR-T02R7SA256MB-ND | Global sourcing |
-| C33 | MIC1555 VCC bypass (U11) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C34, C35 | IC VCC bypass for U6b and U6c (LM74700-Q1 OR-ing controllers — USB-C and Battery paths) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C36, C37 | VCC bypass for U13 and U14 (NL27WZ14DFT2G-Q) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C38 | VCC bypass for U15 (MIC1555 monostable) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C39 | VCC bypass for U16 (`PCA9534APWR`) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C40 | SYNC delay chain SW-ringing low-pass filter (C_F1) | 100pF X7R 25V (C0402C101K3RACAUTO) | 0402 | 80-C0402C101K3RAUTO | 399-C0402C101K3RACAUTOCT-ND | C5272912 |
-| C41 | SYNC 180° phase delay capacitor (C_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 22nF X7R 25V (CL10B223KB8WPNC) | 0603 | 187-CL10B223KB8WPNC | 1276-6534-1-ND | C346197 |
-| C42 | MIC1555 U15 monostable timing capacitor [t = 1.1 × 274kΩ × 10µF = 3.01 s] | 10µF 16V X7R (CC1206KKX7R8BB106) | 1206 | 603-CC126KKX7R8BB106 | 311-1959-1-ND | C70462 |
-| C43 | U12 INA219 local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C44 | U17 SW2 signal-conditioner local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C45 | U18 SW2 shutdown-latch local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C46 | U19 SW2 red-blink gate local VCC bypass | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C47 | LMQ61460A U2A BST pin bootstrap capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C48 | LMQ61460A U2B BST pin bootstrap capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C49 | STUSB4500 U5 CC1 pin filter capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C50 | STUSB4500 U5 CC2 pin filter capacitor | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C51 | TPS75733 U7 NR pin noise-reduction capacitor | 10nF 50V X7R | 0402 | 187-CL05B103KB5NNNC | 1276-1008-1-ND | C15195 |
-| C52 | INA219 U12 IN+/IN- differential filter capacitor (CF) | 100nF 50V X7R | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C53 | LTC3350 (U3) INTVCC (pin 29, 5V internal LDO output) bypass — min 1µF low ESR | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C54 | LTC3350 (U3) DRVCC (pin 28, bottom gate driver supply — tied to INTVCC) bypass — min 2.2µF low ESR; 10µF used | 10µF 16V X7R | 1206 | 603-CC126KKX7R8BB106 | 311-1959-1-ND | C70462 |
-| C55 | LTC3350 (U3) VCC2P5 (pin 23, 2.5V internal logic LDO output) bypass — min 1µF low ESR | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C56 | STUSB4500 (U5) VREG_1V2 (pin A3, 1.2V internal LDO output) bypass — typ 1µF (0.5µF min, 10µF max) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C57 | STUSB4500 (U5) VREG_2V7 (pin A4, 2.7V internal LDO output) bypass — typ 1µF (0.5µF min, 10µF max) | 1µF 50V X7R | 0805 | 80-C0805C105K5R | 399-C0805C105K5RACTUCT-ND | C3018567 |
-| C58 | U7 (TPS75733KTTRG3) VIN input bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| D1 | BATT_PRES ESD | TPD1E10B06DYARQ1 | SOD-523 | 595-TPD1E10B06DYARQ1 | 296-TPD1E10B06DYARQ1CT-ND | C3013901 |
-| D2 | Battery SMBus ESD | TPD2E2U06DRLR | SOT-553 (DRL) | 595-TPD2E2U06DRLR | 296-38361-1-ND | C1972959 |
-| D3 | USB-C ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, ±15kV, U-DFN-10 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| D4 | VBATT TVS diode — 18V transient suppression at J4 battery connector (VBATT+/VBATT−) | SMBJ18A-Q — unidirectional 600W TVS, 18V standoff [Bourns] | SMB (DO-214AA) | 652-SMBJ18A-Q | 118-SMBJ18A-QCT-ND | C1979859 (Extended) |
-| D6 | SW1 RGB hardware path isolation — Red channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
-| D7 | SW1 RGB hardware path isolation — Green channel | BAT54 Schottky diode | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
-| F1 | TCO | 72°C SMD Thermal Cutoff | N/A | 652-AC72ABD | AC72ABD-ND | C17468669 |
-| FB1 | Ferrite Bead, 600Ω/100MHz | BMC-Q2AY0600M (2-2176748-1) — 600Ω ±25% @ 100MHz, DCR 100mΩ max, 2000mA rated, −40°C to +125°C, AEC-Q200 Grade 1, MIL-STD-202 env. tested. Single-point GND↔GND_CHASSIS bond. **Reference datasheet:** `design/Datasheets/TE-DS_1773178-3_A3-datasheet.md` | 0805 | 279-BMC-Q2AY0600M | 1712-2-2176748-1CT-ND | Global sourcing / consignment |
-| J1-J3 | Controller dock plugs (regulated rails / PoE auxiliary / low-speed control) | TE 1123684-7 | 10-position 2.5mm RA plug | 571-1123684-7 | A114780-ND | C3683043 (consignment — verify stock; post-assembly install if unavailable) |
-| J4 | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** | Molex 0436500519 (43650-0519) — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Candidate military / NetWarrior-style replacement under review: Glenair `807-216-00ZNU6-6DY` via Heilind / consignment-only; see `Millitary_Battery_Connection_Option.md`. | 5-pin Micro-Fit 3.0 THT vertical | 538-43650-0519 | WM14587-ND | C563849 |
-| J5 | USB-C Power Input | GCT USB4135-GF-A — **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must protrude through the Power Module enclosure rear face in line with the global external-connector overhang rule; verify clearance at prototype stage. See BOM note for details | SMT right-angle (board-edge) | 640-USB4135-GF-A | 2073-USB4135-GF-ACT-ND | C5438410 |
-| J_SW1_1–J_SW1_6, J_SW2_1–J_SW2_6 | PCB male spade tabs for SW1 / SW2 harnesses | Keystone 1211 — 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | THT Quick-Fit tab | 534-1211 | 36-1211-ND | C3029550 |
-| L1 | EMI Primary CMC (CM filter, broadband) | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT | THT | 710-7448031002 | 732-5584-ND | C1519839 |
-| L2 | EMI Secondary CMC (HF, >10MHz) | Würth WE-CMBNC 7448031002 — same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | THT | 710-7448031002 | 732-5584-ND | C1519839 |
-| L3 | EMI DM Pi-filter Inductor | Bourns SRP1265A-100M — 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded | 13.5×12.5×6.2mm SMT | 652-SRP1265A-100M | SRP1265A-100MCT-ND | C840531 |
-| Q1, Q2, Q3 | OR-ing ideal-diode N-ch MOSFET (one per power input: PoE, USB-C, Battery) | TI CSD17578Q5A — 30V V_DSS, 25A I_D continuous, R_ds(on)=5.9mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | SON 5×6mm | 595-CSD17578Q5A | 296-48512-1-ND | C2871447 |
-| Q4 | SW1 hardware LED path gate (MIC1555 → R+G channels) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q5 | PWR_BUT open-drain pull (MIC1555 U15 OUT → PWR_BUT to GND) | BSS138 N-channel MOSFET — 50V, 200mA, logic-level gate. Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q6, Q7, Q8 | Runtime RGB low-side sink stages for SW1 Red / Green / Blue cathodes | BSS138 N-channel MOSFET — reused Settings Board sink-stage pattern; gates driven from U16 through `R31-R33`, held OFF by `R34-R36` | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q9, Q10 | SW2 hardware LED low-side sink stages for Green / Red cathodes | BSS138 N-channel MOSFET — same low-side sink pattern as SW1 runtime LED stages; Q9 sinks SW2 green from buffered `LED_nPWR`, Q10 sinks SW2 red from the shutdown blink gate | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| R1 | eFuse UVLO upper resistor (R_UVLO_HI) | 232kΩ 1% Thick-Film (ERJ-3EKF2323V) | 0603 | 667-ERJ-3EKF2323V | P232KHCT-ND | C403086 |
-| R2 | eFuse UVLO lower resistor | 28.7kΩ 1% Thick-Film (ERJ-3EKF2872V) | 0603 | 667-ERJ-3EKF2872V | P28.7KHCT-ND | C403135 |
-| R3 | eFuse ILIM set resistor | 210Ω 0.1% Thin-Film | 0603 | 667-ERA-3VEB2100V | 10-ERA-3VEB2100VCT-ND | C1861624 |
-| R6 | BATT_PRES_N Pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R7, R8 | I2C SDA/SCL Pull-ups (to 3V3_ENIG) | 4.7kΩ 1% | 0603 | 667-ERJ-3EKF4701V | P4.70KHCT-ND | C192166 |
-| R9 | `PM_IO_INT_N` pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R10 | ROTOR_EN_N Pull-up (to 3V3_ENIG — holds LDO disabled at startup until CM5 drives ROTOR_EN_N LOW) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R11 | LTC3350 RICHARGE (charge current set) | 301Ω 1% [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | 0603 | 667-ERJ-3EKF3010V | P301HCT-ND | C403144 |
-| R12 | LTC3350 RSENSE (Kelvin sense, charge path) | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — (no JLCPCB stock; global sourcing required) |
-| R14 | LTC3350 BACKUP divider upper (R_TOP) — **REVISED (DEC-030): threshold raised to 4.812V for 312mV gap** | 30.1kΩ 0.1% Thin-Film [calc: V_thr=1.2V, V_trigger=4.812V → R_TOP/R_BOT=(4.812/1.2)−1=3.01 → R_BOT=10kΩ → R_TOP=30.1kΩ → E96=30.1kΩ → actual trigger: 4.812V, 312mV above MCP121T 4.50V threshold — see DEC-030] | 0603 | 667-ERA-3ARB3012V | 10-ERA-3ARB3012VCT-ND | C1728516 |
-| R15 | LTC3350 BACKUP divider lower (R_BOT) | 10.0kΩ 0.1% Thin-Film [pairs with R14; use 0.1% for threshold accuracy] | 0603 | 667-ERA-3ARB103V | P10KBDCT-ND | C465746 |
-| R16 | MIC1555 timing resistor R_A | 10.0kΩ 1% [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R17 | MIC1555 timing resistor R_B | 715kΩ 1% E96 [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | 0603 | 667-ERJ-3EKF7153V | P715KHCT-ND | C403339 |
-| R22 | eFuse EN pull-up (SW1 circuit) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R23 | INA219 5V_MAIN Kelvin-sense shunt | 10mΩ ±1% 5A | 2512 Kelvin | 652-CSS2H-2512R-R010ELF | CSS2H-2512R-R010ELF-ND | — (no JLCPCB stock; global sourcing required) |
-| R24 | LMQ61460A FSET frequency-set resistor (U2A, R_FSET) | 86.6kΩ 1% Thick-Film (ERJ-3EKF8662V) | 0603 | 667-ERJ-3EKF8662V | P86.6KHCT-ND | C403381 |
-| R25 | SYNC delay chain SW-ringing isolation resistor (R_SW) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R26 | SYNC 180° phase delay resistor (R_DLY) [τ = 82.0kΩ × 22nF = 1.804ms → 180° at 400kHz] | 82.0kΩ 1% Thick-Film (ERJ-2RKF8202X) | 0402 | 667-ERJ-2RKF8202X | P82.0KLCT-ND | C400641 |
-| R27 | U2B SYNC pull-down to AGND (R_PD) | 10kΩ 1% Thick-Film (ERJ-2RKF1002X) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R28 | MIC1555 U15 monostable timing resistor [t = 1.1 × 274kΩ × 10µF = 3.01 s PWR_BUT pulse] | 274kΩ 1% E96 Thick-Film | 0603 | 667-ERJ-3EKF2743V | P274KHCT-ND | C403126 |
-| R29 | LTC3350 /INTB pull-up (open-drain; holds line HIGH when not in backup mode) | 10kΩ 1% Thick-Film | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R30 | LTC3350 RT frequency-setting resistor (RT pin to GND — sets switching frequency to 400 kHz) | 33.2kΩ 1% E96 Thick-Film [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | 0402 | 667-ERA-2AEB3322X | P33.2KDCCT-ND | C2087909 |
-| R31-R33 | Runtime RGB gate resistors for Q6/Q7/Q8 | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
-| R34-R36 | Runtime RGB gate pull-down resistors for Q6/Q7/Q8 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R37, R38 | SW2 LED sink gate resistors for Q9/Q10 | 1kΩ 1% | 0402 | 667-ERJ-2RKF1001X | P1.00KLBCT-ND | C25705 |
-| R39, R40 | SW2 LED sink gate pull-down resistors for Q9/Q10 | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R41–R42 | LMQ61460A U2A/U2B feedback divider R_FB_TOP (×2) | 52.3kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF5232X | P52.3KLCT-ND | Global sourcing / consignment |
-| R43–R44 | LMQ61460A U2A/U2B feedback divider R_FB_BOT (×2) | 10kΩ 1% | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R45–R46 | LMQ61460A U2A/U2B EN pin pull-up to VIN (×2) | 100kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
-| R47–R48 | LMQ61460A U2A/U2B PG pin pull-up to 5V_MAIN (×2) | 100kΩ 1% Thin-Film | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
-| R49–R51 | LM74700-Q1 U6a/U6b/U6c GATE series resistors (×3) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
-| R52–R53 | INA219 U12 IN+/IN− series filter resistors (RF1, RF2) (×2) | 10Ω 1% Thin-Film | 0402 | 667-ERJ-2RKF10R0X | P10.0LCT-ND | Global sourcing / consignment |
-| SW1 | Main Power Toggle + RGB Status | Adafruit 4660 — panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. LED anode supply: `5V_MAIN`. | Panel-mount 16mm metal switch | 485-4660 | 1528-4660-ND | Global sourcing / consignment |
-| SW2 | CM5 Power Button + Hardware Power-State Indicator | Adafruit 3350 — panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press. Red / green LED channels are driven locally on the PM: green = CM5 powered from buffered `LED_nPWR`; red = 1Hz blink during shutdown latch while green remains ON. Blue channel not used. | Panel-mount 16mm metal switch | 485-3350 | 1528-2546-ND | Global sourcing / consignment |
-| U1 | eFuse | TPS259804ONRGER (16.9V silicon-fixed OVLO) | VQFN-24 4×4mm | 595-TPS259804ONRGER | 296-TPS259804ONRGERCT-ND | C2878936 |
-| U2A, U2B | 5V Buck ×2 (180° interleaved) | LMQ61460AFSQRJRRQ1 | VQFN-HR (RJR) 14-pin 4×3.5mm | 595-Q61460AFSQRJRRQ1 | 296-LMQ61460AFSQRJRRQ1CT-ND | C1518767 |
-| U3 | Supercap Manager | LTC3350EUHF#PBF | QFN-38 (5×7mm) | 584-LTC3350EUHF#PBF | 505-LTC3350EUHF#PBF-ND | C580711 |
-| U4 | PD Emulator (DRP, PD3.1) | TPS25751DREFR — PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. Package: WQFN-38 6×4mm (differs from TPS25750 QFN-28). | WQFN-38 6×4mm | 595-TPS25751DREFR | 296-TPS25751DREFRCT-ND | C30169739 |
-| U5 | USB-C Sink Controller | STUSB4500LQTR | QFN-24 | 511-STUSB4500LQTR | 497-STUSB4500LQCT-ND | C506650 |
-| U6a, U6b, U6c | OR-ing Controllers (×3, one per power input: PoE, USB-C, Battery) | LM74700QDBVRQ1 | SOT-23-6 | 595-LM74700QDBVRQ1; alt T&R: 595-LM74700QDBVTQ1 | 296-LM74700QDBVRQ1CT-ND | C2941042 |
-| U7 | 3V3_ENIG LDO | TPS75733KTTRG3 (fixed 3.3V, active-LOW EN) | TO-263 (KTT) 5-pin 10.16×15.24mm | 595-TPS75733KTTRG3 | 296-50559-1-ND | C3749924 |
-| U8 | Voltage Supervisor | MCP121T-450E/LB (4.5V trip) | SC70-3 | 579-MCP121T-450E/LB | MCP121T-450E/LBCT-ND | C625189 |
-| U11 | Hardware status LED oscillator | MIC1555YM5-TR — CMOS timer IC, 2–10V supply, SOT-23-5. Generates 1Hz hardware "Initialising" heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 |
-| U12 | 5V_MAIN Current Monitor | INA219AIDR — Zero-Drift Current/Power Monitor (I²C 0x40) | SOIC-8 | 595-INA219AIDR | 296-23978-1-ND | C138706 |
-| U13, U14 | 180° SYNC phase-delay Schmitt-trigger inverters (U_INV1 and U_INV2) | NL27WZ14DFT2G-Q — AEC-Q100 dual Schmitt-trigger inverter, one gate used per SYNC stage | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 |
-| U15 | PWR_BUT shutdown one-shot timer | MIC1555YM5-TR — CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C42 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C38 (100nF). | SOT-23-5 | 998-MIC1555YM5TR | 576-2576-1-ND | C145373 |
-| U16 | PM-local GPIO expander | PCA9534APWR — 8-bit I²C GPIO expander @ 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`. `INT` exported as `PM_IO_INT_N`. | TSSOP-16 | 595-PCA9534APWR | 296-21760-1-ND | C2871127 |
-| U17 | SW2 hardware signal conditioner | NL27WZ14DFT2G-Q — automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. VCC bypass: C44 (100nF). | SC-88 | 863-NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | C24511261 |
-| U18 | SW2 shutdown latch | SN74LVC1G175DBVR — single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. Latches shutdown active on `PWR_BUT` assertion and clears when `LED_nPWR` deasserts. VCC bypass: C45 (100nF). | SOT-23-6 | 595-SN74LVC1G175DBVR | 296-17617-1-ND | C128412 |
-| U19 | SW2 red blink gate | SN74LVC1G08DBVR — single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. Gates the U11 1Hz oscillator into the SW2 red sink while the shutdown latch is set. VCC bypass: C46 (100nF). | SOT-23-5 | 595-SN74LVC1G08DBVR | 296-11601-1-ND | C7666 |
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C1-C13 | 22µF 25V X7R 1210 | CL32B226KAJNNNE | Samsung | 1276-3392-1-ND | 187-CL32B226KAJNNNE | C309062 | — | — | Yes | Pending | 13 |
+| C14, C15 | 22µF 25V X7R 1210 | CL32B226KAJNNNE | Samsung | 1276-3392-1-ND | 187-CL32B226KAJNNNE | C309062 | — | see DEC-030 | Yes | Pending | 2 |
+| C16-C19 | 47µF 25V X7R 2220 | CGA9N3X7R1E476M230KB | TDK | 445-174773-1-ND | 810-A9N3X7476M23KB | C2182815 | — | — | Yes | Pending | 4 |
+| C20 | 10µF 25V X7R 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 1 |
+| C21-C23, C53, C55-C57 | 1µF 50V X7R 0805 | C0805C105K5RACTU | Kemet | 399-C0805C105K5RACTUCT-ND | 80-C0805C105K5R | C3018567 | — | — | Yes | Pending | 7 |
+| C24-C30, C33-C39, C43-C50, C52, C58 | 100nF 50V X7R 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 24 |
+| C40 | 100pF X7R 25V 0402 | C0402C101K3RACAUTO | Kemet | 399-C0402C101K3RACAUTOCT-ND | 80-C0402C101K3RAUTO | C5272912 | — | — | Yes | Pending | 1 |
+| C41 | 22nF X7R 25V 0603 | CL10B223KB8WPNC | Samsung | 1276-6534-1-ND | 187-CL10B223KB8WPNC | C346197 | — | — | Yes | Pending | 1 |
+| C42, C54 | 10µF 16V X7R 1206 | CC1206KKX7R8BB106 | YAGEO | 311-1959-1-ND | 603-CC126KKX7R8BB106 | C70462 | — | — | Yes | Pending | 2 |
+| C51 | 10nF 50V X7R 0402 | CL05B103KB5NNNC | Samsung | 1276-1008-1-ND | 187-CL05B103KB5NNNC | C15195 | — | — | Yes | Pending | 1 |
+| C_SC1–8 | 25F 2.7V supercap THT Radial 16x25mm | ADCR-T02R7SA256MB | Abracon | 535-ADCR-T02R7SA256MB-ND | 815-ADCRT02R7SA256MB | Global sourcing | Global sourcing | — | Yes | Pending | 8 |
+| D1 | ESD SOD-523 | TPD1E10B06DYARQ1 | Texas Instruments | 296-TPD1E10B06DYARQ1CT-ND | 595-TPD1E10B06DYARQ1 | C3013901 | — | — | Yes | Pending | 1 |
+| D2 | ESD SOT-553 | TPD2E2U06DRLR | Texas Instruments | 296-38361-1-ND | 595-TPD2E2U06DRLR | C1972959 | — | — | Yes | Pending | 1 |
+| D3 | 4-ch ESD ±15kV U-DFN-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | — | Yes | Pending | 1 |
+| D4 | 18V 600W unidirectional TVS SMB (DO-214AA) | SMBJ18A-Q | Bourns | 118-SMBJ18A-QCT-ND | 652-SMBJ18A-Q | C1979859 (Extended) | — | — | Yes | Pending | 1 |
+| D6, D7 | Schottky SOT-23 | BAT54 | Vishay | 4878-BAT54CT-ND | 637-BAT54 | C49435667 | — | — | Yes | Pending | 2 |
+| F1 | 72°C SMD Thermal Cutoff | AC72ABD | Bourns | AC72ABD-ND | 652-AC72ABD | C17468669 | — | — | Yes | Pending | 1 |
+| FB1 | 600Ω ±25% @100MHz ferrite bead 0805 AEC-Q200 Gr.1 | BMC-Q2AY0600M (2-2176748-1) | TE Connectivity | 1712-2-2176748-1CT-ND | 279-BMC-Q2AY0600M | Global sourcing / consignment | Global sourcing / consignment | 600Ω ±25% @ 100MHz, DCR 100mΩ max, 2000mA rated, −40°C to +125°C, AEC-Q200 Grade 1, MIL-STD-202 env. tested. Single-point GND↔GND_CHASSIS bond. **Reference datasheet:** `design/Datasheets/TE-DS_1773178-3_A3-datasheet.md` | Yes | Pending | 1 |
+| J1-J3 | 10-pos 2.5mm RA plug | 1123684-7 | TE Connectivity | A114780-ND | 571-1123684-7 | C3683043 (consignment — verify stock; post-assembly install if unavailable) | — | — | Yes | Pending | 3 |
+| J4 | 5-pin Micro-Fit 3.0 THT vertical | 0436500519 | Molex | WM14587-ND | 538-43650-0519 | C563849 | — | Battery Conn ⚠️ **REVIEW: confirm suitability for battery application** — full PN 0436500519; vertical THT, 5-circuit, 1-row, gold contacts, board lock, 3mm pitch. Candidate military / NetWarrior-style replacement under review: Glenair `807-216-00ZNU6-6DY` via Heilind / consignment-only; see `Millitary_Battery_Connection_Option.md`. | Yes | Pending | 1 |
+| J5 | USB-C right-angle SMT | USB4135-GF-A | GCT | 2073-USB4135-GF-ACT-ND | 640-USB4135-GF-A | C5438410 | — | **6-position** USB Type-C right-angle SMT receptacle (power/PD only). Connects CC1 and CC2 to STUSB4500 (U5) for PD negotiation; VBUS to OR-ing circuit. Right-angle (board-edge mount) with retention pins. ⚠️ **Mechanical note**: connector must protrude through the Power Module enclosure rear face in line with the global external-connector overhang rule; verify clearance at prototype stage. See BOM note for details. | Yes | Pending | 1 |
+| J_SW1_1–J_SW1_6, J_SW2_1–J_SW2_6 | 2.8mm PCB male spade tabs THT Quick-Fit | 1211 | Keystone Electronics | 36-1211-ND | 534-1211 | C3029550 | — | 2.8mm (0.110in) vertical PCB-mount male Quick-Fit terminal; 12 total to mate with the Adafruit 4660 / 3350 panel-switch terminals (switch contact + RGB ring LED harnesses) | Yes | Pending | 12 |
+| L1, L2 | 10A 2mH nanocrystalline CMC THT | 7448031002 | Würth Elektronik | 732-5584-ND | 710-7448031002 | C1519839 | — | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT ; same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | Yes | Pending | 2 |
+| L3 | 10µH 15.5A Isat shielded SMT 13.5x12.5x6.2mm | SRP1265A-100M | Bourns | SRP1265A-100MCT-ND | 652-SRP1265A-100M | C840531 | — | 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded | Yes | Pending | 1 |
+| Q1, Q2, Q3 | N-ch MOSFET 30V 10A SON-8 3.3x3.3mm | CSD17578Q5A | Texas Instruments | 296-48512-1-ND | 595-CSD17578Q5A | C2871447 | — | 30V V_DSS, 25A I_D continuous, R_ds(on)=5.9mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | Yes | ✓ | 3 |
+| Q4-Q10 | N-ch MOSFET 50V 200mA SOT-23 | BSS138 | onsemi | BSS138CT-ND | 512-BSS138 | C52895 | — | Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. ; Reused Settings Board sink-stage pattern; gates driven from U16 through `R31-R33`, held OFF by `R34-R36` ; Same low-side sink pattern as SW1 runtime LED stages; Q9 sinks SW2 green from buffered `LED_nPWR`, Q10 sinks SW2 red from the shutdown blink gate | Yes | Pending | 7 |
+| R1 | 232kΩ 1% 0603 | ERJ-3EKF2323V | Panasonic | P232KHCT-ND | 667-ERJ-3EKF2323V | C403086 | — | — | Yes | Pending | 1 |
+| R2 | 28.7kΩ 1% 0603 | ERJ-3EKF2872V | Panasonic | P28.7KHCT-ND | 667-ERJ-3EKF2872V | C403135 | — | — | Yes | Pending | 1 |
+| R3 | 210Ω 0.1% 0603 | ERA-3VEB2100V | Panasonic | 10-ERA-3VEB2100VCT-ND | 667-ERA-3VEB2100V | C1861624 | — | — | Yes | Pending | 1 |
+| R6, R9, R10, R16, R22, R29 | 10kΩ 1% 0603 | ERJ-3EKF1002V | Panasonic | P10.0KHCT-ND | 667-ERJ-3EKF1002V | C191124 | — | [calc: f=1.44/((R_A+2R_B)×C); R_B=715kΩ, C=1µF → f=1Hz, duty≈50%] | Yes | Pending | 6 |
+| R7, R8 | 4.7kΩ 1% 0603 | ERJ-3EKF4701V | Panasonic | P4.70KHCT-ND | 667-ERJ-3EKF4701V | C192166 | — | — | Yes | Pending | 2 |
+| R11 | 301Ω 1% 0603 | ERJ-3EKF3010V | Panasonic | P301HCT-ND | 667-ERJ-3EKF3010V | C403144 | — | [calc: ICH=0.5A, VICHARGE=1.485V, RSENSE=10mΩ → R=297Ω → E96=301Ω] | Yes | Pending | 1 |
+| R12, R23 | 10mΩ ±1% 5A 2512 Kelvin shunt | CSS2H-2512R-R010ELF | Bourns | CSS2H-2512R-R010ELF-ND | 652-CSS2H-2512R-R010ELF | — (no JLCPCB stock; global sourcing required) | — | no JLCPCB stock | Yes | Pending | 2 |
+| R14 | 30.1kΩ 0.1% 0603 | ERA-3ARB3012V | Panasonic | 10-ERA-3ARB3012VCT-ND | 667-ERA-3ARB3012V | C1728516 | — | [calc: V_thr=1.2V, V_trigger=4.812V → R_TOP/R_BOT=(4.812/1.2)−1=3.01 → R_BOT=10kΩ → R_TOP=30.1kΩ → E96=30.1kΩ → actual trigger: 4.812V, 312mV above MCP121T 4.50V threshold — see DEC-030] | Yes | Pending | 1 |
+| R15 | 10.0kΩ 0.1% 0603 | ERA-3ARB103V | Panasonic | P10KBDCT-ND | 667-ERA-3ARB103V | C465746 | — | [pairs with R14; use 0.1% for threshold accuracy] | Yes | Pending | 1 |
+| R17 | 715kΩ 1% 0603 | ERJ-3EKF7153V | Panasonic | P715KHCT-ND | 667-ERJ-3EKF7153V | C403339 | — | [pairs with R16 and C23 to set 1Hz, ~50% duty-cycle oscillation] | Yes | Pending | 1 |
+| R24 | 86.6kΩ 1% 0603 | ERJ-3EKF8662V | Panasonic | P86.6KHCT-ND | 667-ERJ-3EKF8662V | C403381 | — | — | Yes | Pending | 1 |
+| R25, R27, R34-R36, R39-R40, R43-R44 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | — | Yes | Pending | 9 |
+| R26 | 82.0kΩ 1% 0402 | ERJ-2RKF8202X | Panasonic | P82.0KLCT-ND | 667-ERJ-2RKF8202X | C400641 | — | — | Yes | Pending | 1 |
+| R28 | 274kΩ 1% 0603 | ERJ-3EKF2743V | Panasonic | P274KHCT-ND | 667-ERJ-3EKF2743V | C403126 | — | — | Yes | Pending | 1 |
+| R30 | 33.2kΩ 1% 0402 | ERA-2AEB3322X | Panasonic | P33.2KDCCT-ND | 667-ERA-2AEB3322X | C2087909 | — | [RT=INTVCC gives 200kHz default; R30=33.2kΩ to GND gives 400kHz; required for ≥4-cycle backup switchover — see DEC-030] | Yes | Pending | 1 |
+| R31-R33, R37-R38 | 1kΩ 1% Thick-Film 0402 | ERJ-2RKF1001X | Panasonic | P1.00KLCT-ND | 667-ERJ-2RKF1001X | C242161 | — | — | Yes | Pending | 5 |
+| R41–R42 | 52.3kΩ 1% 0402 | ERJ-2RKF5232X | Panasonic | P52.3KLCT-ND | 667-ERJ-2RKF5232X | Global sourcing / consignment | Global sourcing | — | Yes | Pending | 2 |
+| R45-R48 | 100kΩ 1% 0402 | ERJ-2RKF1003X | Panasonic | P100KLCT-ND | 667-ERJ-2RKF1003X | Global sourcing / consignment | Global sourcing | — | Yes | Pending | 4 |
+| R49-R53 | 10Ω 1% Thin-Film 0402 | ERJ-2RKF10R0X | Panasonic | P10.0LCT-ND | 667-ERJ-2RKF10R0X | C413044 | — | — | Yes | Pending | 5 |
+| SW1 | 16mm panel latching RGB metal switch | 4660 | Adafruit | 1528-4660-ND | 485-4660 | Global sourcing / consignment | Global sourcing | Panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. LED anode supply: `5V_MAIN`. | Yes | Pending | 1 |
+| SW2 | 16mm panel momentary RGB metal switch | 3350 | Adafruit | 1528-2546-ND | 485-3350 | Global sourcing / consignment | Global sourcing | Panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press. Red / green LED channels are driven locally on the PM: green = CM5 powered from buffered `LED_nPWR`; red = 1Hz blink during shutdown latch while green remains ON. Blue channel not used. | Yes | Pending | 1 |
+| U1 | eFuse 16.9V fixed OVLO VQFN-24 4x4mm | TPS259804ONRGER | Texas Instruments | 296-TPS259804ONRGERCT-ND | 595-TPS259804ONRGER | C2878936 | — | variant-locked do not change | Yes | Pending | 1 |
+| U2A, U2B | 5V buck x2 180° interleaved VQFN-HR 14-pin 4x3.5mm | LMQ61460AFSQRJRRQ1 | Texas Instruments | 296-LMQ61460AFSQRJRRQ1CT-ND | 595-Q61460AFSQRJRRQ1 | C1518767 | — | — | Yes | Pending | 2 |
+| U3 | Supercap manager QFN-38 5x7mm | LTC3350EUHF#PBF | Analog Devices | 505-LTC3350EUHF#PBF-ND | 584-LTC3350EUHF#PBF | C580711 | — | — | Yes | Pending | 1 |
+| U4 | PD3.1 DRP controller WQFN-38 6x4mm | TPS25751DREFR | Texas Instruments | 296-TPS25751DREFRCT-ND | 595-TPS25751DREFR | C30169739 | — | PD3.1 certified DRP controller with integrated 20V/5A bi-directional + 5V/3A source power paths. Replaces NRND TPS25750. Package: WQFN-38 6×4mm (differs from TPS25750 QFN-28). | Yes | ✓ | 1 |
+| U5 | USB-C sink controller QFN-24 | STUSB4500LQTR | STMicroelectronics | 497-STUSB4500LQCT-ND | 511-STUSB4500LQTR | C506650 | — | — | Yes | Pending | 1 |
+| U6a, U6b, U6c | OR-ing controller SOT-23-6 | LM74700QDBVRQ1 | Texas Instruments | 296-LM74700QDBVRQ1CT-ND | 595-LM74700QDBVRQ1; alt T&R: 595-LM74700QDBVTQ1 | C2941042 | — | — | Yes | Pending | 3 |
+| U7 | 3.3V LDO fixed TO-263 5-pin | TPS75733KTTRG3 | Texas Instruments | 296-50559-1-ND | 595-TPS75733KTTRG3 | C3749924 | — | fixed 3.3V, active-LOW EN | No library — create manually | N/A | 1 |
+| U8 | 4.5V voltage supervisor SC70-3 | MCP121T-450E/LB | Microchip Technology | MCP121T-450E/LBCT-ND | 579-MCP121T-450E/LB | C625189 | — | 4.5V trip | No library — create manually | N/A | 1 |
+| U11, U15 | CMOS timer SOT-23-5 | MIC1555YM5-TR | Microchip Technology | 576-2576-1-ND | 998-MIC1555YM5TR | C145373 | — | CMOS timer IC, 2–10V supply. Generates 1Hz hardware “Initialising” heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. ; CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C42 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C38 (100nF). | Yes | Pending | 2 |
+| U12 | Current monitor I²C 0x40 SOIC-8 | INA219AIDR | Texas Instruments | 296-23978-1-ND | 595-INA219AIDR | C138706 | — | Zero-Drift Current/Power Monitor (I²C 0x40) | Yes | Pending | 1 |
+| U13, U14, U17 | Dual Schmitt-trigger inverter SC-88 | NL27WZ14DFT2G-Q | onsemi | 488-NL27WZ14DFT2G-QCT-ND | 863-NL27WZ14DFT2G-Q | C24511261 | — | AEC-Q100 dual Schmitt-trigger inverter, one gate used per SYNC stage ; Automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. VCC bypass: C44 (100nF). | Yes | Pending | 3 |
+| U16 | 8-bit I²C GPIO expander 0x3F TSSOP-16 | PCA9534APWR | NXP Semiconductors | 296-21760-1-ND | 595-PCA9534APWR | C2871127 | — | 8-bit I²C GPIO expander @ 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`. `INT` exported as `PM_IO_INT_N`. | Yes | Pending | 1 |
+| U18 | D-type flip-flop shutdown latch SOT-23-6 | SN74LVC1G175DBVR | Texas Instruments | 296-17617-1-ND | 595-SN74LVC1G175DBVR | C128412 | — | Single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. Latches shutdown active on `PWR_BUT` assertion and clears when `LED_nPWR` deasserts. VCC bypass: C45 (100nF). | Yes | Pending | 1 |
+| U19 | Single AND gate SOT-23-5 | SN74LVC1G08DBVR | Texas Instruments | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | — | Single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. Gates the U11 1Hz oscillator into the SW2 red sink while the shutdown latch is set. VCC bypass: C46 (100nF). | Yes | Pending | 1 |
 
 > **BOM Notes:**
 >
@@ -664,12 +614,12 @@ Estimated PM-local power dissipation at system peak load:
 > (Mouser 810-A9N3X7476M23KB; DigiKey 445-174773-1-ND; JLCPCB C2182815).
 > C13 (3V3_ENIG bus) remains single.
 > BOM total for CL32B226KAJNNNE is now **13 units** per PM: 6 positions × 2 + 1 single (C13).
-> C20 uses a different 10µF part.
+> C20 uses Samsung CL21B106KAYQNNE (10µF 25V X7R 0805).
 > DigiKey 1276-3392-1-ND; JLCPCB C309062 (confirmed — Samsung CL32B226KAJNNNE 22µF 25V X7R 1210).
 > * **Timing/bypass caps (C21–C57)** — C21/C22/C23 and C53/C55/C56/C57 (1µF) share the same Kemet
 >   C0805C105K5RACTU: Pi-filter mid-frequency bypass, U11 timer cap, LTC3350 INTVCC/VCC2P5 bypass,
 >   and STUSB4500 VREG_1V2/VREG_2V7 bypass. C24–C39, C43–C52 (100nF bypass / HF shunt) share
->   Samsung CL05B104KB5NNNC / C1525. C40 (100pF) and C41 (22nF) are the dedicated SYNC filter /
+>   Samsung CL05B104KB5NNNC / C960916. C40 (100pF) and C41 (22nF) are the dedicated SYNC filter /
 >   delay capacitors; C42 and C54 are 10µF 16V X7R 1206 (CC1206KKX7R8BB106) — C42 for U15
 >   one-shot timing and C54 for LTC3350 DRVCC bypass (min 2.2µF per datasheet).
 > * **U13/U14 NL27WZ14DFT2G-Q** — AEC-Q100 dual Schmitt-trigger inverter in SC-88. One gate is used as U_INV1 (U13) and one as U_INV2 (U14) in the 180° SYNC interleaving delay chain.

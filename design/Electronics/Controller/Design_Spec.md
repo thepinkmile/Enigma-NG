@@ -436,44 +436,33 @@ Estimated Controller-local power dissipation at system peak load:
 
 ## 11. Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| BT1 | CR2032 coin cell holder (RTC backup) | Keystone 3034TR | THT horizontal | 534-3034TR | 36-3034CT-ND | C5213768 |
-| C1-C5 | `5V_MAIN` bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C6 | VBAT bypass cap | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C7-C11 | `3V3_ENIG` bulk entry decoupling bank (star/spoke) | 10uF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C12 | `VDD_GPIO_REF` decoupling capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C13 | U2 (TPS2065CDBVR) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C14 | U3 (AP2331W-7) Vcc bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C15 | U9 (TPS2372-4RGWR) VCC bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C16 | U10 (TPS23730RMTR) VCC bypass capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C17 | RJ45 Bob Smith termination capacitor(Y1-class proxy; EMC GbE ESD discharge path to chassis GND) | 10nF 100V X7R | 0402 | 80-C0402C103K1RAUTO | 399-C0402C103K1RACAUTOCT-ND | C19862710 |
-| D1 | VBAT Schottky protection (blocks CR2032 charge path) | BAT54 | SOT-23 | 637-BAT54 | 4878-BAT54CT-ND | C49435667 |
-| J1-J3 | Power Module dock receptacles (×3) | TE 1-1674231-1 | 10-position 2.5mm vertical receptacle | 571-1-1674231-1 | A119250-ND | C3683260 |
-| J4, J5 | Stator dock hybrid receptacles (×2) | Molex 2195630015 | 5 power + 15 signal press-fit receptacle | 538-219563-0015 | 900-2195630015-ND | Global sourcing / consignment |
-| J6 | USB 3.0 Type-A | Dual-Stack | Molex 48406-0003 | 538-48406-0003 | WM10420-ND | C565298 |
-| J7 | HDMI Type-A | Full-Size | TE 2007435-1 | 571-2007435-1 | A141617-ND | C195051 |
-| J8 | RJ45 with integrated magnetics / PoE entry | Wurth 7499111121A | Long-Body THT RJ45 | 710-7499111121A | 1297-1070-5-ND | C5523983 |
-| J9 | DSI1 display FPC connector (15-pin 1.0mm pitch ZIF) | Amphenol F52Q-1A7H1-11015 | 15-pin ZIF, 1.0mm pitch | 649-F52Q-1A7H1-11015 | 609-F52Q-1A7H1-11015CT-ND | C3169095 |
-| J10 | JST SH 4-pin 1.0mm fan header | JST SM04B-SRSS-TB(LF)(SN) | SMT 1.0mm pitch | 306-SM04BSRSSTBLFSN | 455-SM04B-SRSS-TBCT-ND | C160404 |
-| J11 | Actuation Module power dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| J12 | JDB hat power/USB header (female socket) | Adam Tech RS1-05-G — 1×5 2.54mm female | THT | 737-RS1-05-G | 2057-RS1-05-G-ND | C3321119 |
-| J13 | JDB hat JTAG header (female socket) | Adam Tech RS1-10-G — 1×10 2.54mm female | THT | 737-RS1-10-G | 2057-RS1-10-G-ND | C3320525 |
-| J14-J15 | Amphenol 100-pin B2B socket 4.0mm height (×2, for CM5 module) | 10164227-1004A1RLF | CM5 SO-DIMM | 649-101642271004RLF | 609-10164227-1004A1RLFCT-ND | C7435219 |
-| J16 | Actuation Module trigger dock socket | Samtec ERF8-005-05.0-S-DV-K-TR | SMT 0.8mm pitch | 200-ERF8005050SDVKTR | SAM13517CT-ND | C7273978 |
-| MH1–MH4 | CM5 brass standoff M2.5 × 4.0mm SMT (Würth 9774040151R) × 4 | M2.5 × 4.0mm | SMT | 710-9774040151R | 732-7089-1-ND | C5182034 |
-| R1 | PWR_GD GPIO pull-up (to 3V3_ENIG) | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R2 | `PM_IO_INT_N` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R3 | `USB_FAULT` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R4 | `PWR_GD` CM5 status-input series resistor | 10kΩ 1% | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| T1 | PoE transformer (1500V isolation) | POE600F-12L | 12-pin SMT | 673-POE600F-12L | 553-POE600F-12LCT-ND | Global sourcing / consignment |
-| U1 | Raspberry Pi Compute Module 5 (CM5) — multiple acceptable non-Lite variants; minimum 4GB RAM / 8GB eMMC; Wi-Fi optional | N/A | CM5 (SO-DIMM) | various CM5 SKUs | N/A — source from RPi distributors | N/A — not stocked at JLCPCB |
-| U2 | USB power switch | TPS2065CDBVR | SOT-23-5 | 595-TPS2065CDBVR | 296-39353-1-ND | C353882 |
-| U3 | HDMI power switch | AP2331W-7 | SOT-23-5 | 621-AP2331W-7 | AP2331W-7DICT-ND | C460346 |
-| U4 | USB/HDMI ESD | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF, ±15kV IEC 61000-4-2; covers USB 3.0 and HDMI differential pairs | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U5-U6 | GbE ESD — pairs AB+CD (DA+/DA−, DB+/DB−, DC+/DC−, DD+/DD−) ×2; place between J8 RJ45 and integrated magnetics | TPD4E05U06QDQARQ1 — 4-ch ESD array, 0.5pF/ch, ±15kV IEC 61000-4-2, supports up to 6 Gbps; same part as U4 | U-DFN-10 | 595-PD4E05U06QDQARQ1 | 296-40696-1-ND | C81353 |
-| U9 | PoE PD interface and signature controller | TPS2372-4RGWR | VQFN-24 4×4mm | 595-TPS2372-4RGWR | 296-45285-1-ND | Global sourcing / consignment |
-| U10 | PoE auxiliary controller | TPS23730RMTR | WSON-10 3×3mm | 595-TPS23730RMTR | 296-TPS23730RMTRCT-ND | Global sourcing / consignment |
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| BT1 | CR2032 holder THT horizontal | 3034TR | Keystone Electronics | 36-3034CT-ND | 534-3034TR | C5213768 | — | — | Yes | Pending | 1 |
+| C1-C5, C7-C11 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 10 |
+| C6, C12-C16 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 6 |
+| C17 | 10nF 100V X7R 0402 | C0402C103K1RACAUTO | Kemet | 399-C0402C103K1RACAUTOCT-ND | 80-C0402C103K1RAUTO | C19862710 | — | — | Yes | Pending | 1 |
+| D1 | Schottky SOT-23 | BAT54 | Vishay | 4878-BAT54CT-ND | 637-BAT54 | C49435667 | — | — | Yes | Pending | 1 |
+| J1-J3 | 10-pos 2.5mm receptacle 10-pos vert | 1-1674231-1 | TE Connectivity | A119250-ND | 571-1-1674231-1 | C3683260 | — | — | Yes | Pending | 3 |
+| J4, J5 | 5-pwr+15-sig press-fit receptacle hybrid | 2195630015 | Molex | 900-2195630015-ND | 538-219563-0015 | Global sourcing / consignment | Global sourcing | — | Yes | Pending | 2 |
+| J6 | USB 3.0 Type-A dual-stack | 48406-0003 | Molex | WM10420-ND | 538-48406-0003 | C565298 | — | — | Yes | Pending | 1 |
+| J7 | HDMI Type-A full-size | 2007435-1 | TE Connectivity | A141617-ND | 571-2007435-1 | C195051 | — | — | Yes | Pending | 1 |
+| J8 | RJ45 w/ magnetics/PoE long-body THT | 7499111121A | Würth Elektronik | 1297-1070-5-ND | 710-7499111121A | C5523983 | — | — | Yes | Pending | 1 |
+| J9 | DSI1 15-pin 1.0mm ZIF | F52Q-1A7H1-11015 | Amphenol | 609-F52Q-1A7H1-11015CT-ND | 649-F52Q-1A7H1-11015 | C3169095 | — | — | Yes | Pending | 1 |
+| J10 | 4-pin SH 1.0mm fan SMT | SM04B-SRSS-TB(LF)(SN) | JST | 455-SM04B-SRSS-TBCT-ND | 306-SM04BSRSSTBLFSN | C160404 | — | — | Yes | Pending | 1 |
+| J11, J16 | 10-pin 2x5 0.8mm socket SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | — | Yes | Pending | 2 |
+| J12 | 1x5 2.54mm female socket THT | RS1-05-G | Adam Tech | 2057-RS1-05-G-ND | 737-RS1-05-G | C3321119 | — | — | Yes | Pending | 1 |
+| J13 | 1x10 2.54mm female socket THT | RS1-10-G | Adam Tech | 2057-RS1-10-G-ND | 737-RS1-10-G | C3320525 | — | — | Yes | Pending | 1 |
+| J14-J15 | CM5 SO-DIMM 100-pin 4mm | 10164227-1004A1RLF | Amphenol | 609-10164227-1004A1RLFCT-ND | 649-101642271004RLF | C7435219 | — | — | Yes | Pending | 2 |
+| MH1–MH4 | M2.5x4.0mm SMT standoff | 9774040151R | Würth Elektronik | 732-7089-1-ND | 710-9774040151R | C5182034 | — | — | Yes | Pending | 4 |
+| R1-R4 | 10kΩ 1% 0603 | ERJ-3EKF1002V | Panasonic | P10.0KHCT-ND | 667-ERJ-3EKF1002V | C191124 | — | — | Yes | Pending | 4 |
+| T1 | PoE transformer 1500V 12-pin SMT | POE600F-12L | Bourns | 553-POE600F-12LCT-ND | 673-POE600F-12L | Global sourcing / consignment | — | — | Yes | Pending | 1 |
+| U1 | CM5 module SO-DIMM | CM5 | Raspberry Pi Ltd | N/A — source from RPi distributors | various CM5 SKUs | N/A — not stocked at JLCPCB | — | — | N/A | N/A | 1 |
+| U2 | USB power switch SOT-23-5 | TPS2065CDBVR | Texas Instruments | 296-39353-1-ND | 595-TPS2065CDBVR | C353882 | — | — | Yes | Pending | 1 |
+| U3 | HDMI power switch SOT-23-5 | AP2331W-7 | Diodes Inc | AP2331W-7DICT-ND | 621-AP2331W-7 | C460346 | — | — | Yes | Pending | 1 |
+| U4-U6 | 4-ch ESD ±15kV 0.5pF U-DFN-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | — | Yes | Pending | 3 |
+| U9 | PoE PD interface VQFN-24 4×4mm | TPS2372-4RGWR | Texas Instruments | 296-45285-1-ND | 595-TPS2372-4RGWR | Global sourcing / consignment | — | — | Yes | Pending | 1 |
+| U10 | PoE auxiliary controller WSON-10 3×3mm | TPS23730RMTR | Texas Instruments | 296-TPS23730RMTRCT-ND | 595-TPS23730RMTR | Global sourcing / consignment | — | — | Yes | Pending | 1 |
 
 ### BOM Notes
 

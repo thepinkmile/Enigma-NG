@@ -180,3 +180,18 @@ Where G[5:0] = raw Gray code bits from FDC2114 sensors, B[5:0] = 6-bit binary po
 
 No lookup table is required. The XOR chain is fully combinational and synthesises to 5 XOR
 gates in the CPLD. SW1[5:0] is summed modulo 64 with B[5:0] to yield the effective position.
+
+---
+
+## 8. Bill of Materials (N=64 Variant-Specific Components)
+
+Variant-specific components for the N=64 rotor. Common components shared across all Rotor variants
+are listed in **`design/Electronics/Rotor/Design_Spec.md`** §5.
+
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C18 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 1 |
+| C19 | 1µF X7R ±10% 10V AEC-Q200 0402 | KAM05CR71A105KH | Kyocera AVX | 478-KAM05CR71A105KHCT-ND | 581-KAM05CR71A105KH | — | Global sourcing | — | Yes | Pending | 1 |
+| C28–C31 | 33pF C0G/NP0 ±1% 50V AEC-Q200 0402 | AC0402FRNPO9BN330 | YAGEO | 13-AC0402FRNPO9BN330CT-ND | 603-0402FRNPO9BN330 | C1852937 | — | — | Yes | Pending | 4 |
+| L9–L12 | 18µH ±10% SRF 28MHz 0603 | CWF1610A-180K | Bourns | 118-CWF1610A-180KCT-ND | 652-CWF1610A-180K | — | Global sourcing | — | Yes | Pending | 4 |
+| U4 | 4-ch cap sensor I²C 0x2B 16-VQFN | FDC2114RGHR | Texas Instruments | FDC2114RGHR-ND | 595-FDC2114RGHR | C2652079 | — | JLCPCB MOQ 2 | Yes | Pending | 1 |

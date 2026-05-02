@@ -150,3 +150,8 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 144 | FB1 formalisation complete | 032-fb1-formalisation-complete.md |
 | 146 | Rotor J11–J14 renumber and BOM rewrite complete | 051-rotor-j11-j14-renumber-bom-rewrite-complete.md |
 | 147 | Rotor J7–J14 renumber and J_INT header fix complete | 056-rotor-j-renumber-complete.md |
+| 148 | BOM strip all complete — awaiting commit | 090-bom-strip-all-complete.md |
+| 149 | BT→J rename complete, todo-list.md created | 099-bt-to-j-rename-todo-list-created.md |
+| 150 | Datasheet design-content cleanup | 100-datasheet-design-content-clean.md |
+| 151 | BOM encoding, merge review, C20 correction complete | 101-bom-encoding-and-merge-review-.md |
+| 152 | BOM supplier PN corruption fixes complete | 152-bom-supplier-pn-corruption-fixes.md |

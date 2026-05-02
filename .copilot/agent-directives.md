@@ -26,13 +26,18 @@ the component type. Any such placeholder inserted without approval must be remov
 
 ---
 
-## SECONDARY DIRECTIVE - Git Commits
+## SECONDARY DIRECTIVE — Git Commits
+
+> ⚠️ **CRITICAL INTEGRITY VIOLATION** — Committing without authorisation corrupts the repository
+> audit trail and removes the user's ability to review, reject, or roll back changes before they
+> are permanently recorded. This has already caused a serious violation in this project (commit
+> `889cb5c`). A repeat occurrence is an unacceptable breach of trust. There are no exceptions.
 
 **NEVER perform a git commit without explicit user confirmation.**
 
-All changes made to any files in the repository must be reviewed and acceptaed by the user before
-they can be commited into the repository.
-Possible user confirmation promts include:
+All changes made to any files in the repository must be reviewed and accepted by the user before
+they can be committed into the repository.
+Possible user confirmation prompts include:
 
 - "Let's lock this in"
 - "Save state"
@@ -41,7 +46,28 @@ When using these prompts, you should create a new checkpoint following the "Repo
 
 ---
 
-## TERTIARY DIRECTIVE — File Deletion
+## TERTIARY DIRECTIVE — Design Log Integrity (Append-Only Audit Log)
+
+> ⚠️ **CRITICAL INTEGRITY VIOLATION** — Modifying an existing audit log entry is equivalent to
+> falsifying a record. In a regulated or professional engineering context this could constitute
+> a criminal offence. This has already caused a serious violation in this project (commit `889cb5c`
+> modified DEC-028 in-place). A repeat occurrence is an unacceptable breach of trust with no
+> exceptions whatsoever.
+
+**`design/Design_Log.md` is an append-only audit log. NEVER modify any existing DEC-NNN entry.**
+
+Rules:
+- Existing entries are **read-only** once written. Their text, rationale, impact, and all other
+  fields must never be altered, even to fix a typo or update a cross-reference.
+- Design changes that amend, supersede, or correct a prior decision must be recorded as a
+  **new DEC entry** with an explicit `Amends: DEC-NNN` or `Supersedes: DEC-NNN` field.
+- The only permitted write operation on `design/Design_Log.md` is appending new entries before
+  the `## Open Questions` section.
+- This rule applies to all agents, sub-agents, and the primary orchestrating session equally.
+
+---
+
+## QUATERNARY DIRECTIVE — File Deletion
 
 **NEVER permanently delete any file from the repository.**
 
@@ -52,7 +78,7 @@ appear in git history.
 
 ---
 
-## QUATERNARY DIRECTIVE — Review Sub-Agent Constraints
+## QUINARY DIRECTIVE — Review Sub-Agent Constraints
 
 **Review sub-agents launched during a review cycle are strictly READ-ONLY.**
 

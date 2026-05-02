@@ -385,41 +385,24 @@ automatic polling intervals.
 
 ## 10. Bill of Materials
 
-| Ref | Component | Value | Package | Mouser Part # | DigiKey Part # | JLCPCB Part # |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| C1 | VCC decoupling cap for U1 (MCP23017 @ 0x23) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C2 | VCC decoupling cap for U2 (MCP23017 @ 0x24) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C3 | VCC decoupling cap for U3 (MCP23017 @ 0x25) | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-1009-1-ND | C1525 |
-| C4 | `CFG_APPLY_N` debounce capacitor | 100nF X7R 50V | 0402 | 187-CL05B104KB5NNNC | 1276-CL05B104KB5NNNCCT-ND | C960916 |
-| C5-C9 | Power-entry bulk capacitors — `3V3_ENIG` (5× 10µF at J1 pin 1 power-entry node; satisfies §3 bulk-entry bank rule) | 10µF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| C10-C14 | Power-entry bulk capacitors — `5V_MAIN` (5× 10µF at J1 pin 2 power-entry node; satisfies §3 bulk-entry bank rule) | 10µF X7R 25V | 0805 | 187-CL21B106KAYQNNE | 1276-CL21B106KAYQNNECT-ND | C3039694 |
-| D1-D5 | Bank 1 discrete RGB indicator LEDs (×5: 1 source-status + 4 config bits) | Kingbright WP154A4SEJ3VBDZGW/CA — 5mm common-anode RGB THT LED | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
-| D6-D12 | Bank 2 discrete RGB indicator LEDs (×7: 1 source-status + 6 config bits) | Kingbright WP154A4SEJ3VBDZGW/CA — same part as Bank 1 | THT 5mm LED | 604-WP154A43VBDZGWCA | 754-2029-ND | C7151795 |
-| J1 | I²C harness connector to Stator J13 | JST B6B-PH-K-S(LF)(SN) — 6-pin JST PH 2.0mm | THT | 306-B6B-PH-K-SLFSN | 455-1708-ND | C131342 |
-| Q1-Q6 | Bank 1+2 colour-rail sink MOSFETs (×6: R/G/B per bank) | BSS138 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q7–Q11 | Bank 1 per-anode LED NMOS pre-drivers (×5, one per Bank 1 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q12–Q18 | Bank 2 per-anode LED NMOS pre-drivers (×7, one per Bank 2 LED anode) | BSS138 — same part as Q1-Q6 | SOT-23 | 512-BSS138 | BSS138CT-ND | C52895 |
-| Q19–Q30 | Per-anode LED high-side PMOS switches (×12); source at `5V_MAIN`, drain to LED anode; gate driven by Q7–Q18 BSS138 pre-drivers | Vishay SQ2319ADS-T1_BE3 — P-Ch TrenchFET SOT-23; Vds=−40V, Vgs(max)=±20V, Vgs(th)=−2.5V max, Rds(on)=145mΩ @ Vgs=−4.5V; AEC-Q101; Mouser 78-SQ2319ADS-T1_BE3; DigiKey 742-SQ2319ADS-T1_BE3CT-ND; JLCPCB C3280190 | SOT-23 | 78-SQ2319ADS-T1_BE3 | 742-SQ2319ADS-T1_BE3CT-ND | C3280190 |
-| R1-R4 | Bank 1 toggle input pull-downs (×4: `CFG_ROUTE[3:0]`) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R5-R10 | Bank 2 toggle input pull-downs (×6: `CFG_REFMAP[5:0]`) | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R11 | `CFG_APPLY_N` pull-up resistor | 10kΩ (1%) | 0603 | 667-ERJ-3EKF1002V | P10.0KHCT-ND | C191124 |
-| R12–R17 | MOSFET gate resistors (×6, one per transistor) | 1kΩ (1%) | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 |
-| R18-R29 | Per-indicator red LED series resistors (×12) | 150Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1500V | P150HCT-ND | C400650 |
-| R30-R41 | Per-indicator green LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
-| R42-R53 | Per-indicator blue LED series resistors (×12) | 100Ω (1%) — 5V operation, 20mA nominal | 0603 | 667-ERJ-3EKF1000V | P100HCT-ND | C193336 |
-| R54–R65 | BSS138 gate resistors for per-anode pre-drivers Q7–Q18 (×12) | 1kΩ (1%) — same part as R12-R17 | 0402 | 667-ERJ-2RKF1001X | P1.00KLCT-ND | C242161 |
-| R66–R77 | PMOS gate pull-up resistors for Q19–Q30 (×12); holds PMOS gate HIGH when BSS138 OFF | KOA Speer SG73S1ERTTP4702D — 47 kΩ ±0.5% thick film anti-sulfuration 0402; AEC-Q200; DigiKey MOQ 10000, JLCPCB MOQ 40 | 0402 | 660-SG73S1ERTTP4702D | 2019-SG73S1ERTTP4702DTR-ND ⚠️ MOQ 10000 | C5915648 ⚠️ MOQ 40 |
-| R78 | MCP23017 U1 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R79 | MCP23017 U2 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R80 | MCP23017 U3 `~RESET` pull-up to 3V3_ENIG | 10kΩ (1%) | 0402 | 667-ERJ-2RKF1002X | P10.0KLCT-ND | C191123 |
-| R81–R86 | BSS138 gate pull-downs for colour-rail sinks Q1–Q6 (×6); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
-| R87–R91 | BSS138 gate pull-downs for Bank 1 per-anode pre-drivers Q7–Q11 (×5); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
-| R92–R98 | BSS138 gate pull-downs for Bank 2 per-anode pre-drivers Q12–Q18 (×7); holds gates LOW during GPIO Hi-Z at power-up | 100kΩ (1%) | 0402 | 667-ERJ-2RKF1003X | P100KLCT-ND | Global sourcing / consignment |
-| SW1-SW10 | Bank 1+2 config toggle switches (×10: 4 routing + 6 reflector) | E-Switch 200MSP1T2B4M2QE | Panel-mount THT toggle | 612-200MSP1T2B4M2QE | EG5525-ND | C5491263 |
-| SW11 | `CFG_APPLY_N` momentary pushbutton | Omron B3F-1070 — SPST NO through-hole tactile switch; board-mounted and mechanically actuated through enclosure | THT tactile | 653-B3F-1070 | SW406-ND | C726011 |
-| U1 | MCP23017 I²C GPIO Expander (switch input reader) | MCP23017T-E/SO @ 0x23 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| U2 | MCP23017 I²C GPIO Expander (Bank 1 LED controller) | MCP23017T-E/SO @ 0x24 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
-| U3 | MCP23017 I²C GPIO Expander (Bank 2 LED controller) | MCP23017T-E/SO @ 0x25 | SOIC-28 | 579-MCP23017T-E/SO | MCP23017T-E/SOCT-ND | C47023 |
+| RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C1-C4 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 4 |
+| C5-C14 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 10 |
+| D1-D12 | 5mm common-anode RGB THT | WP154A4SEJ3VBDZGW/CA | Kingbright | 754-2029-ND | 604-WP154A43VBDZGWCA | C7151795 | — | — | Yes | Pending | 12 |
+| J1 | 6-pin JST PH 2.0mm THT | B6B-PH-K-S(LF)(SN) | JST | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | — | — | Yes | Pending | 1 |
+| Q1-Q18 | N-MOSFET 50V 200mA SOT-23 | BSS138 | onsemi | BSS138CT-ND | 512-BSS138 | C52895 | — | — | Yes | Pending | 18 |
+| Q19-Q30 | P-MOSFET AEC-Q101 SOT-23 | SQ2319ADS-T1_BE3 | Vishay | 742-SQ2319ADS-T1_BE3CT-ND | 78-SQ2319ADS-T1_BE3 | C3280190 | — | — | Yes | Pending | 12 |
+| R1-R11 | 10kΩ 1% 0603 | ERJ-3EKF1002V | Panasonic | P10.0KHCT-ND | 667-ERJ-3EKF1002V | C191124 | — | — | Yes | Pending | 11 |
+| R12-R17,R54-R65 | 1kΩ 1% 0402 | ERJ-2RKF1001X | Panasonic | P1.00KLCT-ND | 667-ERJ-2RKF1001X | C242161 | — | — | Yes | Pending | 18 |
+| R18-R29 | 150Ω 1% 0603 | ERJ-3EKF1500V | Panasonic | P150HCT-ND | 667-ERJ-3EKF1500V | C400650 | — | — | Yes | Pending | 12 |
+| R30-R53 | 100Ω 1% 0603 | ERJ-3EKF1000V | Panasonic | P100HCT-ND | 667-ERJ-3EKF1000V | C193336 | — | — | Yes | Pending | 24 |
+| R66-R77 | 47kΩ ±0.5% AEC-Q200 0402 | SG73S1ERTTP4702D | KOA Speer | 2019-SG73S1ERTTP4702DTR-ND ⚠️ MOQ 10000 | 660-SG73S1ERTTP4702D | C5915648 ⚠️ MOQ 40 | — | JLCPCB MOQ 40 | Yes | Pending | 12 |
+| R78-R80 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | — | — | Yes | Pending | 3 |
+| R81-R98 | 100kΩ 1% 0402 | ERJ-2RKF1003X | Panasonic | P100KLCT-ND | 667-ERJ-2RKF1003X | Global sourcing / consignment | Global sourcing | no JLCPCB stock | Yes | Pending | 18 |
+| SW1-SW10 | SPDT latching toggle panel-mount THT | 200MSP1T2B4M2QE | E-Switch | EG5525-ND | 612-200MSP1T2B4M2QE | C5491263 | — | — | Yes | Pending | 10 |
+| SW11 | SPST NO tactile THT | B3F-1070 | Omron | SW406-ND | 653-B3F-1070 | C726011 | — | — | Yes | Pending | 1 |
+| U1-U3 | I²C GPIO expander SOIC-28 | MCP23017T-E/SO | Microchip Technology | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | — | — | Yes | Pending | 3 |
 
 ---
 
