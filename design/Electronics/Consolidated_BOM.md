@@ -77,8 +77,8 @@
 | PM: U4 | TPS25751DREFR | 296-TPS25751DREFRCT-ND | 595-TPS25751DREFR | C30169739 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | PD3.1 DRP controller WQFN-38 6x4mm [Texas Instruments] | Yes | ✔ |
 | PM: U5 | STUSB4500LQTR | 497-STUSB4500LQCT-ND | 511-STUSB4500LQTR | C506650 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | USB-C sink controller QFN-24 [STMicroelectronics] | Yes | Pending |
 | PM: U6a,U6b,U6c | LM74700QDBVRQ1 | 296-LM74700QDBVRQ1CT-ND | 595-LM74700QDBVRQ1 | C2941042 | — | 3 | — | — | — | — | — | — | — | — | — | — | 3 | OR-ing controller SOT-23-6 [Texas Instruments] | Yes | Pending |
-| PM: U7 | TPS75733KTTRG3 | 296-50559-1-ND | 595-TPS75733KTTRG3 | C3749924 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 3.3V LDO fixed TO-263 5-pin [Texas Instruments] | No library — create manually | N/A |
-| PM: U8 | MCP121T-450E/LB | MCP121T-450E/LBCT-ND | 579-MCP121T-450E/LB | C625189 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 4.5V voltage supervisor SC70-3 [Microchip Technology] | No library — create manually | N/A |
+| PM: U7 | TPS75733KTTRG3 | 296-50559-1-ND | 595-TPS75733KTTRG3 | C3749924 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 3.3V LDO fixed TO-263 5-pin [Texas Instruments] | No library — footprint requested | Pending |
+| PM: U8 | MCP121T-450E/LB | MCP121T-450E/LBCT-ND | 579-MCP121T-450E/LB | C625189 | — | 1 | — | — | — | — | — | — | — | — | — | — | 1 | 4.5V voltage supervisor SC70-3 [Microchip Technology] | No library — footprint requested | Pending |
 | PM: U11,U15 | MIC1555YM5-TR | 576-2576-1-ND | 998-MIC1555YM5TR | C145373 | — | 2 | — | — | — | — | — | — | — | — | — | — | 2 | CMOS timer SOT-23-5 [Microchip Technology] | Yes | ✔ |
 | PM: U12; STA: U2 | INA219AIDR | 296-23978-1-ND | 595-INA219AIDR | C138706 | — | 1 | — | — | — | — | — | 1 | — | — | — | — | 2 | Current monitor I²C SOIC-8 [Texas Instruments] | Yes | Pending |
 | PM: U13,U14,U17 | NL27WZ14DFT2G-Q | 488-NL27WZ14DFT2G-QCT-ND | 863-NL27WZ14DFT2G-Q | C24511261 | — | 3 | — | — | — | — | — | — | — | — | — | — | 3 | Dual Schmitt-trigger inverter SC-88 [onsemi] | Yes | Pending |
