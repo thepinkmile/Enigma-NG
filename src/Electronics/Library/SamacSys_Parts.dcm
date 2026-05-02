@@ -168,4 +168,119 @@ K
 F http://www.ti.com/lit/gpn/csd17578q5a
 $ENDCMP
 #
+$CMP CL32B226KAJNNNE
+D CAP CER 22UF 25V X7R 1210
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/Datasheets_SAMA/48329b07b10de63f31143e6cb641d9cc.pdf
+$ENDCMP
+#
+$CMP CGA9N3X7R1E476M230KB
+D Multilayer Ceramic Capacitors MLCC - SMD/SMT CGA 2220 25V 47uF X7R 20% AEC-Q200
+K
+F https://product.tdk.com/system/files/dam/doc/product/capacitor/ceramic/mlcc/catalog/mlcc_automotive_general_en.pdf
+$ENDCMP
+#
+$CMP C0805C105K5RACTU
+D SMD, MLCC, Temperature Stable, Class II
+K
+F https://www.yageogroup.com/content/datasheet/asset/file/KEM_C1002_X7R_SMD
+$ENDCMP
+#
+$CMP CL05B104KB5NNNC
+D 0.1 F +/-10% 50V Ceramic Capacitor X7R 0402 (1005 Metric)
+K
+F https://product.samsungsem.com/mlcc/CL05B104KB5NNN.do
+$ENDCMP
+#
+$CMP C0402C101K3RACAUTO
+D Multilayer Ceramic Capacitors MLCC - SMD/SMT 100V 100pF X8R 0402 5% AEC-Q200
+K
+F https://content.kemet.com/datasheets/KEM_C1091_C0G_ESD.pdf
+$ENDCMP
+#
+$CMP ADCR-T02R7SA256MB
+D CAP 25F 2.7V TH
+K
+F https://abracon.com/datasheets/ADCR-T02R7S.pdf
+$ENDCMP
+#
+$CMP CL10B223KB8WPNC
+D General Multilayer Ceramic Capacitors
+K
+F https://media.digikey.com/pdf/Data%20Sheets/Samsung%20PDFs/CL10B223KB8NNNC_Spec.pdf
+$ENDCMP
+#
+$CMP CC1206KKX7R8BB106
+D 10 F +/-10% 25V Ceramic Capacitor X7R 1206 (3216 Metric)
+K
+F https://www.yageo.com/upload/media/product/productsearch/datasheet/mlcc/UPY-GPHC_X7R_6.3V-to-50V_20.pdf
+$ENDCMP
+#
+$CMP CL05B103KB5NNNC
+D Samsung Electro-Mechanics 0402 CL 10nF Ceramic Multilayer Capacitor, 50 V, +125C, X7R Dielectric, +/-10% SMD
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/Datasheets-DGA10/2407958.pdf
+$ENDCMP
+#
+$CMP SMBJ18A-Q
+D SMBJ-Q Transient Voltage Suppressor Diode Series, Uni-Directional
+K
+F https://www.bourns.com/docs/Product-Datasheets/SMBJ-Q.pdf
+$ENDCMP
+#
+#
+$CMP 1123684-7
+D Conn Battery PL 10 POS 2.5mm Solder RA Thru-Hole 10 Terminal 1 Port Tray
+K
+F http://www.te.com/commerce/DocumentDelivery/DDEController?Action=srchrtrv&DocNm=1123684&DocType=Customer+Drawing&DocLang=English
+$ENDCMP
+#
+$CMP 43650-0519
+D Micro-Fit 3.0 Vertical Header, 3.00mm Pitch, Single Row, 5 Circuits, with PCB Press-fit Metal Retention Clip, Glow-Wire Capable, Black
+K
+F https://www.molex.com/pdm_docs/sd/436500218_sd.pdf
+$ENDCMP
+#
+$CMP USB4135-GF-A
+D USB Connectors USBC Rec GF RA 6P SMT-SMT stakes 3.16mm
+K
+F https://ar.mouser.com/datasheet/2/837/usb4135-2930399.pdf
+$ENDCMP
+#
+$CMP 7448031002
+D WE-CMBNC Common Mode Power Line Choke  Size M; L = 2 mH +/-50%; IR = 10 A; RDC = 6,3 m
+K
+F https://www.we-online.com/catalog/datasheet/7448031002.pdf
+$ENDCMP
+#
+$CMP SRP1265A-100M
+D Bourns SRP1265A Series Shielded Wire-wound SMD Inductor with a Carbonyl Powder Core, 10 uH 20% 10A Idc
+K
+F https://componentsearchengine.com/Datasheets/2/SRP1265A-100M.pdf
+$ENDCMP
+#
+$CMP BSS138LT1G
+D Low Threshold Voltage; Miniature SOT-23 Surface Mount Package; RoHS Compliant
+K
+F https://www.onsemi.com/pub/Collateral/BSS138LT1-D.PDF
+$ENDCMP
+#
+$CMP ERJ-3EKF2323V
+D Precision Thick Film Chip Resistor, 0603, 0.1W
+K
+F http://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C86.pdf
+$ENDCMP
+#
+$CMP ERJ-3EKF2872V
+D Precision Thick Film Chip Resistor, 0603, 0.1W
+K
+F http://industrial.panasonic.com/cdbs/www-data/pdf/RDA0000/AOA0000C86.pdf
+$ENDCMP
+#
+$CMP ERA-3VEB2100V
+D Chip Resistor 0603 (1608 Metric) Anti-Sulfur, Automotive AEC-Q200 Thin Film
+K
+F http://industrial.panasonic.com/cdbs/www-data/pdf/RDM0000/RDM0000C331.pdf
+$ENDCMP
+#
 #End Doc Library

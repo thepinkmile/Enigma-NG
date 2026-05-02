@@ -35,6 +35,7 @@ Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams
 | `cpld-production-replacement` | Review replacement CPLD for production stage (current MAX II EPM570 is a prototype-grade selection); update Certification Evidence §7.1 when confirmed | OA-04 | `design/Standards/Certification_Evidence.md` |
 | `connector-thermal-verification` | Thermal / current-capacity verification of active PM and Stator dock connectors (TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015`); document final derating rule for Certification Evidence §5 | OA-05 | `design/Standards/Certification_Evidence.md` |
 | `full-pn-review` | Full supplier PN review of all BOM entries before schematic capture — a prior session that reduced component package sizes appears to have corrupted supplier PNs on at least two components (ERJ-2RKF1001X, CL05B104KB5NNNC), substituting codes pointing to entirely different parts. A sweep of all DigiKey / Mouser / JLCPCB PNs against their MPNs is required before KiCAD work begins | — | 2026-05-02 supplier PN audit |
+| `footprint-requests-pending` | Footprints requested but not yet received; update BOM and library when each arrives: **BAT54** (Diotec SOT-23) — requested, **AC72ABD** (72°C SMD thermal cutoff) — requested, **BMC-Q2AY0600M** (TE 600Ω 0805 AEC-Q200 ferrite bead) — requested. Add further pending requests here as they arise | — | 2026-05-02 |
 
 ---
 
