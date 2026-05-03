@@ -21,7 +21,7 @@ Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams
 | ID | Description | Status | Source |
 | --- | --- | --- | --- |
 | `extension-mechanical-usage` | Detailed switch/linkage geometry for Extension boundary carry is still needed; architectural answer (shared AM) is locked but physical linkage spec is not | pending | `plan.md` |
-| `coupon-testing-review` | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware | pending | `plan.md` |
+| `coupon-testing-review` | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware. Depends on: `extension-mechanical-usage` (connector changes likely) | pending | `plan.md` |
 | `battery-connector-final-review` | Re-confirm Glenair `807-216-00ZNU6-6DY` contact assignment, `BATT_PRES_N` position, reserved-contact behaviour, cable selection, and interposer fit; check ODU AMC NP lead before closing | **🔒 blocked** — awaiting external supplier response | `plan.md` |
 | ~~`general-pin-mapping-schematic-capture`~~ | ✅ **COMPLETE** — Footprints now available in KiCAD library; schematic capture can begin | done | `plan.md` |
 | `rerun-deep-reviews` | Final pre-V1 cross-discipline deep-review cycle — run only once electrical, mechanical, and software work are complete and each board has a full KiCAD project with exported production Gerbers | pending | `plan.md` |
@@ -33,8 +33,8 @@ Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams
 | ID | Description | Status | Ref | Source |
 | --- | --- | --- | --- | --- |
 | `ctlh1-deferred` | Controller CTL-H1 finding: explicitly deferred by user during Pass 2 review cycle | ✅ DONE | — | Resolved checkpoint 076: R1/R2 stale placeholders removed; R3–R6 renumbered R1–R4 |
-| `rotor-power-analysis-ministack` | Recalculate Rotor `Board_Layout.md §7` power analysis for mini-stack architecture. Currently assumes a single daisy-chain of 30 rotors (worst-case J2 input 1.65 A at Rotor 1). Architecture uses mini-stacks of max 5 rotors with an Extension Board re-introducing clean 3V3_ENIG at each mini-stack start — worst case is now 5 × 55 mA = 275 mA. Update: worked example, inline table (Rotor 1/15/30 rows), trace width table §7.1, and §7.2 notes. Also verify Extension Board power re-injection connector sizing. | pending | — | `design/Electronics/Rotor/Board_Layout.md §7` |
-| `rotor-esd-tvs` | Rotor ESD TVS (PRTR5V0U10AZ): Section 6 placeholder retained; final sourcing pending. Depends on: `rotor-variant-refdes-schematic` | pending | — | `design/Electronics/Rotor/Design_Spec.md §6` |
+| `rotor-power-analysis-ministack` | Recalculate Rotor `Board_Layout.md §7` power analysis for mini-stack architecture. Currently assumes a single daisy-chain of 30 rotors (worst-case J2 input 1.65 A at Rotor 1). Architecture uses mini-stacks of max 5 rotors with an Extension Board re-introducing clean 3V3_ENIG at each mini-stack start — worst case is now 5 × 55 mA = 275 mA. Update: worked example, inline table (Rotor 1/15/30 rows), trace width table §7.1, and §7.2 notes. Also verify Extension Board power re-injection connector sizing. | ✅ DONE | DEC-053 | Checkpoint 098: power analysis rewritten for mini-stack; Extension connector under-spec discovered and resolved in checkpoint 099 (BHR-20-VUA → 2BHR-30-VUA) |
+| `rotor-esd-tvs` | ✅ **DONE.** PRTR5V0U10AZ placeholder superseded; TPD4E05U06QDQARQ1 selected (reused from PM/CTL — no new part). U5–U12 fully defined in Design_Spec.md §6 and Board_Layout.md. All supplier PNs in Consolidated BOM. | ✅ DONE | — | Resolved prior session; confirmed 2026-05-03 |
 | `rotor-variant-refdes-schematic` | ✅ **DONE.** Rotor variant A/B suffix convention agreed and implemented: U3→U3A, U4→U3B; all associated bypass caps (C16A/C17A/C16B/C17B) and resonant-tank components (C22A–C25A/C22B–C25B, L5A–L8A/L5B–L8B) renamed throughout Design_Spec.md, Board_Layout.md, Rotor_26_Char_Design.md, Rotor_64_Char_Design.md, and Consolidated_BOM.md. DEC-052 logged. KiCAD schematic will use U3A/U3B as unique RefDes with N26/N64 project variants selecting DNP flags. | ✅ DONE | DEC-052 | This session (2026-05-01); deferred until schematic capture |
 | `display-addon-board` | 🚫 **DEFERRED TO V2.0.** Display add-on board design: J9 (Amphenol F52Q) on Controller is the only fixed connector; display power, touch wiring, and auxiliary harness remain deferred with the add-on board definition | blocked | DEC-033 | `design/Electronics/Controller/Design_Spec.md §8` |
 | `cpld-production-replacement` | 🚫 **DEFERRED TO V2.0.** Review replacement CPLD for production stage (current MAX II EPM570 is a prototype-grade selection); update Certification Evidence §7.1 when confirmed | blocked | OA-04 | `design/Standards/Certification_Evidence.md` |
@@ -121,9 +121,9 @@ rotor-variant-refdes-schematic
                                                                     (also needs: da-01–da-04)
 
 v2.0 deferred (blocked): display-addon-board, display-aperture, cpld-production-replacement
-Currently ready (no pending deps): connector-thermal-verification, coupon-testing-review,
-  ctlh1-deferred, extension-mechanical-usage,
-  rotor-variant-refdes-schematic
+Currently ready (no pending deps): connector-thermal-verification, ctlh1-deferred,
+  extension-mechanical-usage, rotor-variant-refdes-schematic
+  [coupon-testing-review now depends on extension-mechanical-usage]
   [battery-connector-final-review excluded — 🔒 blocked awaiting supplier response]
   [prototype-pcb-manufacturing excluded — depends on rerun-deep-reviews]
   [release-candidate-production excluded — now depends on compliance-testing]
