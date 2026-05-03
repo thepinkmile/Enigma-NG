@@ -47,22 +47,23 @@ group without Controller-side live servo control.
 | DR-EXT-05 | Buffer output pin assignment | TCK → J4 pin 2; TMS → J4 pin 4 (per DEC-018 pinout) | §2 Connectivity; Design_Log.md DEC-018 |
 | DR-EXT-06 | Buffer bypass capacitor | C6 = 100 nF 0402 within 2 mm of U1 VCC pin (L1) | §4 PCB Fabrication & Stackup; BOM C6 (100nF X7R) |
 | DR-EXT-07 | System quantity | Up to ×5 Extension boards per system (Rev A power budget); Rev A prototype uses ×1 | §1 Overview; System_Architecture.md |
-| DR-EXT-08 | Extension Port connector family | J7/J8 = Adam Tech BHR-20-VUA / 2BHR-20-VUA 20-pin 2×10 shrouded headers | §2 Connectivity; BOM J7, J8 |
+| DR-EXT-08 | Extension Port connector family | J7/J8 = Adam Tech 2BHR-30-VUA 30-pin 2×15 shrouded headers. Per DEC-053 | §2 Connectivity; BOM J7, J8 |
 | DR-EXT-09 | Actuation Module power dock | J9 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J1 | §2 Connectivity; BOM J9 |
 | DR-EXT-10 | Actuation Module trigger dock | J10 = Samtec ERF8-005-05.0-S-DV-K-TR socket; host-side mating connector for AM J2 | §2 Connectivity; BOM J10 |
 | DR-EXT-11 | Actuation Module host envelope | The Extension area beneath the installed AM shall be a no-component placement zone except for J9 / J10 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure walls that would trap heat or obstruct service access | §2 Connectivity; `Board_Layout.md` |
-| DR-EXT-12 | 5V_MAIN entry decoupling bank | C7–C11 (5× 10µF X7R 25V 0805) shall be placed at the 5V_MAIN entry point (J7 pins 17/19) using a star/spoke topology matching the 3V3_ENIG entry bank (C1–C5); both rails must be locally decoupled at the Extension Port entry | §2 Connectivity; §5 Thermal & ESD; BOM C7–C11 |
+| DR-EXT-12 | 5V_MAIN entry decoupling bank | C7–C11 (5× 10µF X7R 25V 0805) shall be placed at the 5V_MAIN entry point (J7 pins 1–2 and 29–30) using a star/spoke topology matching the 3V3_ENIG entry bank (C1–C5); both rails must be locally decoupled at the Extension Port entry | §2 Connectivity; §5 Thermal & ESD; BOM C7–C11 |
 | DR-EXT-13 | ESD protection — rotor-facing BtB connectors | U2–U5 (J1/J3 in) + U6–U9 (J4/J6 out); 8× TPD4E05U06QDQARQ1 within 3mm of mating edge per DEC-048 | §5 Thermal & ESD; BOM U2–U9 |
 
 ## 2. Connectivity
 
-* **Extension Port (J7 IN / J8 OUT):** 20-pin 2×10 shrouded box header.
+* **Extension Port (J7 IN / J8 OUT):** 30-pin 2×15 shrouded box header.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
-  > This board uses the mating connector on both J7 and J8 (Adam Tech BHR-20-VUA / 2BHR-20-VUA — see BOM).
-  > Authoritative pinout: pins 1-16 preserve the existing reflector-boundary service bus
-  > (`3V3_ENIG`, `SYS_RESET_N`, `ENC_OUT_REF[5:0]`, `ENC_IN_REF[5:0]`, `TTD_RETURN`, `GND`);
-  > pins 17-20 add grouped `5V_MAIN` and extra return capacity for the local Actuation Module supply path.
-  > **Per DEC-043:** The Extension Port was widened from 16-pin to 20-pin to add `5V_MAIN` on pins 17–20.
+  > This board uses the mating connector on both J7 and J8 (Adam Tech 2BHR-30-VUA — see BOM).
+  > Authoritative pinout per DEC-053: `5V_MAIN` on pins 1–2 and 29–30, `3V3_ENIG` on pins 3–4 and 27–28,
+  > `ENC_OUT_REF[5:0]` on pins 7–12, `ENC_IN_REF[5:0]` on pins 19–24, `SYS_RESET_N` on pin 15,
+  > `TTD_RETURN` on pin 16, GND guard pairs on pins 5–6, 13–14, 17–18, 25–26.
+  > **Per DEC-043 then DEC-053:** The Extension Port was first widened from 16-pin to 20-pin (DEC-043)
+  > and then from 20-pin to 30-pin (DEC-053) to resolve a power current budget violation.
 * **Rotor Interface Connectors(3 per rotor-facing side × 2 sides = 6 connectors total):**
   The Extension board provides ERM8 male headers on the **input side** (J1–J3, plugging into the
   previous rotor group's last rotor J4/J5/J6 ERF8 output sockets) and ERF8 female sockets on the
@@ -82,13 +83,13 @@ group without Controller-side live servo control.
 
   > **J2 power pins (3V3_ENIG and GND) are not connected to the board power plane.** J2 is present
   > for mechanical engagement with the upstream rotor group only. The Extension board's sole power
-  > entry is J7 (Extension Port IN; `3V3_ENIG` on pin 1, `5V_MAIN` on pins 17/19, and returns on
-  > pins 16/18/20). This prevents a parallel power
+  > entry is J7 (Extension Port IN; `3V3_ENIG` on pins 3–4 and 27–28, `5V_MAIN` on pins 1–2 and 29–30,
+  > and GND returns on pins 5–6, 13–14, 17–18, 25–26). This prevents a parallel power
   > path / ground loop between the rotor daisy-chain and the Extension Port ribbon. C1–C5 (10µF × 5,
   > star/spoke) decouple `3V3_ENIG` at the J7 power entry. C7–C11 (10µF × 5, star/spoke) decouple
-  > `5V_MAIN` at the J7 power entry (pins 17/19), providing equivalent bulk buffering for both supply
+  > `5V_MAIN` at the J7 power entry (pins 1–2 and 29–30), providing equivalent bulk buffering for both supply
   > rails. `3V3_ENIG` is passed to the downstream rotor group via J5 (driven from J7), while `5V_MAIN`
-  > is used locally for the Extension-mounted Actuation Module and **forwarded to J8 pins 17/19** for
+  > is used locally for the Extension-mounted Actuation Module and **forwarded to J8 pins 1–2 and 29–30** for
   > the next Extension board in chain.
 
   **Note:** The ERM8/ERF8 0.8mm pitch is physically incompatible with 2.54mm connectors — label distinctly on silkscreen.
@@ -179,7 +180,7 @@ group without Controller-side live servo control.
   All arrays shall be placedwithin 3mm of their respective connector mating edge on L1.
 * **ESD — all other connectors (no TVS required):**
   * J2 (Power in, ERM8-005) and J5 (Power out, ERF8-005): power rail (3V3_ENIG / GND) only — no signal protection required (explicitly outside DEC-048 scope — power-only rails, no signal data).
-  * J7, J8 (Extension Port ribbons, BHR-20-VUA): internal IDC connectors; not accessible during live rotor swap.
+  * J7, J8 (Extension Port ribbons, 2BHR-30-VUA): internal IDC connectors; not accessible during live rotor swap.
   * J9, J10 (AM service docks, ERF8-005): service-only; not operator-swapped under live conditions (explicitly outside DEC-048 scope).
   Per `design/Standards/Global_Routing_Spec.md §9`.
 
@@ -193,6 +194,6 @@ group without Controller-side live servo control.
 | J3 | 20-pin 2x10 0.8mm male SMT | ERM8-010-05.0-S-DV-K-TR | Samtec | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | — | — | Yes | Pending | 1 |
 | J4, J5, J9, J10 | 10-pin 2x5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | — | Yes | Pending | 4 |
 | J6 | 20-pin 2x10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | — | — | Yes | Pending | 1 |
-| J7, J8 | 20-pin 2x10 2.54mm shrouded box THT | BHR-20-VUA | Adam Tech | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | Yes | Pending | 2 |
+| J7, J8 | 30-pin 2x15 2.54mm shrouded box THT | 2BHR-30-VUA | Adam Tech | 2057-2BHR-30-VUA-ND | 737-2BHR-30-VUA | C17346400 | — | Per DEC-053 | Yes | Pending | 2 |
 | U1 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | — | — | Yes | Pending | 1 |
 | U2-U9 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | — | Yes | Pending | 8 |

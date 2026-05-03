@@ -161,13 +161,20 @@ for user review rather than silently substituting an alternative.
 ## Repo-Local State Rules
 
 - `.copilot/` is tracked in git and must stay in sync with meaningful design-state changes.
-- At session start, read `.copilot/plan.md`, `.copilot/handoff.md`, and the latest relevant
-  checkpoint(s) in `.copilot/checkpoints/`.
+- At session start, read `.copilot/agent-directives.md` **first**, then `.copilot/plan.md`,
+  `.copilot/handoff.md`, and the latest relevant checkpoint(s) in `.copilot/checkpoints/`.
+  Load each directive into memory as a standing rule before performing any other work.
 - A checkpoint is not complete until all of these are updated and consistent:
   - the new checkpoint file in `.copilot/checkpoints/`
   - `.copilot/checkpoints/index.md`
   - `.copilot/plan.md`
   - `.copilot/handoff.md`
+- **Checkpoint numbering:** Repo-local checkpoint files **must always be numbered consecutively**.
+  The CLI agent may take more checkpoints internally than the user explicitly requests, but every
+  checkpoint written to `.copilot/checkpoints/` gets the next available integer after the current
+  highest-numbered file in that folder. Check the folder before writing a new checkpoint and use
+  `max_existing_number + 1` as the new number. Never skip numbers or use session-internal counters
+  as the file number.
 - Sanitize all `.copilot/` content for version control: use repo-relative paths or
   `%USERPROFILE%` placeholders instead of machine-specific absolute paths. Do not persist raw
   usernames or session IDs.

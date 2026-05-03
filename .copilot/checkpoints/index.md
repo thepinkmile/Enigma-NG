@@ -101,3 +101,5 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 95 | Connector derating analysis complete | 095-connector-derating-complete.md |
 | 96 | Rotor variant RefDes renames complete | 096-rotor-variant-refdes-complete.md |
 | 97 | Rotor RefDes consecutive renumber complete | 097-rotor-refdes-consecutive-renumber.md |
+| 98 | Rotor & Extension power analysis rewritten for mini-stack | 098-rotor-extension-power-analysis.md |
+| 99 | Extension Port 30-pin connector change applied | 099-extension-port-30-pin-connector-applied.md |

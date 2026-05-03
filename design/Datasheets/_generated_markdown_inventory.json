@@ -17,6 +17,11 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "2bhr-xx-vua-data-sheet.pdf",
+      "markdown": "2bhr-xx-vua-data-sheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "74HC_HCT157_Q100-datasheet.pdf",
       "markdown": "74HC_HCT157_Q100-datasheet.md",
       "mapping_type": "same_stem"
@@ -453,11 +458,13 @@
     }
   ],
   "pdf_only": [
+    "TE-1-1674231-1-product-specification.pdf",
     "TI-csd17578q5a-datasheet.pdf"
   ],
   "markdown_only": [
     "Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md",
     "Intel-EPM570T100I5N-datasheet.md",
-    "SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md"
+    "SaiBuy_Ltd_6p35mm_Mono_Jack_Pseudo_Datasheet.md",
+    "TE-108-5775-product-specification.md"
   ]
 }

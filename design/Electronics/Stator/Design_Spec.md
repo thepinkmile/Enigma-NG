@@ -24,7 +24,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | FR-STA-01 | Serve as the removable mechanical and electrical backplane for the 30-rotor stack | Provides all power, JTAG, and data connectivity to rotors | §2 Core Features; BOM J1–J3 (ERF8 rotor sockets) |
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor slots simultaneously | Via 2oz copper pour on L3 | §2 Core Features; §3 Encryption & JTAG Hub; BOM L1–L4 (ferrite beads) |
 | FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor slots in sequence | Serial daisy-chain; Stator CPLD is device 1 | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
-| FR-STA-04 | Receive `TTD_RETURN` from the Reflector and feed the reflector / extension service harness | Via J10 (Adam Tech `BHR-20-VUA` 20-pin reflector / extension port) into the `J12` logic dock return path, while also exporting grouped `5V_MAIN` for Extension-local actuation | §3 Encryption & JTAG Hub; BOM J10, R2 (10kΩ pull-up) |
+| FR-STA-04 | Receive `TTD_RETURN` from the Reflector and feed the reflector / extension service harness | Via J10 (Adam Tech `2BHR-30-VUA` 30-pin reflector / extension port) into the `J12` logic dock return path, while also exporting grouped `5V_MAIN` for Extension-local actuation | §3 Encryption & JTAG Hub; BOM J10, R2 (10kΩ pull-up) |
 | FR-STA-05 | Interface with up to 6 Encoder Modules via IDC ribbon cables; route a single 6-bit `ENC_DATA[5:0]` service bus through one HID encode path, one HID decode path, and two configurable plugboard passes, plus a HID-local `ENC_ACTIVE_N` sideband | Bank 1 = `KBD_ENC` + `LBD_DEC`; Bank 2 = `PLG_PASS1_DEC` + `PLG_PASS1_ENC`; Bank 3 = `PLG_PASS2_DEC` + `PLG_PASS2_ENC`; Stator owns the fixed per-port aliases and forwards `ENC_ACTIVE_N` only for the HID bank | §3 Plugboard Routing; §4 Interconnects; BOM J4–J9 (20-pin IDC) |
 | FR-STA-06 | Host a CPLD as the first device in the system JTAG chain | Intel MAX II EPM570 (570 LEs required for startup-loaded reflector map registers + routing matrix) | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | FR-STA-07 | Connect to the Controller Board via two hybrid blind-mate dock connectors | `J11` = 5V-biased power dock; `J12` = 3V3/JTAG/I2C dock | §4 Interconnects; BOM J11, J12 |
@@ -43,7 +43,7 @@ The Stator Board is the mechanical and electrical backbone of the rotor stack. I
 | DR-STA-02 | Layer mapping | L1 = Signal (JTAG/routing), L2 = GND, L3 = 3V3_ENIG, L4 = ENC Data | §1 Overview |
 | DR-STA-03 | Rotor interface (per slot) | J1 = ERF8-005 (JTAG), J2 = ERF8-005 (Power), J3 = ERF8-010 (ENC); 1 slot set | §4 Interconnects; BOM J1–J3 (ERF8-005/ERF8-010) |
 | DR-STA-04 | Encoder interface | J4/J5/J6/J7/J8/J9 = 20-pin 2×10 IDC (6 fixed-role encoder ports in 3 banks of 2) carrying generic Encoder `ENC_DATA[5:0]`, `ENC_ACTIVE_N`, and Stator-owned aliases | §4 Interconnects; BOM J4–J9 |
-| DR-STA-05 | Reflector / Extension service connector | J10 = Adam Tech `BHR-20-VUA` / `2BHR-20-VUA` 20-pin 2×10 shrouded header; `TTD_RETURN` on pin 15, legacy logic bus preserved on pins 1-16, grouped `5V_MAIN` added on pins 17/19 with returns on 18/20 | §3 Encryption & JTAG Hub; BOM J10 |
+| DR-STA-05 | Reflector / Extension service connector | J10 = Adam Tech `2BHR-30-VUA` 30-pin 2×15 shrouded header; `TTD_RETURN` on pin 16, `SYS_RESET_N` on pin 15, `ENC_OUT_REF[5:0]` on pins 7–12, `ENC_IN_REF[5:0]` on pins 19–24, `3V3_ENIG` on pins 3–4 and 27–28, `5V_MAIN` on pins 1–2 and 29–30. Per DEC-053 | §3 Encryption & JTAG Hub; BOM J10 |
 | DR-STA-06 | Controller dock connectors | `J11/J12` = Molex `2195620015` hybrid plugs mating with Controller `2195630015` receptacles | §4 Interconnects; BOM J11, J12 |
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240 (drop-in); 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 Encryption & JTAG Hub; BOM U1 (EPM570T100I5N) |
 | DR-STA-08 | Power monitoring | INA219 current sensor; shunt R1 = CSS2H-2512R-R010ELF (10mΩ 2512 Kelvin), sized for the 2.05 A worst-case typical stack load | §5 Power Telemetry; BOM U2 (INA219AIDR), R1 (CSS2H 10mΩ shunt) |
@@ -285,8 +285,7 @@ remains hard-wired active and `KEY_CM5_ACTIVE` continues to occupy GPA[6].
   The Stator CPLD implements all 16 configurations as synthesised VHDL case logic. See
   `design/Electronics/Stator/Board_Layout.md` and `design/Electronics/Encoder/Design_Spec.md §1`
   for further detail.
-* **Reflector/Extension Interconnect:** 20-pin (2x10) Vertical Shrouded Header (legacy reflector
-  service bus on pins 1-16 plus grouped `5V_MAIN` on pins 17/19 for Extension-local actuation).
+* **Reflector/Extension Interconnect:** 30-pin (2×15) Vertical Shrouded Header (symmetric pinout: `5V_MAIN` outer pair, `3V3_ENIG` inner pair, signal group flanked by GND guard pairs). Per DEC-053.
   * **Routing:** Cables secured to the chassis floor with conductive EMI tape.
   * Extension boards enable daisy chaining this interconnect (to enable multi-stack rotor configurations).
   * **Cross-ref:** For matching interconnect pinouts on power (3V3_ENIG/GND), SYS_RESET_N,
@@ -295,15 +294,15 @@ remains hard-wired active and `KEY_CM5_ACTIVE` continues to occupy GPA[6].
     * `Extension/Design_Spec.md`
     * `Reflector/Design_Spec.md`
   * **Reflector boundary aliases (bidirectional — simultaneous):** J10 carries the Stator-owned
-    reflector aliases on two separate pin groups simultaneously. `ENC_IN_REF[5:0]` (pins 9–14)
+    reflector aliases on two separate pin groups simultaneously. `ENC_IN_REF[5:0]` (pins 19–24)
     returns the reflected signal from the Reflector chain to the Stator CPLD (Step 2 receive in the
-    routing matrix). `ENC_OUT_REF[5:0]` (pins 3–8) carries the return-pass signal driven by the
+    routing matrix). `ENC_OUT_REF[5:0]` (pins 7–12) carries the return-pass signal driven by the
     Stator CPLD back to the Reflector chain after optional plugboard insertion (Step 2 drive — starts
     the return pass through the rotor stack).
 * **Rotor Interconnect:** The Stator provides 1 rotor slot (Rotor 1 input side) using 3 ERF8 female sockets.
   * **JTAG:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — TCK, TMS, TTD (TDI function on input side),
     SYS\_RESET\_N with interleaved GND. **J1 pin 6 = TTD** (outgoing TDI to Rotor 1).
-    Pin 10 = spare/GND (TDO does NOT return via this connector — it returns via J10 pin 15).
+    Pin 10 = spare/GND (TDO does NOT return via this connector — it returns via J10 pin 16).
   * **Power:** ERF8-005-05.0-S-DV-K-TR (10-pin 2×5, 0.8mm pitch) — 5× 3V3\_ENIG, 5× GND. Same part as JTAG socket.
   * **ENC DATA (bidirectional):** ERF8-010-05.0-S-DV-K-TR (20-pin 2×10, 0.8mm pitch) —
     `ENC_OUT_ROT[5:0]` (CPLD drives to Rotor 1, forward pass — Step 1 drive);
@@ -370,7 +369,7 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 * **ESD — all other connectors (no TVS required):**
   * J2 (Power, ERF8-005): power rail (3V3_ENIG / GND) only — no signal protection required.
   * J4–J9 (Encoder ribbon IDC ports): internal connectors; not accessible during live rotor swap.
-  * J10 (Extension Port ribbon, BHR-20-VUA): internal; not accessible during live rotor swap.
+  * J10 (Extension Port ribbon, 2BHR-30-VUA): internal; not accessible during live rotor swap.
   * J11, J12 (Controller dock, Molex 2195620015): blind-mate dock; not operator-accessible under live conditions.
   * J13 (Settings harness, JST PH): internal harness; not accessible during live rotor swap.
   Per `design/Standards/Global_Routing_Spec.md §9`.
@@ -383,7 +382,8 @@ full-system I²C allocation is defined in `Controller/Design_Spec.md §4.1`.
 | C9-C13, C22-C26 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 10 |
 | J1, J2 | 10-pin 2x5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | — | — | Yes | Pending | 2 |
 | J3 | 20-pin 2x10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | — | — | Yes | Pending | 1 |
-| J4-J10 | 20-pin 2x10 2.54mm shrouded THT | BHR-20-VUA | Adam Tech | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | Yes | Pending | 7 |
+| J4-J9 | 20-pin 2x10 2.54mm shrouded THT | BHR-20-VUA | Adam Tech | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | Yes | Pending | 6 |
+| J10 | 30-pin 2x15 2.54mm shrouded THT | 2BHR-30-VUA | Adam Tech | 2057-2BHR-30-VUA-ND | 737-2BHR-30-VUA | C17346400 | — | Per DEC-053 | Yes | Pending | 1 |
 | J11, J12 | 5 power + 15 signal hybrid plug | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | — | Global sourcing | — | Yes | Pending | 2 |
 | J13 | 6-pin JST PH 2.0mm THT | B6B-PH-K-S(LF)(SN) | JST | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | — | — | Yes | Pending | 1 |
 | L1-L4 | 120Ω @100MHz 4.0A 1206 | HI1206P121R-10 | Laird Performance Materials | 240-2410-1-ND | 875-HI1206P121R-10 | C2442103 | — | — | Yes | Pending | 4 |

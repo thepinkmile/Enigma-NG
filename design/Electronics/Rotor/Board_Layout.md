@@ -204,7 +204,7 @@ ERF8 sockets on the output side (J4–J6). See `Rotor/Design_Spec.md §3.4` for 
 
 TTD (JTAG Transmission Data) does not chain back through the Extension Port individually per rotor. Each
 rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Rotor J1 pin 6. Only **Rotor 30**
-(last in chain) routes its TDO via the Reflector back to Stator J10 pin 15 as TTD_RETURN.
+(last in chain) routes its TDO via the Reflector back to Stator J10 pin 16 as TTD_RETURN.
 
 ---
 
@@ -260,18 +260,23 @@ See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Rotor power analysis (pass-through sizing):**
 Each rotor draws 50 mA (EPM570) + 2 × 2.1 mA (FDC2114 pair U2/U3B or U2/U3A) = **54.2 mA ≈ 55 mA** locally.
-The J2 power input connector daisy-chains 3V3_ENIG through J5 to the next rotor. All 30 rotor PCBs
-are **identical**, so traces must be sized for the worst case — **Rotor 1**, which receives
-Using the 55 mA design budget, Rotor 1 carries **1.65 A** through its J2 connector and passes
-29 × 55 mA = **1.60 A** to Rotor 2 via J5.
+The J2 power input connector daisy-chains 3V3_ENIG through J5 to the next rotor within the same
+mini-stack. Each mini-stack contains a maximum of **5 rotors**; 3V3_ENIG is re-injected fresh at
+each mini-stack boundary by an Extension Board (via its J5, fed from the Extension Port J7).
+All rotor PCBs are **identical**, so traces must be sized for the worst case — **Rotor 1** of any
+mini-stack, which receives power for all 5 rotors in its group.
+Using the 55 mA design budget, Rotor 1 carries **275 mA** through its J2 connector and passes
+4 × 55 mA = **220 mA** to Rotor 2 via J5.
 
-| Rotor position | J2 input current | Local draw | J5 output current |
+| Rotor position in mini-stack | J2 input current | Local draw | J5 output current |
 | :--- | :--- | :--- | :--- |
-| Rotor 1 (worst case) | 1.65 A | 55 mA | 1.60 A |
-| Rotor 15 (mid-stack) | 0.88 A | 55 mA | 0.83 A |
-| Rotor 30 (last) | 55 mA | 55 mA | 0 A |
+| Rotor 1 (worst case) | 275 mA | 55 mA | 220 mA |
+| Rotor 3 (mid-stack) | 165 mA | 55 mA | 110 mA |
+| Rotor 5 (last in mini-stack) | 55 mA | 55 mA | 0 A |
 
-IPC calculation for worst-case 1.65 A at 2oz external: 1.65 × 0.15 mm = 0.25 mm → **0.80 mm** (3V3_ENIG canonical width per Global_Routing_Spec §1.1; consistent with PM and Stator 3V3_ENIG trunk traces).
+IPC calculation for worst-case 275 mA at 2oz external: 0.275 × 0.15 mm = 0.04 mm → **0.80 mm**
+(3V3_ENIG canonical width per Global_Routing_Spec §1.1; consistent with PM, Stator, and Extension
+Board 3V3_ENIG trunk traces).
 
 ### 7.1 Trace Width Table
 
@@ -280,8 +285,8 @@ IPC calculation for worst-case 1.65 A at 2oz external: 1.65 × 0.15 mm = 0.25 mm
 | Signal (ENC_IN/OUT, FDC2114 I2C SDA/SCL, SYS_RESET_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic; CPLD data I/O; I2C to FDC2114 capacitive encoder; SYS_RESET_N is a slow-logic CPLD reset sourced from Stator U7 GPA[7] — not a CI signal |
 | JTAG signals: TCK, TMS, TTD in/out (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. |
 | 3V3_ENIG local draw (J2 → CPLD + FDC2114 supply) | 55 mA | 0.008 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); local IC supply only |
-| 3V3_ENIG pass-through rail (J2 input → J5 output bus) | 1.65 A (Rotor 1 budget) | 0.25 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 3V3_ENIG trunk width (Global_Routing_Spec §1.1); Rotor 1 worst case; feeds L3 pour via thermal vias between J2 and J5 |
-| 3V3_ENIG distribution (inner power pour) | up to 1.65 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution across the board |
+| 3V3_ENIG pass-through rail (J2 input → J5 output bus) | 275 mA (Rotor 1 of mini-stack; 5 rotors max) | 0.04 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 3V3_ENIG trunk width (Global_Routing_Spec §1.1); Rotor 1 worst case for a 5-rotor mini-stack; feeds L3 pour via thermal vias between J2 and J5 |
+| 3V3_ENIG distribution (inner power pour) | up to 275 mA | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution across the board |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
 
 ### 7.2 Notes
@@ -293,8 +298,10 @@ IPC calculation for worst-case 1.65 A at 2oz external: 1.65 × 0.15 mm = 0.25 mm
   Source impedance ≈ 95 Ω targeting the ~100 Ω inter-rotor Stator PCB segment. Trace from R1 to
   J4 kept < 5 mm and routed at 0.127 mm consistent with the CI chain.
 * **3V3_ENIG power rail:** The L3 copper pour is the primary current path. L1 surface traces at
-  0.80 mm connect J2/J5 connector pads to the L3 pour via thermal vias. All 30 rotor boards share
-  the same PCB layout — the 1.65 A worst-case sizing ensures safe operation at every stack position.
+  0.80 mm connect J2/J5 connector pads to the L3 pour via thermal vias. All rotor boards share
+  the same PCB layout — the 0.80 mm canonical width provides substantial margin above the 275 mA
+  mini-stack worst case (IPC minimum: 0.04 mm). 3V3_ENIG is re-injected at each mini-stack boundary
+  by an Extension Board, so no rotor ever passes more than 5 × 55 mA = 275 mA through J2.
 
 ---
 

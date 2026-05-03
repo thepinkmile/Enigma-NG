@@ -3074,6 +3074,83 @@ sequence is kept consecutive with no gaps.
 
 ---
 
+## DEC-053 — Extension Port Connector Upgraded from BHR-20-VUA (20-pin) to 2BHR-30-VUA (30-pin)
+
+- **Status:** Active
+- **Date:** 2025-07-10
+- **Category:** Electrical / Connector Selection
+- **Area:** Extension Port — Stator J10, Reflector J4, Extension J7/J8
+
+### Decision
+
+Replace the Adam Tech BHR-20-VUA (20-pin 2×10) with the Adam Tech 2BHR-30-VUA (30-pin 2×15) on
+all Extension Port instances (Stator J10, Reflector J4, Extension J7, Extension J8). The approved
+30-pin pinout is symmetric end-to-end:
+
+| Pin | Signal | Pin | Signal |
+| --- | ------ | --- | ------ |
+| 1 | 5V_MAIN | 2 | 5V_MAIN |
+| 3 | 3V3_ENIG | 4 | 3V3_ENIG |
+| 5 | GND | 6 | GND |
+| 7 | ENC_OUT_REF[0] | 8 | ENC_OUT_REF[1] |
+| 9 | ENC_OUT_REF[2] | 10 | ENC_OUT_REF[3] |
+| 11 | ENC_OUT_REF[4] | 12 | ENC_OUT_REF[5] |
+| 13 | GND | 14 | GND |
+| 15 | SYS_RESET_N | 16 | TTD_RETURN |
+| 17 | GND | 18 | GND |
+| 19 | ENC_IN_REF[0] | 20 | ENC_IN_REF[1] |
+| 21 | ENC_IN_REF[2] | 22 | ENC_IN_REF[3] |
+| 23 | ENC_IN_REF[4] | 24 | ENC_IN_REF[5] |
+| 25 | GND | 26 | GND |
+| 27 | 3V3_ENIG | 28 | 3V3_ENIG |
+| 29 | 5V_MAIN | 30 | 5V_MAIN |
+
+The layout is symmetric: columns 1↔15, 2↔14, 3↔13 are identical; the signal blocks
+(ENC_OUT pins 7–12, ENC_IN pins 19–24) are positionally mirrored about the centre pair
+(pins 15–16). A keyed (polarised) variant is retained. The connector is from the same Adam Tech
+BHR/2BHR series as the previous BHR-20-VUA (same 3 A/pin contact rating, same housing family).
+
+### Rationale
+
+Current-capacity analysis of the 20-pin connector revealed three worst-case violations at full system
+build (30 rotors, 5 Extension boards) against the IPC-2221 28 AWG IDC ribbon limit of ~1 A/conductor:
+
+- `3V3_ENIG`: 30 × 55 mA = **1.65 A** via a single pin → 1.65 A/conductor — exceeds limit.
+- `5V_MAIN`: 5 extensions × 500 mA = **2.50 A** via 2 pins → 1.25 A/conductor — exceeds limit.
+- `GND` return: 4.15 A total via 2 dedicated GND pins → 2.08 A/conductor — exceeds limit.
+
+The 30-pin connector resolves all three:
+
+- `3V3_ENIG`: 1.65 A ÷ 4 pins = **0.41 A/conductor** ✅
+- `5V_MAIN`: 2.50 A ÷ 4 pins = **0.63 A/conductor** ✅
+- `GND` return: 4.15 A ÷ 8 pins = **0.52 A/conductor** ✅
+
+All rails are within the 1 A/conductor 28 AWG IDC ribbon limit. The 2BHR-30-VUA connector pin rating
+(3 A/pin) is not the binding constraint; the IDC ribbon cable is. The symmetric, mirrored layout
+satisfies an aesthetic consistency preference.
+
+### Approved Part Numbers — 2BHR-30-VUA
+
+| Supplier | Part Number |
+| --- | --- |
+| DigiKey | `2057-2BHR-30-VUA-ND` |
+| Mouser | `737-2BHR-30-VUA` |
+| JLCPCB | `C17346400` |
+
+### Impact
+
+- `design/Electronics/Stator/Board_Layout.md §1 J10` — authoritative pinout rewritten to 30-pin; pending-review note removed.
+- `design/Electronics/Stator/Design_Spec.md` — FR-STA-04, DR-STA-05, §4 Interconnects, §8 ESD, BOM updated.
+- `design/Electronics/Extension/Board_Layout.md` — §2/§3 section headings, cross-reference notes, §5/§5.2 power notes, §7 ESD reference updated.
+- `design/Electronics/Extension/Design_Spec.md` — DR-EXT-08, DR-EXT-12, §2 Connectivity pin references, §5 ESD reference, BOM J7/J8 updated.
+- `design/Electronics/Reflector/Design_Spec.md` — DR-REF-03, §2/§3 connector descriptions, JTAG warning block pin references, §4 power entry note, BOM J4 updated.
+- `design/Electronics/Consolidated_BOM.md` — BHR-20-VUA row split; new 2BHR-30-VUA row added.
+- `design/Electronics/System_Architecture.md` — JTAG chain diagram pin references updated.
+- `design/Electronics/Investigations/JTAG_Integrity.md` — TTD_RETURN ribbon diagram pin references updated.
+- `design/Electronics/Rotor/Board_Layout.md` — TTD_RETURN routing note updated.
+
+---
+
 ## Open Questions
 
 Questions raised during design review that are deferred pending further investigation or a future decision.

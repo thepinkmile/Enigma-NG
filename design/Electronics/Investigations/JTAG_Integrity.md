@@ -67,8 +67,8 @@ Stator CPLD (U1)
             │                               *** JTAG CHAIN END ***
             │                               R1 22Ω — end-of-chain TDO series damping
             │
-            └─▶ TTD_RETURN ribbon: Reflector J4 pin 15 ──▶ Stator J10 pin 15
-                (J4 also carries `ENC_OUT_REF[5:0]` / `ENC_IN_REF[5:0]` on pins 3–14 for
+            └─▶ TTD_RETURN ribbon: Reflector J4 pin 16 ──▶ Stator J10 pin 16
+                (J4 also carries `ENC_OUT_REF[5:0]` on pins 7–12 and `ENC_IN_REF[5:0]` on pins 19–24 for
                  the Stator CPLD reflector-boundary path — these are NOT part of the JTAG chain)
                 Stator J10 → Controller-facing `J5/J12` `TTD_RETURN` path → FT232H
 ```
@@ -89,7 +89,7 @@ end-of-chain damping) and returns to the Stator on the dedicated ribbon cable (R
 Stator J10).
 
 > ⚠️ **Do not confuse the Reflector J4 ribbon cable with the JTAG chain.** The ribbon carries
-> TTD_RETURN (JTAG TDO return, pin 15) AND ENC_IN/ENC_OUT (plugboard configuration, pins 3–14).
+> TTD_RETURN (JTAG TDO return, pin 16) AND ENC_IN/ENC_OUT (plugboard configuration, ENC_OUT_REF pins 7–12 / ENC_IN_REF pins 19–24).
 > The ENC signals are a separate Stator CPLD interface for configuring plugboard pass positions.
 > The JTAG chain terminates at the Reflector — it does NOT continue on this ribbon cable.
 

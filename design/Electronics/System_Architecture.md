@@ -182,8 +182,8 @@ Controller J5
   -> Stator J1 pin 6 (TTD out)
   -> Rotor 1 ... Rotor 30
   -> Reflector J1 pin 6 (TTD in)
-  -> Reflector J4 pin 15 (TTD_RETURN)
-  -> Stator J10 pin 15
+  -> Reflector J4 pin 16 (TTD_RETURN)
+  -> Stator J10 pin 16
   -> Controller J5
 ```
 

@@ -98,12 +98,13 @@ Recent locked work:
 
 ## Next Session Start Point
 
-Start the next clean session by reading:
+Start the next clean session by reading **in this order**:
 
-1. `.copilot/plan.md`
-2. `.copilot/handoff.md`
-3. `.copilot/todo-list.md` — canonical deferred-work and open-action tracker for the project
-4. `.copilot/checkpoints/153-settings-board-rename-complete.md` (latest checkpoint)
+1. `.copilot/agent-directives.md` — **load every directive as a standing memory rule before any other work**
+2. `.copilot/plan.md`
+3. `.copilot/handoff.md`
+4. `.copilot/todo-list.md` — canonical deferred-work and open-action tracker for the project
+5. `.copilot/checkpoints/099-extension-port-30-pin-connector-applied.md` (latest checkpoint)
 
 `Settings_Board` → `User_Settings_Module` rename complete and committed (DEC-051).
 Before next steps:

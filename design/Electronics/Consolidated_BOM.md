@@ -126,7 +126,8 @@
 | ENC: J3-J66 | 1285-ST | 36-1285-ST-ND | 534-1285-ST | C5370868 | — | — | — | — | — | 64 | — | — | — | — | — | — | 64 | 6.35mm PCB spade blade terminals THT vertical [Keystone Electronics] | Yes | Pending |
 | ENC: D1; AM: D1-D3 | 150060VS75000 | 732-4980-1-ND | 710-150060VS75000 | C6848499 | — | — | — | — | — | 1 | 3 | — | — | — | — | — | 4 | Green SMD LED VfÔëê2.0V 0402 [Würth Elektronik] | Yes | ✔ |
 | ENC: J1 | (no standard MPN) | — | — | — | eBay SaiBuy.Ltd | — | — | — | — | 1 | — | — | — | — | — | — | 1 | 6.35mm mono jack sockets panel-mount [generic]; eBay SaiBuy.Ltd | N/A | N/A |
-| ENC: J2; STA: J4-J10; REF: J4; EXT: J7,J8 | BHR-20-VUA | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | — | — | — | 1 | — | 7 | 1 | 2 | — | — | 11 | 20-pin 2x10 2.54mm shrouded box THT [Adam Tech] | Yes | ✔ |
+| ENC: J2; STA: J4-J9 | BHR-20-VUA | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | — | — | — | 1 | — | 6 | — | — | — | — | 7 | 20-pin 2x10 2.54mm shrouded box THT [Adam Tech] | Yes | ✔ |
+| STA: J10; REF: J4; EXT: J7,J8 | 2BHR-30-VUA | 2057-2BHR-30-VUA-ND | 737-2BHR-30-VUA | C17346400 | — | — | — | — | — | — | — | 1 | 1 | 2 | — | — | 4 | 30-pin 2x15 2.54mm shrouded box THT [Adam Tech]. Per DEC-053 | No | Pending |
 | ENC: R1; AM: R1-R3 | ERJ-2RKF3300X | P330LCT-ND | 667-ERJ-2RKF3300X | C278592 | — | — | — | — | — | 1 | 3 | — | — | — | — | — | 4 | 330Ω 1% 0402 [Panasonic] | Yes | ✔ |
 | ENC: R6; STA: R7-R12,R27-R38 | ERJ-2RKF75R0X | P75.0LCT-ND | 667-ERJ-2RKF75R0X | C413061 | — | — | — | — | — | 1 | — | 18 | — | — | — | — | 19 | 75Ω 1% 0402 [Panasonic] | Yes | ✔ |
 | ENC: SW1-SW40 | (no standard MPN) | — | — | — | eBay gadgetskingdom | — | — | — | — | 40 | — | — | — | — | — | — | 40 | DPDT 6-pin momentary switches panel-mount [generic]; eBay gadgetskingdom | N/A | N/A |

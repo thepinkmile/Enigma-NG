@@ -15,7 +15,7 @@
 TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
  _____________________________________________________________________________
 |                                                                             |
-|   [ J7: EXTENSION PORT IN ] <--- 20-pin 2×10 shrouded, from previous stage  |
+|   [ J7: EXTENSION PORT IN ] <--- 30-pin 2×15 shrouded, from previous stage  |
 |                                                                             |
 |   [ BULK DECOUPLING ] <--- 5x 10uF X7R star/spoke near J7                   |
 |                                                                             |
@@ -25,7 +25,7 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 |   [ JTAG BUFFER (U1) ] <--- SN74LVC2G125DCUR, TCK+TMS re-drive for output   |
 |   [ J9 / J10: AM HOST DOCKS ] <--- Power + Trigger sockets for shared AM    |
 |                                                                             |
-|   [ J8: EXTENSION PORT OUT ] <--- 20-pin 2×10 shrouded, to next stage       |
+|   [ J8: EXTENSION PORT OUT ] <--- 30-pin 2×15 shrouded, to next stage       |
 |                                                                             |
 |   [ DATA PLATE ] <--- Inverted White Silkscreen on L4                       |
 |_____________________________________________________________________________|
@@ -33,16 +33,17 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper / ENIG
 
 ---
 
-## 2. J7 — Extension Port IN (20-Pin 2×10)
+## 2. J7 — Extension Port IN (30-Pin 2×15)
 >
 > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J7. See BOM for part number.
-> Authoritative pinout: pins 1-16 preserve the existing reflector-boundary service bus; pins 17-20 add
-> `5V_MAIN`, `GND`, `5V_MAIN`, `GND` for local actuation power.
+> Authoritative pinout per DEC-053: 30-pin 2×15 symmetric layout; `5V_MAIN` on pins 1–2 and 29–30,
+> `3V3_ENIG` on pins 3–4 and 27–28, `ENC_OUT_REF[5:0]` on pins 7–12, `ENC_IN_REF[5:0]` on pins 19–24,
+> `SYS_RESET_N` on pin 15, `TTD_RETURN` on pin 16, and GND guard pairs on pins 5–6, 13–14, 17–18, 25–26.
 
 ---
 
-## 3. J8 — Extension Port OUT (20-Pin 2×10)
+## 3. J8 — Extension Port OUT (30-Pin 2×15)
 >
 > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
 > This board uses the mating connector on J8. Carries the same signals as J7, passed through.
@@ -90,11 +91,16 @@ For 2oz external: ~0.15 mm/A. The 3V3_ENIG inner pour (L3) carries the bus curre
 See Global_Routing_Spec.md §1.1 for the full current-category table.
 
 **Extension board power pass-through analysis:**
-The Extension board passes `3V3_ENIG` from its J7 input to the next rotor group (up to 5 rotors ×
-55 mA = 275 mA local group draw plus remaining upstream groups), and now also receives a grouped
-`5V_MAIN` feed for the local Actuation Module.
-Worst-case: first Extension board (Rotor group 2) passes power for Rotors 6–30 = 25 rotors × 55 mA = 1.38 A through its J5 output.
-All Extension boards share an identical PCB layout; traces must be sized for the worst case — the first Extension board in the stack.
+The Extension Board passes `3V3_ENIG` to the downstream rotor mini-stack via its **J5** output
+(5 rotors × 55 mA = **275 mA** maximum). Separately, `3V3_ENIG` is forwarded via the Extension
+Port (**J7 → J8**) to power further Extension Boards and their mini-stacks downstream in the chain.
+The Extension Board also receives a `5V_MAIN` feed via J7 for the local Actuation Module, forwarded
+to J8 for the next Extension Board.
+
+Worst-case J7 design current: the Extension Port connector is sized to supply the full 30-rotor
+system — **30 rotors × 55 mA = 1.65 A** design budget (intentional over-spec to ensure any future
+stacking architecture chosen during the `extension-mechanical-usage` design phase is fully
+supported). All Extension boards share an identical PCB layout; traces are sized for this budget.
 
 ### 5.1 Trace Width Table
 
@@ -102,9 +108,10 @@ All Extension boards share an identical PCB layout; traces must be sized for the
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Signal (ENC_IN/OUT, SYS_RESET_N, ACTUATE_REQUEST) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; pass-through from J7 to J8 and local AM trigger routing |
 | JTAG signals: TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
-| 3V3_ENIG entry / pass-through trunk (J7 → J5 output bus) | 1.43 A (worst case) | 0.21 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); worst-case Extension 1 pass-through |
+| 3V3_ENIG J7 entry trunk (J7 → L3 pour → J5 and J8) | 1.65 A (design budget; 30 rotors × 55 mA) | 0.25 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); conservative full-system budget; resolved by DEC-053 (4 dedicated pins for 0.41 A/conductor) |
+| 3V3_ENIG J5 output (J5 → downstream mini-stack J2) | 275 mA (5-rotor mini-stack worst case) | 0.04 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 0.80 mm minimum; 275 mA = Rotor 1 of downstream mini-stack |
 | 3V3_ENIG local draw (J7 → U1 VCC) | ≤ 10 mA | 0.002 mm | 0.80 mm | **0.80 mm** | L1 | Buffer IC supply; 3V3_ENIG canonical 0.80 mm minimum |
-| 3V3_ENIG distribution (inner power pour) | 1.43 A | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution |
+| 3V3_ENIG distribution (inner power pour) | 1.65 A (J7 design budget) | — | pour | **copper pour** | L3 | Full uninterrupted 2oz plane; primary distribution |
 | 5V_MAIN to AM host dock (J7 → J9) | 0.50 A | 0.08 mm | 0.80 mm | **0.80 mm** | L1 | Local Extension actuation supply path |
 | GND return (inner GND pour) | — | — | pour | **copper pour** | L2 | Reference plane; must be solid and uninterrupted under all CI traces on L1 |
 
@@ -114,8 +121,13 @@ All Extension boards share an identical PCB layout; traces must be sized for the
   impedance on the JLC04161H-7628 stackup (h = 0.087 mm, t = 0.035 mm, Eᵣ = 4.4). Per DEC-016.
   See `design/Electronics/Investigations/JTAG_Integrity.md §3.1`.
 * **3V3_ENIG pass-through:** The 0.80 mm is the canonical system-wide minimum for all 3V3_ENIG
-  surface traces (Global_Routing_Spec §1.1). IPC calculation for worst-case 1.43 A at 2oz external:
-  1.43 × 0.15 mm = 0.21 mm → **0.80 mm** canonical width provides 6.8× margin above IPC minimum.
+  surface traces (Global_Routing_Spec §1.1). IPC calculation for worst-case J7 entry 1.65 A at
+  2oz external: 1.65 × 0.15 mm = 0.25 mm → **0.80 mm** canonical width provides 3.2× margin.
+  For the J5 output (275 mA only): 0.275 × 0.15 mm = 0.04 mm → **0.80 mm** provides 20× margin.
+* **Extension Port 3V3_ENIG pin count:** Resolved by DEC-053 — the 2BHR-30-VUA 30-pin connector
+  provides 4 dedicated `3V3_ENIG` pins (pins 3–4 and 27–28), distributing 1.65 A across 4 conductors
+  for 0.41 A/conductor — well within the 28 AWG IDC ribbon limit of ~1 A/conductor. The trace and
+  copper pour widths (0.80 mm / L3 pour) are unaffected by this change.
 
 ---
 
@@ -125,5 +137,5 @@ All Extension boards share an identical PCB layout; traces must be sized for the
 
 * **Rotor-facing connectors (TVS required):** All Samtec ERM8/ERF8 connectors (J1–J6) require TPD4E05U06QDQARQ1 ESD arrays within 3mm of the mating edge per DEC-045 and DEC-048.
   Arrays are assigned to U2–U9 (see `Design_Spec.md §5`).
-* **Internal connectors (no TVS required):** J7, J8 (Extension Port BHR-20-VUA shrouded box) and J9, J10 (AM dock ERF8-005) are not operator-accessible during live rotor swap.
+* **Internal connectors (no TVS required):** J7, J8 (Extension Port 2BHR-30-VUA shrouded box) and J9, J10 (AM dock ERF8-005) are not operator-accessible during live rotor swap.
   No TVS required per `design/Standards/Global_Routing_Spec.md §9`.

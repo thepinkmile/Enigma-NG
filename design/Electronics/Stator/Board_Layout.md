@@ -7,7 +7,7 @@
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-04-26
 
-## 1. J10— Reflector / Extension Link (20-pin, 2×10, 2.54mm Shrouded Box Header)
+## 1. J10 — Reflector / Extension Link (30-pin, 2×15, 2.54mm Shrouded Box Header)
 
 Provides a direct power and data link to the Reflector (end-of-stack loopback) board, bypassing the
 full rotor stack to avoid cumulative contact resistance on the power rail and to provide a short TDO
@@ -18,30 +18,39 @@ return path for the JTAG chain.
 
 | Pin | Signal | Direction | Notes |
 | :--- | :--- | :--- | :--- |
-| 1 | 3V3_ENIG | PM -> Reflector / Ext | 3.3V logic power direct from Power Module LDO (bypasses rotor stack) |
-| 2 | SYS_RESET_N | Stator -> Reflector / Ext | Active-low CPLD reset broadcast from Stator |
-| 3 | ENC_OUT_REF[0] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 0 |
-| 4 | ENC_OUT_REF[1] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 1 |
-| 5 | ENC_OUT_REF[2] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 2 |
-| 6 | ENC_OUT_REF[3] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 3 |
-| 7 | ENC_OUT_REF[4] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 4 |
-| 8 | ENC_OUT_REF[5] | Stator -> Reflector / Ext | Stator-owned outbound reflector-boundary bit 5 |
-| 9 | ENC_IN_REF[0] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 0 |
-| 10 | ENC_IN_REF[1] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 1 |
-| 11 | ENC_IN_REF[2] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 2 |
-| 12 | ENC_IN_REF[3] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 3 |
-| 13 | ENC_IN_REF[4] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 4 |
-| 14 | ENC_IN_REF[5] | Reflector / Ext -> Stator | Stator-owned inbound reflector-boundary bit 5 |
-| 15 | TTD_RETURN | Reflector / Ext -> Stator | JTAG TDO return path |
-| 16 | GND | — | Logic return |
-| 17 | 5V_MAIN | CTRL -> Ext / Reflector | Extension-local actuation supply |
-| 18 | GND | — | Actuation return |
-| 19 | 5V_MAIN | CTRL -> Ext / Reflector | Additional current path |
-| 20 | GND | — | Actuation return |
+| 1 | 5V_MAIN | CTRL → Ext / Reflector | Actuation supply (outer pair) |
+| 2 | 5V_MAIN | CTRL → Ext / Reflector | Additional current path |
+| 3 | 3V3_ENIG | PM → Reflector / Ext | 3.3V logic power (bypasses rotor stack) |
+| 4 | 3V3_ENIG | PM → Reflector / Ext | Additional current path |
+| 5 | GND | — | Logic/actuation return |
+| 6 | GND | — | Logic/actuation return |
+| 7 | ENC_OUT_REF[0] | Stator → Reflector / Ext | Outbound reflector-boundary bit 0 |
+| 8 | ENC_OUT_REF[1] | Stator → Reflector / Ext | Outbound reflector-boundary bit 1 |
+| 9 | ENC_OUT_REF[2] | Stator → Reflector / Ext | Outbound reflector-boundary bit 2 |
+| 10 | ENC_OUT_REF[3] | Stator → Reflector / Ext | Outbound reflector-boundary bit 3 |
+| 11 | ENC_OUT_REF[4] | Stator → Reflector / Ext | Outbound reflector-boundary bit 4 |
+| 12 | ENC_OUT_REF[5] | Stator → Reflector / Ext | Outbound reflector-boundary bit 5 |
+| 13 | GND | — | Signal group guard return |
+| 14 | GND | — | Signal group guard return |
+| 15 | SYS_RESET_N | Stator → Reflector / Ext | Active-low CPLD reset broadcast |
+| 16 | TTD_RETURN | Reflector / Ext → Stator | JTAG TDO return path |
+| 17 | GND | — | Signal group guard return |
+| 18 | GND | — | Signal group guard return |
+| 19 | ENC_IN_REF[0] | Reflector / Ext → Stator | Inbound reflector-boundary bit 0 |
+| 20 | ENC_IN_REF[1] | Reflector / Ext → Stator | Inbound reflector-boundary bit 1 |
+| 21 | ENC_IN_REF[2] | Reflector / Ext → Stator | Inbound reflector-boundary bit 2 |
+| 22 | ENC_IN_REF[3] | Reflector / Ext → Stator | Inbound reflector-boundary bit 3 |
+| 23 | ENC_IN_REF[4] | Reflector / Ext → Stator | Inbound reflector-boundary bit 4 |
+| 24 | ENC_IN_REF[5] | Reflector / Ext → Stator | Inbound reflector-boundary bit 5 |
+| 25 | GND | — | Signal group guard return |
+| 26 | GND | — | Signal group guard return |
+| 27 | 3V3_ENIG | PM → Reflector / Ext | 3.3V symmetric outer pair |
+| 28 | 3V3_ENIG | PM → Reflector / Ext | 3.3V symmetric outer pair |
+| 29 | 5V_MAIN | CTRL → Ext / Reflector | 5V symmetric outer pair |
+| 30 | 5V_MAIN | CTRL → Ext / Reflector | 5V symmetric outer pair |
 
-**Connector:** 2×10 2.54mm shrouded box header with polarisation key (e.g. Adam Tech BHR-20-VUA /
-2BHR-20-VUA or equivalent).  
-**Mating connector on Extension: J7 / Reflector: J4 — same 20-pin 2×10 shrouded box header.**
+**Connector:** 2×15 2.54mm shrouded box header with polarisation key (Adam Tech 2BHR-30-VUA). Per DEC-053.  
+**Mating connector on Extension: J7 / Reflector: J4 — same 30-pin 2×15 shrouded box header.**
 
 ## 2. J1–J3: ROTOR INTERFACE CONNECTORS
 >

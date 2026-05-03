@@ -33,7 +33,7 @@ second CPLD on the Reflector itself.
 | :--- | :--- | :--- | :--- |
 | DR-REF-01 | PCB stackup | 4-layer, 2oz finished copper (JLC04161H-7628) | §6 PCB Fabrication & Stackup |
 | DR-REF-02 | Input connectors | J1 = ERM8-005 (JTAG, plugs into Rotor 30 J4), J2 = ERM8-005 (Power, Rotor 30 J5), J3 = ERM8-010 (ENC, Rotor 30 J6) | §4 Rotor Interface Connectors; BOM J1–J3 |
-| DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J10); `TTD_RETURN` on J4 pin 15; pins 17-20 reserved for grouped `5V_MAIN` / returns in the shared reflector / extension harness contract | §3 JTAG & Logic Hub; BOM J4 (20-pin 2×10 shrouded) |
+| DR-REF-03 | TTD_RETURN output | J4 connector (mates with Stator J10); `TTD_RETURN` on J4 pin 16; 30-pin 2×15 layout per DEC-053; `5V_MAIN` on pins 1–2/29–30, `3V3_ENIG` on pins 3–4/27–28 (unused on this board); GND guard pairs at pins 5–6, 13–14, 17–18, 25–26 | §3 JTAG & Logic Hub; BOM J4 (30-pin 2×15 shrouded) |
 | DR-REF-04 | End-of-chain damping | R1 = 22 Ω, 0603, on TDO line | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | DR-REF-05 | Active logic | None — passive turnaround board only; reflector-map selection remains Stator-owned | §2 Architecture |
 | DR-REF-06 | ESD protection — rotor-facing BtB connectors | U1 (J1 JTAG, 1× TPD4E05U06QDQARQ1 covering TCK, TMS, TTD, SYS_RESET_N) + U2–U4 (J3 ENC, 3× TPD4E05U06QDQARQ1 covering ENC_IN[5:0] + ENC_OUT[5:0]); placed within 3mm of connector mating edge per DEC-048 | §5 Thermal & ESD; BOM U1–U4 |
@@ -52,18 +52,20 @@ second CPLD on the Reflector itself.
   the Stator CPLD by `U8` @ 0x22 — see DEC-032.
 * **CPLD support:** None on this PCB; the board only provides the mandatory return path.
 * **Signal Path:** Final rotor/extension outputs → Reflector J1–J3 (ERM8 male) → passive turnaround traces
-  → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (20-pin header, pin 15) → Stator J10.
+  → ENC cipher data returned toward the Stator; `TTD_RETURN` exits via J4 (30-pin header, pin 16) → Stator J10.
 
 ## 3. JTAG & Logic Hub
 
-* **Interconnect:** 20-pin (2x10) 2.54mm Shrouded Box Header (Vertical).
+* **Interconnect:** 30-pin (2×15) 2.54mm Shrouded Box Header (Vertical). Per DEC-053.
   > **Connector Definition Owner:** `Stator/Board_Layout.md — J10`.
-  > This board uses the mating connector as J4 (Adam Tech BHR-20-VUA / 2BHR-20-VUA — see BOM). The authoritative
-  > pinout is defined on the Stator; pins 1-16 preserve the legacy reflector service bus and pins
-  > 17-20 carry grouped `5V_MAIN` / `GND` for Extension-local actuation compatibility.
+  > This board uses the mating connector as J4 (Adam Tech 2BHR-30-VUA — see BOM). The authoritative
+  > pinout is defined on the Stator; `TTD_RETURN` on pin 16, `SYS_RESET_N` on pin 15,
+  > `ENC_OUT_REF[5:0]` on pins 7–12, `ENC_IN_REF[5:0]` on pins 19–24, `3V3_ENIG` on pins 3–4/27–28,
+  > `5V_MAIN` on pins 1–2/29–30, GND guard pairs at pins 5–6, 13–14, 17–18, 25–26.
 
-> **Compatibility note:** J4 pin allocation matches Stator J10 (20-pin 2×10). Pins 17-20 are unused on
-> the passive Reflector but retained so the same cable family can be used for Reflector and Extension links.
+> **Compatibility note:** J4 pin allocation matches Stator J10 (30-pin 2×15). Power pins (`5V_MAIN`
+> on pins 1–2/29–30 and `3V3_ENIG` on pins 3–4/27–28) are unused on the passive Reflector but retained
+> so the same cable family can be used for Reflector and Extension links.
 
 * Decoupling and bulk entry capacitor requirements per `design/Standards/Global_Routing_Spec.md §3`.
 * **Termination:**R1 (22Ω) is a series damping resistor on the TDO return line (end-of-chain
@@ -77,27 +79,26 @@ second CPLD on the Reflector itself.
 >
 > The J4 ribbon cable (Reflector J4 → Stator J10) carries:
 >
-> * **Pin 15 — TTD_RETURN:** JTAG TDO return only — completes the chain back to the FT232H. This is
+> * **Pin 16 — TTD_RETURN:** JTAG TDO return only — completes the chain back to the FT232H. This is
 >   the ONLY JTAG signal on J4.
-> * **Pins 3–14 — `ENC_OUT_REF[5:0]` / `ENC_IN_REF[5:0]`:** Bidirectional Stator CPLD interface
->   (simultaneous, using Stator-owned aliases). `ENC_OUT_REF[5:0]` (pins 3–8): return-pass signal
+> * **Pins 7–12 — `ENC_OUT_REF[5:0]`; Pins 19–24 — `ENC_IN_REF[5:0]`:** Bidirectional Stator CPLD interface
+>   (simultaneous, using Stator-owned aliases). `ENC_OUT_REF[5:0]` (pins 7–12): return-pass signal
 >   driven by the Stator CPLD to the Reflector chain after optional plugboard insertion (Step 2
->   drive). `ENC_IN_REF[5:0]` (pins 9–14): reflected signal returned from passive Reflector
+>   drive). `ENC_IN_REF[5:0]` (pins 19–24): reflected signal returned from passive Reflector
 >   turnaround to the Stator CPLD (Step 2 receive). **These are NOT JTAG signals.**
 >   See `Stator/Design_Spec.md §3 CPLD Signal Routing Matrix` for full signal flow details.
-> * **Pin 2 — SYS_RESET_N**, **Pin 1 — 3V3_ENIG**, **Pin 16 — GND.**
-> * **Pins 17-20 — `5V_MAIN`, `GND`, `5V_MAIN`, `GND`:** Present for shared cable compatibility only;
->   unused on the passive Reflector.
+> * **Pin 15 — SYS_RESET_N**, **Pins 3–4 and 27–28 — 3V3_ENIG**, **Pins 5–6, 13–14, 17–18, 25–26 — GND.**
+> * **Pins 1–2 and 29–30 — `5V_MAIN`:** Present for shared cable compatibility only; unused on the passive Reflector.
 >
 > **Note:** TMS and TDI pull-up resistors (R2/R3) previously listed in this section have been removed.
-> TMS and TDI are NOT routed on J4 (pin 15 = TTD_RETURN only for JTAG; pins 3–14 = ENC data; pin 2 = SYS_RESET_N).
+> TMS and TDI are NOT routed on J4 (pin 16 = TTD_RETURN only for JTAG; pins 7–12 = ENC_OUT_REF; pins 19–24 = ENC_IN_REF; pin 15 = SYS_RESET_N).
 > Pull-up termination for TMS and TDI is already provided by the Stator (R3/R4) and Encoder boards (R3/R4) where those signals originate.
 
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 (TTD_RETURN and any in-board JTAG
   routing) shall be routed at **0.127 mm (5 mil)** width over the L2 GND plane, targeting
   **50 Ω controlled impedance**. Stackup upgraded to 4-Layer per DEC-017.
   See `design/Electronics/Investigations/JTAG_Integrity.md` and DEC-016.
-* **JTAG Return:** TDO from Rotor 30 is routed to Pin 15 (TTD_RETURN) for return to the Stator.
+* **JTAG Return:** TDO from Rotor 30 is routed to Pin 16 (TTD_RETURN) for return to the Stator.
 * **Loopback:** Directly routes the 6-bit `ENC_OUT_REF` turnaround into the returned 6-bit `ENC_IN_REF`
   path via 2oz 10-mil traces.
 * **Cross-ref:** For interconnect pinouts on power (3V3_ENIG/GND), `ENC_OUT_REF` / `ENC_IN_REF`, and
@@ -121,7 +122,7 @@ on each Rotor's output side (J4/J5/J6). One set of three connectors per the Roto
 
 > **J2 power pins (3V3_ENIG and GND) are not connected to the board power plane.** J2 is present for
 > mechanical engagement with Rotor 30 J5 only. The Reflector's sole power entry is J4 (ribbon cable,
-> pin 1 = 3V3_ENIG, pin 16 = GND). This prevents a parallel power path / ground loop through the
+> pins 3–4 and 27–28 = 3V3_ENIG, GND on pins 5–6/13–14/17–18/25–26). This prevents a parallel power path / ground loop through the
 > rotor daisy-chain and the direct ribbon cable return. C1–C5 decouple at the J4 power entry.
 
 **Orientation:** Facing the rotor output side (Rotor 30 top face), perpendicular to the rotor stack axis.
@@ -134,7 +135,7 @@ Per `design/Standards/Global_Routing_Spec.md §5`, the Reflector implements a lo
 net tied to its mounting holes and any deliberate enclosure-contact features, but it does **not**
 implement a local GND-to-GND_CHASSIS bond. The system's only galvanic GND ↔ GND_CHASSIS bond is
 defined on the Power Module at the common power-entry point immediately before the eFuse, so J4
-pin 16 is treated as signal/power return only and must not be bridged locally to chassis on the
+GND pins (5–6, 13–14, 17–18, 25–26) are treated as signal/power return only and must not be bridged locally to chassis on the
 Reflector.
 
 ## 5. Thermal & ESD
@@ -151,7 +152,7 @@ Reflector.
     operating range with a ≥0.4V margin to the rated limit.
 * **ESD — all other connectors (no TVS required):**
   * J2 (Power, ERM8-005): power rail (3V3_ENIG / GND) only — no signal protection required.
-  * J4 (TTD_RETURN ribbon, BHR-20-VUA): internal ribbon connector; not accessible during live rotor swap.
+  * J4 (TTD_RETURN ribbon, 2BHR-30-VUA): internal ribbon connector; not accessible during live rotor swap.
   Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 6. PCB Fabrication & Stackup
@@ -174,6 +175,6 @@ Reflector.
 | C1-C5 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 5 |
 | J1-J2 | 10-pin 2x5 0.8mm male SMT | ERM8-005-05.0-S-DV-K-TR | Samtec | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | — | — | Yes | Pending | 2 |
 | J3 | 20-pin 2x10 0.8mm male SMT | ERM8-010-05.0-S-DV-K-TR | Samtec | SAM8610CT-ND | 200-ERM8010050SDVKTR | C374877 | — | — | Yes | Pending | 1 |
-| J4 | 20-pin 2x10 2.54mm shrouded THT | BHR-20-VUA | Adam Tech | 2057-BHR-20-VUA-ND | 737-BHR-20-VUA | C17340054 | — | — | Yes | Pending | 1 |
+| J4 | 30-pin 2x15 2.54mm shrouded THT | 2BHR-30-VUA | Adam Tech | 2057-2BHR-30-VUA-ND | 737-2BHR-30-VUA | C17346400 | — | Per DEC-053 | Yes | Pending | 1 |
 | R1 | 22Ω 1% 0603 | ERJ-3EKF2200V | Panasonic | P220HCT-ND | 667-ERJ-3EKF2200V | C403073 | — | — | Yes | Pending | 1 |
 | U1-U4 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | — | — | Yes | Pending | 4 |
