@@ -69,7 +69,7 @@ Recent locked work:
 
 | ID | Status | Scope |
 | ---- | -------- | ------- |
-| `review-cycle-pass2` | **complete** | Pass 2 board + integration reviews complete; all findings F-42–F-66 resolved or deferred; audit trail appended to review-report.md; checkpoint 083 created; awaiting "Let's lock this in" |
+| `review-cycle-pass3` | **complete** | Pass 3 electronics review fixes complete; all 19 fixes (F-67–F-87) applied and lint-clean; audit trail appended to review-report.md; checkpoint 100 created; awaiting "Let's lock this in" |
 | `bom-description-strip` | **complete** | All 11 board spec Component columns stripped; Consolidated_BOM.md 205 Description/Usage cells stripped + 4 new Rotor N=26 rows + Section 2 ROT-A/B→ROT-26/64 rename + 5 qty corrections; all_boards_bom.json 201 descriptions stripped + Rotor board field rename; all files lint-clean; checkpoint 090 written; awaiting "Let's lock this in" |
 | `extension-mechanical-usage` | pending | Mechanical Extension usage is now aligned to local AM-based carry regeneration, but detailed switch / linkage geometry still needs later mechanical design |
 | `coupon-testing-review` | pending | Add and review board-level coupons and PAS-oriented test coverage so production boards do not retain test-only hardware |
@@ -83,16 +83,16 @@ Recent locked work:
 
 | Board | Status |
 | ------- | -------- |
-| Power Module | In Review (Pass 2 fixes applied) |
-| Stator | In Review (Pass 2 fixes applied) |
-| Reflector | In Review (Pass 2 fixes applied) |
-| Extension | In Review (Pass 2 fixes applied) |
+| Power Module | In Review (Pass 3 fixes applied) |
+| Stator | In Review (Pass 3 fixes applied) |
+| Reflector | In Review (Pass 3 fixes applied) |
+| Extension | In Review (Pass 3 fixes applied) |
 | JDB | In Review (Pass 2 fixes applied) |
-| Controller | In Review (Pass 2 fixes applied) |
-| Encoder | In Review |
-| Rotor | In Review (Pass 2 fixes applied) |
-| User Settings Module | In Review (Pass 2 fixes applied) |
-| Actuation Module | In Review (Pass 2 fixes applied) |
+| Controller | In Review (Pass 3 fixes applied) |
+| Encoder | In Review (Pass 3 fixes applied) |
+| Rotor | In Review (Pass 3 fixes applied) |
+| User Settings Module | In Review (Pass 3 fixes applied) |
+| Actuation Module | In Review (Pass 3 fixes applied) |
 
 ---
 
@@ -104,12 +104,12 @@ Start the next clean session by reading **in this order**:
 2. `.copilot/plan.md`
 3. `.copilot/handoff.md`
 4. `.copilot/todo-list.md` — canonical deferred-work and open-action tracker for the project
-5. `.copilot/checkpoints/099-extension-port-30-pin-connector-applied.md` (latest checkpoint)
+5. `.copilot/checkpoints/100-pass3-electronics-review-fixes-complete.md` (latest checkpoint)
 
 `Settings_Board` → `User_Settings_Module` rename complete and committed (DEC-051).
 Before next steps:
 
-- Begin Pass 3 electronics review
+- Begin Pass 3 has been completed. All 19 fixes applied and committed.
 
 Read `.copilot/review-report.md` for the running audit trail.
 
@@ -158,9 +158,11 @@ Read `.copilot/review-report.md` for the running audit trail.
 - The AM firmware specification now lives under
   `design/Software/Actuation_Module/Design_Spec.md`; the electronics AM spec keeps only a brief
   cross-reference to that software document.
-- Pass 2 electronics review complete. All findings F-42–F-66 resolved or deferred per user decisions.
-  `Settings_Board` → `User_Settings_Module` rename complete (DEC-051). Pass 3 will follow after
-  the current outstanding changes are committed.
+- Pass 3 electronics review complete. All 19 fixes (F-67–F-87) applied across 15 files; all lint-clean.
+  Signal renames: `LED_nPWR`→`LED_PWR_N`, `I2C1`→`I2C-1`, `DEV_CLRN`→`DEV_CLR_N`,
+  `ACTUATE_REQUEST`→`ACTUATE_REQUEST_N`, `FR-SBD-`/`DR-SBD-`→`FR-USM-`/`DR-USM-`.
+  New DRs: DR-EXT-14/15, DR-PM-14, DR-CTL-17, DR-ENC-05, DR-USM-11. Mouser PNs corrected in 3 files.
+  PM-MIN-1 carry-forward dismissed as false positive. SET-MAJ-2 still deferred.
 - This does **not** close the repo-local `rerun-deep-reviews` workstream. That workstream remains the
   final pre-V1 cross-discipline review gate to be rerun only after electrical, mechanical, and software
   work are complete and each board has a full KiCAD project plus exported production Gerbers.
@@ -180,3 +182,4 @@ Read `.copilot/review-report.md` for the running audit trail.
 - `.copilot/` is tracked in git and must be kept in sync with meaningful design-state changes.
 - Every checkpoint must update the checkpoint file, `.copilot/checkpoints/index.md`,
   `.copilot/plan.md`, and any related handoff content together.
+

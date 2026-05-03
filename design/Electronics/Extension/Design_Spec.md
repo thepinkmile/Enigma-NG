@@ -53,6 +53,8 @@ group without Controller-side live servo control.
 | DR-EXT-11 | Actuation Module host envelope | The Extension area beneath the installed AM shall be a no-component placement zone except for J9 / J10 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure walls that would trap heat or obstruct service access | §2 Connectivity; `Board_Layout.md` |
 | DR-EXT-12 | 5V_MAIN entry decoupling bank | C7–C11 (5× 10µF X7R 25V 0805) shall be placed at the 5V_MAIN entry point (J7 pins 1–2 and 29–30) using a star/spoke topology matching the 3V3_ENIG entry bank (C1–C5); both rails must be locally decoupled at the Extension Port entry | §2 Connectivity; §5 Thermal & ESD; BOM C7–C11 |
 | DR-EXT-13 | ESD protection — rotor-facing BtB connectors | U2–U5 (J1/J3 in) + U6–U9 (J4/J6 out); 8× TPD4E05U06QDQARQ1 within 3mm of mating edge per DEC-048 | §5 Thermal & ESD; BOM U2–U9 |
+| DR-EXT-14 | 3V3_ENIG entry decoupling bank | C1–C5 (5× 10µF X7R 25V 0805) shall be placed at the 3V3_ENIG entry point (J7 pins 3–4 and 27–28) using a star/spoke topology per `design/Standards/Global_Routing_Spec.md §3`; both supply rails must be locally decoupled at the Extension Port entry | §2 Connectivity; BOM C1–C5 |
+| DR-EXT-15 | Mounting holes | MH1–MH4 shall be M2.5mm through-hole mounting holes (KiCAD built-in `MountingHole` footprint; no purchasable BOM component), bonded to the local GND_CHASSIS net per `design/Standards/Global_Routing_Spec.md §4` | §2 Connectivity |
 
 ## 2. Connectivity
 

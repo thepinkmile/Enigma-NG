@@ -45,7 +45,7 @@ source is active.
 | FR-CTL-02 | Receive regulated rails from the Power Module and distribute them to the CM5, Stator, and local peripherals | Via PM dock `J1` and Stator docks `J4/J5` | §2 Dock Interfaces; BOM J1–J3, J4/J5 |
 | FR-CTL-03 | Provide the system's enclosure-edge external I/O interfaces | GbE / PoE entry, HDMI, USB 3.0 | §8 Connectivity; BOM J6, J7, J8 |
 | FR-CTL-04 | Provide JTAG programming capability for all 37 CPLDs in the system | Via JTAG Daughterboard and the `J5` Stator logic dock | §3 JTAG Programming Subsystem; BOM J4, J5 |
-| FR-CTL-05 | Monitor system power and PM status via I²C, with only essential direct PM handshakes kept as dedicated pins | Telemetry: LTC3350 @ 0x09, STUSB4500 @ 0x28, PCA9534A @ 0x3F, INA219 ×2 (PM U12 @ 0x40; Stator U2 @ 0x45); Direct handshakes: `PWR_GD`, `ROTOR_EN_N`, `PWR_BUT`, `LED_nPWR` | §4 Telemetry & Logic; §6 CM5 GPIO Mapping Matrix |
+| FR-CTL-05 | Monitor system power and PM status via I²C, with only essential direct PM handshakes kept as dedicated pins | Telemetry: LTC3350 @ 0x09, STUSB4500 @ 0x28, PCA9534A @ 0x3F, INA219 ×2 (PM U12 @ 0x40; Stator U2 @ 0x45); Direct handshakes: `PWR_GD`, `ROTOR_EN_N`, `PWR_BUT`, `LED_PWR_N` | §4 Telemetry & Logic; §6 CM5 GPIO Mapping Matrix |
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
 | FR-CTL-07 | Route power, JTAG, and I²C between the Controller and the Stator board | Via `J4/J5` hybrid docks | §2 Dock Interfaces; BOM J4/J5 |
 | FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J9) on Controller Board; display add-on board to be designed separately | §8 Connectivity; BOM J9 |
@@ -71,6 +71,7 @@ source is active.
 | DR-CTL-14 | Actuation-request GPIO usage | `ACTUATE_REQUEST_N` uses CM5 GPIO 8 as an active-low host control output. The former direct `SERVO_PWM` / `SERVO_HOME` CM5 ownership is retired in favour of the shared Actuation Module architecture. | §6 CM5 GPIO Mapping Matrix |
 | DR-CTL-15 | Actuation Module host envelope | The Controller area beneath the installed AM shall be a no-component placement zone except for J11 / J16 and the copper / vias needed to route them; do not crowd the module with nearby tall parts or enclosure features that would trap heat or block service access | §8.6; §8.7; `Board_Layout.md` |
 | DR-CTL-16 | Power switch Vcc bypass capacitors | U2 (TPS2065CDBVR) and U3 (AP2331W-7) shall each have a dedicated 100nF X7R 50V 0402 bypass capacitor on their Vcc pin, placed within 1mm of the IC per `Global_Routing_Spec.md §3.2` | BOM: C13 (U2 bypass), C14 (U3 bypass) |
+| DR-CTL-17 | PoE IC bypass capacitors | U9 (TPS2372-4RGWR) and U10 (TPS23730RMTR) shall each have a dedicated 100nF X7R 50V 0402 bypass capacitor on their VCC pin, placed within 1mm of the IC per `Global_Routing_Spec.md §3.2`. BOM: C24 (U9 bypass), C28 (U10 bypass) | BOM C24, C28 |
 
 ## 2. Dock Interfaces
 
@@ -206,18 +207,28 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
-| **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | System I2C-1 shared with the devices listed in §4.1. |
+| **2 / 3** | **I2C_SDA/SCL** | I2C | 3.3V | System I2C-1 shared with the devices listed in §4.1. |
 | **4** | **ROTOR_EN_N** | Output | 3.3V | Active-low: drive LOW to enable Power Module `3V3_ENIG` LDO for sequenced rotor-stack power-up; held HIGH by R10 pull-up on PM until CM5 asserts. Routed on `J3`. |
 | **5** | **PM_IO_INT_N** | Input | 3.3V | Optional interrupt input from the PM-local `PCA9534A @ 0x3F`, used to wake the power-management daemon for PM status changes. |
 | **6** | **USB_FAULT** | Input | 3.3V | Active Low: USB power fault from on-board TPS2065C (local to Controller; no BtB pin required). |
 | **7** | **PWR_GD** | Input | 3.3V | Direct PM rail-health telemetry only — HIGH while `5V_MAIN` ≥ 4.50V; does NOT trigger shutdown. Routed on `J3`. |
 | **8** | **ACTUATE_REQUEST_N** | Output | 3.3V | Active-low request pulse into the Controller-local Actuation Module trigger dock (`J16`). |
 
-> **GPIO matrix scope note:** `PWR_BUT` and `LED_nPWR` are **not** CM5 GPIO signals and are
+> **GPIO matrix scope note:** `PWR_BUT` and `LED_PWR_N` are **not** CM5 GPIO signals and are
 > deliberately absent from this table. `PWR_BUT` connects directly to the CM5 PMIC dedicated
 > hardware power-key input pin (internal 10 kΩ pull-up; brief GND press initiates orderly shutdown).
-> `LED_nPWR` is a dedicated CM5 hardware output (pin 95) that drives the PM SW2 green LED circuit
+> `LED_PWR_N` is a dedicated CM5 hardware output (pin 95) that drives the PM SW2 green LED circuit
 > over J3. Neither signal requires GPIO direction, pull, or interrupt configuration.
+
+### 6.1 CM5 Dedicated Hardware Pin Name Mapping
+
+Where the CM5 exposes dedicated hardware signals (not GPIOs) using a naming convention other than
+the Enigma-NG GRS `_N` active-low suffix, the design net is renamed. The original CM5 pin name is
+preserved here for traceability (cross-ref: `design/Standards/Global_Routing_Spec.md §10`).
+
+| CM5 Pin Name | CM5 Pin No. | Signal Type | Design Net Name | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| `LED_nPWR` | 95 (Hirose DF40 200-pin) | Dedicated hardware output | `LED_PWR_N` | Active-low power-state indicator; CM5 uses `n` prefix rather than `_N` suffix |
 
 ## 7. Protection & EMI
 
@@ -248,7 +259,7 @@ The Power Module dock uses three copies of the TE 10-position 2.5 mm connector f
 | :--- | :--- | :--- |
 | `J1` | `3 × 5V_MAIN`, `2 × 3V3_ENIG`, `5 × GND` | Main regulated rails from PM to Controller |
 | `J2` | `3 × VIN_POE_12V`, `7 × GND` | Regulated PoE-derived auxiliary feed from Controller PoE front-end into PM OR-ing stage |
-| `J3` | `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN_N`, `PWR_BUT`, `LED_nPWR`, `3 × GND` | Low-speed control / telemetry connector |
+| `J3` | `I2C_SDA`, `I2C_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN_N`, `PWR_BUT`, `LED_PWR_N`, `3 × GND` | Low-speed control / telemetry connector |
 
 `5V_MAIN` and `3V3_ENIG` both enter the Controller on `J1`. The Controller then distributes those rails
 to the CM5, local peripherals, and the Stator docks.
@@ -274,7 +285,7 @@ The Stator dock uses the Molex EXTreme Guardian HD hybrid pair:
 | Link | Allocation | Description |
 | :--- | :--- | :--- |
 | `J4` | `4 × 5V_MAIN` blades, `1 × GND` blade, signal field = `GND` returns / guards | 5V-biased dock |
-| `J5` | `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, `I2C1_SCL`, remaining signal contacts = `GND` | 3V3 / logic dock |
+| `J5` | `4 × 3V3_ENIG` blades, `1 × GND` blade, guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C_SDA`, `I2C_SCL`, remaining signal contacts = `GND` | 3V3 / logic dock |
 
 The `J5` connector deliberately groups the JTAG cluster and `TTD_RETURN` with the logic-domain `3V3_ENIG` feed.
 
@@ -440,7 +451,7 @@ Estimated Controller-local power dissipation at system peak load:
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | BT1 | CR2032 holder THT horizontal | 3034TR | Keystone Electronics | 36-3034CT-ND | 534-3034TR | C5213768 | — | — | Yes | Pending | 1 |
 | C1-C5, C7-C11 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 10 |
-| C6, C12-C16 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 6 |
+| C6, C12-C16, C24, C28 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 8 |
 | C17 | 10nF 100V X7R 0402 | C0402C103K1RACAUTO | Kemet | 399-C0402C103K1RACAUTOCT-ND | 80-C0402C103K1RAUTO | C19862710 | — | — | Yes | Pending | 1 |
 | D1 | Schottky SOT-23 | BAT54 | Vishay | 4878-BAT54CT-ND | 637-BAT54 | C49435667 | — | — | Yes | Pending | 1 |
 | J1-J3 | 10-pos 2.5mm receptacle 10-pos vert | 1-1674231-1 | TE Connectivity | A119250-ND | 571-1-1674231-1 | C3683260 | — | — | Yes | Pending | 3 |

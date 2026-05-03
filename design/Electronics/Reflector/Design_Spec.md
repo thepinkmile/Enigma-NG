@@ -23,7 +23,7 @@ second CPLD on the Reflector itself.
 | :--- | :--- | :--- | :--- |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | Connects to Rotor 30 J4/J5/J6 outputs | §3 JTAG & Logic Hub; BOM J1–J3 (ERM8) |
 | FR-REF-02 | Provide the mandatory physical turnaround path at the end of the rotor/extension chain while the selected reflection map is applied by the Stator CPLD | Passive turnaround board — no local CPLD required | §2 Architecture; BOM J1–J4 |
-| FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H | §3 JTAG & Logic Hub; BOM J4 (20-pin), R1 (22Ω) |
+| FR-REF-03 | Return the JTAG TTD_RETURN signal from the end of the chain to the Stator | Via J4 → Stator J10 → Controller-facing `J5` logic dock → FT232H | §3 JTAG & Logic Hub; BOM J4 (30-pin 2×15 shrouded), R1 (22Ω) |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | Prevents reflections in the serial chain | §3 JTAG & Logic Hub; BOM R1 (22Ω) |
 | FR-REF-05 | Protect the J1 (JTAG) and J3 (ENC) rotor-facing BtB connector interfaces from ESD events during live rotor swap | J1 and J3 are exposed to operator handling during rotor insertion/removal; TVS/ESD arrays required on both connectors per DEC-048 | §5 Thermal & ESD; BOM U1–U4 |
 

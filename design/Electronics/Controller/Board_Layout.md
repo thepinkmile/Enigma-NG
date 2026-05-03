@@ -52,13 +52,13 @@ rear edge of Controller
 
 | Signal | Direction | Notes |
 | :--- | :--- | :--- |
-| `I2C1_SDA` | Bidir | Shared PM telemetry and PM-local GPIO-expander bus |
-| `I2C1_SCL` | Bidir | Shared PM telemetry and PM-local GPIO-expander bus |
+| `I2C_SDA` | Bidir | Shared PM telemetry and PM-local GPIO-expander bus |
+| `I2C_SCL` | Bidir | Shared PM telemetry and PM-local GPIO-expander bus |
 | `PM_IO_INT_N` | PM -> CTRL | Active-low interrupt from PM `PCA9534APWR` |
 | `PWR_GD` | PM -> CTRL | Direct rail-health telemetry from MCP121T |
 | `ROTOR_EN_N` | CTRL -> PM | Direct 3V3_ENIG LDO enable control |
 | `PWR_BUT` | PM -> CTRL | Direct CM5 PMIC power-button path |
-| `LED_nPWR` | CTRL -> PM | Direct CM5 power-state indication for the SW2 hardware LED logic |
+| `LED_PWR_N` | CTRL -> PM | Direct CM5 power-state indication for the SW2 hardware LED logic |
 | `3 × GND` | — | Guards / return path |
 
 ---

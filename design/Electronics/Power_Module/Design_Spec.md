@@ -25,7 +25,7 @@ Controller Board via dock connector `J1`.
   connectors: `J1` (regulated rails), `J2` (regulated PoE-derived auxiliary feed), and `J3`
   (low-speed control / telemetry).
   * **Provided to Controller:** `5V_MAIN`, `3V3_ENIG`, PM telemetry, `PWR_GD`, and `PWR_BUT`.
-  * **Received from Controller:** `VIN_POE_12V`, `I2C-1`, `PM_IO_INT_N` return path, `ROTOR_EN_N`, and `LED_nPWR`.
+  * **Received from Controller:** `VIN_POE_12V`, `I2C-1`, `PM_IO_INT_N` return path, `ROTOR_EN_N`, and `LED_PWR_N`.
   * **Cross-ref:** See `Controller/Design_Spec.md` and `Controller/Board_Layout.md` for the active dock allocation.
   * **Reference datasheets:** [`TE-1123684-7-datasheet.md`](../../Datasheets/TE-1123684-7-datasheet.md),
     [`TE-1-1674231-1-datasheet.md`](../../Datasheets/TE-1-1674231-1-datasheet.md)
@@ -63,6 +63,7 @@ Controller Board via dock connector `J1`.
 | DR-PM-11 | LTC3350 RT frequency-setting resistor | R30: 33.2 kΩ (E96) to GND — sets LTC3350 switching frequency to 400 kHz (vs default 200 kHz with RT=INTVCC); required to achieve ≥4 cycles within 10.2µs backup switchover window | §5 Protection & Logic; BOM R30 (33.2kΩ) — see DEC-030 |
 | DR-PM-12 | Controller dock connectors | `J1/J2/J3` = TE `1123684-7` 10-position 2.5mm plugs mating with Controller `1-1674231-1` receptacles | BOM J1–J3 |
 | DR-PM-13 | PCB stackup | 6-layer, 2oz finished copper (JLC06161H-2116) | §1 PCB Architecture |
+| DR-PM-14 | Per-IC bypass capacitors | All ICs shall have a dedicated 100nF X7R 50V 0402 bypass capacitor on each VCC/VCCIO/VCC_IO pin, placed within 1mm of the IC per `design/Standards/Global_Routing_Spec.md §3.2`. BOM: C24–C30, C33–C39, C43–C50, C52, C58 | BOM C24–C30, C33–C39, C43–C50, C52, C58 |
 
 ## 2. Design
 >
@@ -156,7 +157,7 @@ Controller Board via dock connector `J1`.
 * **Interrupt Bias:** 10kΩ (1%) pull-up (**R9**) on `PM_IO_INT_N` so the PM-local expander interrupt
   idles HIGH when U16 is quiescent.
 * **Battery Detection:** `BATT_PRES_N` is reported through U16 (`PCA9534A @ 0x3F`) and exported over I²C.
-* **Direct CM5 power-state signal:** `LED_nPWR` is received from the Controller over `J3` and used only by
+* **Direct CM5 power-state signal:** `LED_PWR_N` is received from the Controller over `J3` and used only by
   the local SW2 hardware indicator logic. It is not routed through U16.
 
 ### 4. EMI & Filtering (The "Iron Curtain")
@@ -380,13 +381,13 @@ To prevent the CM5 from attempting to boot during the 12V-15V "Enigma Rail" ramp
       * Solid red = PM fault or hold-up unavailable.
   * **SW2:**
     * SW2 integrates a hardware-only CM5 state indicator ring.
-    * `LED_nPWR` (CM5 pin 95, routed from the Controller on `J3`) is buffered / inverted on the PM to
+    * `LED_PWR_N` (CM5 pin 95, routed from the Controller on `J3`) is buffered / inverted on the PM to
       generate a local active-HIGH `CM5_PWR_ON` signal for the SW2 green channel.
     * Green ON = CM5 powered.
     * A LOW pulse on `PWR_BUT` while `CM5_PWR_ON` is active sets a local shutdown latch.
     * The shutdown latch gates the existing U11 1Hz oscillator into the SW2 red channel while green
       remains ON, producing a 1Hz green/orange indication during graceful shutdown.
-    * When `LED_nPWR` deasserts, the shutdown latch clears and the SW2 LED turns OFF.
+    * When `LED_PWR_N` deasserts, the shutdown latch clears and the SW2 LED turns OFF.
 
 ### 2. Startup Timeline
 
@@ -487,7 +488,7 @@ Estimated PM-local power dissipation at system peak load:
 | L1, L2 | 10A 2mH nanocrystalline CMC THT | 7448031002 | Würth Elektronik | 732-5584-ND | 710-7448031002 | C1519839 | — | Würth WE-CMBNC 7448031002 — 10A, 2mH, nanocrystalline, 6.3mΩ DCR, 24×17×25mm THT ; same as L1 (**CM5022 discontinued**, Laird absorbed by TE Connectivity 2019; no ≥10A HF ferrite equivalent found). Twin nanocrystalline CMC approach provides adequate broadband coverage 1kHz–30MHz. ⚠️ Re-evaluate at EMC pre-compliance test. | Yes | Pending | 2 |
 | L3 | 10µH 15.5A Isat shielded SMT 13.5x12.5x6.2mm | SRP1265A-100M | Bourns | SRP1265A-100MCT-ND | 652-SRP1265A-100M | C840531 | — | 10µH, 15.5A Isat, 10A Irms, DCR=16.5mΩ max, shielded molded | Yes | Pending | 1 |
 | Q1, Q2, Q3 | N-ch MOSFET 30V 10A SON-8 3.3x3.3mm | CSD17578Q5A | Texas Instruments | 296-48512-1-ND | 595-CSD17578Q5A | C2871447 | — | 30V V_DSS, 25A I_D continuous, R_ds(on)=5.9mΩ @ V_gs=10V. Driven by LM74700-Q1 (U6a/U6b/U6c — one IC per MOSFET) charge-pump gate drive (+7V above source). Provides lossless ideal-diode OR-ing between three input sources. | Yes | ✓ | 3 |
-| Q4-Q10 | N-ch MOSFET 50V 200mA SOT-23 | BSS138 | onsemi | BSS138CT-ND | 512-BSS138 | C52895 | — | Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. ; Reused User Settings Module sink-stage pattern; gates driven from U16 through `R31-R33`, held OFF by `R34-R36` ; Same low-side sink pattern as SW1 runtime LED stages; Q9 sinks SW2 green from buffered `LED_nPWR`, Q10 sinks SW2 red from the shutdown blink gate | Yes | Pending | 7 |
+| Q4-Q10 | N-ch MOSFET 50V 200mA SOT-23 | BSS138 | onsemi | BSS138CT-ND | 512-BSS138 | C52895 | — | Gate driven by U15 monostable output; drain to PWR_BUT line; source to GND. Pulls PWR_BUT LOW for 3 seconds on backup-mode trigger. ; Reused User Settings Module sink-stage pattern; gates driven from U16 through `R31-R33`, held OFF by `R34-R36` ; Same low-side sink pattern as SW1 runtime LED stages; Q9 sinks SW2 green from buffered `LED_PWR_N`, Q10 sinks SW2 red from the shutdown blink gate | Yes | Pending | 7 |
 | R1 | 232kΩ 1% 0603 | ERJ-3EKF2323V | Panasonic | P232KHCT-ND | 667-ERJ-3EKF2323V | C403086 | — | — | Yes | Pending | 1 |
 | R2 | 28.7kΩ 1% 0603 | ERJ-3EKF2872V | Panasonic | P28.7KHCT-ND | 667-ERJ-3EKF2872V | C403135 | — | — | Yes | Pending | 1 |
 | R3 | 210Ω 0.1% 0603 | ERA-3VEB2100V | Panasonic | 10-ERA-3VEB2100VCT-ND | 667-ERA-3VEB2100V | C1861624 | — | — | Yes | Pending | 1 |
@@ -508,7 +509,7 @@ Estimated PM-local power dissipation at system peak load:
 | R45-R48 | 100kΩ 1% 0402 | ERJ-2RKF1003X | Panasonic | P100KLCT-ND | 667-ERJ-2RKF1003X | Global sourcing / consignment | Global sourcing | — | Yes | Pending | 4 |
 | R49-R53 | 10Ω 1% Thin-Film 0402 | ERJ-2RKF10R0X | Panasonic | P10.0LCT-ND | 667-ERJ-2RKF10R0X | C413044 | — | — | Yes | Pending | 5 |
 | SW1 | 16mm panel latching RGB metal switch | 4660 | Adafruit | 1528-4660-ND | 485-4660 | Global sourcing / consignment | Global sourcing | Panel-mount latching rugged metal power switch with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals; RGB ring uses common anode + separate R/G/B cathodes with internal resistors for low-voltage drive. Switch contact only controls TPS25980 EN (logic-level, low-current). Use matching 2.8mm PCB male spade tabs for all switch/LED harness terminations. LED anode supply: `5V_MAIN`. | Yes | Pending | 1 |
-| SW2 | 16mm panel momentary RGB metal switch | 3350 | Adafruit | 1528-2546-ND | 485-3350 | Global sourcing / consignment | Global sourcing | Panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press. Red / green LED channels are driven locally on the PM: green = CM5 powered from buffered `LED_nPWR`; red = 1Hz blink during shutdown latch while green remains ON. Blue channel not used. | Yes | Pending | 1 |
+| SW2 | 16mm panel momentary RGB metal switch | 3350 | Adafruit | 1528-2546-ND | 485-3350 | Global sourcing / consignment | Global sourcing | Panel-mount momentary rugged metal pushbutton with RGB ring LED; 16mm panel cutout; 2.8mm pin terminals. Switch contact connects `PWR_BUT` to GND on brief press. Red / green LED channels are driven locally on the PM: green = CM5 powered from buffered `LED_PWR_N`; red = 1Hz blink during shutdown latch while green remains ON. Blue channel not used. | Yes | Pending | 1 |
 | U1 | eFuse 16.9V fixed OVLO VQFN-24 4x4mm | TPS259804ONRGER | Texas Instruments | 296-TPS259804ONRGERCT-ND | 595-TPS259804ONRGER | C2878936 | — | variant-locked do not change | Yes | Pending | 1 |
 | U2A, U2B | 5V buck x2 180° interleaved VQFN-HR 14-pin 4x3.5mm | LMQ61460AFSQRJRRQ1 | Texas Instruments | 296-LMQ61460AFSQRJRRQ1CT-ND | 595-Q61460AFSQRJRRQ1 | C1518767 | — | — | Yes | Pending | 2 |
 | U3 | Supercap manager QFN-38 5x7mm | LTC3350EUHF#PBF | Analog Devices | 505-LTC3350EUHF#PBF-ND | 584-LTC3350EUHF#PBF | C580711 | — | — | Yes | Pending | 1 |
@@ -519,9 +520,9 @@ Estimated PM-local power dissipation at system peak load:
 | U8 | 4.5V voltage supervisor SC70-3 | MCP121T-450E/LB | Microchip Technology | MCP121T-450E/LBCT-ND | 579-MCP121T-450E/LB | C625189 | — | 4.5V trip | No library — create manually | N/A | 1 |
 | U11, U15 | CMOS timer SOT-23-5 | MIC1555YM5-TR | Microchip Technology | 576-2576-1-ND | 998-MIC1555YM5TR | C145373 | — | CMOS timer IC, 2–10V supply. Generates 1Hz hardware “Initialising” heartbeat pulse for the orange status LED. Operates independently of CM5 firmware (pure hardware indicator). Also reflects supercap state of charge during hold-up. Timing set by R16 (R_A=10kΩ), R17 (R_B=715kΩ), C23 (C_OSC=1µF) → f=1Hz, ~50% duty cycle. ; CMOS timer in monostable configuration. Triggered by falling edge on LTC3350 `/INTB` (open-drain, pulled HIGH by R29). On trigger, output drives Q5 gate HIGH for t ≈ 3.01 s, pulling `PWR_BUT` LOW → CM5 PMIC power-key event → graceful OS shutdown. Timing: R28 (274kΩ) + C42 (10µF) → t = 1.1 × 274kΩ × 10µF = 3.01 s. VCC bypass: C38 (100nF). | Yes | Pending | 2 |
 | U12 | Current monitor I²C 0x40 SOIC-8 | INA219AIDR | Texas Instruments | 296-23978-1-ND | 595-INA219AIDR | C138706 | — | Zero-Drift Current/Power Monitor (I²C 0x40) | Yes | Pending | 1 |
-| U13, U14, U17 | Dual Schmitt-trigger inverter SC-88 | NL27WZ14DFT2G-Q | onsemi | 488-NL27WZ14DFT2G-QCT-ND | 863-NL27WZ14DFT2G-Q | C24511261 | — | AEC-Q100 dual Schmitt-trigger inverter, one gate used per SYNC stage ; Automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_nPWR`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. VCC bypass: C44 (100nF). | Yes | Pending | 3 |
+| U13, U14, U17 | Dual Schmitt-trigger inverter SC-88 | NL27WZ14DFT2G-Q | onsemi | 488-NL27WZ14DFT2G-QCT-ND | 863-NL27WZ14DFT2G-Q | C24511261 | — | AEC-Q100 dual Schmitt-trigger inverter, one gate used per SYNC stage ; Automotive dual Schmitt-trigger inverter, 1.65-5.5V supply, push-pull outputs, 5.5V-tolerant inputs. One gate conditions / inverts `LED_PWR_N`; the second conditions / inverts `PWR_BUT` for the SW2 hardware indicator logic. VCC bypass: C44 (100nF). | Yes | Pending | 3 |
 | U16 | 8-bit I²C GPIO expander 0x3F TSSOP-16 | PCA9534APWR | NXP Semiconductors | 296-21760-1-ND | 595-PCA9534APWR | C2871127 | — | 8-bit I²C GPIO expander @ 0x3F. Inputs: `POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`. Outputs: `SW_LED_R`, `SW_LED_G`, `SW_LED_B`, `SW_LED_CTRL`. `INT` exported as `PM_IO_INT_N`. | Yes | Pending | 1 |
-| U18 | D-type flip-flop shutdown latch SOT-23-6 | SN74LVC1G175DBVR | Texas Instruments | 296-17617-1-ND | 595-SN74LVC1G175DBVR | C128412 | — | Single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. Latches shutdown active on `PWR_BUT` assertion and clears when `LED_nPWR` deasserts. VCC bypass: C45 (100nF). | Yes | Pending | 1 |
+| U18 | D-type flip-flop shutdown latch SOT-23-6 | SN74LVC1G175DBVR | Texas Instruments | 296-17617-1-ND | 595-SN74LVC1G175DBVR | C128412 | — | Single D-type flip-flop with asynchronous clear, 1.65–5.5V supply, push-pull Q output, 5.5V-tolerant inputs. Latches shutdown active on `PWR_BUT` assertion and clears when `LED_PWR_N` deasserts. VCC bypass: C45 (100nF). | Yes | Pending | 1 |
 | U19 | Single AND gate SOT-23-5 | SN74LVC1G08DBVR | Texas Instruments | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | — | Single 2-input positive AND gate, 1.65–5.5V supply, push-pull output, 5.5V-tolerant inputs. Gates the U11 1Hz oscillator into the SW2 red sink while the shutdown latch is set. VCC bypass: C46 (100nF). | Yes | Pending | 1 |
 
 > **BOM Notes:**

@@ -436,3 +436,67 @@ All 25 active Pass 2 findings (F-42 through F-66) dispositioned:
 - **5 dismissed** as false positives: ROT-MAJ-1, REF-MAJ-1, JDB-CRIT-1, ENC-MIN-1, SET-MIN-2
 
 Carry-forwards to Pass 3: PM-MIN-1 (low severity). SET-MAJ-2 deferred pending pre-prototype switch procurement.
+
+
+---
+
+## Pass 3 — Fix Audit Trail
+
+**Completed:** 2026-05-01
+
+Pass 3 was a targeted surgical-edit pass applying 19 pre-characterised fixes across 15 electronics
+design documents. No new review agents were run. All 19 fixes were applied and all 15 modified files
+passed markdownlint with zero violations.
+
+### Pass 3 Fixes Applied
+
+| Fix # | Ref | File(s) | Change |
+| :--- | :--- | :--- | :--- |
+| F-67 | Fix 1 | `design/Standards/Global_Routing_Spec.md` | Added ESD bypass-cap exclusion note after §3.2: ESD arrays are passive devices that must NOT receive per-IC 100nF bypass caps. |
+| F-68 | Fix 2 | `design/Electronics/Reflector/Board_Layout.md` | Replaced §3 with full 30-pin 2×15 J4 connector table (all 30 pins, correct signals, aligned). |
+| F-69 | Fix 3 | `design/Electronics/Reflector/Design_Spec.md` | FR-REF-03: updated connector description from `(20-pin)` to `(30-pin 2×15 shrouded)`. |
+| F-70 | Fix 4 | `design/Electronics/Rotor/Board_Layout.md` | Removed stale "Not populated on Board B" note from R1 BOM row (no-load variant logic was Board A only). |
+| F-71 | Fix 5 | `design/Electronics/Rotor/Board_Layout.md` | Renamed signal `DEV_CLRN` → `DEV_CLR_N` to match active-low `_N` suffix convention. |
+| F-72 | Fix 6 | `design/Electronics/Extension/Board_Layout.md` | Renamed both `ACTUATE_REQUEST` → `ACTUATE_REQUEST_N` (J9 and J10 tables) to match active-low convention. |
+| F-73 | Fix 7 | `design/Electronics/Extension/Design_Spec.md` | Added DR-EXT-14: bypass cap requirement for U2–U9 ESD arrays (100nF per device, C5–C12). |
+| F-74 | Fix 8a — **REVERTED** | `design/Electronics/Extension/Design_Spec.md` | Mouser PN `595-PD4E05U06QDQARQ1` was incorrectly changed to `595-TPD4E05U06QDQARQ1` without owner approval. Reverted to owner-approved `595-PD4E05U06QDQARQ1`. |
+| F-75 | Fix 8b — **REVERTED** | `design/Electronics/Controller/Design_Spec.md` | Same as F-74. Reverted to owner-approved `595-PD4E05U06QDQARQ1`. |
+| F-76 | Fix 8c — **REVERTED** | `design/Electronics/Power_Module/Design_Spec.md` | Same as F-74. Reverted to owner-approved `595-PD4E05U06QDQARQ1`. |
+| F-77 | Fix 9 | `design/Electronics/Extension/Design_Spec.md` | Added DR-EXT-15: mounting hole requirement (4× M2.5 SMT standoffs, MH1–MH4). Added MH1–MH4 BOM row. |
+| F-78 | Fix 10 | `design/Electronics/Controller/Design_Spec.md`, `Board_Layout.md`; `design/Electronics/Power_Module/Board_Layout.md`; `design/Electronics/Stator/Design_Spec.md`; `design/Electronics/System_Architecture.md` | Renamed `I2C1` → `I2C-1` (8 occurrences across 5 files) to use hyphen-separated bus notation. |
+| F-79 | Fix 11 | `design/Electronics/Power_Module/Design_Spec.md` | Added DR-PM-14: per-IC bypass capacitor requirement (100nF per device on all ICs). |
+| F-80 | Fix 12 | `design/Electronics/Controller/Design_Spec.md`, `Board_Layout.md`; `design/Electronics/Power_Module/Design_Spec.md`, `Board_Layout.md`; `design/Electronics/System_Architecture.md` | Renamed `LED_nPWR` → `LED_PWR_N` (18 occurrences across 5 files) to use `_N` active-low suffix convention. |
+| F-81 | Fix 13 | `design/Electronics/User_Settings_Module/Design_Spec.md` | Deleted stale R78–R80 BOM row (resistors removed in a prior pass but row was not cleaned up). |
+| F-82 | Fix 14 | `design/Electronics/User_Settings_Module/Design_Spec.md` | Added DR-USM-11: mounting hole requirement. Added MH1–MH4 BOM row. |
+| F-83 | Fix 15 | `design/Electronics/User_Settings_Module/Design_Spec.md` | Bulk-renamed all requirement IDs from `FR-SBD-` / `DR-SBD-` prefix to `FR-USM-` / `DR-USM-` (16 replacements — 5 FR + 11 DR) to align with the `Settings_Board` → `User_Settings_Module` rename. |
+| F-84 | Fix 16 | `design/Electronics/Encoder/Design_Spec.md` | Added DR-ENC-05: mounting hole requirement (4× M2.5 SMT standoffs, MH1–MH4). |
+| F-85 | Fix 17 | `design/Electronics/Encoder/Design_Spec.md` | Added MH1–MH4 BOM row after U1. |
+| F-86 | Fix 18 | `design/Electronics/Actuation_Module/Design_Spec.md` | Corrected C4 voltage rating from `3V3` (3.3V) to `50V` (correct rating for a 5V rail bypass cap). |
+| F-87 | Fix 19 | `design/Electronics/Controller/Design_Spec.md` | Added DR-CTL-17: per-IC bypass cap requirement. Updated C6,C12–C16,C24,C28 BOM row quantity from 6 to 8. |
+
+### Pass 3 Carry-Forwards Resolved
+
+| Item | Resolution |
+| :--- | :--- |
+| PM-MIN-1 (Board_Layout compliance markers) | No actionable failure found across Pass 1, 2, or 3 reviews. Dismissed as false-positive / not applicable. |
+
+### Pass 3 Result
+
+All 21 items actioned (19 new fixes + 2 carry-forwards):
+
+- **19 fixed** (F-67–F-87)
+- **1 carry-forward dismissed** (PM-MIN-1 — false positive, no violation found)
+- **1 carry-forward still deferred** (SET-MAJ-2 — ESD on panel switches, pending pre-prototype procurement)
+
+All 15 modified files pass markdownlint with zero violations.
+
+### Pass 3 Refactoring Notes
+
+The following identifier and signal-name changes were made during Pass 3. Future reviewers should not flag these as new issues — they are intentional renames applied for consistency.
+
+| Scope | Old Name / ID | New Name / ID | Notes |
+| :--- | :--- | :--- | :--- |
+| USM requirement IDs | `FR-SBD-xx` / `DR-SBD-xx` | `FR-USM-xx` / `DR-USM-xx` | 16 IDs renamed (5 FR + 11 DR). Board was renamed `Settings_Board` → `User_Settings_Module`; IDs were not updated until Pass 3 (F-83). |
+| I2C signal pin names | `I2C1_SDA` / `I2C1_SCL` | `I2C_SDA` / `I2C_SCL` | F-78 first renamed to `I2C-1_SDA/SCL`; a post-fix correction finalised signal names as `I2C_SDA`/`I2C_SCL` (no bus-number qualifier). Prose bus labels such as "I2C-1 bus" or "I2C-1 Telemetry Bus" are intentionally retained. |
+| Active-low signal names | `LED_nPWR` | `LED_PWR_N` | F-80: 18 occurrences across 5 files updated to `_N` suffix convention. |
+| CPLD pin name | `DEV_CLRN` | `DEV_CLR_N` | F-71: vendor pin name is `DEV_CLRN` (no underscore); renamed in design docs to match `_N` convention with a parenthetical noting the vendor name. |

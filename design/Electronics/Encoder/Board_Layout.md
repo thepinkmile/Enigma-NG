@@ -93,7 +93,7 @@ the six matching headers on the Stator.
 | `TMS` | J2 pin 12 -> U1 | Dedicated JTAG mode input |
 | `TDI` | J2 pin 16 -> U1 | Dedicated JTAG serial input from the Stator-managed chain |
 | `TDO` | U1 -> R6 -> J2 pin 14 | Dedicated JTAG serial output back to the Stator-managed chain |
-| `DEV_CLRN` / reset input | J2 pin 18 (`SYS_RESET_N`) -> U1 | Active-low device reset; held high locally by R5 |
+| `DEV_CLR_N` / reset input | J2 pin 18 (`SYS_RESET_N`) -> U1 | Active-low device reset; held high locally by R5 (vendor pin name `DEV_CLRN` — see `design/Standards/Global_Routing_Spec.md §10`) |
 
 ### 4.2 General-purpose signal groups
 

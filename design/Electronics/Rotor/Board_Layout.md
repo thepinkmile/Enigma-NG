@@ -224,7 +224,7 @@ rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Roto
 | `TMS` | J1 pin 4 / J8 pin 3 -> U1 | Dedicated JTAG mode input; forwarded to Board B and onwards to J4 |
 | `TDI` | J1 pin 6 (`TTD`) -> U1 | Incoming serial JTAG data from the previous stage; connector name stays `TTD` for stack clarity |
 | `TDO` | U1 -> J8 pin 5 / J4 pin 6 (`TTD`) | Outgoing serial JTAG data to the next stage |
-| `DEV_CLRN` / reset input | J1 pin 8 (`SYS_RESET_N`) / J8 pin 4 -> U1 | Active-low device reset; held high locally by R5 |
+| `DEV_CLR_N` / reset input | J1 pin 8 (`SYS_RESET_N`) / J8 pin 4 -> U1 | Active-low device reset; held high locally by R5 (vendor name `DEV_CLRN` renamed `DEV_CLR_N` per GRS active-low naming convention) |
 
 ### 6.2 General-purpose signal groups
 
@@ -294,9 +294,9 @@ Board 3V3_ENIG trunk traces).
 * **JTAG CI traces:** 0.127 mm (5 mil) on L1 over the L2 GND plane achieves 50 Ω controlled
   impedance on the JLC04161H-7628 stackup (h = 0.087 mm, t = 0.035 mm, Eᵣ = 4.4). Per DEC-016.
   See `design/Electronics/Investigations/JTAG_Integrity.md §3.1`.
-* **Series termination R1 (75 Ω, CPLD TDO → J4 pin 6):** Placed within 2 mm of the CPLD TDO pin.
-  Source impedance ≈ 95 Ω targeting the ~100 Ω inter-rotor Stator PCB segment. Trace from R1 to
-  J4 kept < 5 mm and routed at 0.127 mm consistent with the CI chain.
+* **No series termination on BtB stack path.** 75 Ω series termination applies to the Stator ribbon
+  cable ports only (see `Stator/Board_Layout.md §8`). Rotor-to-rotor BtB connectors (J4/J5) are
+  unterminated; no series termination resistor is used on this board.
 * **3V3_ENIG power rail:** The L3 copper pour is the primary current path. L1 surface traces at
   0.80 mm connect J2/J5 connector pads to the L3 pour via thermal vias. All rotor boards share
   the same PCB layout — the 0.80 mm canonical width provides substantial margin above the 275 mA

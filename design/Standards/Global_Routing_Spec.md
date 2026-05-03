@@ -109,6 +109,8 @@ placed within 1mm of the IC on the same layer.
   capacitors for a given IC, the design requirement table for that board shall cite this rule and
   list the specific capacitors added.
 
+> **Note:** ESD protection ICs (TVS arrays) are excluded from the per-IC bypass capacitor rule in §3.2. These devices do not require dedicated decoupling capacitors.
+
 ## 4. Mechanical Grounding
 
 * **Mounting Holes:** 3.2mm PTH for M3 screws.
@@ -136,6 +138,24 @@ placed within 1mm of the IC on the same layer.
   tolerances must still be verified during mechanical prototype fit-check.
 * **Exceptions:** Panel-mounted switches, LEDs, buttons, and any connector family whose datasheet
   mechanically prevents a 2.0mm nominal overhang must be handled by explicit board-level documentation.
+
+## 4.2. Mounting Hole BOM Policy
+
+Every board design specification shall explicitly list its mounting holes (designators, size, and
+location). The BOM treatment depends on hole purpose:
+
+* **Plain chassis mounting holes** (board-to-enclosure): Use the KiCAD built-in `MountingHole`
+  footprint. These are physical PCB features only — no purchasable component exists and **no BOM
+  row shall be added** for them.
+* **Module attachment standoffs** (board-to-Module): Where a Module (e.g. CM5 = Compute Module 5,
+  AM = Actuation Module) is mechanically secured to the host board, SMT standoff components are
+  required. These are purchasable parts with a specific footprint and **shall have a BOM row**.
+* **Identification:** The term "Module" in this context means a discrete sub-assembly that mounts
+  onto the host board (not merely a board-to-board connector). If in doubt, presence of a
+  purchasable standoff part number is the distinguishing test.
+* **Final positions:** Exact mounting hole coordinates cannot be fully verified until schematic
+  capture and PCB layout; all mounting hole locations shall be reviewed as part of the
+  `review-mounting-holes` design checkpoint before first manufacture.
 
 ## 5. Single-Point GND ↔ GND_CHASSIS Bond (Global Rule)
 
@@ -207,6 +227,17 @@ To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Dat
 * **Do not add UNSOURCED ESD placeholders for internal-only boards.** Boards that carry only internal connectors shall state "No
   TVS/ESD protection required — all connectors are internal to the enclosure, per `Global_Routing_Spec.md §9`" in their Thermal &
   ESD section.
+
+## 10. Vendor Pin Name Mapping
+
+Where a vendor IC uses a pin or signal name that does not conform to the Enigma-NG active-low naming
+convention (`_N` suffix), the **design net shall be renamed** to comply. The original vendor name must
+be noted alongside the design net name in the relevant Design Specification and Board Layout for
+traceability, cross-referenced back to this section.
+
+| Vendor | Device Family | Vendor Pin Name | Design Net Name | Notes |
+| :--- | :--- | :--- | :--- | :--- |
+| Intel (Altera) | MAX II / MAX V CPLD | `DEV_CLRN` | `DEV_CLR_N` | Global asynchronous device clear; active-low; vendor uses `N` suffix without underscore separator |
 
 ## 8. Vias & Teardrops
 

@@ -39,35 +39,44 @@ TOP VIEW (L1) - 4-Layer / 2oz Copper
 |_____________________________________________|
 ```
 
-## 3. Interconnect Pinout (20-Pin Header)
+## 3. Interconnect Pinout (30-Pin 2×15 Header, J4)
 
-This 20-pin (2x10) ribbon-style connector follows odd/even row orientation (odd pins on row 1, even
-pins on row 2), consistent with the Encoder Data Link pinout format.
+J4 uses the Adam Tech 2BHR-30-VUA 30-pin 2×15 shrouded IDC box header (2.54mm pitch),
+consistent with the Extension Port pinout defined in `Stator/Board_Layout.md §1 J10`.
+Odd pins are on row 1; even pins on row 2.
 
-```text
-PIN | SIGNAL          | DESCRIPTION
-----|-----------------|---------------------------------
-1   | 3V3_ENIG        | Power Supply
-2   | SYS_RESET_N     | Active-low CPLD reset (broadcast from Stator)
-3   | ENC_OUT_REF[0]  | Stator-owned outbound reflector-boundary bit 0
-4   | ENC_OUT_REF[1]  | Stator-owned outbound reflector-boundary bit 1
-5   | ENC_OUT_REF[2]  | Stator-owned outbound reflector-boundary bit 2
-6   | ENC_OUT_REF[3]  | Stator-owned outbound reflector-boundary bit 3
-7   | ENC_OUT_REF[4]  | Stator-owned outbound reflector-boundary bit 4
-8   | ENC_OUT_REF[5]  | Stator-owned outbound reflector-boundary bit 5
-9   | ENC_IN_REF[0]   | Stator-owned inbound reflector-boundary bit 0
-10  | ENC_IN_REF[1]   | Stator-owned inbound reflector-boundary bit 1
-11  | ENC_IN_REF[2]   | Stator-owned inbound reflector-boundary bit 2
-12  | ENC_IN_REF[3]   | Stator-owned inbound reflector-boundary bit 3
-13  | ENC_IN_REF[4]   | Stator-owned inbound reflector-boundary bit 4
-14  | ENC_IN_REF[5]   | Stator-owned inbound reflector-boundary bit 5
-15  | TTD_RETURN      | JTAG Data Out Return
-16  | GND             | Ground (TDO Shield)
-17  | 5V_MAIN         | Reserved on passive Reflector
-18  | GND             | Reserved return
-19  | 5V_MAIN         | Reserved on passive Reflector
-20  | GND             | Reserved return
-```
+| PIN | SIGNAL          | DIR (Reflector) | DESCRIPTION                                     |
+|-----|-----------------|-----------------|-------------------------------------------------|
+| 1   | 5V_MAIN         | In              | Main 5V supply                                  |
+| 2   | 5V_MAIN         | In              | Main 5V supply (paired)                         |
+| 3   | 3V3_ENIG        | In              | 3.3V logic supply                               |
+| 4   | 3V3_ENIG        | In              | 3.3V logic supply (paired)                      |
+| 5   | GND             | —               | Guard / return                                  |
+| 6   | GND             | —               | Guard / return                                  |
+| 7   | ENC_OUT_REF[0]  | In              | Stator-driven outbound reflector-boundary bit 0 |
+| 8   | ENC_OUT_REF[1]  | In              | Stator-driven outbound reflector-boundary bit 1 |
+| 9   | ENC_OUT_REF[2]  | In              | Stator-driven outbound reflector-boundary bit 2 |
+| 10  | ENC_OUT_REF[3]  | In              | Stator-driven outbound reflector-boundary bit 3 |
+| 11  | ENC_OUT_REF[4]  | In              | Stator-driven outbound reflector-boundary bit 4 |
+| 12  | ENC_OUT_REF[5]  | In              | Stator-driven outbound reflector-boundary bit 5 |
+| 13  | GND             | —               | Guard / return                                  |
+| 14  | GND             | —               | Guard / return                                  |
+| 15  | SYS_RESET_N     | In              | Active-low CPLD reset (broadcast from Stator)   |
+| 16  | TTD_RETURN      | Out             | JTAG Data Out Return to Stator                  |
+| 17  | GND             | —               | Guard / return                                  |
+| 18  | GND             | —               | Guard / return                                  |
+| 19  | ENC_IN_REF[0]   | Out             | Stator-bound inbound reflector-boundary bit 0   |
+| 20  | ENC_IN_REF[1]   | Out             | Stator-bound inbound reflector-boundary bit 1   |
+| 21  | ENC_IN_REF[2]   | Out             | Stator-bound inbound reflector-boundary bit 2   |
+| 22  | ENC_IN_REF[3]   | Out             | Stator-bound inbound reflector-boundary bit 3   |
+| 23  | ENC_IN_REF[4]   | Out             | Stator-bound inbound reflector-boundary bit 4   |
+| 24  | ENC_IN_REF[5]   | Out             | Stator-bound inbound reflector-boundary bit 5   |
+| 25  | GND             | —               | Guard / return                                  |
+| 26  | GND             | —               | Guard / return                                  |
+| 27  | 3V3_ENIG        | In              | 3.3V logic supply (paired)                      |
+| 28  | 3V3_ENIG        | In              | 3.3V logic supply (paired)                      |
+| 29  | 5V_MAIN         | In              | Main 5V supply (paired)                         |
+| 30  | 5V_MAIN         | In              | Main 5V supply (paired)                         |
 
 ---
 

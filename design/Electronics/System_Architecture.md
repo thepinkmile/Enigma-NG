@@ -83,13 +83,13 @@ The Controller ↔ Power Module dock uses three 10-position TE 2.5 mm board-to-b
 | :--- | :--- | :--- | :--- |
 | J1 | Main regulated rails (`5V_MAIN`, `3V3_ENIG`, `GND`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
 | J2 | Regulated PoE-derived auxiliary input (`VIN_POE_12V` + `GND`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
-| J3 | Low-speed control / telemetry (`I2C-1`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `LED_nPWR`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
+| J3 | Low-speed control / telemetry (`I2C-1`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `LED_PWR_N`) | TE `1-1674231-1` receptacle | TE `1123684-7` plug |
 
 Functional allocation:
 
 - **J1:** `3 × 5V_MAIN`, `2 × 3V3_ENIG`, `5 × GND`
 - **J2:** `3 × VIN_POE_12V`, `7 × GND`
-- **J3:** `I2C1_SDA`, `I2C1_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `LED_nPWR`, `3 × GND`
+- **J3:** `I2C_SDA`, `I2C_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN`, `PWR_BUT`, `LED_PWR_N`, `3 × GND`
 
 **Reference datasheets:** [`TE-1-1674231-1-datasheet.md`](../Datasheets/TE-1-1674231-1-datasheet.md),
 [`TE-1123684-7-datasheet.md`](../Datasheets/TE-1123684-7-datasheet.md)
@@ -108,7 +108,7 @@ Functional allocation:
 - **J4 power blades:** `4 × 5V_MAIN`, `1 × GND`
 - **J4 signal field:** additional `GND` returns / guards
 - **J5 power blades:** `4 × 3V3_ENIG`, `1 × GND`
-- **J5 signal field:** guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C1_SDA`, `I2C1_SCL`, with all
+- **J5 signal field:** guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C_SDA`, `I2C_SCL`, with all
   remaining signal contacts tied to `GND`
 
 The small signal contacts are valid current-carrying return paths as well as guards; the family

@@ -75,7 +75,7 @@ Mark clearly on silkscreen: `ERM8/ERF8 / 0.8mm / NICHT 2.54mm`.
 
 * **J9:** AM power dock host socket (ERF8-005) - routes `5V_MAIN`, `3V3_ENIG`, and grouped returns
   from the Extension Port power entry.
-* **J10:** AM trigger dock host socket (ERF8-005) - routes the local active-low `ACTUATE_REQUEST`
+* **J10:** AM trigger dock host socket (ERF8-005) - routes the local active-low `ACTUATE_REQUEST_N`
   source into the AM.
 * The mounted AM footprint on the Extension shall be kept as a **no-component placement zone** except
   for J9 / J10 and the routing / copper needed to reach them. This preserves the inverted module's
@@ -106,7 +106,7 @@ supported). All Extension boards share an identical PCB layout; traces are sized
 
 | Net | Peak Current | IPC Calc (2oz ext) | Design Min | **Specified Width** | Layer | Notes |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Signal (ENC_IN/OUT, SYS_RESET_N, ACTUATE_REQUEST) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; pass-through from J7 to J8 and local AM trigger routing |
+| Signal (ENC_IN/OUT, SYS_RESET_N, ACTUATE_REQUEST_N) | < 5 mA | < 0.001 mm | 0.20 mm | **0.20 mm** | L1 | 3.3 V logic signals; pass-through from J7 to J8 and local AM trigger routing |
 | JTAG signals: TTD_RETURN (CI) | signal | — | 0.127 mm | **0.127 mm (5 mil)** | L1 (external) | 50 Ω controlled impedance over L2 GND plane; per DEC-016. External layer — no inner-layer minimum conflict. See `JTAG_Integrity.md`. |
 | 3V3_ENIG J7 entry trunk (J7 → L3 pour → J5 and J8) | 1.65 A (design budget; 30 rotors × 55 mA) | 0.25 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | 3V3_ENIG canonical 0.80 mm (Global_Routing_Spec §1.1); conservative full-system budget; resolved by DEC-053 (4 dedicated pins for 0.41 A/conductor) |
 | 3V3_ENIG J5 output (J5 → downstream mini-stack J2) | 275 mA (5-rotor mini-stack worst case) | 0.04 mm | 0.80 mm | **0.80 mm** | L1 + L3 pour | Canonical 0.80 mm minimum; 275 mA = Rotor 1 of downstream mini-stack |

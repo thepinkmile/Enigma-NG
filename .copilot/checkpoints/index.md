@@ -103,3 +103,5 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 97 | Rotor RefDes consecutive renumber complete | 097-rotor-refdes-consecutive-renumber.md |
 | 98 | Rotor & Extension power analysis rewritten for mini-stack | 098-rotor-extension-power-analysis.md |
 | 99 | Extension Port 30-pin connector change applied | 099-extension-port-30-pin-connector-applied.md |
+| 100 | Pass 3 electronics review fixes complete | 100-pass3-electronics-review-fixes-complete.md |
+| 101 | todo-list.md persisted: 5 new todos and deps | 101-todo-list-persisted-5-new-tod.md |

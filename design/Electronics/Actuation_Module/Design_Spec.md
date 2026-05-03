@@ -278,7 +278,7 @@ pinouts, mechanical constraints, and BOM.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | C1 | 1µF X7R 50V 0805 | C0805C105K5RACTU | Kemet | 399-C0805C105K5RACTUCT-ND | 80-C0805C105K5R | C3018567 | — | — | Yes | Pending | 1 |
 | C2-C3, C6-C7 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | — | — | Yes | Pending | 4 |
-| C4 | 4.7µF X7R 3V3 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | — | — | Yes | Pending | 1 |
+| C4 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | — | — | Yes | Pending | 1 |
 | C5 | 10µF X7R 25V 0805 | CL21B106KAYQNNE | Samsung | 1276-CL21B106KAYQNNECT-ND | 187-CL21B106KAYQNNE | C3039694 | — | — | Yes | Pending | 1 |
 | D1-D3 | Green SMD LED diagnostic 0402 | 150060VS75000 | Würth Elektronik | 732-4980-1-ND | 710-150060VS75000 | C6848499 | — | — | Yes | Pending | 3 |
 | J1-J2 | Male 2x5 0.8mm pitch SMT | ERM8-005-05.0-S-DV-K-TR | Samtec | 612-ERM8-005-05.0-S-DV-K-TRCT-ND | 200-ERM8005050SDVKTR | C3649741 | — | — | Yes | Pending | 2 |

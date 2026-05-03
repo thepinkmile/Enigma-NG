@@ -228,7 +228,7 @@ R1 is on the 3V3\_ENIG entry trace; INA219 differential voltage sense pins strad
 | `TMS` | Controller dock `J12` -> U1 | Dedicated JTAG mode input; broadcast onwards to all encoder ports and the rotor stack |
 | `TDI` | Controller dock `J12` -> U1 | Head of the Stator-managed JTAG daisy chain |
 | `TDO` | U1 -> Stator JTAG chain -> `J4` | First JTAG chain output; continues through encoder ports, then the rotor stack |
-| `DEV_CLRN` | `U3` (`SYS_RESET_N AND CFG_APPLY_N`) -> U1 | Dedicated device clear; not counted as a general-purpose routing I/O |
+| `DEV_CLR_N` | `U3` (`SYS_RESET_N AND CFG_APPLY_N`) -> U1 | Dedicated device clear; not counted as a general-purpose routing I/O (vendor pin name `DEV_CLRN` — see `design/Standards/Global_Routing_Spec.md §10`) |
 
 ### 10.2 General-purpose signal groups
 

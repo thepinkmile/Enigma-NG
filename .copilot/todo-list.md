@@ -10,7 +10,7 @@
 > from the SQL Reconstruction Reference section at the bottom of this file. That section is the authoritative
 > dependency source; the in-session SQL is a convenience tracker only and does not persist across sessions.
 
-Last updated: 2026-05-02 (dependency graph added)
+Last updated: 2026-05-03 (rotor-refdes-reallocate + 4 interim electronics review milestones added; Pass 3 fixes in progress)
 
 ---
 
@@ -39,6 +39,7 @@ Long-running workstreams; tracked in `.copilot/plan.md` Current Open Workstreams
 | `display-addon-board` | 🚫 **DEFERRED TO V2.0.** Display add-on board design: J9 (Amphenol F52Q) on Controller is the only fixed connector; display power, touch wiring, and auxiliary harness remain deferred with the add-on board definition | blocked | DEC-033 | `design/Electronics/Controller/Design_Spec.md §8` |
 | `cpld-production-replacement` | 🚫 **DEFERRED TO V2.0.** Review replacement CPLD for production stage (current MAX II EPM570 is a prototype-grade selection); update Certification Evidence §7.1 when confirmed | blocked | OA-04 | `design/Standards/Certification_Evidence.md` |
 | `connector-thermal-verification` | **✅ DONE.** Thermal / current-capacity verification of active PM and Stator dock connectors (TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015`); full derating analysis documented in Certification Evidence §5.1. Temperature exception noted for TE connector (−20°C continuous vs DEFSTAN −40°C target); thermal shock test to −40°C cited as supporting evidence. Formal TE confirmation recommended before DEFSTAN submission. | done | OA-05 | `design/Standards/Certification_Evidence.md §5.1` |
+| `rotor-refdes-reallocate` | Rotor board RefDes gap removal: BOM currently runs R2–R7 (no R1 — series termination resistor was never used). Reallocate to R1–R6 with matching updates to `Design_Spec.md` BOM table, `Board_Layout.md` references, and `Consolidated_BOM.md` Rotor rows. All boards must have zero RefDes gaps before `interim-electronics-review-1` can be called complete. | pending | — | 2026-05-03 |
 | `full-pn-review` | Full supplier PN review of all BOM entries before schematic capture — a prior session that reduced component package sizes appears to have corrupted supplier PNs on at least two components (ERJ-2RKF1001X, CL05B104KB5NNNC), substituting codes pointing to entirely different parts. A sweep of all DigiKey / Mouser / JLCPCB PNs against their MPNs is required before KiCAD work begins. Depends on: `connector-thermal-verification`, `extension-mechanical-usage`, `battery-connector-final-review`, `ctlh1-deferred`, `rotor-esd-tvs`, `coupon-testing-review` | pending | — | 2026-05-02 supplier PN audit |
 | `footprint-requests-pending` | Footprints requested but not yet received; update BOM and library when each arrives: **BAT54** (Diotec SOT-23) — requested, **AC72ABD** (72°C SMD thermal cutoff) — requested, **BMC-Q2AY0600M** (TE 600Ω 0805 AEC-Q200 ferrite bead) — requested, **2BHR-30-VUA** (Adam Tech 30-pin 2×15 IDC box header, JLCPCB C17346400; used at STA:J10, REF:J4, EXT:J7/J8) — requested, **TPS75733KTTRG3** (Texas Instruments 3.3V LDO TO-263-5) — ⚠️ footprint ready, no 3D model yet — download on next session, **MCP121T-450E/LB** (Microchip 4.5V supervisor SC70-3) — ⚠️ footprint ready, no 3D model yet — download on next session. Add further pending requests here as they arise. Depends on: `full-pn-review` | pending | — | 2026-05-02 |
 
@@ -91,9 +92,14 @@ Top-level milestones that gate v1.0 release. Descriptions TBD — to be confirme
 
 | ID | Description | Status | Depends on |
 | --- | --- | --- | --- |
-| `prototype-pcb-manufacturing` | Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | `rerun-deep-reviews` |
+| `review-mounting-holes` | Verify mounting hole count and board-specific location for every board during schematic capture and PCB layout stage. Cannot be fully defined until KiCAD layout is complete. Known placements: USM = 4 corners; Extension = bottom corners + middle-centre + top-centre. Extension AM standoff holes (quantity/position/part TBD). Hole type and pad spec per GRS §4.2. | pending | `interim-electronics-review-1`, `coupon-testing-review` |
+| `interim-electronics-review-1` | **Review gate 1 — Pass 3 fixes verified.** All pass-3 fix todos (fix1–fix19) and `rotor-refdes-reallocate` must be complete. Verify no RefDes gaps on any board, all pass-3 findings resolved, and documentation consistent before proceeding to schematic capture / footprint work. | pending | All fix1–fix19 + `rotor-refdes-reallocate` |
+| `interim-electronics-review-2` | **Review gate 2 — Post-coupon review.** Coupon strategy verified, all mounting hole locations finalised, BOM ready for full PN review. | pending | `interim-electronics-review-1`, `coupon-testing-review`, `review-mounting-holes` |
+| `interim-electronics-review-3` | **Review gate 3 — Post-schematic / pre-prototype manufacturing.** Schematic capture, footprint assignment, and full PN review complete. Final electronics design gate before committing to prototype PCB manufacturing. | pending | `interim-electronics-review-2`, `full-pn-review`, `footprint-requests-pending` |
+| `interim-electronics-review-4` | **Review gate 4 — Pre-production run.** Prototype system testing complete and all prototype-phase findings resolved. Final gate before releasing to production manufacturing. | pending | `prototype-system-complete`, `compliance-testing` |
+| `prototype-pcb-manufacturing` | Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | `rerun-deep-reviews`, `review-mounting-holes`, `interim-electronics-review-3` |
 | `prototype-system-complete` | Verification of full system and issuing all design documents, test procedures and guides as version 1.0 complete | pending | All SW & Mech deferrals, `rerun-deep-reviews` |
-| `release-candidate-production` | Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as `prototype-pcb-manufacturing`: (1) Generate manufacturing pack; (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | `prototype-system-complete`, `compliance-testing` |
+| `release-candidate-production` | Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as `prototype-pcb-manufacturing`: (1) Generate manufacturing pack; (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing | pending | `prototype-system-complete`, `compliance-testing`, `interim-electronics-review-4` |
 | `version-one-complete` | All version 1.0 documents issued. Conduct lessons learned from v1.0 and create a new todo-list to refine the design for a version 2.0 machine | pending | `da-01`, `da-02`, `da-03`, `da-04`, `release-candidate-production` |
 
 ---
@@ -101,32 +107,40 @@ Top-level milestones that gate v1.0 release. Descriptions TBD — to be confirme
 ## Dependency Overview
 
 ```
+fix1-fix19 + rotor-refdes-reallocate
+  --> interim-electronics-review-1
+        --> interim-electronics-review-2 (also needs: coupon-testing-review, review-mounting-holes)
+              --> interim-electronics-review-3 (also needs: full-pn-review, footprint-requests-pending)
+                    --> prototype-pcb-manufacturing (also needs: rerun-deep-reviews, review-mounting-holes)
+
 rotor-variant-refdes-schematic
-  └─> rotor-esd-tvs
-        └─> full-pn-review (also needs: extension-mechanical-usage,
-              │              battery-connector-final-review [🔒 blocked],
-              │              ctlh1-deferred, coupon-testing-review,
-              │              connector-thermal-verification)
-              └─> footprint-requests-pending
-                    └─> rerun-deep-reviews ──┐
-                          │                  │
-                          ├─> ltc3350-telemetry (also needs: prototype-pcb-manufacturing)
-                          └─> cpld-timing-load  (also needs: prototype-pcb-manufacturing)
-                                └─> [all mechanical deferrals] (also need: prototype-pcb-manufacturing)
-                                      └─> prototype-system-complete
-                                            └─> da-01, da-02, da-03, da-04
-                                                  └─> compliance-testing
-                                                        └─> release-candidate-production
-                                                              └─> version-one-complete
-                                                                    (also needs: da-01–da-04)
+  --> rotor-esd-tvs
+        --> full-pn-review (also needs: extension-mechanical-usage,
+              |              battery-connector-final-review [blocked - awaiting supplier],
+              |              ctlh1-deferred, coupon-testing-review,
+              |              connector-thermal-verification)
+              --> footprint-requests-pending
+                    --> rerun-deep-reviews --+
+                          |                  |
+                          |--> ltc3350-telemetry (also needs: prototype-pcb-manufacturing)
+                          --> cpld-timing-load  (also needs: prototype-pcb-manufacturing)
+                                --> [all mechanical deferrals] (also need: prototype-pcb-manufacturing)
+                                      --> prototype-system-complete
+                                            --> da-01, da-02, da-03, da-04
+                                                  --> compliance-testing
+                                                        |--> interim-electronics-review-4
+                                                        |      --> release-candidate-production
+                                                        --> release-candidate-production (also needs: prototype-system-complete)
+                                                               --> version-one-complete
+                                                                     (also needs: da-01-da-04)
 
 v2.0 deferred (blocked): display-addon-board, display-aperture, cpld-production-replacement
 Currently ready (no pending deps): connector-thermal-verification, ctlh1-deferred,
   extension-mechanical-usage, rotor-variant-refdes-schematic
-  [coupon-testing-review now depends on extension-mechanical-usage]
-  [battery-connector-final-review excluded — 🔒 blocked awaiting supplier response]
-  [prototype-pcb-manufacturing excluded — depends on rerun-deep-reviews]
-  [release-candidate-production excluded — now depends on compliance-testing]
+  [coupon-testing-review depends on extension-mechanical-usage]
+  [battery-connector-final-review excluded -- blocked awaiting supplier response]
+  [prototype-pcb-manufacturing excluded -- depends on rerun-deep-reviews + interim-electronics-review-3]
+  [release-candidate-production excluded -- depends on compliance-testing + interim-electronics-review-4]
 ```
 
 ---
@@ -148,9 +162,10 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('rerun-deep-reviews',                'Final pre-V1 deep review cycle',               'pending'),
 -- Electronics Deferrals
 ('ctlh1-deferred',                    'Controller CTL-H1 deferred finding',           'done'),
-('rotor-power-analysis-ministack',    'Recalculate Rotor Board_Layout §7 power analysis for mini-stack (max 5 rotors per stack)', 'pending'),
-('rotor-esd-tvs',                     'Rotor ESD TVS (PRTR5V0U10AZ) sourcing',       'pending'),
+('rotor-power-analysis-ministack',    'Recalculate Rotor Board_Layout §7 power analysis for mini-stack (max 5 rotors per stack)', 'done'),
+('rotor-esd-tvs',                     'Rotor ESD TVS (PRTR5V0U10AZ) sourcing',       'done'),
 ('rotor-variant-refdes-schematic',    'Rotor variant U3/U4 KiCAD DNF approach',       'pending'),
+('rotor-refdes-reallocate',           'Rotor RefDes gap removal: R2-R7 -> R1-R6',    'pending'),
 ('display-addon-board',               'Display add-on board (v2.0)',                  'blocked'),
 ('cpld-production-replacement',       'CPLD production replacement review (v2.0)',    'blocked'),
 ('connector-thermal-verification',    'Connector thermal/current derating',           'pending'),
@@ -174,7 +189,12 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('da-04',                             'DA-04: Consolidated BOM PM component update',  'pending'),
 ('compliance-testing',               'Sending final review prototype for Environmental and EMC testing to get required certification documentation.', 'pending'),
 -- Project Milestones
-('prototype-pcb-manufacturing',       'Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing',        'pending'),
+('review-mounting-holes',             'Verify mounting hole count and board-specific location for every board during schematic capture and PCB layout stage. Cannot be fully defined until KiCAD layout is complete.', 'pending'),
+('interim-electronics-review-1',      'Review gate 1: pass 3 fixes + rotor-refdes-reallocate complete; no RefDes gaps; all pass-3 findings resolved.', 'pending'),
+('interim-electronics-review-2',      'Review gate 2: post-coupon review; mounting holes finalised; BOM ready for full PN review.', 'pending'),
+('interim-electronics-review-3',      'Review gate 3: post-schematic / pre-prototype; schematic, footprints, full PN review complete.', 'pending'),
+('interim-electronics-review-4',      'Review gate 4: pre-production; prototype testing complete; final electronics gate before production run.', 'pending'),
+('prototype-pcb-manufacturing','Process prototype PCB manufacturing through JLCPCB: (1) Generate manufacturing pack (gerber, pick & place, LCSC BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing',        'pending'),
 ('prototype-system-complete',         'Verification of full system and issuing all design documents, test procedures and guides as version 1.0 complete.',          'pending'),
 ('release-candidate-production',      'Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as prototype-pcb-manufacturing: (1) Generate manufacturing pack (gerber, pick & place, BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing.',       'pending'),
 ('version-one-complete',              'All version 1.0 documents issued. Conduct lessons learned from v1.0 and create a new todo-list to refine the design for a version 2.0 machine.',              'pending');
@@ -242,11 +262,30 @@ INSERT OR IGNORE INTO todo_deps (todo_id, depends_on) VALUES
 ('compliance-testing',          'da-02'),
 ('compliance-testing',          'da-03'),
 ('compliance-testing',          'da-04'),
--- prototype-pcb-manufacturing depends on rerun-deep-reviews
+-- prototype-pcb-manufacturing depends on rerun-deep-reviews, review-mounting-holes, and interim-electronics-review-3
 ('prototype-pcb-manufacturing', 'rerun-deep-reviews'),
--- release-candidate-production depends on prototype-system-complete + compliance-testing
+('review-mounting-holes',       'rerun-deep-reviews'),
+('prototype-pcb-manufacturing', 'review-mounting-holes'),
+('prototype-pcb-manufacturing', 'interim-electronics-review-3'),
+-- interim-electronics-review-1 gates (fix1-fix19 listed individually + rotor-refdes-reallocate)
+-- Note: fix1-fix19 are session-transient pass-3 fix todos and not reconstructed here;
+-- add them manually per session. The structural dep is rotor-refdes-reallocate.
+('interim-electronics-review-1', 'rotor-refdes-reallocate'),
+-- interim-electronics-review-2 gates
+('interim-electronics-review-2', 'interim-electronics-review-1'),
+('interim-electronics-review-2', 'coupon-testing-review'),
+('interim-electronics-review-2', 'review-mounting-holes'),
+-- interim-electronics-review-3 gates
+('interim-electronics-review-3', 'interim-electronics-review-2'),
+('interim-electronics-review-3', 'full-pn-review'),
+('interim-electronics-review-3', 'footprint-requests-pending'),
+-- interim-electronics-review-4 gates
+('interim-electronics-review-4', 'prototype-system-complete'),
+('interim-electronics-review-4', 'compliance-testing'),
+-- release-candidate-production depends on prototype-system-complete + compliance-testing + interim-electronics-review-4
 ('release-candidate-production', 'prototype-system-complete'),
 ('release-candidate-production', 'compliance-testing'),
+('release-candidate-production', 'interim-electronics-review-4'),
 -- version-one-complete needs all DA actions + release candidate
 ('version-one-complete',        'da-01'),
 ('version-one-complete',        'da-02'),
