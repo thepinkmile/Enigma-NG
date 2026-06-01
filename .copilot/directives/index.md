@@ -2,6 +2,7 @@
 
 Load this file first at every session start, then fetch individual directive files as needed.
 All directives apply equally to all agents, sub-agents, and orchestrating sessions.
+Session bootstrap and memory persistence workflow is defined in `.copilot/SESSION_START.md`.
 
 ## Critical Directives — load these first
 
