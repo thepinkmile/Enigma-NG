@@ -121,8 +121,8 @@ These connectors are distinct from the face-mounted ROT-board Samtec BtB connect
 | --- | --- | --- |
 | **front-top-right** | Stack-Input front (right edge) | ENC_IN[5:0], ENC_OUT[5:0], TTD_IN (TDI from Cypher Board/prev stack to first ROT Board B), TMS, TCK, CPLD_RESET_N |
 | **front-bottom-right** | Stack-Input front (right edge) | 3V3_ENIG, 5V_MAIN, GND, ENC_ACTIVE_N (from ENC module — active-low debounced keypress signal; triggers rotor actuation on keypress via native AM circuit) |
-| **front-top-left** | Stack-Output front (left edge) | TTD_RETURN — passthrough only (return JTAG TDO path back to Cypher Board) |
-| **front-bottom-left** | Stack-Output front (left edge) | ENC_DATA return (ENC_IN[5:0] + ENC_OUT[5:0]) — routed back to Cypher Board CPLD via blanking board |
+| **front-top-left** | Stack-Output front (left edge) | TTD_RETURN + ENC_DATA return (return path back toward Cypher Board) |
+| **front-bottom-left** | Stack-Output front (left edge) | 3V3_ENIG + GND only (Stack-Output board power feed) |
 
 *Rear face (next-stack / blanking board side):*
 
@@ -130,7 +130,7 @@ These connectors are distinct from the face-mounted ROT-board Samtec BtB connect
 | --- | --- | --- |
 | **rear-top-right** | Stack-Input back (left edge) | Return signals from ribbon cable (ENC_DATA + JTAG TTD) forwarded to next mini-stack front-top-right or blanking board |
 | **rear-bottom-right** | Stack-Input back (left edge) | 3V3_ENIG, 5V_MAIN, GND passthrough to next mini-stack front-bottom-right or blanking board |
-| **rear-top-left** | Stack-Output back (right edge) | TTD_RETURN passthrough (received from blanking board routing at last mini-stack) |
+| **rear-top-left** | Stack-Output back (right edge) | TTD_RETURN + ENC_DATA return passthrough (received from blanking board at the last mini-stack) |
 | **rear-bottom-left** | Stack-Output back (right edge) | 3V3_ENIG, GND — Stack-Output board power supply (ROT face connectors on Stack-Output side have power pins NC to avoid ground loops; power provided by this connector instead — see Q43) |
 
 *Signal flow through a mini-stack:*
@@ -144,12 +144,10 @@ These connectors are distinct from the face-mounted ROT-board Samtec BtB connect
 7. Stack-Input maps ribbon return to **rear-top-right** and forwards to next mini-stack or blanking board
 8. Power and ENC_ACTIVE_N pass straight through Stack-Input: **front-bottom-right** → **rear-bottom-right** (3V3_ENIG, 5V_MAIN, and ENC_ACTIVE_N all pass through;
    each Stack-Input taps ENC_ACTIVE_N and 5V_MAIN locally for its AM circuit)
-9. At the last mini-stack: blanking board routes TTD_RETURN to Stack-Output **rear-top-left**; every Stack-Output board has an internal **rear-top-left → front-top-left** passthrough;
-   TTD_RETURN daisy-chains forward through all Stack-Output boards back to Cypher Board
-10. ENC_DATA return path routes via blanking board back to **front-bottom-left** (Stack-Output) and on to Cypher Board CPLD *(exact chain path for intermediate stacks — see Q45)*
+9. At the last mini-stack: blanking board routes TTD_RETURN and ENC_DATA return to Stack-Output **rear-top-left**; every Stack-Output board has an internal **rear-top-left → front-top-left** passthrough.
+10. TTD_RETURN and ENC_DATA return then daisy-chain forward through all Stack-Output boards back to the Cypher Board.
 
-> **Note:** Per-connector pin assignment proposed in Entry 9 (pending user approval — see Q42). 5V_MAIN pin count on front/rear-bottom-right may need review for 6-stack current capacity.
-> **Open question:** How does ENC_DATA return chain through intermediate Stack-Output boards — does rear-bottom-left also need ENC_DATA return pins alongside 3V3_ENIG? See Q45.
+> **Note:** Entry 10 is a historical draft. **Entry 11 pin tables are authoritative** and take precedence where they differ.
 
 ### Boards Affected / Fate
 
@@ -399,11 +397,11 @@ User provided detailed answers to multiple open questions:
 1. Q36 — Signal assignment per connector (now defined):
    - **front-top-right (Stack-Input):** ENC_IN[5:0], ENC_OUT[5:0], TTD_IN (JTAG TDI from Cypher Board or previous stack to first ROT Board B), TMS, TCK, CPLD_RESET_N
    - **front-bottom-right (Stack-Input):** 3V3_ENIG, 5V_MAIN, GND, ENC_ACTIVE_N (from ENC module — active-low debounced keypress signal; triggers rotor actuation on keypress via native AM circuit)
-   - **front-top-left (Stack-Output):** TTD_RETURN — passthrough only (return JTAG TDO path back to Cypher Board)
-   - **front-bottom-left (Stack-Output):** ENC_DATA return (ENC_IN[5:0] + ENC_OUT[5:0]) — routed back to Cypher Board CPLD via blanking board
+   - **front-top-left (Stack-Output):** TTD_RETURN + ENC_DATA return (return path back to Cypher Board)
+   - **front-bottom-left (Stack-Output):** 3V3_ENIG + GND only (Stack-Output board power feed)
    - **rear-top-right (Stack-Input back):** return signals from ribbon cable (ENC_DATA + JTAG TTD) forwarded to next mini-stack front-top-right or blanking board
    - **rear-bottom-right (Stack-Input back):** 3V3_ENIG, 5V_MAIN, GND passthrough to next mini-stack
-   - **rear-top-left (Stack-Output back):** TTD_RETURN passthrough (received from blanking board routing at last mini-stack)
+   - **rear-top-left (Stack-Output back):** TTD_RETURN + ENC_DATA return passthrough (received from blanking board routing at last mini-stack)
    - **rear-bottom-left (Stack-Output back):** 3V3_ENIG + GND (Stack-Output board power; ROT face connectors on Stack-Output side have power pins NC — avoids ground loops — see Q43)
    - Signal flow: front-top-right data/JTAG into Stack-Input → face-mounted ROT connectors (Board B Samtec input, unchanged) → 5 ROT boards in series → last ROT Board A Samtec output
      → Stack-Output → ribbon cable IDC back to Stack-Input → out rear-top-right
@@ -457,7 +455,7 @@ User noted a future architectural idea — the **`mini-stack-base-board`** — a
 - Carries **3V3_ENIG + GND only** — Stack-Output board power supply.
 - ROT face connectors on the Stack-Output side have power pins NC (same ground-loop-avoidance pattern as current EXT board J2 being NC; power was provided by Extension Port instead).
 - Stack-Output board 3V3_ENIG is provided by this stacking connector instead of via the ROT face-connector chain.
-- **Open concern:** for ENC_DATA return to chain through intermediate Stack-Output boards, rear-bottom-left may also need ENC_DATA return pins — which contradicts "3V3_ENIG + GND only." See Q45.
+- **Resolved by Entry 11/Q45:** ENC_DATA return is carried on rear-top-left/front-top-left with TTD_RETURN; rear-bottom-left remains 3V3_ENIG + GND only.
 
 **Q44 / mini-stack-base-board:**
 
@@ -470,6 +468,8 @@ User noted a future architectural idea — the **`mini-stack-base-board`** — a
 ---
 
 ### 2026-05-26 - Q42 — Updated per-pin signal mapping (Entry 10)
+
+> ⚠️ **Correction banner:** Entry 10 is kept for historical context only. Where Entry 10 and Entry 11 differ, **Entry 11 is authoritative**.
 
 All connectors are Samtec-style, 0.8mm pitch, SMT. Sizes based on ROT face connector precedents (ERM8-005 = 10-pin 2×5; ERM8-010 = 20-pin 2×10). Exact Samtec part numbers TBD (see Q28/Q37).
 Per-user request: no reserved/NC pins on Cypher-facing stacking connectors — unused pins are to be tied to GND unless explicitly required to be NC on Cypher Input/Output boards.
@@ -652,13 +652,13 @@ This now contains the correct pin mappings the user intended and should be used 
 | - | - | GND | 9 | 19 | GND | - | - |
 | - | - | GND | 10 | 20 | CPLD_RESET_N | In | active-low |
 
-#### J7 — front-bottom-left (10-pin 2×5) (J8 rear-bottom-left = same pin mapping)
+#### J7/J8 - front-bottom-left / rear-bottom-left (10-pin 2x5, same symmetric mapping)
 
 | Note (R1) | Direction (R1) | Signal (R1) | Pin (R1) | Pin (R2) | Signal (R2) | Direction (R2) | Note (R2) |
-| - | - | GND | 1 | 6 | GND | - | - |
+| - | - | 3V3_ENIG | 1 | 6 | 3V3_ENIG | - | - |
 | - | - | GND | 2 | 7 | GND | - | - |
 | - | - | GND | 3 | 8 | GND | - | - |
-| - | - | 3V3_ENIG | 4 | 9 | 3V3_ENIG | - | - |
+| - | - | GND | 4 | 9 | GND | - | - |
 | - | - | 3V3_ENIG | 5 | 10 | 3V3_ENIG | - | - |
 
 ---
@@ -669,8 +669,8 @@ This now contains the correct pin mappings the user intended and should be used 
 | --- | --- | --- | --- |
 | 1 | What connectors/interface does the Cypher Board use for rotor mini-stack attachment? | ✅ Partial | Samtec-style stacking connectors (exact part TBD — see Q28/Q37). Female connectors on Cypher Board: Stack-Input side (bottom + above-centre positions); Stack-Output side (top + below-centre positions). Signal assignments defined — see Q36. |
 | 2 | What is the physical form factor / dimensions of the Cypher Board? | ❌ Open | |
-| 3 | How does the Stack-Input Board interface with the Cypher Board (connector type, pin count)? | ✅ Partial | Via front-top-right (data/JTAG) and front-bottom-right (power + ENC_ACTIVE_N) Samtec-style stacking connectors. Exact part and pin count TBD — see Q28, Q37, Q42. |
-| 4 | How does the Stack-Output Board interface with the Cypher Board (connector type, pin count)? | ✅ Partial | Via front-top-left (TTD_RETURN passthrough) and front-bottom-left (ENC_DATA return). Exact part and pin count TBD — see Q28, Q37, Q42. |
+| 3 | How does the Stack-Input Board interface with the Cypher Board (connector type, pin count)? | ✅ Partial | Via front-top-right (data/JTAG) and front-bottom-right (power + ENC_ACTIVE_N) Samtec-style stacking connectors. Entry 11 pin counts are defined (J1 = 26-pin, J5 = 20-pin). Exact Samtec part numbers and pitch series remain TBD (see Q28/Q37). |
+| 4 | How does the Stack-Output Board interface with the Cypher Board (connector type, pin count)? | ✅ Partial | Via front-top-left (TTD_RETURN + ENC_DATA return) and front-bottom-left (3V3_ENIG + GND only). Entry 11 pin counts are defined (J3 = 24-pin, J7 = 10-pin). Exact Samtec part numbers remain TBD (see Q28/Q37). |
 | 5 | How many Rotor boards sit between the Stack-Input and Stack-Output boards in a mini-stack? | ✅ Answered | **5 ROT boards per mini-stack.** Maximum 6 mini-stacks = 30 rotor positions total. |
 | 6 | Does the ROT board form factor or connector change as a result of this restructuring? | ❌ Open | |
 | 7 | Does the AM-native integration on Stack-Input change the motor/actuator wiring to the machine body? | ❌ Open | |
@@ -694,12 +694,12 @@ This now contains the correct pin mappings the user intended and should be used 
 | 25 | What is the exact chaining connector and protocol between Input-Cypher and Output-Cypher boards? | ✅ Answered | 2 male Samtec connectors on bottom edge + 2 female on top edge of each board. Input-Cypher: consumes left male, right male passes through to right female, left female NC (except 3V3_ENIG + GND). Output-Cypher: consumes right male, left male passes through to left female, right female NC (except 3V3_ENIG + GND). Either board may be inserted first. Exact Samtec part TBD. |
 | 26 | What mechanical keyboard switch type is required for Input-Cypher Board? (MX-compatible? actuation force, travel, hot-swap socket needed?) | ✅ Partial | MX-style mechanical push button (same as modern keyboards). Exact MPN, actuation spec, and hot-swap socket requirement TBD. |
 | 27 | Will PCBWay be the confirmed prototype manufacturer for the Cypher Board given 6-layer + double-sided assembly? | ❌ Open | JLCPCB 6-layer is a known constraint |
-| 28 | What is the connector type for the keyed stacking connectors on Stack-Input/Stack-Output (type, pin count, pitch, keying mechanism)? | ✅ Partial | Expected to be Samtec-style; exact part not yet selected. Positional keying by connector position confirmed (no separate mechanical key feature). Pin count driven by Q36/Q42 signal assignment. |
-| 29 | What signals/rails are on the stacking connectors vs what is on the ribbon cable IDC? | ✅ Answered | **Stacking connectors (front-top-right):** ENC_IN[5:0], ENC_OUT[5:0], TTD_IN, TMS, TCK, CPLD_RESET_N. **(front-bottom-right):** 3V3_ENIG, 5V_MAIN, GND, ENC_ACTIVE_N. **(front-top-left):** TTD_RETURN passthrough. **(front-bottom-left):** ENC_DATA return. **Ribbon cable (IDC):** return path — ENC_DATA + JTAG TTD from Stack-Output back to Stack-Input within one mini-stack. |
-| 30 | What is the ribbon cable IDC connector specification? (pin count, pitch, IDC type, cable width) | ❌ Open | Carries ENC_DATA + JTAG TTD return from Stack-Output to Stack-Input within one mini-stack |
-| 31 | Is the Stack-Blanking Board purely passive (shorting jumpers/terminations) or does it contain active components? | ✅ Partial | Near-passive confirmed; no active ICs expected. Must contain routing traces to carry TTD_RETURN from Stack-Input rear-top-right to Stack-Output rear-top-left, and ENC_DATA return to front-bottom-left. Not a purely passive shorting board. Exact internal wiring TBD — see Q41. |
+| 28 | What is the connector type for the keyed stacking connectors on Stack-Input/Stack-Output (type, pin count, pitch, keying mechanism)? | ✅ Partial | Expected to be Samtec-style; exact part not yet selected. Positional keying by connector position is confirmed (no separate mechanical key feature). Entry 11 pin counts: J1/J2 = 26-pin, J3/J4 = 24-pin, J5/J6 = 20-pin, J7/J8 = 10-pin. |
+| 29 | What signals/rails are on the stacking connectors vs what is on the ribbon cable IDC? | ✅ Answered | **Stacking connectors (front-top-right):** ENC_IN[5:0], ENC_OUT[5:0], TTD, TMS, TCK, CPLD_RESET_N. **(front-bottom-right):** 3V3_ENIG, 5V_MAIN, GND, ENC_ACTIVE_N. **(front-top-left):** TTD_RETURN + ENC_DATA return toward Cypher. **(front-bottom-left):** 3V3_ENIG + GND only. **Ribbon cable (IDC):** intra-mini-stack return path from Stack-Output to Stack-Input carrying ENC_DATA + TTD from the last ROT output. |
+| 30 | What is the ribbon cable IDC connector specification? (pin count, pitch, IDC type, cable width) | ❌ Open | Carries ENC_DATA + TTD return from Stack-Output back to Stack-Input within one mini-stack. |
+| 31 | Is the Stack-Blanking Board purely passive (shorting jumpers/terminations) or does it contain active components? | ✅ Partial | Near-passive confirmed; no active ICs expected. Must contain routed traces that carry TTD_RETURN and ENC_DATA return from Stack-Input rear-top-right to Stack-Output rear-top-left. Not a purely passive shorting board. Exact internal routing remains TBD (see Q41). |
 | 32 | How many ROT boards are in a single mini-stack (between Stack-Input and Stack-Output)? | ✅ Answered | **5 ROT boards per mini-stack.** |
-| 33 | How do the Cypher Board connections to Stack-Input and Stack-Output differ in connector type/pin count (they serve different signal sets)? | ✅ Partial | Both Samtec-style (exact part TBD). front-top-right (Stack-Input): data + JTAG forward. front-bottom-right (Stack-Input): power + ENC_ACTIVE_N. front-top-left (Stack-Output): TTD_RETURN. front-bottom-left (Stack-Output): ENC_DATA return. Per-connector pin count TBD — see Q42. |
+| 33 | How do the Cypher Board connections to Stack-Input and Stack-Output differ in connector type/pin count (they serve different signal sets)? | ✅ Partial | Both are Samtec-style families (exact part TBD). Stack-Input uses front-top-right (data/JTAG forward, J1=26-pin) + front-bottom-right (power/ENC_ACTIVE_N, J5=20-pin). Stack-Output uses front-top-left (TTD_RETURN + ENC_DATA return, J3=24-pin) + front-bottom-left (3V3_ENIG + GND only, J7=10-pin). |
 | 34 | With AM native to each Stack-Input Board, what is the per-stack power budget for AM circuits (motor driver current, MCU current)? | ✅ Partial | One servo + STM32G071 + motor driver per mini-stack. Per-stack AM load = same as current standalone AM board. Max 6 stacks = 6 AM circuits simultaneously. Exact current figures in AM Board Design_Spec. |
 | 35 | Is the AM MCU the same STM32G071 as currently used, or will the native integration allow a smaller/different MCU? | ✅ Answered | Same STM32G071 + motor driver as current AM board — identical circuits, made native to Stack-Input PCB. |
 | 36 | What is the full signal assignment for Cypher Board ↔ Stack-Input and Cypher Board ↔ Stack-Output connections? | ✅ Answered | See 8-connector signal assignment table in Known Scope section and Discussion entry 2026-05-26. |
@@ -709,10 +709,10 @@ This now contains the correct pin mappings the user intended and should be used 
 | 39a | User referenced the CPLD as "EPM540" — confirmed as EPM570T100I5N (570 LEs). User clarified they had confused the part with the smaller EPM240. | ✅ Answered | EPM570T100I5N confirmed. |
 | 40 | How does TTD_RETURN propagate back through intermediate mini-stacks (not the last one)? At the last mini-stack the blanking board routes it — but in intermediate stacks, what carries TTD_RETURN from rear-top-left forward toward the Cypher Board? | ✅ Answered | **Every Stack-Output board** has a direct **rear-top-left → front-top-left** internal passthrough. The blanking board routes TTD_RETURN to the last mini-stack's Stack-Output rear-top-left, then it daisy-chains forward through each Stack-Output board (rear-top-left → front-top-left passthrough) back to the Cypher Board. No active logic needed on Stack-Output boards — purely a trace passthrough. |
 | 41 | The blanking board must route TTD_RETURN from Stack-Input rear-top-right to Stack-Output rear-top-left — does this mean it is a routed PCB with traces (not just a shorting assembly)? What exactly does the blanking board contain? | ✅ Answered | Confirmed as a **basic pass-through PCB with routed traces** (not a shorting assembly). Contains routed PCB traces completing required signal connections between the 8 stacking connector positions at the end of the chain. Exact internal routing detail TBD. User has a future alternative idea deferred as `signal-trace-simplification-and-routing`. |
-| 42 | Full per-pin signal assignment within each of the 8 connectors: which specific pins carry which signals? This drives the minimum pin count and Samtec part selection for each connector. | ✅ Proposed | Proposed pin tables presented in Entry 9 — **pending user approval.** 5V_MAIN current capacity concern flagged (3 pins = ~3A; 6-stack max requires ~6A — confirm against selected connector rating). ENC_DATA return chain question flagged as Q45. Once approved, update to ✅ Answered. |
-| 43 | What signal does the rear-bottom-left connector (Stack-Output back, right edge) carry? | ✅ Partial | **3V3_ENIG + GND only** — Stack-Output board power supply. ROT face connectors on the Stack-Output side will have power pins NC (same ground-loop-avoidance pattern as current EXT board J2). Stack-Output board 3V3_ENIG is provided by this stacking connector instead. **Open:** may also need to carry ENC_DATA return for intermediate mini-stack chain — see Q45. |
+| 42 | Full per-pin signal assignment within each of the 8 connectors: which specific pins carry which signals? This drives the minimum pin count and Samtec part selection for each connector. | ✅ Answered | Final per-pin mapping is defined in **Entry 11** and is authoritative for J1-J8. Outstanding work is connector part selection/rating validation (Samtec part numbers and current rating), not signal assignment. |
+| 43 | What signal does the rear-bottom-left connector (Stack-Output back, right edge) carry? | ✅ Answered | **3V3_ENIG + GND only** (same mapping family as J7/J8 per Entry 11). It does not carry ENC_DATA return. |
 | 44 | `mini-stack-base-board` — alternative to the ribbon cable IDC for the Stack-Output → Stack-Input return path within each mini-stack. | ✅ Answered | Pass-through PCB using the same connector style as the current STA–CTL interface. Advantages: mechanically solidifies the mini-stack; better signal integrity than ribbon cable (ground-plane shielding top + bottom). **Not yet part of the current changeset** — user still in design brain-dump phase. To be revisited in a dedicated future session if adopted. |
-| 45 | **ENC_DATA return chain:** front-bottom-left carries ENC_DATA return toward Cypher Board. Resolution: rear-top-left now carries ENC_DATA return alongside TTD_RETURN; front/rear-bottom-right upgraded to 20-pin for power/GND redundancy; reserved pins converted to GND. | ✅ Answered | See Entry 10 (2026-05-26) — rear-top-left updated to include ENC_DATA return and TTD_RETURN; front/rear-bottom-right mapping published (pins 1,3,5,7,9 = 5V_MAIN; pins 11–14 = 3V3_ENIG; pins 2,4,6,8,10,15–18 = GND; pin 19 = ENC_ACTIVE_N; pin 20 = CPLD_RESET_N). |
+| 45 | **ENC_DATA return chain:** confirm the return path location and any required power-connector upgrades. | ✅ Answered | ENC_DATA return is carried with TTD_RETURN on the rear-top-left/front-top-left chain (J4/J3 path) back toward Cypher. Front/rear-bottom-left (J7/J8) remains power-only (3V3_ENIG + GND). Authoritative pin-level details are in Entry 11. |
 
 ---
 

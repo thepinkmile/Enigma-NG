@@ -1,0 +1,198 @@
+<mxfile host="Electron" modified="2026-05-28T06:58:26.005+01:00" version="26.0.0">
+  <diagram id="overview" name="Rotor Mini-Stack Architecture">
+    <mxGraphModel dx="1422" dy="827" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Cypher Board -->
+        <mxCell id="cypher" value="Cypher Board&#10;(Controller + Connector Hub)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="650" width="300" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Input Cypher -->
+        <mxCell id="in-cypher" value="Input-Cypher&#10;(Backup/Edge)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="760" y="670" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Stack-Input -->
+        <mxCell id="stack-in" value="Stack-Input" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="860" y="340" width="240" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- ROT modules (stacked vertically) -->
+        <mxCell id="rot1" value="ROT1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="850" y="520" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rot2" value="ROT2" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="730" y="520" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rot3" value="ROT3" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="610" y="520" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rot4" value="ROT4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="490" y="520" width="110" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rot5" value="ROT5" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="370" y="520" width="110" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Stack-Output -->
+        <mxCell id="stack-out" value="Stack-Output&#10;J2 (Rear-Top-Right):&#10;1-6 ENC_OUT[5:0]&#10;9-14 ENC_IN[5:0]&#10;17 TMS, 18 TCK, 19 TTD(TDO/TDI), 20 CPLD_RESET_N" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="70" y="320" width="240" height="140" as="geometry" />
+        </mxCell>
+
+        <!-- Stack-Blanking -->
+        <mxCell id="blank" value="Stack-Blanking&#10;(Terminator)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="1">
+          <mxGeometry x="490" y="80" width="180" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Output Cypher -->
+        <mxCell id="out-cypher" value="Output-Cypher&#10;(Edge)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="220" y="670" width="180" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Connectors J3-J8 (examples for other positions) -->
+        <mxCell id="j3" value="J3 (Front-Top-Left):&#10;ENC_DATA return path (confirmed Q45)" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="80" y="190" width="210" height="90" as="geometry" />
+        </mxCell>
+
+        <mxCell id="j4" value="J4 (Rear-Top-Left):&#10;TMS/TCK shielding: GND pairs between TCK/TTD" style="shape=mxgraph.flowchart.database;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="860" y="190" width="220" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Edges (logical connections) -->
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="cypher" target="stack-in" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="stack-in" target="rot1" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="rot5" target="stack-out" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;html=1;" edge="1" source="stack-out" target="out-cypher" parent="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Title -->
+        <mxCell id="title" value="Rotor Mini-Stack — Architecture &amp; Connector Pin mappings (Entry 11)" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;align=center;verticalAlign=top;" vertex="1" parent="1">
+          <mxGeometry x="200" y="10" width="760" height="30" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J1" name="J1 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J1" value="J1 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="J1_table" value="1: GND&#10;2: ENC_IN[0] (In)&#10;3: ENC_IN[2] (In)&#10;4: ENC_IN[4] (In)&#10;5: GND&#10;6: TMS (JTAG In)&#10;7: GND&#10;8: TTD (JTAG TDI) (In)&#10;9: GND&#10;10: ENC_OUT[4] (Out)&#10;11: ENC_OUT[2] (Out)&#10;12: ENC_OUT[0] (Out)&#10;13: GND&#10;14: GND&#10;15: ENC_IN[1] (In)&#10;16: ENC_IN[3] (In)&#10;17: ENC_IN[5] (In)&#10;18: GND&#10;19: TCK (JTAG In)&#10;20: GND&#10;21: CPLD_RESET_N (In, active-low)&#10;22: GND&#10;23: ENC_OUT[5] (Out)&#10;24: ENC_OUT[3] (Out)&#10;25: ENC_OUT[1] (Out)&#10;26: GND" style="text;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="1029" height="700" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J2" name="J2 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J2" value="J2 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="J2_table" value="1: GND&#10;2: ENC_OUT[0] (Out)&#10;3: ENC_OUT[2] (Out)&#10;4: ENC_OUT[4] (Out)&#10;5: GND&#10;6: TMS (JTAG Out)&#10;7: GND&#10;8: TTD (JTAG TDO) (Out)&#10;9: GND&#10;10: ENC_IN[4] (In)&#10;11: ENC_IN[2] (In)&#10;12: ENC_IN[0] (In)&#10;13: GND&#10;14: GND&#10;15: ENC_OUT[1] (Out)&#10;16: ENC_OUT[3] (Out)&#10;17: ENC_OUT[5] (Out)&#10;18: GND&#10;19: TCK (JTAG Out)&#10;20: GND&#10;21: CPLD_RESET_N (Out, active-low)&#10;22: GND&#10;23: ENC_IN[5] (In)&#10;24: ENC_IN[3] (In)&#10;25: ENC_IN[1] (In)&#10;26: GND" style="text;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="1029" height="700" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J3" name="J3 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J3" value="J3 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="J3_table" value="1: GND&#10;2: ENC_IN[0] (Out)&#10;3: ENC_IN[2] (Out)&#10;4: ENC_IN[4] (Out)&#10;5: GND&#10;6: TTD_RETURN (Out)&#10;7: GND&#10;8: GND&#10;9: ENC_OUT[4] (In)&#10;10: ENC_OUT[2] (In)&#10;11: ENC_OUT[0] (In)&#10;12: GND&#10;13: GND&#10;14: ENC_IN[1] (Out)&#10;15: ENC_IN[3] (Out)&#10;16: ENC_IN[5] (Out)&#10;17: GND&#10;18: GND&#10;19: TTD_RETURN (Out)&#10;20: GND&#10;21: ENC_OUT[5] (In)&#10;22: ENC_OUT[3] (In)&#10;23: ENC_OUT[1] (In)&#10;24: GND" style="text;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="1029" height="700" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J4" name="J4 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J4" value="J4 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="table_J4" value="1: GND - 13: GND&#10;2: ENC_IN[0] (In) - 14: ENC_IN[1] (In)&#10;3: ENC_IN[2] (In) - 15: ENC_IN[3] (In)&#10;4: ENC_IN[4] (In) - 16: ENC_IN[5] (In)&#10;5: GND - 17: GND&#10;6: TTD_RETURN (In) - 18: GND&#10;7: GND - 19: TTD_RETURN (In)&#10;8: GND - 20: GND&#10;9: ENC_OUT[4] (Out) - 21: ENC_OUT[5] (Out)&#10;10: ENC_OUT[2] (Out) - 22: ENC_OUT[3] (Out)&#10;11: ENC_OUT[0] (Out) - 23: ENC_OUT[1] (Out)&#10;12: GND - 24: GND" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="600" height="260" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J5" name="J5 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J5" value="J5 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="table_J5" value="1: GND - 13: GND&#10;2: ENC_IN[0] (In) - 14: ENC_IN[1] (In)&#10;3: ENC_IN[2] (In) - 15: ENC_IN[3] (In)&#10;4: ENC_IN[4] (In) - 16: ENC_IN[5] (In)&#10;5: GND - 17: GND&#10;6: TTD_RETURN (In) - 18: GND&#10;7: GND - 19: TTD_RETURN (In)&#10;8: GND - 20: GND&#10;9: ENC_OUT[4] (Out) - 21: ENC_OUT[5] (Out)&#10;10: ENC_OUT[2] (Out) - 22: ENC_OUT[3] (Out)&#10;11: ENC_OUT[0] (Out) - 23: ENC_OUT[1] (Out)&#10;12: GND - 24: GND" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="600" height="260" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J6" name="J6 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J6" value="J6 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="table_J6" value="NOTE: J6 mirrors J5 but rear-facing; ENC directions inverted where applicable.&#10;1: GND - 13: GND&#10;2: ENC_OUT[0] (Out) - 14: ENC_OUT[1] (Out)&#10;3: ENC_OUT[2] (Out) - 15: ENC_OUT[3] (Out)&#10;4: ENC_OUT[4] (Out) - 16: ENC_OUT[5] (Out)&#10;5: GND - 17: GND&#10;6: GND - 18: TTD_RETURN (Out)&#10;7: TTD_RETURN (Out) - 19: GND&#10;8: GND - 20: GND&#10;9: ENC_IN[4] (In) - 21: ENC_IN[5] (In)&#10;10: ENC_IN[2] (In) - 22: ENC_IN[3] (In)&#10;11: ENC_IN[0] (In) - 23: ENC_IN[1] (In)&#10;12: GND - 24: GND" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="600" height="300" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J7" name="J7 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J7" value="J7 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="table_J7" value="1: 3V3_ENIG - 6: 3V3_ENIG&#10;2: GND - 7: GND&#10;3: GND - 8: GND&#10;4: GND - 9: GND&#10;5: 3V3_ENIG - 10: 3V3_ENIG" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="600" height="260" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+  <diagram id="J8" name="J8 Pins">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title_J8" value="J8 Pin Map" style="text;strokeColor=none;fillColor=none;fontSize=18;fontStyle=1;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="400" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="table_J8" value="J8 mirrors J7 (rear-facing).&#10;1: 3V3_ENIG - 6: 3V3_ENIG&#10;2: GND - 7: GND&#10;3: GND - 8: GND&#10;4: GND - 9: GND&#10;5: 3V3_ENIG - 10: 3V3_ENIG" style="text;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="20" y="60" width="600" height="300" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
