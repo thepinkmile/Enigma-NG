@@ -120,7 +120,14 @@ class PageExtraction:
 
 def normalize_text(text: str) -> str:
     text = text.replace("\x00", " ").replace("\r\n", "\n").replace("\r", "\n")
+    text = text.replace("\u00A0", " ")
+    # Some PDFs extract leader dots/decimal separators as U+FFFD replacement chars.
+    # Recover common numeric forms and collapse unreadable runs.
+    text = re.sub(r"(?<=\d)\uFFFD(?=\d)", ".", text)
+    text = re.sub(r"\uFFFD{3,}", " ", text)
+    text = text.replace("\uFFFD", "")
     text = re.sub(r"[ \t]+\n", "\n", text)
+    text = re.sub(r"[ \t]{2,}", " ", text)
     text = re.sub(r"\n{3,}", "\n\n", text)
     return text.strip()
 
@@ -136,9 +143,12 @@ def escape_snippet(text: str, max_len: int = 195) -> str:
     text = text.replace("\\", "\\\\")
     text = text.replace("*", "\\*")
     text = text.replace("_", "\\_")
+    text = re.sub(r"^(\d+)\)", r"\1\\)", text)
     text = _BARE_URL_RE.sub(r"<\1>", text)
     if len(text) > max_len:
-        text = text[:max_len - 1] + "…"
+        text = text[: max_len - 1] + "…"
+    if text.count("<") > text.count(">"):
+        text += ">"
     return text
 
 

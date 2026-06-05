@@ -6,14 +6,21 @@
 
 ---
 
-## Current Status (as of 2026-05-25 — post-checkpoint 169, copilot-dir-restructure complete)
+## Current Status (as of 2026-06-05 — Kailh datasheet & library cleanup complete)
 
-Pass-10 fully resolved. All 91 board findings closed (91 resolved, 0 partial). All INT MINOR and MEDIUM findings closed. `data-plate-standardisation` complete ✅. `design-log-restructure` complete ✅ — `design/Design_Log.md` split into `design/Design_Log/` (83 per-DEC files + `index.md`).
+Pass-10 remains fully resolved. Previous session completed three parallel workstreams (ENC connector topology, datasheets, Samsung library). **This session** focused on cleaning up corruption from Kailh component import work:
 
-Samsung CL31B106KBK6PJE selected as the standard 10µF 50V 1206 AEC-Q200 bulk reservoir cap for
-all boards (DEC-082). All 87 placements updated across 11 boards. KiCAD library import complete in
-all 4 formats. `all_boards_bom.json` retired (DEC-083) — it had completely diverged and was never
-actively used.
+**Kailh PG151101S11 cleanup (Checkpoint 170):**
+- Fixed 3× datasheet files with corrupted titles and linting issues:
+  - `Bourns-3310-datasheet.md` — "# Single Cup" → "# Bourns 3310P-001-503L"
+  - `Cherry-MX2A SILENT RED-datasheet.md` — "# characteristic" → proper title; fixed table formatting
+  - `HanElectricity-CPG151101S11-16-datasheet.md` — garbled title → proper title; cleaned empty table cells
+- Removed duplicate/corrupted library entries from `.dcm` and `.lib` files (entries after library end markers)
+- Verified `.kicad_sym` correctness (single properly-formatted Kailh entry)
+- Restored 75+ `.stp` 3D model files that were accidentally targeted for deletion (QUATERNARY directive compliance)
+- Added Entry 18 to `.copilot/discussions/extension-mechanical-usage.md` with Kailh design rationale
+
+**Status:** Kailh component ready for verification and use in PCB designs
 
 ## Board Design Status
 
@@ -42,7 +49,12 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 1. **Pass-10 complete ✅** — 91 resolved, 0 partial = 91 total
 2. **Review Pass 11** (`review-pass-11`) — blocked by `copilot-dir-restructure` (pending); `data-plate-standardisation` ✅ complete; `design-log-restructure` ✅ complete
    - Once pass 11 and pass 12 are both clean → `review-clean-passes-gate` can be closed
-3. **Extension mechanical usage (Entry 10)** — Entry 10 (2026-05-26) synced: 20-pin Stack-Input power mapping published (pins 1,3,5,7,9 = 5V_MAIN; pins 11–14 = 3V3_ENIG; pins 2,4,6,8,10,15–18 = GND; pin 19 = ENC_ACTIVE_N; pin 20 = CPLD_RESET_N). Rear-top-left updated to include ENC_DATA return + TTD_RETURN. Plan and handoff updated.
+3. **Extension mechanical usage — ENC connector topology + Hirose sourcing** (`extension-mechanical-usage`) — Entry 16 documents the three-connector ENC interface (J1=90-pin, J2=24-pin, J3=10-pin Hirose). Next work:
+   - User to provide Hirose family name, pitch, stack height, and MPNs for J1/J2/J3
+   - Once MPNs confirmed: update `design/Electronics/Encoder/Design_Spec.md` with new three-connector architecture
+   - Samtec QSS/QTS: exact suffix selection (`RA` vs `A`, `WT`, `GP`, plating) still open
+   - Pin allocation refinement into the `-050` / `-025` grids still open
+   - Board-level current-budget check against extracted Samtec datasheet data still open
 
 ### Deferred / Blocked
 
@@ -70,13 +82,13 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 
 | File | Status |
 |------|--------|
-| `SamacSys_Parts.kicad_sym` | CL31B106KBK6PJE appended ✅ |
-| `SamacSys_Parts.lib` / `.dcm` | CL31B106KBK6PJE appended ✅ |
-| `SamacSys_Parts.pretty/` | `CAPC3216X190N.kicad_mod` added ✅ |
-| `SamacSys_Parts.mod` | `CAPC3216X190N` in `$INDEX` + `$MODULE` ✅ |
-| `SamacSys_Parts.3dshapes/` | `CL31B106KBK6PJE.stp` added ✅ |
-| `3D_Models/` | `CL31B106KBK6PJE.stp` added ✅ |
-| `src/Electronics/Library/temp/` | LIB_CL31B106KBK6PJE extracted; safe to clean after user review |
+| `SamacSys_Parts.kicad_sym` | CL31B106KBK6PJE + 12 Samtec QSS/QTS symbols present ✅ |
+| `SamacSys_Parts.lib` / `.dcm` | CL31B106KBK6PJE present; 12 Samtec symbols appended to `.lib` ✅ |
+| `SamacSys_Parts.pretty/` | CL31B106KBK6PJE + 12 Samtec QSS/QTS footprints present ✅ |
+| `SamacSys_Parts.mod` | CL31B106KBK6PJE + 12 Samtec QSS/QTS `$MODULE` backports present ✅ |
+| `SamacSys_Parts.3dshapes/` | CL31B106KBK6PJE + 12 Samtec STEP models present ✅ |
+| `3D_Models/` | CL31B106KBK6PJE + 12 Samtec STEP models present ✅ |
+| `src/Electronics/Library/temp/` | Empty — all ZIPs and temp assets cleaned up ✅ |
 
 ## Critical Standing Rules
 
@@ -101,4 +113,3 @@ In brief:
 3. This `plan.md`
 4. `.copilot/handoff.md` (latest section first)
 5. `.copilot/checkpoints/169-copilot-dir-restructure-complete.md`
-

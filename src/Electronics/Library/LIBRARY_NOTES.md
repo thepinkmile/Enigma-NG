@@ -198,6 +198,7 @@ from the standard library, not custom `.stp` files in `3dshapes/`. See
 | `NL27WZ14DFT2G-Q` | new | `SOT65P210X110-6N` | — | ON Semi dual inverter; generic IPC |
 | `PA4343.333NLT` | legacy | `PA4343333NLT` | `PA4343.333NLT.stp` | Pulse transformer; ⚠️ STP absent from `3dshapes/` |
 | `PCA9534APWR` | new | `SOP65P640X120-16N` | — | TI I2C I/O expander; generic IPC |
+| `PG151101S11` | both | `SW_PG151101S11` | `PG151101S11.step` | Kailh hot-swap socket; underside-mounted on Input-Cypher PCBA |
 | `PH1-05-UA` | legacy | `HDRV5W64P0X254_1X5_1270X250X850P` | — | Sullins 1×5 header; generic IPC |
 | `PH1-07-UA` | legacy | `HDRV7W64P0X254_1X7_1778X250X850P` | `PH1-07-UA.stp` | Sullins 1×7 header |
 | `POE600F-12LB` | legacy | `POE600F12LB` | `POE600F-12LB.stp` | Coilcraft PoE transformer (v2 reserved) |

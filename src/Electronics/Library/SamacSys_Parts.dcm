@@ -762,4 +762,17 @@ K
 F https://product.samsungsem.com/mlcc/CL31B106KBK6PJ.do
 $ENDCMP
 #
+$CMP 3310P-001-503L
+D Potentiometers 9mm 50Kohms Single Cup
+K potentiometer variable resistor 3310 Bourns 50k
+F https://componentsearchengine.com/Datasheets/1/3310P-001-503L.pdf
+$ENDCMP
+#
+$CMP PG151101S11
+D Kailh Hot-swap Keyboard Switch Socket - MX Compatible
+K Kailh switch socket MX-compatible hot-swap keyboard
+F design/Datasheets/HanElectricity-CPG151101S11-16-datasheet.pdf
+$ENDCMP
+#
 #End Doc Library
+

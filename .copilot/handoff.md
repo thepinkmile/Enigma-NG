@@ -7,49 +7,101 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** `extension-mechanical-usage` discussion (todo: in-progress)
+**Continue with:** Kailh keyboard socket component verification and Hirose sourcing for ENC connectors
 
-The user ended the previous session intending to **describe the next additions to the architecture
-in their head** when they return. Start by presenting the summary below so they can immediately
-continue where they left off.
+### Kailh PG151101S11 Status (Checkpoint 170)
+
+The Kailh hot-swap socket component work has been cleaned up after encountering significant corruption from PDF→markdown generation. All library files are now clean and verified:
+
+- **Datasheet:** `design/Datasheets/HanElectricity-CPG151101S11-16-datasheet.md` — Title fixed, linting clean
+- **SamacSys Libraries:** `.dcm`, `.lib`, and `.kicad_sym` — All duplicate/corrupted entries removed; verified correct structure
+- **3D Models:** `src/Electronics/Library/SamacSys_Parts.3dshapes/` — All 75+ STEP files restored (were accidentally targeted for deletion)
+- **Discussion entry:** `.copilot/discussions/extension-mechanical-usage.md` Entry 18 — Kailh design rationale documented with PCBA service notes
+
+**Next steps for Kailh:**
+1. Verify the component is ready for use in PCB designs (post-cleanup validation)
+2. Update related datasheets if necessary (Cherry-MX2A and Bourns-3310 were also corrected during this session)
+
+### Extension Mechanical Usage (ENC Connectors)
+
+**Continue with:** Hirose sourcing pass for ENC connectors (from Entry 16 handoff)
 
 ### Discussion summary to present at session start
 
-**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (last updated 2026-05-26, entry 10) — Entry 10 includes user-approved 20-pin power/GND mapping, ENC_DATA return on rear-top-left, and reserved pins converted to GND. See `.copilot/discussions/extension-mechanical-usage.md` Entry 10 for full pin table and routing notes.
+**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (last updated 2026-06-02, entries 14–16) — Entry 11 remains the authoritative J1-J8 pin mapping.
+- Entry 12 / 13 still hold the earlier architecture clarifications.
+- **Entry 14** corrects the Samtec family sizing language:
+  - QSS/QTS `-050` = **50 positions per row / 100 total contacts**
+  - QSS/QTS `-025` = **25 positions per row / 50 total contacts**
+  - Pin-budget summary: Stack-Input = 92/100, Stack-Output = 68/100
+- **Entry 15** records local-datasheet findings (current, voltage, LLCR, durability, impedance, SI, stack height)
+- **Entry 16** (this session) defines the ENC three-connector interface:
+  - **J1 = 90-pin Hirose (2×45):** plain-bits[63:0] + 26 GND zig-zagged; left edge of ENC module
+  - **J2 = 24-pin Hirose (2×12):** cypher-bits[5:0] + TCK/RST_N/TMS/TDI/TDO + ENC_ACTIVE_N + 12 GND; bottom-right corner
+  - **J3 = 10-pin Hirose (2×5):** 5× 3V3_ENIG + 5× GND; top-right corner
+  - Signal naming: "plain-bits" and "cypher-bits" are orientation-neutral (same PCB used as encoder or decoder)
+  - ENC_ACTIVE_N direction NOT specified — determined by CPLD programming role
+  - Exact Hirose MPNs TBD — user to provide
 
 **6 new boards defined** (no design files changed yet — all pre-decision):
 
 | New Board | Replaces | Key facts |
 | :--- | :--- | :--- |
 | **Cypher Board** | STA + REF + JM | Central backplane; 6-layer; 4 ENC module mounts + spade tabs on back; BtB to CTL / Input-Cypher / Output-Cypher; PCBWay likely prototype manufacturer |
-| **Stack-Input Board** | EXT (input half) | AM circuits native (STM32G071 + motor driver); 5V_MAIN + 3V3_ENIG via stacking connectors; male front / female back; right edge = front |
-| **Stack-Output Board** | EXT (output half) | 3V3_ENIG only via stacking connectors; male front / female back; left edge = front |
-| **Stack-Blanking Board** | *(new)* | Passive/near-passive; male at all 4 positions; terminates last mini-stack or connects directly to Cypher Board for transport |
-| **Input-Cypher Board** | ENC (keyboard role) | 1 ENC module via Hirose BtB + MX-style keyboard buttons on opposite face |
-| **Output-Cypher Board** | ENC (lightboard role) | 1 ENC module via Hirose BtB + LEDs on opposite face |
+| **Stack-Input Board** | EXT (input half) | AM circuits native (STM32G071 + motor driver); 5V_MAIN + 3V3_ENIG via 50-pin front male / rear female; male front / female back; right edge = front |
+| **Stack-Output Board** | EXT (output half) | 3V3_ENIG only via 50-pin front male / rear female; male front / female back; left edge = front |
+| **Stack-Blanking Board** | *(new)* | Passive/near-passive; two 50-pin males at rear; terminates last mini-stack or connects directly to Cypher Board for transport |
+| **Input-Cypher Board** | ENC (keyboard role) | 1 ENC module via Hirose BtB + MX-style keyboard buttons on opposite face + QSS/QTS `-025` connector class (50 total contacts) |
+| **Output-Cypher Board** | ENC (lightboard role) | 1 ENC module via Hirose BtB + LEDs on opposite face + QSS/QTS `-025` connector class (50 total contacts) |
 
-**Stacking connector topology locked:**
+**Stacking connector topology (proposed Entry 14 — unified QSS/QTS approach):**
 
-- Stack-Input front (right edge): **male**, bottom + just above centre
-- Stack-Output front (left edge): **male**, top + just below centre
-- Positional keying prevents swap errors — no mechanical key feature needed
-- Power: 5V_MAIN + 3V3_ENIG on Stack-Input stacking connectors; 3V3_ENIG only on Stack-Output
-- ENC_DATA carried separately on **ribbon cable IDC** (not on stacking connectors)
+- Stack-Input front (right edge): **one `-050` male** = 100 total contacts; current budget from Entry 11 uses 46
+- Stack-Input rear (left edge): **one `-050` female** = 100 total contacts; current budget from Entry 11 uses 46
+- Stack-Output front (left edge): **one `-050` male** = 100 total contacts; current budget from Entry 11 uses 34
+- Stack-Output rear (right edge): **one `-050` female** = 100 total contacts; current budget from Entry 11 uses 34
+- Positional keying by board position (no separate mechanical key feature needed)
+- Power: 5V_MAIN + 3V3_ENIG on Stack-Input connectors; 3V3_ENIG only on Stack-Output
+- ENC_DATA carried separately on **ribbon cable IDC** (not on stacking connectors) — unchanged
+- Ground / shield capacity now has real datasheet backing, but the older "30A wedge" shorthand should not be treated as the validated figure
 
-**Major open items still to be defined by user (30 of 38 questions open):**
+**Major open items still to be defined by user / next session (sourcing-focused):**
 
-1. Full signal assignment — Cypher Board ↔ Stack-Input and Cypher Board ↔ Stack-Output (drives connector pin count and mechanical geometry)
-2. Stacking connector type — exact part, pitch, pin count
-3. How many ROT boards per mini-stack
-4. 5V_MAIN propagation — passes through stacking connectors stack-to-stack, or each stack sources its own?
-5. Input-Cypher / Output-Cypher chaining connector and protocol (deferred by user)
-6. AM MCU — same STM32G071 or different part for native integration?
+1. **Hirose J1/J2/J3 MPNs:** family name, pitch, stack height for 90-pin, 24-pin, 10-pin variants — user to provide from Hirose product document
+2. **ENC Design_Spec update:** `design/Electronics/Encoder/Design_Spec.md` still shows old J1=20-pin IDC, J2–J65=64× spade terminals — blocked until Hirose MPNs confirmed
+3. **Final Samtec shortlist:** exact QSS/QTS suffix choices (`RA` vs `A`, `WT`, `GP`, plating) for each board role
+4. **Pin allocation spreadsheet:** refine Entry 11 signals into the `-050` / `-025` grids and decide where spare contacts go
+5. **Power-budget fit:** compare real `5V_MAIN` / `3V3_ENIG` loads against the extracted Samtec current-carrying data
+6. **RA board-spacing confirmation:** interpret the 8.53 mm / 9.63 mm mated-view dimensions correctly before treating them as design limits
+7. Mini-stack return IDC connector/cable exact specification and MPNs
+8. Input-Cypher switch exact MPN/spec (hot-swap sockets already decided: No)
+9. Lightboard LED and resistor value/part selections (baseline), plus whether RGB path becomes in-scope
 
-**No design files have been touched yet.**
+**No board Design_Spec implementation files have been touched yet** (discussion docs and diagram artifacts were updated).
 
 ---
 
-## 2026-05-25 session result (copilot-dir-restructure complete; checkpoint 169)
+## 2026-06-02 session result (ENC topology + datasheet coverage; no new checkpoint)
+
+### What happened
+
+Three parallel workstreams completed:
+
+1. **Datasheet coverage** — `panasonic-ERJ-PC3-datasheet.md` and three ERM8/ERF8 supplementary markdown files generated from PDFs via the local Python script. `_generated_markdown_inventory.json` rebuilt with all mappings correct.
+
+2. **Samsung CL31B106KBK6PJE library** — All four library formats verified complete (`.lib`, `.kicad_sym`, `.pretty/CAPC3216X190N.kicad_mod`, legacy `.mod` block). `src/Electronics/Library/temp/` fully cleaned up.
+
+3. **ENC connector topology (Entry 16)** — Three-connector ENC interface defined and documented in `.copilot/discussions/extension-mechanical-usage.md`. TBD rows Q15, Q17, Q18 updated to ✅ Partial; Q24 text improved. `Last Updated` header updated to `2026-06-02 (entry 16)`.
+
+### Files changed this session
+
+**Created:** `design/Datasheets/panasonic-ERJ-PC3-datasheet.md` · `design/Datasheets/erm8-erf8-product-spec-notes.md` · `design/Datasheets/erm8-erf8-product-spec.md` · `design/Datasheets/erm8-erf8-qualification-test-report.md`  
+**Modified:** `design/Datasheets/_generated_markdown_inventory.json` · `src/Electronics/Library/SamacSys_Parts.mod` · `.copilot/discussions/extension-mechanical-usage.md` · `.copilot/plan.md` · `.copilot/handoff.md`  
+**Cleaned up:** `src/Electronics/Library/temp/` (empty)
+
+---
+
+
 
 ### What happened
 
@@ -1275,4 +1327,3 @@ Full analysis in `.copilot/discussions/stackup-impedance-analysis.md` (approx 83
 - Calibrated IPC-2141A formula and calibration point
 - PM analysis
 - JLCPCB calculator guide
-
