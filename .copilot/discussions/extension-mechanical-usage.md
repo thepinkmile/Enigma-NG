@@ -1295,7 +1295,7 @@ User confirmed the following sourcing choices:
 
 ---
 
-### 2026-06-05 — Kailh PG151101S11 Hot-Swap Socket Design and Assembly Strategy
+### 2026-06-05 — Kailh PG151101S11 Hot-Swap Socket Design and Assembly Strategy (Entry 18)
 
 User revisited the hot-swap socket decision (noted in Entry 11, item 2) and confirmed adoption of the **Kailh PG151101S11** mechanical switch hot-swap base for the Input-Cypher Board keyboard assembly:
 
@@ -1340,6 +1340,81 @@ User revisited the hot-swap socket decision (noted in Entry 11, item 2) and conf
 - ✓ Footprint `SW_PG151101S11.kicad_mod` in `SamacSys_Parts.pretty/`
 - ✓ 3D model `PG151101S11.step` in `3D_Models/`
 - ✓ Markdown datasheet generated from HanElectricity PDF
+
+---
+
+### 2026-06-05 — Cypher-owned Input/Output interconnect finalisation (Entry 19)
+
+User completed the Cypher interconnect definition for the paired Input-Cypher and Output-Cypher boards.
+This entry supersedes the earlier partial notes for this specific connector mapping topic.
+
+#### Topology and ownership
+
+1. **Connector ownership:** the interconnect is owned by the **Cypher board**.
+2. **Connector family / orientation:**
+   - **Cypher board** and **Plugboard** use the **vertical** Samtec variants.
+   - **Input-Cypher** and **Output-Cypher** use the **right-angle** Samtec variants.
+3. **Gender and edge convention (bird's-eye view):**
+   - Cypher board and bottom edge of Input/Output-Cypher boards use **male plugs**.
+   - Plugboard and top edge of Input/Output-Cypher boards use **female receptacles**.
+4. Input-Cypher and Output-Cypher can be inserted in either order in the chain.
+
+#### Electrical intent
+
+1. `5V_MAIN` is not required on this interconnect for the currently defined Input/Output-Cypher functions; interconnect power is `3V3_ENIG` + `GND`.
+2. The two PWM signals are inter-board only:
+   - `GREEN_PWM_N`
+   - `YELLOW_PWM_N`
+   These are **NC on Cypher and Plugboard**.
+3. JTAG path uses forward path on the top-row route and return path on the bottom-row route.
+4. Include one board-role ID pin per row for top-position board identification:
+   - Input-Cypher top connector: `ID_TOP=3V3_ENIG`, `ID_BOT=GND`
+   - Output-Cypher top connector: `ID_TOP=GND`, `ID_BOT=3V3_ENIG`
+   - Bottom connector on both boards: both ID pins are **NC**
+5. `ENC_DATA[5:0]` is carried on both rows:
+   - Top row carries Input-Cypher ENC output pass
+   - Bottom row carries Output-Cypher ENC input pass
+6. I2C passthrough is included as a single pair (`I2C_SCL_PASS`, `I2C_SDA_PASS`) for Plugboard-local expansion logic.
+7. The central wedge/contact position is assigned as common high-current return (`GND_WEDGE`) on both rows.
+
+#### Final pin-mapping table (approved)
+
+| Top row signal | Top pin (symbol) | Bottom pin (symbol) | Bottom row signal |
+| --- | ---: | ---: | --- |
+| 3V3_ENIG | 1 | 2 | 3V3_ENIG |
+| JTAG_TCK_FWD | 3 | 4 | ENC_DATA_BOT[5] |
+| GND | 5 | 6 | GND |
+| JTAG_TMS_FWD | 7 | 8 | ENC_DATA_BOT[4] |
+| GND | 9 | 10 | GND |
+| CPLD_RESET_N_FWD | 11 | 12 | ENC_DATA_BOT[3] |
+| GND | 13 | 14 | GND |
+| JTAG_TDI_FWD | 15 | 16 | ENC_DATA_BOT[2] |
+| GND | 17 | 18 | GND |
+| GREEN_PWM_N *(inter-board only)* | 19 | 20 | ENC_DATA_BOT[1] |
+| BOARD_ROLE_ID_TOP | 21 | 22 | GND |
+| I2C_SCL_PASS | 23 | 24 | ENC_DATA_BOT[0] |
+| **GND_WEDGE** | 25 | 26 | **GND_WEDGE** |
+| ENC_DATA_TOP[0] | 27 | 28 | I2C_SDA_PASS |
+| GND | 29 | 30 | BOARD_ROLE_ID_BOT |
+| ENC_DATA_TOP[1] | 31 | 32 | YELLOW_PWM_N *(inter-board only)* |
+| GND | 33 | 34 | GND |
+| ENC_DATA_TOP[2] | 35 | 36 | JTAG_TDO_RET |
+| GND | 37 | 38 | GND |
+| ENC_DATA_TOP[3] | 39 | 40 | CPLD_RESET_N_RET |
+| GND | 41 | 42 | GND |
+| ENC_DATA_TOP[4] | 43 | 44 | JTAG_TMS_RET |
+| GND | 45 | 46 | GND |
+| ENC_DATA_TOP[5] | 47 | 48 | JTAG_TCK_RET |
+| 3V3_ENIG | 49 | 50 | 3V3_ENIG |
+
+#### Symbol numbering convention check (`-025`, dual-row)
+
+The approved table aligns to the Samtec `-025` odd/even symbol numbering model:
+
+- Top row column `Cn` maps to pin `2n-1`
+- Bottom row column `Cn` maps to pin `2n`
+
+So `C1 => pins 1/2`, `C13 => pins 25/26`, and `C25 => pins 49/50`.
 
 ---
 
@@ -1401,7 +1476,7 @@ User revisited the hot-swap socket decision (noted in Entry 11, item 2) and conf
 
 User asked to keep the following discussion points separate from the main design todo list until they explicitly say to integrate the changes:
 
-1. Review Cypher board interconnect connectors and pin mappings, including the new dimmer PWM signals for backlight LEDs.
+1. ✅ Review Cypher board interconnect connectors and pin mappings, including the new dimmer PWM signals for backlight LEDs. **Completed in Entry 19 (2026-06-05).**
 2. Review pin mappings for the Mini-stack return IDC cable connector, including the discussion of replacing the ribbon cable with a PCB passive base-plate.
 3. Locate the remaining new parts, including the current-limiting resistors for the LEDs.
 

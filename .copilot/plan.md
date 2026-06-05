@@ -6,21 +6,18 @@
 
 ---
 
-## Current Status (as of 2026-06-05 — Kailh datasheet & library cleanup complete)
+## Current Status (as of 2026-06-05 — Cypher interconnect mapping finalised in discussion, checkpointed)
 
-Pass-10 remains fully resolved. Previous session completed three parallel workstreams (ENC connector topology, datasheets, Samsung library). **This session** focused on cleaning up corruption from Kailh component import work:
+The Cypher-owned Input/Output interconnect mapping discussion has been completed and captured in:
 
-**Kailh PG151101S11 cleanup (Checkpoint 170):**
-- Fixed 3× datasheet files with corrupted titles and linting issues:
-  - `Bourns-3310-datasheet.md` — "# Single Cup" → "# Bourns 3310P-001-503L"
-  - `Cherry-MX2A SILENT RED-datasheet.md` — "# characteristic" → proper title; fixed table formatting
-  - `HanElectricity-CPG151101S11-16-datasheet.md` — garbled title → proper title; cleaned empty table cells
-- Removed duplicate/corrupted library entries from `.dcm` and `.lib` files (entries after library end markers)
-- Verified `.kicad_sym` correctness (single properly-formatted Kailh entry)
-- Restored 75+ `.stp` 3D model files that were accidentally targeted for deletion (QUATERNARY directive compliance)
-- Added Entry 18 to `.copilot/discussions/extension-mechanical-usage.md` with Kailh design rationale
+- `.copilot/discussions/extension-mechanical-usage.md` **Entry 19** (2026-06-05)
 
-**Status:** Kailh component ready for verification and use in PCB designs
+Entry 19 includes:
+- Finalised topology/orientation for Cypher, Plugboard, Input-Cypher, and Output-Cypher connectors
+- Final approved 50-contact (`-025` dual-row) mapping table using symbol pins 1..50
+- Confirmed odd/even mapping convention (`top=odd`, `bottom=even`)
+- Updated status marking the Cypher interconnect mapping item complete in “Next discussion order”
+- Checkpoint recorded: `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md`
 
 ## Board Design Status
 
@@ -49,12 +46,11 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 1. **Pass-10 complete ✅** — 91 resolved, 0 partial = 91 total
 2. **Review Pass 11** (`review-pass-11`) — blocked by `copilot-dir-restructure` (pending); `data-plate-standardisation` ✅ complete; `design-log-restructure` ✅ complete
    - Once pass 11 and pass 12 are both clean → `review-clean-passes-gate` can be closed
-3. **Extension mechanical usage — ENC connector topology + Hirose sourcing** (`extension-mechanical-usage`) — Entry 16 documents the three-connector ENC interface (J1=90-pin, J2=24-pin, J3=10-pin Hirose). Next work:
-   - User to provide Hirose family name, pitch, stack height, and MPNs for J1/J2/J3
-   - Once MPNs confirmed: update `design/Electronics/Encoder/Design_Spec.md` with new three-connector architecture
-   - Samtec QSS/QTS: exact suffix selection (`RA` vs `A`, `WT`, `GP`, plating) still open
-   - Pin allocation refinement into the `-050` / `-025` grids still open
-   - Board-level current-budget check against extracted Samtec datasheet data still open
+3. **Extension mechanical usage (discussion-only, no implementation yet)** (`extension-mechanical-usage`)
+   - ✅ Cypher interconnect connector and pin mapping review complete (**Entry 19**)
+   - Tomorrow start hint: mini-stack IDC ribbon pin mapping + passive base-plate PCB discussion
+   - Remaining separate discussion item: mini-stack return IDC cable pin mapping (including passive base-plate alternative)
+   - Remaining separate discussion item: locate/confirm remaining new parts (including LED current-limiting resistor sourcing rows)
 
 ### Deferred / Blocked
 
@@ -112,4 +108,4 @@ In brief:
 2. Seed session DB from `.copilot/todos/todos.sql` + `.copilot/todos/deps.sql`
 3. This `plan.md`
 4. `.copilot/handoff.md` (latest section first)
-5. `.copilot/checkpoints/169-copilot-dir-restructure-complete.md`
+5. `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md`

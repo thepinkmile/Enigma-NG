@@ -7,41 +7,45 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** Kailh keyboard socket component verification and Hirose sourcing for ENC connectors
+**Continue with:** the two remaining discussion-only items in `.copilot/discussions/extension-mechanical-usage.md` after Entry 19:
 
-### Kailh PG151101S11 Status (Checkpoint 170)
+1. Mini-stack return IDC cable connector pin mapping review (including passive base-plate alternative)
+2. Remaining new parts closure, including LED current-limiting resistor sourcing rows
 
-The Kailh hot-swap socket component work has been cleaned up after encountering significant corruption from PDF→markdown generation. All library files are now clean and verified:
+**Tomorrow start hint:** begin with the mini-stack IDC ribbon pin mapping and passive PCB base-plate discussion before moving to parts closure.
 
-- **Datasheet:** `design/Datasheets/HanElectricity-CPG151101S11-16-datasheet.md` — Title fixed, linting clean
-- **SamacSys Libraries:** `.dcm`, `.lib`, and `.kicad_sym` — All duplicate/corrupted entries removed; verified correct structure
-- **3D Models:** `src/Electronics/Library/SamacSys_Parts.3dshapes/` — All 75+ STEP files restored (were accidentally targeted for deletion)
-- **Discussion entry:** `.copilot/discussions/extension-mechanical-usage.md` Entry 18 — Kailh design rationale documented with PCBA service notes
+### Extension Mechanical Usage (current state)
 
-**Next steps for Kailh:**
-1. Verify the component is ready for use in PCB designs (post-cleanup validation)
-2. Update related datasheets if necessary (Cherry-MX2A and Bourns-3310 were also corrected during this session)
-
-### Extension Mechanical Usage (ENC Connectors)
-
-**Continue with:** Hirose sourcing pass for ENC connectors (from Entry 16 handoff)
+- **Entry 19 (2026-06-05)** is now the authoritative Cypher-owned Input/Output interconnect mapping for this discussion phase.
+- The approved 50-contact (`-025`) table is captured with explicit symbol pin numbers and validated odd/even row mapping convention.
+- “Next discussion order” in the discussion file now marks the Cypher interconnect mapping item complete.
+- Checkpoint captured: `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md`
 
 ### Discussion summary to present at session start
 
-**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (last updated 2026-06-02, entries 14–16) — Entry 11 remains the authoritative J1-J8 pin mapping.
-- Entry 12 / 13 still hold the earlier architecture clarifications.
+**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (last updated 2026-06-05, through Entry 19)
+- Entry 11 remains the authoritative J1–J8 mini-stack mapping.
+- Entry 19 is the authoritative Input/Output-Cypher interconnect mapping result for this phase.
+- Entry 12 / 13 still hold earlier architecture clarifications.
 - **Entry 14** corrects the Samtec family sizing language:
   - QSS/QTS `-050` = **50 positions per row / 100 total contacts**
   - QSS/QTS `-025` = **25 positions per row / 50 total contacts**
   - Pin-budget summary: Stack-Input = 92/100, Stack-Output = 68/100
 - **Entry 15** records local-datasheet findings (current, voltage, LLCR, durability, impedance, SI, stack height)
-- **Entry 16** (this session) defines the ENC three-connector interface:
+- **Entry 16** defines the ENC three-connector interface:
   - **J1 = 90-pin Hirose (2×45):** plain-bits[63:0] + 26 GND zig-zagged; left edge of ENC module
   - **J2 = 24-pin Hirose (2×12):** cypher-bits[5:0] + TCK/RST_N/TMS/TDI/TDO + ENC_ACTIVE_N + 12 GND; bottom-right corner
   - **J3 = 10-pin Hirose (2×5):** 5× 3V3_ENIG + 5× GND; top-right corner
   - Signal naming: "plain-bits" and "cypher-bits" are orientation-neutral (same PCB used as encoder or decoder)
   - ENC_ACTIVE_N direction NOT specified — determined by CPLD programming role
-  - Exact Hirose MPNs TBD — user to provide
+  - Hirose family and sourcing lines are already recorded in the discussion component tables
+
+- **Entry 19** (latest) defines the Cypher-owned Input/Output interconnect details:
+  - Vertical on Cypher/Plugboard, RA on Input/Output-Cypher
+  - Final approved 50-contact table with explicit symbol pins (1..50)
+  - `5V_MAIN` removed from this interconnect scope; `3V3_ENIG` + `GND` retained
+  - PWM lines are inter-board only (NC on Cypher/Plugboard)
+  - I2C passthrough pair retained for Plugboard-local expansion strategy
 
 **6 new boards defined** (no design files changed yet — all pre-decision):
 
@@ -65,17 +69,11 @@ The Kailh hot-swap socket component work has been cleaned up after encountering 
 - ENC_DATA carried separately on **ribbon cable IDC** (not on stacking connectors) — unchanged
 - Ground / shield capacity now has real datasheet backing, but the older "30A wedge" shorthand should not be treated as the validated figure
 
-**Major open items still to be defined by user / next session (sourcing-focused):**
+**Major open items still to be defined by user / next session:**
 
-1. **Hirose J1/J2/J3 MPNs:** family name, pitch, stack height for 90-pin, 24-pin, 10-pin variants — user to provide from Hirose product document
-2. **ENC Design_Spec update:** `design/Electronics/Encoder/Design_Spec.md` still shows old J1=20-pin IDC, J2–J65=64× spade terminals — blocked until Hirose MPNs confirmed
-3. **Final Samtec shortlist:** exact QSS/QTS suffix choices (`RA` vs `A`, `WT`, `GP`, plating) for each board role
-4. **Pin allocation spreadsheet:** refine Entry 11 signals into the `-050` / `-025` grids and decide where spare contacts go
-5. **Power-budget fit:** compare real `5V_MAIN` / `3V3_ENIG` loads against the extracted Samtec current-carrying data
-6. **RA board-spacing confirmation:** interpret the 8.53 mm / 9.63 mm mated-view dimensions correctly before treating them as design limits
-7. Mini-stack return IDC connector/cable exact specification and MPNs
-8. Input-Cypher switch exact MPN/spec (hot-swap sockets already decided: No)
-9. Lightboard LED and resistor value/part selections (baseline), plus whether RGB path becomes in-scope
+1. Mini-stack return IDC connector/cable exact pin mapping review and whether passive base-plate replacement is adopted
+2. Remaining new-parts closure in the discussion, including current-limiting resistor sourcing rows
+3. When user instructs implementation: propagate discussion outcomes into design files and DEC flow per directives
 
 **No board Design_Spec implementation files have been touched yet** (discussion docs and diagram artifacts were updated).
 
