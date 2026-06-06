@@ -7,23 +7,24 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** the two remaining discussion-only items in `.copilot/discussions/extension-mechanical-usage.md` after Entry 19:
+**Continue with:** the remaining discussion-only item in `.copilot/discussions/extension-mechanical-usage.md` after Entry 20:
 
-1. Mini-stack return IDC cable connector pin mapping review (including passive base-plate alternative)
-2. Remaining new parts closure, including LED current-limiting resistor sourcing rows
+1. Remaining new parts closure, including LED current-limiting resistor sourcing rows
 
-**Tomorrow start hint:** begin with the mini-stack IDC ribbon pin mapping and passive PCB base-plate discussion before moving to parts closure.
+**Tomorrow start hint:** begin with remaining new-parts closure and reconcile against the now-locked Entry 20 signal-block/base-board mapping model.
 
 ### Extension Mechanical Usage (current state)
 
 - **Entry 19 (2026-06-05)** is now the authoritative Cypher-owned Input/Output interconnect mapping for this discussion phase.
+- **Entry 20 (2026-06-06)** captures the full mini-stack signal-flow model (`SIG-BLOCK-A`..`I`) and the passive base-board-owned 2x13 mapping.
 - The approved 50-contact (`-025`) table is captured with explicit symbol pin numbers and validated odd/even row mapping convention.
-- “Next discussion order” in the discussion file now marks the Cypher interconnect mapping item complete.
-- Checkpoint captured: `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md`
+- Entry 19 now includes `ENC_ACTIVE_INPUT_N` (pin 5) and `ENC_ACTIVE_OUTPUT_N` (pin 46), both linked to functional `ENC_ACTIVE_N`.
+- “Next discussion order” in the discussion file now marks items 1 and 2 complete.
+- Latest checkpoint captured: `.copilot/checkpoints/172-mini-stack-baseboard-mapping-finalised.md`
 
 ### Discussion summary to present at session start
 
-**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (last updated 2026-06-05, through Entry 19)
+**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (last updated 2026-06-06, through Entry 20)
 - Entry 11 remains the authoritative J1–J8 mini-stack mapping.
 - Entry 19 is the authoritative Input/Output-Cypher interconnect mapping result for this phase.
 - Entry 12 / 13 still hold earlier architecture clarifications.
@@ -46,6 +47,14 @@ keep near the design docs but is **not** itself a source of design truth.
   - `5V_MAIN` removed from this interconnect scope; `3V3_ENIG` + `GND` retained
   - PWM lines are inter-board only (NC on Cypher/Plugboard)
   - I2C passthrough pair retained for Plugboard-local expansion strategy
+  - `ENC_ACTIVE_INPUT_N` / `ENC_ACTIVE_OUTPUT_N` aliases added to keep independent Cypher interconnect nets separate in schematic capture while preserving functional relation to `ENC_ACTIVE_N`
+
+- **Entry 20** defines the mini-stack return-link and signal-block model:
+  - Full flow capture for `SIG-BLOCK-A`..`I` (ENC_DATA forward/return legs, JTAG outbound/return, actuation, power)
+  - JTAG distributed spoke model includes `TCK`, `TMS`, and `CPLD_RESET_N`; `TTD`/`TTD_RETURN` chain naming clarified
+  - Passive mini-stack base-board selected as preferred internal interposer over flexible ribbon
+  - Base-board ownership established for internal-link mapping
+  - Locked dual-row IDC style **26-pin (2x13)** odd/even zig-zag map applied to both base-board connectors
 
 **6 new boards defined** (no design files changed yet — all pre-decision):
 
@@ -66,13 +75,13 @@ keep near the design docs but is **not** itself a source of design truth.
 - Stack-Output rear (right edge): **one `-050` female** = 100 total contacts; current budget from Entry 11 uses 34
 - Positional keying by board position (no separate mechanical key feature needed)
 - Power: 5V_MAIN + 3V3_ENIG on Stack-Input connectors; 3V3_ENIG only on Stack-Output
-- ENC_DATA carried separately on **ribbon cable IDC** (not on stacking connectors) — unchanged
+- ENC_DATA internal Stack-Output <-> Stack-Input return-link now tracks to the **passive mini-stack base-board interposer** direction (Entry 20), while still remaining separate from the main stacking-connector signal blocks
 - Ground / shield capacity now has real datasheet backing, but the older "30A wedge" shorthand should not be treated as the validated figure
 
 **Major open items still to be defined by user / next session:**
 
-1. Mini-stack return IDC connector/cable exact pin mapping review and whether passive base-plate replacement is adopted
-2. Remaining new-parts closure in the discussion, including current-limiting resistor sourcing rows
+1. Remaining new-parts closure in the discussion, including current-limiting resistor sourcing rows
+2. Merge this discussion thread with the user's other active discussion thread when requested
 3. When user instructs implementation: propagate discussion outcomes into design files and DEC flow per directives
 
 **No board Design_Spec implementation files have been touched yet** (discussion docs and diagram artifacts were updated).

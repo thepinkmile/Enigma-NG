@@ -3,7 +3,7 @@
 **Status:** In Discussion — no design changes made yet  
 **Todo ID:** `extension-mechanical-usage`  
 **Opened:** 2026-05-17  
-**Last Updated:** 2026-06-04 (entry 17)
+**Last Updated:** 2026-06-06 (entry 20)
 
 ---
 
@@ -1383,7 +1383,7 @@ This entry supersedes the earlier partial notes for this specific connector mapp
 | --- | ---: | ---: | --- |
 | 3V3_ENIG | 1 | 2 | 3V3_ENIG |
 | JTAG_TCK_FWD | 3 | 4 | ENC_DATA_BOT[5] |
-| GND | 5 | 6 | GND |
+| ENC_ACTIVE_INPUT_N *(ENC_ACTIVE_N)* | 5 | 6 | GND |
 | JTAG_TMS_FWD | 7 | 8 | ENC_DATA_BOT[4] |
 | GND | 9 | 10 | GND |
 | CPLD_RESET_N_FWD | 11 | 12 | ENC_DATA_BOT[3] |
@@ -1403,9 +1403,12 @@ This entry supersedes the earlier partial notes for this specific connector mapp
 | ENC_DATA_TOP[3] | 39 | 40 | CPLD_RESET_N_RET |
 | GND | 41 | 42 | GND |
 | ENC_DATA_TOP[4] | 43 | 44 | JTAG_TMS_RET |
-| GND | 45 | 46 | GND |
+| GND | 45 | 46 | ENC_ACTIVE_OUTPUT_N *(ENC_ACTIVE_N)* |
 | ENC_DATA_TOP[5] | 47 | 48 | JTAG_TCK_RET |
 | 3V3_ENIG | 49 | 50 | 3V3_ENIG |
+
+`ENC_ACTIVE_INPUT_N` and `ENC_ACTIVE_OUTPUT_N` are intentionally distinct connector labels for schematic capture
+net-separation on this interconnect while preserving the related functional signal context (`ENC_ACTIVE_N`).
 
 #### Symbol numbering convention check (`-025`, dual-row)
 
@@ -1415,6 +1418,175 @@ The approved table aligns to the Samtec `-025` odd/even symbol numbering model:
 - Bottom row column `Cn` maps to pin `2n`
 
 So `C1 => pins 1/2`, `C13 => pins 25/26`, and `C25 => pins 49/50`.
+
+---
+
+### 2026-06-06 — Mini-stack signal-flow block tracker (Entry 20)
+
+User requested a high-level flow-first tracker using `SIG-BLOCK-{ALPHA}` IDs, delaying final per-pin remapping
+until this discussion is merged with the other active discussion threads.
+
+#### Scope and rules captured in this entry
+
+1. Data and control signals discussed here are treated as **active-low**.
+2. Existing board-level electrical implementation (buffers/terminations) remains as currently defined in design;
+   this entry tracks flow/grouping only.
+3. The central wedge pin assignment (`GND_WEDGE`) remains reserved for common return current.
+4. Final pin-map locking is deferred; this table is the working cross-board block reference.
+5. Termination networks for tapped lines are expected to be fitted (no new DNF/DNI variants introduced by this
+   entry).
+6. Board implementation baseline for this architecture: all boards are minimum 4-layer with GND pour on top and
+   bottom layers for shielding/EMI-EMC control.
+
+#### Mini-stack internal return-link implementation direction (updated)
+
+1. Preferred direction is now a **passive mini-stack base board** instead of a flexible ribbon cable.
+2. The electrical role is unchanged: this is a passive interposer link between Stack-Output and Stack-Input
+   signal blocks inside each mini-stack.
+3. Connector style remains shrouded IDC-header family (board-mounted header style), but implemented as rigid
+   PCB-to-PCB joins through the passive base board.
+4. Orientation/mechanical intent for assembly:
+   - Stack-Input bottom edge: right-angle female connector
+   - Passive base board (Stack-Input side): male header mating to Stack-Input female
+   - Passive base board (Stack-Output side): right-angle female connector
+   - Stack-Output bottom edge: male header mating to passive base-board female
+5. This approach is intended to improve signal shielding and make the mini-stack assembly mechanically rigid while
+   preserving the established signal-flow model.
+
+#### Required signal groups on the Stack-Output <-> Stack-Input passive base-board link
+
+1. `SIG-BLOCK-A`: `ENC_DATA[5:0]` (forward mini-stack pass handoff)
+2. `SIG-BLOCK-D`: `ENC_DATA[5:0]` (return-direction mini-stack handoff)
+3. `SIG-BLOCK-E` local chain handoff: `TTD`
+4. Interleaved and edge-guard `GND` around these data/control lines for shielding/return-path quality.
+5. No new power-rail requirement is introduced on this passive base-board link by this entry.
+
+#### Passive base-board connector ownership and mapping (locked)
+
+1. Ownership of the Stack-Output <-> Stack-Input internal-link pin mapping is assigned to the **passive base board**.
+2. Mating connectors on Stack-Input and Stack-Output must conform to this base-board-defined mapping.
+3. Base-board connector pair is defined as a dual-row IDC style, **26 pins total (2x13)**, odd/even numbering.
+4. The same pin map applies to both base-board connectors (Stack-Input side and Stack-Output side), with
+   pin-to-pin passive continuity through the base board (`n -> n`).
+
+#### Base-board 2x13 connector pin map (applies to both base-board connectors)
+
+| Top row signal | Top pin (odd) | Bottom pin (even) | Bottom row signal |
+| --- | ---: | ---: | --- |
+| SIG_BLOCK_A_ENC_DATA[0] | 1 | 2 | GND |
+| GND | 3 | 4 | SIG_BLOCK_A_ENC_DATA[1] |
+| SIG_BLOCK_A_ENC_DATA[2] | 5 | 6 | GND |
+| GND | 7 | 8 | SIG_BLOCK_A_ENC_DATA[3] |
+| SIG_BLOCK_A_ENC_DATA[4] | 9 | 10 | GND |
+| GND | 11 | 12 | SIG_BLOCK_A_ENC_DATA[5] |
+| SIG_BLOCK_E_TTD | 13 | 14 | SIG_BLOCK_E_TTD |
+| SIG_BLOCK_D_ENC_DATA[5] | 15 | 16 | GND |
+| GND | 17 | 18 | SIG_BLOCK_D_ENC_DATA[4] |
+| SIG_BLOCK_D_ENC_DATA[3] | 19 | 20 | GND |
+| GND | 21 | 22 | SIG_BLOCK_D_ENC_DATA[2] |
+| SIG_BLOCK_D_ENC_DATA[1] | 23 | 24 | GND |
+| GND | 25 | 26 | SIG_BLOCK_D_ENC_DATA[0] |
+
+#### Signal naming and chain conventions
+
+1. `TTD` is the chain signal name used between devices to represent the serial data link from `TDO(prev)` to
+   `TDI(next)`.
+2. `TTD_RETURN` is used for the return leg from blanking/mini-stack return path back to the JTAG module.
+3. JTAG module endpoint labels are usage-oriented at the module boundary:
+   - module `TDI` pin launches outbound chain data toward the first device in chain order
+   - module `TDO` pin receives `TTD_RETURN` from the end of the chain
+4. JTAG protocol blocks require interleaved `GND` between all JTAG signal lines and guard `GND` on both sides
+   of the protocol block.
+5. `CPLD_RESET_N` is sourced from Cypher and follows the same distribution/tap/termination rules as `TCK` and
+   `TMS` for CPLD `DEV_RST` reload control.
+
+#### ENC_DATA flow description (captured from discussion)
+
+1. `ENC_DATA[5:0]` is generated on **Input-Cypher** from keyboard state and sent to **Cypher**.
+2. Cypher routes this data either through plugboard logic (when applicable) and onward to the first mini-stack
+   via **Stack-Input front `SIG-BLOCK-A`**.
+3. Within each mini-stack forward pass, data traverses rotors from right-to-left and exits at Stack-Output.
+4. Stack-Output passively transfers this data over the passive base-board interposer link back to Stack-Input,
+   which then forwards it via
+   **Stack-Input rear `SIG-BLOCK-A`** to the next mini-stack (or to blanking board at chain end).
+5. At chain end, blanking board passively bridges into **`SIG-BLOCK-B`**, after which data travels back toward
+   Cypher through Stack-Output rear-to-front `SIG-BLOCK-B` passthrough on each mini-stack.
+6. Cypher receives this on reflector side, performs reflector transform, then emits outbound data on
+   **`SIG-BLOCK-C`** toward the mini-stack chain.
+7. `SIG-BLOCK-C` is passively propagated through Stack-Output front-to-back, through blanking board, and into
+   last Stack-Input handoff for **`SIG-BLOCK-D`**.
+8. `SIG-BLOCK-D` is then sent via the passive base-board interposer link to corresponding Stack-Output path to
+   begin rotor return traversal
+   (left-to-right), ultimately re-entering Stack-Input front and propagating back toward Cypher.
+9. After optional Cypher-side plugboard processing, final output data is sent to Output-Cypher LED outputs.
+
+#### JTAG flow description (captured from discussion)
+
+1. Outbound chain starts at JTAG module (`TDI` pin as source) and is carried as `TTD` with `TCK`, `TMS`, and
+   `CPLD_RESET_N`
+   through Cypher, Input-Cypher ENC, Output-Cypher ENC, plugboard pass 1 ENC in/out, plugboard pass 2 ENC
+   in/out, then into mini-stacks via **`SIG-BLOCK-E`**.
+2. For each mini-stack on `SIG-BLOCK-E`:
+   - `TCK`, `TMS`, and `CPLD_RESET_N` are passed Stack-Input front->rear with local tap/distribution for that
+     mini-stack
+   - `TTD` is routed through rotors (device-to-device chain path)
+   - at Stack-Output, `TTD` is carried over the passive base-board interposer link back to Stack-Input rear
+     `SIG-BLOCK-E` to continue chain
+3. `TCK`, `TMS`, and `CPLD_RESET_N` spoke terminations are implemented at Stack-Output boards and at blanking
+   board (per existing design intent) to support tapped distribution rather than a pure 30-device serial route.
+4. At blanking board, `TCK`, `TMS`, and `CPLD_RESET_N` terminate and outbound `TTD` is renamed **`TTD_RETURN`**
+   and emitted on **`SIG-BLOCK-F`**.
+5. `SIG-BLOCK-F` (`TTD_RETURN` + interleaved `GND`) is passed rear->front through all Stack-Output boards back
+   to Cypher, then to JTAG module (`TDO` pin as sink).
+
+#### Actuation flow description (captured from discussion)
+
+1. Actuation trigger is sourced from Cypher and associated with Input-Cypher key activity (`ENC_ACTIVE_N`).
+2. This trigger is tracked as **`SIG-BLOCK-G`** and is treated as its own signal block.
+3. `SIG-BLOCK-G` is carried through Stack-Input front connector to Stack-Input rear connector as a pass-through
+   distribution line across mini-stacks.
+4. Each Stack-Input board takes a local tap from `SIG-BLOCK-G` to trigger its local servo PWM actuation control.
+5. Cypher also forwards `SIG-BLOCK-G` (`ENC_ACTIVE_N`) to Output-Cypher as the global LED enable gate.
+6. Output-Cypher LED behavior is active-low gated:
+   - LED anode-side enable is controlled from `3V3_ENIG` via `ENC_ACTIVE_N` gating
+   - LED cathode-side/select is controlled by the corresponding decoded output line
+   - LED illuminates only when the decoded output is active (low) and `ENC_ACTIVE_N` is low
+7. Rotor reciprocal actuation remains mechanical (Enigma-style); this signal only triggers stack-local actuation
+   and Output-Cypher LED enable behavior.
+8. `SIG-BLOCK-G` is terminated at the blanking board at end-of-chain.
+9. `SIG-BLOCK-G` naming applies to the stacking/inter-stack distribution path. On the Input-Cypher/Output-Cypher
+   interconnect (Entry 19), the split aliases `ENC_ACTIVE_INPUT_N` and `ENC_ACTIVE_OUTPUT_N` are used only to keep
+   the two independent Cypher-interconnect signal sets separated in schematic capture. Cypher links these aliases to
+   the common functional signal `ENC_ACTIVE_N`.
+
+#### Power flow description (captured from discussion)
+
+1. `SIG-BLOCK-H` = `5V_MAIN` distribution rail for Stack-Input actuation power.
+2. `5V_MAIN` is provided to Stack-Input only (not Stack-Output) using multiple connector pins to satisfy
+   aggregate current budget for up to 6 mini-stack servo actuation circuits.
+3. `5V_MAIN` is passed front->rear across the Stack-Input chain; each Stack-Input takes a local draw and uses
+   local bulk capacitance for servo actuation supply stability.
+4. At blanking board, `SIG-BLOCK-H` pins are NC (no onward power distribution required past end-of-chain).
+5. `SIG-BLOCK-I` = `3V3_ENIG` distribution rail for all boards in this chain context (Stack-Input, Stack-Output,
+   blanking board, and rotor-side loads).
+6. `3V3_ENIG` uses multiple connector pins across interfaces to meet full-system budget for up to 6 mini-stacks
+   (30 rotors total) and associated logic/interface loads.
+7. `3V3_ENIG` pin allocation intent is a distributed multi-pin "power cage" around connector signal groups to
+   improve rail integrity and return proximity.
+
+#### SIG-BLOCK mapping tracker (working; pin numbers deferred)
+
+| SIG-BLOCK | Function | Signal group (provisional) | Flow summary | Must map consistently on |
+| --- | --- | --- | --- | --- |
+| `SIG-BLOCK-A` | ENC_DATA forward pass | `ENC_DATA[5:0]` | Input-Cypher -> Cypher -> Stack-Input front -> rotors (R->L) -> Stack-Output -> passive base-board interposer link -> Stack-Input rear -> next mini-stack rearward chain -> blanking board input | Stack-Input front/rear data block, Stack-Output interposer-side block, Passive base-board A-side block, Blanking board A-side block |
+| `SIG-BLOCK-B` | ENC_DATA rear return-to-reflector side | `ENC_DATA[5:0]` | Blanking board bridges A->B at chain end, then Stack-Output rear -> Stack-Output front through each mini-stack back toward Cypher reflector side | Stack-Output rear/front B block on every mini-stack, Blanking board B-side block, Cypher reflector-side ingress block |
+| `SIG-BLOCK-C` | ENC_DATA outbound from reflector side toward last mini-stack | `ENC_DATA[5:0]` | Cypher reflector output -> Stack-Output front -> Stack-Output rear through chain -> blanking board C path -> last Stack-Input D ingress | Stack-Output front/rear C block, Blanking board C routing block, last-stack handoff to D |
+| `SIG-BLOCK-D` | ENC_DATA rotor return pass (machine return direction) | `ENC_DATA[5:0]` | Last Stack-Input receives from C/blanking side -> passive base-board interposer link to matching Stack-Output -> through rotors (L->R) -> Stack-Input front -> previous mini-stacks/Cypher -> optional plugboard -> Output-Cypher | Stack-Input/Stack-Output D handoff points, passive base-board D pairing, Stack-Input front D egress blocks |
+| `SIG-BLOCK-E` | JTAG outbound chain into mini-stacks | `TCK`, `TMS`, `CPLD_RESET_N`, `TTD` + interleaved `GND` | JTAG Module (`TDI` pin used as outbound chain source) -> Cypher -> Input-Cypher ENC -> Output-Cypher ENC -> Plugboard ENC chain -> mini-stacks -> blanking board E input | All E blocks across Cypher/Input-Cypher/Output-Cypher/Plugboard/Stack-Input/Blanking with same line order and GND interleave rule |
+| `SIG-BLOCK-F` | JTAG return chain to JTAG module | `TTD_RETURN` + interleaved `GND` | At blanking board: `TCK`/`TMS`/`CPLD_RESET_N` terminate, `TTD` is renamed `TTD_RETURN` -> Stack-Output rear -> Stack-Output front through all mini-stacks -> Cypher -> JTAG Module (`TDO` pin used as chain return sink) | Blanking F output, Stack-Output rear/front F blocks on all mini-stacks, Cypher return block to module |
+| `SIG-BLOCK-G` | Actuation + LED-enable distribution | `ENC_ACTIVE_N` | Cypher -> Stack-Input front -> Stack-Input rear pass-through across mini-stacks with local Stack-Input actuation taps; Cypher also forwards ENC_ACTIVE_N to Output-Cypher as global LED enable gate; blanking board provides end termination | Stack-Input front/rear G block on every mini-stack, Cypher G egress/branch blocks, Output-Cypher G ingress block, Blanking board G termination block |
+| `SIG-BLOCK-H` | Stack-Input actuation power distribution | `5V_MAIN` | Cypher -> Stack-Input front -> Stack-Input rear across mini-stack chain; local Stack-Input draw with bulk capacitance; blanking board H pins NC at chain end | Stack-Input front/rear H power blocks on every mini-stack, Cypher H source block, Blanking board H NC policy |
+| `SIG-BLOCK-I` | Global logic/interface power distribution | `3V3_ENIG` | Multi-pin distribution across Stack-Input, Stack-Output, blanking board, and rotor-facing chain interfaces for full-system load support | All connector I power blocks across Cypher/Stack-Input/Stack-Output/Blanking with consistent multi-pin allocation strategy |
 
 ---
 
@@ -1477,7 +1649,7 @@ So `C1 => pins 1/2`, `C13 => pins 25/26`, and `C25 => pins 49/50`.
 User asked to keep the following discussion points separate from the main design todo list until they explicitly say to integrate the changes:
 
 1. ✅ Review Cypher board interconnect connectors and pin mappings, including the new dimmer PWM signals for backlight LEDs. **Completed in Entry 19 (2026-06-05).**
-2. Review pin mappings for the Mini-stack return IDC cable connector, including the discussion of replacing the ribbon cable with a PCB passive base-plate.
+2. ✅ Review pin mappings for the Mini-stack return IDC cable connector, including the discussion of replacing the ribbon cable with a PCB passive base-plate. **Completed in Entry 20 (2026-06-06), with passive base-board ownership and locked 2x13 mapping.**
 3. Locate the remaining new parts, including the current-limiting resistors for the LEDs.
 
 ---

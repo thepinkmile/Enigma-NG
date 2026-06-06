@@ -175,3 +175,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 169 | Copilot directory restructure complete | 169-copilot-dir-restructure-complete.md |
 | 170 | Kailh datasheet and library file cleanup complete | 170-kailh-datasheet-library-cleanup.md |
 | 171 | Cypher interconnect Entry 19 finalised | 171-cypher-interconnect-entry19-finalised.md |
+| 172 | Mini-stack base-board mapping finalised (Entry 20) | 172-mini-stack-baseboard-mapping-finalised.md |

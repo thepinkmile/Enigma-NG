@@ -6,11 +6,12 @@
 
 ---
 
-## Current Status (as of 2026-06-05 — Cypher interconnect mapping finalised in discussion, checkpointed)
+## Current Status (as of 2026-06-06 — mini-stack return-link mapping finalised in discussion, checkpointed)
 
-The Cypher-owned Input/Output interconnect mapping discussion has been completed and captured in:
+The extension mechanical discussion now has both core connector-mapping items completed and captured in:
 
 - `.copilot/discussions/extension-mechanical-usage.md` **Entry 19** (2026-06-05)
+- `.copilot/discussions/extension-mechanical-usage.md` **Entry 20** (2026-06-06)
 
 Entry 19 includes:
 - Finalised topology/orientation for Cypher, Plugboard, Input-Cypher, and Output-Cypher connectors
@@ -18,6 +19,15 @@ Entry 19 includes:
 - Confirmed odd/even mapping convention (`top=odd`, `bottom=even`)
 - Updated status marking the Cypher interconnect mapping item complete in “Next discussion order”
 - Checkpoint recorded: `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md`
+
+Entry 20 includes:
+- Full signal-flow model for `SIG-BLOCK-A` through `SIG-BLOCK-I` (ENC_DATA, JTAG, actuation, power)
+- `CPLD_RESET_N` captured in the JTAG distributed/tapped model alongside `TCK/TMS`
+- `ENC_ACTIVE_N` alignment and alias handling (`ENC_ACTIVE_INPUT_N` / `ENC_ACTIVE_OUTPUT_N`) for Cypher interconnect separation
+- Passive mini-stack base-board direction captured (replacing flexible ribbon as preferred implementation)
+- Locked passive base-board-owned internal-link mapping: dual-row IDC style **26-pin (2x13)** odd/even zig-zag table
+- “Next discussion order” item 2 marked complete in the discussion file
+- Checkpoint recorded: `.copilot/checkpoints/172-mini-stack-baseboard-mapping-finalised.md`
 
 ## Board Design Status
 
@@ -48,8 +58,7 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
    - Once pass 11 and pass 12 are both clean → `review-clean-passes-gate` can be closed
 3. **Extension mechanical usage (discussion-only, no implementation yet)** (`extension-mechanical-usage`)
    - ✅ Cypher interconnect connector and pin mapping review complete (**Entry 19**)
-   - Tomorrow start hint: mini-stack IDC ribbon pin mapping + passive base-plate PCB discussion
-   - Remaining separate discussion item: mini-stack return IDC cable pin mapping (including passive base-plate alternative)
+   - ✅ Mini-stack return-link pin mapping review complete (**Entry 20**, passive base-board direction + locked 2x13 map)
    - Remaining separate discussion item: locate/confirm remaining new parts (including LED current-limiting resistor sourcing rows)
 
 ### Deferred / Blocked
@@ -108,4 +117,4 @@ In brief:
 2. Seed session DB from `.copilot/todos/todos.sql` + `.copilot/todos/deps.sql`
 3. This `plan.md`
 4. `.copilot/handoff.md` (latest section first)
-5. `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md`
+5. `.copilot/checkpoints/172-mini-stack-baseboard-mapping-finalised.md`
