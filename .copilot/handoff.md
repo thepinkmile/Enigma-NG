@@ -7,84 +7,89 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** the remaining discussion-only item in `.copilot/discussions/extension-mechanical-usage.md` after Entry 20:
+**Continue with:** PR merge and Yageo resistor library import, then begin design file implementation.
 
-1. Remaining new parts closure, including LED current-limiting resistor sourcing rows
+**All component sourcing is COMPLETE** — the extension mechanical usage discussion contains:
+- 18/18 rows of "New Component Requirements" table populated with confirmed MPNs and supplier part numbers
+- No remaining parts queries expected from next session
 
-**Tomorrow start hint:** begin with remaining new-parts closure and reconcile against the now-locked Entry 20 signal-block/base-board mapping model.
+### Current Blocking Work (Roadmap)
 
-### Extension Mechanical Usage (current state)
+1. **External PR Merge** (per user instruction)
+   - User will provide PR with another discussion thread
+   - Merge both discussions' content into current `extension-mechanical-usage.md`
+   - This merge must complete before design file implementation begins
 
-- **Entry 19 (2026-06-05)** is now the authoritative Cypher-owned Input/Output interconnect mapping for this discussion phase.
-- **Entry 20 (2026-06-06)** captures the full mini-stack signal-flow model (`SIG-BLOCK-A`..`I`) and the passive base-board-owned 2x13 mapping.
-- The approved 50-contact (`-025`) table is captured with explicit symbol pin numbers and validated odd/even row mapping convention.
-- Entry 19 now includes `ENC_ACTIVE_INPUT_N` (pin 5) and `ENC_ACTIVE_OUTPUT_N` (pin 46), both linked to functional `ENC_ACTIVE_N`.
-- “Next discussion order” in the discussion file now marks items 1 and 2 complete.
-- Latest checkpoint captured: `.copilot/checkpoints/172-mini-stack-baseboard-mapping-finalised.md`
+2. **Yageo Resistor Library Import** (KiCAD assets creation)
+   - Create symbols, footprints, 3D models for both Yageo AT0402 variants (130Ω and 120Ω)
+   - Import to both modern formats (`.kicad_sym`, `.pretty/`) and legacy formats (`.lib`, `.mod`)
+   - Update rows 16–17 KiCAD asset checkboxes from `–` to `✓` after import
 
-### Discussion summary to present at session start
+3. **Design File Implementation Gate**
+   - Only after: (a) library import complete AND (b) external PR merged AND (c) explicit user approval
+   - Then: create DEC entries, update board Design_Spec files, modify schematics/PCBs
+   - SENARY DIRECTIVE: No implementation without explicit user trigger phrase
 
-**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (last updated 2026-06-06, through Entry 20)
-- Entry 11 remains the authoritative J1–J8 mini-stack mapping.
-- Entry 19 is the authoritative Input/Output-Cypher interconnect mapping result for this phase.
-- Entry 12 / 13 still hold earlier architecture clarifications.
-- **Entry 14** corrects the Samtec family sizing language:
-  - QSS/QTS `-050` = **50 positions per row / 100 total contacts**
-  - QSS/QTS `-025` = **25 positions per row / 50 total contacts**
-  - Pin-budget summary: Stack-Input = 92/100, Stack-Output = 68/100
-- **Entry 15** records local-datasheet findings (current, voltage, LLCR, durability, impedance, SI, stack height)
-- **Entry 16** defines the ENC three-connector interface:
-  - **J1 = 90-pin Hirose (2×45):** plain-bits[63:0] + 26 GND zig-zagged; left edge of ENC module
-  - **J2 = 24-pin Hirose (2×12):** cypher-bits[5:0] + TCK/RST_N/TMS/TDI/TDO + ENC_ACTIVE_N + 12 GND; bottom-right corner
-  - **J3 = 10-pin Hirose (2×5):** 5× 3V3_ENIG + 5× GND; top-right corner
-  - Signal naming: "plain-bits" and "cypher-bits" are orientation-neutral (same PCB used as encoder or decoder)
-  - ENC_ACTIVE_N direction NOT specified — determined by CPLD programming role
-  - Hirose family and sourcing lines are already recorded in the discussion component tables
+### Extension Mechanical Usage (Updated 2026-06-07)
 
-- **Entry 19** (latest) defines the Cypher-owned Input/Output interconnect details:
-  - Vertical on Cypher/Plugboard, RA on Input/Output-Cypher
-  - Final approved 50-contact table with explicit symbol pins (1..50)
-  - `5V_MAIN` removed from this interconnect scope; `3V3_ENIG` + `GND` retained
-  - PWM lines are inter-board only (NC on Cypher/Plugboard)
-  - I2C passthrough pair retained for Plugboard-local expansion strategy
-  - `ENC_ACTIVE_INPUT_N` / `ENC_ACTIVE_OUTPUT_N` aliases added to keep independent Cypher interconnect nets separate in schematic capture while preserving functional relation to `ENC_ACTIVE_N`
+**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (46 entries complete through 2026-06-07)
 
-- **Entry 20** defines the mini-stack return-link and signal-block model:
-  - Full flow capture for `SIG-BLOCK-A`..`I` (ENC_DATA forward/return legs, JTAG outbound/return, actuation, power)
-  - JTAG distributed spoke model includes `TCK`, `TMS`, and `CPLD_RESET_N`; `TTD`/`TTD_RETURN` chain naming clarified
-  - Passive mini-stack base-board selected as preferred internal interposer over flexible ribbon
-  - Base-board ownership established for internal-link mapping
-  - Locked dual-row IDC style **26-pin (2x13)** odd/even zig-zag map applied to both base-board connectors
+- **Entry 19** (2026-06-05): Cypher-owned Input/Output-Cypher interconnect mapping with final 50-contact table
+- **Entry 20** (2026-06-06): Mini-stack internal return-link and signal-block flow model (passive base-board direction locked)
+- **Rows 1–18** (complete 2026-06-07): All "New Component Requirements" confirmed with MPNs, supplier PNs, and MOQ documentation
 
-**6 new boards defined** (no design files changed yet — all pre-decision):
+**All component rows status:**
 
-| New Board | Replaces | Key facts |
-| :--- | :--- | :--- |
-| **Cypher Board** | STA + REF + JM | Central backplane; 6-layer; 4 ENC module mounts + spade tabs on back; BtB to CTL / Input-Cypher / Output-Cypher; PCBWay likely prototype manufacturer |
-| **Stack-Input Board** | EXT (input half) | AM circuits native (STM32G071 + motor driver); 5V_MAIN + 3V3_ENIG via 50-pin front male / rear female; male front / female back; right edge = front |
-| **Stack-Output Board** | EXT (output half) | 3V3_ENIG only via 50-pin front male / rear female; male front / female back; left edge = front |
-| **Stack-Blanking Board** | *(new)* | Passive/near-passive; two 50-pin males at rear; terminates last mini-stack or connects directly to Cypher Board for transport |
-| **Input-Cypher Board** | ENC (keyboard role) | 1 ENC module via Hirose BtB + MX-style keyboard buttons on opposite face + QSS/QTS `-025` connector class (50 total contacts) |
-| **Output-Cypher Board** | ENC (lightboard role) | 1 ENC module via Hirose BtB + LEDs on opposite face + QSS/QTS `-025` connector class (50 total contacts) |
+| Row | Component | MPN | Supplier Coverage | KiCAD Assets | Notes |
+| --- | --- | --- | --- | --- | --- |
+| 1–2 | Samtec stacking (-050) | QSS/QTS series | DigiKey, Mouser, JLCPCB | ✓ | All 4 variants sourced |
+| 3 | Mini-stack shrouded IDC | SQT-115-01-L-D-RA | JLCPCB | ✓ | Imported |
+| 4–9 | Hirose ENC BtB (6 pairs) | DF40C series | JLCPCB | ✓ | All 6 variants sourced |
+| 10 | Keyboard switches | MX2A-71NB | JLCPCB | ✓ | Confirmed |
+| 11 | Keyboard hot-swap sockets | Kailh PG151101S11 | JLCPCB | ✓ | Imported |
+| 12 | Keyboard/Lightboard LEDs | Kingbright APFA2507Y2G2C-C2 | Mouser, DigiKey, JLCPCB | ✓ | Imported, 2 variant support |
+| 13 | **[Omitted — duplicate LED row to avoid confusion]** | — | — | — | |
+| 14 | Keyboard LEDs (alternate spec) | Kingbright APFA2507Y2G2C-C2 | Mouser, DigiKey, JLCPCB | ✓ | Same as row 12 |
+| 15 | Lightboard LEDs (alternate spec) | Kingbright APFA2507Y2G2C-C2 | Mouser, DigiKey, JLCPCB | ✓ | Same as row 12 |
+| 16 | Keyboard/Lightboard yellow 130Ω resistor | Yageo AT0402CRD07130RL | DigiKey, Mouser, JLCPCB | – | Pending import; MOQ documented |
+| 17 | Keyboard/Lightboard green 120Ω resistor | Yageo AT0402CRD07120RL | DigiKey, JLCPCB (Mouser N/A) | – | Pending import; MOQ documented |
+| 18 | Brightness potentiometer | Bourns 3310P-001-503L | JLCPCB, DigiKey | ✓ | Imported |
 
-**Stacking connector topology (proposed Entry 14 — unified QSS/QTS approach):**
+**Component Removal Note:**
+- Old row 13 (placeholder for dual-LED-variant clarification) removed during renumbering
+- Rows 14–15 now clarify LED variant specifications (26-char vs 64-char)
+- Rows 16–17 contain resistor sourcing data (final two component rows)
 
-- Stack-Input front (right edge): **one `-050` male** = 100 total contacts; current budget from Entry 11 uses 46
-- Stack-Input rear (left edge): **one `-050` female** = 100 total contacts; current budget from Entry 11 uses 46
-- Stack-Output front (left edge): **one `-050` male** = 100 total contacts; current budget from Entry 11 uses 34
-- Stack-Output rear (right edge): **one `-050` female** = 100 total contacts; current budget from Entry 11 uses 34
-- Positional keying by board position (no separate mechanical key feature needed)
-- Power: 5V_MAIN + 3V3_ENIG on Stack-Input connectors; 3V3_ENIG only on Stack-Output
-- ENC_DATA internal Stack-Output <-> Stack-Input return-link now tracks to the **passive mini-stack base-board interposer** direction (Entry 20), while still remaining separate from the main stacking-connector signal blocks
-- Ground / shield capacity now has real datasheet backing, but the older "30A wedge" shorthand should not be treated as the validated figure
+**Variant Support Confirmed:**
+- **Variant 1 (26-character)**: 26 LEDs + 26 yellow resistors + 26 green resistors per board
+- **Variant 2 (64-character)**: 41 LEDs + 41 yellow resistors + 41 green resistors per board (includes spacebar for software-only use)
+- All component row values scale automatically with variant
 
-**Major open items still to be defined by user / next session:**
+### Key Decisions Locked
 
-1. Remaining new-parts closure in the discussion, including current-limiting resistor sourcing rows
-2. Merge this discussion thread with the user's other active discussion thread when requested
-3. When user instructs implementation: propagate discussion outcomes into design files and DEC flow per directives
+1. **Resistor Selection**: Yageo AT0402 thin-film series chosen over VikingTech TAR02
+   - Rationale: Multi-source availability (DigiKey, Mouser, JLCPCB) vs single-source VikingTech
+   - Specs: ±0.25% tolerance + ±25 ppm/°C TCR + AEC-Q200 automotive compliance (both parts)
 
-**No board Design_Spec implementation files have been touched yet** (discussion docs and diagram artifacts were updated).
+2. **Mini-Stack Internal Link**: Passive rigid base-board preferred over flexible ribbon
+   - Mechanical assembly intent documented in Entry 20
+   - 26-pin (2x13) IDC connector mapping locked and base-board-owned
+
+3. **Cypher Interconnect**: Vertical orientation on Cypher/Plugboard; RA on Input/Output boards
+   - 50-contact table finalized in Entry 19 with explicit symbol pin mapping (1..50)
+   - `ENC_ACTIVE_INPUT_N` / `ENC_ACTIVE_OUTPUT_N` aliasing preserved for net separation
+
+**No board Design_Spec implementation files have been touched yet** (discussion docs only).
+
+### Remaining Open Items
+
+1. **External PR discussion merge** — awaiting user to provide PR and trigger merge step
+2. **Yageo resistor library import** — KiCAD asset creation for both parts
+3. **User implementation approval** — explicit trigger phrase required per SENARY DIRECTIVE before design file changes
+
+**Datasheets generated (markdown, project-agnostic):**
+- `design/Datasheets/VikingTech-TAR_Series-datasheet.md` (reviewed, rejected)
+- `design/Datasheets/Yageo-AT_series-datasheet.md` (reviewed, approved, covers both 130Ω and 120Ω parts)
 
 ---
 

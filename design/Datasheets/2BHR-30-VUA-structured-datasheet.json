@@ -1,0 +1,38 @@
+{
+  "component_type": "Shrouded Box Header",
+  "manufacturer": "Adam Tech",
+  "series": "2BHR",
+  "part_number_base": "2BHR-30-VUA",
+  "pitch_spacing": "2.00 mm (0.079 inches)",
+  "number_of_positions": 30,
+  "row_configuration": "Dual Row (2 x 15)",
+  "orientation": "Vertical (Straight)",
+  "mounting_type": "Through-Hole Technology (THT)",
+  "termination": "Solder Tail",
+  "contact_gender": "Male Pin",
+  "shroud_features": "Fully Shrouded, Central Polarization Slot",
+  "electrical_specifications": {
+    "current_rating": "2.0 A AC/DC",
+    "voltage_rating": "250 V AC/DCMax",
+    "contact_resistance": "20 milliohms max",
+    "insulation_resistance": "5000 megohms min",
+    "dielectric_withstanding_voltage": "500 V AC for 1 minute"
+  },
+  "material_specifications": {
+    "insulator_material": "PBT or Nylon 6T, UL 94V-0 rated",
+    "insulator_color": "Black",
+    "contact_material": "Brass or Phosphor Bronze",
+    "contact_plating": "Gold Flash over Nickel underplate"
+  },
+  "mechanical_specifications": {
+    "operating_temperature_range": "-40 degrees C to +105 degrees C",
+    "mating_cycles": "100 cycles minimum"
+  },
+  "dimensional_formulas": {
+    "pitch_dimension_c": "2.54 mm spacing between pin centers",
+    "total_outside_length_a": "(2.00 mm * (Positions / 2)) + 5.10 mm",
+    "shroud_inside_length_b": "(2.00 mm * (Positions / 2)) + 3.10 mm",
+    "calculated_length_a_30pos": "35.10 mm",
+    "calculated_length_b_30pos": "33.10 mm"
+  }
+}

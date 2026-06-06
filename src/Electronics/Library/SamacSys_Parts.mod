@@ -1,4 +1,4 @@
-﻿PCBNEW-LibModule-V1
+PCBNEW-LibModule-V1
 # encoding utf-8
 Units mm
 $INDEX
@@ -15499,4 +15499,245 @@ Of -0.00078740155720335 -0.0023622046716101 0.031496063461454
 Ro -180 0 90
 $EndSHAPE3D
 $EndMODULE 3310P-1
+$MODULE SQT-115-01-XXX-D-RA
+Po 0 0 0 15 00000000 00000000 ~~
+Li SQT-115-01-XXX-D-RA
+Cd SQT-115-01-XXX-D-RA
+Kw Connector
+Sc 0
+At thru_hole
+AR 
+Op 0 0 0
+T0 0 0 1.27 1.27 0 0.254 N V 21 N "J**"
+T1 0 0 1.27 1.27 0 0.254 N I 21 N "SQT-115-01-XXX-D-RA"
+DS -29.15 0.9 1.15 0.9 0.2 24
+DS 1.15 0.9 1.15 6.615 0.2 24
+DS 1.15 6.615 -29.15 6.615 0.2 24
+DS -29.15 6.615 -29.15 0.9 0.2 24
+DS 1.15 0.9 1.15 6.615 0.1 21
+DS 1.15 6.615 -29.15 6.615 0.1 21
+DS -29.15 6.615 -29.15 0.9 0.1 21
+DS -30.35 -3.75 2.35 -3.75 0.05 32
+DS 2.35 -3.75 2.35 7.815 0.05 32
+DS 2.35 7.815 -30.35 7.815 0.05 32
+DS -30.35 7.815 -30.35 -3.75 0.05 32
+DA 1.15 0 1.15 0.05 900 0.2 21
+$PAD
+Po 0 0
+Sh "1" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po 0 -2
+Sh "2" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -2 0
+Sh "3" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -2 -2
+Sh "4" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -4 0
+Sh "5" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -4 -2
+Sh "6" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -6 0
+Sh "7" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -6 -2
+Sh "8" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -8 0
+Sh "9" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -8 -2
+Sh "10" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -10 0
+Sh "11" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -10 -2
+Sh "12" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -12 0
+Sh "13" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -12 -2
+Sh "14" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -14 0
+Sh "15" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -14 -2
+Sh "16" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -16 0
+Sh "17" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -16 -2
+Sh "18" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -18 0
+Sh "19" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -18 -2
+Sh "20" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -20 0
+Sh "21" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -20 -2
+Sh "22" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -22 0
+Sh "23" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -22 -2
+Sh "24" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -24 0
+Sh "25" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -24 -2
+Sh "26" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -26 0
+Sh "27" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -26 -2
+Sh "28" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -28 0
+Sh "29" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$PAD
+Po -28 -2
+Sh "30" C 1.5 1.5 0 0 0
+Dr 0.99 0 0
+At thru_hole N 00E0FFFF
+Ne 0 ""
+$EndPAD
+$SHAPE3D
+Na "SamacSys_Parts.3dshapes/SQT-115-01-L-D-RA.stp"
+Sc 1 1 1
+Of -0.55118110236220 -0.049606298837136 0.086220474693719
+Ro 0 180 180
+$EndSHAPE3D
+$EndMODULE SQT-115-01-XXX-D-RA
+
 $EndLIBRARY

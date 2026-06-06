@@ -774,5 +774,11 @@ K Kailh switch socket MX-compatible hot-swap keyboard
 F design/Datasheets/HanElectricity-CPG151101S11-16-datasheet.pdf
 $ENDCMP
 #
+$CMP SQT-115-01-L-D-RA
+D 30 Position, Cost Effective Rugged PCB Sockets, 2.00mm pitch, RA ver.
+K Connector IDC Rugged Socket Samtec 2.00mm
+F design/Datasheets/Samtec-sqt-1xx-xx-xxx-x-xxx-xxx-mkt-datasheet.md
+$ENDCMP
+#
 #End Doc Library
 

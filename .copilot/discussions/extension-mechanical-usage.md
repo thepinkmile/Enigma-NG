@@ -317,14 +317,14 @@ Any new components introduced by this change will need the following fully confi
 | 8 | 90-pin Mating connector for ENC module Hirose BtB interface (on Input-Cypher / Output-Cypher / Cypher backplane) | DF40C-90DS-0.4V(51) | Hirose | Confirmed | - | 798-DF40C90DS0.4V51 | 26-DF40C-90DS-0.4V(51)CT-ND | C2911197 | ✓ | ✓ | ✓ |
 | 9 | 24-pin Mating connector for ENC module Hirose BtB interface (on Input-Cypher / Output-Cypher / Cypher backplane) | DF40C-24DS-0.4V(51) | Hirose | Confirmed | - | 798-DF40C24DS0.4V51 | H11621CT-ND | C424640 | ✓ | ✓ | ✓ |
 | 10 | 10-pin Mating connector for ENC module Hirose BtB interface (on Input-Cypher / Output-Cypher / Cypher backplane) | DF40C-10DS-0.4V(51) | Hirose | Confirmed | - | 798-DF40C10DS0.4V51 | H11617CT-ND | C424636 | ✓ | ✓ | ✓ |
-| 11 | Mini-stack return IDC cable connector pair (Stack-Output -> Stack-Input return path) | TBD | TBD | Pending | - | - | - | - | - | - | - |
+| 11 | 30-position shrouded rugged PCB socket — **right-angle female IDC mating connector** (mini-stack passive base-board Stack-Input/Stack-Output return path) | SQT-115-01-L-D-RA | Samtec | Confirmed | Mouser best for prototype; full supplier coverage available. Male 30-pin 2x15 header reuse (`2BHR-30-VUA`) is tracked in BOM-Protected Components row 16 | 200-SQT11501LDRA | SAM1246-15-ND | C7318577 | ✓ | ✓ | ✓ |
 | 12 | Mechanical keyboard switches for Input-Cypher (MX-style or compatible) | MX2A-71NB | Cherry | Confirmed | Amazon available for prototyping; hot-swap mounts to be revisited in a follow-on discussion | 540-MX2A-71NB | 1644-MX2A-71NB-ND | Global sourcing / consignment | - | - | - |
-| 12.1 | Mechanical keyboard hot-swap socket bases (MX-compatible) — **Kailh PG151101S11** | PG151101S11 | Kailh | Confirmed | Keycaps and button stems sourced separately from Amazon | - | - | C41430893 | ✓ | ✓ | ✓ |
-| 13 | Mechanical keyboard LEDs (MX-switch compatible) | APFA2507Y2G2C-C2 | Kingbright | Confirmed | - | 604-APFA2507Y2G2C-C2 | 754-APFA2507Y2G2C-C2CT-ND | C7216896 | ✓ | ✓ | ✓ |
-| 14 | Lightboard LEDs + current-limit resistors (active-low from ENC outputs) | TBD | TBD | Pending | Reuse the same LEDs/current-limit values as Input-Cypher; revisit BtB pin mapping for GREEN_ACTIVE_N / YELLOW_ACTIVE_N | - | - | - | - | - | - |
-| 15 | Keyboard LED current-limiting resistor — **Yellow** (130 Ω, 0402, ×26 per board); R = (3.3 − 2.0) / 0.010 = 130 Ω; P = 13 mW | TBD | TBD | Pending | - | - | - | - | - | - | - |
-| 16 | Keyboard LED current-limiting resistor — **Green** (120 Ω, 0402, ×26 per board); R = (3.3 − 2.1) / 0.010 = 120 Ω; P = 12 mW | TBD | TBD | Pending | - | - | - | - | - | - | - |
-| 17 | Rotary potentiometer, 50 kΩ — **keyboard brightness dial** (panel-mount on Input-Cypher Board); 555 R\_A variable element | 3310P-001-503L | Bourns | Confirmed | Local datasheet and KiCad assets imported | 652-3310P-001-503L | 3310P-001-503L-ND | C5891432 | ✓ | ✓ | ✓ |
+| 13 | Mechanical keyboard hot-swap socket bases (MX-compatible) — **Kailh PG151101S11** | PG151101S11 | Kailh | Confirmed | Keycaps and button stems sourced separately from Amazon | - | - | C41430893 | ✓ | ✓ | ✓ |
+| 14 | Mechanical keyboard LEDs (MX-switch compatible) — **bicolor Kingbright APFA2507Y2G2C-C2** | APFA2507Y2G2C-C2 | Kingbright | Confirmed | Two variants: Variant 1 (original 26-char layout) = 26 LEDs; Variant 2 (64-char layout with 41 buttons including spacebar for software-only input) = 41 LEDs | 604-APFA2507Y2G2C-C2 | 754-APFA2507Y2G2C-C2CT-ND | C7216896 | ✓ | ✓ | ✓ |
+| 15 | Lightboard LEDs (active-low from ENC outputs) — **identical bicolor Kingbright APFA2507Y2G2C-C2** | APFA2507Y2G2C-C2 | Kingbright | Confirmed | Two variants matching keyboard variants: Variant 1 (26-char layout) = 26 LEDs; Variant 2 (64-char layout) = 41 LEDs. Reuse same resistor values as keyboard; revisit BtB pin mapping for GREEN_ACTIVE_N / YELLOW_ACTIVE_N | 604-APFA2507Y2G2C-C2 | 754-APFA2507Y2G2C-C2CT-ND | C7216896 | ✓ | ✓ | ✓ |
+| 16 | Keyboard LED current-limiting resistor — **Yellow** (130 Ω, 0402); R = (3.3 − 2.0) / 0.010 = 130 Ω; P = 13 mW | AT0402CRD07130RL | Yageo | Confirmed | Two variants: Variant 1 (26-char) = ×26 per board; Variant 2 (64-char with 41 buttons) = ×41 per board. Thin-film ±0.25% tolerance, ±25 ppm/°C TCR, AEC-Q200 automotive grade. DigiKey MOQ 10,000; Mouser MOQ 10,000; JLCPCB MOQ 110 (achievable with 2 prototype boards) | 603-AT0402CRD07130RL | AT0402CRD07130RL-ND | C2142705 | - | - | - |
+| 17 | Keyboard LED current-limiting resistor — **Green** (120 Ω, 0402); R = (3.3 − 2.1) / 0.010 = 120 Ω; P = 12 mW | AT0402CRD07120RL | Yageo | Confirmed | Two variants: Variant 1 (26-char) = ×26 per board; Variant 2 (64-char with 41 buttons) = ×41 per board. Thin-film ±0.25% tolerance, ±25 ppm/°C TCR, AEC-Q200 automotive grade. DigiKey MOQ 10,000; JLCPCB MOQ 90 (achievable with prototype build); Mouser not currently stocking | 603-AT0402CRD07120RL | AT0402CRD07120RL-ND | C4286960 | - | - | - |
+| 18 | Rotary potentiometer, 50 kΩ — **keyboard brightness dial** (panel-mount on Input-Cypher Board); 555 R\_A variable element | 3310P-001-503L | Bourns | Confirmed | Local datasheet and KiCad assets imported | 652-3310P-001-503L | 3310P-001-503L-ND | C5891432 | ✓ | ✓ | ✓ |
 
 > *Populate this table as component candidates are identified during discussion.*
 
@@ -353,13 +353,14 @@ destination board's BOM column is created, these rows must be updated to include
 | 13 | 5+15-pin hybrid plug [Molex] | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | Global sourcing | STA: J11, J12 (retiring — 2 total) | Cypher Board — absorbs STA keyboard harness connectors (×2 per machine) |
 | 14 | Quad 2-to-1 MUX TSSOP-16 | 74HC157PW-Q100,118 | Nexperia | 1727-74HC157PW-Q100,118CT-ND | 771-74HC157PWQ100118 | C546614 | STA: U4, U5 (retiring — 2 total) | Cypher Board — absorbs STA signal-routing multiplexers (×2 per machine) |
 | 15 | 120 Ω @100 MHz ferrite bead 1206 | HI1206P121R-10 | Laird | 240-2410-1-ND | 875-HI1206P121R-10 | C2442103 | STA: L1–L4 (retiring — 4 total) | Cypher Board — absorbs STA power-entry ferrite beads (×4 per machine) |
-| 16 | 30-pin 2×15 2.54 mm shrouded box THT | 2BHR-30-VUA | Adam Tech | 2057-2BHR-30-VUA-ND | 737-2BHR-30-VUA | C17346400 | STA: J10; REF: J4; EXT: J7, J8 (all retiring — 4 total) | Destination TBD — all current user boards retiring; protect until Cypher Board connector sizing confirmed |
+| 16 | 30-pin 2×15 2.54 mm shrouded box THT | 2BHR-30-VUA | Adam Tech | 2057-2BHR-30-VUA-ND | 737-2BHR-30-VUA | C17346400 | STA: J10; REF: J4; EXT: J7, J8 (all retiring — 4 total) | Mini-stack passive base-board internal-link male header positions (reuse existing part; 2x15 mapping defined in Entry 20) |
 
 > **Note:** Row 5 (`SQ2319ADS-T1_BE3`) — confirmed suitable from local datasheet (`design/Datasheets/vishay-sq2319ads-datasheet.md`):
 > I_D = −4.6 A continuous at 25 °C (requirement ≥ 300 mA ✓); V_GS(th) max = −2.5 V, so V_GS = −3.3 V provides −0.8 V worst-case overdrive — device enhances ✓.
 >
-> **Note:** Row 16 (`2BHR-30-VUA`) — all three boards using this connector (STA, REF, EXT) are being retired.
-> The connector size may change on the Cypher Board or new boards. Protected here as a precaution until confirmed.
+> **Note:** Row 16 (`2BHR-30-VUA`) — all three historical boards using this connector (STA, REF, EXT) are being retired,
+> but the part is now explicitly reused for the mini-stack passive base-board internal-link male header positions.
+> Remaining open selection is the right-angle female mating connector counterpart (tracked in New Component row 11).
 
 ---
 
@@ -1465,11 +1466,13 @@ until this discussion is merged with the other active discussion threads.
 
 1. Ownership of the Stack-Output <-> Stack-Input internal-link pin mapping is assigned to the **passive base board**.
 2. Mating connectors on Stack-Input and Stack-Output must conform to this base-board-defined mapping.
-3. Base-board connector pair is defined as a dual-row IDC style, **26 pins total (2x13)**, odd/even numbering.
-4. The same pin map applies to both base-board connectors (Stack-Input side and Stack-Output side), with
+3. Base-board connector pair is defined as a dual-row IDC style, **30 pins total (2x15)**, odd/even numbering.
+4. Existing male header component is reused as `2BHR-30-VUA` on board-side male positions; right-angle female
+   mating component remains pending selection.
+5. The same pin map applies to both base-board connectors (Stack-Input side and Stack-Output side), with
    pin-to-pin passive continuity through the base board (`n -> n`).
 
-#### Base-board 2x13 connector pin map (applies to both base-board connectors)
+#### Base-board 2x15 connector pin map (applies to both base-board connectors)
 
 | Top row signal | Top pin (odd) | Bottom pin (even) | Bottom row signal |
 | --- | ---: | ---: | --- |
@@ -1479,13 +1482,15 @@ until this discussion is merged with the other active discussion threads.
 | GND | 7 | 8 | SIG_BLOCK_A_ENC_DATA[3] |
 | SIG_BLOCK_A_ENC_DATA[4] | 9 | 10 | GND |
 | GND | 11 | 12 | SIG_BLOCK_A_ENC_DATA[5] |
-| SIG_BLOCK_E_TTD | 13 | 14 | SIG_BLOCK_E_TTD |
-| SIG_BLOCK_D_ENC_DATA[5] | 15 | 16 | GND |
-| GND | 17 | 18 | SIG_BLOCK_D_ENC_DATA[4] |
-| SIG_BLOCK_D_ENC_DATA[3] | 19 | 20 | GND |
-| GND | 21 | 22 | SIG_BLOCK_D_ENC_DATA[2] |
-| SIG_BLOCK_D_ENC_DATA[1] | 23 | 24 | GND |
-| GND | 25 | 26 | SIG_BLOCK_D_ENC_DATA[0] |
+| SIG_BLOCK_E_TTD | 13 | 14 | GND |
+| GND | 15 | 16 | GND |
+| GND | 17 | 18 | SIG_BLOCK_E_TTD |
+| SIG_BLOCK_D_ENC_DATA[5] | 19 | 20 | GND |
+| GND | 21 | 22 | SIG_BLOCK_D_ENC_DATA[4] |
+| SIG_BLOCK_D_ENC_DATA[3] | 23 | 24 | GND |
+| GND | 25 | 26 | SIG_BLOCK_D_ENC_DATA[2] |
+| SIG_BLOCK_D_ENC_DATA[1] | 27 | 28 | GND |
+| GND | 29 | 30 | SIG_BLOCK_D_ENC_DATA[0] |
 
 #### Signal naming and chain conventions
 
@@ -1641,16 +1646,6 @@ until this discussion is merged with the other active discussion threads.
 | 44 | `mini-stack-base-board` — alternative to the ribbon cable IDC for the Stack-Output → Stack-Input return path within each mini-stack. | ✅ Answered | Pass-through PCB using the same connector style as the current STA–CTL interface. Advantages: mechanically solidifies the mini-stack; better signal integrity than ribbon cable (ground-plane shielding top + bottom). **Not yet part of the current changeset** — user still in design brain-dump phase. To be revisited in a dedicated future session if adopted. |
 | 45 | **ENC_DATA return chain:** confirm the return path location and any required power-connector upgrades. | ✅ Answered | ENC_DATA return is carried with TTD_RETURN on the rear-top-left/front-top-left chain (J4/J3 path) back toward Cypher. Front/rear-bottom-left (J7/J8) remains power-only (3V3_ENIG + GND). Authoritative pin-level details are in Entry 11. |
 | 46 | **P-channel MOSFET selection for keyboard LED drive circuits.** Requirements: SOT-23 package; I\_D continuous ≥ 300 mA; \|V\_GS(th)\| reliably switched fully ON at V\_GS = −3.3 V; one device per LED colour bank (×2 per Input-Cypher Board). | ✅ Answered | **SQ2319ADS-T1\_BE3** (Vishay SOT-23) — confirmed from local datasheet: I\_D = −4.6 A continuous at 25 °C (≥ 300 mA ✓); V\_GS(th) max = −2.5 V, so V\_GS = −3.3 V provides −0.8 V worst-case overdrive — device enhances ✓. Full supplier details in BOM-Protected row 5. |
-
----
-
-### 2026-06-04 — Next discussion order
-
-User asked to keep the following discussion points separate from the main design todo list until they explicitly say to integrate the changes:
-
-1. ✅ Review Cypher board interconnect connectors and pin mappings, including the new dimmer PWM signals for backlight LEDs. **Completed in Entry 19 (2026-06-05).**
-2. ✅ Review pin mappings for the Mini-stack return IDC cable connector, including the discussion of replacing the ribbon cable with a PCB passive base-plate. **Completed in Entry 20 (2026-06-06), with passive base-board ownership and locked 2x13 mapping.**
-3. Locate the remaining new parts, including the current-limiting resistors for the LEDs.
 
 ---
 

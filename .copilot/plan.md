@@ -6,28 +6,36 @@
 
 ---
 
-## Current Status (as of 2026-06-06 — mini-stack return-link mapping finalised in discussion, checkpointed)
+## Current Status (as of 2026-06-07 — extension mechanical components finalised, checkpointed)
 
-The extension mechanical discussion now has both core connector-mapping items completed and captured in:
+The extension mechanical discussion now has **all 18 component rows fully populated and locked**. The "New Component Requirements" table is 100% complete with confirmed MPNs, manufacturers, and supplier part numbers for all required components across all 6 new boards.
 
-- `.copilot/discussions/extension-mechanical-usage.md` **Entry 19** (2026-06-05)
-- `.copilot/discussions/extension-mechanical-usage.md` **Entry 20** (2026-06-06)
+Latest checkpoint: `.copilot/checkpoints/173-extension-mechanical-components-final-locked.md`
 
-Entry 19 includes:
-- Finalised topology/orientation for Cypher, Plugboard, Input-Cypher, and Output-Cypher connectors
-- Final approved 50-contact (`-025` dual-row) mapping table using symbol pins 1..50
-- Confirmed odd/even mapping convention (`top=odd`, `bottom=even`)
-- Updated status marking the Cypher interconnect mapping item complete in “Next discussion order”
-- Checkpoint recorded: `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md`
+### Components Confirmed (Summary)
 
-Entry 20 includes:
-- Full signal-flow model for `SIG-BLOCK-A` through `SIG-BLOCK-I` (ENC_DATA, JTAG, actuation, power)
-- `CPLD_RESET_N` captured in the JTAG distributed/tapped model alongside `TCK/TMS`
-- `ENC_ACTIVE_N` alignment and alias handling (`ENC_ACTIVE_INPUT_N` / `ENC_ACTIVE_OUTPUT_N`) for Cypher interconnect separation
-- Passive mini-stack base-board direction captured (replacing flexible ribbon as preferred implementation)
-- Locked passive base-board-owned internal-link mapping: dual-row IDC style **26-pin (2x13)** odd/even zig-zag table
-- “Next discussion order” item 2 marked complete in the discussion file
-- Checkpoint recorded: `.copilot/checkpoints/172-mini-stack-baseboard-mapping-finalised.md`
+| Board/Function | Component | MPN | Status |
+| --- | --- | --- | --- |
+| Connectors (all boards) | 25-pin Samtec stacking (QSS/QTS variants) | QSS/QTS-025-01-L-D series | ✅ All 4 variants sourced |
+| Connectors (mini-stack) | 30-position shrouded IDC female socket | SQT-115-01-L-D-RA | ✅ KiCAD imported |
+| ENC module interfaces | 6× Hirose BtB connectors | DF40C variants (90/24/10-pin pairs) | ✅ All 6 variants sourced |
+| Input-Cypher (keyboard) | MX-style mechanical switches | MX2A-71NB | ✅ Confirmed |
+| Input-Cypher (keyboard) | MX hot-swap sockets | Kailh PG151101S11 | ✅ KiCAD imported |
+| Input-Cypher/Output-Cypher | Bicolor LEDs | Kingbright APFA2507Y2G2C-C2 | ✅ KiCAD imported |
+| Input-Cypher | LED current-limiting resistor (yellow, 130Ω) | Yageo AT0402CRD07130RL | ✅ Confirmed, awaiting library import |
+| Input-Cypher | LED current-limiting resistor (green, 120Ω) | Yageo AT0402CRD07120RL | ✅ Confirmed, awaiting library import |
+| Input-Cypher | Brightness potentiometer (50kΩ) | Bourns 3310P-001-503L | ✅ KiCAD imported |
+
+### Work Completed This Session
+
+1. ✅ Located and validated VikingTech TAR02ATBY1300 (130Ω, not suitable — DigiKey-only)
+2. ✅ Located Yageo AT0402CRD07130RL (130Ω yellow resistor, confirmed superior specs)
+3. ✅ Updated row 16 with full supplier coverage and MOQ documentation
+4. ✅ Located Yageo AT0402CRD07120RL (120Ω green resistor, confirmed equivalent specs)
+5. ✅ Updated row 17 with full supplier coverage and MOQ documentation
+6. ✅ Generated datasheets for both Yageo parts; verified electrical specs against design requirements
+7. ✅ Removed completed "Next discussion order" section from discussion file
+8. ✅ All 18 component rows now 100% populated and locked
 
 ## Board Design Status
 

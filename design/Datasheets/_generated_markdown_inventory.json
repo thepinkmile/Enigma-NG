@@ -347,6 +347,11 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "Samtec-sqt-1xx-xx-xxx-x-xxx-xxx-mkt-datasheet.pdf",
+      "markdown": "Samtec-sqt-1xx-xx-xxx-x-xxx-xxx-mkt-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "Susumu-KRL-datasheet.pdf",
       "markdown": "Susumu-KRL-datasheet.md",
       "mapping_type": "same_stem"
@@ -439,6 +444,11 @@
     {
       "pdf": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.pdf",
       "markdown": "Yaego-UPY-GPHC_X7R_6_3V-TO-250V-CC1206KKX7R8BB106-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
+      "pdf": "Yageo-AT_series-datasheet.pdf",
+      "markdown": "Yageo-AT_series-datasheet.md",
       "mapping_type": "same_stem"
     },
     {
