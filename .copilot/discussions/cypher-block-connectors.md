@@ -50,7 +50,9 @@ The intent is:
 
 ## 4. Shielding Rules Around the Board Edges
 
-The `GND_CHASSIS` ring should be continuous around the chassis except where it must be relieved locally around the right-angle connector zones.
+The `GND_CHASSIS` ring should be continuous around the chassis except where it
+must be relieved locally at connector zones where signal-pin termination cannot
+be completed inside the ring/moat keep-out region.
 
 - The local break is only to maintain clearance around the connector openings.
 - The break must not introduce any second connection between chassis ground and logic ground.
@@ -61,7 +63,10 @@ The `GND_CHASSIS` ring should be continuous around the chassis except where it m
 [BOARD EDGE] ──► [2.5mm GND_CHASSIS] ──► [1.5mm MOAT] ──► [INNER LOGIC ZONE]
 ```
 
-For the Stack-Input and Stack-Output boards, the connectors are already right-angle in the current design. This discussion only captures the shielding cut-out and continuity intent around those connectors.
+For Stack-Input and Stack-Output, the connectors are already right-angle in the
+current design. This discussion captures the shielding cut-out and continuity
+intent around those connector zones, and the same rule applies to any
+equivalent external connector zones on other chassis-connected boards.
 
 ```text
        [GND_CHASSIS PLATED HOLE] ──► (Clamped to Metal Enclosure Frame)
@@ -105,7 +110,10 @@ Therefore, this discussion is mostly an extension/clarification, not a topology 
 
 ## 7. Chassis-Connected Board Tracking (Non-Module Boards)
 
-Scope requested: include boards that are part of chassis grounding continuity; exclude module boards carried by other boards (JTAG Module, Actuation Module, CM5).
+Scope requested: include boards that are part of chassis grounding continuity;
+exclude module boards carried by other boards (JTAG Module, Actuation Module,
+CM5). For planning completeness, this tracking table also includes other active
+enclosure-coupled boards outside the four-board replacement set.
 
 ### 7.1 Existing Active Boards
 
