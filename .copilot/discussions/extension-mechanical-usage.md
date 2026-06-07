@@ -47,25 +47,20 @@ The Rotor Mini-Stack is the assembly unit consisting of:
 #### Stacking Connector Topology
 
 ```text
-                              [Cypher Board]
-                       (STA side)         (REF side)
-                          /                    \
-                         /                      \
-                        /                        \
-          (female, bottom +                      (female, top +
-           above-centre)                          below-centre)
-                |                                     |
-   RIGHT EDGE = FRONT                             LEFT EDGE = FRONT
-   [Stack-Input Board]     ←—— ROT boards ——→     [Stack-Output Board]
-   LEFT EDGE = BACK                               RIGHT EDGE = BACK
-                |                                    |
-          (female, bottom +                    (female, top +
-           above-centre)                        below-centre)
-                 \                                   /
-                  \                                 /
-                   \                               /
-                    \                             /
-                [            Blanking Board           ]
+               [ Stack-Blanking ]
+                /               \
+               /                 \
+   Stack-Input BACK             Stack-Output BACK
+    (left edge)                   (right edge)
+          |                           |
+   [Stack-Input]  ←-- ROT x5 --→  [Stack-Output]
+          |                           |
+   Stack-Input FRONT            Stack-Output FRONT
+    (right edge)                  (left edge)
+               \                 /
+                \               /
+             (STA side)    (REF side)
+                  [  Cypher  ]
 ```
 
 **Mini-stack front/back orientation:**

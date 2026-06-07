@@ -7,89 +7,39 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** PR merge and Yageo resistor library import, then begin design file implementation.
+**Continue with:** completeness review of the unified point-in-time spec:
 
-**All component sourcing is COMPLETE** — the extension mechanical usage discussion contains:
-- 18/18 rows of "New Component Requirements" table populated with confirmed MPNs and supplier part numbers
-- No remaining parts queries expected from next session
+- `.copilot/discussions/cypher-extension-unified-discussion.md`
 
-### Current Blocking Work (Roadmap)
+### What changed in this session
 
-1. **External PR Merge** (per user instruction)
-   - User will provide PR with another discussion thread
-   - Merge both discussions' content into current `extension-mechanical-usage.md`
-   - This merge must complete before design file implementation begins
+1. Merged the two additive discussions into one standalone design-modification specification file:
+   - Source history retained in:
+     - `.copilot/discussions/extension-mechanical-usage.md`
+     - `.copilot/discussions/cypher-block-connectors.md`
+2. Unified file now contains embedded:
+   - architecture baseline (new board set + retirement intent),
+   - `GND_CHASSIS` model (single-point bond, ring geometry, connector caveat),
+   - full Cypher interconnect pin map,
+   - full passive base-board 2x15 pin map,
+   - `SIG-BLOCK-A..I` table plus explicit electronic flow narratives,
+   - component/procurement baseline,
+   - active-design change matrix.
+3. Topology visual orientation updated so diagrams use Cypher at bottom / Stack-Blanking at top (user confirmed final edits locally across both discussion files).
 
-2. **Yageo Resistor Library Import** (KiCAD assets creation)
-   - Create symbols, footprints, 3D models for both Yageo AT0402 variants (130Ω and 120Ω)
-   - Import to both modern formats (`.kicad_sym`, `.pretty/`) and legacy formats (`.lib`, `.mod`)
-   - Update rows 16–17 KiCAD asset checkboxes from `–` to `✓` after import
+### Current session state
 
-3. **Design File Implementation Gate**
-   - Only after: (a) library import complete AND (b) external PR merged AND (c) explicit user approval
-   - Then: create DEC entries, update board Design_Spec files, modify schematics/PCBs
-   - SENARY DIRECTIVE: No implementation without explicit user trigger phrase
+- No design implementation files modified (discussion/state files only).
+- The next step is user-led verification of completeness of the unified file.
+- Expect follow-up edits to fill any missing details found during that review.
 
-### Extension Mechanical Usage (Updated 2026-06-07)
+### Immediate next-session actions
 
-**Discussion file:** `.copilot/discussions/extension-mechanical-usage.md` (46 entries complete through 2026-06-07)
-
-- **Entry 19** (2026-06-05): Cypher-owned Input/Output-Cypher interconnect mapping with final 50-contact table
-- **Entry 20** (2026-06-06): Mini-stack internal return-link and signal-block flow model (passive base-board direction locked)
-- **Rows 1–18** (complete 2026-06-07): All "New Component Requirements" confirmed with MPNs, supplier PNs, and MOQ documentation
-
-**All component rows status:**
-
-| Row | Component | MPN | Supplier Coverage | KiCAD Assets | Notes |
-| --- | --- | --- | --- | --- | --- |
-| 1–2 | Samtec stacking (-050) | QSS/QTS series | DigiKey, Mouser, JLCPCB | ✓ | All 4 variants sourced |
-| 3 | Mini-stack shrouded IDC | SQT-115-01-L-D-RA | JLCPCB | ✓ | Imported |
-| 4–9 | Hirose ENC BtB (6 pairs) | DF40C series | JLCPCB | ✓ | All 6 variants sourced |
-| 10 | Keyboard switches | MX2A-71NB | JLCPCB | ✓ | Confirmed |
-| 11 | Keyboard hot-swap sockets | Kailh PG151101S11 | JLCPCB | ✓ | Imported |
-| 12 | Keyboard/Lightboard LEDs | Kingbright APFA2507Y2G2C-C2 | Mouser, DigiKey, JLCPCB | ✓ | Imported, 2 variant support |
-| 13 | **[Omitted — duplicate LED row to avoid confusion]** | — | — | — | |
-| 14 | Keyboard LEDs (alternate spec) | Kingbright APFA2507Y2G2C-C2 | Mouser, DigiKey, JLCPCB | ✓ | Same as row 12 |
-| 15 | Lightboard LEDs (alternate spec) | Kingbright APFA2507Y2G2C-C2 | Mouser, DigiKey, JLCPCB | ✓ | Same as row 12 |
-| 16 | Keyboard/Lightboard yellow 130Ω resistor | Yageo AT0402CRD07130RL | DigiKey, Mouser, JLCPCB | – | Pending import; MOQ documented |
-| 17 | Keyboard/Lightboard green 120Ω resistor | Yageo AT0402CRD07120RL | DigiKey, JLCPCB (Mouser N/A) | – | Pending import; MOQ documented |
-| 18 | Brightness potentiometer | Bourns 3310P-001-503L | JLCPCB, DigiKey | ✓ | Imported |
-
-**Component Removal Note:**
-- Old row 13 (placeholder for dual-LED-variant clarification) removed during renumbering
-- Rows 14–15 now clarify LED variant specifications (26-char vs 64-char)
-- Rows 16–17 contain resistor sourcing data (final two component rows)
-
-**Variant Support Confirmed:**
-- **Variant 1 (26-character)**: 26 LEDs + 26 yellow resistors + 26 green resistors per board
-- **Variant 2 (64-character)**: 41 LEDs + 41 yellow resistors + 41 green resistors per board (includes spacebar for software-only use)
-- All component row values scale automatically with variant
-
-### Key Decisions Locked
-
-1. **Resistor Selection**: Yageo AT0402 thin-film series chosen over VikingTech TAR02
-   - Rationale: Multi-source availability (DigiKey, Mouser, JLCPCB) vs single-source VikingTech
-   - Specs: ±0.25% tolerance + ±25 ppm/°C TCR + AEC-Q200 automotive compliance (both parts)
-
-2. **Mini-Stack Internal Link**: Passive rigid base-board preferred over flexible ribbon
-   - Mechanical assembly intent documented in Entry 20
-   - 26-pin (2x13) IDC connector mapping locked and base-board-owned
-
-3. **Cypher Interconnect**: Vertical orientation on Cypher/Plugboard; RA on Input/Output boards
-   - 50-contact table finalized in Entry 19 with explicit symbol pin mapping (1..50)
-   - `ENC_ACTIVE_INPUT_N` / `ENC_ACTIVE_OUTPUT_N` aliasing preserved for net separation
-
-**No board Design_Spec implementation files have been touched yet** (discussion docs only).
-
-### Remaining Open Items
-
-1. **External PR discussion merge** — awaiting user to provide PR and trigger merge step
-2. **Yageo resistor library import** — KiCAD asset creation for both parts
-3. **User implementation approval** — explicit trigger phrase required per SENARY DIRECTIVE before design file changes
-
-**Datasheets generated (markdown, project-agnostic):**
-- `design/Datasheets/VikingTech-TAR_Series-datasheet.md` (reviewed, rejected)
-- `design/Datasheets/Yageo-AT_series-datasheet.md` (reviewed, approved, covers both 130Ω and 120Ω parts)
+1. Read:
+   - `.copilot/discussions/cypher-extension-unified-discussion.md`
+   - User’s missing-details feedback (if provided).
+2. Patch unified file to include any missing architectural/signal/component details.
+3. Keep unified file as single implementation baseline; preserve source files as history only.
 
 ---
 

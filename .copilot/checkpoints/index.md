@@ -177,3 +177,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 171 | Cypher interconnect Entry 19 finalised | 171-cypher-interconnect-entry19-finalised.md |
 | 172 | Mini-stack base-board mapping finalised (Entry 20) | 172-mini-stack-baseboard-mapping-finalised.md |
 | 173 | Extension mechanical components finalised (all remaining parts locked) | 173-extension-mechanical-components-final-locked.md |
+| 174 | Unified Cypher/Extension spec created; completeness review pending | 174-unified-cypher-extension-spec-created-awaiting-completeness-review.md |

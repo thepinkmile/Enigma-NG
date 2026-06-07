@@ -6,36 +6,21 @@
 
 ---
 
-## Current Status (as of 2026-06-07 — extension mechanical components finalised, checkpointed)
+## Current Status (as of 2026-06-07 — unified Cypher/Extension design-spec discussion created)
 
-The extension mechanical discussion now has **all 18 component rows fully populated and locked**. The "New Component Requirements" table is 100% complete with confirmed MPNs, manufacturers, and supplier part numbers for all required components across all 6 new boards.
+The new consolidated point-in-time design modification file is now in place:
 
-Latest checkpoint: `.copilot/checkpoints/173-extension-mechanical-components-final-locked.md`
+- `.copilot/discussions/cypher-extension-unified-discussion.md`
 
-### Components Confirmed (Summary)
+It consolidates architecture, grounding model, interconnect mappings, signal-flow narratives, component baseline, and active-design change tracking from both prior discussions. The immediate activity is now completeness review of this unified file before any implementation work.
 
-| Board/Function | Component | MPN | Status |
-| --- | --- | --- | --- |
-| Connectors (all boards) | 25-pin Samtec stacking (QSS/QTS variants) | QSS/QTS-025-01-L-D series | ✅ All 4 variants sourced |
-| Connectors (mini-stack) | 30-position shrouded IDC female socket | SQT-115-01-L-D-RA | ✅ KiCAD imported |
-| ENC module interfaces | 6× Hirose BtB connectors | DF40C variants (90/24/10-pin pairs) | ✅ All 6 variants sourced |
-| Input-Cypher (keyboard) | MX-style mechanical switches | MX2A-71NB | ✅ Confirmed |
-| Input-Cypher (keyboard) | MX hot-swap sockets | Kailh PG151101S11 | ✅ KiCAD imported |
-| Input-Cypher/Output-Cypher | Bicolor LEDs | Kingbright APFA2507Y2G2C-C2 | ✅ KiCAD imported |
-| Input-Cypher | LED current-limiting resistor (yellow, 130Ω) | Yageo AT0402CRD07130RL | ✅ Confirmed, awaiting library import |
-| Input-Cypher | LED current-limiting resistor (green, 120Ω) | Yageo AT0402CRD07120RL | ✅ Confirmed, awaiting library import |
-| Input-Cypher | Brightness potentiometer (50kΩ) | Bourns 3310P-001-503L | ✅ KiCAD imported |
+Latest checkpoint: `.copilot/checkpoints/174-unified-cypher-extension-spec-created-awaiting-completeness-review.md`
 
-### Work Completed This Session
+### Current review focus
 
-1. ✅ Located and validated VikingTech TAR02ATBY1300 (130Ω, not suitable — DigiKey-only)
-2. ✅ Located Yageo AT0402CRD07130RL (130Ω yellow resistor, confirmed superior specs)
-3. ✅ Updated row 16 with full supplier coverage and MOQ documentation
-4. ✅ Located Yageo AT0402CRD07120RL (120Ω green resistor, confirmed equivalent specs)
-5. ✅ Updated row 17 with full supplier coverage and MOQ documentation
-6. ✅ Generated datasheets for both Yageo parts; verified electrical specs against design requirements
-7. ✅ Removed completed "Next discussion order" section from discussion file
-8. ✅ All 18 component rows now 100% populated and locked
+1. Validate the unified file is fully self-contained and does not omit detail from prior additive discussions.
+2. Capture any missing details directly in the unified file.
+3. After completeness sign-off, use the unified file as the single implementation baseline.
 
 ## Board Design Status
 
@@ -64,10 +49,10 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 1. **Pass-10 complete ✅** — 91 resolved, 0 partial = 91 total
 2. **Review Pass 11** (`review-pass-11`) — blocked by `copilot-dir-restructure` (pending); `data-plate-standardisation` ✅ complete; `design-log-restructure` ✅ complete
    - Once pass 11 and pass 12 are both clean → `review-clean-passes-gate` can be closed
-3. **Extension mechanical usage (discussion-only, no implementation yet)** (`extension-mechanical-usage`)
-   - ✅ Cypher interconnect connector and pin mapping review complete (**Entry 19**)
-   - ✅ Mini-stack return-link pin mapping review complete (**Entry 20**, passive base-board direction + locked 2x13 map)
-   - Remaining separate discussion item: locate/confirm remaining new parts (including LED current-limiting resistor sourcing rows)
+3. **Unified Cypher/Extension specification review (discussion-only, no implementation yet)**
+   - Unified file created: `.copilot/discussions/cypher-extension-unified-discussion.md`
+   - Pending: user-led completeness pass to identify any missing historical details
+   - No design-file changes until unified file content is accepted as complete
 
 ### Deferred / Blocked
 
@@ -125,4 +110,4 @@ In brief:
 2. Seed session DB from `.copilot/todos/todos.sql` + `.copilot/todos/deps.sql`
 3. This `plan.md`
 4. `.copilot/handoff.md` (latest section first)
-5. `.copilot/checkpoints/172-mini-stack-baseboard-mapping-finalised.md`
+5. `.copilot/checkpoints/174-unified-cypher-extension-spec-created-awaiting-completeness-review.md`
