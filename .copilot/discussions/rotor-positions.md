@@ -225,7 +225,19 @@ This document contains the un-truncated, mathematically verified track data loop
 
 ### 📝 Stretched-Flat Track Diagram (Full 360° Circumference Loop)
 
-TBD
+
+| Position | Track 1 | Sensor Track 1 | Sensor Track 2 | Track 2 |
+| :---: | :---: | :---: | :---: | :---: |
+| **00** | 0 | < | > | 0 |
+| **01** | 0 |   | > | 0 |
+| **02** | 0 | < |   | 1 |
+| **03** | 0 |   |   | 1 |
+| **04** | 1 |   |   | 0 |
+| **05** | 1 |   |   | 0 |
+| **06** | 1 |   |   | 1 |
+| **07** | 1 |   |   | 1 |
+| **08** | 1 |   |   | 0 |
+| **09** | 1 |   |   | 0 |
 
 ### 📊 Full Absolute Position Truth Table (0 to 9)
 
