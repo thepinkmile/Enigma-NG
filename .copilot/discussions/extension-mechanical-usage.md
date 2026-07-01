@@ -51,12 +51,12 @@ The Rotor Mini-Stack is the assembly unit consisting of:
                 /               \
                /                 \
    Stack-Input BACK             Stack-Output BACK
-    (left edge)                   (right edge)
-          |                           |
-   [Stack-Input]  ←-- ROT x5 --→  [Stack-Output]
-          |                           |
+    (right edge)                 (left edge)
+          |       ←-- ROT x5 --→      |
+   [Stack-Input]                  [Stack-Output]
+          |  ←---- Stack-Base ----→   |
    Stack-Input FRONT            Stack-Output FRONT
-    (right edge)                  (left edge)
+    (left edge)                  (right edge)
                \                 /
                 \               /
              (STA side)    (REF side)
