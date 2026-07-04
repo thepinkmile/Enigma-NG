@@ -1,0 +1,206 @@
+ENTITY i2c_controller IS
+    PORT (
+        -- Global System Signals
+        clk                : IN    STD_LOGIC;                    -- Internal UFM Oscillator (~4 MHz)
+        rst_n              : IN    STD_LOGIC;                    -- Global Configuration Reset
+       
+        -- Physical I2C Hardware Pins
+        SCL                : INOUT STD_LOGIC;                    -- Serial Clock Line
+        SDA                : INOUT STD_LOGIC;                    -- Serial Data Line
+       
+        -- Process-to-Process Handshake Interface
+        byte_ready         : OUT   STD_LOGIC;                    -- Set '1' when full byte is ready
+        byte_ack           : IN    STD_LOGIC;                    -- Monitored from Process 2
+       
+        -- Parallel Data Buffers
+        data_holding_reg   : OUT   STD_LOGIC_VECTOR(7 DOWNTO 0); -- Output byte to Process 2
+        tx_data_buffer     : IN    STD_LOGIC_VECTOR(7 DOWNTO 0)  -- Input byte response from Process 2
+    );
+END ENTITY i2c_controller;
+
+ARCHITECTURE Structural OF i2c_controller IS
+
+    -- State Machine Enumeration
+    TYPE t_i2c_state IS (IDLE, RX_BYTE, ACK_PHASE, CLK_STRETCH, TX_BYTE);
+    SIGNAL state : t_i2c_state := IDLE;
+
+    -- Oversampling Shift Pipes (History Registers)
+    SIGNAL scl_pipe : STD_LOGIC_VECTOR(1 DOWNTO 0) := "11";
+    SIGNAL sda_pipe : STD_LOGIC_VECTOR(1 DOWNTO 0) := "11";
+
+    -- Synchronous Edge Detection Strobes
+    SIGNAL scl_rising       : STD_LOGIC;
+    SIGNAL scl_falling      : STD_LOGIC;
+    SIGNAL sda_rising       : STD_LOGIC;
+    SIGNAL sda_falling      : STD_LOGIC;
+
+    -- Asynchronous Protocol Condition Flags
+    SIGNAL start_condition  : STD_LOGIC;
+    SIGNAL stop_condition   : STD_LOGIC;
+
+    -- Internal Counters & Core Shift Registers
+    SIGNAL bit_counter      : INTEGER RANGE 0 TO 8 := 0;
+    SIGNAL rx_shift_reg     : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL tx_shift_reg     : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0');
+   
+    -- Internal Tri-state Control Drivers
+    SIGNAL sda_drive_low    : STD_LOGIC := '0';
+    SIGNAL scl_clamp_low    : STD_LOGIC := '0';
+
+BEGIN
+
+    -------------------------------------------------------------------
+    -- BLOCK A: DIGITAL OVERSAMPLER & EDGE DETECTOR
+    -------------------------------------------------------------------
+    process_oversample : PROCESS(clk)
+    BEGIN
+        IF rising_edge(clk) THEN
+            scl_pipe <= scl_pipe(0) & SCL;
+            sda_pipe <= sda_pipe(0) & SDA;
+        END IF;
+    END PROCESS process_oversample;
+
+    -- Edge Evaluation (Looking for valid transitions across internal cycles)
+    scl_rising  <= '1' WHEN (scl_pipe = "01") ELSE '0';
+    scl_falling <= '1' WHEN (scl_pipe = "10") ELSE '0';
+    sda_rising  <= '1' WHEN (sda_pipe = "01") ELSE '0';
+    sda_falling <= '1' WHEN (sda_pipe = "10") ELSE '0';
+
+    -------------------------------------------------------------------
+    -- BLOCK B: ASYNCHRONOUS BUS CONDITION MONITORS
+    -------------------------------------------------------------------
+    -- START: SDA transitions High-to-Low while SCL is locked stable High
+    start_condition <= '1' WHEN (sda_falling = '1' AND scl_pipe(1) = '1') ELSE '0';
+
+    -- STOP: SDA transitions Low-to-High while SCL is locked stable High
+    stop_condition  <= '1' WHEN (sda_rising = '1' AND scl_pipe(1) = '1') ELSE '0';
+
+    -------------------------------------------------------------------
+    -- BLOCK C: SYNCHRONOUS STATE MACHINE (PROCESS 1 DATA LOOP)
+    -------------------------------------------------------------------
+    process_i2c_core : PROCESS(clk)
+    BEGIN
+        IF rising_edge(clk) THEN
+            -- 1. Master Reset Overrule
+            IF rst_n = '0' THEN
+                state            <= IDLE;
+                bit_counter      <= 0;
+                byte_ready       <= '0';
+                sda_drive_low    <= '0';
+                scl_clamp_low    <= '0';
+                data_holding_reg <= (OTHERS => '0');
+               
+            -- 2. Protocol Boundary Control Breaks (Instant Reset)
+            ELSIF start_condition = '1' THEN
+                state         <= RX_BYTE; -- Ready for Device Address
+                bit_counter   <= 0;
+                byte_ready    <= '0';
+                sda_drive_low <= '0';
+                scl_clamp_low <= '0';
+               
+            ELSIF stop_condition = '1' THEN
+                state         <= IDLE;
+                bit_counter   <= 0;
+                byte_ready    <= '0';
+                sda_drive_low <= '0';
+                scl_clamp_low <= '0';
+               
+            -- 3. Clock-Enabled State Loop
+            ELSE
+                CASE state IS
+                   
+                    WHEN IDLE =>
+                        byte_ready    <= '0';
+                        sda_drive_low <= '0';
+                        scl_clamp_low <= '0';
+                        bit_counter   <= 0;
+
+                    WHEN RX_BYTE =>
+                        IF scl_rising = '1' THEN
+                            -- Sample stable data directly into the register
+                            rx_shift_reg(7 - bit_counter) <= sda_pipe(1);
+                           
+                            IF bit_counter = 7 THEN
+                                state <= ACK_PHASE;
+                            ELSE
+                                bit_counter <= bit_counter + 1;
+                            END IF;
+                        END IF;
+
+                    WHEN ACK_PHASE =>
+                        -- Drive SDA Low to assert physical ACK on the 9th bit
+                        sda_drive_low <= '1';
+                       
+                        IF scl_falling = '1' THEN
+                            -- Flush internal parallel wires to Process 2
+                            data_holding_reg <= rx_shift_reg;
+                            byte_ready       <= '1';
+                           
+                            -- Inspect handshake line immediately
+                            IF byte_ack = '1' THEN
+                                state <= CLK_STRETCH;
+                            ELSE
+                                -- If no long operation, bypass stretch
+                                sda_drive_low <= '0';
+                                bit_counter   <= 0;
+                                state         <= IDLE;
+                            END IF;
+                        END IF;
+
+                    WHEN CLK_STRETCH =>
+                        -- Maintain physical SCL Clamp Low
+                        scl_clamp_low <= '1';
+                        sda_drive_low <= '0'; -- Release SDA during stretch phase
+                        byte_ready    <= '0'; -- Clear handshake alert flag
+                       
+                        -- Keep bus frozen until Process 2 finishes execution
+                        IF byte_ack = '0' THEN
+                            scl_clamp_low <= '0'; -- Release SCL Lock
+                            bit_counter   <= 0;
+                           
+                            -- Evaluate transaction mode (Example checks 8th bit for Read/Write flag)
+                            IF rx_shift_reg(0) = '1' THEN
+                                tx_shift_reg <= tx_data_buffer; -- Pre-load answer byte
+                                state        <= TX_BYTE;
+                            ELSE
+                                state        <= RX_BYTE;        -- Prepare for downstream command payload
+                            END IF;
+                        END IF;
+
+                    WHEN TX_BYTE =>
+                        -- Drive current MSB value to SDA line
+                        IF tx_shift_reg(7) = '0' THEN
+                            sda_drive_low <= '1';
+                        ELSE
+                            sda_drive_low <= '0';
+                        END IF;
+
+                        IF scl_falling = '1' THEN
+                            -- Shift out values sequentially
+                            tx_shift_reg <= tx_shift_reg(6 DOWNTO 0) & '1';
+                           
+                            IF bit_counter = 7 THEN
+                                sda_drive_low <= '0'; -- Release to listen for Master NACK/ACK
+                                state         <= IDLE;
+                            ELSE
+                                bit_counter <= bit_counter + 1;
+                            END IF;
+                        END IF;
+
+                    WHEN OTHERS =>
+                        state <= IDLE;
+                END CASE;
+            END IF;
+        END IF;
+    END PROCESS process_i2c_core;
+
+    -------------------------------------------------------------------
+    -- BLOCK D: PHYSICAL TRI-STATE PIN DRIVER LOGIC
+    -------------------------------------------------------------------
+    -- Electrical Compliance: Only clamp '0' to Ground, or release 'Z' to Float.
+    -- Never force a direct logic high '1' output onto the external I2C bus.
+
+    SDA <= '0' WHEN (sda_drive_low = '1') ELSE 'Z';
+    SCL <= '0' WHEN (scl_clamp_low = '1') ELSE 'Z';
+
+END ARCHITECTURE Structural;
