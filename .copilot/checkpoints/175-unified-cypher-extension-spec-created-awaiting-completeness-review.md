@@ -1,4 +1,4 @@
-# Checkpoint 174: Unified Cypher/Extension Spec Created; Completeness Review Pending
+# Checkpoint 175: Unified Cypher/Extension Spec Created; Completeness Review Pending
 
 **Date**: 2026-06-07  
 **Status**: Complete  
@@ -48,7 +48,7 @@ patches to the unified file.
 - `.copilot/plan.md`
 - `.copilot/handoff.md`
 - `.copilot/checkpoints/index.md`
-- `.copilot/checkpoints/174-unified-cypher-extension-spec-created-awaiting-completeness-review.md` (new)
+- `.copilot/checkpoints/175-unified-cypher-extension-spec-created-awaiting-completeness-review.md` (new)
 
 ## Next Start Hint
 

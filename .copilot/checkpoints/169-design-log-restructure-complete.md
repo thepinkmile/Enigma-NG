@@ -1,4 +1,4 @@
-# Checkpoint 168 — Design Log restructure complete
+# Checkpoint 169 — Design Log restructure complete
 
 **Date:** 2026-05-22
 **Session:** design-log-restructure workstream closed; extension-mechanical-usage marked in-progress
@@ -91,5 +91,5 @@ Read in order:
 1. `.copilot/agent-directives.md` (always first — seed session DB immediately)
 2. `.copilot/plan.md`
 3. `.copilot/handoff.md` (latest section first)
-4. This checkpoint file (`168-design-log-restructure-complete.md`)
+4. This checkpoint file (`169-design-log-restructure-complete.md`)
 5. `.copilot/review-report.md` (Pass-10 fully closed)

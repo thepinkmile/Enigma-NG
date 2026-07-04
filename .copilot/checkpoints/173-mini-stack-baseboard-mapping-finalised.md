@@ -1,4 +1,4 @@
-# Checkpoint 172: Mini-stack Base-Board Mapping Finalised (Entry 20)
+# Checkpoint 173: Mini-stack Base-Board Mapping Finalised (Entry 20)
 
 **Date**: 2026-06-06  
 **Status**: Complete  
@@ -41,7 +41,7 @@ Continue with the remaining unresolved discussion item:
 - `.copilot/plan.md`
 - `.copilot/handoff.md`
 - `.copilot/checkpoints/index.md`
-- `.copilot/checkpoints/172-mini-stack-baseboard-mapping-finalised.md` (new)
+- `.copilot/checkpoints/173-mini-stack-baseboard-mapping-finalised.md` (new)
 
 ## State After This Checkpoint
 

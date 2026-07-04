@@ -1,4 +1,4 @@
-# Checkpoint 163 — P10 Recovery: All Remaining Findings Applied
+# Checkpoint 164 — P10 Recovery: All Remaining Findings Applied
 
 **Date:** 2026-05-18  
 **Session work:** Apply all ~54 open/partial P10 findings across 11 board design files + consolidated BOM; append DEC-080; create checkpoint 163.

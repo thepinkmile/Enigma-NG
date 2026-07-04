@@ -1,4 +1,4 @@
-﻿# Checkpoint History
+# Checkpoint History
 
 Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, higher numbers are more recent.
 
@@ -160,21 +160,24 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 153 | CFG_APPLY_N GPA[4]→GPA[6] correction complete; DEC-070 updated | 153-cfg-apply-n-gpa4-gpa6-dec070-updated.md |
 | 154 | Pin format fixes, NC cleanup, todo dep restoration | 154-pin-format-nc-cleanup-todo-deps-restored.md |
 | 155 | README full-board audit complete; AM section added | 155-readme-full-audit-am-added.md |
+| 156 | README system architecture Mermaid diagram complete | 156-readme-mermaid-diagram-complete.md |
 | 157 | USM switch topology complete — R1-R10 removed, R11→R1, dual-terminated wiring, DEC-071 | 157-usm-switch-topology-complete.md |
 | 158 | ENC connector review complete; review-pass-8 corrected | 158-enc-connector-review-complete-pass8-corrected.md |
-| 159 | JTAG/USM/CTL fixes; Group 1-2-3 library imports; all-board BOM ticks | 159-jtag-usm-ctl-library-imports-all-board-bom-ticks.md |
-| 160 | Library import (Hirose + TPS), todo sync, directives hardened | 160-library-import-todo-sync-directives-hardened.md |
-| 161 | TPS25751 EEPROM Option C implementation complete | 161-tps25751-eeprom-option-c-complete.md |
-| 162 | Todo restructuring and review-pass gate | 162-todo-restructuring-review-gates.md |
-| 163 | P10 Recovery: all remaining 54 findings applied across 11 boards + BOM; DEC-080 appended | 163-p10-recovery-complete.md |
-| 164 | PM Pass-10 all resolved; DEC-073 violation fix; ROT-P10-10/11 resolved | 164-pm-all-resolved-rot-progress.md |
-| 165 | Samsung 50V cap complete; all_boards_bom.json retired; DEC-082/083; KiCAD import | 165-samsung-50v-cap-complete-bom-json-retired.md |
-| 166 | AM/USM P10 findings closed; review-report Phase A audit corrected; two new todos | 166-am-usm-p10-closed-report-audit-corrected.md |
-| 167 | data-plate-standardisation complete; all 10 boards standardised; USM-P10-09 resolved | 167-data-plate-standardisation-complete.md |
-| 168 | Design Log restructure complete | 168-design-log-restructure-complete.md |
-| 169 | Copilot directory restructure complete | 169-copilot-dir-restructure-complete.md |
-| 170 | Kailh datasheet and library file cleanup complete | 170-kailh-datasheet-library-cleanup.md |
-| 171 | Cypher interconnect Entry 19 finalised | 171-cypher-interconnect-entry19-finalised.md |
-| 172 | Mini-stack base-board mapping finalised (Entry 20) | 172-mini-stack-baseboard-mapping-finalised.md |
-| 173 | Extension mechanical components finalised (all remaining parts locked) | 173-extension-mechanical-components-final-locked.md |
-| 174 | Unified Cypher/Extension spec created; completeness review pending | 174-unified-cypher-extension-spec-created-awaiting-completeness-review.md |
+| 159 | Review Pass 9 complete | 159-review-pass-9-complete.md |
+| 160 | JTAG/USM/CTL fixes; Group 1-2-3 library imports; all-board BOM ticks | 160-jtag-usm-ctl-library-imports-all-board-bom-ticks.md |
+| 161 | Library import (Hirose + TPS), todo sync, directives hardened | 161-library-import-todo-sync-directives-hardened.md |
+| 162 | TPS25751 EEPROM Option C implementation complete | 162-tps25751-eeprom-option-c-complete.md |
+| 163 | Todo restructuring and review-pass gate | 163-todo-restructuring-review-gates.md |
+| 164 | P10 Recovery: all remaining 54 findings applied across 11 boards + BOM; DEC-080 appended | 164-p10-recovery-complete.md |
+| 165 | PM Pass-10 all resolved; DEC-073 violation fix; ROT-P10-10/11 resolved | 165-pm-all-resolved-rot-progress.md |
+| 166 | Samsung 50V cap complete; all_boards_bom.json retired; DEC-082/083; KiCAD import | 166-samsung-50v-cap-complete-bom-json-retired.md |
+| 167 | AM/USM P10 findings closed; review-report Phase A audit corrected; two new todos | 167-am-usm-p10-closed-report-audit-corrected.md |
+| 168 | data-plate-standardisation complete; all 10 boards standardised; USM-P10-09 resolved | 168-data-plate-standardisation-complete.md |
+| 169 | Design Log restructure complete | 169-design-log-restructure-complete.md |
+| 170 | Copilot directory restructure complete | 170-copilot-dir-restructure-complete.md |
+| 171 | Kailh datasheet and library file cleanup complete | 171-kailh-datasheet-library-cleanup.md |
+| 172 | Cypher interconnect Entry 19 finalised | 172-cypher-interconnect-entry19-finalised.md |
+| 173 | Mini-stack base-board mapping finalised (Entry 20) | 173-mini-stack-baseboard-mapping-finalised.md |
+| 174 | Extension mechanical components finalised (all remaining parts locked) | 174-extension-mechanical-components-final-locked.md |
+| 175 | Unified Cypher/Extension spec created; completeness review pending | 175-unified-cypher-extension-spec-created-awaiting-completeness-review.md |
+| 176 | Session start and state reconciliation for merged discussions | 176-session-start-and-state-reconciliation-for-merged-discussions.md |

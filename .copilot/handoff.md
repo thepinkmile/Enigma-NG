@@ -7,39 +7,37 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** completeness review of the unified point-in-time spec:
+**Continue with:** merged-discussion rollout into main design (execution-phase prep complete):
 
-- `.copilot/discussions/cypher-extension-unified-discussion.md`
+- `.copilot/discussions/cypher-engine-discussion/cypher-extension-unified-discussion.md`
+- `.copilot/discussions/rp2040-discussion/`
+- `.copilot/discussions/sigaba-discussion/`
+- `.copilot/discussions/extension-mechanical-usage.md`
 
 ### What changed in this session
 
-1. Merged the two additive discussions into one standalone design-modification specification file:
-   - Source history retained in:
-     - `.copilot/discussions/extension-mechanical-usage.md`
-     - `.copilot/discussions/cypher-block-connectors.md`
-2. Unified file now contains embedded:
-   - architecture baseline (new board set + retirement intent),
-   - `GND_CHASSIS` model (single-point bond, ring geometry, connector caveat),
-   - full Cypher interconnect pin map,
-   - full passive base-board 2x15 pin map,
-   - `SIG-BLOCK-A..I` table plus explicit electronic flow narratives,
-   - component/procurement baseline,
-   - active-design change matrix.
-3. Topology visual orientation updated so diagrams use Cypher at bottom / Stack-Blanking at top (user confirmed final edits locally across both discussion files).
+1. Session bootstrap completed from `.copilot/SESSION_START.md`:
+   - directives loaded and persisted as repository memory,
+   - session DB seeded from SQL (`todos=116`, `todo_deps=141`).
+2. State reconciliation completed for merged-thread continuity:
+   - fixed unified-discussion path references in session-state docs,
+   - restored missing checkpoint index row for checkpoint 156.
+3. Working baseline aligned for merged discussions:
+   - Cypher/Extension unified spec + RP2040 + SIGABA + extension mechanical discussion are now the active source set for main-design integration.
 
 ### Current session state
 
-- No design implementation files modified (discussion/state files only).
-- The next step is user-led verification of completeness of the unified file.
-- Expect follow-up edits to fill any missing details found during that review.
+- No design implementation files modified (session-state reconciliation only).
+- Checkpoint/state tracking is now coherent for single-thread execution from this merged context.
+- Next phase is translating merged discussion decisions into design-doc updates.
 
 ### Immediate next-session actions
 
 1. Read:
-   - `.copilot/discussions/cypher-extension-unified-discussion.md`
-   - User’s missing-details feedback (if provided).
-2. Patch unified file to include any missing architectural/signal/component details.
-3. Keep unified file as single implementation baseline; preserve source files as history only.
+   - `.copilot/discussions/cypher-engine-discussion/cypher-extension-unified-discussion.md`
+   - all RP2040 and SIGABA discussion files.
+2. Build a single implementation map from merged discussion decisions to target design files.
+3. Apply design updates in controlled batches with checkpointed progress.
 
 ---
 
@@ -285,7 +283,7 @@ match actual Design_Log entries).
 `.copilot/plan.md` · `.copilot/todo-list.md` · `.copilot/review-report.md` ·
 `.copilot/todos/design-log-restructure.md` (created) · `.copilot/todos/copilot-dir-restructure.md` (created) ·
 `.copilot/todos/data-plate-standardisation.md` (§4 expanded) ·
-`.copilot/checkpoints/166-am-usm-p10-closed-report-audit-corrected.md` (created) ·
+`.copilot/checkpoints/167-am-usm-p10-closed-report-audit-corrected.md` (created) ·
 `.copilot/checkpoints/index.md`
 
 ---
@@ -335,7 +333,7 @@ Checkpoint 165 written. `todo-list.md` synced (INSERTs corrected for `download-m
 `design/Electronics/Consolidated_BOM.md` · `design/Standards/Global_Routing_Spec.md` §3.2 ·
 All 11 board `Design_Spec.md` BOM tables · `src/Electronics/Library/` (all 4 KiCAD formats + 3D) ·
 `.copilot/agent-directives.md` · `.copilot/todo-list.md` ·
-`.copilot/checkpoints/165-samsung-50v-cap-complete-bom-json-retired.md` ·
+`.copilot/checkpoints/166-samsung-50v-cap-complete-bom-json-retired.md` ·
 `.copilot/checkpoints/index.md`
 
 Retired: `design/Electronics/all_boards_bom.json` · `.copilot/bom_audit_report.md`

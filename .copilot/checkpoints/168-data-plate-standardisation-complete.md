@@ -1,4 +1,4 @@
-# Checkpoint 167 — data-plate-standardisation Complete
+# Checkpoint 168 — data-plate-standardisation Complete
 
 **Date:** 2026-05-22
 **Session activity:** data-plate-standardisation workstream; USM-P10-09 RESOLVED; CTL §10.2 duplicate GRS ref removed

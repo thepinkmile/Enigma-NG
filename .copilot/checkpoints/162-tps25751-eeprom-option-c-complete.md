@@ -1,4 +1,4 @@
-# Checkpoint 161 — TPS25751 EEPROM Option C Implementation Complete
+# Checkpoint 162 — TPS25751 EEPROM Option C Implementation Complete
 
 **Date:** 2026-05-16
 **Session Phase:** Pass 10 triage — tps25751-i2c-review resolved
@@ -90,7 +90,7 @@ The `tps25751-i2c-review` blocked TODO is fully resolved. Option C (SafeMode + e
 - `.copilot/todos/tps25751-i2c-review.md` (status → done, resolution added)
 - `.copilot/todo-list.md` (status updated, last-updated line)
 - `.copilot/todos/footprint-requests-pending.md` (U18 + J6 added)
-- `.copilot/checkpoints/161-tps25751-eeprom-option-c-complete.md` (this file)
+- `.copilot/checkpoints/162-tps25751-eeprom-option-c-complete.md` (this file)
 - `.copilot/checkpoints/index.md` (entry 161 added)
 - `.copilot/plan.md` (status updated)
 - `.copilot/handoff.md` (updated)

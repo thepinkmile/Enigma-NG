@@ -1,4 +1,4 @@
-# Checkpoint 173: Extension Mechanical Components Finalised (All Remaining Parts Locked)
+# Checkpoint 174: Extension Mechanical Components Finalised (All Remaining Parts Locked)
 
 **Date**: 2026-06-07  
 **Status**: Complete  

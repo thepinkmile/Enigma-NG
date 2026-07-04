@@ -1,4 +1,4 @@
-# Checkpoint 164 — PM Pass-10 All Resolved; ROT Progress
+# Checkpoint 165 — PM Pass-10 All Resolved; ROT Progress
 
 **Date:** 2026-05-19  
 **Session focus:** Pass-10 findings resolution — Power Module complete; Rotor progress

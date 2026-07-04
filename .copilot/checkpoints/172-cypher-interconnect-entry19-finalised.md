@@ -1,4 +1,4 @@
-# Checkpoint 171: Cypher Interconnect Entry 19 Finalised
+# Checkpoint 172: Cypher Interconnect Entry 19 Finalised
 
 **Date**: 2026-06-05  
 **Status**: Complete  
@@ -38,7 +38,7 @@ Start with the next unresolved discussion item:
 - `.copilot/plan.md`
 - `.copilot/handoff.md`
 - `.copilot/checkpoints/index.md`
-- `.copilot/checkpoints/171-cypher-interconnect-entry19-finalised.md` (new)
+- `.copilot/checkpoints/172-cypher-interconnect-entry19-finalised.md` (new)
 
 ## State After This Checkpoint
 

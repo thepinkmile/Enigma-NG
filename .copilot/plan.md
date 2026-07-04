@@ -6,21 +6,25 @@
 
 ---
 
-## Current Status (as of 2026-06-07 — unified Cypher/Extension design-spec discussion created)
+## Current Status (as of 2026-07-04 — session state reconciled for discussion-to-design merge)
 
 The new consolidated point-in-time design modification file is now in place:
 
-- `.copilot/discussions/cypher-extension-unified-discussion.md`
+- `.copilot/discussions/cypher-engine-discussion/cypher-extension-unified-discussion.md`
 
-It consolidates architecture, grounding model, interconnect mappings, signal-flow narratives, component baseline, and active-design change tracking from both prior discussions. The immediate activity is now completeness review of this unified file before any implementation work.
+It consolidates architecture, grounding model, interconnect mappings, signal-flow narratives, component baseline, and active-design change tracking from the Cypher/Extension discussions. The immediate activity is now using the merged discussion set as the implementation baseline for controlled rollout into design docs.
 
-Latest checkpoint: `.copilot/checkpoints/174-unified-cypher-extension-spec-created-awaiting-completeness-review.md`
+Latest checkpoint: `.copilot/checkpoints/176-session-start-and-state-reconciliation-for-merged-discussions.md`
 
-### Current review focus
+### Current merge focus
 
-1. Validate the unified file is fully self-contained and does not omit detail from prior additive discussions.
-2. Capture any missing details directly in the unified file.
-3. After completeness sign-off, use the unified file as the single implementation baseline.
+1. Consolidate active discussion inputs from:
+   - `.copilot/discussions/cypher-engine-discussion/`
+   - `.copilot/discussions/rp2040-discussion/`
+   - `.copilot/discussions/sigaba-discussion/`
+   - `.copilot/discussions/extension-mechanical-usage.md`
+2. Map merged decisions to concrete target design documents and DEC updates.
+3. Apply implementation in controlled batches once user-directed execution begins.
 
 ## Board Design Status
 
@@ -49,10 +53,10 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 1. **Pass-10 complete ✅** — 91 resolved, 0 partial = 91 total
 2. **Review Pass 11** (`review-pass-11`) — blocked by `copilot-dir-restructure` (pending); `data-plate-standardisation` ✅ complete; `design-log-restructure` ✅ complete
    - Once pass 11 and pass 12 are both clean → `review-clean-passes-gate` can be closed
-3. **Unified Cypher/Extension specification review (discussion-only, no implementation yet)**
-   - Unified file created: `.copilot/discussions/cypher-extension-unified-discussion.md`
-   - Pending: user-led completeness pass to identify any missing historical details
-   - No design-file changes until unified file content is accepted as complete
+3. **Merged discussion rollout preparation**
+   - Primary unified spec: `.copilot/discussions/cypher-engine-discussion/cypher-extension-unified-discussion.md`
+   - Additional merged threads: RP2040 and SIGABA discussion sets
+   - Next execution phase: translate merged discussion decisions into main design documentation updates
 
 ### Deferred / Blocked
 
@@ -110,4 +114,4 @@ In brief:
 2. Seed session DB from `.copilot/todos/todos.sql` + `.copilot/todos/deps.sql`
 3. This `plan.md`
 4. `.copilot/handoff.md` (latest section first)
-5. `.copilot/checkpoints/174-unified-cypher-extension-spec-created-awaiting-completeness-review.md`
+5. `.copilot/checkpoints/176-session-start-and-state-reconciliation-for-merged-discussions.md`

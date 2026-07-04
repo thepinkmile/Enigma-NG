@@ -1,4 +1,4 @@
-# Checkpoint 162 — Todo restructuring and review-pass gate
+# Checkpoint 163 — Todo restructuring and review-pass gate
 
 **Date:** 2026-05-17  
 **Session work:** Todo dependency restructuring; new review-clean-passes-gate and review-pass-12 todos; full 3-way sync (session DB ↔ todo-list.md ↔ detail files)

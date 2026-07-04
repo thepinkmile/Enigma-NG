@@ -1,4 +1,4 @@
-# Checkpoint 165 — Samsung 50V cap complete; all_boards_bom.json retired; DEC-082/083; KiCAD import
+# Checkpoint 166 — Samsung 50V cap complete; all_boards_bom.json retired; DEC-082/083; KiCAD import
 
 **Date:** 2026-05-21  
 **Session:** a2e511b4-0b5c-4db6-9142-dfa87ed93cc4

@@ -1,4 +1,4 @@
-# Checkpoint 166 — AM/USM P10 findings closed; review-report Phase A audit corrected; two new todos
+# Checkpoint 167 — AM/USM P10 findings closed; review-report Phase A audit corrected; two new todos
 
 **Date:** 2026-05-22
 
@@ -93,7 +93,7 @@ Data Plate bullet will be added as part of §3 once the USM German board name is
 `.copilot/todos/design-log-restructure.md` (created) ·
 `.copilot/todos/copilot-dir-restructure.md` (created) ·
 `.copilot/todos/data-plate-standardisation.md` (§4 expanded) ·
-`.copilot/checkpoints/166-am-usm-p10-closed-report-audit-corrected.md` (this file) ·
+`.copilot/checkpoints/167-am-usm-p10-closed-report-audit-corrected.md` (this file) ·
 `.copilot/checkpoints/index.md`
 
 ---
