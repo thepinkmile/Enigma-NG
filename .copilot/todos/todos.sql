@@ -20,6 +20,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('cpld-production-replacement',       'CPLD production replacement review (v2.0)',    'blocked'),
 ('connector-thermal-verification',    'Connector thermal/current derating',           'done'),
 ('full-pn-review',                    'Full supplier PN sweep pre-schematic',         'pending'),
+('post-merge-final-design-bom-sweep', 'Post-merge final design/BOM consolidation sweep', 'pending'),
 ('footprint-requests-pending',        'Outstanding footprint requests / downloads',   'pending'),
 ('bom-func-notes-sweep',              'BOM function notes conformity sweep',          'done'),
 ('m25-m3-dec-exception',              'M2.5 mounting hole DEC exception for daughterboards', 'done'),
