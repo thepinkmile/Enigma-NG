@@ -131,4 +131,22 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('ref-stackup-simplify',                      'Simplify REF §6; add GRS §2.3.1 reference',                                                 'done'),
 ('rot-stackup-simplify',                      'Simplify ROT §4; add GRS §2.3.1 reference',                                                 'done'),
 ('sta-stackup-simplify',                      'Simplify STA §7; add GRS §2.3.1 reference',                                                 'done'),
-('usm-stackup-simplify',                      'Simplify USM §8; add GRS §2.3.1 reference',                                                 'done');
+('usm-stackup-simplify',                      'Simplify USM §8; add GRS §2.3.1 reference',                                                 'done'),
+-- Design discussion merge todos
+('design-discussion-merge',          'Merge design discussions into main design',                         'in_progress'),
+('merge-grs-6layer-stackup',         'Add 6-layer board stackup section to GRS',                         'pending'),
+('merge-create-cypher-board',        'Create and refine Cypher Board Design_Spec and Board_Layout',       'in_progress'),
+('merge-cypher-board-j3j6-pinouts',  'Define full 50-pin allocation for Cypher Board J3-J6 connectors',  'pending'),
+('merge-ctl-dock-usb-allocation',    'Define USB D+/D- pin allocation in Cypher Board J1 CTL dock',      'pending'),
+('merge-create-stack-input',         'Create Stack-Input Board Design',                                  'pending'),
+('merge-update-ctl-board',           'Update CTL Board Design — remove JM and AM sub-systems',           'pending'),
+('merge-create-stack-output',        'Create Stack-Output Board Design',                                 'pending'),
+('merge-create-stack-blanking',      'Create Stack-Blanking Panel Board Design',                         'pending'),
+('merge-create-stack-interposer',    'Create Stack-Interposer Board Design',                             'pending'),
+('merge-create-cypher-input',        'Create Cypher-Input Board Design',                                 'pending'),
+('merge-create-cypher-output',       'Create Cypher-Output Board Design',                                'pending'),
+('merge-update-top-level-docs',      'Update Boards_Overview, System_Architecture and related docs',     'pending'),
+('merge-remove-old-boards',          'Move retiring board design files to .recycle-bin/',                'pending'),
+('merge-consistency-review',         'Review all merged design files for consistency',                   'pending'),
+('merge-missing-components',         'Identify and select missing/supporting BOM components',            'pending'),
+('merge-final-review',               'Final full review of design merge and completion sign-off',        'pending');

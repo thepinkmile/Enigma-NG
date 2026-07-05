@@ -8,7 +8,7 @@
 >
 > **Design Log** entries: `design/Design_Log/` (per-DEC files; see `design/Design_Log/index.md`).
 
-Last updated: 2026-05-25
+Last updated: 2026-07-05
 
 ---
 
@@ -132,3 +132,20 @@ Last updated: 2026-05-25
 | `ctl-t1-coilcraft-v2-review` | [ctl-t1-coilcraft-v2-review.md](ctl-t1-coilcraft-v2-review.md) | **blocked** (v2.0) | `ctl-t1-transformer-decision` |
 | `tps25751-i2c-review` | — | done | — |
 | `rename-sys-reset-n` | — | done | — |
+| `design-discussion-merge` | [design-discussion-merge.md](design-discussion-merge.md) | in-progress | — |
+| `merge-create-cypher-board` | [merge-create-cypher-board.md](merge-create-cypher-board.md) | in-progress | `design-discussion-merge` |
+| `merge-grs-6layer-stackup` | [merge-grs-6layer-stackup.md](merge-grs-6layer-stackup.md) | pending | `design-discussion-merge` |
+| `merge-cypher-board-j3j6-pinouts` | [merge-cypher-board-j3j6-pinouts.md](merge-cypher-board-j3j6-pinouts.md) | pending | `design-discussion-merge` |
+| `merge-ctl-dock-usb-allocation` | [merge-ctl-dock-usb-allocation.md](merge-ctl-dock-usb-allocation.md) | pending | `design-discussion-merge` |
+| `merge-create-stack-input` | [merge-create-stack-input.md](merge-create-stack-input.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-update-ctl-board` | [merge-update-ctl-board.md](merge-update-ctl-board.md) | pending | `design-discussion-merge`, `merge-ctl-dock-usb-allocation` |
+| `merge-create-stack-output` | [merge-create-stack-output.md](merge-create-stack-output.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-create-stack-blanking` | [merge-create-stack-blanking.md](merge-create-stack-blanking.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-create-stack-interposer` | [merge-create-stack-interposer.md](merge-create-stack-interposer.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-create-cypher-input` | [merge-create-cypher-input.md](merge-create-cypher-input.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-create-cypher-output` | [merge-create-cypher-output.md](merge-create-cypher-output.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-update-top-level-docs` | [merge-update-top-level-docs.md](merge-update-top-level-docs.md) | pending | `merge-create-cypher-board`, `merge-create-stack-input`, `merge-update-ctl-board`, `merge-create-stack-output`, `merge-create-stack-blanking`, `merge-create-stack-interposer`, `merge-create-cypher-input`, `merge-create-cypher-output` |
+| `merge-remove-old-boards` | [merge-remove-old-boards.md](merge-remove-old-boards.md) | pending | `merge-update-top-level-docs` |
+| `merge-consistency-review` | [merge-consistency-review.md](merge-consistency-review.md) | pending | `merge-remove-old-boards` |
+| `merge-missing-components` | [merge-missing-components.md](merge-missing-components.md) | pending | `merge-consistency-review` |
+| `merge-final-review` | [merge-final-review.md](merge-final-review.md) | pending | `merge-consistency-review`, `merge-missing-components` |
