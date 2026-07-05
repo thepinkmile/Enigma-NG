@@ -55,8 +55,8 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| DR-STA-01 | PCB stackup | 6-layer / 2oz copper per DR-CYP-01 | §9 PCB Fabrication & Stackup |
-| DR-STA-02 | Layer mapping | TBD at PCB layout phase (6-layer) | §9 PCB Fabrication & Stackup |
+| DR-STA-01 | PCB stackup | 6-layer / 2oz copper per `design/Standards/Global_Routing_Spec.md §2.3.4` | §9 PCB Fabrication & Stackup |
+| DR-STA-02 | Layer mapping | L1 Signal/front face, L2 GND, L3 Inner signal (CI), L4 Power, L5 GND, L6 Signal/back face — per `design/Standards/Global_Routing_Spec.md §2.3.4` | §9 PCB Fabrication & Stackup |
 | DR-STA-03 | Stack-Input / STA-side rotor interface | J3 = QSS-025-01-L-D-A-GP-K (50-contact vertical female); pin mapping per `Board_Layout.md §2` | §6 Interconnects; BOM J3 |
 | DR-STA-04 | ENC module and HID board interfaces | J5/J6 = QTS-025-01-L-D-A-GP-K-TR (HID roles — KBD_ENC/LBD_DEC); J7–J18 = DF40C-xDS sets (4x plugboard passes) | §6 Interconnects; BOM J5–J18 |
 | DR-STA-06 | Controller dock connectors | J1 = Molex 2195620015 (5V power dock + USB D+/D-); J2 = Molex 2195620015 (logic dock); mating CTL receptacle = Molex 2195630015 | §6 Interconnects; BOM J1, J2 |
@@ -77,7 +77,7 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | DR-REF-04 | End-of-chain damping | R50 = 22 Ohm, 0603, ERJ-3EKF2200V, on TTD_RETURN from J4 to U17 TDO | §4 Signal Turnaround; BOM R50 |
 | DR-REF-05 | Reflection mapping | Reflection mapping handled by CPLD U1 at Step 2 boundary; no passive turnaround traces required | §3 CPLD Signal Routing |
 | DR-REF-06 | ESD protection — J4 Stack-Output/REF-side | U13–U16 (TPD4E05U06QDQARQ1 x4); placed within 3mm of J4 mating edge | §8 Thermal & ESD; BOM U13–U16 |
-| DR-CYP-01 | PCB stackup | 6-layer / 2oz copper; GRS §2.3.x for 6-layer boards pending (see todo `merge-grs-6layer-stackup`) | §9 PCB Fabrication & Stackup |
+| DR-CYP-01 | PCB stackup | 6-layer / 2oz copper per `design/Standards/Global_Routing_Spec.md §2.3.4`; PCBWay prototype manufacturer | §9 PCB Fabrication & Stackup |
 | DR-CYP-02 | Prototype manufacturer | PCBWay (JLCPCB not suitable for 6-layer + double-sided assembly) | §9 PCB Fabrication & Stackup |
 | DR-CYP-03 | Stack-Input stacking connector | J3 = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT) | §6 Interconnects; BOM J3 |
 | DR-CYP-04 | Stack-Output stacking connector | J4 = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT) | §6 Interconnects; BOM J4 |
@@ -634,8 +634,9 @@ Board copper layers.
 
 ## 9. PCB Fabrication & Stackup
 
-- **Stackup:** 6-layer / 2oz copper. Layer mapping TBD at PCB layout phase.
-  See todo `merge-grs-6layer-stackup` for the pending GRS §2.3.x definition.
+- **Stackup:** 6-layer / 2oz copper per `design/Standards/Global_Routing_Spec.md §2.3.4`.
+  Layer assignment: L1 Signal/front face → L2 GND → L3 Inner signal (CI) → L4 Power → L5 GND → L6 Signal/back face.
+  CI trace widths TBD with PCBWay impedance tool at board layout time.
 - **Manufacturer:** PCBWay for prototype. JLCPCB not suitable (6-layer + double-sided assembly).
 - **Fillets:** 2.0mm rounded PCB corners.
 - **Mounting Holes:** MH1–MH4, M3 PTH (3.2mm drill), tied to GND_CHASSIS per GRS §4.

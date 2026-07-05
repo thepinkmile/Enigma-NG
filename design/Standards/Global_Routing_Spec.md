@@ -3,7 +3,7 @@
 **Status:** Draft
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-22
+**Last Updated:** 2026-07-05
 
 ## 1. Trace & Via Geometry
 
@@ -125,6 +125,43 @@ Layer signal assignments differ between these boards and are documented individu
 
 Physical properties and CI trace widths: see `design/Production/JLCPCB_Manufacturing.md §1.2`.
 Reference: DEC-016, DEC-065.
+
+#### 2.3.4 Six-Layer PCBWay — Cypher Board
+
+Used by: **Cypher Board**
+
+The Cypher Board requires a 6-layer / 2oz copper stackup to accommodate the routing density of
+its consolidated CPLD, USB-JTAG bridge, and ENC data bus circuits combined with **double-sided
+component assembly** (front-face SMT and back-face DF40C mounts with spade blade terminal
+through-hole). JLCPCB is not suitable for this board due to the combination of 6-layer board and
+double-sided assembly; **PCBWay is the prototype manufacturer**.
+
+> **Physical stackup parameters** (prepreg types, dielectric constants Eᵣ, layer thicknesses, and
+> controlled-impedance trace widths) are to be confirmed with PCBWay at board layout time. No
+> JLCPCB stackup code applies to this board. A PCBWay-equivalent to `JLC061621-3313` (6-layer
+> 1.6mm 2oz outer / 1oz inner) is the target — CI trace widths will differ from §1.2 values in
+> `design/Production/JLCPCB_Manufacturing.md` and must be calculated using PCBWay's impedance tool.
+
+**Logical layer assignment:**
+
+| Layer | Role | Typical Content |
+| :--- | :--- | :--- |
+| **L1 (Top outer — front face)** | Signal + component placement | CPLD U1, FT232H U17, MCP23017 U6–U8, INA219 U2, ESD arrays; Samtec J3–J6 stacking connectors; Molex J1/J2 docks; signal routing |
+| **L2 (Inner)** | GND plane | Solid GND pour; primary return reference for front-face components and inner signal layers |
+| **L3 (Inner signal)** | Signal routing | CI traces — JTAG chain (50 Ω SE) and USB D+/D- differential pair (90 Ω diff); high-density ENC bus inter-layer routing |
+| **L4 (Inner power)** | Power distribution | 3V3\_ENIG copper pour; 5V\_MAIN copper pour |
+| **L5 (Inner)** | GND plane | Solid GND pour; shields L4 power layer from back-face; return reference for back-face components |
+| **L6 (Bottom outer — back face)** | Signal + component placement | DF40C ENC module mounts J7–J18; spade blade terminal bank J20+; ENC data routing; Data Plate silkscreen |
+
+**Double-sided assembly note:** Front-face (L1) components are assembled first; back-face (L6)
+components are assembled second. The spade blade terminals (J20+) are THT — they pass through
+the full board and are soldered from the front face (L1 pad side).
+
+**CI service requirement:** CI trace widths are required on L1 (JTAG 50 Ω microstrip) and L3
+(JTAG 50 Ω stripline; USB D+/D- 90 Ω differential). Exact widths TBD with PCBWay impedance tool
+at board layout time.
+
+**Design rule reference:** Cypher Board `DR-CYP-01`.
 
 > For full JLCPCB fabrication capabilities, assembly constraints, and stackup specifications,
 > see `design/Production/JLCPCB_Manufacturing.md`.
@@ -303,7 +340,8 @@ To maintain a unified "Museum-Grade" look, every board must feature the V1.0 Dat
 * **Background:** Inverted solid white silkscreen rectangular block on the bottom layer.
 * **Graphic:** The Enigma silhouette and "ENIGMA-NG" text, knocked out of the white block, revealing the dark green solder mask.
 * **Serial Number:** A clear zone within the white block containing the string `JLCJLCJLCJLC` for the JLCPCB automated serial numbering service.
-* **Metadata:** Revision block text in the format `GERMAN-NAME [English Name] Vx.y` — board-specific ALL-CAPS German name followed by the English name in square brackets and the version number; e.g. `WALZE-26 [Rotor] V1.0`.
+* **Metadata:** Revision block text in the format `GERMAN-NAME [English Name] Vx.y` — board-specific ALL-CAPS German name followed by the English name in square brackets and the version number;
+  e.g. `WALZE-26 [Rotor] V1.0`.
 * **Placement:** Positioned in a "Quiet Zone" on the bottom layer, away from critical test points.
 
 ## 7. Silkscreen Standards
