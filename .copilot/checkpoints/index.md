@@ -181,3 +181,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 174 | Extension mechanical components finalised (all remaining parts locked) | 174-extension-mechanical-components-final-locked.md |
 | 175 | Unified Cypher/Extension spec created; completeness review pending | 175-unified-cypher-extension-spec-created-awaiting-completeness-review.md |
 | 176 | Session start and state reconciliation for merged discussions | 176-session-start-and-state-reconciliation-for-merged-discussions.md |
+| 177 | Cypher System Board Design — Cypher Board + Stack-Input Board created | 177-cypher-system-board-design-cypher-stack-input-created.md |

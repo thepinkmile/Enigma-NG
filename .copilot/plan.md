@@ -6,41 +6,51 @@
 
 ---
 
-## Current Status (as of 2026-07-04 — session state reconciled for discussion-to-design merge)
+## Current Status (as of 2026-07-05 — design discussion merge in progress)
 
-The new consolidated point-in-time design modification file is now in place:
+The design discussion merge is now underway. The Cypher Board and Stack-Input Board design files
+have been created. The merge todo hierarchy is established and tracked.
 
-- `.copilot/discussions/cypher-engine-discussion/cypher-extension-unified-discussion.md`
+Latest checkpoint: `.copilot/checkpoints/177-cypher-system-board-design-cypher-stack-input-created.md`
 
-It consolidates architecture, grounding model, interconnect mappings, signal-flow narratives, component baseline, and active-design change tracking from the Cypher/Extension discussions. The immediate activity is now using the merged discussion set as the implementation baseline for controlled rollout into design docs.
+### Completed merge sub-tasks
 
-Latest checkpoint: `.copilot/checkpoints/176-session-start-and-state-reconciliation-for-merged-discussions.md`
+| Sub-task | Result |
+| --- | --- |
+| `merge-grs-6layer-stackup` | GRS §2.3.4 added (PCBWay 6-layer; Cypher Board) |
+| `merge-create-cypher-board` | `design/Electronics/Cypher/` created (Design_Spec + Board_Layout) |
+| `merge-create-stack-input` | `design/Electronics/Stack-Input/` created (Design_Spec + Board_Layout) |
 
 ### Current merge focus
 
-1. Consolidate active discussion inputs from:
-   - `.copilot/discussions/cypher-engine-discussion/`
-   - `.copilot/discussions/rp2040-discussion/`
-   - `.copilot/discussions/sigaba-discussion/`
-   - `.copilot/discussions/extension-mechanical-usage.md`
-2. Map merged decisions to concrete target design documents and DEC updates.
-3. Apply implementation in controlled batches once user-directed execution begins.
+**Next sub-task: `merge-create-stack-output`** — output-side board of the Rotor Mini-Stack.
+Source: EXT output-side circuits. Use FR-EXT-xx/DR-EXT-xx IDs where applicable; new
+FR-SOUT-xx/DR-SOUT-xx for Stack-Output-specific requirements.
+
+After Stack-Output:
+- `merge-create-stack-blanking` — termination board for last mini-stack
+- `merge-create-stack-interposer` — passive interposer between Stack-Output and Stack-Input
+- `merge-create-cypher-input` / `merge-create-cypher-output` — keyboard and lightboard panels
+- `merge-update-ctl-board` — blocked by `merge-ctl-dock-usb-allocation` (USB D+/D- pin alloc)
+- `merge-update-top-level-docs` → `merge-remove-old-boards` → review chain
 
 ## Board Design Status
 
 | Board | Status | Notes |
 |-------|--------|-------|
 | Power Module (PM) | In Review | All P10 findings closed |
-| Controller Board (CTL) | In Review | T1 decision complete (DEC-067); all P10 closed |
-| Stator | In Review | All P10 findings closed |
+| Controller Board (CTL) | In Review | T1 decision complete (DEC-067); all P10 closed; JM/AM removal pending (`merge-update-ctl-board`) |
+| Stator | **Retiring** | Circuits migrated to Cypher Board |
 | Rotor (26-char) | In Review | All P10 findings closed |
 | Rotor (64-char) | In Review | All P10 findings closed |
-| Reflector | In Review | All P10 findings closed |
-| Extension Board (EXT) | In Review | All P10 findings closed |
-| JTAG Module (JM) | In Review | All P10 findings closed |
+| Reflector | **Retiring** | Circuits migrated to Cypher Board |
+| Extension Board (EXT) | **Retiring** | Circuits split into Stack-Input + Stack-Output |
+| JTAG Module (JM) | **Retiring** | Circuits migrated to Cypher Board |
 | User Settings Module (USM) | In Review | All P10 findings closed |
-| Encoder (ENC) | In Review | All P10 findings closed |
-| Actuation Module (AM) | In Review | All P10 findings closed |
+| Encoder (ENC) | In Review | Module redesign pending |
+| Actuation Module (AM) | **Retiring** | Circuits migrated native to Stack-Input Board |
+| **Cypher Board** | **Draft** | Created 2026-07-05; consolidates STA + REF + JM |
+| **Stack-Input Board** | **Draft** | Created 2026-07-05; EXT input-side + native solenoid AM |
 
 ## Open Pass-10 Findings (0 remaining — all closed ✅)
 
@@ -50,35 +60,31 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 
 ### Immediate (resume here)
 
-1. **Pass-10 complete ✅** — 91 resolved, 0 partial = 91 total
-2. **Review Pass 11** (`review-pass-11`) — blocked by `copilot-dir-restructure` (pending); `data-plate-standardisation` ✅ complete; `design-log-restructure` ✅ complete
-   - Once pass 11 and pass 12 are both clean → `review-clean-passes-gate` can be closed
-3. **Merged discussion rollout preparation**
-   - Primary unified spec: `.copilot/discussions/cypher-engine-discussion/cypher-extension-unified-discussion.md`
-   - Additional merged threads: RP2040 and SIGABA discussion sets
-   - Next execution phase: translate merged discussion decisions into main design documentation updates
+1. **Design Discussion Merge** (`design-discussion-merge` — in_progress)
+   - `merge-create-stack-output` — **next task** (source: EXT output-side circuits)
+   - `merge-create-stack-blanking`, `merge-create-stack-interposer`
+   - `merge-create-cypher-input`, `merge-create-cypher-output`
+   - `merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`
+   - Full sequence tracked in `.copilot/todos/design-discussion-merge.md`
+2. **Pending pinout work** (`merge-cypher-board-j3j6-pinouts`)
+   - Full 50-contact allocation for Cypher Board J3/J4/J5/J6 stacking connectors
 
 ### Deferred / Blocked
 
-- `data-plate-standardisation` ✅ DONE (2026-05-22)
-- `design-log-restructure` ✅ DONE (2026-05-22)
 - `battery-connector-final-review` — blocked: awaiting supplier response
-- `jdb-ft232h-3v3-vregin` — blocked (v2.0), pending FT232H Rev C availability
+- `jdb-ft232h-3v3-vregin` — blocked (v2.0)
 - `display-addon-board`, `cpld-production-replacement`, `display-aperture` — blocked (v2.0)
 - `ctl-t1-coilcraft-v2-review` — blocked (v2.0)
 
-## Key Design Decisions (recent)
+## Key Design Decisions (recent — 2026-07-05 session)
 
-| Entry | Summary |
+| Decision | Summary |
 |-------|---------|
-| DEC-076 | TPS25751 I2C address conflict resolution (I2C1 0x20; EEPROM U18 at 0x50 on isolated I2Cc) |
-| DEC-077 | CPLD_RESET_N renamed SYS_RESET_N across all boards |
-| DEC-078 | Trace-width convention: GRS §6 standardised |
-| DEC-079 | data-plate-standardisation (pending) |
-| DEC-080 | Retrospective: PM and Stator Dock Connector Redesignation (Amends DEC-038) |
-| DEC-081 | Retrospective: Rotor TTD No-Series-Resistor Policy (In Addition to DEC-016) |
-| DEC-082 | 10µF bulk cap upgrade: 25V 0805 → 50V 1206 AEC-Q200; Samsung CL31B106KBK6PJE adopted |
-| DEC-083 | `all_boards_bom.json` retired; BOM authority = Consolidated_BOM.md + board Design_Spec.md |
+| Cypher Board stackup | 6-layer PCBWay (GRS §2.3.4); JLCPCB not suitable |
+| CFG_ROUTE table | 13 valid configurations 0–12; 13–15 reserved; rules embedded in Cypher Design_Spec |
+| Actuation | Solenoid replaces servo; dual homing switches (retracted + extended) |
+| ACTUATE_REQUEST_N | Separate signal from ENC_ACTIVE_N on stacking connectors |
+| Stack-Input J4 power | J4 carries power to ROT 1; no ground-loop restriction (single J1 entry) |
 
 ## Library Status
 
@@ -107,11 +113,5 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 
 ## Next Session Start Point
 
-Follow `.copilot/SESSION_START.md` — it lists the canonical bootstrap order.
-In brief:
-
-1. `.copilot/SESSION_START.md` → load all directives from `.copilot/directives/` as memories
-2. Seed session DB from `.copilot/todos/todos.sql` + `.copilot/todos/deps.sql`
-3. This `plan.md`
-4. `.copilot/handoff.md` (latest section first)
-5. `.copilot/checkpoints/176-session-start-and-state-reconciliation-for-merged-discussions.md`
+Follow `.copilot/SESSION_START.md` — canonical bootstrap order.
+Then read checkpoint 177 and resume with `merge-create-stack-output`.

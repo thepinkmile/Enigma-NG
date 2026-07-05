@@ -133,11 +133,11 @@ Last updated: 2026-07-05
 | `tps25751-i2c-review` | — | done | — |
 | `rename-sys-reset-n` | — | done | — |
 | `design-discussion-merge` | [design-discussion-merge.md](design-discussion-merge.md) | in-progress | — |
-| `merge-create-cypher-board` | [merge-create-cypher-board.md](merge-create-cypher-board.md) | in-progress | `design-discussion-merge` |
-| `merge-grs-6layer-stackup` | [merge-grs-6layer-stackup.md](merge-grs-6layer-stackup.md) | pending | `design-discussion-merge` |
+| `merge-create-cypher-board` | — | done | `design-discussion-merge` |
+| `merge-grs-6layer-stackup` | — | done | `design-discussion-merge` |
 | `merge-cypher-board-j3j6-pinouts` | [merge-cypher-board-j3j6-pinouts.md](merge-cypher-board-j3j6-pinouts.md) | pending | `design-discussion-merge` |
 | `merge-ctl-dock-usb-allocation` | [merge-ctl-dock-usb-allocation.md](merge-ctl-dock-usb-allocation.md) | pending | `design-discussion-merge` |
-| `merge-create-stack-input` | [merge-create-stack-input.md](merge-create-stack-input.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-create-stack-input` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-update-ctl-board` | [merge-update-ctl-board.md](merge-update-ctl-board.md) | pending | `design-discussion-merge`, `merge-ctl-dock-usb-allocation` |
 | `merge-create-stack-output` | [merge-create-stack-output.md](merge-create-stack-output.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-stack-blanking` | [merge-create-stack-blanking.md](merge-create-stack-blanking.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |

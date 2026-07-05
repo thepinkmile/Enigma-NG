@@ -7,17 +7,57 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** merged-discussion rollout into main design (execution-phase prep complete):
+**Continue with:** `merge-create-stack-output` — the output-side board of the Rotor Mini-Stack.
 
-- `.copilot/discussions/cypher-engine-discussion/cypher-extension-unified-discussion.md`
-- `.copilot/discussions/rp2040-discussion/`
-- `.copilot/discussions/sigaba-discussion/`
-- `.copilot/discussions/extension-mechanical-usage.md`
+Source circuits: EXT output-side circuits. Mirror the Stack-Input Board approach:
+- FR/DR-EXT-xx IDs for inherited requirements; new FR/DR-SOUT-xx for Stack-Output-specific ones
+- Front QTS-025 male R/A (mates with Cypher Board J4 or prev mini-stack rear Stack-Output)
+- Rear QSS-025 female R/A (mates with next mini-stack or Stack-Blanking Board)
+- ERF8 input sockets from last ROT board in mini-stack
+- SQT-115 interposer link connector to Stack-Interposer Board
+- No AM circuits; 3V3_ENIG only (no 5V_MAIN)
 
-### What changed in this session
+Reference file for cypher-system discussion:
+`.copilot/discussions/cypher-system-discussion/extension-mechanical-usage.md` (only this folder is in-scope)
 
-1. Session bootstrap completed from `.copilot/SESSION_START.md`:
-   - directives loaded and persisted as repository memory,
+### What changed in this session (2026-07-05)
+
+1. Created design discussion merge todo hierarchy:
+   - `design-discussion-merge` parent + 16 sub-tasks
+   - Persisted to `todos/todos.sql`, `todos/deps.sql`, `todos/index.md`, 17 detail files
+2. Created `design/Diagrams/` folder:
+   - `cypher-system-layout.drawio` (moved from cypher-system-discussion folder)
+   - `renders/01-Rotor-Mini-Stack-Architecture.png`
+   - `renders/02-Mini-Stack-Vertical-Stack-Portrait.png`
+3. GRS §2.3.4 added: PCBWay 6-layer stackup for Cypher Board; CI trace widths TBD with PCBWay
+4. Cypher Board design files created:
+   - `design/Electronics/Cypher/Design_Spec.md` — STA + REF + JM circuits consolidated
+   - `design/Electronics/Cypher/Board_Layout.md` — J1–J6 connector pinouts; J5/J6 Entry 19 table
+   - CFG_ROUTE table corrected: 13 valid configs (0–12); 13–15 reserved; rules embedded
+5. Stack-Input Board design files created:
+   - `design/Electronics/Stack-Input/Design_Spec.md`
+   - `design/Electronics/Stack-Input/Board_Layout.md`
+   - Solenoid actuation (not servo); dual homing switches; ACTUATE_REQUEST_N ≠ ENC_ACTIVE_N
+   - J4 carries power to ROT 1; no ground-loop restriction
+   - Service header pinouts (J7-J10) owned by Board_Layout §5-§8
+6. Markdownlint cleanup:
+   - Removed unnecessary MD013/MD055/MD056 inline disables from Cypher Board spec
+   - Fixed pre-existing MD013 violation in GRS §6
+
+### Files created this session
+
+**New:**
+`design/Diagrams/cypher-system-layout.drawio` · `design/Diagrams/renders/*.png`
+`design/Electronics/Cypher/Design_Spec.md` · `design/Electronics/Cypher/Board_Layout.md`
+`design/Electronics/Stack-Input/Design_Spec.md` · `design/Electronics/Stack-Input/Board_Layout.md`
+`.copilot/todos/design-discussion-merge.md` + 16 merge todo detail files
+
+**Modified:**
+`design/Standards/Global_Routing_Spec.md` · `.copilot/todos/todos.sql` · `.copilot/todos/deps.sql`
+`.copilot/todos/index.md` · `.copilot/plan.md` · `.copilot/handoff.md`
+`.copilot/checkpoints/index.md` · `.copilot/directives/repo-state.md`
+
+---
    - session DB seeded from SQL (`todos=116`, `todo_deps=141`).
 2. State reconciliation completed for merged-thread continuity:
    - fixed unified-discussion path references in session-state docs,

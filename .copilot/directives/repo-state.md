@@ -30,7 +30,7 @@ check `.copilot/checkpoints/index.md` or list the folder and use `max_existing_n
 ⛔ The session-state folder (`%USERPROFILE%/.copilot/session-state/<id>/checkpoints/`) uses its own
 independent numbering. **NEVER** use the session-state number as the repo-local number.
 
-**Current highest: 169. Next: 170.**
+**Current highest: 177. Next: 178.**
 
 ## Path Sanitisation
 
