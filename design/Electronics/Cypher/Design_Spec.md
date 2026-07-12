@@ -1,4 +1,4 @@
-# Cypher Board (V1.0) Design Specification
+﻿# Cypher Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -652,34 +652,34 @@ Board copper layers.
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C1-C8, C14-C21, C28-C36 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | CPLD bypass (C1-C8, C14-C21); FT232H per-IC bypass (C28-C36) | Yes | ✔ | 25 |
-| C9-C13, C22-C26 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | Bulk entry decoupling at J1 (5V_MAIN) and J2 (3V3_ENIG) | Yes | ✔ | 10 |
-| C27 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | FT232H 5V_USB entry filter | Yes | ✔ | 1 |
-| C37, C38 | 33pF C0G/NP0 0402 crystal-load | C0402C330J5GAUTO | Kemet | 399-12979-1-ND | 80-C0402C330J5GAUTO | C2169327 | - | Y1 crystal load caps; C_L = 20pF | Yes | ✔ | 2 |
-| J1, J2 | 5+15-pin hybrid plug | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | - | Global sourcing | CTL dock (J1: 5V_MAIN + USB D+/D-; J2: 3V3 logic) | Yes | Pending | 2 |
-| J3, J4 | 50-contact 0.635mm vertical female SMT | QSS-025-01-L-D-A-GP-K | Samtec | QSS-025-01-L-D-A-GP-K-ND | 200-QSS02501LDAGPK | C6632602 | - | Stack-Input/STA-side (J3); Stack-Output/REF-side (J4) | Yes | ✔ | 2 |
-| J5, J6 | 50-contact 0.635mm vertical male SMT T/R | QTS-025-01-L-D-A-GP-K-TR | Samtec | QTS-025-01-L-D-A-GP-K-TR-ND | 200-QTS02501LDAGPKTR | C5714677 | - | Cypher-Input (J5); Cypher-Output (J6) | Yes | ✔ | 2 |
-| J7, J10, J13, J16 | 90-pin 0.4mm pitch BtB receptacle | DF40C-90DS-0.4V(51) | Hirose | 26-DF40C-90DS-0.4V(51)CT-ND | 798-DF40C90DS0.4V51 | C2911197 | - | ENC mount plain-bits connector — Mounts 1/2/3/4 | Yes | ✔ | 4 |
-| J8, J11, J14, J17 | 24-pin 0.4mm pitch BtB receptacle | DF40C-24DS-0.4V(51) | Hirose | H11621CT-ND | 798-DF40C24DS0.4V51 | C424640 | - | ENC mount cypher-bits + JTAG — Mounts 1/2/3/4 | Yes | ✔ | 4 |
-| J9, J12, J15, J18 | 10-pin 0.4mm pitch BtB receptacle | DF40C-10DS-0.4V(51) | Hirose | H11617CT-ND | 798-DF40C10DS0.4V51 | C424636 | - | ENC mount power — Mounts 1/2/3/4 | Yes | ✔ | 4 |
-| J19 | 6-pin JST PH 2.0mm THT | B6B-PH-K-S(LF)(SN) | JST | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | - | USM harness | Yes | ✔ | 1 |
-| J20+ | 6.35mm PCB spade blade terminals THT vertical | 1285-ST | Keystone Electronics | 36-1285-ST-ND | 534-1285-ST | C5370868 | - | Jack plug harness; 64 per ENC mount x 4 = 256 total; RefDes/arrangement TBD at schematic | Yes | ✔ | 256 |
-| L1-L4 | 120Ω @100MHz 4.0A 1206 ferrite bead | HI1206P121R-10 | Laird Performance Materials | 240-2410-1-ND | 875-HI1206P121R-10 | C2442103 | - | 3V3_ENIG rotor power entry beads | Yes | ✔ | 4 |
-| Q1 | BSS138 N-ch MOSFET SOT-23 | BSS138LT1G | ON Semiconductor | BSS138LT1GOSCT-ND | 863-BSS138LT1G | C6568483 | - | CPLD_RESET_N open-drain buffer; prevents MCP23017 IOL overload (30-rotor stack) | Yes | Pending | 1 |
-| R1 | 10mΩ ±1% 2W 6432 (2512) Kelvin 4-terminal shunt | KRL6432T4-M-R010-F-T1 | Susumu | KRL6432T4-M-R010-F-T1 | 754-KRL6432T4MR010FT | C4076514 | - | Rotor stack current shunt | Yes | ✔ | 1 |
-| R2-R6, R13-R23, R36-R38, R46-R48 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | - | JTAG/config pull-ups and pull-downs (R2-R6/R13-R23/R36-R38: CPLD/config; R46-R48: FT232H idle biasing) | Yes | ✔ | 22 |
-| R7-R12, R24-R35, R42-R45 | 33Ω 1% 0402 | ERJ-2RKF33R0X | Panasonic | P33.0LCT-ND | 667-ERJ-2RKF33R0X | C278594 | - | JTAG BtB series termination 33Ω per DEC-024 (R7-R12/R24-R35: encoder-equiv ports; R42-R45: FT232H JTAG outputs) | Yes | ✔ | 22 |
-| R39, R40 | 10Ω 1% Thin-Film 0402 | ERJ-2RKF10R0X | Panasonic | P10.0LCT-ND | 667-ERJ-2RKF10R0X | C413044 | - | INA219 RF input filter | Yes | ✔ | 2 |
-| R41 | 100Ω 1% 0402 | ERJ-2RKF1000X | Panasonic | P100LCT-ND | 667-ERJ-2RKF1000X | C25190 | - | Q1 gate resistor (CPLD_RESET_N open-drain buffer) | Yes | Pending | 1 |
-| R49 | 12kΩ ±1% 0402 | ERJ-2RKF1202X | Panasonic | P12.0KLCT-ND | 667-ERJ-2RKF1202X | C25741 | - | FT232H REF pin bias (pin 5 to GND); per FTDI datasheet §3.5 and AN_146 | Yes | ✔ | 1 |
-| R50 | 22Ω 1% 0603 | ERJ-3EKF2200V | Panasonic | P220HCT-ND | 667-ERJ-3EKF2200V | C403073 | - | TTD_RETURN end-of-chain series damping (J4 to FT232H U17 TDO) | Yes | ✔ | 1 |
-| U1 | MAX II 570 LEs CPLD TQFP-100 | EPM570T100I5N | Intel (Altera) | 544-2281-ND | 989-EPM570T100I5N | C27319 | - | Signal routing and reflector-mapping CPLD | Yes | ✔ | 1 |
-| U2 | Current monitor I2C SOIC-8 | INA219AIDR | Texas Instruments | 296-23978-1-ND | 595-INA219AIDR | C138706 | - | Rotor stack current/power telemetry | Yes | ✔ | 1 |
-| U3 | Single AND gate SOT-23-5 | SN74LVC1G08DBVR | Texas Instruments | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | - | CPLD_RESET_N / CFG_APPLY_N AND gate | Yes | ✔ | 1 |
-| U4, U5 | Quad 2-to-1 mux TSSOP-16 | 74HC157PW-Q100,118 | Nexperia | 1727-74HC157PW-Q100,118CT-ND | 771-74HC157PWQ100118 | C546614 | - | Keyboard source select mux | Yes | ✔ | 2 |
-| U6-U8 | I2C GPIO expander SOIC-28 | MCP23017T-E/SO | Microchip Technology | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | - | I2C expanders (U6 @ 0x20, U7 @ 0x21, U8 @ 0x22) | Yes | ✔ | 3 |
-| U9-U12 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | J3 Stack-Input/STA-side ESD protection | Yes | ✔ | 4 |
-| U13-U16 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | J4 Stack-Output/REF-side ESD protection | Yes | ✔ | 4 |
-| U17 | USB 2.0 to MPSSE bridge LQFP-48 | FT232HL-REEL | FTDI Chip | 768-1101-1-ND | 895-FT232HL-REEL | C51997 | - | USB-JTAG bridge in MPSSE mode | Yes | ✔ | 1 |
-| U18 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | - | JTAG TCK/TMS output buffer (1OE/2OE tied to GND) | Yes | ✔ | 1 |
+| C1-C8, C14-C21, C28-C36 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | CPLD bypass (C1-C8, C14-C21); FT232H per-IC bypass (C28-C36) | ✔ | ✔ | 25 |
+| C9-C13, C22-C26 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | Bulk entry decoupling at J1 (5V_MAIN) and J2 (3V3_ENIG) | ✔ | ✔ | 10 |
+| C27 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | FT232H 5V_USB entry filter | ✔ | ✔ | 1 |
+| C37, C38 | 33pF C0G/NP0 0402 crystal-load | C0402C330J5GAUTO | Kemet | 399-12979-1-ND | 80-C0402C330J5GAUTO | C2169327 | - | Y1 crystal load caps; C_L = 20pF | ✔ | ✔ | 2 |
+| J1, J2 | 5+15-pin hybrid plug | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | - | Global sourcing | CTL dock (J1: 5V_MAIN + USB D+/D-; J2: 3V3 logic) | ✔ | Pending | 2 |
+| J3, J4 | 50-contact 0.635mm vertical female SMT | QSS-025-01-L-D-A-GP-K | Samtec | QSS-025-01-L-D-A-GP-K-ND | 200-QSS02501LDAGPK | C6632602 | - | Stack-Input/STA-side (J3); Stack-Output/REF-side (J4) | ✔ | ✔ | 2 |
+| J5, J6 | 50-contact 0.635mm vertical male SMT T/R | QTS-025-01-L-D-A-GP-K-TR | Samtec | QTS-025-01-L-D-A-GP-K-TR-ND | 200-QTS02501LDAGPKTR | C5714677 | - | Cypher-Input (J5); Cypher-Output (J6) | ✔ | ✔ | 2 |
+| J7, J10, J13, J16 | 90-pin 0.4mm pitch BtB receptacle | DF40C-90DS-0.4V(51) | Hirose | 26-DF40C-90DS-0.4V(51)CT-ND | 798-DF40C90DS0.4V51 | C2911197 | - | ENC mount plain-bits connector — Mounts 1/2/3/4 | ✔ | ✔ | 4 |
+| J8, J11, J14, J17 | 24-pin 0.4mm pitch BtB receptacle | DF40C-24DS-0.4V(51) | Hirose | H11621CT-ND | 798-DF40C24DS0.4V51 | C424640 | - | ENC mount cypher-bits + JTAG — Mounts 1/2/3/4 | ✔ | ✔ | 4 |
+| J9, J12, J15, J18 | 10-pin 0.4mm pitch BtB receptacle | DF40C-10DS-0.4V(51) | Hirose | H11617CT-ND | 798-DF40C10DS0.4V51 | C424636 | - | ENC mount power — Mounts 1/2/3/4 | ✔ | ✔ | 4 |
+| J19 | 6-pin JST PH 2.0mm THT | B6B-PH-K-S(LF)(SN) | JST | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | - | USM harness | ✔ | ✔ | 1 |
+| J20+ | 6.35mm PCB spade blade terminals THT vertical | 1285-ST | Keystone Electronics | 36-1285-ST-ND | 534-1285-ST | C5370868 | - | Jack plug harness; 64 per ENC mount x 4 = 256 total; RefDes/arrangement TBD at schematic | ✔ | ✔ | 256 |
+| L1-L4 | 120Ω @100MHz 4.0A 1206 ferrite bead | HI1206P121R-10 | Laird Performance Materials | 240-2410-1-ND | 875-HI1206P121R-10 | C2442103 | - | 3V3_ENIG rotor power entry beads | ✔ | ✔ | 4 |
+| Q1 | BSS138 N-ch MOSFET SOT-23 | BSS138LT1G | ON Semiconductor | BSS138LT1GOSCT-ND | 863-BSS138LT1G | C6568483 | - | CPLD_RESET_N open-drain buffer; prevents MCP23017 IOL overload (30-rotor stack) | ✔ | Pending | 1 |
+| R1 | 10mΩ ±1% 2W 6432 (2512) Kelvin 4-terminal shunt | KRL6432T4-M-R010-F-T1 | Susumu | KRL6432T4-M-R010-F-T1 | 754-KRL6432T4MR010FT | C4076514 | - | Rotor stack current shunt | ✔ | ✔ | 1 |
+| R2-R6, R13-R23, R36-R38, R46-R48 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | - | JTAG/config pull-ups and pull-downs (R2-R6/R13-R23/R36-R38: CPLD/config; R46-R48: FT232H idle biasing) | ✔ | ✔ | 22 |
+| R7-R12, R24-R35, R42-R45 | 33Ω 1% 0402 | ERJ-2RKF33R0X | Panasonic | P33.0LCT-ND | 667-ERJ-2RKF33R0X | C278594 | - | JTAG BtB series termination 33Ω per DEC-024 (R7-R12/R24-R35: encoder-equiv ports; R42-R45: FT232H JTAG outputs) | ✔ | ✔ | 22 |
+| R39, R40 | 10Ω 1% Thin-Film 0402 | ERJ-2RKF10R0X | Panasonic | P10.0LCT-ND | 667-ERJ-2RKF10R0X | C413044 | - | INA219 RF input filter | ✔ | ✔ | 2 |
+| R41 | 100Ω 1% 0402 | ERJ-2RKF1000X | Panasonic | P100LCT-ND | 667-ERJ-2RKF1000X | C25190 | - | Q1 gate resistor (CPLD_RESET_N open-drain buffer) | ✔ | Pending | 1 |
+| R49 | 12kΩ ±1% 0402 | ERJ-2RKF1202X | Panasonic | P12.0KLCT-ND | 667-ERJ-2RKF1202X | C25741 | - | FT232H REF pin bias (pin 5 to GND); per FTDI datasheet §3.5 and AN_146 | ✔ | ✔ | 1 |
+| R50 | 22Ω 1% 0603 | ERJ-3EKF2200V | Panasonic | P220HCT-ND | 667-ERJ-3EKF2200V | C403073 | - | TTD_RETURN end-of-chain series damping (J4 to FT232H U17 TDO) | ✔ | ✔ | 1 |
+| U1 | MAX II 570 LEs CPLD TQFP-100 | EPM570T100I5N | Intel (Altera) | 544-2281-ND | 989-EPM570T100I5N | C27319 | - | Signal routing and reflector-mapping CPLD | ✔ | ✔ | 1 |
+| U2 | Current monitor I2C SOIC-8 | INA219AIDR | Texas Instruments | 296-23978-1-ND | 595-INA219AIDR | C138706 | - | Rotor stack current/power telemetry | ✔ | ✔ | 1 |
+| U3 | Single AND gate SOT-23-5 | SN74LVC1G08DBVR | Texas Instruments | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | - | CPLD_RESET_N / CFG_APPLY_N AND gate | ✔ | ✔ | 1 |
+| U4, U5 | Quad 2-to-1 mux TSSOP-16 | 74HC157PW-Q100,118 | Nexperia | 1727-74HC157PW-Q100,118CT-ND | 771-74HC157PWQ100118 | C546614 | - | Keyboard source select mux | ✔ | ✔ | 2 |
+| U6-U8 | I2C GPIO expander SOIC-28 | MCP23017T-E/SO | Microchip Technology | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | - | I2C expanders (U6 @ 0x20, U7 @ 0x21, U8 @ 0x22) | ✔ | ✔ | 3 |
+| U9-U12 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | J3 Stack-Input/STA-side ESD protection | ✔ | ✔ | 4 |
+| U13-U16 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | J4 Stack-Output/REF-side ESD protection | ✔ | ✔ | 4 |
+| U17 | USB 2.0 to MPSSE bridge LQFP-48 | FT232HL-REEL | FTDI Chip | 768-1101-1-ND | 895-FT232HL-REEL | C51997 | - | USB-JTAG bridge in MPSSE mode | ✔ | ✔ | 1 |
+| U18 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | - | JTAG TCK/TMS output buffer (1OE/2OE tied to GND) | ✔ | ✔ | 1 |
 | Y1 | 12MHz 20pF ±20ppm SMD-5032 (5.0×3.2×1.1mm) | 435F12012IET | CTS | 110-435F12012IETTR-ND | 774-435F12012IET | C19766404 (Extended) | - | FT232H reference crystal; load caps C37/C38 = 33pF (C_L = 20pF) | Yes* | Yes* | 1 |

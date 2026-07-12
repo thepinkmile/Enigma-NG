@@ -1,4 +1,4 @@
-# Stack-Input Board (V1.0) Design Specification
+﻿# Stack-Input Board (V1.0) Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -368,24 +368,24 @@ See §4 Actuation Module for full pin-by-pin detail of J7–J10.
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C1-C5 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 3V3_ENIG entry decoupling bank at J1 (from EXT C1-C5) | Yes | ✔ | 5 |
-| C6-C10 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN entry decoupling bank at J1 (from EXT C7-C11) | Yes | ✔ | 5 |
-| C11 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | U2 JTAG buffer bypass (from EXT C6) | Yes | ✔ | 1 |
+| C1-C5 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 3V3_ENIG entry decoupling bank at J1 (from EXT C1-C5) | ✔ | ✔ | 5 |
+| C6-C10 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN entry decoupling bank at J1 (from EXT C7-C11) | ✔ | ✔ | 5 |
+| C11 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | U2 JTAG buffer bypass (from EXT C6) | ✔ | ✔ | 1 |
 | C12, C19 | 1µF X7R 50V 0805 | C0805C105K5RACTU | Kemet | 399-C0805C105K5RACTUCT-ND | 80-C0805C105K5R | C3018567 | - | ACTUATION_HOME_N debounce (C12) + ACTUATION_EXTENDED_N debounce (C19); one per homing switch (from AM C1) | ✔ | ✔ | 2 |
-| C13, C14, C18 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | STM32 VDD/VDDA decoupling + RESET_N filter (from AM C2, C3, C7; C17 = RESET_N filter) | Yes | ✔ | 3 |
-| C15 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | 3V3_ENIG local reservoir (from AM C4) | Yes | ✔ | 1 |
-| C16 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN solenoid reservoir near J7 (from AM C5) | Yes | ✔ | 1 |
-| C17 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | RESET_N filter cap (from AM C6) | Yes | ✔ | 1 |
+| C13, C14, C18 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | STM32 VDD/VDDA decoupling + RESET_N filter (from AM C2, C3, C7; C17 = RESET_N filter) | ✔ | ✔ | 3 |
+| C15 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | 3V3_ENIG local reservoir (from AM C4) | ✔ | ✔ | 1 |
+| C16 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN solenoid reservoir near J7 (from AM C5) | ✔ | ✔ | 1 |
+| C17 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | RESET_N filter cap (from AM C6) | ✔ | ✔ | 1 |
 | D1-D3 | Green SMD LED diagnostic 0603 | 150060VS75000 | Wurth Elektronik | 732-4980-1-ND | 710-150060VS75000 | C6848499 | - | PWR, HOMED, ACT indicators (from AM D1-D3) | ✔ | ✔ | 3 |
-| J1 | 50-contact 0.635mm right-angle male SMT | QTS-025-01-L-D-RA-P | Samtec | QTS-025-01-L-D-RA-P-ND | 200-QTS02501LDRAP | C7267889 | - | Front stacking connector (mates with Cypher J3 or prev mini-stack J2) | Yes | ✔ | 1 |
-| J2 | 50-contact 0.635mm right-angle female SMT | QSS-025-01-L-D-RA-K | Samtec | QSS-025-01-L-D-RA-K-ND | 200-QSS02501LDRAK | C6156774 | - | Rear stacking connector (mates with next mini-stack J1 or blanking board) | Yes | ✔ | 1 |
-| J3, J4 | 10-pin 2x5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | - | ROT 1 JTAG (J3) and Power (J4) output sockets | Yes | ✔ | 2 |
-| J5 | 20-pin 2x10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | - | ROT 1 ENC data output socket | Yes | ✔ | 1 |
-| J6 | 30-position 2x15 right-angle female shrouded SMT | SQT-115-01-L-D-RA | Samtec | SAM1246-15-ND | 200-SQT11501LDRA | C7318577 | - | Stack-Interposer return link (TTD_RETURN + ENC_DATA return from Stack-Output) | Yes | ✔ | 1 |
+| J1 | 50-contact 0.635mm right-angle male SMT | QTS-025-01-L-D-RA-P | Samtec | QTS-025-01-L-D-RA-P-ND | 200-QTS02501LDRAP | C7267889 | - | Front stacking connector (mates with Cypher J3 or prev mini-stack J2) | ✔ | ✔ | 1 |
+| J2 | 50-contact 0.635mm right-angle female SMT | QSS-025-01-L-D-RA-K | Samtec | QSS-025-01-L-D-RA-K-ND | 200-QSS02501LDRAK | C6156774 | - | Rear stacking connector (mates with next mini-stack J1 or blanking board) | ✔ | ✔ | 1 |
+| J3, J4 | 10-pin 2x5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | - | ROT 1 JTAG (J3) and Power (J4) output sockets | ✔ | ✔ | 2 |
+| J5 | 20-pin 2x10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | - | ROT 1 ENC data output socket | ✔ | ✔ | 1 |
+| J6 | 30-position 2x15 right-angle female shrouded SMT | SQT-115-01-L-D-RA | Samtec | SAM1246-15-ND | 200-SQT11501LDRA | C7318577 | - | Stack-Interposer return link (TTD_RETURN + ENC_DATA return from Stack-Output) | ✔ | ✔ | 1 |
 | J7-J10 | 1x5 2.54mm male THT | PH1-05-UA | Adam Tech | 2057-PH1-05-UA-ND | 737-PH1-05-UA | C5374051 | - | Solenoid loom (J7), dual homing switches (J8), SWD (J9), UART (J10); manually fitted | ✔ | ✔ | 4 |
 | R1-R3 | 330Ω 1% 0402 | ERJ-2RKF3300X | Panasonic | P330LCT-ND | 667-ERJ-2RKF3300X | C278592 | - | LED current-limit resistors (from AM R1-R3) | ✔ | ✔ | 3 |
 | R4-R6 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | - | R4: ACTUATION_HOME_N pull-up; R5: BOOT0 series protection; R6: ACTUATION_EXTENDED_N pull-up | ✔ | ✔ | 3 |
 | SW1, SW2 | SPST NO tactile THT | B3F-1070 | Omron | SW406-ND | 653-B3F-1070 | C726011 | - | RESET_N (SW1) and BOOT0 (SW2) buttons (from AM SW1, SW2) | ✔ | ✔ | 2 |
 | U1 | STM32 MCU LQFP-32 | STM32G071K8T3TR | STMicroelectronics | 497-STM32G071K8T3TR-ND | 511-STM32G071K8T3TR | - | Global sourcing | Native AM solenoid controller; JLCPCB consignment only (from AM U1) | ✔ | ✔ | 1 |
-| U2 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | - | JTAG TCK/TMS buffer (from EXT U1) | Yes | ✔ | 1 |
-| U3-U10 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | ESD protection: U3-U6 on J1, U7-U10 on J3/J5 (from EXT U2-U9) | Yes | ✔ | 8 |
+| U2 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | - | JTAG TCK/TMS buffer (from EXT U1) | ✔ | ✔ | 1 |
+| U3-U10 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | ESD protection: U3-U6 on J1, U7-U10 on J3/J5 (from EXT U2-U9) | ✔ | ✔ | 8 |
