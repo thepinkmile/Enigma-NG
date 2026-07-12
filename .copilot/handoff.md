@@ -7,20 +7,66 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** `merge-create-stack-output` — the output-side board of the Rotor Mini-Stack.
+**Continue with:** `merge-create-stack-interposer` — the passive base-board that sits at the
+bottom of each Rotor Mini-Stack, bridging Stack-Input J6 (SQT-115 right-angle female) to
+Stack-Output J6 (2BHR-30-VUA THT male header).
 
-Source circuits: EXT output-side circuits. Mirror the Stack-Input Board approach:
-- FR/DR-EXT-xx IDs for inherited requirements; new FR/DR-SOUT-xx for Stack-Output-specific ones
-- Front QTS-025 male R/A (mates with Cypher Board J4 or prev mini-stack rear Stack-Output)
-- Rear QSS-025 female R/A (mates with next mini-stack or Stack-Blanking Board)
-- ERF8 input sockets from last ROT board in mini-stack
-- SQT-115 interposer link connector to Stack-Interposer Board
-- No AM circuits; 3V3_ENIG only (no 5V_MAIN)
+Key facts:
+
+- Passive board; carries SIG-BLOCK-A/D/E signals (ENC_DATA forward, ENC_DATA return, TTD)
+- Bidirectional: SIG-BLOCK-A + TTD: Stack-Output → Stack-Input; SIG-BLOCK-D: Stack-Input → Stack-Output
+- Stack-Input side connector: SQT-115-01-L-D-RA right-angle female (mates with Stack-Input J6)
+- Stack-Output side connector: 2BHR-30-VUA 30-pin THT male header (mates with Stack-Output J6)
+- Pin map defined in Entry 20 of `.copilot/discussions/cypher-system-discussion/extension-mechanical-usage.md`
+- 4-layer stackup; GND outer layers for shielding; signal routing on inner layers
 
 Reference file for cypher-system discussion:
 `.copilot/discussions/cypher-system-discussion/extension-mechanical-usage.md` (only this folder is in-scope)
 
-### What changed in this session (2026-07-05)
+### What changed in this session (2026-07-12)
+
+1. **Stack-Output Board design files created** (`merge-create-stack-output` ✅):
+   - `design/Electronics/Stack-Output/Design_Spec.md`
+   - `design/Electronics/Stack-Output/Board_Layout.md`
+   - FR-EXT-03/05/07 inherited; FR-SOUT-01–08, DR-SOUT-01–07 new
+   - J2 rear stacking connector ownership: Cypher Board J4 (not "this board")
+   - JTAG spoke termination: R1–R3 (10 kΩ idle-state bias; mirrors Cypher R3/R5/R6)
+   - J4 power pins: 0Ω links R4/R5 fitted for prototype (DEC-085)
+   - ERJ-2GE0R00X footprint not in KiCAD library — marked ✘
+
+2. **DEC-085 created** (`design/Design_Log/DEC-085_*`):
+   - Stack-Output J4 Power-Pin 0Ω Links for Prototype Test Flexibility
+   - Accepted — confirm after prototype testing
+   - Next DEC: DEC-086; tertiary.md updated
+
+3. **Stack-Blanking Board design files created** (`merge-create-stack-blanking` ✅):
+   - `design/Electronics/Stack-Blanking/Design_Spec.md`
+   - `design/Electronics/Stack-Blanking/Board_Layout.md`
+   - Passive board: 2× QTS-025-01-L-D-A-GP-K-TR vertical male + 5× 10 kΩ resistors
+   - Bridges SIG-BLOCK-A→B, C→D, E→F (TTD→TTD_RETURN)
+   - Terminates: ENC_ACTIVE_N (R1), TCK (R2), TMS (R3), CPLD_RESET_N (R4), ACTUATE_REQUEST_N (R5)
+   - Transport mode: J1/J2 mate directly with Cypher Board J3/J4
+   - Stackup: GND pour L1/L4; signal routing L2/L3 only
+
+4. **System-wide BOM consistency sweep:**
+   - Replaced all `| Yes |` with `| ✔ |` in Footprint Available columns across 15 files
+   - 12 Design_Spec.md files, 2 Rotor variant files, Consolidated_BOM.md
+   - JTAG_Integrity.md left unchanged (options analysis table, not a BOM)
+
+### Files created this session
+
+**New:**
+`design/Electronics/Stack-Output/Design_Spec.md` · `design/Electronics/Stack-Output/Board_Layout.md`
+`design/Electronics/Stack-Blanking/Design_Spec.md` · `design/Electronics/Stack-Blanking/Board_Layout.md`
+`design/Design_Log/DEC-085_stack-output-j4-power-pin-zero-ohm-links-prototype-test.md`
+
+**Modified:**
+`design/Design_Log/index.md` · `.copilot/directives/tertiary.md` · `.copilot/directives/repo-state.md`
+15× board Design_Spec.md files + Consolidated_BOM.md (BOM consistency sweep)
+`.copilot/todos/todos.sql` · `.copilot/todos/index.md` · `.copilot/plan.md` · `.copilot/handoff.md`
+`.copilot/checkpoints/index.md`
+
+---
 
 1. Created design discussion merge todo hierarchy:
    - `design-discussion-merge` parent + 16 sub-tasks

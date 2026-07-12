@@ -139,8 +139,8 @@ Last updated: 2026-07-05
 | `merge-ctl-dock-usb-allocation` | [merge-ctl-dock-usb-allocation.md](merge-ctl-dock-usb-allocation.md) | pending | `design-discussion-merge` |
 | `merge-create-stack-input` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-update-ctl-board` | [merge-update-ctl-board.md](merge-update-ctl-board.md) | pending | `design-discussion-merge`, `merge-ctl-dock-usb-allocation` |
-| `merge-create-stack-output` | [merge-create-stack-output.md](merge-create-stack-output.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
-| `merge-create-stack-blanking` | [merge-create-stack-blanking.md](merge-create-stack-blanking.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-create-stack-output` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
+| `merge-create-stack-blanking` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-stack-interposer` | [merge-create-stack-interposer.md](merge-create-stack-interposer.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-cypher-input` | [merge-create-cypher-input.md](merge-create-cypher-input.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-cypher-output` | [merge-create-cypher-output.md](merge-create-cypher-output.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup` |

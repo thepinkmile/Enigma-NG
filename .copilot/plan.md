@@ -6,12 +6,12 @@
 
 ---
 
-## Current Status (as of 2026-07-05 — design discussion merge in progress)
+## Current Status (as of 2026-07-12 — design discussion merge in progress)
 
-The design discussion merge is now underway. The Cypher Board and Stack-Input Board design files
-have been created. The merge todo hierarchy is established and tracked.
+The design discussion merge is ongoing. Stack-Output and Stack-Blanking board design files have
+been created. The BOM Footprint Available column has been standardised (✔/✘) across all boards.
 
-Latest checkpoint: `.copilot/checkpoints/177-cypher-system-board-design-cypher-stack-input-created.md`
+Latest checkpoint: `.copilot/checkpoints/178-stack-output-blanking-bom-consistency-sweep.md`
 
 ### Completed merge sub-tasks
 
@@ -20,24 +20,27 @@ Latest checkpoint: `.copilot/checkpoints/177-cypher-system-board-design-cypher-s
 | `merge-grs-6layer-stackup` | GRS §2.3.4 added (PCBWay 6-layer; Cypher Board) |
 | `merge-create-cypher-board` | `design/Electronics/Cypher/` created (Design_Spec + Board_Layout) |
 | `merge-create-stack-input` | `design/Electronics/Stack-Input/` created (Design_Spec + Board_Layout) |
+| `merge-create-stack-output` | `design/Electronics/Stack-Output/` created (Design_Spec + Board_Layout) |
+| `merge-create-stack-blanking` | `design/Electronics/Stack-Blanking/` created (Design_Spec + Board_Layout) |
 
 ### Current merge focus
 
-**Next sub-task: `merge-create-stack-output`** — output-side board of the Rotor Mini-Stack.
-Source: EXT output-side circuits. Use FR-EXT-xx/DR-EXT-xx IDs where applicable; new
-FR-SOUT-xx/DR-SOUT-xx for Stack-Output-specific requirements.
+**Next sub-task: `merge-create-stack-interposer`** — passive base-board at the bottom of each
+Rotor Mini-Stack. Bridges Stack-Input J6 (SQT-115 right-angle female) to Stack-Output J6
+(2BHR-30-VUA THT male header). Carries SIG-BLOCK-A/D/E signals. Pin map defined in Entry 20 of
+the discussion doc. 4-layer stackup; GND outer layers; signal routing on inner layers.
 
-After Stack-Output:
-- `merge-create-stack-blanking` — termination board for last mini-stack
-- `merge-create-stack-interposer` — passive interposer between Stack-Output and Stack-Input
+After Stack-Interposer:
+
 - `merge-create-cypher-input` / `merge-create-cypher-output` — keyboard and lightboard panels
-- `merge-update-ctl-board` — blocked by `merge-ctl-dock-usb-allocation` (USB D+/D- pin alloc)
+- `merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`
+- `merge-cypher-board-j3j6-pinouts` — full 50-contact allocation for J3/J4/J5/J6
 - `merge-update-top-level-docs` → `merge-remove-old-boards` → review chain
 
 ## Board Design Status
 
 | Board | Status | Notes |
-|-------|--------|-------|
+| --- | --- | --- |
 | Power Module (PM) | In Review | All P10 findings closed |
 | Controller Board (CTL) | In Review | T1 decision complete (DEC-067); all P10 closed; JM/AM removal pending (`merge-update-ctl-board`) |
 | Stator | **Retiring** | Circuits migrated to Cypher Board |
@@ -51,6 +54,8 @@ After Stack-Output:
 | Actuation Module (AM) | **Retiring** | Circuits migrated native to Stack-Input Board |
 | **Cypher Board** | **Draft** | Created 2026-07-05; consolidates STA + REF + JM |
 | **Stack-Input Board** | **Draft** | Created 2026-07-05; EXT input-side + native solenoid AM |
+| **Stack-Output Board** | **Draft** | Created 2026-07-12; EXT output-side circuits; 0Ω links on J4 (DEC-085) |
+| **Stack-Blanking Board** | **Draft** | Created 2026-07-12; passive termination; 5× termination resistors |
 
 ## Open Pass-10 Findings (0 remaining — all closed ✅)
 
@@ -79,7 +84,7 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 ## Key Design Decisions (recent — 2026-07-05 session)
 
 | Decision | Summary |
-|-------|---------|
+| --- | --- |
 | Cypher Board stackup | 6-layer PCBWay (GRS §2.3.4); JLCPCB not suitable |
 | CFG_ROUTE table | 13 valid configurations 0–12; 13–15 reserved; rules embedded in Cypher Design_Spec |
 | Actuation | Solenoid replaces servo; dual homing switches (retracted + extended) |
@@ -89,7 +94,7 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 ## Library Status
 
 | File | Status |
-|------|--------|
+| --- | --- |
 | `SamacSys_Parts.kicad_sym` | CL31B106KBK6PJE + 12 Samtec QSS/QTS symbols present ✅ |
 | `SamacSys_Parts.lib` / `.dcm` | CL31B106KBK6PJE present; 12 Samtec symbols appended to `.lib` ✅ |
 | `SamacSys_Parts.pretty/` | CL31B106KBK6PJE + 12 Samtec QSS/QTS footprints present ✅ |
@@ -114,4 +119,4 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 ## Next Session Start Point
 
 Follow `.copilot/SESSION_START.md` — canonical bootstrap order.
-Then read checkpoint 177 and resume with `merge-create-stack-output`.
+Then read checkpoint 178 and resume with `merge-create-stack-interposer`.
