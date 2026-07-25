@@ -352,6 +352,11 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "Samtec-sqt-tmmh-datasheet.pdf",
+      "markdown": "Samtec-sqt-tmmh-datasheet.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "Susumu-KRL-datasheet.pdf",
       "markdown": "Susumu-KRL-datasheet.md",
       "mapping_type": "same_stem"

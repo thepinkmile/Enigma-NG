@@ -183,3 +183,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 176 | Session start and state reconciliation for merged discussions | 176-session-start-and-state-reconciliation-for-merged-discussions.md |
 | 177 | Cypher System Board Design — Cypher Board + Stack-Input Board created | 177-cypher-system-board-design-cypher-stack-input-created.md |
 | 178 | Stack-Output and Stack-Blanking Boards Created; BOM Consistency Sweep | 178-stack-output-blanking-bom-consistency-sweep.md |
+| 179 | Stack-Interposer Board Design Complete; connector decisions locked; library imports; front-view diagram | 179-stack-interposer-board-design-complete.md |

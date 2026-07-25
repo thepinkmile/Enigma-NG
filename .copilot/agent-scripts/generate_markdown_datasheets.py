@@ -12,7 +12,7 @@ import pdfplumber
 from pypdf import PdfReader
 
 
-ROOT = Path(r"C:\_DATA_\Repositories\github\Enigma-NG")
+ROOT = Path(__file__).resolve().parent.parent.parent
 DATASHEETS_DIR = ROOT / "design" / "Datasheets"
 INVENTORY_PATH = DATASHEETS_DIR / "_generated_markdown_inventory.json"
 

@@ -142,7 +142,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('merge-update-ctl-board',           'Update CTL Board Design — remove JM and AM sub-systems',           'pending'),
 ('merge-create-stack-output',        'Create Stack-Output Board Design',                                  'done'),
 ('merge-create-stack-blanking',      'Create Stack-Blanking Panel Board Design',                         'done'),
-('merge-create-stack-interposer',    'Create Stack-Interposer Board Design',                             'pending'),
+('merge-create-stack-interposer',   'Create Stack-Interposer Board Design',                             'done'),
 ('merge-create-cypher-input',        'Create Cypher-Input Board Design',                                 'pending'),
 ('merge-create-cypher-output',       'Create Cypher-Output Board Design',                                'pending'),
 ('merge-update-top-level-docs',      'Update Boards_Overview, System_Architecture and related docs',     'pending'),

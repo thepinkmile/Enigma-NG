@@ -25,7 +25,7 @@ QSS-025 female right-angle connector (J2) for chaining to the next mini-stack (J
 Stack-Blanking Board.
 ROT boards connect to J3–J5 (ERF8 female sockets) on the rotor-facing face, receiving signals from
 the last ROT board in the mini-stack. Return signals are routed to Stack-Input via the passive
-interposer link at J6 (2BHR-30-VUA 30-pin THT male header on the bottom edge), mating with the
+interposer link at J6 (SQT-115-01-L-D-RA right-angle female on the bottom edge), mating with the
 Stack-Interposer Board.
 
 ### Functional Requirements
@@ -58,7 +58,7 @@ Stack-Interposer Board.
 | DR-SOUT-03 | ROT-facing input connectors | J3 = ERF8-005 (JTAG from last ROT), J4 = ERF8-005 (Power — all pins NC), J5 = ERF8-010 (ENC data from last ROT); mate with last ROT board ERM8 male output connectors | §6 Interconnects; BOM J3–J5 |
 | DR-SOUT-04 | J4 power pins — 0Ω prototype links | J4 3V3_ENIG pins connected to local 3V3_ENIG plane via R4 (0Ω link); J4 GND pins connected to local GND plane via R5 (0Ω link); both links can be removed to revert to NC if prototype testing reveals EMI issues; see DEC-085 | §5 Power; BOM R4, R5 |
 | DR-SOUT-05 | JTAG spoke termination | R1 = 10 kΩ TCK pull-down to GND; R2 = 10 kΩ TMS pull-up to 3V3_ENIG; R3 = 10 kΩ CPLD_RESET_N pull-up to 3V3_ENIG; placed within 3mm of J3; mirrors Cypher Board R3/R5/R6 idle-bias pattern; per DEC-016 | §4 JTAG Termination; BOM R1–R3 |
-| DR-SOUT-06 | Passive interposer link connector | J6 = 2BHR-30-VUA (Adam Tech 30-pin 2×15 2.54mm shrouded THT male header, bottom edge); mates with SQT-115-01-L-D-RA right-angle female on Stack-Interposer Board; pin map defined in `Stack-Interposer/Board_Layout.md` | §6 Interconnects; BOM J6 |
+| DR-SOUT-06 | Passive interposer link connector | J6 = SQT-115-01-L-D-RA (Samtec 30-position 2×15 right-angle female shrouded SMT, bottom edge); mates with TMMH-115-01-L-D-ES straight/vertical male on Stack-Interposer Board J1; pin map defined in `Stack-Interposer/Board_Layout.md §3` | §6 Interconnects; BOM J6 |
 | DR-SOUT-07 | Power rail | 3V3_ENIG only; no 5V_MAIN on this board; no AM circuits requiring 5V_MAIN | §5 Power |
 
 ### Component Block Diagram
@@ -225,21 +225,20 @@ J4 3V3_ENIG pins connect to the local 3V3_ENIG plane via R4 (0Ω link); J4 GND p
 the local GND plane via R5 (0Ω link). Both links can be removed to revert to NC if prototype
 testing reveals EMI issues (see DEC-085).
 
-### J6 — Passive Interposer Link (2BHR-30-VUA)
+### J6 — Passive Interposer Link (SQT-115-01-L-D-RA)
 
 > **Connector Definition Owner:** `Stack-Interposer/Board_Layout.md`.
 
-30-pin 2×15 2.54mm shrouded THT male header on the bottom edge. Connects to the Stack-Interposer
-Board which bridges this connector to the matching return connector on the Stack-Input Board.
+Right-angle female shrouded 30-position (2×15) connector on the bottom edge. Connects to the
+Stack-Interposer Board which bridges this connector to the matching return connector on the
+Stack-Input Board.
 
-- **MPN:** 2BHR-30-VUA (Adam Tech 30-pin 2×15 2.54mm shrouded box THT; reused from retiring
-  STA/REF/EXT boards — BOM-Protected Component row 16)
+- **MPN:** SQT-115-01-L-D-RA (Samtec 30-position right-angle female shrouded SMT)
 - **Signals carried (bidirectional):**
   - Out to Stack-Input: SIG-BLOCK-A ENC_DATA[5:0] (from J5) + SIG-BLOCK-E TTD (from J3)
   - In from Stack-Input: SIG-BLOCK-D ENC_DATA[5:0] (return direction into ROT chain)
-- **Mating connector on Interposer Board:** SQT-115-01-L-D-RA (Samtec 30-position right-angle
-  female shrouded SMT)
-- **Pinout:** defined in `Stack-Interposer/Board_Layout.md` (TBD — board not yet created)
+- **Mating connector on Interposer Board:** TMMH-115-01-L-D-ES (Samtec 30-position straight/vertical male)
+- **Pinout:** see `Stack-Interposer/Board_Layout.md §3`.
 
 ## 7. PCB Fabrication & Stackup
 
@@ -292,7 +291,7 @@ Board which bridges this connector to the matching return connector on the Stack
 | J2 | 50-contact 0.635mm right-angle female SMT | QSS-025-01-L-D-RA-K | Samtec | QSS-025-01-L-D-RA-K-ND | 200-QSS02501LDRAK | C6156774 | – | Rear stacking connector (mates with next mini-stack J1 or blanking board) | ✔ | ✔ | 1 |
 | J3, J4 | 10-pin 2x5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | – | J3: JTAG from last ROT; J4: Power (all pins NC) | ✔ | ✔ | 2 |
 | J5 | 20-pin 2x10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | – | ENC data from last ROT board | ✔ | ✔ | 1 |
-| J6 | 30-pin 2x15 2.54mm shrouded THT male | 2BHR-30-VUA | Adam Tech | 2057-2BHR-30-VUA-ND | 737-2BHR-30-VUA | C17346400 | – | Passive interposer link (SIG-BLOCK-A ENC_DATA + SIG-BLOCK-E TTD to Stack-Input; SIG-BLOCK-D from Stack-Input; via Stack-Interposer Board) | ✔ | ✔ | 1 |
+| J6 | 30-position 2×15 right-angle female shrouded SMT | SQT-115-01-L-D-RA | Samtec | SAM1246-15-ND | 200-SQT11501LDRA | C7318577 | – | Passive interposer link — mates with Stack-Interposer J1 (TMMH-115-01-L-D-ES); per Stack-Interposer/Board_Layout.md §3 | ✔ | ✔ | 1 |
 | R1 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | – | TCK pull-down to GND — JTAG spoke end termination; prevents spurious clocking | ✔ | ✔ | 1 |
 | R2, R3 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | – | R2: TMS pull-up to 3V3_ENIG; R3: CPLD_RESET_N pull-up to 3V3_ENIG — JTAG spoke end termination; mirrors Cypher R3/R6 | ✔ | ✔ | 2 |
 | R4 | 0Ω 0402 | ERJ-2GE0R00X | Panasonic | P0.0JCT-ND | 667-ERJ-2GE0R00X | C242160 | – | J4 3V3_ENIG bus → local 3V3_ENIG plane (0Ω link; remove to revert J4 3V3_ENIG to NC — see DEC-085) | – | ✘ | 1 |

@@ -780,5 +780,52 @@ K Connector IDC Rugged Socket Samtec 2.00mm
 F design/Datasheets/Samtec-sqt-1xx-xx-xxx-x-xxx-xxx-mkt-datasheet.md
 $ENDCMP
 #
+$CMP TMMH-115-01-L-D-ES
+D 2MM Low Profile Strip, 2x15, 30-position, Straight/Vertical Male, THT, 2.00mm pitch
+K Connector Strip Samtec THT 2.00mm Male
+F design/Datasheets/Samtec-sqt-tmmh-datasheet.md
+$ENDCMP
+$CMP APFA2507Y2G2C-C2
+D Green, Yellow 570nm Green, 590nm Yellow LED Indication - Discrete 2.1V Green, 2V Yellow 4-SMD, No Lead 20mA
+K
+F https://www.kingbrightusa.com/images/catalog/SPEC/APFA2507Y2G2C-C2.pdf
+$ENDCMP
+#
+$CMP DF40C-10DP-0.4V(51)
+D HIROSE(HRS) - DF40C-10DP-0.4V(51) - CONNECTOR, STACKING, HEADER, 10POS, 2ROW
+K
+F 
+$ENDCMP
+#
+$CMP DF40C-10DS-0.4V(51)
+D HIROSE(HRS) - DF40C-10DS-0.4V(51) - CONNECTOR, STACKING, RCPT, 10POS, 2ROW
+K
+F 
+$ENDCMP
+#
+$CMP DF40C-24DP-0.4V(51)
+D Board to Board & Mezzanine Connectors 24P SMT HEADER NO FITTING, NO BOSS
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/Datasheets-DGA17/1059795.pdf
+$ENDCMP
+#
+$CMP DF40C-24DS-0.4V(51)
+D Board to Board & Mezzanine Connectors 24P SMT RECEPTACLE NO FITTING, NO BOSS
+K
+F https://datasheet.datasheetarchive.com/originals/distributors/Datasheets-DGA17/1059795.pdf
+$ENDCMP
+#
+$CMP DF40C-90DP-0.4V(51)
+D 90 Position Connector Plug, Outer Shroud Contacts Surface Mount Gold, 30V , 300mA , -35C ~ +85C
+K
+F https://www.mouser.in/ProductDetail/Hirose-Connector/DF40C-90DP-0.4V51?qs=1RUxC5ic%2FMpzAtgiQOrKow%3D%3D&srsltid=AfmBOooP9Xzhu5O9QIzBGRM-KFMX3s59XzijYLoIuUSlCKcfK248rYaa
+$ENDCMP
+#
+$CMP DF40C-90DS-0.4V(51)
+D HIROSE(HRS) - DF40C-90DS-0.4V(51) - CONNECTOR, STACKING, RCPT, 90POS, 2ROW
+K
+F https://www.hirose.com/product/document?clcode=CL0684-4124-8-51&productname=DF40C-90DS-0.4V(51)&series=DF40&documenttype=2DDrawing&lang=en&documentid=0001001229
+$ENDCMP
+#
 #End Doc Library
 

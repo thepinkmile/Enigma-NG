@@ -10,12 +10,12 @@
 
 | File / Directory | Format | Role |
 | --- | --- | --- |
-| `SamacSys_Parts.kicad_sym` | KiCAD 6+ | Primary symbol library (new format). 69 symbols. |
-| `SamacSys_Parts.lib` | KiCAD 5 / EESchema | Legacy symbol library. 128 symbols. Superset of `.kicad_sym`. |
+| `SamacSys_Parts.kicad_sym` | KiCAD 6+ | Primary symbol library (new format). 62 symbols. |
+| `SamacSys_Parts.lib` | KiCAD 5 / EESchema | Legacy symbol library. 153 symbols. Superset of `.kicad_sym`. |
 | `SamacSys_Parts.dcm` | KiCAD 5 | Legacy symbol descriptions/keywords/datasheet URLs. |
 | `SamacSys_Parts.mod` | KiCAD 5 / PCBNEW | Legacy footprint library. Contains `$INDEX` section + `$MODULE` blocks. |
-| `SamacSys_Parts.pretty/` | KiCAD 6+ | New footprint directory. One `.kicad_mod` file per footprint. 93 files. |
-| `SamacSys_Parts.3dshapes/` | — | Part-specific 3D models in `.stp` format. 57 files. |
+| `SamacSys_Parts.pretty/` | KiCAD 6+ | New footprint directory. One `.kicad_mod` file per footprint. 128 files. |
+| `SamacSys_Parts.3dshapes/` | — | Part-specific 3D models in `.stp` format. 82 files. |
 | `3D_Models/` | — | Mirror of 3dshapes in `.step` format. Kept in sync with `.3dshapes/`. |
 | `temp/` | — | Drop zone for SamacSys/SnapMagic download zips. Not committed. |
 
@@ -23,7 +23,7 @@
 modified, the corresponding entry must be updated in both legacy and new formats. See
 `.copilot/agent-directives.md` NONARY DIRECTIVE for the full import workflow.
 
-**59 symbols exist only in legacy `.lib` format** and have not yet been migrated to `.kicad_sym`.
+**92 symbols exist only in legacy `.lib` format** and have not yet been migrated to `.kicad_sym`.
 This is expected — new-format migration happens when a part is actively edited in KiCAD 6+.
 
 ---
@@ -50,6 +50,9 @@ wildcard-normalized footprint names. **Do not flag any entry in this table as an
 | `WP154A4SEJ3VBDZGW/CA` | `WP154A4SEJ3VBDZGW_CA` | `L-154A4SUREQBFZGEC.kicad_mod` | SamacSys assigned a different catalog/variant name to the footprint of this Kingbright LED. The footprint dimensions are correct for the WP154A4 package. |
 | `B82806D0060A120` | `B82806D0060A120` | `B82806D0060A033.kicad_mod` | SamacSys uses the A033 variant footprint (same Würth WE-CSB package) for the A120 inductance value. Package dimensions are identical across the B82806D0060Axxx series. |
 | `ERJ-PC3B1333V` | `ERJ-PC3B1333V` | `ERJPC3D9763V.kicad_mod` | SamacSys assigns a package-dimension code (`ERJPC3D9763V`) to the Panasonic ERJ-PC3 high-precision 0603 series. The footprint encodes pad dimensions rather than the component value; it is shared across the ERJ-PC3 series. The 3D model is part-specific (`ERJ-PC3B1333V.stp`). |
+| `3310P-001-503L` | `3310P-001-503L` | `3310P-1.kicad_mod` | SamacSys shortens the Bourns trimmer footprint source name to `3310P-1`. The Enigma-NG library normalizes the imported footprint to the full canonical MPN `3310P-001-503L`. |
+| `APFA2507Y2G2C-C2` | `APFA2507Y2G2C-C2` | `APFA2507Y2G2CC2.kicad_mod` | SamacSys strips the final dash from the suffix in the source footprint filename. The library restores the full canonical MPN for the imported footprint. |
+| `PG151101S11` | `PG151101S11` | `SW_PG151101S11.kicad_mod` | The source footprint uses a `SW_` vendor prefix. The Enigma-NG library removes that prefix and stores the footprint under the canonical part number. |
 
 ### 3D model name differs from footprint or MPN
 
@@ -76,6 +79,12 @@ footprints with dashes, dots, or spaces removed. These are all correct:
 | `PA4343.333NLT` | `PA4343333NLT.kicad_mod` |
 | `KRL6432T4-M-R010-F-T1` | `KRL6432T4MR010FT1.kicad_mod` |
 | `USB4135-GF-A` | `USB4135GFA.kicad_mod` |
+| `DF40C-10DP-0.4V(51)` | `DF40C-10DP-0.4V_51_.kicad_mod` |
+| `DF40C-10DS-0.4V(51)` | `DF40C10DS04V51.kicad_mod` |
+| `DF40C-24DP-0.4V(51)` | `DF40C24DP04V51.kicad_mod` |
+| `DF40C-24DS-0.4V(51)` | `DF40C24DS04V51.kicad_mod` |
+| `DF40C-90DP-0.4V(51)` | `DF40C90DP04V51.kicad_mod` |
+| `DF40C-90DS-0.4V(51)` | `DF40C90DS04V51.kicad_mod` |
 | `POE600F-12LB` | `POE600F12LB.kicad_mod` |
 | `F52Q-1A7H1-11015` | `F52Q1A7H111015.kicad_mod` |
 | `2195630015` | `2195630015.kicad_mod` (unchanged) |
@@ -109,6 +118,7 @@ from the standard library, not custom `.stp` files in `3dshapes/`. See
 | `2195630015` | legacy | `2195630015` | `2195630015.stp` | Molex Micro-Lock Plus connector |
 | `2BHR-30-VUA` | new | `Connector_IDC:IDC-Header_2x15_P2.54mm_Vertical` | — | Adam Tech 2×15 30-pin shrouded box header; standard KiCAD library footprint |
 | `3034TR` | legacy | `3034TR` | — | Keystone THT test point |
+| `3310P-001-503L` | both | `3310P-001-503L` | `3310P-001-503L.stp` | Bourns trimmer potentiometer |
 | `43650-0519` | new | `43650-05YY_18192063` | `43650-0519.stp` | Molex KK 254 5-pos connector |
 | `43650-0619` | legacy | `43650-06YY_18192063` | `43650-0619.stp` | Molex KK 254 6-pos connector |
 | `48406-0003` | legacy | `484060003` | `48406-0003.stp` | Molex Nano-Fit connector |
@@ -119,6 +129,7 @@ from the standard library, not custom `.stp` files in `3dshapes/`. See
 | `9774035151R` | legacy | `9774035151R` | `9774035151R.stp` | Würth SMD standoff — ⚠️ STP absent from `3dshapes/` |
 | `9774040151R` | legacy | `9774040151R` | `9774040151R.stp` | Würth SMD standoff — ⚠️ STP absent from `3dshapes/` |
 | `ADCR-T02R7SA256MB` | new | `CAPPRD750W85D1600H2500` | — | Capacitor; generic IPC footprint |
+| `APFA2507Y2G2C-C2` | both | `APFA2507Y2G2C-C2` | `APFA2507Y2G2C-C2.stp` | Kingbright dual-color LED; source footprint alias `APFA2507Y2G2CC2` |
 | `AP2331W-7` | new | `SOT95P285X130-3N` | — | Diodes Inc load switch; generic IPC |
 | `B3F-1070` | legacy | `B3F1060` | `B3F-1070.stp` | Omron tactile switch; ⚠️ see naming equivalences |
 | `B6B-PH-K-S(LF)(SN)` | legacy | `SHDR6W50P0X200_1X6_1390X450X600P` | — | JST PH 6-pos; generic IPC footprint |
@@ -143,6 +154,12 @@ from the standard library, not custom `.stp` files in `3dshapes/`. See
 | `CL32B226KAJNNNE` | new | `CAPC3225X270N` | — | Samsung cap 1210; generic IPC |
 | `CSD17578Q5A` | new | `CSD19531Q5AT` | `CSD17578Q5A.stp` | TI NMOS 30V 25A; ⚠️ see naming equivalences |
 | `CWF1610A-180K` | legacy | `CWF1610A100K` | `CWF1610A-180K.stp` | Bourns inductor; ⚠️ see naming equivalences |
+| `DF40C-10DP-0.4V(51)` | both | `DF40C-10DP-0.4V(51)` | `DF40C-10DP-0.4V(51).stp` | Hirose DF40 10-pos plug; source aliases documented in naming equivalences |
+| `DF40C-10DS-0.4V(51)` | both | `DF40C-10DS-0.4V(51)` | `DF40C-10DS-0.4V(51).stp` | Hirose DF40 10-pos receptacle; source aliases documented in naming equivalences |
+| `DF40C-24DP-0.4V(51)` | both | `DF40C-24DP-0.4V(51)` | `DF40C-24DP-0.4V(51).stp` | Hirose DF40 24-pos plug; source aliases documented in naming equivalences |
+| `DF40C-24DS-0.4V(51)` | both | `DF40C-24DS-0.4V(51)` | `DF40C-24DS-0.4V(51).stp` | Hirose DF40 24-pos receptacle; source aliases documented in naming equivalences |
+| `DF40C-90DP-0.4V(51)` | both | `DF40C-90DP-0.4V(51)` | `DF40C-90DP-0.4V(51).stp` | Hirose DF40 90-pos plug; source aliases documented in naming equivalences |
+| `DF40C-90DS-0.4V(51)` | both | `DF40C-90DS-0.4V(51)` | `DF40C-90DS-0.4V(51).stp` | Hirose DF40 90-pos receptacle; source aliases documented in naming equivalences |
 | `DF40C-20DP-0.4V(51)` | new | `DF40C20DP04V51` | `DF40C20DP04V51.stp` | Hirose DF40 20-pos plug |
 | `DF40HC(3.5)-20DS-0.4V(51)` | new | `DF40HC3520DS04V51` | `DF40HC3520DS04V51.stp` | Hirose DF40 20-pos receptacle |
 | `EPM570T100I5N` | new | `QFP50P1600X1600X120-100N` | — | Intel CPLD; generic IPC QFP |
@@ -198,7 +215,7 @@ from the standard library, not custom `.stp` files in `3dshapes/`. See
 | `NL27WZ14DFT2G-Q` | new | `SOT65P210X110-6N` | — | ON Semi dual inverter; generic IPC |
 | `PA4343.333NLT` | legacy | `PA4343333NLT` | `PA4343.333NLT.stp` | Pulse transformer; ⚠️ STP absent from `3dshapes/` |
 | `PCA9534APWR` | new | `SOP65P640X120-16N` | — | TI I2C I/O expander; generic IPC |
-| `PG151101S11` | both | `SW_PG151101S11` | `PG151101S11.step` | Kailh hot-swap socket; underside-mounted on Input-Cypher PCBA |
+| `PG151101S11` | both | `PG151101S11` | `PG151101S11.stp` | Kailh hot-swap socket; underside-mounted on Input-Cypher PCBA |
 | `PH1-05-UA` | legacy | `HDRV5W64P0X254_1X5_1270X250X850P` | — | Sullins 1×5 header; generic IPC |
 | `PH1-07-UA` | legacy | `HDRV7W64P0X254_1X7_1778X250X850P` | `PH1-07-UA.stp` | Sullins 1×7 header |
 | `POE600F-12LB` | legacy | `POE600F12LB` | `POE600F-12LB.stp` | Coilcraft PoE transformer (v2 reserved) |
@@ -276,6 +293,8 @@ their 3D models from its built-in `Capacitor_SMD.3dshapes`, `Resistor_SMD.3dshap
 | `HDRV7W64P0X254_1X7_1778X250X850P` | 1×7 2.54mm header | PH1-07-UA |
 | `SHDR6W50P0X200_1X6_1390X450X600P` | 1×6 2.0mm header | B6B-PH-K-S |
 | `SHDR20W64P254_2X10_3300X880X910P` | 2×10 2.54mm header | BHR-20-VUA |
+| `SAMTEC_TMMH-115-01-L-D-ES` | 2×15 2.00mm straight male THT | TMMH-115-01-L-D-ES |
+| `SQT-115-01-XXX-D-RA` | 2×15 2.00mm right-angle female SMT | SQT-115-01-L-D-RA |
 
 ---
 

@@ -6,12 +6,14 @@
 
 ---
 
-## Current Status (as of 2026-07-12 — design discussion merge in progress)
+## Current Status (as of 2026-07-25 — design discussion merge in progress)
 
-The design discussion merge is ongoing. Stack-Output and Stack-Blanking board design files have
-been created. The BOM Footprint Available column has been standardised (✔/✘) across all boards.
+The design discussion merge is ongoing. The Stack-Interposer Board design files have been created,
+connector decisions locked (TMMH-115-01-L-D-ES for J1/J2; SQT-115-01-L-D-RA for J6 on both
+Stack-Output and Stack-Input), and the KiCAD library has been updated with all required components.
+A front-elevation diagram page (Mini-Stack Front View) has been added to the draw.io diagram set.
 
-Latest checkpoint: `.copilot/checkpoints/178-stack-output-blanking-bom-consistency-sweep.md`
+Latest checkpoint: `.copilot/checkpoints/179-stack-interposer-board-design-complete.md`
 
 ### Completed merge sub-tasks
 
@@ -22,20 +24,20 @@ Latest checkpoint: `.copilot/checkpoints/178-stack-output-blanking-bom-consisten
 | `merge-create-stack-input` | `design/Electronics/Stack-Input/` created (Design_Spec + Board_Layout) |
 | `merge-create-stack-output` | `design/Electronics/Stack-Output/` created (Design_Spec + Board_Layout) |
 | `merge-create-stack-blanking` | `design/Electronics/Stack-Blanking/` created (Design_Spec + Board_Layout) |
+| `merge-create-stack-interposer` | `design/Electronics/Stack-Interposer/` created (Design_Spec + Board_Layout) |
 
 ### Current merge focus
 
-**Next sub-task: `merge-create-stack-interposer`** — passive base-board at the bottom of each
-Rotor Mini-Stack. Bridges Stack-Input J6 (SQT-115 right-angle female) to Stack-Output J6
-(2BHR-30-VUA THT male header). Carries SIG-BLOCK-A/D/E signals. Pin map defined in Entry 20 of
-the discussion doc. 4-layer stackup; GND outer layers; signal routing on inner layers.
+**Next sub-task: `merge-create-cypher-input`** — keyboard input panel board.
+ENC module BtB interface (DF40C family), mechanical keyboard switches (MX2A-71NB + PG151101S11
+hot-swap sockets), LED circuit (APFA2507Y2G2C-C2 with 555 PWM brightness, P-MOSFET switch).
+See `.copilot/discussions/cypher-system-discussion/extension-mechanical-usage.md` Entries 16–17.
 
-After Stack-Interposer:
+After Cypher-Input:
 
-- `merge-create-cypher-input` / `merge-create-cypher-output` — keyboard and lightboard panels
+- `merge-create-cypher-output` — lightboard output panel
 - `merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`
 - `merge-cypher-board-j3j6-pinouts` — full 50-contact allocation for J3/J4/J5/J6
-- `merge-update-top-level-docs` → `merge-remove-old-boards` → review chain
 
 ## Board Design Status
 
@@ -54,7 +56,8 @@ After Stack-Interposer:
 | Actuation Module (AM) | **Retiring** | Circuits migrated native to Stack-Input Board |
 | **Cypher Board** | **Draft** | Created 2026-07-05; consolidates STA + REF + JM |
 | **Stack-Input Board** | **Draft** | Created 2026-07-05; EXT input-side + native solenoid AM |
-| **Stack-Output Board** | **Draft** | Created 2026-07-12; EXT output-side circuits; 0Ω links on J4 (DEC-085) |
+| **Stack-Output Board** | **Draft** | Created 2026-07-12; J6 updated to SQT-115-01-L-D-RA (from 2BHR-30-VUA); DEC-085 |
+| **Stack-Interposer Board** | **Draft** | Created 2026-07-25; TMMH-115-01-L-D-ES J1/J2; SQT-115-01-L-D-RA mating; mirror-corrected routing note |
 | **Stack-Blanking Board** | **Draft** | Created 2026-07-12; passive termination; 5× termination resistors |
 
 ## Open Pass-10 Findings (0 remaining — all closed ✅)
@@ -119,4 +122,4 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 ## Next Session Start Point
 
 Follow `.copilot/SESSION_START.md` — canonical bootstrap order.
-Then read checkpoint 178 and resume with `merge-create-stack-interposer`.
+Then read checkpoint 179 and resume with `merge-create-cypher-input`.

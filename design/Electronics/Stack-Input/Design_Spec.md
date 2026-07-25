@@ -54,7 +54,7 @@ ROT boards connect to J3–J5 (ERF8 female sockets) on the rotor-facing face. Re
 | DR-EXT-13 | 3V3_ENIG entry decoupling bank | C1–C5 (5x 10µF X7R 50V 1206) at 3V3_ENIG entry (J1 bottom power pins) per GRS §3 | §5 Power; BOM C1–C5 |
 | DR-EXT-14 | Mounting holes | MH1–MH4: M3 PTH (3.2mm drill) tied to GND_CHASSIS per GRS §4; placement per GRS §4.3 Pattern B. No BOM entry. | §7 PCB Fabrication; GRS §4.3 |
 | DR-SIN-01 | Rear stacking connector (output/chain side) | J2 = QSS-025-01-L-D-RA-K (Samtec 50-contact right-angle female SMT); mirrors J1 signal set with I/O inverted; bottom 24 contacts include ACTUATE_REQUEST_N output (from last ROT carry) and power passthrough; full allocation pending `merge-cypher-board-j3j6-pinouts` | §6 Interconnects; BOM J2 |
-| DR-SIN-02 | Stack-Interposer return link connector | J6 = SQT-115-01-L-D-RA (Samtec 30-pin 2×15 right-angle female shrouded); receives TTD_RETURN + ENC_DATA return from Stack-Output Board via Stack-Interposer Board; pinout TBD at Stack-Interposer Board spec | §6 Interconnects; BOM J6 |
+| DR-SIN-02 | Stack-Interposer return link connector | J6 = SQT-115-01-L-D-RA (Samtec 30-pin 2×15 right-angle female shrouded); receives TTD_RETURN + ENC_DATA return from Stack-Output Board via Stack-Interposer Board; pinout defined in `Stack-Interposer/Board_Layout.md §3` | §6 Interconnects; BOM J6 |
 | DR-SIN-03 | Native Actuation Module MCU | U1 = STM32G071K8T3TR LQFP-32; same circuit as former standalone Actuation Module; firmware updated for solenoid drive and dual homing switches | §4 Actuation Module; BOM U1 |
 | DR-SIN-04 | Solenoid loom header | J7 = PH1-05-UA 1x5 2.54mm THT; pins 1-3 active (5V_MAIN, GND, SOLENOID_DRIVE); solenoid driver circuit details TBD (future discussion merge) | §4 Actuation Module; BOM J7 |
 | DR-SIN-05 | Homing switch loom header — dual switch | J8 = PH1-05-UA 1x5 2.54mm THT; pin 1 = ACTUATION_HOME_N (retracted position), pin 2 = GND; pin 3 = ACTUATION_EXTENDED_N (fully-extended position), pin 4 = GND; solenoid has two detectable positions | §4 Actuation Module; BOM J8 |
@@ -316,8 +316,8 @@ Stack-Output Board.
 
 - **MPN:** SQT-115-01-L-D-RA (Samtec 30-position right-angle female shrouded SMT)
 - **Signals carried:** TTD_RETURN (last ROT TDO) + ENC_DATA return (6-bit bus)
-- **Mating male header on Interposer Board:** 2BHR-30-VUA (Adam Tech 30-pin 2×15 shrouded THT)
-- **Pinout:** TBD — to be defined alongside `Stack-Interposer/Board_Layout.md`.
+- **Mating connector on Interposer Board:** TMMH-115-01-L-D-ES (Samtec 30-position straight/vertical male)
+- **Pinout:** see `Stack-Interposer/Board_Layout.md §3`.
 
 ### J7–J10 — Service / Loom Headers
 

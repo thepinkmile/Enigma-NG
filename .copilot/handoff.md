@@ -7,7 +7,68 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** `merge-create-stack-interposer` — the passive base-board that sits at the
+**Continue with:** `merge-create-cypher-input` — the keyboard input panel board.
+
+Key facts:
+- ENC module connects via Hirose DF40C BtB connectors (90-pin DP + 24-pin DP + 10-pin DP)
+- Mechanical keyboard switches: MX2A-71NB (Cherry) in PG151101S11 (Kailh) hot-swap sockets
+- LED circuit: APFA2507Y2G2C-C2 bicolor LEDs; 555 PWM brightness (MIC1555YM5-TR); P-MOSFET (SQ2319ADS) high-side switch; 130Ω (AT0402CRD07130RL) and 120Ω (AT0402CRD07120RL) current-limit resistors
+- Rotary brightness dial: 3310P-001-503L (Bourns 50kΩ)
+- BtB connection to Cypher Board (same Hirose family — mating DS connectors)
+- Two variants: 26-char (Enigma standard) and 64-char (extended)
+- Source entries: discussion doc Entries 16, 17, 18 in `extension-mechanical-usage.md`
+
+### What changed in this session (2026-07-25)
+
+1. **Stack-Interposer Board design files created** (`merge-create-stack-interposer` ✅):
+   - `design/Electronics/Stack-Interposer/Design_Spec.md`
+   - `design/Electronics/Stack-Interposer/Board_Layout.md`
+   - Connectors: J1/J2 = TMMH-115-01-L-D-ES (Samtec straight/vertical male)
+   - Mating connectors: J6 on both Stack-Output and Stack-Input = SQT-115-01-L-D-RA
+   - DR-SINT-04: pin-to-pin mapping; L2/L3 traces laid out as if mirrored due to connector orientation
+   - German data plate: STAPELBRUCKE (printed as STAPELBRÜCKE)
+
+2. **Stack-Output J6 connector updated** (2BHR-30-VUA → SQT-115-01-L-D-RA):
+   - DR-SOUT-06, J6 section, BOM row all updated
+   - Now matches Stack-Input J6
+
+3. **Stack-Input J6 mating connector reference updated** (2BHR-30-VUA → TMMH-115-01-L-D-ES):
+   - DR-SIN-02, J6 section updated; pinout reference resolved to Board_Layout.md §3
+
+4. **Front-elevation diagram added**:
+   - New page "Mini-Stack Front View" in `design/Diagrams/cypher-system-layout.drawio`
+   - Render: `design/Diagrams/renders/03-Mini-Stack-Front-View.png`
+   - Shows ROT boards as vertical discs on shaft; all connectors labelled; 4 signal flow lines
+
+5. **Library imports completed** (all now fully in all 4 KiCAD formats):
+   - TMMH-115-01-L-D-ES (new part — Stack-Interposer J1/J2)
+   - SQT-115-01-L-D-RA (was incomplete — Stack-Input/Stack-Output J6)
+   - 3310P-001-503L, APFA2507Y2G2C-C2, DF40C-10/24/90 DP/DS × 6, PG151101S11
+
+6. **`generate_markdown_datasheets.py` fixed**: hardcoded `D:\` path → `Path(__file__).resolve().parent.parent.parent`
+
+### Files created this session
+
+**New:**
+`design/Electronics/Stack-Interposer/Design_Spec.md` · `design/Electronics/Stack-Interposer/Board_Layout.md`
+`design/Datasheets/Samtec-sqt-tmmh-datasheet.md`
+`design/Diagrams/renders/03-Mini-Stack-Front-View.png`
+`.copilot/checkpoints/179-stack-interposer-board-design-complete.md`
+
+**Modified:**
+`design/Electronics/Stack-Output/Design_Spec.md` · `design/Electronics/Stack-Input/Design_Spec.md`
+`design/Diagrams/cypher-system-layout.drawio`
+`design/Datasheets/_generated_markdown_inventory.json`
+`src/Electronics/Library/SamacSys_Parts.*` (all 4 formats + 3D)
+`src/Electronics/Library/LIBRARY_NOTES.md`
+`.copilot/agent-scripts/generate_markdown_datasheets.py`
+`.copilot/todos/todos.sql` · `.copilot/todos/index.md`
+`.copilot/checkpoints/index.md` · `.copilot/plan.md` · `.copilot/handoff.md`
+`.copilot/directives/repo-state.md`
+
+---
+
+
 bottom of each Rotor Mini-Stack, bridging Stack-Input J6 (SQT-115 right-angle female) to
 Stack-Output J6 (2BHR-30-VUA THT male header).
 
