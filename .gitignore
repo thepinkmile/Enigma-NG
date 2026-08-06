@@ -431,3 +431,6 @@ src/Electronics/Library/temp/
 
 # Wireframe render previews — committed to repo
 # design/Software/GUI_App/Wireframes/renders/
+
+# Temporarily ignore MAX10 DVD extraction folder
+.copilot/discussions/max-10-fpga-details/MAXPROLOGIC_FPGA_PROJECT_2.7_DVD/
