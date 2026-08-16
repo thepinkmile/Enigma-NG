@@ -2,7 +2,7 @@
 
 **Status:** Reference
 **Version:** v.0.1.0
-**Last Updated:** 2026-04-19
+**Last Updated:** 2026-08-16
 
 ## 1. Component Rules (The "Museum-Grade" Standard)
 
@@ -18,6 +18,7 @@
 | 0x09 | LTC3350 | Power Module | Supercap charger / health monitor |
 | 0x0B | Smart Battery | Power Module | Smart battery / SMBus monitor |
 | 0x28 | STUSB4500 | Power Module | USB-C PD Controller |
+| 0x38 | PCA9534A | Cypher-Input (all variants) | Single fixed address (`U4`); variant identified via `BOARD_ROLE_ID[3:0]`, not I2C address; Space + Enter GPIO on the 64-Character variant only - see `Cypher-Input/Design_Spec.md §3a` |
 | 0x3F | PCA9534A | Power Module | PM-local GPIO expander (`POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`, SW1 RGB control) |
 | 0x40 | INA219 | Power Module | 5V_MAIN current/power monitoring (10mΩ Kelvin-sense shunt R16) |
 | 0x20 | MCP23017 | Stator | ENC monitor expander (`U6`) |

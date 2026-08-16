@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-26
+**Last Updated:** 2026-08-12
 
 ---
 
@@ -231,22 +231,12 @@ through each CPLD.
 
 ## 5. I2C Topology
 
-All system management devices remain on the single shared `I2C-1` bus:
+All system management devices remain on the single shared `I2C-1` bus.
 
-| Address | Device | Location | Function |
-| :--- | :--- | :--- | :--- |
-| 0x09 | LTC3350 | Power Module | Supercap charger/monitor |
-| 0x0B | Smart Battery | Power Module | SMBus battery monitoring |
-| 0x28 | STUSB4500 | Power Module | USB-C PD controller |
-| 0x3F | PCA9534A | Power Module | PM-local status + SW1 RGB handoff expander |
-| 0x40 | INA219 | Power Module | 5V_MAIN telemetry |
-| 0x45 | INA219 | Stator | Rotor-stack telemetry |
-| 0x20 | MCP23017 | Stator | ENC monitoring |
-| 0x21 | MCP23017 | Stator | Virtual keypress + SOURCE_SEL + CPLD_RESET_N |
-| 0x22 | MCP23017 | Stator | CPLD config output driver |
-| 0x23 | MCP23017 | User Settings Module | Switch input reader |
-| 0x24 | MCP23017 | User Settings Module | Bank 1 LED controller |
-| 0x25 | MCP23017 | User Settings Module | Bank 2 LED controller |
+> **Authoritative I2C address table:** see `Controller/Design_Spec.md §4.1` for the full list of
+> device addresses, locations, and functions across all boards sharing the `I2C1` bus (Power
+> Module, Stator, User Settings Module, Cypher-Input). This section documents topology only, to
+> avoid duplicating a table that must otherwise be kept in sync in two places.
 
 The PM-local expander uses the address block adjacent to the PM INA219 so PM devices remain grouped in
 `i2cdetect` output.

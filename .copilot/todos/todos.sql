@@ -143,10 +143,15 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('merge-create-stack-output',        'Create Stack-Output Board Design',                                  'done'),
 ('merge-create-stack-blanking',      'Create Stack-Blanking Panel Board Design',                         'done'),
 ('merge-create-stack-interposer',   'Create Stack-Interposer Board Design',                             'done'),
-('merge-create-cypher-input',        'Create Cypher-Input Board Design',                                 'pending'),
+('merge-create-cypher-input',        'Create Cypher-Input Board Design',                                 'done'),
 ('merge-create-cypher-output',       'Create Cypher-Output Board Design',                                'pending'),
+('merge-create-plugboard',           'Create Plugboard Board Design',                                    'pending'),
 ('merge-update-top-level-docs',      'Update Boards_Overview, System_Architecture and related docs',     'pending'),
 ('merge-remove-old-boards',          'Move retiring board design files to .recycle-bin/',                'pending'),
 ('merge-consistency-review',         'Review all merged design files for consistency',                   'pending'),
 ('merge-missing-components',         'Identify and select missing/supporting BOM components',            'pending'),
-('merge-final-review',               'Final full review of design merge and completion sign-off',        'pending');
+('merge-final-review',               'Final full review of design merge and completion sign-off',        'pending'),
+('todo-clean-up-requirement-details', 'Cleaning up FR/DR requirement detail across design files',         'pending'),
+('merge-diagrams-review',            'Review and update draw.io diagrams for Cypher system merge',       'pending'),
+('cypher-input-led-independent-rgb-pwm-review', 'Review LED colour controls for independent per-channel RGB PWM', 'pending'),
+('usm-cfg-refmap-removal-review', 'Revisit USM Bank 2/CFG_REFMAP removal before next full design review', 'pending');

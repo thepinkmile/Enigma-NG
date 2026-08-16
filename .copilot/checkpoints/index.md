@@ -184,3 +184,9 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 177 | Cypher System Board Design — Cypher Board + Stack-Input Board created | 177-cypher-system-board-design-cypher-stack-input-created.md |
 | 178 | Stack-Output and Stack-Blanking Boards Created; BOM Consistency Sweep | 178-stack-output-blanking-bom-consistency-sweep.md |
 | 179 | Stack-Interposer Board Design Complete; connector decisions locked; library imports; front-view diagram | 179-stack-interposer-board-design-complete.md |
+| 180 | Cypher-Input Board draft: two variants (26-Char Classic / 64-Char Extended); I2C board-identification scheme | 180-cypher-input-draft-two-variants-i2c-board-id.md |
+| 181 | Cypher HID Interconnect: JTAG chain + full signal map resolved (4-connector architecture) | 181-cypher-hid-interconnect-jtag-and-signal-map-resolved.md |
+| 182 | Encoder Module renamed and redesigned around DF40C BtB interconnect | 182-encoder-module-rename-btb-redesign-complete.md |
+| 183 | Cypher-Input LED colour architecture redesigned (RGB, local, off `plain-bits`) | 183-cypher-input-led-colour-architecture-redesigned.md |
+| 184 | ENC_ACTIVE_INPUT_N naming consolidated (Cypher / Cypher-Input); LED part sourcing deferred to merge-missing-components | 184-enc-active-input-n-naming-consolidated.md |
+| 185 | Cypher-Input Board design complete; Plugboard/5V_MAIN architecture clarified (DEC-088) | 185-cypher-input-complete-plugboard-5v-main-dec088.md |

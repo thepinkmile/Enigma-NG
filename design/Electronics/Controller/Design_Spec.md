@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-22
+**Last Updated:** 2026-08-16
 
 ---
 
@@ -226,6 +226,7 @@ the Stator over `J5`.
 | 0x24 | MCP23017 (U2) | User Settings Module | Bank 1 LED controller: 5x anodes + RGB bank-rail drivers (DEC-034) |
 | 0x25 | MCP23017 (U3) | User Settings Module | Bank 2 LED controller: 7x anodes + RGB bank-rail drivers (DEC-034) |
 | 0x28 | STUSB4500 | Power Module | USB-C PD controller |
+| 0x38 | PCA9534A (U4) | Cypher-Input (all variants) | Single fixed address; variant identified via `BOARD_ROLE_ID[3:0]`, not I2C address; Space + Enter GPIO on the 64-Character variant only |
 | 0x3F | PCA9534A (U14) | Power Module | PM-local status inputs + SW1 RGB handoff control |
 | 0x40 | INA219 (U10) | Power Module | 5V_MAIN current/power telemetry |
 | 0x45 | INA219 (U2) | Stator | Rotor stack current/power telemetry |
@@ -234,7 +235,6 @@ the Stator over `J5`.
 > address-selection wiring for U6 (0x20), U7 (0x21), and U8 (0x22) are defined in
 > `design/Electronics/Stator/Design_Spec.md §3` and the Stator BOM. This table lists I²C addresses
 > and high-level functions only.
-
 > **TPS25751 (PM U4) is intentionally absent from this I²C address map.** The TPS25751 is operated in
 > fixed passive PD emulator mode with its USB-C PDO profile stored in internal NVM. No I²C connection to
 > U4 is required or used in this design. See PM `Design_Spec.md §5` and DEC-012.
@@ -356,8 +356,8 @@ C19 for U8).
 * **L1 (Yageo PA4343.333NLT, 33µH shielded ferrite inductor) — ACF Forward Output Inductor:** Buck-style output
   inductor on `VIN_POE_12V`, forming the LC filter together with C20. Required by the ACF Forward
   topology; not present in flyback designs. Value 33µH selected for ≤28% peak-to-peak current ripple
-  at all Vin/Iout operating points (200kHz, 12V/5A, Vin=36–57V). Specification: ≥6A Isat, DCR 48mΩ typ / 58mΩ max (procurement-constrained exception — best available; typ compliant with DR-CTL-25 ≤50mΩ, max accepted),
-  shielded ferrite core. See DR-CTL-25, DEC-063.
+  at all Vin/Iout operating points (200kHz, 12V/5A, Vin=36–57V).
+  Specification: ≥6A Isat, DCR 48mΩ typ / 58mΩ max (procurement-constrained exception — best available; typ compliant with DR-CTL-25 ≤50mΩ, max accepted), shielded ferrite core. See DR-CTL-25, DEC-063.
 * **C20 (4× TDK CGA9N1X7R1V476M230KC, 47µF 35V X7R 2220) — PoE Output Filter:** 4× in parallel on `VIN_POE_12V`
   rail. Forms the LC output filter together with L1 (ACF Forward topology). 188µF nominal, ≥103µF
   effective worst-case (DC bias + tolerance + temperature). ESR ≤2.5mΩ total at 200kHz. See DR-CTL-22.
@@ -672,7 +672,8 @@ Estimated Controller-local power dissipation at system peak load:
 
 ### BOM Notes
 
-**BT1 (Keystone 3034TR) footprint note:** The "Yes*" entries in the Footprint Available and Footprint Downloaded columns indicate this part uses the standard KiCAD library battery holder footprint — no custom zip download is required. The asterisk (*) denotes a library-standard footprint was used directly.
+**BT1 (Keystone 3034TR) footprint note:** The "Yes*" entries in the Footprint Available and Footprint Downloaded columns indicate this part uses the standard KiCAD library battery holder footprint,
+so there is no custom zip download is required. The asterisk (*) denotes a library-standard footprint was used directly.
 
 Telemetry shunt specifications and Kelvin-sensing notes are detailed in §4. Protection, ESD, bulk
 decoupling, and `ACTUATE_REQUEST_N` pull-up (R4) are detailed in §7; PoE front-end passive assignments

@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-22
+**Last Updated:** 2026-08-16
 
 ---
 
@@ -17,11 +17,16 @@ the Stator via a 6-wire harness on `J1`.
 
 The active architecture is:
 
-- `U1` (`MCP23017 @ 0x23`) reads the 10 configuration toggles plus `CFG_APPLY_N`
+> **Interim reduction (2026-08-16):** the former Bank 2 (`CFG_REFMAP[5:0]`) hardware - `SW5-SW10`,
+> `D6-D12`, `U3`, and their associated colour-rail/anode-drive transistors and resistors - has been
+> removed from this board. RefDes gaps are left intentionally, pending a fuller redesign - see
+> `design/Electronics/User_Settings_Module/Design_Spec.md §1` and
+> `.copilot/todos/usm-cfg-refmap-removal-review.md`.
+
+- `U1` (`MCP23017 @ 0x23`) reads the 4 configuration toggles plus `CFG_APPLY_N`
 - `U2` (`MCP23017 @ 0x24`) drives the 5 Bank 1 BSS138 pre-driver gates and the Bank 1 RGB rail gates
-- `U3` (`MCP23017 @ 0x25`) drives the 7 Bank 2 BSS138 pre-driver gates and the Bank 2 RGB rail gates
-- `Q1-Q6` (BSS138 NMOS) are shared colour-rail low-side switches (3 per bank: R/G/B)
-- `Q7-Q18` (BSS138 NMOS) are per-anode pre-drivers; `Q19-Q30` (PMOS, Cat B) are per-anode high-side switches;
+- `Q1-Q3` (BSS138 NMOS) are shared colour-rail low-side switches (R/G/B)
+- `Q7-Q11` (BSS138 NMOS) are per-anode pre-drivers; `Q19-Q23` (PMOS, Cat B) are per-anode high-side switches;
   each pair sits in the signal path between the MCP23017 GPIO and the LED anode
 
 All three LED colour channels are routed and driven; CM5 selects the active bank colour according to
@@ -30,24 +35,24 @@ mode or status state.
 ```text
 TOP EDGE / ENCLOSURE PANEL FACE
 
-  [D1 SRC]  [SW1] [SW2] [SW3] [SW4]   [D6 SRC]  [SW5] [SW6] [SW7] [SW8] [SW9] [SW10] [SW11]
-    [LED]   [D2]  [D3]  [D4]  [D5]      [LED]   [D7]  [D8]  [D9]  [D10] [D11] [D12]  [PB]
+  [D1 SRC]  [SW1] [SW2] [SW3] [SW4]                                          [SW11]
+    [LED]   [D2]  [D3]  [D4]  [D5]                                            [PB]
 
-   J1        U1 (0x23)    U2 (0x24)  Q7-Q11/Q19-Q23    U3 (0x25)  Q12-Q18/Q24-Q30   Q1/G/B Q4/G/B
-   left edge       centre-left    centre                              centre-right              right edge
+   J1        U1 (0x23)    U2 (0x24)  Q7-Q11/Q19-Q23                        Q1/G/B
+   left edge       centre-left    centre                                right edge
 ```
 
 ---
 
 ## 2. Placement Zones
 
-- **Top edge:** 10 configuration toggle switches, 12 indicator LEDs (including 2 source-status LEDs), and the `SW11` actuator position
+- **Top edge:** 4 configuration toggle switches, 5 indicator LEDs (including 1 source-status LED), and the `SW11` actuator position
 - **Left edge:** `J1` 6-pin JST PH connector, cable exit toward Stator `J13`
 - **Centre-left:** `U1`, `R1`, `C4`
-- **Centre / centre-right:** `U2` and `U3`, LED series resistors, per-anode two-stage switches
-  (`Q7-Q18` BSS138 pre-drivers + `Q19-Q30` PMOS high-side, Cat B), and anode-routing fanout
-- **Right edge:** 6 RGB BSS138 colour-rail transistors (`Q1-Q6`) with adjacent gate resistors
-  (`R12-R17`)
+- **Centre:** `U2`, LED series resistors, per-anode two-stage switches
+  (`Q7-Q11` BSS138 pre-drivers + `Q19-Q23` PMOS high-side, Cat B), and anode-routing fanout
+- **Right edge:** 3 RGB BSS138 colour-rail transistors (`Q1-Q3`) with adjacent gate resistors
+  (`R12-R14`)
 
 ---
 
@@ -59,7 +64,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 
 | Pin | Signal | Notes |
 | :--- | :--- | :--- |
-| 1 | `3V3_ENIG` | Logic supply for the three MCP23017 devices |
+| 1 | `3V3_ENIG` | Logic supply for the two MCP23017 devices |
 | 2 | `5V_MAIN` | Indicator power feed from the Controller via Stator `J13` / `J11` |
 | 3 | `GND` | Logic return only; no local GND_CHASSIS bond |
 | 4 | `SDA` | Shared I2C-1 data |
@@ -75,23 +80,18 @@ TOP EDGE / ENCLOSURE PANEL FACE
 ## 4. U1 - MCP23017 @ 0x23
 
 **Package:** SOIC-28  
-**Role:** Reads the 10 configuration toggles and `CFG_APPLY_N`
+**Role:** Reads the 4 configuration toggles and `CFG_APPLY_N`
 
 | Port | Pin | Signal | Direction | Pull | Description |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| GPA | [0] | `CFG_ROUTE[0]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 1 routing config bit 0 (`SW1`) |
-| GPA | [1] | `CFG_ROUTE[1]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 1 routing config bit 1 (`SW2`) |
-| GPA | [2] | `CFG_ROUTE[2]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 1 routing config bit 2 (`SW3`) |
-| GPA | [3] | `CFG_ROUTE[3]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 1 routing config bit 3 (`SW4`) |
+| GPA | [0] | `CFG_ROUTE[0]` | Bidirectional(Input) | 330Ω series (R2–R5) | Bank 1 routing config bit 0 (`SW1`) |
+| GPA | [1] | `CFG_ROUTE[1]` | Bidirectional(Input) | 330Ω series (R2–R5) | Bank 1 routing config bit 1 (`SW2`) |
+| GPA | [2] | `CFG_ROUTE[2]` | Bidirectional(Input) | 330Ω series (R2–R5) | Bank 1 routing config bit 2 (`SW3`) |
+| GPA | [3] | `CFG_ROUTE[3]` | Bidirectional(Input) | 330Ω series (R2–R5) | Bank 1 routing config bit 3 (`SW4`) |
 | GPA | [5:4] | NC | Bidirectional | - | - |
 | GPA | [6] | `CFG_APPLY_N` | Bidirectional(Input) | 10k pull-up | Active-low momentary pushbutton (`SW11`) |
 | GPA | [7] | NC | Output | - | - |
-| GPB | [0] | `CFG_REFMAP[0]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 2 reflector-map bit 0 (`SW5`) |
-| GPB | [1] | `CFG_REFMAP[1]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 2 reflector-map bit 1 (`SW6`) |
-| GPB | [2] | `CFG_REFMAP[2]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 2 reflector-map bit 2 (`SW7`) |
-| GPB | [3] | `CFG_REFMAP[3]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 2 reflector-map bit 3 (`SW8`) |
-| GPB | [4] | `CFG_REFMAP[4]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 2 reflector-map bit 4 (`SW9`) |
-| GPB | [5] | `CFG_REFMAP[5]` | Bidirectional(Input) | 330Ω series (R2–R11) | Bank 2 reflector-map bit 5 (`SW10`) |
+| GPB | [5:0] | NC | Bidirectional | - | Former `CFG_REFMAP[5:0]` (Bank 2) inputs - fully spare since the 2026-08-16 removal, see `Design_Spec.md §1` |
 | GPB | [6] | NC | Bidirectional | - | - |
 | GPB | [7] | NC | Output | - | - |
 
@@ -117,25 +117,8 @@ TOP EDGE / ENCLOSURE PANEL FACE
 | GPB | [6:0] | NC | Bidirectional | - |
 | GPB | [7] | NC | Output | - |
 
-### 5.2 U3 - MCP23017 @ 0x25
-
-> **Note:** GPA[0:6] each drive a BSS138 pre-driver gate (Q12-Q18) via 1 kΩ (R59-R65); the BSS138
-> pulls its paired PMOS gate (Q24-Q30) low, enabling the 5V_MAIN high-side switch to the LED anode.
-
-| Port | Pin | Signal | Direction | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| GPA | [0] | `LED_B2_SRC_A` | Bidirectional(Output) | Drives Q12 gate → Q24 high-side → D6 anode |
-| GPA | [1] | `LED_B2_0_A` | Bidirectional(Output) | Drives Q13 gate → Q25 high-side → D7 anode |
-| GPA | [2] | `LED_B2_1_A` | Bidirectional(Output) | Drives Q14 gate → Q26 high-side → D8 anode |
-| GPA | [3] | `LED_B2_2_A` | Bidirectional(Output) | Drives Q15 gate → Q27 high-side → D9 anode |
-| GPA | [4] | `LED_B2_3_A` | Bidirectional(Output) | Drives Q16 gate → Q28 high-side → D10 anode |
-| GPA | [5] | `LED_B2_4_A` | Bidirectional(Output) | Drives Q17 gate → Q29 high-side → D11 anode |
-| GPA | [6] | `LED_B2_5_A` | Bidirectional(Output) | Drives Q18 gate → Q30 high-side → D12 anode |
-| GPA | [7] | `BNK2_R` | Output | Drives `Q4` gate (Bank 2 red colour-rail) |
-| GPB | [0] | `BNK2_G` | Bidirectional(Output) | Drives `Q5` gate (Bank 2 green colour-rail) |
-| GPB | [1] | `BNK2_B` | Bidirectional(Output) | Drives `Q6` gate (Bank 2 blue colour-rail) |
-| GPB | [6:2] | NC | Bidirectional | - |
-| GPB | [7] | NC | Output | - |
+> **Removed 2026-08-16:** the former "5.2 U3 - MCP23017 @ 0x25" section (Bank 2 LED driver) has
+> been removed - see `Design_Spec.md §1`.
 
 ---
 
@@ -144,7 +127,7 @@ TOP EDGE / ENCLOSURE PANEL FACE
 Each indicator LED uses a two-stage switch path from MCP23017 GPIO to LED anode, plus shared
 colour-rail low-side switches for RGB selection.
 
-**Per-anode high-side path (12 LED positions):**
+**Per-anode high-side path (5 LED positions):**
 
 | GPIO source | Gate resistor | BSS138 pre-driver | PMOS high-side | LED anode |
 | :--- | :--- | :--- | :--- | :--- |
@@ -153,24 +136,14 @@ colour-rail low-side switches for RGB selection.
 | `U2.GPA[2]` | `R56` | `Q9` | `Q21` | `D3` |
 | `U2.GPA[3]` | `R57` | `Q10` | `Q22` | `D4` |
 | `U2.GPA[4]` | `R58` | `Q11` | `Q23` | `D5` |
-| `U3.GPA[0]` | `R59` | `Q12` | `Q24` | `D6` |
-| `U3.GPA[1]` | `R60` | `Q13` | `Q25` | `D7` |
-| `U3.GPA[2]` | `R61` | `Q14` | `Q26` | `D8` |
-| `U3.GPA[3]` | `R62` | `Q15` | `Q27` | `D9` |
-| `U3.GPA[4]` | `R63` | `Q16` | `Q28` | `D10` |
-| `U3.GPA[5]` | `R64` | `Q17` | `Q29` | `D11` |
-| `U3.GPA[6]` | `R65` | `Q18` | `Q30` | `D12` |
 
-**Shared colour-rail low-side path (6 transistors):**
+**Shared colour-rail low-side path (3 transistors):**
 
 | Transistor | Gate source | Gate resistor | Function |
 | :--- | :--- | :--- | :--- |
 | `Q1` | `U2.GPA[5]` | `R12` | Pull Bank 1 red rail low |
 | `Q2` | `U2.GPA[6]` | `R13` | Pull Bank 1 green rail low |
 | `Q3` | `U2.GPA[7]` | `R14` | Pull Bank 1 blue rail low |
-| `Q4` | `U3.GPA[7]` | `R15` | Pull Bank 2 red rail low |
-| `Q5` | `U3.GPB[0]` | `R16` | Pull Bank 2 green rail low |
-| `Q6` | `U3.GPB[1]` | `R17` | Pull Bank 2 blue rail low |
 
 CM5 firmware normally selects one colour rail per bank at a time:
 
@@ -188,13 +161,6 @@ CM5 firmware normally selects one colour rail per bank at a time:
 | `SW2` / `D3` | `U1.GPA[1]` (`CFG_ROUTE[1]`) | `U2.GPA[2]` (`LED_B1_1_A`) | `U2.GPA[5:7]` |
 | `SW3` / `D4` | `U1.GPA[2]` (`CFG_ROUTE[2]`) | `U2.GPA[3]` (`LED_B1_2_A`) | `U2.GPA[5:7]` |
 | `SW4` / `D5` | `U1.GPA[3]` (`CFG_ROUTE[3]`) | `U2.GPA[4]` (`LED_B1_3_A`) | `U2.GPA[5:7]` |
-| `D6` Bank 2 source-status LED | - | `U3.GPA[0]` (`LED_B2_SRC_A`) | `U3.GPA[7]` / `U3.GPB[0:1]` |
-| `SW5` / `D7` | `U1.GPB[0]` (`CFG_REFMAP[0]`) | `U3.GPA[1]` (`LED_B2_0_A`) | `U3.GPA[7]` / `U3.GPB[0:1]` |
-| `SW6` / `D8` | `U1.GPB[1]` (`CFG_REFMAP[1]`) | `U3.GPA[2]` (`LED_B2_1_A`) | `U3.GPA[7]` / `U3.GPB[0:1]` |
-| `SW7` / `D9` | `U1.GPB[2]` (`CFG_REFMAP[2]`) | `U3.GPA[3]` (`LED_B2_2_A`) | `U3.GPA[7]` / `U3.GPB[0:1]` |
-| `SW8` / `D10` | `U1.GPB[3]` (`CFG_REFMAP[3]`) | `U3.GPA[4]` (`LED_B2_3_A`) | `U3.GPA[7]` / `U3.GPB[0:1]` |
-| `SW9` / `D11` | `U1.GPB[4]` (`CFG_REFMAP[4]`) | `U3.GPA[5]` (`LED_B2_4_A`) | `U3.GPA[7]` / `U3.GPB[0:1]` |
-| `SW10` / `D12` | `U1.GPB[5]` (`CFG_REFMAP[5]`) | `U3.GPA[6]` (`LED_B2_5_A`) | `U3.GPA[7]` / `U3.GPB[0:1]` |
 | `SW11` | `U1.GPA[6]` (`CFG_APPLY_N`) | - | - |
 
 ---
@@ -216,11 +182,11 @@ CM5 firmware normally selects one colour rail per bank at a time:
 
 ### 8.1 Routing guidance
 
-- Keep `SDA` / `SCL` as a matched short pair from `J1` to the three expanders
+- Keep `SDA` / `SCL` as a matched short pair from `J1` to the two expanders
 - Route the `5V_MAIN` feed and pin-6 return wider than logic traces
 - Place one 100nF decoupler at each MCP23017 supply pin cluster
-- Keep colour-rail gate resistors (R12-R17) adjacent to the six colour-rail BSS138s (Q1-Q6)
-- Place each BSS138 pre-driver (Q7-Q18) and its paired PMOS (Q19-Q30) in a tight pair directly
+- Keep colour-rail gate resistors (R12-R14) adjacent to the three colour-rail BSS138s (Q1-Q3)
+- Place each BSS138 pre-driver (Q7-Q11) and its paired PMOS (Q19-Q23) in a tight pair directly
   in the anode signal path between the MCP23017 GPIO fanout and the LED anode; keep PMOS source
   via short and direct to the `5V_MAIN` plane
 

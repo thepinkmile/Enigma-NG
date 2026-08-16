@@ -7,16 +7,232 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**Continue with:** `merge-create-cypher-input` — the keyboard input panel board.
+**2026-08-16 session update (checkpoint 185):** `merge-create-cypher-input` is now **done**. A
+long review/cleanup session covered: `BOARD_ROLE_ID`-vs-I2C wording corrections; a historical-
+language sweep (removed "retired"/"formerly"/"superseded" narration - design docs should state
+only current facts, per user direction); "64-Char Extended" renamed to "64-Character" across 8
+files (matches Rotor's "64-Character Variant" convention); the 64-Character-only colour-select
+mux (U9)/Shift-sense (D9/R9) circuit moved out of the common `Design_Spec.md` into its own variant
+file, per user request; an unapproved non-ASCII mux-enable character fix (replaced with plain
+`` `E` (mux enable, active-low) ``); placeholder ASCII key layouts added to the 26-Char and
+64-Character variant files; and a restructured assembly plan so only the LEDs and RV1 are
+top-face/hand-soldered post-PCBA, with everything else on the rear face for JLCPCB's
+single-sided-only standard SMT service (`JLCPCB_Manufacturing.md §3.1`).
 
-Key facts:
+The user also proposed a candidate addressable LED (SK6812MINI-E, Adafruit #4960) to replace the
+placeholder RGB LED part - datasheet + KiCad library zip were already staged locally; generated a
+markdown datasheet via `.copilot/agent-scripts/generate_markdown_datasheets.py` and logged full
+findings (including a **critical open VDD-vs-3V3_ENIG voltage concern** and the required
+drive-circuit redesign for an addressable single-wire-protocol LED) in `merge-missing-
+components.md` - **not yet approved for sourcing**.
+
+**Resolved this session - DEC-088:** the last blocking item for `merge-create-cypher-input` (the
+left-side J4/J6 "Plugboard passthrough" signal question) is resolved. The Plugboard board's only
+electrical role is passive HID-chain termination (no plugboard signals on J4/J6 at all); physical
+patch jacks mount mechanically-only on the Plugboard board, wired via spade-to-spade harness
+directly to the Cypher Board's own spade terminal bank (`J20+`, confirmed at the bottom edge of
+the rear face - general location only, exact arrangement still TBD at layout). The `J4`/`J6` left
+pair also gained reserved/spare `5V_MAIN` pins for potential future LED power needs.
+
+**Continue with:** `merge-create-cypher-output` (lightboard/output panel board) - see
+`.copilot/todos/merge-create-cypher-output.md` for the full wiring-notes set, now synced to
+DEC-088. It needs no local colour-select mux/Shift-sense/555 oscillator of its own (just 3 colour
+MOSFETs + 1 cathode-return MOSFET driven by Cypher-Input's broadcast signals), plus its own I2C
+GPIO expander (fresh address from `0x39-0x3E`, not `0x38`) and its own `BOARD_ROLE_ID[2:0]`
+variant scheme once confirmed with the user.
+
+**Explicitly out of scope:** `Mechanical/Keyboard_Assembly`, `Lightboard_Assembly`, and
+`Plugboard_Assembly` design specs still describe the pre-Cypher standalone-board architecture and
+are stale relative to the current electronics design. Per explicit user direction, do not touch
+mechanical or software sections — those get a dedicated overhaul pass only after the electronics
+design is fully merged.
+
+Likely next steps:
+
+1. Await user confirmation of the RGB LED part, then finalise current-limit resistor values
+   across all 3 Cypher-Input variant files.
+2. `merge-create-cypher-output` — create the board files (Design_Spec.md + Board_Layout.md);
+   wiring notes are already captured in its todo file, updated post-DEC-087 to reflect that this
+   board needs no local colour/brightness generation of its own - just 3 colour MOSFETs + 1
+   cathode-return MOSFET driven by broadcast signals from Cypher-Input.
+3. `merge-create-plugboard` — new todo; scope the termination/blanking board for the bottom of
+   the Cypher-Input/Cypher-Output stack (mirrors Stack-Blanking; termination resistor values
+   already captured in its todo file).
+
+### Process item to review (user-flagged, 2026-08-06 — partially resolved 2026-08-13/14)
+
+Two directive files currently contain mutable "next value" state that gets updated as design
+work proceeds:
+
+- `.copilot/directives/tertiary.md` — still reads `**Next entry: DEC-086**` (stale - actual next
+  entry is now DEC-088, since DEC-086 and DEC-087 have both been created this and the prior
+  session; not correcting the directive file itself without explicit instruction, per the
+  flagged concern below)
+- `.copilot/directives/repo-state.md` — **the user has explicitly asked for this counter to be
+  kept up to date going forward** (2026-08-13); it now correctly reads
+  `**Current highest: 183. Next: 184.**`. The `tertiary.md` DEC-number counter has not received
+  the same explicit instruction and is left untouched pending user direction.
+
+Directives are meant to be written and updated only by the repository owner (per the standing
+convention that directives define non-negotiable rules, not evolving state). Tracking values like
+"next DEC number" or "next checkpoint number" is exactly the kind of thing that belongs in
+`plan.md`/`handoff.md` instead, since the agent needs to update it every time a new DEC or
+checkpoint is created. Flagging for the user to decide how to restructure this - not changing the
+directive files themselves without explicit instruction.
+
+### What changed in this session (2026-08-14)
+
+1. **Session re-initialised properly** after an apparent mid-task interruption from the prior
+   session - followed `SESSION_START.md` in full, confirmed the `Electronics/Encoder/` →
+   `Electronics/Encoder_Module/` change was a legitimate rename/rewrite (not data loss - briefly
+   over-archived it to `.recycle-bin/` in error, reverted once the user clarified), and wrote the
+   missing checkpoint (182) for that prior work plus synced `plan.md`/`handoff.md`.
+2. **Cypher-Input LED colour architecture fully reworked (DEC-087)**, following user review of
+   `Board_Layout.md §1`: colour selection moved entirely off the ENC module's `plain-bits` bus
+   (all 64 `PB[]` positions now reserved purely for cipher-path keyswitches, on every variant) and
+   onto a local, software-configurable RGB circuit. U4 (PCA9534A) GPIO defines colour code(s); the
+   64-Char Extended variant (the only one with a Shift key) adds a local hardware mux (`U9`,
+   `74HC157PW-Q100,118` - reused from the Cypher Board's own keyboard-source mux) plus a
+   diode-OR Shift-sense network (`D9` `BAT54C`, `R9`) to switch between two software-configured
+   colours in real time; Classic/10-Numeric drive one fixed-but-configurable colour directly, no
+   mux needed.
+3. **Brightness control moved to the LED bank's termination.** RV1/555 (U1) no longer feeds the
+   ENC module's `GCLK0` pin - its PWM output now gates `U8` (`BSS138`), a shared cathode-return
+   switch downstream of all colour selection, broadcast (along with the 3 colour signals) to the
+   future Cypher-Output board via the **left** connector pair (`J4`/`J6`) rather than the JTAG
+   chain-through pair. `GREEN_PWM_N`/`YELLOW_PWM_N` (previously on the JTAG pair) are retired -
+   updated in both `Cypher-Input/Board_Layout.md` and the canonical template owner,
+   `Cypher/Board_Layout.md §4`.
+4. **LED part is now an explicit placeholder.** The previous Kingbright APFA2507Y2G2C-C2 bicolour
+   part is retired; BOM rows across all 3 variant files show `TBD` pending the user's own
+   confirmation of a part that fits under the Cherry MX2A-71NB keyswitch cutout - explicitly not
+   sourced by the agent, per the established sourcing-responsibility convention and this session's
+   direct user instruction ("Don't try to locate the part").
+5. **`.copilot/todos/merge-create-cypher-output.md` updated** to describe the simplified LED
+   architecture that board will need (broadcast-only, no local colour/brightness generation), and
+   the `Encoder_Module/Board_Layout.md §1a` `plain-bits` usage note was corrected to remove the
+   now-stale "LED drive outputs on Cypher-Input" example.
+6. **Checkpoint 183 + DEC-087 created**; `plan.md`/`handoff.md` synced; `repo-state.md`'s
+   checkpoint counter updated to 183/184 per explicit user instruction (2026-08-13) that this
+   counter should be kept current going forward - see the process-item note above.
+
+### What changed in this session (2026-08-09)
+
+1. **4-connector HID board architecture** replaces the original single-connector model for
+   Cypher-Input/Cypher-Output: 2 male connectors at the top edge (mate upward), 2 female at the
+   bottom edge (mate downward), inset from the board sides for mechanical stability. Left pair =
+   3V3_ENIG/GND/Plugboard passthrough (signals TBD); right pair = shared JTAG+signal template,
+   identical regardless of which board occupies which physical slot ("either order" support).
+   Connector Definition Ownership for the shared right-pair template moved to
+   `Cypher/Board_Layout.md §4`.
+
+2. **Revised 37-device JTAG chain order**: FT232H → Cypher-Input CPLD (device 1) →
+   Cypher-Output CPLD (device 2) → 4x Plugboard Encoder Modules (devices 3-6) → Cypher Board's
+   own U1 CPLD (device 7) → 30x Rotor CPLDs (devices 8-37) → `TTD_RETURN` → FT232H. U1 moved
+   from chain position 1 to position 7 - all "static" CPLDs now precede the "dynamic" Rotor
+   stack. `TTD` naming convention applied consistently at every hop (no `TDI`/`TDO`/`_FWD`/`_RET`
+   suffixes), matching the existing Rotor mini-stack convention.
+
+3. **Full 50-pin shared connector map resolved** (was previously only JTAG): `ENC_DATA[5:0]`
+   (pins 3-14, row = generating/consuming board, other row = passthrough), `BOARD_ROLE_ID[2:0]`
+   (pins 17-22, same row convention; encoding MSB-to-LSB: `000`=64-Char, `001`=26-Char,
+   `010`=10-Numeric, rest reserved), `CPLD_RESET_N` (pin 23 only - reduced from 2 pins since it's
+   broadcast/unchained), `ENC_ACTIVE_KBD_N` (pin 24, renamed from draft placeholder
+   `ENC_ACTIVE_INPUT_N` to match the Cypher Board's existing internal net name), `I2C_SDA`/
+   `I2C_SCL` (pins 29/31, single pin each - renamed from `I2C_SCL_PASS`/`I2C_SDA_PASS`),
+   `GREEN_PWM_N`/`YELLOW_PWM_N` (pins 30/32), plus the `TTD`x3/`TMS`/`TCK` JTAG block.
+
+4. **Caught and corrected an in-session error**: initially guessed a JLCPCB PN for the new
+   right-angle male connector (J4/J5) without checking existing parts; corrected to reuse the
+   already-approved `QTS-025-01-L-D-RA-P` part data from Stack-Input's J1 (same MPN, same
+   supplier PNs). Also corrected the Cypher Board's own connector MPN/orientation from an
+   initially-wrong right-angle female guess to the correct vertical female
+   `QSS-025-01-L-D-A-GP-K` (matching the existing Stack-Input/Cypher J3/J4 "hub" pattern).
+
+5. **New todo created**: `merge-create-plugboard` - termination/blanking board for the bottom of
+   the Cypher-Input/Cypher-Output local stack, mirroring Stack-Blanking's role for the rotor
+   mini-stack chain. Termination resistor values (10 kOhm ERJ-2RKF1002X; TCK pull-down, TMS +
+   CPLD_RESET_N pull-up) copied from `Stack-Blanking/Design_Spec.md §3`. Added as a dependency of
+   `merge-update-top-level-docs`.
+
+6. **Todo detail files updated**: `merge-create-cypher-input.md` (both blocking items resolved,
+   full resolved-items log added), `merge-create-cypher-output.md` (mirrored wiring notes for
+   all resolved signal groups), `merge-create-plugboard.md` (new).
+
+### Key facts (Cypher-Input Board, updated 2026-08-09)
+
+- Two variants documented in one Design_Spec: **26-Char Classic** (QWERTZ, 26 letters, mimics
+  original Enigma, no Shift/digits/symbols/Space/Enter) and **64-Char Extended** (42 keys: 26
+  letters + 10 digits + 2 base64-extra symbols `+`/`/` + 2 Shift + Space + Enter; RFC 4648 base64
+  alphabet). Component types identical between variants; only quantities/PB[] allocation/I2C
+  address differ.
 - ENC module connects via Hirose DF40C BtB connectors (90-pin DP + 24-pin DP + 10-pin DP)
 - Mechanical keyboard switches: MX2A-71NB (Cherry) in PG151101S11 (Kailh) hot-swap sockets
-- LED circuit: APFA2507Y2G2C-C2 bicolor LEDs; 555 PWM brightness (MIC1555YM5-TR); P-MOSFET (SQ2319ADS) high-side switch; 130Ω (AT0402CRD07130RL) and 120Ω (AT0402CRD07120RL) current-limit resistors
+- LED circuit: APFA2507Y2G2C-C2 bicolor LEDs; 555 PWM brightness (MIC1555YM5-TR); P-MOSFET
+  (SQ2319ADS-T1_BE3) high-side switch; 130Ω (AT0402CRD07130RL) and 120Ω (AT0402CRD07120RL)
+  current-limit resistors — all confirmed sourcing per source discussion rows 14/16/17
 - Rotary brightness dial: 3310P-001-503L (Bourns 50kΩ)
-- BtB connection to Cypher Board (same Hirose family — mating DS connectors)
-- Two variants: 26-char (Enigma standard) and 64-char (extended)
-- Source entries: discussion doc Entries 16, 17, 18 in `extension-mechanical-usage.md`
+- Connector to Cypher Board (revised 2026-08-09): 4 connectors J4/J5 (top, male,
+  QTS-025-01-L-D-RA-P) + J6/J7 (bottom, female, QSS-025-01-L-D-RA-K) - see `Board_Layout.md §4`
+  for the full pin map
+- On-board I2C GPIO expander (U4, PCA9534A) provides board-type identification per variant (0x38
+  Extended, 0x39 Classic, 0x3A-0x3E reserved for further variants) and, on the Extended variant
+  only, reads Space/Enter outside the cipher pipeline. Connects to `I2C_SCL`/`I2C_SDA` (pins
+  31/29) — **not** a pure passthrough.
+- Source entries: discussion doc Entries 16-20 in `extension-mechanical-usage.md`
+
+### What changed in this session (2026-08-06)
+
+1. **Cypher-Input Board draft created** (`merge-create-cypher-input`, in_progress — not done):
+   - `design/Electronics/Cypher-Input/Design_Spec.md`
+   - `design/Electronics/Cypher-Input/Board_Layout.md`
+   - Two variants documented (26-Char Classic, 64-Char Extended); dual BOM Qty columns mirroring
+     Rotor's ROT-26/ROT-64 pattern
+   - New I2C GPIO expander (U4, PCA9534A) for board-type identification + non-cipher key I/O
+
+2. **I2C address allocation** (PCA9534A chosen over MCP23017 — MCP23017's fixed address space
+   would be entirely consumed by existing devices):
+   - 0x38 = Cypher-Input 64-Char Extended
+   - 0x39 = Cypher-Input 26-Char Classic
+   - 0x3A-0x3E reserved for further keyboard variants (Cypher-Output needs its own address from
+     this range when designed)
+   - 4 system-wide I2C address tables updated: `Electronics/Electrical_Design.md`,
+     `Electronics/System_Architecture.md`, `Electronics/Boards_Overview.md`,
+     `Controller/Design_Spec.md §4.1`
+   - Fixed a pre-existing `PCA9534A`/`PCA9534APWR` naming inconsistency in `Boards_Overview.md`
+
+3. **Sourcing corrections**: initial draft had incorrect/fabricated supplier PNs for the LED and
+   current-limit resistors; corrected to the exact MPNs/PNs already confirmed in the source
+   discussion (rows 14/16/17). Established convention going forward: only populate MPN/supplier
+   PNs for parts explicitly given in the source discussion or already approved elsewhere in the
+   system BOM — sourcing genuinely new components is the user's job, not the agent's.
+
+4. **Todo detail files updated** to target follow-on work:
+   - `merge-create-cypher-input.md` (status → in_progress; full context; open items)
+   - `merge-create-cypher-output.md` (needs own I2C address from 0x3A-0x3E; shares non-passthrough bus)
+   - `merge-cypher-board-j3j6-pinouts.md` (I2C_SCL_PASS/I2C_SDA_PASS no longer NC/passthrough-only)
+
+5. **Fixed a stale reference in `plan.md`**: "Critical Standing Rules" said next Design Log
+   entry = DEC-084, but DEC-084 and DEC-085 already exist (per `design/Design_Log/index.md`).
+   Corrected to DEC-086, matching the `tertiary.md` directive.
+
+### Files created this session (2026-08-06)
+
+**New:**
+`design/Electronics/Cypher-Input/Design_Spec.md` · `design/Electronics/Cypher-Input/Board_Layout.md`
+`.copilot/checkpoints/180-cypher-input-draft-two-variants-i2c-board-id.md`
+
+**Modified:**
+`design/Electronics/Electrical_Design.md` · `design/Electronics/System_Architecture.md` ·
+`design/Electronics/Boards_Overview.md` · `design/Electronics/Controller/Design_Spec.md`
+`.copilot/todos/merge-create-cypher-input.md` · `.copilot/todos/merge-create-cypher-output.md` ·
+`.copilot/todos/merge-cypher-board-j3j6-pinouts.md` · `.copilot/todos/index.md` ·
+`.copilot/todos/todos.sql`
+`.copilot/checkpoints/index.md` · `.copilot/plan.md` · `.copilot/handoff.md`
+
+---
+
+## Previous session (2026-07-25)
 
 ### What changed in this session (2026-07-25)
 

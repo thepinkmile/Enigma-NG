@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
-**Last Updated:** 2026-05-15
+**Last Updated:** 2026-08-12
 
 ## 1. Overview
 
@@ -104,18 +104,11 @@ Only the Power Module implements the intentional `GND` ↔ `GND_CHASSIS` bond.
   - Controller -> Power Module over `J3`
   - Controller -> Stator over `J5`
   - Stator -> User Settings Module over `J13`
-  - `0x09`: LTC3350 supercap charger / monitor (Power Module)
-  - `0x0B`: Smart Battery / SMBus monitor (Power Module)
-  - `0x20`: MCP23017 U6 (Stator ENC monitoring)
-  - `0x21`: MCP23017 U7 (Stator virtual keypress / SOURCE_SEL / CPLD_RESET_N)
-  - `0x22`: MCP23017 U8 (Stator CPLD config output driver)
-  - `0x23`: MCP23017 U1 (User Settings Module switch input)
-  - `0x24`: MCP23017 U2 (User Settings Module Bank 1 LED controller)
-  - `0x25`: MCP23017 U3 (User Settings Module Bank 2 LED controller)
-  - `0x28`: STUSB4500 USB PD controller (Power Module)
-  - `0x3F`: PCA9534APWR PM-local GPIO expander (Power Module)
-  - `0x40`: INA219 (Power Module)
-  - `0x45`: INA219 (Stator)
+
+> **Authoritative I2C address table:** see `Controller/Design_Spec.md §4.1` for the full list of
+> device addresses, locations, and functions across all boards sharing the `I2C1` bus (Power
+> Module, Stator, User Settings Module, Cypher-Input). This section documents topology only, to
+> avoid duplicating a table that must otherwise be kept in sync in two places.
 
 ## 5. System Architecture & Status
 

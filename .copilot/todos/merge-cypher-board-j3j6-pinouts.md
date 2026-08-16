@@ -19,3 +19,9 @@ tied to GND as placeholders. User requires symmetric, fully specified allocation
 - J3 and J4 have 50 contacts each (QSS-025-01-L-D-A-GP-K); currently 26 and 24 defined.
 - J5 and J6 have 50 contacts each (QTS-025-01-L-D-A-GP-K-TR); Entry 19 pin map defines all 50.
 - Update Board_Layout.md §2-§4 pinout tables and Design_Spec.md §3 Port Mapping when resolved.
+- **Update from Cypher-Input session (2026-08-06):** `I2C_SCL_PASS`/`I2C_SDA_PASS` on J5/J6 are
+  **no longer documented as a pure Plugboard-only passthrough**. Cypher-Input's own I2C GPIO
+  expander (U4, PCA9534A @ 0x38 or 0x39 depending on variant) connects directly to this bus via
+  J5, and Cypher-Output will need to do the same via J6 (see `merge-create-cypher-output.md`).
+  When resolving this todo, reconcile the J5/J6 pin usage notes in `Cypher/Board_Layout.md §4`
+  accordingly - these two pins are active on both Input/Output-Cypher, not NC/reserved.
