@@ -190,3 +190,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 183 | Cypher-Input LED colour architecture redesigned (RGB, local, off `plain-bits`) | 183-cypher-input-led-colour-architecture-redesigned.md |
 | 184 | ENC_ACTIVE_INPUT_N naming consolidated (Cypher / Cypher-Input); LED part sourcing deferred to merge-missing-components | 184-enc-active-input-n-naming-consolidated.md |
 | 185 | Cypher-Input Board design complete; Plugboard/5V_MAIN architecture clarified (DEC-088) | 185-cypher-input-complete-plugboard-5v-main-dec088.md |
+| 186 | Cypher-Output Board design drafted; power budget corrections | 186-cypher-output-drafted-power-budget-fixes.md |

@@ -7,39 +7,87 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**2026-08-16 session update (checkpoint 185):** `merge-create-cypher-input` is now **done**. A
-long review/cleanup session covered: `BOARD_ROLE_ID`-vs-I2C wording corrections; a historical-
-language sweep (removed "retired"/"formerly"/"superseded" narration - design docs should state
-only current facts, per user direction); "64-Char Extended" renamed to "64-Character" across 8
-files (matches Rotor's "64-Character Variant" convention); the 64-Character-only colour-select
-mux (U9)/Shift-sense (D9/R9) circuit moved out of the common `Design_Spec.md` into its own variant
-file, per user request; an unapproved non-ASCII mux-enable character fix (replaced with plain
-`` `E` (mux enable, active-low) ``); placeholder ASCII key layouts added to the 26-Char and
-64-Character variant files; and a restructured assembly plan so only the LEDs and RV1 are
-top-face/hand-soldered post-PCBA, with everything else on the rear face for JLCPCB's
-single-sided-only standard SMT service (`JLCPCB_Manufacturing.md §3.1`).
+**2026-08-16 session update (checkpoint 186):** Two major threads this session.
 
-The user also proposed a candidate addressable LED (SK6812MINI-E, Adafruit #4960) to replace the
-placeholder RGB LED part - datasheet + KiCad library zip were already staged locally; generated a
-markdown datasheet via `.copilot/agent-scripts/generate_markdown_datasheets.py` and logged full
-findings (including a **critical open VDD-vs-3V3_ENIG voltage concern** and the required
-drive-circuit redesign for an addressable single-wire-protocol LED) in `merge-missing-
-components.md` - **not yet approved for sourcing**.
+**1. `BOARD_ROLE_ID` redesign (DEC-089).** Widened from a 3-bit enumerated index to a 4-bit
+capability bitmask (bit0=Characters, bit1=Numbers, bit2=Special, bit3=Custom), with an
+`AND`-based compatibility rule on the Cypher Board's CPLD comparator producing
+`HID_VARIANT_ID[3:0]`. CPLD pin budget was freed by replacing the old `CFG_REFMAP[5:0]` parallel
+bus (removed from User Settings Module Bank 2) with a JTAG-based UFM write for reflector-map
+selection. The strap migrated from the Cypher Board's `J6` (right, JTAG template - no spare
+budget once widened) to `J5` (left, has headroom). Went through several rounds of user-directed
+refinement: removed all historical/narrative wording from design docs (state only current facts -
+history belongs in the DEC log + git, not prose like "formerly"/"moved here"); removed
+"spare"/"reserved" pin labels (every pin needs a specific current allocation - unallocated pins
+are just `GND`); rebuilt the `J5` pin map for **180° rotational symmetry** with an **equal 8/8/8
+`3V3_ENIG`/`5V_MAIN`/GND split**, RGB/brightness signals split diagonally, and
+`BOARD_ROLE_ID_IN[3:0]`/`BOARD_ROLE_ID_OUT[3:0]` each occupying a full row-block, diagonally
+opposed and *not* row-adjacent (per explicit user request for visual/electrical independence);
+moved `I2C_SDA`/`I2C_SCL` on the Cypher Board's `J6` template to a single adjacent pin pair
+(27/28). Applied consistently across `Cypher/`, `Cypher-Input/`, and all 3 Cypher-Input variant
+files.
 
-**Resolved this session - DEC-088:** the last blocking item for `merge-create-cypher-input` (the
-left-side J4/J6 "Plugboard passthrough" signal question) is resolved. The Plugboard board's only
-electrical role is passive HID-chain termination (no plugboard signals on J4/J6 at all); physical
-patch jacks mount mechanically-only on the Plugboard board, wired via spade-to-spade harness
-directly to the Cypher Board's own spade terminal bank (`J20+`, confirmed at the bottom edge of
-the rear face - general location only, exact arrangement still TBD at layout). The `J4`/`J6` left
-pair also gained reserved/spare `5V_MAIN` pins for potential future LED power needs.
+**2. Cypher-Output Board created** (`design/Electronics/Cypher-Output/` - 5 files, mirrors
+Cypher-Input's structure: common Design_Spec.md/Board_Layout.md + 3 variant files). Key
+architecture, confirmed interactively with the user during drafting:
 
-**Continue with:** `merge-create-cypher-output` (lightboard/output panel board) - see
-`.copilot/todos/merge-create-cypher-output.md` for the full wiring-notes set, now synced to
-DEC-088. It needs no local colour-select mux/Shift-sense/555 oscillator of its own (just 3 colour
-MOSFETs + 1 cathode-return MOSFET driven by Cypher-Input's broadcast signals), plus its own I2C
-GPIO expander (fresh address from `0x39-0x3E`, not `0x38`) and its own `BOARD_ROLE_ID[2:0]`
-variant scheme once confirmed with the user.
+- ENC module runs in the `LBD_DEC` role: decodes `cypher-bits[5:0]` into a one-hot
+  `plain-bits[63:0]` lens-position select output.
+- **Per-position discrete N-channel MOSFETs (2N7002K, Q1-Qxx)** gate each lens - **not** a shared
+  MOSFET-per-colour-channel topology like Cypher-Input (which lights its whole key bank
+  simultaneously with one shared colour; Cypher-Output needs individual one-hot addressing since
+  only one lens is ever lit). This was explicitly justified against directly sinking each LED
+  through its own CPLD pin: researched the MAX II Device Handbook and confirmed drive-strength
+  settings (8mA/16mA at 3.3V LVTTL/LVCMOS) apply symmetrically to both sourcing (IOH) and sinking
+  (IOL); a single pin sinking a lit position's full worst-case current (up to 30mA for 3 channels
+  through a shared cathode) would exceed that rating even though under the ±25mA absolute max -
+  an unreliable VOL/VOH margin, not outright pin damage. Rationale note added to `Design_Spec.md`.
+- **No local colour/brightness generation and no I2C GPIO expander at all** -
+  `BOARD_ROLE_ID_OUT[3:0]` is a pure hardwired strap; colour/brightness are received entirely as
+  broadcast signals from Cypher-Input via `J4`/`J6`.
+- **The 64-Character variant carries the custom-support switch (SW1)** - a panel-mount SPDT
+  switch toggling `BOARD_ROLE_ID_OUT[3]` between `0b0111` (default) and `0b1111` (custom-support
+  enabled), placed in a keyless keepout zone mirroring Cypher-Input's RV1 location (this board
+  has no RV1/brightness dial of its own). **Note:** mid-session this was mistakenly removed
+  entirely, then correctly restored per explicit user correction - it belongs on Cypher-Output,
+  not Cypher-Input.
+- Fixed a lens-count slip introduced mid-session: 64-Character variant is **40 lenses**
+  (D1-D40/Q1-Q40), not 42 - Shift/Space/Enter have no lens (nothing to display).
+- Removed a redundant "Custom-support strap" row from the common `Design_Spec.md`'s Circuit
+  Responsibility table per user request (already fully covered in the 64-Character variant file).
+
+**3. Design review findings (surfaced by user during Cypher-Output review, all fixed):**
+
+- **5V_MAIN power budget gap (significant):** Cypher-Input's LED bank (U5-U7, one shared
+  P-MOSFET per colour channel, lighting the entire key bank simultaneously) draws from
+  `5V_MAIN`, not `3V3_ENIG` - and this **had never been budgeted anywhere in the system**. Added
+  a `5V_MAIN` entry decoupling bank to Cypher-Input (`DR-CYPI-14a`, C9-C13); documented the
+  combined worst-case current across all 3 channels simultaneously (mixed colour, e.g.
+  white/yellow/cyan) = **1.26A** (64-Character variant) - distinct from the existing 420mA
+  single-channel MOSFET-rating figure, which stays correct for the per-MOSFET check but was
+  insufficient for the shared-rail figure. Added this line item to `Power_Budgets.md`'s 5V_MAIN
+  Load Analysis (system total revised 9.50A → 10.76A, 89.7% of the LMQ61460-Q1's 12A capacity).
+- **Also fixed a pre-existing stale figure in the same table**, unrelated to the LED work: the
+  User Settings Module indicator-rail row still showed the old pre-Bank-2-removal 0.24A figure,
+  even though `User_Settings_Module/Design_Spec.md` itself was already correctly updated to
+  0.10A earlier this session (Bank 2/`CFG_REFMAP` removal, DEC-089) - this cross-reference just
+  hadn't been propagated.
+- **LED mounting-face open item now cross-referenced on both boards:** a reverse-mount
+  addressable LED candidate (SK6812MINI-E, `merge-missing-components.md`) could allow rear-face
+  mounting instead of top-face hand-soldering. Added matching "open item" callouts to both
+  `Cypher-Input/Design_Spec.md` and `Cypher-Output/Design_Spec.md`, and updated the todo to
+  require both boards be updated together if this is ever decided.
+- **Connector "ownership" wording backwards:** both HID boards' `Design_Spec.md` J4-J7
+  Interconnects subsections read as if the HID board owned the pin-level connector template (it
+  doesn't - the Cypher Board does; the HID board only owns its own physical placement/gender).
+  Corrected in both files, and removed misleading `(KBD_ENC role)`/`(LBD_DEC role)` suffixes from
+  the J4-J7 heading (those are ENC-module CPLD roles, not properties of the interconnect).
+
+**`merge-create-cypher-output` is NOT yet complete.** The user is continuing a document review of
+the Cypher-Output files next session before marking it done. **Do not mark it complete until the
+user explicitly says the review is finished.** The old wiring-notes draft in
+`.copilot/todos/merge-create-cypher-output.md` is now stale relative to what was actually built -
+treat checkpoint 186 as the authoritative summary instead.
 
 **Explicitly out of scope:** `Mechanical/Keyboard_Assembly`, `Lightboard_Assembly`, and
 `Plugboard_Assembly` design specs still describe the pre-Cypher standalone-board architecture and
@@ -49,15 +97,14 @@ design is fully merged.
 
 Likely next steps:
 
-1. Await user confirmation of the RGB LED part, then finalise current-limit resistor values
-   across all 3 Cypher-Input variant files.
-2. `merge-create-cypher-output` — create the board files (Design_Spec.md + Board_Layout.md);
-   wiring notes are already captured in its todo file, updated post-DEC-087 to reflect that this
-   board needs no local colour/brightness generation of its own - just 3 colour MOSFETs + 1
-   cathode-return MOSFET driven by broadcast signals from Cypher-Input.
-3. `merge-create-plugboard` — new todo; scope the termination/blanking board for the bottom of
-   the Cypher-Input/Cypher-Output stack (mirrors Stack-Blanking; termination resistor values
-   already captured in its todo file).
+1. Continue/finish the user's Cypher-Output document review (unknown scope - follow their lead).
+2. Once confirmed complete, mark `merge-create-cypher-output` done, checkpoint, and move to
+   `merge-create-plugboard` (well-scoped by DEC-088).
+3. Then `merge-cypher-board-j3j6-pinouts` — verify current status first, since this session's
+   DEC-089 pin-map rework may have substantially or fully resolved it already.
+4. RGB LED part sourcing remains deferred to `merge-missing-components` (SK6812MINI-E candidate
+   under evaluation, not yet approved; VDD-vs-3V3_ENIG concern still unresolved for that
+   candidate; affects both Cypher-Input and Cypher-Output together if adopted).
 
 ### Process item to review (user-flagged, 2026-08-06 — partially resolved 2026-08-13/14)
 

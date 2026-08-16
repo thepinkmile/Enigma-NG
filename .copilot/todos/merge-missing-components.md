@@ -97,3 +97,15 @@ Select and confirm approved parts, including footprint and 3D model availability
     decision. Do not import into `SamacSys_Parts.*`, update any BOM row, or change the drive
     circuit in `Design_Spec.md`/variant files until the user explicitly confirms adoption,
     including resolution of the VDD/`3V3_ENIG` concern above.
+  - **Cypher-Output uses the same LED part as Cypher-Input (2026-08-16) - update both boards
+    together.** `Cypher-Output/Design_Spec.md §2`/§4 and `Cypher-Output/Board_Layout.md` (all 3
+    variant files) currently document the LED bank as top-face, hand-soldered, mirroring
+    Cypher-Input's own placeholder wording - with an explicit open-item note in each board's
+    `Design_Spec.md` flagging that the mounting face is provisional pending this todo. If the
+    reverse-mount candidate (or any other rear-face-mountable part) is adopted, both boards'
+    `Design_Spec.md` (§2 Architecture, LED Specification section) and `Board_Layout.md`
+    (Orientation Convention, top/rear face component lists) need updating in the same pass, not
+    just Cypher-Input's. Cypher-Output has no colour-select mux/Shift-sense circuitry to remove
+    (unlike Cypher-Input's 64-Character variant U9/D9/R9), but does have its own per-position
+    select MOSFETs (Q1-Qxx) whose gate wiring would be unaffected by a mounting-face change -
+    only the LED footprint/orientation and hand-soldering step would change.
