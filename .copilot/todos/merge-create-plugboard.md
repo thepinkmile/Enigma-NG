@@ -44,7 +44,8 @@ hosts the plugboard jack field as a panel/fixture.
   - All 3x resistors: 10 kOhm 1% 0402, ERJ-2RKF1002X (Panasonic), DigiKey P10.0KLCT-ND, Mouser
     667-ERJ-2RKF1002X, JLCPCB C191123; placed within 3mm of the mating connector, per
     Stack-Blanking's DR-SBLK-05 pattern.
-  - TTD (both lanes): left NC/unterminated for now, pending confirmation of whether a termination
+  - `TTD_HID_IN`/`TTD_HID_OUT`/`TTD_HID_PASS` (renamed 2026-08-17, see `Cypher/Board_Layout.md
+    §4`): left NC/unterminated for now, pending confirmation of whether a termination
     resistor is needed there too (Stack-Blanking's chain does not terminate TTD itself, only the
     broadcast/spoke signals - same logic likely applies here, but not yet confirmed with user).
 - **Mechanical jack field (per DEC-088):** the physical plugboard patch jacks (see

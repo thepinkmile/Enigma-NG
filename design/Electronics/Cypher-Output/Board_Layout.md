@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-08-17
 
 > **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
 > component rationale belong in `Design_Spec.md`. This file contains connector pinout references
@@ -275,13 +275,13 @@ internally per the table below.
 | GND | 21 | 22 | GND |
 | **CPLD_RESET_N** | 23 | 24 | **ENC_ACTIVE_INPUT_N** |
 | GND (bar) | 25 | 26 | GND (bar) |
-| GND | 27 | 28 | GND |
+| **I2C_SDA** | 27 | 28 | **I2C_SCL** |
 | GND | 29 | 30 | GND |
 | GND | 31 | 32 | GND |
 | GND | 33 | 34 | GND |
-| GND | 35 | 36 | **TTD** |
-| **TTD** | 37 | 38 | GND |
-| GND | 39 | 40 | **TTD** |
+| GND | 35 | 36 | **TTD_HID_PASS** |
+| **TTD_HID_IN** | 37 | 38 | GND |
+| GND | 39 | 40 | **TTD_HID_OUT** |
 | GND | 41 | 42 | GND |
 | **TMS** | 43 | 44 | **TMS** |
 | GND | 45 | 46 | GND |
@@ -297,27 +297,29 @@ internally per the table below.
 | 17-22 (J5 & J7, tied) | GND |
 | 23 - `CPLD_RESET_N` (J5 & J7, tied) | → own ENC module CPLD `RST_N` (via J2 column C08) |
 | 24 - `ENC_ACTIVE_INPUT_N` (J5 & J7, tied) | → received into own ENC module `ENC_ACTIVE_N` input (via J2 column C12) - this board consumes this signal, it does not generate it |
-| 27, 28 (J5 & J7, tied) | GND - this board has no I2C bus connection (see `Design_Spec.md §1`) |
+| 27, 28 (J5 <-> J7) - `I2C_SDA`/`I2C_SCL` | Direct passthrough wire - not connected to this board's own circuitry (no I2C device on this board, see `Design_Spec.md §1`); relays Cypher-Input's I2C bus through to whichever board is directly under the Cypher Board |
 | 30, 32 (J5 & J7, tied) | NC; LED colour/brightness reception is carried on `J4`/`J6` (see §4 intro and `Design_Spec.md §6`) |
-| 36 (J5 & J7, tied together) | → own ENC module CPLD TDO (via J2 column C11, Row A `TDO`) |
-| 37 (J5 active; NC on J7) | → own ENC module CPLD TDI (via J2 column C10, Row B `TDI`) |
-| 40 (J5 <-> J7) | Direct passthrough wire - not connected to the ENC module CPLD |
+| 36 (J5 & J7, tied together) - `TTD_HID_PASS` | → own ENC module CPLD TDI (via J2 column C10, Row B `TDI`) - receives Cypher-Input's own TDO |
+| 37 (J5 <-> J7) - `TTD_HID_IN` | Direct passthrough wire - not connected to the ENC module CPLD; relays the Cypher Board's TDI through to Cypher-Input if this board is directly under the Cypher Board |
+| 40 (J5 & J7, tied together) - `TTD_HID_OUT` | → own ENC module CPLD TDO (via J2 column C11, Row A `TDO`) |
 | 43/44, 47/48 (J5 & J7, tied together per signal) | → own ENC module CPLD TMS / TCK (via J2 columns C09/C07) |
 
-> `TTD` at pin 37 is this board's own real TDI (single-sided - only J5, the top/male connector, is
-> active; J7 is NC). This board's own real TDO drives pin 36 (tied on both J5 and J7), reaching
-> whichever neighbour needs it as its own TDI. Pin 40 is a straight passthrough on this board only
-> (bridging J5 and J7, not touching the ENC module CPLD) - it exists so that if this board is
-> *not* the one directly under the Cypher Board, the other HID board's own TDO (arriving on pin
-> 40) can still reach the Cypher Board's `J6` pin 40 (`TTD_RETURN`) by passing straight through
-> this board. TCK/TMS/CPLD_RESET_N are broadcast (tied together on both J5 and J7, both rows)
-> since they are not chained.
+> This board's own real TDI is driven from pin 36 (`TTD_HID_PASS`, tied on both J5 and J7) -
+> receiving Cypher-Input's own TDO. This board's own real TDO drives pin 40 (`TTD_HID_OUT`, tied
+> on both J5 and J7), reaching back to the Cypher Board's `J6` pin 40. Pin 37 (`TTD_HID_IN`) is a
+> straight passthrough on this board only (bridging J5 and J7, not touching the ENC module CPLD)
+> - it exists so that if this board is directly under the Cypher Board, the Cypher Board's own
+> TDI (arriving on pin 37) can still reach Cypher-Input by passing straight through this board.
+> TCK/TMS/CPLD_RESET_N are broadcast (tied together on
+> both J5 and J7, both rows) since they are not chained.
 >
 > **ENC_DATA row convention:** bottom row = this board's own generated/consumed signal (since
 > this board is documented as the `LBD_DEC` role - the opposite row to Cypher-Input's own
 > `KBD_ENC` role); top row = straight passthrough, relaying Cypher-Input's own signal when this
 > board is not directly under the Cypher Board. `BOARD_ROLE_ID` is carried on `J4`/`J6`. Pins
-> 27/28 are GND since this board has no I2C bus connection. Pins 30/32 are unused (NC) since LED
+> 27/28 (`I2C_SDA`/`I2C_SCL`) are a straight passthrough - not connected to this board's own
+> circuitry (no I2C device on this board) - so Cypher-Input's I2C bus can still reach the Cypher
+> Board if this board sits directly beneath it. Pins 30/32 are unused (NC) since LED
 > colour/brightness reception is carried on `J4`/`J6` instead - see `Design_Spec.md §4`/§6.
 >
 > `ENC_ACTIVE_INPUT_N` (pin 24) matches the Cypher Board's own internal net name, and shares

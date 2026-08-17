@@ -3,7 +3,7 @@
 **Status:** Draft
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-04-20
+**Last Updated:** 2026-08-17
 
 ---
 
@@ -113,21 +113,26 @@ being an unachievable worst-case peak).
 | HDMI sink device | 0.05 A | System boundary: connected HDMI sink; AP2331W-limited |
 | User Settings Module indicator rail (via Controller↔Stator dock → J13) | 0.10 A | Bank 1 only (5 LEDs x 20mA = 100mA max); Bank 2 (CFG_REFMAP switches/LEDs) removed 2026-08-16 - see `User_Settings_Module/Design_Spec.md §1` and this board's own §11/§12 |
 | Cypher-Input LED bank (via Cypher Board dock, 64-Character variant worst case) | 1.26 A | 42 LEDs x 3 colour channels x 10mA, all channels simultaneously active (mixed colour, e.g. white/yellow/cyan); broadcast onward to whichever Cypher-Output board is installed - see `Cypher-Input/Design_Spec.md §5`/§7 |
+| Cypher-Output LED bank (via Cypher Board dock, any variant - worst case is variant-independent) | 0.03 A | Only one lens position is ever lit at a time (one-hot decode); 1 lens x 3 colour channels x 10mA, all channels simultaneously active (mixed colour); local `5V_MAIN`-sourced colour-bank switching (U1-U3) - see `Cypher-Output/Design_Spec.md §4`/§7 |
 | Controller-local servo rail (via Controller J11) | 0.50 A | Budgeted Controller-side servo allocation |
-| **Total 5V_MAIN worst case (system boundary)** | **10.76 A** | |
-| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 89.7% utilisation (10.76/12.0) - reduced margin, see note below |
+| **Total 5V_MAIN worst case (system boundary)** | **10.79 A** | |
+| **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 89.9% utilisation (10.79/12.0) - reduced margin, see note below |
 
 > **Scope note:** The 7.40 A board-level budget (internal consumers: CM5 + LDO + misc + FT232H) covers internal consumers only.
-> External device loads (USB 3.0 + HDMI) plus the Stator-fed User Settings Module load, the Cypher-Input LED bank load, and the Controller-local servo load add 3.36 A, giving a system total of 10.76 A.
-> Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 10.76 A system total.
+> External device loads (USB 3.0 + HDMI) plus the Stator-fed User Settings Module load, the Cypher-Input and Cypher-Output LED bank loads, and the Controller-local servo load add 3.39 A, giving a system total of 10.79 A.
+> Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 10.79 A system total.
 >
-> **Reduced margin note (2026-08-16):** adding the Cypher-Input LED bank's worst-case 1.26 A
-> (64-Character variant, all 3 colour channels simultaneously active) raises total utilisation
-> from 79.2% to 89.7% of the LMQ61460-Q1's 12.0 A dual-phase capacity - still within capacity, but
-> with materially less headroom than before. This worst case assumes a mixed colour (not a single
-> primary channel) is selected and every LED position is populated (64-Character variant, the
-> largest); the 26-Char Classic and 10-Numeric variants draw proportionally less (0.78 A and
-> 0.36 A worst case respectively). Revisit this margin once the LED part is confirmed (see
+> **Reduced margin note (2026-08-16, updated 2026-08-17):** adding the Cypher-Input LED bank's
+> worst-case 1.26 A (64-Character variant, all 3 colour channels simultaneously active) raises
+> total utilisation from 79.2% to 89.7% of the LMQ61460-Q1's 12.0 A dual-phase capacity - still
+> within capacity, but with materially less headroom than before. This worst case assumes a mixed
+> colour (not a single primary channel) is selected and every LED position is populated
+> (64-Character variant, the largest); the 26-Char Classic and 10-Numeric variants draw
+> proportionally less (0.78 A and 0.36 A worst case respectively). Cypher-Output's own LED bank
+> was also previously unbudgeted (found 2026-08-17) but adds only a further 0.03 A worst case,
+> since only one Cypher-Output lens is ever lit at a time regardless of variant (unlike
+> Cypher-Input's whole-key-bank illumination) - this brings total utilisation to 89.9%. Revisit
+> this margin once the LED part is confirmed (see
 > `merge-missing-components.md`) and actual per-channel current is finalised - 10mA/channel is a
 > target, not a measured figure. Separately, the User Settings Module row above was corrected from
 > 0.24 A to 0.10 A this same session, reflecting the removal of Bank 2 (`CFG_REFMAP` switches/
@@ -147,3 +152,4 @@ being an unachievable worst-case peak).
 | :--- | :--- |
 | 2026-04-05 | Initial document - created to resolve STA-05/STA-06/ROT-04/PM-05 inconsistencies |
 | 2026-08-16 | Added Cypher-Input LED bank to the 5V_MAIN Load Analysis table (1.26 A worst case, 64-Character variant, all 3 colour channels active) - was previously unbudgeted. Corrected User Settings Module indicator rail from a stale 0.24 A to 0.10 A, reflecting Bank 2 (`CFG_REFMAP`) removal earlier this session (DEC-089). Total 5V_MAIN worst case revised from 9.50 A to 10.76 A, LMQ61460-Q1 utilisation from 79.2% to 89.7% |
+| 2026-08-17 | Added Cypher-Output LED bank to the 5V_MAIN Load Analysis table (0.03 A worst case, variant-independent since only one lens is ever lit at a time) - was previously unbudgeted; discovered while fixing an incorrect "not consumed by this board's own circuitry" claim in `Cypher-Output/Design_Spec.md §6`. Total 5V_MAIN worst case revised from 10.76 A to 10.79 A, LMQ61460-Q1 utilisation from 89.7% to 89.9% |

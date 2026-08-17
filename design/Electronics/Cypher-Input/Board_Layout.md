@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-08-17
 
 > **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
 > component rationale belong in `Design_Spec.md`. This file contains connector pinout references
@@ -274,9 +274,9 @@ internally per the table below.
 | GND | 29 | 30 | GND |
 | GND | 31 | 32 | GND |
 | GND | 33 | 34 | GND |
-| GND | 35 | 36 | **TTD** |
-| **TTD** | 37 | 38 | GND |
-| GND | 39 | 40 | **TTD** |
+| GND | 35 | 36 | **TTD_HID_PASS** |
+| **TTD_HID_IN** | 37 | 38 | GND |
+| GND | 39 | 40 | **TTD_HID_OUT** |
 | GND | 41 | 42 | GND |
 | **TMS** | 43 | 44 | **TMS** |
 | GND | 45 | 46 | GND |
@@ -294,19 +294,19 @@ internally per the table below.
 | 24 - `ENC_ACTIVE_INPUT_N` (J5 & J7, tied) | → driven from own ENC module `ENC_ACTIVE_N` (via J2 column C12) - this board's own generated keypress-activity signal |
 | 27 - `I2C_SDA`, 28 - `I2C_SCL` (J5 & J7, tied) | → own U4 (PCA9534A) I2C bus - shared multidrop bus, not row-differentiated |
 | 30, 32 (J5 & J7, tied) | NC; LED colour/brightness broadcast is carried on `J4`/`J6` (see §4 intro and `Design_Spec.md §7`) |
-| 36 (J5 & J7, tied together) | → own ENC module CPLD TDO (via J2 column C11, Row A `TDO`) |
-| 37 (J5 active; NC on J7) | → own ENC module CPLD TDI (via J2 column C10, Row B `TDI`) |
-| 40 (J5 <-> J7) | Direct passthrough wire - not connected to the ENC module CPLD |
+| 36 (J5 & J7, tied together) - `TTD_HID_PASS` | → own ENC module CPLD TDO (via J2 column C11, Row A `TDO`) |
+| 37 (J5 active; NC on J7) - `TTD_HID_IN` | → own ENC module CPLD TDI (via J2 column C10, Row B `TDI`) |
+| 40 (J5 <-> J7) - `TTD_HID_OUT` | Direct passthrough wire - not connected to the ENC module CPLD |
 | 43/44, 47/48 (J5 & J7, tied together per signal) | → own ENC module CPLD TMS / TCK (via J2 columns C09/C07) |
 
-> `TTD` at pin 37 is this board's own real TDI (single-sided - only J5, the top/male connector, is
-> active; J7 is NC). This board's own real TDO drives pin 36 (tied on both J5 and J7), reaching
-> whichever neighbour needs it as its own TDI. Pin 40 is a straight passthrough on this board only
-> (bridging J5 and J7, not touching the ENC module CPLD) - it exists so that if this board is
-> *not* the one directly under the Cypher Board, the other HID board's own TDO (arriving on pin
-> 40) can still reach the Cypher Board's `J6` pin 40 (`TTD_RETURN`) by passing straight through
-> this board. TCK/TMS/CPLD_RESET_N are broadcast (tied together on both J5 and J7, both rows)
-> since they are not chained.
+> `TTD_HID_IN` at pin 37 is this board's own real TDI (single-sided - only J5, the top/male
+> connector, is active; J7 is NC). This board's own real TDO drives pin 36 (`TTD_HID_PASS`, tied on
+> both J5 and J7), reaching Cypher-Output's own TDI. Pin 40 (`TTD_HID_OUT`)
+> is a straight passthrough on this board only (bridging J5 and J7, not touching the ENC module
+> CPLD) - it exists so that if this board is directly under the Cypher Board, Cypher-Output's own
+> TDO (arriving on pin 40) can still reach the Cypher Board's `J6` pin 40
+> by passing straight through this board. TCK/TMS/CPLD_RESET_N are broadcast (tied together on
+> both J5 and J7, both rows) since they are not chained.
 >
 > **ENC_DATA row convention:** top row = this board's own generated/consumed
 > signal (since this board is documented as the `KBD_ENC` role); bottom row = straight

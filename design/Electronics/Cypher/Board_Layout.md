@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-08-17
 
 > **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
 > component rationale belong in `Design_Spec.md`. This file contains connector pinout references
@@ -201,9 +201,9 @@ own `Design_Spec.md`.
 ### J6 — Full Pin Map (JTAG + ENC_DATA + Board ID + I2C + PWM)
 
 50 contacts: 2 center-GND-bar (1/row) + 24 usable pins/row. Pin numbering: column Cn, top pin =
-2n-1, bottom pin = 2n. This is a **board-agnostic template** — pin function (e.g. `TTD`) is fixed
-by position; how each specific board (Cypher-Input, Cypher-Output, Plugboard) wires a given pin
-internally is defined in that board's own `Design_Spec.md`.
+2n-1, bottom pin = 2n. This is a **board-agnostic template** — pin function (e.g. `TTD_HID_IN`) is
+fixed by position; how each specific board (Cypher-Input, Cypher-Output, Plugboard) wires a given
+pin internally is defined in that board's own `Design_Spec.md`.
 
 | Top Row Signal | Top Row Pin# | Bottom Row Pin# | Bottom Row Signal |
 | :--- | :---: | :---: | :--- |
@@ -224,9 +224,9 @@ internally is defined in that board's own `Design_Spec.md`.
 | GND | 29 | 30 | GND |
 | GND | 31 | 32 | GND |
 | GND | 33 | 34 | GND |
-| GND | 35 | 36 | **TTD** |
-| **TTD** | 37 | 38 | GND |
-| GND | 39 | 40 | **TTD** |
+| GND | 35 | 36 | **TTD_HID_PASS** |
+| **TTD_HID_IN** | 37 | 38 | GND |
+| GND | 39 | 40 | **TTD_HID_OUT** |
 | GND | 41 | 42 | GND |
 | **TMS** | 43 | 44 | **TMS** |
 | GND | 45 | 46 | GND |
@@ -253,9 +253,9 @@ internally is defined in that board's own `Design_Spec.md`.
 | 24 — `ENC_ACTIVE_INPUT_N` | → I2C GPIO expander (U6), matching the existing `ENC_ACTIVE_INPUT_N` net (GPA[6]) — so the system knows when a key has been depressed, to trigger any initial rotor actuations |
 | 27/28 — `I2C_SDA`/`I2C_SCL` | Part of the I2C-1 bus (shared with U6/U7/U8 and U2) |
 | 29-32 — GND | Tied to GND |
-| 36 | NC |
-| 37 | TDI — driven from FT232H (U17) MPSSE TDI (AD1); this is the chain's TDI source |
-| 40 | TTD_RETURN — received here and forwarded to Mount1 (first Plugboard Encoder Module, `J8`) TDI |
+| 36 — `TTD_HID_PASS` | NC |
+| 37 — `TTD_HID_IN` | TDI — driven from FT232H (U17) MPSSE TDI (AD1); this is the chain's TDI source |
+| 40 — `TTD_HID_OUT` | Received here (Cypher-Output's own real TDO, the exit of the local HID sub-chain) and forwarded to Mount1 (first Plugboard Encoder Module, `J8`) TDI |
 | 43/44, 47/48 | TMS / TCK — broadcast from the JTAG Hub (see `Design_Spec.md §3` JTAG Hub) |
 
 > **Chain order (see `Design_Spec.md §3` JTAG Hub for full derivation):** FT232H (U17) → Cypher-Input
