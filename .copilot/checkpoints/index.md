@@ -192,3 +192,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 185 | Cypher-Input Board design complete; Plugboard/5V_MAIN architecture clarified (DEC-088) | 185-cypher-input-complete-plugboard-5v-main-dec088.md |
 | 186 | Cypher-Output Board design drafted; power budget corrections | 186-cypher-output-drafted-power-budget-fixes.md |
 | 187 | Cypher-Output complete; TTD rename & I2C passthrough fixed | 187-cypher-output-complete-ttd-rename-i2c-passthrough-fixed.md |
+| 188 | Cypher-Plugboard Board complete | 188-cypher-plugboard-complete.md |

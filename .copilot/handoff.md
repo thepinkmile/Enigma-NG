@@ -7,6 +7,97 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
+**2026-08-19 session update (checkpoint 188):** `merge-create-plugboard` is now **done**. This
+session created the full Cypher-Plugboard Board design and fixed two rounds of real issues
+surfaced during review.
+
+**1. Board created** (`design/Electronics/Cypher-Plugboard/` - 5 files: common `Design_Spec.md`/
+`Board_Layout.md` + 3 variant files). **Renamed from the originally-planned "Plugboard Board"** to
+"Cypher-Plugboard" per explicit user request, for file-explorer grouping consistency with the
+rest of the Cypher family (Cypher, Cypher-Input, Cypher-Output). Electrical scope mirrors
+Stack-Blanking: a pure JTAG-spoke terminator (R1-R3, 10 kOhm, on TCK/TMS/`CPLD_RESET_N`), no
+plugboard-signal-specific pins per DEC-088. Jack field, by variant:
+
+- **64-Character:** 7 rows, 64 positions / 128 jacks (`J3`-`J130`) - digits row (10) + 3
+  uppercase rows + 3 lowercase rows. Made deliberately symmetrical per user direction: `+`
+  appended to the short uppercase row and `/` to the short lowercase row, so all 6 letter rows
+  are evenly 9 wide (rather than an uneven 9/9/8 split).
+- **26-Char Classic:** 3 rows, 26 positions / 52 jacks (`J3`-`J54`) - natural 9/9/8 split,
+  uppercase only.
+- **10-Numeric:** 2 rows, 10 positions / 20 jacks (`J3`-`J22`) - 5/5 split.
+
+Each "plug" position is **2 jack sockets** (one per plugboard pass, Pass 1 + Pass 2) placed
+**side-by-side horizontally** (not stacked vertically) - user-directed, to minimise the overall
+enclosure height.
+
+**2. `TTD_HID_IN`/`TTD_HID_PASS`/`TTD_HID_OUT` confirmed as a definite NC** on this board's `J2` -
+initially documented as an "open item" pending confirmation of whether a single-HID-board
+configuration might need termination here. The user corrected this directly: each HID board
+(Cypher-Input, Cypher-Output) already has its own local TDI pull-up close to its own CPLD (via
+the generic Encoder Module's R3 - confirmed by checking `Encoder_Module/Design_Spec.md §5` JTAG
+Chain Integrity, which every ENC module instance already carries), and the system always requires
+both a Cypher-Input and a Cypher-Output board connected - there is no valid single-HID-board
+configuration to worry about. Fixed in both `Design_Spec.md` and `Board_Layout.md`, with a
+citation to the Encoder Module's R3 for traceability.
+
+**3. Jack socket sourced: Switchcraft 12A.** User provided the part with datasheet in hand
+(`design/Datasheets/Switchcraft-12A-datasheet.pdf`, already downloaded) - DigiKey `SC1089-ND`,
+Mouser `502-12A`, **no JLCPCB PN** (manually assembled/panel-mounted, not part of the JLCPCB PCBA
+order). Datasheet also confirmed useful mechanical detail not previously assumed: 3/8-32 UNEF-2A
+threaded bushing, washer+nut hardware shipped unassembled, and exactly 3 terminals (`Tip`,
+`Tip-Shunt` - the normally-closed switch contact, and `Sleeve`) - updated the wiring description
+to specify `Tip`+`Tip-Shunt` tied to one spade jumper (decode-role terminal) and `Sleeve` to a
+second spade jumper (encode-role terminal), both running to the Cypher Board's own `J20+` bank.
+
+**4. Major mechanical correction - the PCB does NOT carry the jack field.** The first draft
+incorrectly assumed the jack field and its character silkscreen lived on this board's own PCB
+(mirroring how the mechanical section was drafted for Cypher-Input/Cypher-Output). The user
+corrected this significantly: **this board's PCB is a thin connector strip along the top edge
+only** - just large enough for `J1`/`J2`/R1-R3 - **identical across all three variants**. **The
+entire jack field mounts directly to a separate machined metal enclosure**, not the PCB. This
+matters electrically as well as mechanically: every jack's threaded metal bushing makes direct
+contact with that enclosure, keeping the whole external jack field on a continuous `GND_CHASSIS`
+network - consistent with the rest of the system's external connectors, and still dissipating
+through the single `GND_CHASSIS`-to-GND bond that remains on the Power Module only (per
+`design/Standards/Global_Routing_Spec.md §5`). Character labels are engraved/printed on the metal
+enclosure, **not** PCB silkscreen. The enclosure itself is sized per variant, scaling in height
+with the row count; the PCB strip is identical regardless of variant. Rewrote §2 Architecture, §4
+Plugboard Jack Field (full rewrite), §6 PCB Fabrication, §7 Thermal & ESD, §8 Branding, the
+mermaid diagram, and `Board_Layout.md`'s orientation convention to match; added `FR-PLB-06`
+(chassis-bonding requirement) and `DR-PLB-09` (chassis bonding mechanism); updated all three
+variant files' overview paragraphs to drop the stale "shared board outline sized for 64-Character
+with keepout" framing, since each variant's enclosure is now independently sized.
+
+**5. `merge-cypher-board-j3j6-pinouts` status update.** While closing out this todo, confirmed
+and recorded in that todo's own file: the **J5/J6 portion is now fully resolved** (both fully
+50-pin allocated in `Cypher/Board_Layout.md §4`, including this session's `TTD_HID_*` rename and
+the Cypher-Output I2C passthrough fix from the prior session) - **remaining scope is J3/J4 only**
+(still only 26/24 of 50 contacts defined on the main rotor-stack-side connectors, `Stack-Input`/
+`STA`-side and `Stack-Output`/`REF`-side). Also corrected a stale 2026-08-06 note in that todo
+assuming Cypher-Output "will need" its own I2C GPIO expander address - superseded by the
+confirmed no-I2C-bus design.
+
+**`merge-create-plugboard` marked done.** Its old planning todo file
+(`.copilot/todos/merge-create-plugboard.md`) has been archived to `.recycle-bin/` - checkpoint 188
+is the authoritative summary of what was actually built.
+
+**Next session starts with either `merge-cypher-board-j3j6-pinouts` (J3/J4 only) or
+`merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`** - both are ready (all dependencies
+satisfied); ask the user which they'd like to tackle first.
+
+**Session paused here (2026-08-19) due to the user's Copilot token budget** - their subscription
+renews in ~2 weeks, so there may be a gap before the next session picks this up.
+
+**Explicitly out of scope:** `Mechanical/Keyboard_Assembly`, `Lightboard_Assembly`, and
+`Plugboard_Assembly` design specs still describe the pre-Cypher standalone-board architecture and
+are stale relative to the current electronics design. Per explicit user direction, do not touch
+mechanical or software sections — those get a dedicated overhaul pass only after the electronics
+design is fully merged.
+
+---
+
+## Previous session (2026-08-17, checkpoint 187)
+
 **2026-08-17 session update (checkpoints 187):** `merge-create-cypher-output` is now **done**.
 This session closed out the remaining review of the Cypher-Output draft and fixed several real
 issues surfaced during that review:

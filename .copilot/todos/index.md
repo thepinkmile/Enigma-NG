@@ -144,7 +144,7 @@ Last updated: 2026-07-05
 | `merge-create-stack-interposer` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-cypher-input` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-cypher-output` | | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
-| `merge-create-plugboard` | [merge-create-plugboard.md](merge-create-plugboard.md) | pending | `design-discussion-merge`, `merge-grs-6layer-stackup`, `merge-create-cypher-input`, `merge-create-cypher-output` |
+| `merge-create-plugboard` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup`, `merge-create-cypher-input`, `merge-create-cypher-output` |
 | `merge-update-top-level-docs` | [merge-update-top-level-docs.md](merge-update-top-level-docs.md) | pending | `merge-create-cypher-board`, `merge-create-stack-input`, `merge-update-ctl-board`, `merge-create-stack-output`, `merge-create-stack-blanking`, `merge-create-stack-interposer`, `merge-create-cypher-input`, `merge-create-cypher-output`, `merge-create-plugboard` |
 | `merge-remove-old-boards` | [merge-remove-old-boards.md](merge-remove-old-boards.md) | pending | `merge-update-top-level-docs` |
 | `merge-consistency-review` | [merge-consistency-review.md](merge-consistency-review.md) | pending | `merge-remove-old-boards` |

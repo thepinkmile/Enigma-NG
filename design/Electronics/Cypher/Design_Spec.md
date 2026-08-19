@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-08-18
 
 ## 1. Overview
 
@@ -475,7 +475,7 @@ connected - see §3 Configuration Bank 2.
   30x Rotor CPLDs (devices 8–37) → `J4` TTD_RETURN → R50 (22 Ohm) → U17 TDO.
   U1 sits between the 4 Plugboard Encoder Modules and the Rotor mini-stack chain. See
   `Board_Layout.md §4` for the `J6` pin-level mapping and per-board wiring (Cypher-Input,
-  Cypher-Output, Plugboard) that realises this chain regardless of which HID board occupies the
+  Cypher-Output, Cypher-Plugboard) that realises this chain regardless of which HID board occupies the
   position closest to this board.
 - **JTAG series termination at encoder-equivalent ports (all BtB — 33 Ohm per DEC-024):**
   - TCK, TMS, CPLD_RESET_N: broadcast from the JTAG Hub via individual 33 Ohm series resistors to
@@ -663,9 +663,9 @@ within that bottom-edge region is TBD at schematic/layout time.
 
 Trace routing from spade blade terminals to relevant CPLD signal nets is done within the Cypher
 Board copper layers. **The physical plugboard patch jacks are not on this board** - they are
-mounted on the Plugboard board (mechanical mounting only, no electrical connection to that
-board's own circuitry - see `Plugboard`'s own design file once created) and wired back to this
-spade bank via discrete spade-to-spade jumper cables, per DEC-088. This keeps the Plugboard
+mounted on the Cypher-Plugboard board (mechanical mounting only, no electrical connection to that
+board's own circuitry - see `Cypher-Plugboard`'s own design file) and wired back to this
+spade bank via discrete spade-to-spade jumper cables, per DEC-088. This keeps the Cypher-Plugboard
 board's only electrical role limited to passive termination of the HID interconnect chain (see
 DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its own.
 

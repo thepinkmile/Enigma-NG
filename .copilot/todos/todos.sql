@@ -145,7 +145,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('merge-create-stack-interposer',   'Create Stack-Interposer Board Design',                             'done'),
 ('merge-create-cypher-input',        'Create Cypher-Input Board Design',                                 'done'),
 ('merge-create-cypher-output',       'Create Cypher-Output Board Design',                                'done'),
-('merge-create-plugboard',           'Create Plugboard Board Design',                                    'pending'),
+('merge-create-plugboard',           'Create Cypher-Plugboard Board Design',                             'done'),
 ('merge-update-top-level-docs',      'Update Boards_Overview, System_Architecture and related docs',     'pending'),
 ('merge-remove-old-boards',          'Move retiring board design files to .recycle-bin/',                'pending'),
 ('merge-consistency-review',         'Review all merged design files for consistency',                   'pending'),
