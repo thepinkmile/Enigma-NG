@@ -307,8 +307,8 @@ internally per the table below.
 > This board's own real TDI is driven from pin 36 (`TTD_HID_PASS`, tied on both J5 and J7) -
 > receiving Cypher-Input's own TDO. This board's own real TDO drives pin 40 (`TTD_HID_OUT`, tied
 > on both J5 and J7), reaching back to the Cypher Board's `J6` pin 40. Pin 37 (`TTD_HID_IN`) is a
-> straight passthrough on this board only (bridging J5 and J7, not touching the ENC module CPLD)
-> - it exists so that if this board is directly under the Cypher Board, the Cypher Board's own
+> straight passthrough on this board only (bridging J5 and J7, not touching the ENC module CPLD).
+> It exists so that if this board is directly under the Cypher Board, the Cypher Board's own
 > TDI (arriving on pin 37) can still reach Cypher-Input by passing straight through this board.
 > TCK/TMS/CPLD_RESET_N are broadcast (tied together on
 > both J5 and J7, both rows) since they are not chained.

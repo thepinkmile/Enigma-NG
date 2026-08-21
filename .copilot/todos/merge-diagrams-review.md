@@ -53,3 +53,16 @@ Rather than patching the existing Rotor-Mini-Stack-oriented diagrams in place, t
   Plugboard passthrough + LED broadcast) is not yet fully locked (see `merge-cypher-board-j3j6-pinouts`).
 - Preserve the existing Rotor Mini-Stack renders' file history where practical (e.g. via git) if
   they are being trimmed/reduced in scope rather than fully replaced.
+
+## User Added Notes
+
+Below is a list of diagram render filenames that have been replaced or added and should be checked in all
+design file cross-references and updated. Where these are used there should be a markdown link such that
+the image is rendered as part of the design file content (embedded image as well as a caption with the
+relavtive file link). All the below files are located within the `design/Diagrams/renders/` directory.
+
+| Original Filename | New/Added Filename | Relevant System | Description |
+| 01-Rotor-Mini-Stack-Architecture.png | cypher-system-layout-Rotor Mini-Stack Architecture.drawio.png | Rotor Stack | Shows the default architecture and interconnects for the mini-stack |
+| 02-Mini-Stack-Vertical-Stack-Portrait.png | cypher-system-layout-Rotor Mini-Stack Multi-Stack.drawio.png | Rotor Stack | Shows multiple mini-stacks interconnected (3 stacks with 15 rotors) |
+| 03-Mini-Stack-Front-View.png | cypher-system-layout-Rotor Mini-Stack Front View.drawio.png | Rotor Stack | Shows a front aspect view of the rotor mini-stack |
+| - | cypher-system-layout-Cypher-System Architecture.drawio.png | Cypher System | Shows the default configuration of the Cypher System boards |
