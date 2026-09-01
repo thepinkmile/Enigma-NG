@@ -6,6 +6,26 @@
 
 ---
 
+## User Added Prefix
+
+In this section the user has added some items from offline thoughts and reviews that should be taken into account during the next session.
+
+- cypher-input-led-independent-rgb-pwm-review.md - todo is possibly obsolete now, we should check this and maybe roll this into the recent changes adding the Cypher-Input and Output boards.
+  - It is worth reminding the user about the USM.
+    This could be used as a side mount board to the Cypher-Input/Output boards and take over the brightness PWM signal with the component currently on the Cypher-Input.
+  - What new components would be required on Input and Output HID boards to support general brightness controls along with the independantly addressable LEDs?
+- cpld-production-replacement.md - todo is probably wise to pull into V1 and no longer be deferred.
+  - User has added extra notes.
+  - User has a development board (dev code and manuals stored in `.copilot/discussions/max-10-fpga-details/`).
+- footprint-requests-pending.md - some items in the todo are probably resolved now.
+  - We should check this and update or mark as complete for the current design once all the discussions are completed and merged.
+- jdb-ft232h-3v3-vregin.md - todo can be pulled into current design. Parts already available at all suppliers.
+- merge-cypher-board-j3j6-pinouts.md - I believe this todo should be satisfied by the work done so far during the current discussion merge. worth doubdle checking and updating as required.
+- merge-update-ctl-board.md - this todo I believe is done as part of the current discussion design merge and also covers the checnges required for merge-ctl-dock-usb-allocation.md todo item.
+  Worth checking the scope of both of these and rolling them into a single todo and marking it with the correct current status.
+- system-assembly-harnesses.md - todo should be updated inline with the merged design changes. Harnesses required have changed and thus this todo's definition is out of date.
+- system-config-variants-diagrams.md - This todo is likely out-of-date with the current merged design. Once we have completed the removal of the old boards this should be updated with the correc definition and details.
+
 ## Current Status (as of 2026-08-19 — Cypher-Plugboard Board complete, checkpoint 188)
 
 `merge-create-plugboard` is now **done** (checkpoint 188). This session created the full

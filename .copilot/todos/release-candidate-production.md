@@ -10,7 +10,14 @@
 
 ## Description
 
-Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as prototype-pcb-manufacturing: (1) Generate manufacturing pack (gerber, pick & place, BOM); (2) Global Sourcing Part Order; (3) Consignment Parts Order; (4) Board Orders (one per board); (5) Receive Boards and Inspect; (6) Run Board PAS Testing.
+Process final draft design for production testing (via PCBWay or JLCPCB). Same subtasks as prototype-pcb-manufacturing:
+
+1: Generate manufacturing pack (gerber, pick & place, BOM)
+2: Global Sourcing Part Order
+3: Consignment Parts Order
+4: Board Orders (one per board)
+5: Receive Boards and Inspect
+6: Run Board PAS Testing
 
 ## Notes
 

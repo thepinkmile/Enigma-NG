@@ -14,4 +14,5 @@ DEFERRED TO V2.0. Review replacement CPLD for production stage (current MAX II E
 
 ## Notes
 
-No additional notes.
+User has started looking at the MAX 10 device as a replacement.
+The aim is to increase the LEs available to allow more versitility and include an I2C state machine within the CPLD to allow for direct configuration using less wires.
