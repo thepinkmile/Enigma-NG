@@ -6,29 +6,41 @@
 
 ---
 
-## User Added Prefix
+## Current Status (as of 2026-09-03 — ACTUATE_REQUEST signal path complete, checkpoint 189)
 
-In this section the user has added some items from offline thoughts and reviews that should be taken into account during the next session.
+`merge-cypher-board-j3j6-pinouts` and `merge-actuate-request-routing` are now **done**
+(checkpoint 189). This session closed out Cypher's last two unresolved connectors (`J3`/`J4`),
+then traced the resulting `ACTUATE_REQUEST_IN_N`/`OUT_N` signal through every board in the Rotor
+Mini-Stack chain, fixing real gaps found at each stop. DEC-090 through DEC-097 created. See
+`.copilot/checkpoints/189-cypher-j3j4-complete-actuate-request-path-defined-connector-ownership-fixed.md`
+for full detail.
 
-- cypher-input-led-independent-rgb-pwm-review.md - todo is possibly obsolete now, we should check this and maybe roll this into the recent changes adding the Cypher-Input and Output boards.
-  - It is worth reminding the user about the USM.
-    This could be used as a side mount board to the Cypher-Input/Output boards and take over the brightness PWM signal with the component currently on the Cypher-Input.
-  - What new components would be required on Input and Output HID boards to support general brightness controls along with the independantly addressable LEDs?
-- cpld-production-replacement.md - todo is probably wise to pull into V1 and no longer be deferred.
-  - User has added extra notes.
-  - User has a development board (dev code and manuals stored in `.copilot/discussions/max-10-fpga-details/`).
-- footprint-requests-pending.md - some items in the todo are probably resolved now.
-  - We should check this and update or mark as complete for the current design once all the discussions are completed and merged.
-- jdb-ft232h-3v3-vregin.md - todo can be pulled into current design. Parts already available at all suppliers.
-- merge-cypher-board-j3j6-pinouts.md - I believe this todo should be satisfied by the work done so far during the current discussion merge. worth doubdle checking and updating as required.
-- merge-update-ctl-board.md - this todo I believe is done as part of the current discussion design merge and also covers the checnges required for merge-ctl-dock-usb-allocation.md todo item.
-  Worth checking the scope of both of these and rolling them into a single todo and marking it with the correct current status.
-- system-assembly-harnesses.md - todo should be updated inline with the merged design changes. Harnesses required have changed and thus this todo's definition is out of date.
-- system-config-variants-diagrams.md - This todo is likely out-of-date with the current merged design. Once we have completed the removal of the old boards this should be updated with the correc definition and details.
+**User is doing a final manual review of this whole change set.** Next steps, in the user's
+confirmed order:
 
-## Current Status (as of 2026-08-19 — Cypher-Plugboard Board complete, checkpoint 188)
+1. User's manual review of this session's change set (in progress).
+2. **Controller board updates** — `merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`:
+   define USB D+/D- on Cypher's `J1` dock; remove JM (`J12`) and AM (`J11`) from Controller (user
+   believes no JTAG traces should remain on Controller now that JM is native to Cypher — needs
+   verifying against the actual schematic); add a Cypher-facing dock connector (old Stator dock
+   `J4`/`J5` are being reallocated to serve this role, since Cypher is the Stator's electronic
+   replacement); retarget Link-Beta from Stator to Cypher.
+3. `jdb-ft232h-3v3-vregin` — quick fix, native to Cypher's JTAG bridge section.
+4. `cpld-production-replacement` — MAX10 FPGA discussion; likely mechanical implications for
+   Rotor boards.
+5. `footprint-requests-pending` — review/resolve outstanding footprints.
+6. `cypher-input-led-independent-rgb-pwm-review` — pending user's own test board results for
+   switches/LED components.
+7. `system-assembly-harnesses` and `system-config-variants-diagrams` — deferred until the above
+   list is complete.
 
-`merge-create-plugboard` is now **done** (checkpoint 188). This session created the full
+Also queued (not in the above sequence yet): `design-docs-current-only-sweep` — a repo-wide sweep
+for historical/rationale wording that shouldn't be in "current design only" docs (this session's
+sweep only covered Cypher + Stack-* boards; see the todo for the specific patterns to search for).
+
+### Prior session recap (2026-08-19, checkpoint 188 — Cypher-Plugboard complete)
+
+`merge-create-plugboard` is **done** (checkpoint 188). This session created the full
 Cypher-Plugboard Board design (5 files: `Design_Spec.md`, `Board_Layout.md`, and 3 variant files
 under `design/Electronics/Cypher-Plugboard/` - renamed from the originally-planned "Plugboard
 Board" for file-explorer grouping with the rest of the Cypher family), then fixed two rounds of
@@ -59,12 +71,6 @@ real issues surfaced during review:
    passthrough fix) - remaining scope is **J3/J4 only** (still 26/24 of 50 contacts defined).
 
 See `.copilot/checkpoints/188-cypher-plugboard-complete.md` for full detail.
-
-**Session paused here (2026-08-19) due to token budget - user's subscription renews in ~2 weeks.**
-**Next session starts with `merge-cypher-board-j3j6-pinouts`** (J3/J4 only) or
-`merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`.
-
-### Prior session recap (2026-08-17, checkpoint 187 — Cypher-Output complete)
 
 `merge-create-cypher-output` is **done** (checkpoint 187). That session closed out the remaining
 review of the Cypher-Output draft (checkpoint 186) and fixed several real issues surfaced during

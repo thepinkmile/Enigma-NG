@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-18
+**Last Updated:** 2026-09-02
 
 ## 1. Overview
 
@@ -39,7 +39,8 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | FR-STA-10 | Provide I2C GPIO expansion for CM5 virtual keypress, HID monitoring, ENC service-bus monitoring, CPLD_RESET_N management, and CPLD configuration driving | Three MCP23017 expanders U6, U7, U8 on I2C-1 bus | §3 I2C Devices; BOM U6–U8 |
 | FR-STA-11 | Select between the physical keyboard source and CM5 virtual key source before the cipher pipeline | 7-channel 2:1 mux (U4/U5); KEY_CM5_ACTIVE selects source | §3 External Keyboard Source Mux; BOM U4, U5 |
 | FR-STA-12 | Connect to the User Settings Module via I2C-1 bus | J19 = 6-pin JST PH 2.0mm harness | §6 Interconnects; BOM J19 |
-| FR-STA-13 | Protect J3 (Stack-Input/STA-side) stacking connector from ESD during live mini-stack swap | J3 carries JTAG + ENC signals; accessible during hot-swap | §8 Thermal & ESD; BOM U9–U12 |
+| FR-STA-13 | Protect J3 (Stack-Input/STA-side) stacking connector from ESD during live mini-stack swap | J3 carries JTAG + ENC + actuation-request signals; accessible during hot-swap | §8 Thermal & ESD; BOM U9–U12, U19 |
+| FR-STA-14 | Verify the ACTUATE_REQUEST round-trip signal completes correctly, as a system self-test | CPLD U1 reads ACTUATE_REQUEST_OUT_N (J3 pin 35) and compares it against the originally-issued ACTUATE_REQUEST_IN_N | §3 Actuation Request Chain; BOM R51 |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | End-of-chain turnaround via J4 (Stack-Output/REF-side) | §4 Signal Turnaround; BOM J4 |
 | FR-REF-02 | Provide the reflection turnaround at the end of the rotor chain with the selected map applied | Reflection mapping applied by CPLD U1 at Step 2 boundary; J4 provides the electrical return path | §3 CPLD Signal Routing; BOM U1, J4 |
 | FR-REF-03 | Return TTD_RETURN from the end of the chain to the JTAG bridge | J4 → R50 (22 Ohm) → FT232H U17 TDO | §4 Signal Turnaround; BOM R50, U17 |
@@ -48,7 +49,7 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | FR-CYP-01 | Provide USB-to-JTAG bridge for programming all 37 CPLDs in the system | FT232H in MPSSE mode; USB D+/D- via CTL dock J1 to CM5 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
 | FR-CYP-02 | Interface with up to 6 Rotor Mini-Stacks via keyed stacking connectors | J3 = Stack-Input/STA-side; J4 = Stack-Output/REF-side | §6 Interconnects; BOM J3, J4 |
 | FR-CYP-03 | Interface with Cypher-Input and Cypher-Output boards | J5/J6 = shared HID interconnect, mates whichever board is closest to this board (either order supported); see `Board_Layout.md §4` | §6 Interconnects; BOM J5, J6 |
-| FR-CYP-04 | Host 4 ENC module mounts on the back face for plugboard-role encoder modules | DF40C Hirose BtB receptacle sets; replaces former Stator IDC encoder ports J6–J9 | §6 Interconnects; BOM J7–J18 |
+| FR-CYP-04 | Host 4 ENC module mounts on the back face for plugboard-role encoder modules | DF40C Hirose BtB receptacle sets | §6 Interconnects; BOM J7–J18 |
 | FR-CYP-05 | Carry spade blade terminal bank on the back face for jack plug harnesses | Keystone 1285-ST; 64 per ENC mount position × 4 = 256 total | §6 Interconnects; BOM J20+ |
 
 ### Design Requirements
@@ -57,7 +58,7 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | :--- | :--- | :--- | :--- |
 | DR-STA-01 | PCB stackup | 6-layer / 2oz copper per `design/Standards/Global_Routing_Spec.md §2.3.4` | §9 PCB Fabrication & Stackup |
 | DR-STA-02 | Layer mapping | L1 Signal/front face, L2 GND, L3 Inner signal (CI), L4 Power, L5 GND, L6 Signal/back face — per `design/Standards/Global_Routing_Spec.md §2.3.4` | §9 PCB Fabrication & Stackup |
-| DR-STA-03 | Stack-Input / STA-side rotor interface | J3 = QSS-025-01-L-D-A-GP-K (50-contact vertical female); pin mapping per `Board_Layout.md §2` | §6 Interconnects; BOM J3 |
+| DR-STA-03 | Stack-Input / STA-side rotor interface | J3 = QSS-025-01-L-D-A-GP-K (50-contact vertical female); pin mapping owned by `Stack-Input/Board_Layout.md §1` (IC-STA-CHAIN, DEC-094) | §6 Interconnects; BOM J3 |
 | DR-STA-04 | ENC module and HID board interfaces | J5/J6 = QSS-025-01-L-D-A-GP-K (shared HID interconnect, vertical female — mates whichever of Cypher-Input/Cypher-Output is closest, either order); J7–J18 = DF40C-xDS sets (4x plugboard passes) | §6 Interconnects; BOM J5–J18 |
 | DR-STA-06 | Controller dock connectors | J1 = Molex 2195620015 (5V power dock + USB D+/D-); J2 = Molex 2195620015 (logic dock); mating CTL receptacle = Molex 2195630015 | §6 Interconnects; BOM J1, J2 |
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240; 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 CPLD; BOM U1 |
@@ -69,10 +70,11 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | DR-STA-13 | U8 specification | U8 = MCP23017T-E/SO; SOIC-28; A2=LOW, A1=HIGH, A0=LOW; GPA[3:0] = CFG_ROUTE[3:0]; GPA[6] = CFG_APPLY_N; GPB[5:0] not connected | BOM U8 |
 | DR-STA-14 | USM harness | J19 = B6B-PH-K-S(LF)(SN) 6-pin JST PH 2.0mm; signals: 3V3_ENIG, 5V_MAIN, GND, SDA, SCL, GND | §6 Interconnects; BOM J19 |
 | DR-STA-15 | CFG_APPLY_N signal | CFG_APPLY_N = active-low Stator-only reload pulse from U8 GPA[6]; ANDed with CPLD_RESET_N through U3 (SN74LVC1G08DBVR) to drive CPLD DEV_CLR_N; R17 (10 kOhm pull-up to 3V3_ENIG) holds CFG_APPLY_N deasserted at power-up | BOM U8, U3, R17 |
-| DR-STA-16 | ESD protection — J3 Stack-Input/STA-side | U9 (JTAG: TTD, TMS, TCK, CPLD_RESET_N) + U10–U12 (ENC: ENC_IN[5:0] + ENC_OUT[5:0]); placed within 3mm of J3 mating edge | §8 Thermal & ESD; BOM U9–U12 |
+| DR-STA-16 | ESD protection — J3 Stack-Input/STA-side | U9 (JTAG: TTD, TMS, TCK, CPLD_RESET_N) + U10–U12 (ENC: ENC_IN[5:0] + ENC_OUT[5:0]) + U19 (ACTUATE_REQUEST_IN_N/OUT_N); placed within 3mm of J3 mating edge | §8 Thermal & ESD; BOM U9–U12, U19 |
 | DR-STA-17 | Mounting holes | MH1–MH4: M3 PTH (3.2 mm drill) tied to GND_CHASSIS per GRS §4; placement per GRS §4.3 (pattern TBD — board shape TBD). No BOM entry. | §9 PCB Fabrication; GRS §4.3 |
 | DR-STA-18 | CPLD_RESET_N open-drain buffer | Q1 = BSS138 N-ch MOSFET SOT-23; gate resistor R41 = 100 Ohm 0402; driven by U7 GPA[7]; prevents MCP23017 IOL overload from 30-rotor pull-up stack (30 x 330 uA = 9.90 mA > 8 mA I/O sink limit) | BOM Q1, R41 |
-| DR-REF-02 | Stack-Output / REF-side interface | J4 = QSS-025-01-L-D-A-GP-K (50-contact vertical female); pin mapping per `Board_Layout.md §3` | §6 Interconnects; BOM J4 |
+| DR-STA-19 | ACTUATE_REQUEST_OUT_N idle-bias / round-trip readback | R51 = 10 kOhm 0402 pull-up to 3V3_ENIG on J3 pin 35, in addition to the CPLD U1 input connection; defines the idle state when disconnected (e.g. Stack-Blanking Board bench mode with no mini-stacks attached) and allows U1 firmware to verify the ACTUATE_REQUEST round trip completed. Per DEC-097. | §3 Actuation Request Chain; BOM R51 |
+| DR-REF-02 | Stack-Output / REF-side interface | J4 = QSS-025-01-L-D-A-GP-K (50-contact vertical female); pin mapping owned by `Stack-Output/Board_Layout.md §1` (IC-REF-CHAIN, DEC-094) | §6 Interconnects; BOM J4 |
 | DR-REF-03 | TTD_RETURN routing | TTD_RETURN received on J4 from Stack-Output; routed via R50 (22 Ohm) to FT232H U17 TDO | §4 Signal Turnaround; BOM J4, R50 |
 | DR-REF-04 | End-of-chain damping | R50 = 22 Ohm, 0603, ERJ-3EKF2200V, on TTD_RETURN from J4 to U17 TDO | §4 Signal Turnaround; BOM R50 |
 | DR-REF-05 | Reflection mapping | Reflection mapping handled by CPLD U1 at Step 2 boundary; no passive turnaround traces required | §3 CPLD Signal Routing |
@@ -114,6 +116,8 @@ flowchart TD
     J3["J3 QSS-025 female\nStack-Input / STA side"]
     J4["J4 QSS-025 female\nStack-Output / REF side"]
     U9U12["U9-U12 TPD4E05 x4 ESD\nJ3 protection"]
+    U19["U19 TPD4E05 ESD\nJ3 ACTUATE_REQUEST_IN/OUT_N"]
+    R51["R51 10kΩ pull-up\nACTUATE_REQUEST_OUT_N idle-bias"]
     U13U16["U13-U16 TPD4E05 x4 ESD\nJ4 protection"]
   end
 
@@ -140,6 +144,8 @@ flowchart TD
   U6U8 -- "CPLD_RESET_N" --> Q1
   Q1 -- "open-drain" --> U3
   U1 -- "JTAG out + ENC" --> J3
+  J3 -- "ACTUATE_REQUEST_OUT_N (round-trip check)" --> U1
+  J3 --> R51
   J4 -- "TTD_RETURN + ENC return" --> U1
   U1 <--> J5
   U1 <--> J6
@@ -148,6 +154,7 @@ flowchart TD
   U1 <--> J13J15
   U1 <--> J16J18
   U9U12 --> J3
+  U19 --> J3
   U13U16 --> J4
 ```
 
@@ -212,6 +219,48 @@ The encryption signal passes through U1 at three defined interception points:
 `ENC_ACTIVE_N` is a HID-local sideband only — selected keyboard-source activity state forwarded
 to `LBD_DEC` (J6) so Cypher-Output can blank when no key event is active. Not propagated through
 the plugboard, rotor, or reflector interfaces.
+
+### Actuation Request Chain (`J3` / `J4`)
+
+`ACTUATE_REQUEST_IN_N`/`ACTUATE_REQUEST_OUT_N` (on `J3`) and `ACTUATE_REQUEST_REF_IN_N`/
+`ACTUATE_REQUEST_REF_OUT_N` (on `J4`) together form a single round-trip signal path that triggers
+rotor-stepping actuation across the entire 30-rotor stack once per keypress. Full path (see
+DEC-093 for complete detail and per-board wiring):
+
+1. **Origination:** CPLD U1 asserts `ACTUATE_REQUEST_IN_N` on `J3` (pin 16) based on `ENC_ACTIVE_N`
+   (received from Cypher-Input, indicating a key is actively depressed) combined with U1's own
+   firmware configuration — this is the only place the actuation trigger is gated on keypress
+   state (see DEC-091).
+2. **Forward pass (STA chain):** the signal propagates through every Rotor Mini-Stack's
+   Stack-Input → Rotor 1-5 → Stack-Output → Stack-Interposer → back to that same mini-stack's own
+   Stack-Input rear connector → next mini-stack's front connector, repeating until it reaches the
+   Stack-Blanking Board.
+3. **First reflection (Blanking → Cypher, REF chain):** the Stack-Blanking Board redirects the
+   signal into the REF-side chain (Stack-Output boards only, direct passthrough, no rotors
+   involved), propagating it back through every mini-stack to Cypher's `J4`, arriving as
+   `ACTUATE_REQUEST_REF_IN_N` (pin 16).
+4. **CPLD reflection:** U1's firmware processes `ACTUATE_REQUEST_REF_IN_N` and drives
+   `ACTUATE_REQUEST_REF_OUT_N` (pin 35) in response.
+5. **Second forward pass (REF chain):** `ACTUATE_REQUEST_REF_OUT_N` propagates forward again
+   through the Stack-Output boards of every mini-stack back to the Stack-Blanking Board.
+6. **Second reflection (Blanking → Cypher, STA chain, reverse rotor order):** the Stack-Blanking
+   Board redirects the signal back into the STA-side chain, entering at the *last* mini-stack's
+   Stack-Input *rear* connector this time, traversing the Stack-Interposer/Stack-Output/Rotor
+   chain in reverse (right-to-left, i.e. each Rotor's own IN-to-OUT pins used the opposite way
+   round from the forward pass), back through every mini-stack to Mini-Stack 1's Stack-Input
+   front connector, and finally to Cypher's `J3` `ACTUATE_REQUEST_OUT_N` (pin 35), where CPLD U1
+   reads it as a round-trip completion check against the originally-issued
+   `ACTUATE_REQUEST_IN_N` (per DEC-097).
+
+This mirrors the existing four-pass structure already used for the `ENC_DATA`/cipher signal
+itself (forward via `J3`/rotors, reflect at Blanking, back via `J4`, CPLD reflection-map
+processing, forward via `J4` again, reflect at Blanking again, back via `J3`/rotors in reverse) —
+see §3 CPLD Signal Routing Matrix above.
+
+Every downstream Rotor Mini-Stack / Rotor board carries all four related nets (front-IN,
+front-OUT, rear-IN, rear-OUT, per DEC-090's board-agnostic model), with each board's own CPLD
+(or, for the Stack-Input Board, its native STM32G071 AM controller) using its own dynamic
+configuration to decide how a given pass is actually routed. See DEC-090, DEC-093.
 
 ### Configuration Bank 1 — Plugboard Routing
 
@@ -502,14 +551,25 @@ of the physical Reflector (Umkehrwalze) of the historical Enigma machine.
   and `ENC_IN_REF[5:0]` remain part of the active signal path in all supported configurations.
 - **TTD_RETURN damping:** R50 (22 Ohm, 0603, ERJ-3EKF2200V) — series damping on TTD_RETURN
   from J4 to FT232H U17 TDO. Provides impedance damping at the final rotor output.
-- **ESD protection on J4:** U13–U16 (TPD4E05U06QDQARQ1 x4). Per DEC-045 and DEC-048.
+- **Power entry:** `3V3_ENIG` (8 pins on J4, matching J3's power pin count for this single-rail
+  connector) feeds the Stack-Output side of the rotor stack; no `5V_MAIN` on this connector, per
+  `Stack-Output/Design_Spec.md DR-SOUT-07`. See DEC-092.
+- **Actuation-request chain (J4):** `ACTUATE_REQUEST_REF_IN_N`/`ACTUATE_REQUEST_REF_OUT_N` occupy
+  the same pin positions as J3's `ACTUATE_REQUEST_IN_N`/`ACTUATE_REQUEST_OUT_N` (board-agnostic
+  template), but are logically distinct nets — the full end-to-end signal path (originating at
+  J3, traversing the entire Rotor Mini-Stack chain and the Stack-Blanking Board, arriving here as
+  `ACTUATE_REQUEST_REF_IN_N`, processed by CPLD U1's firmware, and re-emitted as
+  `ACTUATE_REQUEST_REF_OUT_N`) is documented in DEC-093.
+- **ESD protection on J4:** U13–U16 (TPD4E05U06QDQARQ1 x4). Per DEC-045, DEC-048, and DEC-092.
   Placed within 3mm of J4 mating edge.
   - U13: channels — TTD_RETURN + ENC_IN[0–2] (return)
   - U14: channels — ENC_IN[3–5] (return) + ENC_OUT[0] (return)
   - U15: channels — ENC_OUT[1–4] (return)
-  - U16: channels — ENC_OUT[5] (return) (3 channels NC)
+  - U16: channels — ENC_OUT[5] (return) + `ACTUATE_REQUEST_REF_IN_N` + `ACTUATE_REQUEST_REF_OUT_N`
+    (1 channel spare)
 
-> **J4 pinout:** see `Board_Layout.md §3`.
+> **J4 pinout:** canonical map owned by `Stack-Output/Board_Layout.md §1` (DEC-094); this board's
+> own wiring notes at `Board_Layout.md §3`.
 
 ## 5. USB-JTAG Bridge
 
@@ -581,20 +641,24 @@ C37, C38 (33pF C0G 0402): crystal load capacitors for Y1. Crystal specifies C_L 
 
 ### J3 — Stack-Input / STA-Side Stacking Connector (`KBD_ENC` / Rotor-1 group)
 
-**Connector definition owner: this board.** Mates with Stack-Input Board front-face male QTS-025.
+**Connector definition owner: `Stack-Input/Board_Layout.md §1`** (IC-STA-CHAIN, per DEC-094).
+Mates with Stack-Input Board front-face male QTS-025.
 
 - **MPN:** QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT)
 - **Stacking height:** 5.00mm mated per Samtec datasheet.
 
-> **Pinout:** see `Board_Layout.md §2`. Full 50-pin allocation pending — see todo `merge-cypher-board-j3j6-pinouts`.
+> **Pinout:** see `Stack-Input/Board_Layout.md §1` for the full canonical pin map; `Board_Layout.md §2`
+> of this board for Cypher's own local wiring notes. Fully 50-pin allocated per DEC-090/DEC-093.
 
 ### J4 — Stack-Output / REF-Side Stacking Connector (Reflector return group)
 
-**Connector definition owner: this board.** Mates with Stack-Output Board front-face male QTS-025.
+**Connector definition owner: `Stack-Output/Board_Layout.md §1`** (IC-REF-CHAIN, per DEC-094).
+Mates with Stack-Output Board front-face male QTS-025.
 
 - **MPN:** QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT)
 
-> **Pinout:** see `Board_Layout.md §3`. Full 50-pin allocation pending — see todo `merge-cypher-board-j3j6-pinouts`.
+> **Pinout:** see `Stack-Output/Board_Layout.md §1` for the full canonical pin map; `Board_Layout.md §3`
+> of this board for Cypher's own local wiring notes. Fully 50-pin allocated per DEC-092/DEC-093.
 
 ### J5 / J6 — Cypher-Input and Cypher-Output Connectors (`KBD_ENC` / `LBD_DEC` group)
 
@@ -693,15 +757,18 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 
 - **Thermal:** No active cooling required. Relies on chassis airflow.
 - **ESD — J3 Stack-Input/STA-side (TVS required):**
-  J3 carries JTAG and ENC signals; accessible during live mini-stack swap. Per DEC-045 and DEC-048:
+  J3 carries JTAG, ENC, and actuation-request signals; accessible during live mini-stack swap.
+  Per DEC-045, DEC-048, and DEC-091:
   - **U9:** 1x TPD4E05U06QDQARQ1 — channels: TTD, TMS, TCK, CPLD_RESET_N (JTAG group)
   - **U10:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[0–3]
   - **U11:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[4–5] + ENC_OUT[0–1]
   - **U12:** 1x TPD4E05U06QDQARQ1 — channels: ENC_OUT[2–5]
-  All U9–U12 placed within 3mm of J3 mating edge on L1.
+  - **U19:** 1x TPD4E05U06QDQARQ1 — channels: ACTUATE_REQUEST_IN_N, ACTUATE_REQUEST_OUT_N
+    (2 channels used, 2 spare)
+  All U9–U12, U19 placed within 3mm of J3 mating edge on L1.
 - **ESD — J4 Stack-Output/REF-side (TVS required):** per §4 Signal Turnaround.
 - **Working voltage note:** TPD4E05U06QDQARQ1 max continuous working voltage = 5.5V. On 3V3_ENIG
-  (max 3.465V at +5%), all U9–U16 are within rated limits with >= 2.0V margin.
+  (max 3.465V at +5%), all U9–U16, U19 are within rated limits with >= 2.0V margin.
 - **ESD — all other connectors (no TVS required):**
   J1, J2 (blind-mate dock); J5, J6 (internal BtB); J7–J18 (back-face mounts, not live-swap);
   J19 (internal harness); J20+ (passive blade terminals — ESD TBD at harness definition).
@@ -748,6 +815,7 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 | R41 | 100Ω 1% 0402 | ERJ-2RKF1000X | Panasonic | P100LCT-ND | 667-ERJ-2RKF1000X | C25190 | - | Q1 gate resistor (CPLD_RESET_N open-drain buffer) | ✔ | Pending | 1 |
 | R49 | 12kΩ ±1% 0402 | ERJ-2RKF1202X | Panasonic | P12.0KLCT-ND | 667-ERJ-2RKF1202X | C25741 | - | FT232H REF pin bias (pin 5 to GND); per FTDI datasheet §3.5 and AN_146 | ✔ | ✔ | 1 |
 | R50 | 22Ω 1% 0603 | ERJ-3EKF2200V | Panasonic | P220HCT-ND | 667-ERJ-3EKF2200V | C403073 | - | TTD_RETURN end-of-chain series damping (J4 to FT232H U17 TDO) | ✔ | ✔ | 1 |
+| R51 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | - | ACTUATE_REQUEST_OUT_N (J3 pin 35) idle-bias pull-up to 3V3_ENIG; round-trip completion check input to CPLD U1. Per DEC-097. | ✔ | ✔ | 1 |
 | U1 | MAX II 570 LEs CPLD TQFP-100 | EPM570T100I5N | Intel (Altera) | 544-2281-ND | 989-EPM570T100I5N | C27319 | - | Signal routing and reflector-mapping CPLD | ✔ | ✔ | 1 |
 | U2 | Current monitor I2C SOIC-8 | INA219AIDR | Texas Instruments | 296-23978-1-ND | 595-INA219AIDR | C138706 | - | Rotor stack current/power telemetry | ✔ | ✔ | 1 |
 | U3 | Single AND gate SOT-23-5 | SN74LVC1G08DBVR | Texas Instruments | 296-11601-1-ND | 595-SN74LVC1G08DBVR | C7666 | - | CPLD_RESET_N / CFG_APPLY_N AND gate | ✔ | ✔ | 1 |
@@ -755,6 +823,7 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 | U6-U8 | I2C GPIO expander SOIC-28 | MCP23017T-E/SO | Microchip Technology | MCP23017T-E/SOCT-ND | 579-MCP23017T-E/SO | C47023 | - | I2C expanders (U6 @ 0x20, U7 @ 0x21, U8 @ 0x22) | ✔ | ✔ | 3 |
 | U9-U12 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | J3 Stack-Input/STA-side ESD protection | ✔ | ✔ | 4 |
 | U13-U16 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | J4 Stack-Output/REF-side ESD protection | ✔ | ✔ | 4 |
+| U19 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | J3 Stack-Input/STA-side ESD protection: ACTUATE_REQUEST_IN_N/OUT_N (2 channels used, 2 spare). See DEC-091. | ✔ | ✔ | 1 |
 | U17 | USB 2.0 to MPSSE bridge LQFP-48 | FT232HL-REEL | FTDI Chip | 768-1101-1-ND | 895-FT232HL-REEL | C51997 | - | USB-JTAG bridge in MPSSE mode | ✔ | ✔ | 1 |
 | U18 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | - | JTAG TCK/TMS output buffer (1OE/2OE tied to GND) | ✔ | ✔ | 1 |
 | Y1 | 12MHz 20pF ±20ppm SMD-5032 (5.0×3.2×1.1mm) | 435F12012IET | CTS | 110-435F12012IETTR-ND | 774-435F12012IET | C19766404 (Extended) | - | FT232H reference crystal; load caps C37/C38 = 33pF (C_L = 20pF) | Yes* | Yes* | 1 |

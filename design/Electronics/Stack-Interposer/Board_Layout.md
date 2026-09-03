@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-07-25
+**Last Updated:** 2026-09-02
 
 > **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
 > component rationale belong in `Design_Spec.md`. This file contains connector pinout references
@@ -63,7 +63,7 @@ Stack-Output Board (J1 side):
 | ENC_DATA[4] (SIG-BLOCK-A fwd) | 9 | 10 | GND |
 | GND | 11 | 12 | ENC_DATA[5] (SIG-BLOCK-A fwd) |
 | TTD (SIG-BLOCK-E) | 13 | 14 | GND |
-| GND | 15 | 16 | GND |
+| ACTUATE_REQUEST (SIG-BLOCK-G, fwd, Stack-Output→Stack-Input) | 15 | 16 | ACTUATE_REQUEST (SIG-BLOCK-H, return, Stack-Input→Stack-Output) |
 | GND | 17 | 18 | TTD (SIG-BLOCK-E) |
 | ENC_DATA[5] (SIG-BLOCK-D return) | 19 | 20 | GND |
 | GND | 21 | 22 | ENC_DATA[4] (SIG-BLOCK-D return) |
@@ -75,7 +75,11 @@ Stack-Output Board (J1 side):
 > **Note:** Signal grouping and GND interleaving rationale is documented in
 > `Stack-Interposer/Design_Spec.md §3`. SIG-BLOCK-A occupies pins 1–12 (top half),
 > SIG-BLOCK-D occupies pins 19–30 (bottom half), both interleaved with GND.
-> TTD (SIG-BLOCK-E) appears on pins 13 and 18 with guard GND on pins 14–17 between them.
+> TTD (SIG-BLOCK-E) appears on pins 13 and 18, with GND on pins 14 and 17.
+> `ACTUATE_REQUEST` (SIG-BLOCK-G/H, per DEC-093) occupies pins 15/16. SIG-BLOCK-G carries the
+> forward pass (this mini-stack's own Rotor chain, collected via Stack-Output, forwarded to
+> Stack-Input); SIG-BLOCK-H carries the return pass (from Stack-Input's rear connector, back
+> through this mini-stack's chain via Stack-Output, in reverse).
 >
 > **Routing note (DR-SINT-04):** The pin mapping is pin-to-pin (J1 pin n → J2 pin n). However,
 > because J1 and J2 both face upward with their pin-1 ends facing each other, the physical trace

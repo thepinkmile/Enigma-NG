@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-17
+**Last Updated:** 2026-09-02
 
 > **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
 > component rationale belong in `Design_Spec.md`. This file contains connector pinout references
@@ -37,52 +37,47 @@
 
 ## 2. J3 — Stack-Input / STA-Side Stacking Connector (QSS-025-01-L-D-A-GP-K)
 
-> **Connector Definition Owner:** this board.
-> Stack-Input Board front face carries the mating male QTS-025-01-L-D-RA-P.
+> **Connector Definition Owner:** `Stack-Input/Board_Layout.md §1` (per DEC-094 — the IC-STA-CHAIN
+> template is reused identically at every Stack-Input front/rear junction along the chain).
+> This board carries the female receptacle (QSS-025-01-L-D-A-GP-K); Stack-Input's front face
+> carries the mating male QTS-025-01-L-D-RA-P.
 
-26 contacts defined (see Design_Spec §3 Port Mapping). Pins 27–50 tied to GND.
-Full 50-pin allocation pending: see todo `merge-cypher-board-j3j6-pinouts`.
+**Fully 50-pin allocated** per DEC-090/DEC-093 — see `Stack-Input/Board_Layout.md §1` for the
+full canonical pin map.
 
-| R1 Signal | Pin R1 | Pin R2 | R2 Signal |
-| :--- | :---: | :---: | :--- |
-| GND | 1 | 14 | GND |
-| ENC_OUT[0] | 2 | 15 | ENC_OUT[1] |
-| ENC_OUT[2] | 3 | 16 | ENC_OUT[3] |
-| ENC_OUT[4] | 4 | 17 | ENC_OUT[5] |
-| GND | 5 | 18 | GND |
-| TMS | 6 | 19 | TCK |
-| GND | 7 | 20 | CPLD_RESET_N |
-| TTD (TDI out) | 8 | 21 | GND |
-| GND | 9 | 22 | GND |
-| ENC_IN[4] | 10 | 23 | ENC_IN[5] |
-| ENC_IN[2] | 11 | 24 | ENC_IN[3] |
-| ENC_IN[0] | 12 | 25 | ENC_IN[1] |
-| GND | 13 | 26 | GND |
+> **Cypher Board's own wiring at J3:** `ACTUATE_REQUEST_IN_N` (pin 16) → CPLD U1 input, driving
+> first-rotor actuation per U1's programmed configuration (based on `ENC_ACTIVE_N` from
+> Cypher-Input and U1's firmware, per DEC-091). `ACTUATE_REQUEST_OUT_N` (pin 35) → CPLD U1 input
+> **and** R51 (10 kOhm pull-up to 3V3_ENIG, idle-bias) — this is the far-end return of the full
+> round-trip signal path (DEC-093); U1 firmware compares it against the originally-issued
+> `ACTUATE_REQUEST_IN_N` to verify the request successfully completed its round trip through the
+> entire rotor stack, as a system self-test/diagnostic. The pull-up defines the idle/disconnected
+> state (e.g. Stack-Blanking Board plugged directly into `J3`/`J4` for bench testing with no
+> mini-stacks attached, where nothing actively drives this pin). See DEC-090, DEC-091, DEC-093,
+> DEC-094, DEC-097.
 
 ---
 
 ## 3. J4 — Stack-Output / REF-Side Stacking Connector (QSS-025-01-L-D-A-GP-K)
 
-> **Connector Definition Owner:** this board.
-> Stack-Output Board front face carries the mating male QTS-025-01-L-D-RA-P.
+> **Connector Definition Owner:** `Stack-Output/Board_Layout.md §1` (per DEC-094 — the
+> IC-REF-CHAIN template is reused identically at every Stack-Output front/rear junction along the
+> chain). This board carries the female receptacle (QSS-025-01-L-D-A-GP-K); Stack-Output's
+> front face carries the mating male QTS-025-01-L-D-RA-P.
 
-24 contacts defined (see Design_Spec §4 Signal Turnaround). Pins 25–50 tied to GND.
-Full 50-pin allocation pending: see todo `merge-cypher-board-j3j6-pinouts`.
+**Fully 50-pin allocated** per DEC-092/DEC-093 — see `Stack-Output/Board_Layout.md §1` for the
+full canonical pin map.
 
-| R1 Signal | Pin R1 | Pin R2 | R2 Signal |
-| :--- | :---: | :---: | :--- |
-| GND | 1 | 13 | GND |
-| ENC_IN[0] (return) | 2 | 14 | ENC_IN[1] (return) |
-| ENC_IN[2] (return) | 3 | 15 | ENC_IN[3] (return) |
-| ENC_IN[4] (return) | 4 | 16 | ENC_IN[5] (return) |
-| GND | 5 | 17 | GND |
-| TTD_RETURN | 6 | 18 | GND |
-| GND | 7 | 19 | TTD_RETURN |
-| GND | 8 | 20 | GND |
-| ENC_OUT[4] (return) | 9 | 21 | ENC_OUT[5] (return) |
-| ENC_OUT[2] (return) | 10 | 22 | ENC_OUT[3] (return) |
-| ENC_OUT[0] (return) | 11 | 23 | ENC_OUT[1] (return) |
-| GND | 12 | 24 | GND |
+> **Cypher Board's own wiring at J4:** `TTD_RETURN` (pin 30) mirrors `TTD`'s position on `J3`
+> (pin 30) — routed via R50 (22 Ohm) to FT232H U17 TDO, per §4 Signal Turnaround. `3V3_ENIG`
+> (8 pins total, matching `J3`'s power pin count on this single-rail connector) feeds the
+> Stack-Output Board, which requires no `5V_MAIN` (per `Stack-Output/Design_Spec.md DR-SOUT-07`).
+> `ACTUATE_REQUEST_REF_IN_N`/`ACTUATE_REQUEST_REF_OUT_N` are logically distinct nets from `J3`'s
+> `ACTUATE_REQUEST_IN_N`/`ACTUATE_REQUEST_OUT_N` (same pin positions, per the board-agnostic
+> template, but different roles — matching the existing `ENC_IN_REF`/`ENC_OUT_REF` vs
+> `ENC_IN_ROT`/`ENC_OUT_ROT` naming precedent). `ACTUATE_REQUEST_REF_IN_N` (pin 16) → CPLD U1
+> input; based on U1's firmware configuration, U1 drives `ACTUATE_REQUEST_REF_OUT_N` (pin 35) in
+> response. See DEC-093 for the full end-to-end `ACTUATE_REQUEST` signal path.
 
 ---
 

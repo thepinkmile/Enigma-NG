@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-22
+**Last Updated:** 2026-09-02
 
 ## 1. Overview
 
@@ -465,15 +465,21 @@ the full net-naming convention.
 | 7 | ENC\_IN\[3\] | 8 | ENC\_OUT\[3\] |
 | 9 | ENC\_IN\[4\] | 10 | ENC\_OUT\[4\] |
 | 11 | ENC\_IN\[5\] | 12 | ENC\_OUT\[5\] |
-| 13 | GND | 14 | GND |
+| 13 | ACTUATE\_REQUEST\_IN\_N | 14 | ACTUATE\_REQUEST\_OUT\_N |
 | 15 | GND | 16 | GND |
 | 17 | GND | 18 | GND |
 | 19 | GND | 20 | GND |
 
-> 12 signal pins + 8 GND fill pins. All spare pins assigned as GND for improved EMI shielding
-> and signal return paths around the encoder data bus. Both ENC_IN and ENC_OUT on J3 are active simultaneously:
+> 12 ENC signal pins + 2 ACTUATE_REQUEST pins (per DEC-093) + 6 GND fill pins. All remaining
+> spare pins assigned as GND for improved EMI shielding and signal return paths around the
+> encoder data bus. Both ENC_IN and ENC_OUT on J3 are active simultaneously:
 > ENC_IN receives forward-pass data from upstream; ENC_OUT carries the CPLD SW3-map return-pass result back upstream.
 > The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
+> `ACTUATE_REQUEST_IN_N` (pin 13) receives the actuation-trigger signal from the upstream stage
+> (Stack-Input, or the previous Rotor); `ACTUATE_REQUEST_OUT_N` (pin 14) carries this board's own
+> return-pass signal back upstream — both wired to CPLD U1 (see §6.1). This connector carries
+> these signals rather than J1 (JTAG) since they are logically part of the ENC/actuation control
+> group, not JTAG. See DEC-093.
 >
 #### J4 - JTAG Interface Output (ERF8-005, 10-pin 2x5, 0.8mm pitch, FEMALE socket)
 
@@ -515,13 +521,17 @@ Mates with the next rotor's J3 (ERM8-010 male header) or Reflector J3.
 | 7 | ENC\_IN\[3\] | 8 | ENC\_OUT\[3\] |
 | 9 | ENC\_IN\[4\] | 10 | ENC\_OUT\[4\] |
 | 11 | ENC\_IN\[5\] | 12 | ENC\_OUT\[5\] |
-| 13 | GND | 14 | GND |
+| 13 | ACTUATE\_REQUEST\_IN\_N | 14 | ACTUATE\_REQUEST\_OUT\_N |
 | 15 | GND | 16 | GND |
 | 17 | GND | 18 | GND |
 | 19 | GND | 20 | GND |
 
 > ENC_OUT carries the CPLD SW2-map forward-pass substitution result downstream; ENC_IN receives return-pass data from downstream for SW3-map processing.
 > Both directions are applied by the CPLD - this is NOT a pass-through. The 26-character variant uses ENC[0:4] only; ENC[5] = NC on those boards.
+> `ACTUATE_REQUEST_OUT_N` (pin 14) carries this board's own forward-pass actuation-trigger signal
+> downstream (to the next Rotor, or into Stack-Output for the last rotor in a mini-stack);
+> `ACTUATE_REQUEST_IN_N` (pin 13) receives the return-pass signal from downstream — both wired to
+> CPLD U1 (see §6.1). Per DEC-093.
 >
 #### J_INT - Board A ↔ Board B Internal Interconnect (8x single-row 2.54mm THT headers, 44 pins total)
 
@@ -631,6 +641,7 @@ are reserved so the same 1x5 keyed header footprint can be retained across both 
 | U1 | MAX II 570 LEs CPLD TQFP-100 | EPM570T100I5N | Intel (Altera) | 544-2281-ND | 989-EPM570T100I5N | C27319 | - | - | ✔ | ✔ | 1 |
 | U2 | 4-ch cap sensor I²C 0x2A 16-VQFN | FDC2114RGHR | Texas Instruments | FDC2114RGHR-ND | 595-FDC2114RGHR | C2652079 | - | JLCPCB MOQ 2 | ✔ | ✔ | 1 |
 | U3-U10 | 4-ch ESD ±15kV USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | - | ✔ | ✔ | 8 |
+| U12-U13 | 4-ch ESD ±15kV USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | ACTUATE_REQUEST_IN_N/OUT_N ESD protection (U12: J3/Board A, U13: J6/Board B; 2 channels used, 2 spare each). Per DEC-093. | ✔ | ✔ | 2 |
 
 > **Variant-specific components:** N=26 rotor variant components (C20A, C21A, C22A-C25A, L5A-L8A, U11A) are
 > listed in **`design/Electronics/Rotor/Rotor_26_Char_Design.md`** §8. N=64 rotor variant components
@@ -640,8 +651,8 @@ are reserved so the same 1x5 keyed header footprint can be retained across both 
 > requirements for the populated FDC2114 devices. Resonant front-end parts (`L1-L4`, `C16-C19`)
 > are fully sourced above (Bourns CWF1610A-180K 18 µH inductors and YAGEO AC0402FRNPO9BN330 33 pF
 > resonant capacitors; dummy LC tanks on all unused FDC2114 channels per TI application note).
-> ESD protection arrays `U3`-`U10` (TPD4E05U06QDQARQ1) are sourced above; 4 per board, placed close
-> to connector body per DEC-045 and `Global_Routing_Spec.md §9`.
+> ESD protection arrays `U3`-`U10`, `U12`-`U13` (TPD4E05U06QDQARQ1) are sourced above; 5 per
+> board, placed close to connector body per DEC-045, `Global_Routing_Spec.md §9`, and DEC-093.
 
 ---
 
@@ -659,9 +670,9 @@ connector body, before any series resistors or downstream logic (see `Global_Rou
 | Connector | Board | Interface | Signal Lines Requiring TVS |
 | :--- | :---: | :--- | :--- |
 | J1 | A | JTAG input (ERM8-005 male) | `TTD`, `TMS`, `TCK`, `CPLD_RESET_N` - 4 lines |
-| J3 | A | Encoder data input (ERM8-010 male) | `ENC_IN[5:0]`, `ENC_OUT[5:0]` - 12 lines |
+| J3 | A | Encoder data input (ERM8-010 male) | `ENC_IN[5:0]`, `ENC_OUT[5:0]`, `ACTUATE_REQUEST_IN_N`, `ACTUATE_REQUEST_OUT_N` - 14 lines (per DEC-093) |
 | J4 | B | JTAG output (ERF8-005 female) | `TTD`, `TMS`, `TCK`, `CPLD_RESET_N` - 4 lines |
-| J6 | B | Encoder data output (ERF8-010 female) | `ENC_IN[5:0]`, `ENC_OUT[5:0]` - 12 lines |
+| J6 | B | Encoder data output (ERF8-010 female) | `ENC_IN[5:0]`, `ENC_OUT[5:0]`, `ACTUATE_REQUEST_OUT_N`, `ACTUATE_REQUEST_IN_N` - 14 lines (per DEC-093) |
 
 > Power rail connectors `J2` (Board A) and `J5` (Board B) do not require dedicated TVS devices;
 > board-level bulk decoupling capacitors (C10-C14) provide adequate `3V3_ENIG` rail protection.
@@ -678,18 +689,20 @@ connector body, before any series resistors or downstream logic (see `Global_Rou
 IEC 61000-4-2 Level 4, USON-10 (U-DFN-10). Same part as `D3` (PM) and `U4`-`U6` (CTL);
 no new part numbers required. Placement per `Global_Routing_Spec.md §9` with DEC-045 hot-swap exception.
 
-**Device placement - 8x per rotor pair (4 Board A + 4 Board B), 240x system total:**
+**Device placement - 10x per rotor pair (5 Board A + 5 Board B), 300x system total:**
 
 | Ref | Board | Protects | Channels used |
 | :--- | :---: | :--- | :--- |
 | U3 | A | J1 JTAG input | `TTD`, `TMS`, `TCK`, `CPLD_RESET_N` |
-| U4 | A | J3 encoder input (array 1 of 3) | `ENC_IN[3:0]` |
-| U5 | A | J3 encoder input (array 2 of 3) | `ENC_IN[5:4]`, `ENC_OUT[1:0]` |
-| U6 | A | J3 encoder input (array 3 of 3) | `ENC_OUT[5:2]` |
+| U4 | A | J3 encoder input (array 1 of 4) | `ENC_IN[3:0]` |
+| U5 | A | J3 encoder input (array 2 of 4) | `ENC_IN[5:4]`, `ENC_OUT[1:0]` |
+| U6 | A | J3 encoder input (array 3 of 4) | `ENC_OUT[5:2]` |
+| U12 | A | J3 encoder input (array 4 of 4) | `ACTUATE_REQUEST_IN_N`, `ACTUATE_REQUEST_OUT_N` (2 spare). Per DEC-093. |
 | U7 | B | J4 JTAG output | `TTD`, `TMS`, `TCK`, `CPLD_RESET_N` |
-| U8 | B | J6 encoder output (array 1 of 3) | `ENC_IN[3:0]` |
-| U9 | B | J6 encoder output (array 2 of 3) | `ENC_IN[5:4]`, `ENC_OUT[1:0]` |
-| U10 | B | J6 encoder output (array 3 of 3) | `ENC_OUT[5:2]` |
+| U8 | B | J6 encoder output (array 1 of 4) | `ENC_IN[3:0]` |
+| U9 | B | J6 encoder output (array 2 of 4) | `ENC_IN[5:4]`, `ENC_OUT[1:0]` |
+| U10 | B | J6 encoder output (array 3 of 4) | `ENC_OUT[5:2]` |
+| U13 | B | J6 encoder output (array 4 of 4) | `ACTUATE_REQUEST_OUT_N`, `ACTUATE_REQUEST_IN_N` (2 spare). Per DEC-093. |
 
 ---
 

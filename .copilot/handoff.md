@@ -7,6 +7,72 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
+**2026-09-03 session update (checkpoint 189):** `merge-cypher-board-j3j6-pinouts` and
+`merge-actuate-request-routing` are now **done**. This session closed out Cypher's last two
+unresolved connectors (`J3`/`J4`), then traced the resulting `ACTUATE_REQUEST_IN_N`/`OUT_N`
+signal through every board in the Rotor Mini-Stack chain, fixing real gaps at each stop.
+DEC-090 through DEC-097 created this session.
+
+**1. Cypher `J3`/`J4` fully 50-pin allocated** (DEC-090, DEC-092, DEC-093). `J3`: added
+`3V3_ENIG` ×4, `5V_MAIN` ×4, `ACTUATE_REQUEST_IN_N`/`OUT_N`; confirmed `ENC_ACTIVE_N` is
+HID-local-only and never belongs on this connector (resolved a real contradiction with
+Stack-Input's prior assumption). `J4`: mirrors `J3`'s template, `ACTUATE_REQUEST_REF_IN_N`/
+`REF_OUT_N` added (renamed from generic names to match the `ENC_IN_REF`/`ENC_OUT_REF` precedent).
+
+**2. `ACTUATE_REQUEST` end-to-end signal path defined** (DEC-093) — a full quad-pass round trip
+originating and terminating at Cypher's own CPLD U1, mirroring the existing `ENC_DATA` cipher
+signal's own four-pass structure (forward STA chain → reflect at Blanking → back REF chain →
+CPLD reflection at Cypher → forward REF chain → reflect at Blanking → back STA chain in reverse
+rotor order → terminate at Cypher). Extended into every board: Rotor (`J3`/`J6` ENC connectors,
+new ESD ICs U12/U13), Stack-Interposer (SIG-BLOCK-G/H on spare pins, no new component),
+Stack-Output (own `J1`/`J2` fully pinned, `J5` gains ESD IC U9, all wiring is passive since this
+board has no active ICs), Stack-Input (front-OUT/rear-IN "NC" assumptions corrected to describe
+real two-pass traffic, new ESD ICs U11/U12), and Cypher itself (`J3` pin 35 changed from NC to a
+real CPLD input + new R51 pull-up — U1 now verifies the round trip completed, per DEC-097).
+
+**3. Stack-Blanking Board corrected** (DEC-096) — was still using the pre-DEC-090 model
+(`ACTUATE_REQUEST_N` as a dead-ending signal, R5 terminator) and a stale `ENC_ACTIVE_N`
+termination (R1) that was never actually routed there. Both removed; R2-R4 renumbered to R1-R3
+(TCK/TMS/CPLD_RESET_N only). Two new passive bridging paths added for the round trip's two
+turnarounds.
+
+**4. Connector ownership model corrected** (DEC-094, amends DEC-018) — `J3`/`J4` (and the
+equivalent Stack-Input/Stack-Output `J1`/`J2` templates) were owned by the wrong board. Moved
+IC-STA-CHAIN to Stack-Input and IC-REF-CHAIN to Stack-Output (was Cypher for both), matching the
+same "repeatedly-instantiated board owns the template" reasoning DEC-018 already used for the
+Rotor Interface. This surfaced real drift — Stack-Output's docs still referenced a closed todo
+and a stale "board not yet created" note for Stack-Interposer, which already exists.
+
+**5. Historical/rationale wording sweep** — per `document-rules.md` ("current design only"),
+removed numerous violations across Cypher and all four Stack-* boards in several review rounds
+with the user (stale absence-explanations, ownership rationale, "previously spare... no new
+component required" narrative, "changed from servo to solenoid", ~13 BOM rows of "(from EXT/AM
+...)" provenance notes referencing pre-merge board names). Also caught a genuine **functional**
+error this way: Stack-Input's own `J1` still claimed Cypher as connector-definition-owner after
+DEC-094 had already reassigned that ownership. Confirmed with the user that "Stator"/"Reflector"
+as Cypher Board role names (mapping to the historical Enigma machine's own components, not the
+old separate PCB boards) are legitimate and should stay. New todo
+**`design-docs-current-only-sweep`** created to extend this review repo-wide later.
+
+**Next session:** user is doing a final manual review of this whole change set. Once approved,
+next up is the **Controller board update** (`merge-ctl-dock-usb-allocation` →
+`merge-update-ctl-board`) — see `plan.md` for the full confirmed task order after that
+(`jdb-ft232h-3v3-vregin` → `cpld-production-replacement` → `footprint-requests-pending` →
+`cypher-input-led-independent-rgb-pwm-review` → the 2 deferred items).
+
+**Explicitly out of scope (standing rule):** `Mechanical/Keyboard_Assembly`, `Lightboard_Assembly`,
+and `Plugboard_Assembly` design specs still describe the pre-Cypher standalone-board architecture
+and are stale relative to the current electronics design. Per explicit user direction, do not
+touch mechanical or software sections — those get a dedicated overhaul pass only after the
+electronics design is fully merged.
+
+See `.copilot/checkpoints/189-cypher-j3j4-complete-actuate-request-path-defined-connector-ownership-fixed.md`
+for full detail.
+
+---
+
+## Previous session (2026-08-19, checkpoint 188)
+
 **2026-08-19 session update (checkpoint 188):** `merge-create-plugboard` is now **done**. This
 session created the full Cypher-Plugboard Board design and fixed two rounds of real issues
 surfaced during review.

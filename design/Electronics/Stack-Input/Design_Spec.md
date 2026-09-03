@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-07-05
+**Last Updated:** 2026-09-02
 
 ## 1. Overview
 
@@ -31,31 +31,31 @@ ROT boards connect to J3–J5 (ERF8 female sockets) on the rotor-facing face. Re
 | FR-EXT-04 | Connect on the input side to the Cypher Board or the previous Rotor Mini-Stack | J1 = QTS-025-01-L-D-RA-P male right-angle (front edge) | §6 Interconnects; BOM J1 |
 | FR-EXT-05 | Connect on the output side to the first ROT board of this mini-stack | J3/J4/J5 = ERF8 female sockets | §6 Interconnects; BOM J3–J5 |
 | FR-EXT-06 | Host Actuation Module circuitry natively to provide per-mini-stack rotor position stepping | AM circuits are native on-board (STM32G071 + solenoid loom); triggered by ACTUATE_REQUEST_N from J1 | §4 Actuation Module; BOM U1 |
-| FR-EXT-07 | Protect stacking connector J1 and ROT-facing output connectors J3/J5 from ESD events | J1 and J3/J5 accessible during live mini-stack or rotor swap | §8 Thermal & ESD; BOM U3–U10 |
+| FR-EXT-07 | Protect stacking connector J1 and ROT-facing output connectors J3/J5 from ESD events | J1 and J3/J5 accessible during live mini-stack or rotor swap | §8 Thermal & ESD; BOM U3–U12 |
 | FR-SIN-01 | Connect to the next Rotor Mini-Stack or Stack-Blanking Board via rear stacking connector | J2 = QSS-025-01-L-D-RA-K female right-angle (rear edge) | §6 Interconnects; BOM J2 |
 | FR-SIN-02 | Receive return signals (TTD_RETURN + ENC_DATA return) from Stack-Output Board via Stack-Interposer | J6 = SQT-115-01-L-D-RA (30-pin right-angle female); Stack-Interposer Board connects J6 to Stack-Output Board | §6 Interconnects; BOM J6 |
-| FR-SIN-03 | Receive ACTUATE_REQUEST_N from stacking connector and trigger native AM solenoid actuation | ACTUATE_REQUEST_N is a dedicated pin on J1 (separate from ENC_ACTIVE_N); Cypher Board initially ties this to GND so mini-stack 1 always actuates; subsequent mini-stacks receive ACTUATE_REQUEST_N from the last ROT carry mechanism via the previous mini-stack J2 | §4 Actuation Module; §6 Interconnects |
-| FR-SIN-04 | Output ACTUATE_REQUEST_N on rear stacking connector J2 to trigger the next mini-stack | Signal sourced from last ROT board carry mechanism in this mini-stack; propagated to next mini-stack via J2; details TBD alongside ROT board carry signal definition | §6 Interconnects; BOM J2 |
+| FR-SIN-03 | Receive ACTUATE_REQUEST_IN_N from front stacking connector and trigger native AM solenoid actuation | ACTUATE_REQUEST_IN_N is a dedicated pin on J1, wired to U1 (STM32G071); Cypher Board initially ties this to GND so mini-stack 1 always actuates; subsequent mini-stacks receive ACTUATE_REQUEST_IN_N from the previous mini-stack's ACTUATE_REQUEST_OUT_N (J2) | §4 Actuation Module; §6 Interconnects |
+| FR-SIN-04 | Output ACTUATE_REQUEST_OUT_N on rear stacking connector J2 to trigger the next mini-stack | Signal sourced from this mini-stack's own Rotor 1-5 chain via Stack-Output and the Stack-Interposer Board (Rotor 5's carry mechanism); propagated to next mini-stack's ACTUATE_REQUEST_IN_N via J2, or the Stack-Blanking Board for the last mini-stack; full round-trip path (including the return pass through J1/J2's other two pins) documented in DEC-093 | §6 Interconnects; BOM J2 |
 
 ### Design Requirements
 
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-EXT-01 | PCB stackup | 4-layer standard per `design/Standards/Global_Routing_Spec.md §2.3.1` | §7 PCB Fabrication & Stackup |
-| DR-EXT-02 | Front stacking connector (input side) | J1 = QTS-025-01-L-D-RA-P (Samtec 50-contact right-angle male SMT); top 26 contacts: ENC data + JTAG forward; bottom 24 contacts: 3V3_ENIG, 5V_MAIN, GND, ENC_ACTIVE_N, CPLD_RESET_N, ACTUATE_REQUEST_N; full allocation pending `merge-cypher-board-j3j6-pinouts` | §6 Interconnects; BOM J1 |
+| DR-EXT-02 | Front stacking connector (input side) | J1 = QTS-025-01-L-D-RA-P (Samtec 50-contact right-angle male SMT); fully 50-pin allocated per DEC-090/DEC-093 — top 26 contacts: ENC data + JTAG forward (`ENC_IN[5:0]`, `ENC_OUT[5:0]`, TMS, TCK, TTD, CPLD_RESET_N, GND); bottom 24 contacts: `3V3_ENIG` ×4, `5V_MAIN` ×4, GND, `ACTUATE_REQUEST_IN_N` (pin 16, wired to U1; forward pass), `ACTUATE_REQUEST_OUT_N` (pin 35; return pass, propagates to previous mini-stack or Cypher's J3, where CPLD U1 reads it as a round-trip completion check per DEC-097) | §6 Interconnects; BOM J1 |
 | DR-EXT-03 | ROT output connectors | J3 = ERF8-005 (JTAG out), J4 = ERF8-005 (Power out), J5 = ERF8-010 (ENC data out); receive first ROT board J1/J2/J3 ERM8 inputs | §6 Interconnects; BOM J3–J5 |
 | DR-EXT-04 | JTAG buffer | U2 = SN74LVC2G125DCUR (dual-channel; TCK and TMS only; TDI passes unbuffered) | §3 JTAG; BOM U2 |
 | DR-EXT-05 | Buffer output pin assignment | TCK → J3 pin 2; TMS → J3 pin 4 (per DEC-018 rotor pinout) | §3 JTAG; DEC-018 |
 | DR-EXT-06 | Buffer bypass capacitor | C11 = 100nF 0402 X7R; placement per GRS §3.2 | §7 PCB Fabrication; BOM C11 |
 | DR-EXT-07 | System quantity | 1 per Rotor Mini-Stack; up to 6 per system (30 rotor positions total) | §1 Overview |
 | DR-EXT-11 | 5V_MAIN entry decoupling bank | C6–C10 (5x 10µF X7R 50V 1206) at 5V_MAIN entry (J1 bottom power pins) per GRS §3 star/spoke pattern | §5 Power; BOM C6–C10 |
-| DR-EXT-12 | ESD protection — stacking connector J1 | U3 (JTAG: TTD, TMS, TCK, CPLD_RESET_N) + U4–U6 (ENC: ENC_IN[5:0] + ENC_OUT[5:0]); within 3mm of J1 mating edge per DEC-048 | §8 Thermal & ESD; BOM U3–U6 |
-| DR-EXT-12 | ESD protection — ROT output connectors J3/J5 | U7 (JTAG: J3) + U8–U10 (ENC: J5); within 3mm of connector mating edge per DEC-048 | §8 Thermal & ESD; BOM U7–U10 |
+| DR-EXT-12 | ESD protection — stacking connector J1 | U3 (JTAG: TTD, TMS, TCK, CPLD_RESET_N) + U4–U6 (ENC: ENC_IN[5:0] + ENC_OUT[5:0]) + U11 (ACTUATE_REQUEST_IN_N/OUT_N); within 3mm of J1 mating edge per DEC-048/DEC-095 | §8 Thermal & ESD; BOM U3–U6, U11 |
+| DR-EXT-12 | ESD protection — ROT output connectors J3/J5 | U7 (JTAG: J3) + U8–U10 (ENC: J5) + U12 (ACTUATE_REQUEST_IN_N/OUT_N on J5); within 3mm of connector mating edge per DEC-048/DEC-095 | §8 Thermal & ESD; BOM U7–U10, U12 |
 | DR-EXT-13 | 3V3_ENIG entry decoupling bank | C1–C5 (5x 10µF X7R 50V 1206) at 3V3_ENIG entry (J1 bottom power pins) per GRS §3 | §5 Power; BOM C1–C5 |
 | DR-EXT-14 | Mounting holes | MH1–MH4: M3 PTH (3.2mm drill) tied to GND_CHASSIS per GRS §4; placement per GRS §4.3 Pattern B. No BOM entry. | §7 PCB Fabrication; GRS §4.3 |
-| DR-SIN-01 | Rear stacking connector (output/chain side) | J2 = QSS-025-01-L-D-RA-K (Samtec 50-contact right-angle female SMT); mirrors J1 signal set with I/O inverted; bottom 24 contacts include ACTUATE_REQUEST_N output (from last ROT carry) and power passthrough; full allocation pending `merge-cypher-board-j3j6-pinouts` | §6 Interconnects; BOM J2 |
-| DR-SIN-02 | Stack-Interposer return link connector | J6 = SQT-115-01-L-D-RA (Samtec 30-pin 2×15 right-angle female shrouded); receives TTD_RETURN + ENC_DATA return from Stack-Output Board via Stack-Interposer Board; pinout defined in `Stack-Interposer/Board_Layout.md §3` | §6 Interconnects; BOM J6 |
-| DR-SIN-03 | Native Actuation Module MCU | U1 = STM32G071K8T3TR LQFP-32; same circuit as former standalone Actuation Module; firmware updated for solenoid drive and dual homing switches | §4 Actuation Module; BOM U1 |
+| DR-SIN-01 | Rear stacking connector (output/chain side) | J2 = QSS-025-01-L-D-RA-K (Samtec 50-contact right-angle female SMT); mirrors J1 signal set with I/O inverted; fully 50-pin allocated per DEC-090/DEC-093 — bottom 24 contacts include power passthrough (`3V3_ENIG`/`5V_MAIN`/GND), `ACTUATE_REQUEST_OUT_N` (forward pass, sourced from this mini-stack's own Rotor chain via Stack-Output/Stack-Interposer, drives next mini-stack's `ACTUATE_REQUEST_IN_N` or the Stack-Blanking Board), and `ACTUATE_REQUEST_IN_N` (return pass, received from the next mini-stack or Stack-Blanking Board, routed back through this mini-stack's Rotor/Stack-Output/Stack-Interposer chain in reverse to this board's own J1 `ACTUATE_REQUEST_OUT_N`) | §6 Interconnects; BOM J2 |
+| DR-SIN-02 | Stack-Interposer return link connector | J6 = SQT-115-01-L-D-RA (Samtec 30-pin 2×15 right-angle female shrouded); receives TTD_RETURN + ENC_DATA return from Stack-Output Board via Stack-Interposer Board, plus the two ACTUATE_REQUEST forward/return hop signals per DEC-093; pinout defined in `Stack-Interposer/Board_Layout.md §3` | §6 Interconnects; BOM J6 |
+| DR-SIN-03 | Native Actuation Module MCU | U1 = STM32G071K8T3TR LQFP-32; firmware handles solenoid drive and dual homing switches | §4 Actuation Module; BOM U1 |
 | DR-SIN-04 | Solenoid loom header | J7 = PH1-05-UA 1x5 2.54mm THT; pins 1-3 active (5V_MAIN, GND, SOLENOID_DRIVE); solenoid driver circuit details TBD (future discussion merge) | §4 Actuation Module; BOM J7 |
 | DR-SIN-05 | Homing switch loom header — dual switch | J8 = PH1-05-UA 1x5 2.54mm THT; pin 1 = ACTUATION_HOME_N (retracted position), pin 2 = GND; pin 3 = ACTUATION_EXTENDED_N (fully-extended position), pin 4 = GND; solenoid has two detectable positions | §4 Actuation Module; BOM J8 |
 | DR-SIN-06 | SWD service header | J9 = PH1-05-UA 1x5 2.54mm THT; VTref, SWCLK, GND, SWDIO, RESET_N | §4 Actuation Module; BOM J9 |
@@ -66,7 +66,7 @@ ROT boards connect to J3–J5 (ERF8 female sockets) on the rotor-facing face. Re
 ```mermaid
 flowchart TD
   subgraph stackFront["Stacking Connector — Front (right edge)"]
-    J1["J1 QTS-025 male R/A\nENC data + JTAG forward\nPower + ENC_ACTIVE_N + CPLD_RESET_N"]
+    J1["J1 QTS-025 male R/A\nENC data + JTAG forward\nPower + ACTUATE_REQUEST_IN_N/OUT_N + CPLD_RESET_N"]
   end
 
   subgraph stackRear["Stacking Connector — Rear (left edge)"]
@@ -101,15 +101,21 @@ flowchart TD
   subgraph esd["ESD Protection"]
     U3U6["U3-U6 TPD4E05 x4\nJ1 stacking connector"]
     U7U10["U7-U10 TPD4E05 x4\nJ3/J5 ROT output"]
+    U11["U11 TPD4E05\nJ1 ACTUATE_REQUEST_IN/OUT_N"]
+    U12["U12 TPD4E05\nJ5 ACTUATE_REQUEST_IN/OUT_N"]
   end
 
   J1 -- "JTAG (TTD/TMS/TCK/CPLD_RESET_N)" --> U3U6
   J1 -- "ENC_IN/OUT" --> U3U6
-  J1 -- "ACTUATE_REQUEST_N (separate pin from ENC_ACTIVE_N)" --> U1
-  J1 -- "ENC_ACTIVE_N (keypress indication)" --> J2
+  J1 -- "ACTUATE_REQUEST_IN_N (fwd)" --> U1
+  J1 -- "ACTUATE_REQUEST_IN_N/OUT_N" --> U11
   J1 -- "3V3_ENIG / 5V_MAIN" --> J4
   J1 -- "return signals passthrough" --> J2
   J1 -- "power passthrough" --> J2
+  J5 -- "ACTUATE_REQUEST_IN_N/OUT_N" --> U12
+  J6 -- "ACTUATE_REQUEST_OUT_N (fwd, via Rotor/Stack-Output/Interposer)" --> J2
+  J2 -- "ACTUATE_REQUEST_IN_N (return, to Rotor/Stack-Output/Interposer)" --> J6
+  J2 -- "ACTUATE_REQUEST_OUT_N (return)" --> J1
   U3U6 -- "JTAG fwd" --> U2
   U3U6 -- "ENC data fwd" --> U7U10
   U2 -- "TCK/TMS buffered" --> J3
@@ -139,9 +145,7 @@ local GND to GND_CHASSIS bond. System's only galvanic bond remains on the Power 
 
 ## 3. JTAG Signal Repeater
 
-The Stack-Input Board re-buffers TCK and TMS for the 5 ROT boards within its mini-stack. This
-is the same function as the Extension Board U1 buffer, now serving the intra-stack ROT chain
-rather than an inter-group chain.
+The Stack-Input Board re-buffers TCK and TMS for the 5 ROT boards within its mini-stack.
 
 - **Buffer IC:** SN74LVC2G125DCUR (U2, VSSOP-8). Dual-channel; TCK and TMS only. TDI passes
   unbuffered board-to-board throughout the ROT stack. OE# pins permanently tied to GND
@@ -160,28 +164,33 @@ rather than an inter-group chain.
 
 The Actuation Module circuits are hosted natively on the Stack-Input Board. Each mini-stack has one independent AM circuit set.
 
-The actuator type has changed from servo to **solenoid**. The solenoid has two detectable positions — retracted (home) and fully-extended — each monitored by a dedicated homing switch.
+The actuator type is a **solenoid**. The solenoid has two detectable positions — retracted (home) and fully-extended — each monitored by a dedicated homing switch.
 Full solenoid driver circuit details (MOSFET or relay topology, current ratings) are TBD and will be defined in a future design discussion merge.
 From the STM32G071 perspective the drive output (SOLENOID_DRIVE) is a digital GPIO (or PWM if hold-current control is adopted).
 
-### Signal Source — ACTUATE_REQUEST_N
+### Actuation Request Chain — `ACTUATE_REQUEST_IN_N` / `ACTUATE_REQUEST_OUT_N`
 
-**ACTUATE_REQUEST_N is a dedicated pin on the stacking connector, separate from ENC_ACTIVE_N.**
+Per DEC-090/DEC-093, the stacking connector template carries **two** actuation-trigger nets (not
+one), present at **both** J1 (front) and J2 (rear).
 
-| Signal | Source on J1 (front, in) | Propagated on J2 (rear, out) |
+The full round-trip signal path (originating and terminating at the Cypher Board, see
+`Cypher/Design_Spec.md §3` Actuation Request Chain for the complete end-to-end description)
+touches this board's four actuation pins in two separate passes:
+
+| Net | J1 (front) | J2 (rear) |
 | :--- | :--- | :--- |
-| ENC_ACTIVE_N | Keypress indication from ENC module via Cypher Board | Passed through to next mini-stack; this signal is ANDed with ACTUATE_REQUEST_N to ensure the Actuation Request only triggers when a button is depressed |
-| ACTUATE_REQUEST_N | From Cypher Board (initially tied to GND = always request mini-stack 1 actuation); for mini-stack 2+ sourced from last ROT carry mechanism in the previous mini-stack | Sourced from last ROT carry mechanism in this mini-stack; triggers next mini-stack actuation |
+| `ACTUATE_REQUEST_IN_N` | **Pass 1 (forward):** received from Cypher Board (initially tied to GND = always request mini-stack 1 actuation) or the previous mini-stack's `J2` `ACTUATE_REQUEST_OUT_N`; wired to U1 (STM32G071) to trigger this board's own solenoid actuation | **Pass 2 (return):** received from the next mini-stack's `J1` `ACTUATE_REQUEST_OUT_N`, or from the Stack-Blanking Board for the last mini-stack; routed via the Stack-Interposer/Stack-Output/Rotor chain (in reverse order) back to this board's own `J1` `ACTUATE_REQUEST_OUT_N` |
+| `ACTUATE_REQUEST_OUT_N` | **Pass 2 (return):** delivers the signal received on this board's own `J2` `ACTUATE_REQUEST_IN_N` (after it has propagated in reverse through this mini-stack's Rotor/Stack-Output/Stack-Interposer chain) onward to the previous mini-stack's `J2` `ACTUATE_REQUEST_IN_N`, or to Cypher's `J3` `ACTUATE_REQUEST_OUT_N` (where CPLD U1 reads it as a round-trip completion check, per DEC-097) | **Pass 1 (forward):** sourced from this mini-stack's own Rotor 1-5 chain via Stack-Output and the Stack-Interposer Board (Rotor 5's own carry signal, forwarded through Stack-Output and back to this board via the Interposer link); drives the next mini-stack's `J1` `ACTUATE_REQUEST_IN_N`, or the Stack-Blanking Board for the last mini-stack |
 
-> **ACTUATE_REQUEST_N contact allocation:** The full 50-contact assignment for J1/J2 is pending
-> (see todo `merge-cypher-board-j3j6-pinouts`). ACTUATE_REQUEST_N will be assigned one of the
-> 4 remaining undefined contacts on the QTS/QSS-025.
+> Actuation-trigger gating is handled upstream at the Cypher Board's own CPLD (U1), which only
+> asserts `ACTUATE_REQUEST_IN_N` onto `J3` while a key is actively depressed. This board's
+> STM32G071 (U1) acts directly on `ACTUATE_REQUEST_IN_N` with no local gating logic required.
 
 ### STM32G071K8T3TR (U1)
 
 Implements the actuation control state machine: power-up homing, ACTUATE_REQUEST_N latching, one-shot solenoid cycle, dual position switch monitoring, and LED diagnostics. Key parameters:
 
-- **FR-AM-02:** `ACTUATE_REQUEST_N` received on J1 front stacking connector (the primary power and signal interface for this board, equivalent in role to the former AM host dock).
+- **FR-AM-02:** `ACTUATE_REQUEST_N` received on J1 front stacking connector (the primary power and signal interface for this board).
 - **FR-AM-05:** Drives one external **solenoid** (not servo) via loom connector J7. SOLENOID_DRIVE is a STM32G071 GPIO output;
   a driver circuit (MOSFET or relay) between J7 pin 3 and the solenoid coil is required — driver topology TBD in a future design merge.
 - **FR-AM-06:** Monitors **two** position switches via loom connector J8: `ACTUATION_HOME_N` (retracted, active-low) and `ACTUATION_EXTENDED_N` (fully-extended, active-low).
@@ -267,14 +276,18 @@ Placed at visible board edge for service observation.
 
 ### J1 — Front Stacking Connector (QTS-025-01-L-D-RA-P)
 
-**Connector definition owner: Cypher Board `Board_Layout.md §2`.**
+**Connector definition owner: this board's own `Board_Layout.md §1`** (IC-STA-CHAIN, per DEC-094).
 Mates with Cypher Board J3 (first mini-stack) or previous mini-stack J2 (subsequent stacks).
 
 - **MPN:** QTS-025-01-L-D-RA-P (Samtec 50-contact 0.635mm right-angle male SMT)
 - **Top 26 contacts (ENC data + JTAG forward):** ENC_IN[5:0], ENC_OUT[5:0], TMS, TCK,
-  TTD (TDI forward), CPLD_RESET_N, GND interleave — see `Cypher/Board_Layout.md §2`
-- **Bottom 24 contacts (power + control):** 3V3_ENIG, 5V_MAIN, GND, ENC_ACTIVE_N,
-  CPLD_RESET_N, ACTUATE_REQUEST_N (in) — full allocation pending `merge-cypher-board-j3j6-pinouts`
+  TTD (TDI forward), CPLD_RESET_N, GND interleave — see `Board_Layout.md §1`
+- **Bottom 24 contacts (power + control), fully allocated per DEC-090/DEC-093:** `3V3_ENIG` ×4,
+  `5V_MAIN` ×4, GND, `ACTUATE_REQUEST_IN_N` (received here from Cypher or the previous
+  mini-stack; wired to U1 to trigger local solenoid actuation), `ACTUATE_REQUEST_OUT_N`
+  (receives the final backward-travelling leg of the round trip described in DEC-093, propagated
+  to the previous mini-stack or Cypher's `J3` `ACTUATE_REQUEST_OUT_N`, which CPLD U1 reads as a
+  round-trip completion check per DEC-097).
 
 > **Pinout:** see `Board_Layout.md §1`.
 
@@ -285,9 +298,13 @@ male) or Stack-Blanking Board male connector.
 
 - **MPN:** QSS-025-01-L-D-RA-K (Samtec 50-contact 0.635mm right-angle female SMT)
 - **Top 26 contacts:** same signal set as J1 top region with I/O directions inverted (chain-through)
-- **Bottom 24 contacts:** power passthrough (3V3_ENIG, 5V_MAIN, GND), ENC_ACTIVE_N passthrough,
-  CPLD_RESET_N passthrough, ACTUATE_REQUEST_N (out, from last ROT carry mechanism) — full
-  allocation pending `merge-cypher-board-j3j6-pinouts`
+- **Bottom 24 contacts, fully allocated per DEC-090/DEC-093:** power passthrough (`3V3_ENIG`,
+  `5V_MAIN`, GND), `ACTUATE_REQUEST_OUT_N` (sourced via the Stack-Interposer/Stack-Output return
+  path from this mini-stack's own Rotor chain — see DEC-093 — and propagated to the next
+  mini-stack's `J1` `ACTUATE_REQUEST_IN_N`, or to the Stack-Blanking Board), `ACTUATE_REQUEST_IN_N`
+  (receives the first backward-travelling leg of the round trip from the next mini-stack or the
+  Stack-Blanking Board, routed via the Stack-Interposer/Stack-Output/Rotor chain back to this
+  board's own `J1` `ACTUATE_REQUEST_OUT_N`).
 
 > **Pinout:** see `Board_Layout.md §2`.
 
@@ -342,16 +359,20 @@ See §4 Actuation Module for full pin-by-pin detail of J7–J10.
   - **U4:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[0–3]
   - **U5:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[4–5] + ENC_OUT[0–1]
   - **U6:** 1x TPD4E05U06QDQARQ1 — channels: ENC_OUT[2–5]
-  All U3–U6 placed within 3mm of J1 mating edge on L1.
+  - **U11:** 1x TPD4E05U06QDQARQ1 — channels: ACTUATE_REQUEST_IN_N, ACTUATE_REQUEST_OUT_N
+    (2 channels used, 2 spare). Per DEC-095.
+  All U3–U6, U11 placed within 3mm of J1 mating edge on L1.
 - **ESD — J3/J5 ROT output connectors (TVS required):**
   J3 (JTAG) and J5 (ENC) are accessible during live ROT board swap. Per DEC-045 and DEC-048:
   - **U7:** 1x TPD4E05U06QDQARQ1 — channels: TTD, TMS, TCK, CPLD_RESET_N (J3 JTAG group)
   - **U8:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[0–3] (J5 ENC group)
   - **U9:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[4–5] + ENC_OUT[0–1]
   - **U10:** 1x TPD4E05U06QDQARQ1 — channels: ENC_OUT[2–5]
-  All U7–U10 placed within 3mm of their respective connector mating edge on L1.
+  - **U12:** 1x TPD4E05U06QDQARQ1 — channels: ACTUATE_REQUEST_IN_N, ACTUATE_REQUEST_OUT_N (J5
+    group, mating with Rotor J3's pins 13/14; 2 channels used, 2 spare). Per DEC-095.
+  All U7–U10, U12 placed within 3mm of their respective connector mating edge on L1.
 - **Working voltage note:** TPD4E05U06QDQARQ1 max continuous working voltage = 5.5V. On
-  3V3_ENIG (max 3.465V), all U3–U10 within rated limits with >= 2.0V margin.
+  3V3_ENIG (max 3.465V), all U3–U12 within rated limits with >= 2.0V margin.
 - **ESD — all other connectors (no TVS required):**
   J2 (rear stacking — chain side, not live-swap); J4 (power only, no signal); J6 (interposer,
   internal rigid assembly); J7–J10 (loom/service headers, not live-accessed).
@@ -368,24 +389,25 @@ See §4 Actuation Module for full pin-by-pin detail of J7–J10.
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C1-C5 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 3V3_ENIG entry decoupling bank at J1 (from EXT C1-C5) | ✔ | ✔ | 5 |
-| C6-C10 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN entry decoupling bank at J1 (from EXT C7-C11) | ✔ | ✔ | 5 |
-| C11 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | U2 JTAG buffer bypass (from EXT C6) | ✔ | ✔ | 1 |
-| C12, C19 | 1µF X7R 50V 0805 | C0805C105K5RACTU | Kemet | 399-C0805C105K5RACTUCT-ND | 80-C0805C105K5R | C3018567 | - | ACTUATION_HOME_N debounce (C12) + ACTUATION_EXTENDED_N debounce (C19); one per homing switch (from AM C1) | ✔ | ✔ | 2 |
-| C13, C14, C18 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | STM32 VDD/VDDA decoupling + RESET_N filter (from AM C2, C3, C7; C17 = RESET_N filter) | ✔ | ✔ | 3 |
-| C15 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | 3V3_ENIG local reservoir (from AM C4) | ✔ | ✔ | 1 |
-| C16 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN solenoid reservoir near J7 (from AM C5) | ✔ | ✔ | 1 |
-| C17 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | RESET_N filter cap (from AM C6) | ✔ | ✔ | 1 |
-| D1-D3 | Green SMD LED diagnostic 0603 | 150060VS75000 | Wurth Elektronik | 732-4980-1-ND | 710-150060VS75000 | C6848499 | - | PWR, HOMED, ACT indicators (from AM D1-D3) | ✔ | ✔ | 3 |
+| C1-C5 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 3V3_ENIG entry decoupling bank at J1 | ✔ | ✔ | 5 |
+| C6-C10 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN entry decoupling bank at J1 | ✔ | ✔ | 5 |
+| C11 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | U2 JTAG buffer bypass | ✔ | ✔ | 1 |
+| C12, C19 | 1µF X7R 50V 0805 | C0805C105K5RACTU | Kemet | 399-C0805C105K5RACTUCT-ND | 80-C0805C105K5R | C3018567 | - | ACTUATION_HOME_N debounce (C12) + ACTUATION_EXTENDED_N debounce (C19); one per homing switch | ✔ | ✔ | 2 |
+| C13, C14, C18 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | STM32 VDD/VDDA decoupling + RESET_N filter | ✔ | ✔ | 3 |
+| C15 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | 3V3_ENIG local reservoir | ✔ | ✔ | 1 |
+| C16 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | 5V_MAIN solenoid reservoir near J7 | ✔ | ✔ | 1 |
+| C17 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | RESET_N filter cap | ✔ | ✔ | 1 |
+| D1-D3 | Green SMD LED diagnostic 0603 | 150060VS75000 | Wurth Elektronik | 732-4980-1-ND | 710-150060VS75000 | C6848499 | - | PWR, HOMED, ACT indicators | ✔ | ✔ | 3 |
 | J1 | 50-contact 0.635mm right-angle male SMT | QTS-025-01-L-D-RA-P | Samtec | QTS-025-01-L-D-RA-P-ND | 200-QTS02501LDRAP | C7267889 | - | Front stacking connector (mates with Cypher J3 or prev mini-stack J2) | ✔ | ✔ | 1 |
 | J2 | 50-contact 0.635mm right-angle female SMT | QSS-025-01-L-D-RA-K | Samtec | QSS-025-01-L-D-RA-K-ND | 200-QSS02501LDRAK | C6156774 | - | Rear stacking connector (mates with next mini-stack J1 or blanking board) | ✔ | ✔ | 1 |
 | J3, J4 | 10-pin 2x5 0.8mm female SMT | ERF8-005-05.0-S-DV-K-TR | Samtec | SAM13517CT-ND | 200-ERF8005050SDVKTR | C7273978 | - | ROT 1 JTAG (J3) and Power (J4) output sockets | ✔ | ✔ | 2 |
 | J5 | 20-pin 2x10 0.8mm female SMT | ERF8-010-05.0-S-DV-K-TR | Samtec | SAM8618CT-ND | 200-ERF8010050SDVKTR | C3646170 | - | ROT 1 ENC data output socket | ✔ | ✔ | 1 |
 | J6 | 30-position 2x15 right-angle female shrouded SMT | SQT-115-01-L-D-RA | Samtec | SAM1246-15-ND | 200-SQT11501LDRA | C7318577 | - | Stack-Interposer return link (TTD_RETURN + ENC_DATA return from Stack-Output) | ✔ | ✔ | 1 |
 | J7-J10 | 1x5 2.54mm male THT | PH1-05-UA | Adam Tech | 2057-PH1-05-UA-ND | 737-PH1-05-UA | C5374051 | - | Solenoid loom (J7), dual homing switches (J8), SWD (J9), UART (J10); manually fitted | ✔ | ✔ | 4 |
-| R1-R3 | 330Ω 1% 0402 | ERJ-2RKF3300X | Panasonic | P330LCT-ND | 667-ERJ-2RKF3300X | C278592 | - | LED current-limit resistors (from AM R1-R3) | ✔ | ✔ | 3 |
+| R1-R3 | 330Ω 1% 0402 | ERJ-2RKF3300X | Panasonic | P330LCT-ND | 667-ERJ-2RKF3300X | C278592 | - | LED current-limit resistors | ✔ | ✔ | 3 |
 | R4-R6 | 10kΩ 1% 0402 | ERJ-2RKF1002X | Panasonic | P10.0KLCT-ND | 667-ERJ-2RKF1002X | C191123 | - | R4: ACTUATION_HOME_N pull-up; R5: BOOT0 series protection; R6: ACTUATION_EXTENDED_N pull-up | ✔ | ✔ | 3 |
-| SW1, SW2 | SPST NO tactile THT | B3F-1070 | Omron | SW406-ND | 653-B3F-1070 | C726011 | - | RESET_N (SW1) and BOOT0 (SW2) buttons (from AM SW1, SW2) | ✔ | ✔ | 2 |
-| U1 | STM32 MCU LQFP-32 | STM32G071K8T3TR | STMicroelectronics | 497-STM32G071K8T3TR-ND | 511-STM32G071K8T3TR | - | Global sourcing | Native AM solenoid controller; JLCPCB consignment only (from AM U1) | ✔ | ✔ | 1 |
-| U2 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | - | JTAG TCK/TMS buffer (from EXT U1) | ✔ | ✔ | 1 |
-| U3-U10 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | ESD protection: U3-U6 on J1, U7-U10 on J3/J5 (from EXT U2-U9) | ✔ | ✔ | 8 |
+| SW1, SW2 | SPST NO tactile THT | B3F-1070 | Omron | SW406-ND | 653-B3F-1070 | C726011 | - | RESET_N (SW1) and BOOT0 (SW2) buttons | ✔ | ✔ | 2 |
+| U1 | STM32 MCU LQFP-32 | STM32G071K8T3TR | STMicroelectronics | 497-STM32G071K8T3TR-ND | 511-STM32G071K8T3TR | - | Global sourcing | Native AM solenoid controller; JLCPCB consignment only | ✔ | ✔ | 1 |
+| U2 | Dual 3-state buffer VSSOP-8 | SN74LVC2G125DCUR | Texas Instruments | 296-SN74LVC2G125DCURCT-ND | 595-SN74LVC2G125DCUR | C21404 | - | JTAG TCK/TMS buffer | ✔ | ✔ | 1 |
+| U3-U10 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | ESD protection: U3-U6 on J1, U7-U10 on J3/J5 | ✔ | ✔ | 8 |
+| U11-U12 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | - | ACTUATE_REQUEST_IN_N/OUT_N ESD protection (U11: J1, U12: J5; 2 channels used, 2 spare each). Per DEC-095. | ✔ | ✔ | 2 |

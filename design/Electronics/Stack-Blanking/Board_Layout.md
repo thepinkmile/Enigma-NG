@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-07-12
+**Last Updated:** 2026-09-02
 
 > **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
 > component rationale belong in `Design_Spec.md`. This file contains connector pinout references
@@ -19,44 +19,46 @@
   stacking connector) in normal use, or Cypher Board J3 for transport.
 - **Left side (J2):** Stack-Output mating connector — mates with Stack-Output Board J2 (rear
   stacking connector) in normal use, or Cypher Board J4 for transport.
-- **Signal routing:** all bridging traces run on inner layers L2/L3 (right-to-left, J1 → J2).
-- **Termination resistors R1–R5:** placed close to J1 (Stack-Input side).
+- **Signal routing:** all bridging traces run on inner layers L2/L3 (right-to-left, J1 → J2, and
+  left-to-right, J2 → J1, for the return-direction signals).
+- **Termination resistors R1–R3:** placed close to J1 (Stack-Input side).
 
 ---
 
 ## 1. J1 — Stack-Input Mating Connector (QTS-025-01-L-D-A-GP-K-TR)
 
-> **Connector Definition Owner:** Cypher Board `Board_Layout.md §2` (J3 — Stack-Input / STA-side).
-> Same signal pinout as Cypher Board J3.
+> **Connector Definition Owner:** `Stack-Input/Board_Layout.md §1` (IC-STA-CHAIN, per DEC-094).
+> Same signal pinout as every Stack-Input `J1`/`J2`.
 > Mates with Stack-Input Board J2 (QSS-025-01-L-D-RA-K) in normal use;
 > mates with Cypher Board J3 (QSS-025-01-L-D-A-GP-K) for transport / bench testing.
 
-For the top 26-contact signal region (ENC data + JTAG), see `Cypher/Board_Layout.md §2`.
-Bottom 24-contact power/control region is pending full 50-contact allocation:
-see todo `merge-cypher-board-j3j6-pinouts`.
+Fully 50-pin allocated per DEC-090/DEC-093 — see `Stack-Input/Board_Layout.md §1` for the full
+canonical pin map.
 
 At this board, the following signals from J1 are **terminated** (not routed to J2):
 
 | Signal | Termination |
 | :--- | :--- |
-| ENC_ACTIVE_N | R1 — 10 kΩ pull-up to 3V3_ENIG |
-| TCK | R2 — 10 kΩ pull-down to GND |
-| TMS | R3 — 10 kΩ pull-up to 3V3_ENIG |
-| CPLD_RESET_N | R4 — 10 kΩ pull-up to 3V3_ENIG |
-| ACTUATE_REQUEST_N | R5 — 10 kΩ pull-up to 3V3_ENIG |
+| TCK | R1 — 10 kΩ pull-down to GND |
+| TMS | R2 — 10 kΩ pull-up to 3V3_ENIG |
+| CPLD_RESET_N | R3 — 10 kΩ pull-up to 3V3_ENIG |
 | 5V_MAIN | NC — no connection |
+
+The following signals are **bridged** to J2, not terminated (see §3 Signal Bridge Summary):
+`ACTUATE_REQUEST_OUT_N` (→ J2 `ACTUATE_REQUEST_REF_IN_N`), `ACTUATE_REQUEST_IN_N` (← J2
+`ACTUATE_REQUEST_REF_OUT_N`).
 
 ---
 
 ## 2. J2 — Stack-Output Mating Connector (QTS-025-01-L-D-A-GP-K-TR)
 
-> **Connector Definition Owner:** Cypher Board `Board_Layout.md §3` (J4 — Stack-Output / REF-side).
-> Same signal pinout as Cypher Board J4.
+> **Connector Definition Owner:** `Stack-Output/Board_Layout.md §1` (IC-REF-CHAIN, per DEC-094).
+> Same signal pinout as every Stack-Output `J1`/`J2`.
 > Mates with Stack-Output Board J2 (QSS-025-01-L-D-RA-K) in normal use;
 > mates with Cypher Board J4 (QSS-025-01-L-D-A-GP-K) for transport / bench testing.
 
-For the top 24-contact signal region (ENC data return + TTD_RETURN), see `Cypher/Board_Layout.md §3`.
-Bottom power region (3V3_ENIG + GND) mirrors J1 bottom.
+Fully 50-pin allocated per DEC-092/DEC-093 — see `Stack-Output/Board_Layout.md §1` for the full
+canonical pin map. Bottom power region (3V3_ENIG + GND) mirrors J1 bottom.
 
 ---
 
@@ -67,6 +69,8 @@ Bottom power region (3V3_ENIG + GND) mirrors J1 bottom.
 | ENC_OUT[5:0] (fwd) | J1 ENC_OUT[5:0] out | J2 ENC_IN[5:0] in | SIG-BLOCK-A → B |
 | ENC_OUT[5:0] (ref) | J1 ENC_IN[5:0] in | J2 ENC_OUT[5:0] out | SIG-BLOCK-C → D |
 | TTD → TTD_RETURN | J1 TTD out | J2 TTD_RETURN ×2 in | SIG-BLOCK-E → F |
+| ACTUATE_REQUEST_OUT_N → REF_IN_N | J1 ACTUATE_REQUEST_OUT_N in | J2 ACTUATE_REQUEST_REF_IN_N out | First turnaround (DEC-093/DEC-096) |
+| ACTUATE_REQUEST_REF_OUT_N → IN_N | J1 ACTUATE_REQUEST_IN_N out | J2 ACTUATE_REQUEST_REF_OUT_N in | Second turnaround (DEC-093/DEC-096) |
 | 3V3_ENIG | J1 power section | J2 power section | SIG-BLOCK-I |
 | GND | J1 power section | J2 power section | Return |
 

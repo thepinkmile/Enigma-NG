@@ -193,3 +193,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 186 | Cypher-Output Board design drafted; power budget corrections | 186-cypher-output-drafted-power-budget-fixes.md |
 | 187 | Cypher-Output complete; TTD rename & I2C passthrough fixed | 187-cypher-output-complete-ttd-rename-i2c-passthrough-fixed.md |
 | 188 | Cypher-Plugboard Board complete | 188-cypher-plugboard-complete.md |
+| 189 | Cypher J3/J4 pinouts complete; ACTUATE_REQUEST signal path fully defined; connector ownership corrected (DEC-090 through DEC-097) | 189-cypher-j3j4-complete-actuate-request-path-defined-connector-ownership-fixed.md |

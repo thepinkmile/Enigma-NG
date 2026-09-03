@@ -8,7 +8,7 @@
 >
 > **Design Log** entries: `design/Design_Log/` (per-DEC files; see `design/Design_Log/index.md`).
 
-Last updated: 2026-07-05
+Last updated: 2026-09-02
 
 ---
 
@@ -135,7 +135,9 @@ Last updated: 2026-07-05
 | `design-discussion-merge` | [design-discussion-merge.md](design-discussion-merge.md) | in-progress | — |
 | `merge-create-cypher-board` | — | done | `design-discussion-merge` |
 | `merge-grs-6layer-stackup` | — | done | `design-discussion-merge` |
-| `merge-cypher-board-j3j6-pinouts` | [merge-cypher-board-j3j6-pinouts.md](merge-cypher-board-j3j6-pinouts.md) | pending | `design-discussion-merge` |
+| `merge-cypher-board-j3j6-pinouts` | — | done | — |
+| `merge-actuate-request-routing` | — | done | — |
+| `design-docs-current-only-sweep` | [design-docs-current-only-sweep.md](design-docs-current-only-sweep.md) | pending | — |
 | `merge-ctl-dock-usb-allocation` | [merge-ctl-dock-usb-allocation.md](merge-ctl-dock-usb-allocation.md) | pending | `design-discussion-merge` |
 | `merge-create-stack-input` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-update-ctl-board` | [merge-update-ctl-board.md](merge-update-ctl-board.md) | pending | `design-discussion-merge`, `merge-ctl-dock-usb-allocation` |

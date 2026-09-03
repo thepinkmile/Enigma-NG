@@ -136,7 +136,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('design-discussion-merge',          'Merge design discussions into main design',                         'in_progress'),
 ('merge-grs-6layer-stackup',         'Add 6-layer board stackup section to GRS',                         'done'),
 ('merge-create-cypher-board',        'Create and refine Cypher Board Design_Spec and Board_Layout',       'done'),
-('merge-cypher-board-j3j6-pinouts',  'Define full 50-pin allocation for Cypher Board J3-J6 connectors',  'pending'),
+('merge-cypher-board-j3j6-pinouts',  'Define full 50-pin allocation for Cypher Board J3-J6 connectors',  'done'),
 ('merge-ctl-dock-usb-allocation',    'Define USB D+/D- pin allocation in Cypher Board J1 CTL dock',      'pending'),
 ('merge-create-stack-input',         'Create Stack-Input Board Design',                                  'done'),
 ('merge-update-ctl-board',           'Update CTL Board Design — remove JM and AM sub-systems',           'pending'),
@@ -154,4 +154,6 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('todo-clean-up-requirement-details', 'Cleaning up FR/DR requirement detail across design files',         'pending'),
 ('merge-diagrams-review',            'Review and update draw.io diagrams for Cypher system merge',       'pending'),
 ('cypher-input-led-independent-rgb-pwm-review', 'Review LED colour controls for independent per-channel RGB PWM', 'pending'),
-('usm-cfg-refmap-removal-review', 'Revisit USM Bank 2/CFG_REFMAP removal before next full design review', 'pending');
+('usm-cfg-refmap-removal-review', 'Revisit USM Bank 2/CFG_REFMAP removal before next full design review', 'pending'),
+('merge-actuate-request-routing', 'Define ACTUATE_REQUEST_IN_N/OUT_N routing through Rotor and Stack-Interposer boards', 'done'),
+('design-docs-current-only-sweep', 'Sweep all design documents for historical/rationale wording (current-design-only rule)', 'pending');

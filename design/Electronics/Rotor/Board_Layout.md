@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-20
+**Last Updated:** 2026-09-02
 
 For mechanical tolerances and shroud assembly details, see
 `design/Mechanical/Rotor/Design_Spec.md`.
@@ -78,6 +78,7 @@ Board A faces the input (upstream) side of the rotor stack.
 | U4 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J3 ENC input ESD, array 1 of 3; ENC_IN[3:0] |
 | U5 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J3 ENC input ESD, array 2 of 3; ENC_IN[5:4], ENC_OUT[1:0] |
 | U6 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J3 ENC input ESD, array 3 of 3; ENC_OUT[5:2] |
+| U12 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J3 ENC input ESD, array 4 of 4; ACTUATE_REQUEST_IN_N, ACTUATE_REQUEST_OUT_N (2 spare). Per DEC-093. |
 
 > **GRS §7.1 pin-1 markers:** J7, J8, J11, J14 (Board A inner-face THT headers) shall each have a
 > silkscreen triangular marker or dot at pin 1 per `design/Standards/Global_Routing_Spec.md §7.1`.
@@ -134,6 +135,7 @@ Board B faces the output (downstream) side of the rotor stack.
 | U8 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J6 ENC output ESD, array 1 of 3; ENC_IN[3:0] |
 | U9 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J6 ENC output ESD, array 2 of 3; ENC_IN[5:4], ENC_OUT[1:0] |
 | U10 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J6 ENC output ESD, array 3 of 3; ENC_OUT[5:2] |
+| U13 | TPD4E05U06QDQARQ1 - 4-ch ESD array | J6 ENC output ESD, array 4 of 4; ACTUATE_REQUEST_OUT_N, ACTUATE_REQUEST_IN_N (2 spare). Per DEC-093. |
 
 > **GRS §7.1 pin-1 markers:** J9, J10, J12, J13 (Board B inner-face THT headers) shall each have a
 > silkscreen triangular marker or dot at pin 1 per `design/Standards/Global_Routing_Spec.md §7.1`.
@@ -202,10 +204,10 @@ ERF8 sockets on the output side (J4-J6). See `Rotor/Design_Spec.md §3.4` for th
 | :--- | :--- | :--- | :--- | :--- |
 | J1 | ERM8-005 male | 200-ERM8005050SDVKTR | 10 (2x5) | JTAG input |
 | J2 | ERM8-005 male | 200-ERM8005050SDVKTR | 10 (2x5) | Power input |
-| J3 | ERM8-010 male | 200-ERM8010050SDVKTR | 20 (2x10) | Encoder data input |
+| J3 | ERM8-010 male | 200-ERM8010050SDVKTR | 20 (2x10) | Encoder data input + ACTUATE_REQUEST_IN_N/OUT_N (pins 13/14, per DEC-093) |
 | J4 | ERF8-005 female | 200-ERF8005050SDVKTR | 10 (2x5) | JTAG output → next rotor J1 |
 | J5 | ERF8-005 female | 200-ERF8005050SDVKTR | 10 (2x5) | Power output → next rotor J2 |
-| J6 | ERF8-010 female | 200-ERF8010050SDVKTR | 20 (2x10) | Encoder data output → next rotor J3 |
+| J6 | ERF8-010 female | 200-ERF8010050SDVKTR | 20 (2x10) | Encoder data output → next rotor J3, plus ACTUATE_REQUEST_OUT_N/IN_N (pins 13/14, per DEC-093) |
 
 ### 5.2 TTD Routing Note
 
@@ -241,18 +243,25 @@ rotor passes TTD to the **next rotor's TDI** directly via J4 pin 6 → next Roto
 | `J6 ENC_OUT[5:0]` | 6 | Output | Forward-path cipher result to the downstream stage |
 | `J6 ENC_IN[5:0]` | 6 | Input | Return-path cipher input from the downstream stage |
 | `J3 ENC_OUT[5:0]` | 6 | Output | Return-path cipher result back to the upstream stage |
+| `J3 ACTUATE_REQUEST_IN_N` | 1 | Input | Actuation-trigger forward pass, received from the upstream stage (per DEC-093) |
+| `J3 ACTUATE_REQUEST_OUT_N` | 1 | Output | Actuation-trigger return pass, driven back to the upstream stage (per DEC-093) |
+| `J6 ACTUATE_REQUEST_OUT_N` | 1 | Output | Actuation-trigger forward pass, driven to the downstream stage (per DEC-093) |
+| `J6 ACTUATE_REQUEST_IN_N` | 1 | Input | Actuation-trigger return pass, received from the downstream stage (per DEC-093) |
 | `SW1[5:0]` | 6 | Input | Ring-setting switch bank on Board A |
 | `SW2[5:0]` | 6 | Input | Forward-map select switch bank on Board A |
 | `SW3[5:0]` | 6 | Input | Return-map select switch bank brought from Board B via `J14` |
 | Local `SDA`, `SCL` | 2 | Bidirectional | CPLD I2C master for U2/U11A/U11B position sensors; `J11` extends the same bus to Board B U11B |
 
-**Logical budget summary:** 44 general-purpose signal connections total = **30 inputs + 12 outputs + 2
+**Logical budget summary:** 48 general-purpose signal connections total = **32 inputs + 14 outputs + 2
 bidirectional I2C lines**, plus the dedicated JTAG / reset pins above.
 
 **Variant / reserve policy:** `ENC[5]` remains physically routed for the shared 20-pin connector pinout
 even on N=26 builds where that bit is logically unused. `J11` pins 3-5 stay reserved and are not
 currently tied into U1. Virtual JTAG position export uses the dedicated JTAG infrastructure and does
-not consume extra board-level I/O pins.
+not consume extra board-level I/O pins. The 4 `ACTUATE_REQUEST_*` signals (per DEC-093) use spare
+CPLD I/O headroom; exact synthesis-time propagation logic (how a given Rotor's CPLD routes `IN`
+to `OUT` across the forward and return passes) is firmware-configurable and TBD in a future
+design pass.
 
 ---
 

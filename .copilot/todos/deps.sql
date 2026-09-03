@@ -176,6 +176,8 @@ INSERT OR IGNORE INTO todo_deps (todo_id, depends_on) VALUES
 ('merge-grs-6layer-stackup',        'design-discussion-merge'),
 ('merge-create-cypher-board',       'design-discussion-merge'),
 ('merge-cypher-board-j3j6-pinouts', 'design-discussion-merge'),
+('merge-actuate-request-routing',   'design-discussion-merge'),
+('merge-actuate-request-routing',   'merge-cypher-board-j3j6-pinouts'),
 ('merge-ctl-dock-usb-allocation',   'design-discussion-merge'),
 ('merge-create-stack-input',        'design-discussion-merge'),
 ('merge-create-stack-input',        'merge-grs-6layer-stackup'),

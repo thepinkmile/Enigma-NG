@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-07-12
+**Last Updated:** 2026-09-02
 
 ## 1. Overview
 
@@ -34,11 +34,11 @@ Stack-Interposer Board.
 | :--- | :--- | :--- | :--- |
 | FR-EXT-03 | Pass 3V3_ENIG power and ENC data signals across the mini-stack boundary | Power: received on J1 bottom power section (3V3_ENIG only; no 5V_MAIN); ENC data return: J5 → J6 interposer; ENC passthrough (SIG-BLOCK-B/C): J2 ↔ J1 | §5 Power; BOM J1, J2, J5, J6 |
 | FR-EXT-05 | Connect on the output side to the last ROT board of this mini-stack | J3/J4/J5 = ERF8 female sockets receiving last ROT board ERM8 male output connectors | §6 Interconnects; BOM J3–J5 |
-| FR-EXT-07 | Protect stacking connector J1 and ROT-facing input connectors J3/J5 from ESD events | J1 and J3/J5 accessible during live mini-stack or rotor swap | §8 Thermal & ESD; BOM U1–U8 |
+| FR-EXT-07 | Protect stacking connector J1 and ROT-facing input connectors J3/J5 from ESD events | J1 and J3/J5 accessible during live mini-stack or rotor swap | §8 Thermal & ESD; BOM U1–U9 |
 | FR-SOUT-01 | Connect on the front side to the Cypher Board REF side or the rear of the previous Rotor Mini-Stack | J1 = QTS-025-01-L-D-RA-P male right-angle (front / left edge) | §6 Interconnects; BOM J1 |
 | FR-SOUT-02 | Connect on the rear side to the next Rotor Mini-Stack or Stack-Blanking Board | J2 = QSS-025-01-L-D-RA-K female right-angle (rear / right edge) | §6 Interconnects; BOM J2 |
 | FR-SOUT-03 | Receive JTAG TTD, TCK, TMS, CPLD_RESET_N and ENC data from the last ROT board of this mini-stack | J3 = ERF8-005 (JTAG); J4 = ERF8-005 (Power — all pins NC); J5 = ERF8-010 (ENC data) | §6 Interconnects; BOM J3–J5 |
-| FR-SOUT-04 | Route SIG-BLOCK-A ENC data and SIG-BLOCK-E TTD from the last ROT board to Stack-Input via the passive interposer link | J6 = 2BHR-30-VUA 30-pin THT male header; mates with Stack-Interposer Board SQT-115-01-L-D-RA female | §6 Interconnects; BOM J6 |
+| FR-SOUT-04 | Route SIG-BLOCK-A ENC data, SIG-BLOCK-E TTD, and SIG-BLOCK-G/H ACTUATE_REQUEST (per DEC-093) from the last ROT board to Stack-Input via the passive interposer link | J6 = 2BHR-30-VUA 30-pin THT male header; mates with Stack-Interposer Board SQT-115-01-L-D-RA female | §6 Interconnects; BOM J6 |
 | FR-SOUT-05 | Receive SIG-BLOCK-D ENC data from Stack-Input via the passive interposer link and route it into the ROT chain return pass | J6 → J5; ROT chain traversal (left-to-right return direction) | §3 Signal Return Path; §6 Interconnects |
 | FR-SOUT-06 | Pass SIG-BLOCK-B ENC return and SIG-BLOCK-F TTD_RETURN toward the Cypher Board via front stacking connector J1 | Signals sourced on J2 rear stacking (from blanking board / next Stack-Output passthrough); J2 → J1 internal passthrough per mini-stack | §3 Signal Return Path; §6 Interconnects |
 | FR-SOUT-07 | Pass SIG-BLOCK-C ENC reflector signals rearward toward the Stack-Blanking Board via rear stacking connector J2 | Signals sourced on J1 (from Cypher Board REF output); J1 → J2 internal passthrough | §3 Signal Return Path; §6 Interconnects |
@@ -50,11 +50,11 @@ Stack-Interposer Board.
 | :--- | :--- | :--- | :--- |
 | DR-EXT-01 | PCB stackup | 4-layer standard per `design/Standards/Global_Routing_Spec.md §2.3.1` | §7 PCB Fabrication & Stackup |
 | DR-EXT-07 | System quantity | 1 per Rotor Mini-Stack; up to 6 per system (30 rotor positions total) | §1 Overview |
-| DR-EXT-12 | ESD protection — stacking connector J1 and ROT-facing connectors J3/J5 | U1–U4 (J1 signal region: 14 active signal lines); U5–U8 (J3 JTAG + J5 ENC data); within 3mm of connector mating edge per DEC-048 | §8 Thermal & ESD; BOM U1–U8 |
+| DR-EXT-12 | ESD protection — stacking connector J1 and ROT-facing connectors J3/J5 | U1–U4 (J1 signal region: 14 active signal lines + ACTUATE_REQUEST_REF_IN_N/OUT_N via U4's spare channels); U5–U8 (J3 JTAG + J5 ENC data); U9 (J5 ACTUATE_REQUEST_OUT_N/IN_N); within 3mm of connector mating edge per DEC-048/DEC-095 | §8 Thermal & ESD; BOM U1–U9 |
 | DR-EXT-13 | 3V3_ENIG entry decoupling bank | C1–C5 (5x 10µF X7R 50V 1206) at 3V3_ENIG entry (J1 bottom power section) per GRS §3 star/spoke pattern | §5 Power; BOM C1–C5 |
 | DR-EXT-14 | Mounting holes | MH1–MH4: M3 PTH (3.2mm drill) tied to GND_CHASSIS per GRS §4; placement per GRS §4.3 Pattern B. No BOM entry. | §7 PCB Fabrication; GRS §4.3 |
-| DR-SOUT-01 | Front stacking connector (output/chain side) | J1 = QTS-025-01-L-D-RA-P (Samtec 50-contact right-angle male SMT); top 24 contacts: ENC data return + TTD_RETURN (SIG-BLOCK-B/C/F signal region); bottom 10 contacts: 3V3_ENIG + GND (power region); full allocation pending `merge-cypher-board-j3j6-pinouts` | §6 Interconnects; BOM J1 |
-| DR-SOUT-02 | Rear stacking connector (chain side) | J2 = QSS-025-01-L-D-RA-K (Samtec 50-contact right-angle female SMT); mirrors J1 signal set with I/O directions inverted (passthrough chain); bottom 10 contacts include 3V3_ENIG + GND passthrough | §6 Interconnects; BOM J2 |
+| DR-SOUT-01 | Front stacking connector (output/chain side) | J1 = QTS-025-01-L-D-RA-P (Samtec 50-contact right-angle male SMT); fully 50-pin allocated per DEC-092/DEC-093 (this board is the Definition Owner, DEC-094) — ENC data return + TTD_RETURN (SIG-BLOCK-B/C/F), 3V3_ENIG ×8, ACTUATE_REQUEST_REF_IN_N/OUT_N | §6 Interconnects; BOM J1 |
+| DR-SOUT-02 | Rear stacking connector (chain side) | J2 = QSS-025-01-L-D-RA-K (Samtec 50-contact right-angle female SMT); mirrors J1 signal set with I/O directions inverted (passthrough chain); fully 50-pin allocated per DEC-092/DEC-093 | §6 Interconnects; BOM J2 |
 | DR-SOUT-03 | ROT-facing input connectors | J3 = ERF8-005 (JTAG from last ROT), J4 = ERF8-005 (Power — all pins NC), J5 = ERF8-010 (ENC data from last ROT); mate with last ROT board ERM8 male output connectors | §6 Interconnects; BOM J3–J5 |
 | DR-SOUT-04 | J4 power pins — 0Ω prototype links | J4 3V3_ENIG pins connected to local 3V3_ENIG plane via R4 (0Ω link); J4 GND pins connected to local GND plane via R5 (0Ω link); both links can be removed to revert to NC if prototype testing reveals EMI issues; see DEC-085 | §5 Power; BOM R4, R5 |
 | DR-SOUT-05 | JTAG spoke termination | R1 = 10 kΩ TCK pull-down to GND; R2 = 10 kΩ TMS pull-up to 3V3_ENIG; R3 = 10 kΩ CPLD_RESET_N pull-up to 3V3_ENIG; placed within 3mm of J3; mirrors Cypher Board R3/R5/R6 idle-bias pattern; per DEC-016 | §4 JTAG Termination; BOM R1–R3 |
@@ -80,21 +80,25 @@ flowchart TD
   end
 
   subgraph interposer["Passive Interposer Link"]
-    J6["J6 2BHR-30-VUA 30-pin THT male\nSIG-BLOCK-A ENC data + SIG-BLOCK-E TTD\nSIG-BLOCK-D ENC return"]
+    J6["J6 2BHR-30-VUA 30-pin THT male\nSIG-BLOCK-A ENC data + SIG-BLOCK-E TTD\nSIG-BLOCK-D ENC return + SIG-BLOCK-G/H ACTUATE_REQUEST"]
   end
 
   subgraph esd["ESD Protection"]
     U1U4["U1–U4 TPD4E05 x4\nJ1 stacking connector"]
     U5U8["U5–U8 TPD4E05 x4\nJ3/J5 ROT input"]
+    U9["U9 TPD4E05\nJ5 ACTUATE_REQUEST_OUT/IN_N"]
   end
 
-  J2 -- "SIG-BLOCK-B ENC_IN return + SIG-BLOCK-F TTD_RETURN" --> J1
-  J1 -- "SIG-BLOCK-C ENC_OUT from Cypher REF" --> J2
+  J2 -- "SIG-BLOCK-B ENC_IN return + SIG-BLOCK-F TTD_RETURN + ACTUATE_REQUEST_REF_IN_N" --> J1
+  J1 -- "SIG-BLOCK-C ENC_OUT from Cypher REF + ACTUATE_REQUEST_REF_OUT_N" --> J2
   J1 --> U1U4
   J3 -- "SIG-BLOCK-E TTD + TCK/TMS/CPLD_RESET_N" --> U5U8
   J5 -- "SIG-BLOCK-A ENC data" --> U5U8
+  J5 -- "ACTUATE_REQUEST_OUT_N/IN_N" --> U9
   U5U8 -- "SIG-BLOCK-A + SIG-BLOCK-E TTD" --> J6
   J6 -- "SIG-BLOCK-D ENC return" --> J5
+  J5 -- "SIG-BLOCK-G ACTUATE_REQUEST fwd" --> J6
+  J6 -- "SIG-BLOCK-H ACTUATE_REQUEST return" --> J5
   J1 -- "3V3_ENIG" --> C1C5["C1–C5\n3V3 decoupling"]
 ```
 
@@ -123,9 +127,13 @@ continuity.
 | SIG-BLOCK-B | ENC_IN[5:0] return | J2 → J1 | From blanking board or next Stack-Output rear | Toward Cypher REF side |
 | SIG-BLOCK-C | ENC_OUT[5:0] reflector | J1 → J2 | From Cypher REF output | Toward blanking board or next Stack-Output front |
 | SIG-BLOCK-F | TTD_RETURN | J2 → J1 | From blanking board or next Stack-Output rear | Toward Cypher JTAG Module TDO |
+| — | `ACTUATE_REQUEST_REF_IN_N` | J2 → J1 | From blanking board or next Stack-Output rear | Toward Cypher `J4` `ACTUATE_REQUEST_REF_IN_N` (per DEC-093 step 3, first reflection) |
+| — | `ACTUATE_REQUEST_REF_OUT_N` | J1 → J2 | From Cypher `J4` `ACTUATE_REQUEST_REF_OUT_N` (per DEC-093 step 5, second forward pass) | Toward blanking board or next Stack-Output front |
 
-Every Stack-Output board has an internal J2 → J1 passthrough for SIG-BLOCK-B and SIG-BLOCK-F, and
-a J1 → J2 passthrough for SIG-BLOCK-C. These are passive trace routes with no buffering.
+Every Stack-Output board has an internal J2 → J1 passthrough for SIG-BLOCK-B, SIG-BLOCK-F, and
+`ACTUATE_REQUEST_REF_IN_N`, and a J1 → J2 passthrough for SIG-BLOCK-C and
+`ACTUATE_REQUEST_REF_OUT_N`. These are passive trace routes with no buffering — this board has
+no active ICs (see §8 Thermal & ESD). Per DEC-095.
 
 ### Interposer link signals (J3/J5 ↔ J6)
 
@@ -134,6 +142,11 @@ a J1 → J2 passthrough for SIG-BLOCK-C. These are passive trace routes with no 
 | SIG-BLOCK-A | ENC_DATA[5:0] | J5 → J6 | Forward-direction traversal result from last ROT board; forwarded to Stack-Input for next-stack or blanking board handoff |
 | SIG-BLOCK-E (TTD) | TTD | J3 → J6 | Last ROT TDO — outbound JTAG chain end; forwarded to Stack-Input for next-stack or blanking board handoff |
 | SIG-BLOCK-D | ENC_DATA[5:0] | J6 → J5 | Return-direction data post-reflector from Stack-Input; enters ROT chain for return traversal (left-to-right) |
+| SIG-BLOCK-G | `ACTUATE_REQUEST` (forward) | J5 → J6 | Forward pass, collected from last ROT board's own carry mechanism (pin 14, `ACTUATE_REQUEST_OUT_N`, of Rotor's J6); forwarded to Stack-Input's rear connector via the Stack-Interposer Board |
+| SIG-BLOCK-H | `ACTUATE_REQUEST` (return) | J6 → J5 | Return pass, received from the Stack-Interposer Board (originating at Stack-Input's rear connector); routed into the ROT chain (pin 13, `ACTUATE_REQUEST_IN_N`, of Rotor's J6) for reverse traversal |
+
+Both passthroughs are passive trace routes, consistent with the existing SIG-BLOCK-A/D/E
+handling on this same connector pair. Per DEC-093/DEC-095.
 
 ### TTD vs TTD_RETURN naming
 
@@ -184,28 +197,27 @@ context.
 
 ### J1 — Front Stacking Connector (QTS-025-01-L-D-RA-P)
 
-**Connector definition owner: Cypher Board `Board_Layout.md §3` (J4 — Stack-Output / REF-side).**
+**Connector definition owner: this board's own `Board_Layout.md §1` (IC-REF-CHAIN, per DEC-094).**
 Mates with Cypher Board J4 (first mini-stack) or previous mini-stack J2 (subsequent stacks).
 
 - **MPN:** QTS-025-01-L-D-RA-P (Samtec 50-contact 0.635mm right-angle male SMT)
-- **Top 24 contacts (signal region):** ENC_IN[5:0] return (SIG-BLOCK-B out), ENC_OUT[5:0]
-  (SIG-BLOCK-C in), TTD_RETURN ×2 (SIG-BLOCK-F out), GND interleave — see `Cypher/Board_Layout.md §3`
-- **Bottom 10 contacts (power region):** 3V3_ENIG ×4 + GND ×6 — full allocation pending
-  `merge-cypher-board-j3j6-pinouts`
-- **Contacts 35–50:** GND (spare contacts; tied to GND per Cypher Board `Board_Layout.md §3`)
+- **Fully 50-pin allocated per DEC-092/DEC-093** — see `Board_Layout.md §1` for the full
+  canonical pin map: ENC_IN[5:0] return (SIG-BLOCK-B out), ENC_OUT[5:0] (SIG-BLOCK-C in),
+  TTD_RETURN (SIG-BLOCK-F out, pin 30), `3V3_ENIG` ×8, `ACTUATE_REQUEST_REF_IN_N`/
+  `ACTUATE_REQUEST_REF_OUT_N` (pins 16/35 — passive J1↔J2 passthrough, see §3 Signal Return Path
+  and DEC-095), GND fill.
 
 > **Pinout:** see `Board_Layout.md §1`.
 
 ### J2 — Rear Stacking Connector (QSS-025-01-L-D-RA-K)
 
-**Connector definition owner: Cypher Board `Board_Layout.md §3` (J4 — Stack-Output / REF-side).**
-Same signal pinout as Cypher Board J4; right-angle variant for board-edge mounting.
-Mates with next mini-stack J1 (front stacking male) or Stack-Blanking Board male connector.
+**Connector definition owner: this board's own `Board_Layout.md §1` (IC-REF-CHAIN, §1 above —
+same template, I/O inverted, per DEC-094).** Mates with next mini-stack J1 (front stacking male)
+or Stack-Blanking Board male connector.
 
 - **MPN:** QSS-025-01-L-D-RA-K (Samtec 50-contact 0.635mm right-angle female SMT)
-- **Top 24 contacts:** same signal set as Cypher Board J4 — see `Cypher/Board_Layout.md §3`
-- **Bottom 10 contacts:** 3V3_ENIG + GND power passthrough — full allocation pending
-  `merge-cypher-board-j3j6-pinouts`
+- **Fully 50-pin allocated per DEC-092/DEC-093** — same canonical pin map as J1, I/O inverted;
+  see `Board_Layout.md §2`.
 
 > **Pinout:** see `Board_Layout.md §2`.
 
@@ -219,7 +231,7 @@ Mates with last ROT board in the mini-stack (ROT board ERM8 male output connecto
 | :--- | :--- | :--- | :--- |
 | J3 | ERF8-005 (10-pin, female) | JTAG from last ROT (TTD, TCK, TMS, CPLD_RESET_N + GND) | ERF8-005-05.0-S-DV-K-TR |
 | J4 | ERF8-005 (10-pin, female) | Power from last ROT — 3V3_ENIG ×5 + GND ×5; connected via R4/R5 0Ω links (see DEC-085) | ERF8-005-05.0-S-DV-K-TR |
-| J5 | ERF8-010 (20-pin, female) | ENC data from last ROT | ERF8-010-05.0-S-DV-K-TR |
+| J5 | ERF8-010 (20-pin, female) | ENC data from last ROT, plus ACTUATE_REQUEST_OUT_N/IN_N (pins 13/14, per DEC-093); ESD via U9 (DEC-095) | ERF8-010-05.0-S-DV-K-TR |
 
 J4 3V3_ENIG pins connect to the local 3V3_ENIG plane via R4 (0Ω link); J4 GND pins connect to
 the local GND plane via R5 (0Ω link). Both links can be removed to revert to NC if prototype
@@ -259,7 +271,8 @@ Stack-Input Board.
   - **U1:** 1x TPD4E05U06QDQARQ1 — channels: TTD_RETURN ×2 + ENC_OUT[0:1] (SIG-BLOCK-C)
   - **U2:** 1x TPD4E05U06QDQARQ1 — channels: ENC_OUT[2:5] (SIG-BLOCK-C)
   - **U3:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[0:3] return (SIG-BLOCK-B)
-  - **U4:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[4:5] return (2 active channels; 2 spare)
+  - **U4:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[4:5] return, `ACTUATE_REQUEST_REF_IN_N`,
+    `ACTUATE_REQUEST_REF_OUT_N`. Per DEC-095.
   All U1–U4 placed within 3mm of J1 mating edge on L1.
 - **ESD — J3/J5 ROT input connectors (TVS required):**
   J3 (JTAG) and J5 (ENC) are accessible during live ROT board swap. Per DEC-045 and DEC-048:
@@ -267,9 +280,11 @@ Stack-Input Board.
   - **U6:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[0:3] (J5 ENC group)
   - **U7:** 1x TPD4E05U06QDQARQ1 — channels: ENC_IN[4:5] + ENC_OUT[0:1] (J5 ENC group)
   - **U8:** 1x TPD4E05U06QDQARQ1 — channels: ENC_OUT[2:5] (J5 ENC group)
-  All U5–U8 placed within 3mm of their respective connector mating edge on L1.
+  - **U9:** 1x TPD4E05U06QDQARQ1 — channels: `ACTUATE_REQUEST_OUT_N`, `ACTUATE_REQUEST_IN_N`
+    (J5 group, mating with Rotor J6's pins 13/14; 2 channels used, 2 spare). Per DEC-095.
+  All U5–U9 placed within 3mm of their respective connector mating edge on L1.
 - **Working voltage note:** TPD4E05U06QDQARQ1 max continuous working voltage = 5.5V. On
-  3V3_ENIG (max 3.465V), all U1–U8 within rated limits with >= 2.0V margin.
+  3V3_ENIG (max 3.465V), all U1–U9 within rated limits with >= 2.0V margin.
 - **ESD — all other connectors (no TVS required):**
   J2 (rear stacking — chain side, not live-swap); J4 (power only, all pins NC); J6 (interposer,
   internal rigid assembly).
@@ -297,3 +312,4 @@ Stack-Input Board.
 | R4 | 0Ω 0402 | ERJ-2GE0R00X | Panasonic | P0.0JCT-ND | 667-ERJ-2GE0R00X | C242160 | – | J4 3V3_ENIG bus → local 3V3_ENIG plane (0Ω link; remove to revert J4 3V3_ENIG to NC — see DEC-085) | – | ✘ | 1 |
 | R5 | 0Ω 0402 | ERJ-2GE0R00X | Panasonic | P0.0JCT-ND | 667-ERJ-2GE0R00X | C242160 | – | J4 GND bus → local GND plane (0Ω link; remove to revert J4 GND to NC — see DEC-085) | – | ✘ | 1 |
 | U1–U8 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | – | ESD protection: U1–U4 on J1 signal region, U5–U8 on J3/J5 ROT-facing connectors | ✔ | ✔ | 8 |
+| U9 | 4-ch bidirectional ESD array USON-10 | TPD4E05U06QDQARQ1 | Texas Instruments | 296-40696-1-ND | 595-PD4E05U06QDQARQ1 | C81353 | – | J5 ROT-facing ESD protection: ACTUATE_REQUEST_OUT_N/IN_N (2 channels used, 2 spare). Per DEC-095. | ✔ | ✔ | 1 |

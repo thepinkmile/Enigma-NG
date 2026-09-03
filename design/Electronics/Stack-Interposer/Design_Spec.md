@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-07-25
+**Last Updated:** 2026-09-02
 
 ## 1. Overview
 
@@ -16,7 +16,7 @@ intra-stack signal return path without requiring a flexible ribbon cable.
 
 | Responsibility | Description |
 | :--- | :--- |
-| **Signal bridge** | Routes SIG-BLOCK-A (ENC_DATA[5:0] forward), SIG-BLOCK-D (ENC_DATA[5:0] return direction), and SIG-BLOCK-E (TTD) between the Stack-Output Board and the Stack-Input Board via passive pin-to-pin trace connections |
+| **Signal bridge** | Routes SIG-BLOCK-A (ENC_DATA[5:0] forward), SIG-BLOCK-D (ENC_DATA[5:0] return direction), SIG-BLOCK-E (TTD), and SIG-BLOCK-G/H (ACTUATE_REQUEST forward/return, per DEC-093) between the Stack-Output Board and the Stack-Input Board via passive pin-to-pin trace connections |
 | **GND shielding** | Interleaved GND contacts on both connectors isolate every signal line; GND pours on L1 and L4 provide plane-level EMI shielding |
 | **Mechanical rigidity** | Rigid PCB-to-PCB join stiffens the mini-stack base, making the mini-stack assembly self-supporting without a flexible ribbon cable |
 
@@ -37,7 +37,9 @@ rising on either side.
 | FR-SINT-02 | Route SIG-BLOCK-A (ENC_DATA[5:0] forward) from Stack-Output Board J6 to Stack-Input Board J6 as a passive pin-to-pin connection | Forward-direction ENC data from last ROT board output; passed to Stack-Input for onward chain or blanking board handoff | §3 Signal Routing; BOM J1, J2 |
 | FR-SINT-03 | Route SIG-BLOCK-D (ENC_DATA[5:0] return direction) from Stack-Input Board J6 to Stack-Output Board J6 as a passive pin-to-pin connection | Return-direction ENC data (post-reflector) entering Stack-Output ROT chain for left-to-right return traversal | §3 Signal Routing; BOM J1, J2 |
 | FR-SINT-04 | Route SIG-BLOCK-E (TTD) from Stack-Output Board J6 to Stack-Input Board J6 as a passive pin-to-pin connection | Last ROT board TDO output; forwarded to Stack-Input for onward JTAG chain or blanking board handoff; TTD carried on two pins (13 and 18) with guard GND between | §3 Signal Routing; Board_Layout.md §3 |
-| FR-SINT-05 | Provide interleaved GND contacts between all signal pairs on both connectors per the 2×15 pin map | One GND contact adjacent to each signal line; double guard GND at SIG-BLOCK-E centre (pins 15–17) | §3 Signal Routing; Board_Layout.md §3 |
+| FR-SINT-05 | Provide interleaved GND contacts between all signal pairs on both connectors per the 2×15 pin map | One GND contact adjacent to each signal line; single guard GND remaining at SIG-BLOCK-E/G/H centre (pin 17) after DEC-093 | §3 Signal Routing; Board_Layout.md §3 |
+| FR-SINT-06 | Route SIG-BLOCK-G (ACTUATE_REQUEST forward) from Stack-Output Board J6 to Stack-Input Board J6 as a passive pin-to-pin connection | Actuation-trigger forward pass, collected from this mini-stack's own Rotor chain via Stack-Output; forwarded to Stack-Input's rear connector | §3 Signal Routing; BOM J1, J2 |
+| FR-SINT-07 | Route SIG-BLOCK-H (ACTUATE_REQUEST return) from Stack-Input Board J6 to Stack-Output Board J6 as a passive pin-to-pin connection | Actuation-trigger return pass, received on Stack-Input's rear connector; routed back through this mini-stack's Rotor chain via Stack-Output in reverse | §3 Signal Routing; BOM J1, J2 |
 
 ### Design Requirements
 
@@ -66,6 +68,8 @@ flowchart LR
   J1 -- "SIG-BLOCK-A: ENC_DATA[5:0] fwd" --> J2
   J2 -- "SIG-BLOCK-D: ENC_DATA[5:0] return" --> J1
   J1 -- "SIG-BLOCK-E: TTD (pins 13 + 18)" --> J2
+  J1 -- "SIG-BLOCK-G: ACTUATE_REQUEST fwd (pin 15)" --> J2
+  J2 -- "SIG-BLOCK-H: ACTUATE_REQUEST return (pin 16)" --> J1
 ```
 
 ## 2. Architecture
@@ -95,6 +99,8 @@ This board is passive: all signals pass through as direct trace connections betw
 | SIG-BLOCK-A | ENC_DATA[5:0] | J1 → J2 | Forward-direction ENC data from last ROT board; forwarded to Stack-Input for next-stack or blanking board handoff |
 | SIG-BLOCK-D | ENC_DATA[5:0] | J2 → J1 | Return-direction ENC data post-reflector; received from Stack-Input; enters Stack-Output ROT chain for left-to-right return traversal |
 | SIG-BLOCK-E | TTD | J1 → J2 | Last ROT board TDO output; forwarded to Stack-Input for next-stack or blanking board handoff; carried on pins 13 and 18 |
+| SIG-BLOCK-G | ACTUATE_REQUEST | J1 → J2 | Actuation-trigger forward pass, collected from this mini-stack's own Rotor chain via Stack-Output; forwarded to Stack-Input's rear connector; carried on pin 15. Per DEC-093. |
+| SIG-BLOCK-H | ACTUATE_REQUEST | J2 → J1 | Actuation-trigger return pass, received on Stack-Input's rear connector; routed back through this mini-stack's Rotor chain via Stack-Output in reverse; carried on pin 16. Per DEC-093. |
 
 ### Pin map
 
@@ -112,8 +118,9 @@ The 30 contacts are grouped as follows:
 
 - **Pins 1–12 (SIG-BLOCK-A):** ENC_DATA[5:0] forward direction, interleaved with GND —
   one signal per odd/even pair alternating (signal, GND, GND, signal, ...).
-- **Pins 13–18 (SIG-BLOCK-E):** TTD carried on both pins 13 and 18; guard GND on pins 14, 15,
-  16, and 17 between them for signal isolation.
+- **Pins 13–18 (SIG-BLOCK-E/G/H):** TTD carried on both pins 13 and 18; `ACTUATE_REQUEST`
+  forward (SIG-BLOCK-G) on pin 15 and return (SIG-BLOCK-H) on pin 16, per DEC-093; single guard
+  GND remaining on pin 17.
 - **Pins 19–30 (SIG-BLOCK-D):** ENC_DATA[5:0] return direction, interleaved with GND in the
   same alternating pattern as SIG-BLOCK-A but bit-reversed (ENC_DATA[5] at pin 19,
   ENC_DATA[0] at pin 30).
@@ -133,10 +140,10 @@ from above when the Stack-Output Board is assembled vertically alongside the Sta
 - **DigiKey PN:** 612-TMMH-115-01-L-D-ES-ND
 - **JLCPCB PN:** Global Sourcing
 - **Signals carried (bidirectional):**
-  - Stack-Output → Stack-Input: SIG-BLOCK-A ENC_DATA[5:0] (from Stack-Output J5) and
-    SIG-BLOCK-E TTD (from Stack-Output J3)
+  - Stack-Output → Stack-Input: SIG-BLOCK-A ENC_DATA[5:0] (from Stack-Output J5), SIG-BLOCK-E
+    TTD (from Stack-Output J3), and SIG-BLOCK-G ACTUATE_REQUEST forward (per DEC-093)
   - Stack-Input → Stack-Output: SIG-BLOCK-D ENC_DATA[5:0] return (into Stack-Output J5 for ROT
-    chain return traversal)
+    chain return traversal) and SIG-BLOCK-H ACTUATE_REQUEST return (per DEC-093)
 - **Mating connector on Stack-Output Board:** Stack-Output J6 (SQT-115-01-L-D-RA right-angle female)
 
 > **Pinout:** see `Board_Layout.md §1`.
@@ -154,8 +161,10 @@ from above when the Stack-Input Board is assembled vertically alongside the Stac
 - **DigiKey PN:** 612-TMMH-115-01-L-D-ES-ND
 - **JLCPCB PN:** Global Sourcing
 - **Signals carried (bidirectional):**
-  - Stack-Output → Stack-Input: SIG-BLOCK-A ENC_DATA[5:0] and SIG-BLOCK-E TTD
-  - Stack-Input → Stack-Output: SIG-BLOCK-D ENC_DATA[5:0] return
+  - Stack-Output → Stack-Input: SIG-BLOCK-A ENC_DATA[5:0], SIG-BLOCK-E TTD, and SIG-BLOCK-G
+    ACTUATE_REQUEST forward (per DEC-093)
+  - Stack-Input → Stack-Output: SIG-BLOCK-D ENC_DATA[5:0] return and SIG-BLOCK-H
+    ACTUATE_REQUEST return (per DEC-093)
 - **Mating connector on Stack-Input Board:** Stack-Input J6 (SQT-115-01-L-D-RA right-angle female)
 
 > **Pinout:** see `Board_Layout.md §2`.
