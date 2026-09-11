@@ -6,7 +6,56 @@
 
 ---
 
-## Current Status (as of 2026-09-11 — Controller/Cypher dock rework reviewed & approved; v2.0 items re-prioritised, checkpoint 190)
+## Current Status (as of 2026-09-11 — FT232H 3.3V VREGIN complete, checkpoint 191)
+
+`jdb-ft232h-3v3-vregin` is now **done**. Investigation found the todo's referenced part number
+(`FT232HPQ-TRAY`) was actually FTDI's unrelated "HP" USB Type-C/Power-Delivery chip family, not a
+Rev C variant of the plain FT232H — no part substitution needed. The already-specified
+`FT232HL-REEL` already supports 3.0–3.6V `VREGIN` on Rev C silicon (current production stock by
+default). Implementing this also surfaced and fixed a genuine pre-existing defect: Cypher's
+`5V_USB` net was a phantom/stale leftover from the pre-merge JTAG Daughterboard architecture,
+never actually present on the current post-DEC-098 dock. DEC-102 created — see checkpoint 191 for
+full detail.
+
+Files changed this session:
+
+- `Cypher/Design_Spec.md §5` — `VREGIN` + `VCCD` (pin 39, now an explicit trace) moved to
+  `3V3_ENIG`; `5V_USB` net and its entry filter (`C27`) removed entirely; FR-CYP-01/DR-CYP-08
+  updated; new DR-CYP-11 added.
+- `Power_Budgets.md` — FT232H's full 100 mA consolidated onto `3V3_ENIG` (was split
+  10 mA `3V3_ENIG` / 100 mA `5V_MAIN` via the retired `5V_USB` net). `3V3_ENIG` typical total
+  2,193 mA → 2,283 mA (headroom 27% → 24%); `5V_MAIN` total 10.79 A → 10.69 A (utilisation
+  89.9% → 89.1%).
+- New DEC-102 + `Design_Log/index.md` and `directives/tertiary.md` DEC counter updated (now 103).
+- **Review follow-up (same "current design only" violation class as prior sessions):** removed
+  several more contrastive/historical sentences the user caught across `Cypher/Design_Spec.md`
+  and `Power_Budgets.md` (e.g. "becomes an input... not self-generated as it would be in 5V mode",
+  "no 5V rail required" inside a table already scoped to 3V3_ENIG, an "Updated 2026-09-11:
+  moved off 5V_MAIN..." narrative note) — all rewritten to state only the current design fact,
+  pointing to `Document History`/DEC citations for the change trail instead of narrating it inline.
+
+**⏭️ Next session — start here:** the user has requested a **User Settings Module review** before
+continuing to the LED/PWM task — they have changes in mind that may impact Cypher, Cypher-Input,
+and Cypher-Output. This has not yet started. Once that's scoped and resolved, resume the
+confirmed next-task order below.
+
+Confirmed next-task order:
+
+1. **User Settings Module review** (new, not yet started) — user-driven changes that may impact
+   Cypher/Cypher-Input/Cypher-Output; scope not yet defined.
+2. `cypher-input-led-independent-rgb-pwm-review` — independent per-channel RGB PWM + LED part
+   reconsideration; feeds directly into the user's planned Mock Keyboard test rig.
+3. `cpld-production-replacement` — MAX10 FPGA discussion (`max-10-fpga-details`,
+   `rp2040-discussion`); likely mechanical implications for Rotor boards.
+4. `footprint-requests-pending` — scheduled alongside the final BOM sweep, not standalone.
+5. `system-assembly-harnesses` and `system-config-variants-diagrams` — deferred until the above
+   list is complete.
+
+Also still queued (not yet scheduled): `design-docs-current-only-sweep` — a repo-wide sweep for
+historical/rationale wording that shouldn't be in "current design only" docs (previously only
+covered Cypher + Stack-* boards; see the todo for the specific patterns to search for).
+
+### Prior session recap (2026-09-04 through 2026-09-11, checkpoint 190 — Controller/Cypher dock rework reviewed & approved; v2.0 items re-prioritised)
 
 `merge-ctl-dock-usb-allocation` and `merge-update-ctl-board` are **done and user-reviewed**
 (review completed 2026-09-11). The 2026-09-04 Controller/Cypher dock rework (split power-only
@@ -41,44 +90,27 @@ review, three small follow-up corrections were made (all reviewed inline, no new
    passes, not now.
 
 **Todo re-prioritisation (user, 2026-09-11):** of the five previously-blocked "v2.0" items, two
-are no longer deferred and have been unblocked:
+were unblocked:
 
-- `cpld-production-replacement` — **unblocked**, now tied to the `max-10-fpga-details` and
-  (partially) `rp2040-discussion` discussion threads already in `.copilot/discussions/`.
-- `jdb-ft232h-3v3-vregin` — **unblocked**, the Rev C FT232H part is now available/sourced.
+- `cpld-production-replacement` — unblocked, tied to the `max-10-fpga-details` and (partially)
+  `rp2040-discussion` discussion threads already in `.copilot/discussions/`.
+- `jdb-ft232h-3v3-vregin` — unblocked at the time (subsequently completed — see "Current Status"
+  above), the Rev C FT232H part is now available/sourced.
 - `display-addon-board`, `display-aperture`, `ctl-t1-coilcraft-v2-review` remain correctly
   deferred to v2.0 — no change.
 
-The confirmed next-task order (see below) was also revised: `cypher-input-led-independent-rgb-pwm-review`
-had its `merge-final-review` dependency **removed** (was gating it on the full design-merge
-sign-off) so it can be picked up directly after `jdb-ft232h-3v3-vregin` — the user wants its
-outcome to guide a physical Mock Keyboard test rig for the Cypher-Input board (component
-validation + power-draw probing) before the final Cypher-Input design is locked in, and is not
-confident in the currently-selected RGB LED part (SK6812MINI-E candidate, see
-`merge-missing-components.md`) either. `footprint-requests-pending` is rescheduled (note only, no
-dependency change) to run alongside `post-merge-final-design-bom-sweep` rather than standalone.
+`cypher-input-led-independent-rgb-pwm-review` had its `merge-final-review` dependency **removed**
+(was gating it on the full design-merge sign-off) so it can be picked up after
+`jdb-ft232h-3v3-vregin` — the user wants its outcome to guide a physical Mock Keyboard test rig
+for the Cypher-Input board (component validation + power-draw probing) before the final
+Cypher-Input design is locked in, and is not confident in the currently-selected RGB LED part
+(SK6812MINI-E candidate, see `merge-missing-components.md`) either. `footprint-requests-pending`
+is rescheduled (note only, no dependency change) to run alongside
+`post-merge-final-design-bom-sweep` rather than standalone.
 
-**⏭️ Next session — start here:** resume the task order below. No pending user-review gate is
-currently open (the Controller/Cypher review this note describes is now complete). See
-checkpoint 190 for the full detailed writeup of everything summarised above.
+See checkpoint 190 for the full detailed writeup of everything summarised above.
 
-Confirmed next-task order:
-
-1. `jdb-ft232h-3v3-vregin` — Rev C FT232H 3V3 VREGIN; now native to Cypher's `U17` USB-JTAG
-   bridge section (`Cypher/Design_Spec.md §5`) rather than a separate JTAG Module.
-2. `cypher-input-led-independent-rgb-pwm-review` — independent per-channel RGB PWM + LED part
-   reconsideration; feeds directly into the user's planned Mock Keyboard test rig.
-3. `cpld-production-replacement` — MAX10 FPGA discussion (`max-10-fpga-details`,
-   `rp2040-discussion`); likely mechanical implications for Rotor boards.
-4. `footprint-requests-pending` — scheduled alongside the final BOM sweep, not standalone.
-5. `system-assembly-harnesses` and `system-config-variants-diagrams` — deferred until the above
-   list is complete.
-
-Also still queued (not yet scheduled): `design-docs-current-only-sweep` — a repo-wide sweep for
-historical/rationale wording that shouldn't be in "current design only" docs (previously only
-covered Cypher + Stack-* boards; see the todo for the specific patterns to search for).
-
-### Prior session recap (2026-09-04 — Controller/Cypher dock rework implemented, pending review at the time)
+### Prior session recap (2026-09-04, checkpoint 190 detail — Controller/Cypher dock rework implemented, pending review at the time)
 
 `merge-ctl-dock-usb-allocation` and `merge-update-ctl-board` were implemented but not yet reviewed
 at the end of this session. This session split the Controller↔Cypher dock into a power-only Molex
@@ -319,7 +351,7 @@ Next up:
 | User Settings Module (USM) | In Review | All P10 findings closed |
 | Encoder (ENC) | In Review | Module redesign pending |
 | Actuation Module (AM) | **Retiring** | Circuits migrated native to Stack-Input Board; Controller-side host dock removed 2026-09-04 (DEC-100) |
-| **Cypher Board** | **Draft** | Created 2026-07-05; consolidates STA + REF + JM; J5/J6 HID interconnect redesigned 2026-08-09 (4-connector architecture, shared board-agnostic template); J1/J2 Controller dock split into power-only Molex/signal-only Samtec 2026-09-04 (DEC-098), TP1-TP12 PWM/GPCLK test pads added |
+| **Cypher Board** | **Draft** | Created 2026-07-05; consolidates STA + REF + JM; J5/J6 HID interconnect redesigned 2026-08-09 (4-connector architecture, shared board-agnostic template); J1/J2 Controller dock split into power-only Molex/signal-only Samtec 2026-09-04 (DEC-098), TP1-TP12 PWM/GPCLK test pads added; FT232H moved to 3.3V VREGIN self-powered operation 2026-09-11, 5V_USB net retired (DEC-102) |
 | **Stack-Input Board** | **Draft** | Created 2026-07-05; EXT input-side + native solenoid AM |
 | **Stack-Output Board** | **Draft** | Created 2026-07-12; J6 updated to SQT-115-01-L-D-RA (from 2BHR-30-VUA); DEC-085 |
 | **Stack-Interposer Board** | **Draft** | Created 2026-07-25; TMMH-115-01-L-D-ES J1/J2; SQT-115-01-L-D-RA mating; mirror-corrected routing note |
@@ -439,11 +471,10 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 ## Next Session Start Point
 
 Follow `.copilot/SESSION_START.md` — canonical bootstrap order.
-Then read checkpoint 190 in full (most recent), plus this file's "Current Status" section at the
-top for the full state of the reviewed Controller/Cypher dock rework and the 2026-09-11 todo
-re-prioritisation. **Start with `jdb-ft232h-3v3-vregin`**, then
-`cypher-input-led-independent-rgb-pwm-review` (see the confirmed next-task order above) — no
-pending user-review gate is currently open.
+Then read checkpoint 191 in full (most recent), plus this file's "Current Status" section at the
+top for the full state of the completed FT232H 3.3V VREGIN change. **Start with the User Settings
+Module review** (user-requested, not yet scoped), then `cypher-input-led-independent-rgb-pwm-review`
+(see the confirmed next-task order above) — no pending user-review gate is currently open.
 
 The old wiring-notes draft `.copilot/todos/merge-create-cypher-output.md` has been archived to
 `.recycle-bin/` (the actual implemented architecture differed in several ways from that early

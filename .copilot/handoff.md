@@ -7,6 +7,64 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
+**2026-09-11 session update (checkpoint 191):** `jdb-ft232h-3v3-vregin` is now **done**.
+Investigation found the todo's referenced part number (`FT232HPQ-TRAY`) was actually FTDI's
+unrelated "HP" USB Type-C/Power-Delivery chip family, not a Rev C variant of the plain FT232H — no
+part substitution was needed. The already-specified `FT232HL-REEL` already supports 3.0–3.6V
+`VREGIN` on Rev C silicon (current production stock by default). Implementing this also surfaced
+and fixed a genuine pre-existing defect: Cypher's `5V_USB` net was a phantom/stale leftover from
+the pre-merge JTAG Daughterboard architecture, never actually present on the current post-DEC-098
+dock. DEC-102 created.
+
+**What changed:**
+
+1. `Cypher/Design_Spec.md §5` — `VREGIN` (pin 40) and `VCCD` (pin 39, now an explicit trace, not
+   previously wired) both moved to `3V3_ENIG`; the `5V_USB` net and its entry filter (`C27`)
+   removed entirely; FR-CYP-01/DR-CYP-08 updated; new DR-CYP-11 added.
+2. `Power_Budgets.md` — FT232H's full 100 mA consolidated onto `3V3_ENIG` (was split 10 mA
+   `3V3_ENIG` / 100 mA `5V_MAIN` via the retired `5V_USB` net). `3V3_ENIG` typical total
+   2,193 mA → 2,283 mA (headroom 27% → 24%); `5V_MAIN` total 10.79 A → 10.69 A (utilisation
+   89.9% → 89.1%).
+3. New DEC-102 + `Design_Log/index.md` and `directives/tertiary.md` DEC counter updated (now 103).
+
+**Review follow-up (same "current design only" violation class as prior sessions) — the user
+caught several more contrastive/historical sentences, all fixed inline:**
+
+- `Cypher/Design_Spec.md §5`: removed "becomes an input... not self-generated as it would be in
+  5V mode", "bypass/pass-through mode rather than 5V-to-3.3V regulation", and a trailing
+  "unaffected by the VREGIN rail choice... both reference designs require..." comparison.
+- `Cypher/Design_Spec.md` DR-CYP-11: removed the same "not self-generated... under 5V VREGIN"
+  parenthetical.
+- `Power_Budgets.md` 3V3_ENIG table row: removed "no 5V rail required" (redundant inside a table
+  already scoped to 3V3_ENIG).
+- `Power_Budgets.md` 5V_MAIN scope note: removed the "FT232H draws no 5V_MAIN... fully
+  self-powered" sentence (a consumer table doesn't need to justify an absence).
+- `Power_Budgets.md` LED margin note: replaced an "Updated 2026-09-11: FT232H's 0.1 A moved off
+  5V_MAIN..." narrative with a plain statement of the current 89.1% figure, pointing to
+  `Document History` for the change trail instead.
+
+**Next session — start here:** the user has requested a **User Settings Module review** before
+continuing to the LED/PWM task — they have changes in mind that may impact Cypher, Cypher-Input,
+and Cypher-Output. This has not yet started; scope is not yet defined. Once resolved, resume:
+
+1. `cypher-input-led-independent-rgb-pwm-review` — independent per-channel RGB PWM + LED part
+   reconsideration; feeds directly into the planned Mock Keyboard test rig.
+2. `cpld-production-replacement` — MAX10 FPGA discussion.
+3. `footprint-requests-pending` — alongside the final BOM sweep.
+4. `system-assembly-harnesses` / `system-config-variants-diagrams` — after the above.
+
+**Explicitly out of scope (standing rule, unchanged):** `Mechanical/Keyboard_Assembly`,
+`Lightboard_Assembly`, `Plugboard_Assembly`, `Boards_Overview.md`, `System_Architecture.md`, and
+`Consolidated_BOM.md` all remain deferred until the full electronics design merge is complete and
+signed off — do not touch as side effects of other work.
+
+See `plan.md`'s "Current Status" section, and **checkpoint 191**
+(`191-ft232h-3v3-vregin-self-powered-5v-usb-retired.md`), for the fully detailed writeup.
+
+---
+
+## Previous session (2026-09-04 through 2026-09-11, checkpoint 190 — Controller/Cypher dock rework reviewed & approved; v2.0 items re-prioritised)
+
 **2026-09-11 session update:** the user completed their review of the 2026-09-04 Controller/
 Cypher dock rework (`merge-ctl-dock-usb-allocation` / `merge-update-ctl-board`, DEC-098/099/100)
 and it is now **fully done and approved** — no pending review gate remains. Four small follow-up
@@ -53,16 +111,6 @@ todos.
   the user is not confident in the currently-selected RGB LED part (SK6812MINI-E candidate) either.
 - `footprint-requests-pending` — rescheduled (note only, no dependency change) to run alongside
   `post-merge-final-design-bom-sweep` rather than as a standalone earlier task.
-
-**Confirmed next-task order:**
-
-1. `jdb-ft232h-3v3-vregin` — Rev C FT232H 3V3 VREGIN; now native to Cypher's `U17` USB-JTAG
-   bridge (`Cypher/Design_Spec.md §5`), not a separate JTAG Module.
-2. `cypher-input-led-independent-rgb-pwm-review` — independent per-channel RGB PWM + LED part
-   reconsideration; feeds directly into the planned Mock Keyboard test rig.
-3. `cpld-production-replacement` — MAX10 FPGA discussion.
-4. `footprint-requests-pending` — alongside the final BOM sweep.
-5. `system-assembly-harnesses` / `system-config-variants-diagrams` — after the above.
 
 **Explicitly out of scope (standing rule, unchanged):** `Mechanical/Keyboard_Assembly`,
 `Lightboard_Assembly`, `Plugboard_Assembly`, `Boards_Overview.md`, `System_Architecture.md`, and

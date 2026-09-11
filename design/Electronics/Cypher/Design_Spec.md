@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-08
+**Last Updated:** 2026-09-11
 
 ## 1. Overview
 
@@ -47,7 +47,7 @@ signal-only).
 | FR-REF-03 | Return TTD_RETURN from the end of the chain to the JTAG bridge | J4 → R50 (22 Ohm) → FT232H U17 TDO | §4 Signal Turnaround; BOM R50, U17 |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | R50 = 22 Ohm 0603 series resistor on TTD_RETURN | §4 Signal Turnaround; BOM R50 |
 | FR-REF-05 | Protect J4 (Stack-Output/REF-side) stacking connector from ESD during live mini-stack swap | J4 carries TTD_RETURN + ENC return signals; accessible during hot-swap | §8 Thermal & ESD; BOM U13–U16 |
-| FR-CYP-01 | Provide USB-to-JTAG bridge for programming all 37 CPLDs in the system | FT232H in MPSSE mode; USB D+/D- via CTL signal dock `J2` to CM5 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
+| FR-CYP-01 | Provide USB-to-JTAG bridge for programming all 37 CPLDs in the system | FT232H in MPSSE mode, self-powered from `3V3_ENIG`; USB D+/D- via CTL signal dock `J2` to CM5 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
 | FR-CYP-02 | Interface with up to 6 Rotor Mini-Stacks via keyed stacking connectors | J3 = Stack-Input/STA-side; J4 = Stack-Output/REF-side | §6 Interconnects; BOM J3, J4 |
 | FR-CYP-03 | Interface with Cypher-Input and Cypher-Output boards | J5/J6 = shared HID interconnect, mates whichever board is closest to this board (either order supported); see `Board_Layout.md §4` | §6 Interconnects; BOM J5, J6 |
 | FR-CYP-04 | Host 4 ENC module mounts on the back face for plugboard-role encoder modules | DF40C Hirose BtB receptacle sets | §6 Interconnects; BOM J7–J18 |
@@ -88,9 +88,10 @@ signal-only).
 | DR-CYP-05 | Cypher-Input and Cypher-Output connectors | J5 (left, power + LED broadcast + `BOARD_ROLE_ID[3:0]`), J6 (right, JTAG chain-through) = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT — matches the J3/J4 hub-side pattern); mates whichever HID board's top (right-angle male, QTS-025-01-L-D-RA-P) pair is closest — either order supported; pin mapping `Board_Layout.md §4` | §6 Interconnects; BOM J5, J6 |
 | DR-CYP-06 | ENC module mounts (x4 on back face) | J7–J9, J10–J12, J13–J15, J16–J18 = DF40C-90DS + DF40C-24DS + DF40C-10DS per mount (Hirose 0.4mm pitch) | §6 Interconnects; BOM J7–J18 |
 | DR-CYP-07 | Spade blade terminal bank on back face | Keystone 1285-ST (6.35mm PCB vertical THT); 64 per ENC mount position x 4 = 256 total; RefDes J20+ (arrangement TBD at schematic time) | §6 Interconnects; BOM J20+ |
-| DR-CYP-08 | USB-JTAG bridge | U17 = FT232HL-REEL LQFP-48 (MPSSE mode); U18 = SN74LVC2G125DCUR VSSOP-8; Y1 = 435F12012IET 12MHz SMD-5032 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
+| DR-CYP-08 | USB-JTAG bridge | U17 = FT232HL-REEL LQFP-48 (MPSSE mode; Rev C silicon, self-powered from `3V3_ENIG` via `VREGIN` — see DR-CYP-11); U18 = SN74LVC2G125DCUR VSSOP-8; Y1 = 435F12012IET 12MHz SMD-5032 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
 | DR-CYP-09 | Controller dock split by electrical function | `J1` (power-only Molex) and `J2` (signal-only Samtec) replace the former single hybrid dock pair; `J1` carries zero signal contacts, `J2` carries zero power rails. See DEC-098. | §6 Interconnects; BOM J1, J2 |
 | DR-CYP-10 | PWM/GPCLK test pads | TP1-TP6 = bare copper test-pad loops for `PWM0[0-3]` + `GPCLK[0]`/`GPCLK[1]` (one per signal, received from CTL `J2`); TP7-TP12 = paired `GND` test-pad loops, one adjacent to each signal pad. No BOM entry (bare copper feature, no component). No active devices populated at this time; any future use requires local buffering per DEC-022 precedent. See DEC-099. | §6 Interconnects; Board_Layout.md §1 |
+| DR-CYP-11 | FT232H 3.3V VREGIN self-powered architecture | U17 (FT232HL-REEL, Rev C silicon) powered entirely from `3V3_ENIG`: `VREGIN` (pin 40) and `VCCD` (pin 39, an input) both tied to `3V3_ENIG`, alongside the existing `VCCIO`/`VPLL`/`VPHY` connections. No 5V rail required anywhere in the USB-JTAG bridge. See DEC-102. | §5 USB-JTAG Bridge; BOM U17 |
 
 ### Component Block Diagram
 
@@ -137,7 +138,7 @@ flowchart TD
     J16J18["J16-J18 DF40C\nMount 4 — PLG_PASS2_ENC"]
   end
 
-  J1 -- "5V_USB to FT232H VCC" --> U17
+  J1 -- "3V3_ENIG (VREGIN + VCCD) to FT232H" --> U17
   J1 -- "3V3_ENIG" --> U1
   J2 -- "USB D+/D- to CM5" --> U17
   J2 -- "I2C1 bus" --> U6U8
@@ -593,19 +594,28 @@ of the physical Reflector (Umkehrwalze) of the historical Enigma machine.
 
 ### Power Architecture
 
-- FT232H VCC = **5V_USB** from J1 dock (CTL TPS2065C-protected rail; 1.6A limit).
-- FT232H VCCIO = **3V3_ENIG** from J1 dock (sets JTAG signal voltage to match CPLD I/O).
-- FT232H VBUS tied to 5V_USB (always-on; USB to CM5 is internal — no VBUS monitoring).
-- C27 (4.7uF, 1210): 5V_USB entry filter.
+FT232H U17 operates entirely from **3V3_ENIG** — no 5V rail is required anywhere on this board's
+USB-JTAG bridge (Rev C silicon; see DR-CYP-11):
+
+- **VREGIN** (pin 40): **3V3_ENIG** from J1 dock.
+- **VCCD** (pin 39): an input, tied directly to **3V3_ENIG**, alongside VCCIO/VPLL/VPHY.
+- **VCCIO** (pins 12/24/46), **VPLL** (pin 8), **VPHY** (pin 3): all **3V3_ENIG** (sets JTAG
+  signal voltage to match CPLD I/O).
+- **VCCA** (pin 37), **VCORE** (pin 38): driven by the FT232H's internal 1.8V LDO output (derived
+  from VREGIN); no external supply connection.
 - C28–C36 (9x 100nF 0402): per-IC bypass — one per FT232H supply pin (VCCA, VCORE, VCCD,
   VCCIOx3, VPLL, VPHY) + JTAG buffer U18 VCC bypass.
+- FT232H operates in USB self-powered mode (EEPROM configured accordingly). The FT232H's
+  `PWRSAV#`/`ACBUS7` self-powered VBUS-loss detection feature is not used — USB is entirely
+  internal between this board and the CM5 (no external cable/connector), so there is no real
+  VBUS-loss condition to detect.
 
 ### USB Connectivity
 
 USB D+/D- route from FT232H U17 via J2 CTL signal dock (Samtec QTS-025-01-L-D-RA-P) through the
 Controller Board PCB to the CM5 USB 2.0 port. USB connection is entirely internal; no USB-C connector on
-this board. FT232H operates in self-powered USB mode. CM5 enumerates FT232H on Linux boot via
-`ftdi_sio`; no board-side power sequencing required.
+this board. CM5 enumerates FT232H on Linux boot via `ftdi_sio`; no board-side power sequencing
+required.
 
 ### JTAG Signal Conditioning
 
@@ -810,7 +820,6 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | C1-C8, C14-C21, C28-C36 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | CPLD bypass (C1-C8, C14-C21); FT232H per-IC bypass (C28-C36) | ✔ | ✔ | 25 |
 | C9-C13, C22-C26 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | Bulk entry decoupling at J1 (5V_MAIN and 3V3_ENIG) | ✔ | ✔ | 10 |
-| C27 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | FT232H 5V_USB entry filter | ✔ | ✔ | 1 |
 | C37, C38 | 33pF C0G/NP0 0402 crystal-load | C0402C330J5GAUTO | Kemet | 399-12979-1-ND | 80-C0402C330J5GAUTO | C2169327 | - | Y1 crystal load caps; C_L = 20pF | ✔ | ✔ | 2 |
 | J1 | 5-pwr+15-sig press-fit hybrid plug | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | - | Global sourcing | Power-only CTL dock: 5x GND (power-pitch), 8x 5V_MAIN + 7x 3V3_ENIG (signal-pitch). Mating CTL receptacle 2195630015. | ✔ | Pending | 1 |
 | J2 | 50-contact 0.635mm right-angle male SMT | QTS-025-01-L-D-RA-P | Samtec | QTS-025-01-L-D-RA-P-ND | 200-QTS02501LDRAP | C7267889 | - | Signal-only CTL dock: USB D+/D-, I2C, PWM/GPCLK reserved. Mating CTL receptacle QSS-025-01-L-D-A-GP-K. Same part as Cypher-Input/Cypher-Output J4/J5. | ✔ | ✔ | 1 |

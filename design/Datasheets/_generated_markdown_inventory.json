@@ -132,6 +132,11 @@
       "mapping_type": "same_stem"
     },
     {
+      "pdf": "FT232HPQ-Information.pdf",
+      "markdown": "FT232HPQ-Information.md",
+      "mapping_type": "same_stem"
+    },
+    {
       "pdf": "Glenair_03232018_807_216-3045547-datasheet.pdf",
       "markdown": "Glenair-807-216-datasheet.md",
       "mapping_type": "manual"
@@ -647,7 +652,10 @@
       "mapping_type": "same_stem"
     }
   ],
-  "pdf_only": [],
+  "pdf_only": [
+    "FT233HP-Datasheet.pdf",
+    "Switchcraft-12A-datasheet.pdf"
+  ],
   "markdown_only": [
     "9774035151R-standoff-datasheet.md",
     "Gadgetskingdom_DPDT_Keyboard_Switch_Pseudo_Datasheet.md",
