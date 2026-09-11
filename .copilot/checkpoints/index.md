@@ -194,3 +194,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 187 | Cypher-Output complete; TTD rename & I2C passthrough fixed | 187-cypher-output-complete-ttd-rename-i2c-passthrough-fixed.md |
 | 188 | Cypher-Plugboard Board complete | 188-cypher-plugboard-complete.md |
 | 189 | Cypher J3/J4 pinouts complete; ACTUATE_REQUEST signal path fully defined; connector ownership corrected (DEC-090 through DEC-097) | 189-cypher-j3j4-complete-actuate-request-path-defined-connector-ownership-fixed.md |
+| 190 | Controller/Cypher dock rework complete & user-reviewed; INA219 address aligned; v2.0 todos re-prioritised (DEC-098 through DEC-101) | 190-controller-cypher-dock-rework-reviewed-ina219-aligned-v2-todos-reprioritised.md |

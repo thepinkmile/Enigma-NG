@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-02
+**Last Updated:** 2026-09-04
 
 > **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
 > component rationale belong in `Design_Spec.md`. This file contains connector pinout references
@@ -25,13 +25,66 @@
 
 ---
 
-## 1. J1 / J2 — Controller Dock (Molex 2195620015)
+## 1. J1 / J2 — Controller Dock (Power-Only Molex / Signal-Only Samtec)
 
-> **Connector Definition Owner:** `Controller/Board_Layout.md`.
-> This board uses the plug (Molex 2195620015) mating with the CTL receptacle (Molex 2195630015).
+> **Connector Definition Owner:** `Controller/Board_Layout.md §2`/§3`.
+> `J1` uses the plug (Molex 2195620015) mating with the CTL receptacle (Molex 2195630015).
+> `J2` uses the right-angle male plug (Samtec QTS-025-01-L-D-RA-P) mating with the CTL vertical
+> female receptacle (Samtec QSS-025-01-L-D-A-GP-K). See DEC-098.
 
-- **J1:** 5V-biased power dock. 4x 5V_MAIN blades, 1x GND blade, USB D+/D- (TBD pin allocation).
-- **J2:** Logic dock. 4x 3V3_ENIG blades, 1x GND blade; JTAG (TCK, TMS, TDI, TTD_RETURN), I2C (SDA, SCL).
+### J1 — Power-Only Dock (Molex 2195620015)
+
+Zero signal contacts.
+
+| Contact type | Allocation | Notes |
+| :--- | :--- | :--- |
+| Power-pitch (5x, big pins) | `5 x GND` | `GND` mates first on the larger, more robust contacts |
+| Signal-pitch (8x) | `8 x 5V_MAIN` | 4.5A/contact rating — 36A theoretical capacity |
+| Signal-pitch (7x) | `7 x 3V3_ENIG` | 4.5A/contact rating — 31.5A theoretical capacity |
+
+### J2 — Signal-Only Dock (Samtec QTS-025-01-L-D-RA-P)
+
+Zero power rails. 50 contacts: 2 center-GND-bar (1/row) + 24 usable pins/row. Pin numbering:
+column Cn, top pin = 2n-1, bottom pin = 2n. **Note:** the connector's internal ground wedge runs
+the full connector length between the top (odd) and bottom (even) pin rows — top/bottom crosstalk
+within a column is inherently shielded; the exposure to guard against is column-to-column
+(same-row) adjacency, hence the `GND` separator columns below. Full pin map matches
+`Controller/Board_Layout.md §3.2` exactly (this board carries the mating plug of the same net map).
+
+| Top Row Signal | Top Pin# | Bottom Pin# | Bottom Row Signal |
+| :--- | :---: | :---: | :--- |
+| GND | 1 | 2 | GND |
+| **PWM0[0]** | 3 | 4 | GND |
+| GND | 5 | 6 | **PWM0[1]** |
+| **PWM0[2]** | 7 | 8 | GND |
+| GND | 9 | 10 | **PWM0[3]** |
+| GND | 11 | 12 | GND |
+| GND | 13 | 14 | GND |
+| **GPCLK[0]** | 15 | 16 | **GPCLK[1]** |
+| GND | 17 | 18 | GND |
+| GND | 19 | 20 | GND |
+| **USB_D_PLUS** | 21 | 22 | **USB_D_MINUS** |
+| GND | 23 | 24 | GND |
+| GND (bar) | 25 | 26 | GND (bar) |
+| GND | 27 | 28 | GND |
+| GND | 29 | 30 | GND |
+| **I2C1_SDA** (Bank 1, Cypher peripherals — existing) | 31 | 32 | **I2C1_SCL** (Bank 1, existing) |
+| GND | 33 | 34 | GND |
+| **I2C2_SDA** (Bank 2, future — NC) | 35 | 36 | **I2C2_SCL** (Bank 2, future — NC) |
+| GND | 37 | 38 | GND |
+| **I2C3_SDA** (Bank 3, future — NC) | 39 | 40 | **I2C3_SCL** (Bank 3, future — NC) |
+| GND | 41 | 42 | GND |
+| **I2C4_SDA** (Bank 4, future — NC) | 43 | 44 | **I2C4_SCL** (Bank 4, future — NC) |
+| GND | 45 | 46 | GND |
+| **I2C6_SDA** (Bank 6, spare/HID-future — NC) | 47 | 48 | **I2C6_SCL** (Bank 6, spare/HID-future — NC) |
+| GND | 49 | 50 | GND |
+
+> **Note:** `I2C0` (PM-dedicated bus) is **not** present on this connector — it is routed
+> exclusively via the Controller's `J3` to the Power Module. `I2C2`/`I2C3`/`I2C4`/`I2C6` are
+> reserved for future expansion (see DEC-099) and are NC on this board; `PWM0[0-3]` and
+> `GPCLK[0]`/`GPCLK[1]` are also reserved and are wired only to the bare test-pad loops
+> (`TP1`-`TP6`, each paired with a `GND` test-pad loop `TP7`-`TP12`) defined below — see
+> `Design_Spec.md DR-CYP-10`.
 
 ---
 
@@ -234,7 +287,7 @@ pin internally is defined in that board's own `Design_Spec.md`.
 > `CPLD_RESET_N` uses only the top-row pin (23) — a single instance is sufficient since it is a
 > broadcast/unchained signal; the bottom-row pin at this column (24) is reassigned to
 >
-> `ENC_ACTIVE_INPUT_N` (this board's own internal net name — see `Design_Spec.md §3` I2C-1 Bus
+> `ENC_ACTIVE_INPUT_N` (this board's own internal net name — see `Design_Spec.md §3` I2C1 Bus
 > Devices / U6).
 
 ### Cypher Board's own wiring at J6
@@ -246,7 +299,7 @@ pin internally is defined in that board's own `Design_Spec.md`.
 | 17-22 — GND | Tied to GND |
 | 23 — `CPLD_RESET_N` | Broadcast from the JTAG Hub (see `Design_Spec.md §3`) |
 | 24 — `ENC_ACTIVE_INPUT_N` | → I2C GPIO expander (U6), matching the existing `ENC_ACTIVE_INPUT_N` net (GPA[6]) — so the system knows when a key has been depressed, to trigger any initial rotor actuations |
-| 27/28 — `I2C_SDA`/`I2C_SCL` | Part of the I2C-1 bus (shared with U6/U7/U8 and U2) |
+| 27/28 — `I2C_SDA`/`I2C_SCL` | Part of the `I2C1` bus (shared with U6/U7/U8 and U2) |
 | 29-32 — GND | Tied to GND |
 | 36 — `TTD_HID_PASS` | NC |
 | 37 — `TTD_HID_IN` | TDI — driven from FT232H (U17) MPSSE TDI (AD1); this is the chain's TDI source |
@@ -302,6 +355,27 @@ see `Design_Spec.md §6 J20+` and `§11 BOM`. General location is the bottom edg
 arrangement within that region is TBD at schematic/layout time. Wired via external spade-to-spade
 jumper cables directly to the physical plugboard patch jacks, which are mounted (mechanically
 only, no electrical connection) on the Plugboard board - see DEC-088.
+
+---
+
+## 8. TP1–TP12 — PWM/GPCLK Test Pad Loops (back face)
+
+Bare copper test-pad loops (no component, no BOM entry) receiving the reserved `PWM0[0-3]` and
+`GPCLK[0]`/`GPCLK[1]` signals from Controller `J2` (see §1). Each signal pad is paired with an
+adjacent `GND` test-pad loop for convenient scope/multimeter probing. No active devices are
+populated; see `Design_Spec.md DR-CYP-10`.
+
+| RefDes | Signal | Paired GND RefDes |
+| :--- | :--- | :--- |
+| TP1 | `PWM0[0]` | TP7 |
+| TP2 | `PWM0[1]` | TP8 |
+| TP3 | `PWM0[2]` | TP9 |
+| TP4 | `PWM0[3]` | TP10 |
+| TP5 | `GPCLK[0]` | TP11 |
+| TP6 | `GPCLK[1]` | TP12 |
+
+Exact physical placement is TBD at schematic/layout time; general location is the back face,
+away from the high-speed JTAG/ENC signal routing at J3/J4.
 
 ---
 

@@ -294,7 +294,7 @@ Applicable to: STA, EXT (chassis holes MH1–MH4), REF.
 | :--- | :--- | :--- |
 | AM | Asymmetric 4-hole pattern for single-orientation keying: MH1 (top-left) and MH3 (bottom-left) at 7 mm from left edge and 7 mm from top/bottom edges; MH2 (top-right) and MH4 (bottom-right) at 7 mm from right edge and **12 mm** from top/bottom edges. NPTH M2.5, GND only (not GND_CHASSIS). | `DR-AM-03`; DEC-057 |
 | ROT | Circular board — excluded from both patterns; mounting holes positioned on an inscribed pattern defined by board-specific DR. | `DR-ROT-08`; `Rotor/Board_Layout.md §9` |
-| CTL | Multiple hole groups: chassis holes MH1–MH4 (Pattern A, M3 PTH, GND_CHASSIS), AM dock standoffs MH5–MH8 (M2.5×3.5mm), JM dock standoffs MH9–MH12 (M2.5×3.5mm), CM5 SoM standoffs MH13–MH16 (M2.5×4mm). Each group is defined by its own DR. | `Controller/Design_Spec.md §8`; `DR-CTL-21` |
+| CTL | Multiple hole groups: chassis holes MH1–MH4 (Pattern A, M3 PTH, GND_CHASSIS), CM5 SoM standoffs MH13–MH16 (M2.5×4mm). Each group is defined by its own DR. | `Controller/Board_Layout.md §8`; `DR-CTL-18` |
 | JM | Daughterboard (NPTH M2.5, GND only — not GND_CHASSIS); mounting hardware owned by and specified in the Controller Board BOM (MH9–MH12). | `DR-JM-18`; DEC-057 |
 
 ## 5. Single-Point GND ↔ GND_CHASSIS Bond (Global Rule)

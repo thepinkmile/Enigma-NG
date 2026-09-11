@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-02
+**Last Updated:** 2026-09-08
 
 ## 1. Overview
 
@@ -21,7 +21,8 @@ consolidated 6-layer PCB, and hosts the USB-JTAG programming bridge for the syst
 
 Rotor Mini-Stacks attach to the Cypher Board via keyed Samtec QSS-025 vertical female
 connectors (J3 and J4). Cypher-Input and Cypher-Output boards chain from J5 and J6. The
-Controller Board connects via Molex hybrid dock connectors (J1 and J2).
+Controller Board connects via a split power/signal dock pair (Molex `J1`, power-only; Samtec `J2`,
+signal-only).
 
 ### Functional Requirements
 
@@ -33,12 +34,12 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | FR-STA-04 | Receive TTD_RETURN from the end of the rotor chain and deliver it to the JTAG bridge | Via J4 (Stack-Output/REF-side) → R50 → FT232H U17 TDO | §4 Signal Turnaround; BOM J4, R50, U17 |
 | FR-STA-05 | Interface with ENC modules for all cipher pipeline roles | 4x back-face DF40C mounts for plugboard passes (J7–J18); J5/J6 for HID (Cypher-Input / Cypher-Output, either order) | §6 Interconnects; BOM J5–J18 |
 | FR-STA-06 | Host a CPLD in the "static" portion of the system JTAG chain (after the 4 Plugboard Encoder Modules, before the Rotor stack) | Intel MAX II EPM570T100I5N (570 LEs); device 7 of 37 | §3 CPLD; BOM U1 |
-| FR-STA-07 | Connect to the Controller Board via two hybrid blind-mate dock connectors | J1 = 5V power dock + USB D+/D-; J2 = logic dock | §6 Interconnects; BOM J1, J2 |
+| FR-STA-07 | Connect to the Controller Board via two docks split by electrical function | `J1` = power-only Molex dock (5V_MAIN, 3V3_ENIG, GND); `J2` = signal-only Samtec dock (USB D+/D-, I2C, PWM/GPCLK reserved) | §6 Interconnects; BOM J1, J2 |
 | FR-STA-08 | Select the active plugboard routing configuration from the User Settings Module via I2C | CFG_ROUTE[3:0] via U8 GPA[3:0]; 13 valid configurations (indices 0–12); indices 13–15 reserved | §3 Configuration Bank 1; BOM U8 |
 | FR-STA-09 | Select and apply a stored reflector substitution map at the reflection boundary | CM5 writes the active map index directly into the CPLD via the existing JTAG chain (UFM in-system write) at configuration-apply time - no dedicated parallel GPIO bus; 21 pre-loaded maps | §3 Configuration Bank 2; BOM U1 |
-| FR-STA-10 | Provide I2C GPIO expansion for CM5 virtual keypress, HID monitoring, ENC service-bus monitoring, CPLD_RESET_N management, and CPLD configuration driving | Three MCP23017 expanders U6, U7, U8 on I2C-1 bus | §3 I2C Devices; BOM U6–U8 |
+| FR-STA-10 | Provide I2C GPIO expansion for CM5 virtual keypress, HID monitoring, ENC service-bus monitoring, CPLD_RESET_N management, and CPLD configuration driving | Three MCP23017 expanders U6, U7, U8 on `I2C1` bus | §3 I2C Devices; BOM U6–U8 |
 | FR-STA-11 | Select between the physical keyboard source and CM5 virtual key source before the cipher pipeline | 7-channel 2:1 mux (U4/U5); KEY_CM5_ACTIVE selects source | §3 External Keyboard Source Mux; BOM U4, U5 |
-| FR-STA-12 | Connect to the User Settings Module via I2C-1 bus | J19 = 6-pin JST PH 2.0mm harness | §6 Interconnects; BOM J19 |
+| FR-STA-12 | Connect to the User Settings Module via `I2C1` bus | J19 = 6-pin JST PH 2.0mm harness | §6 Interconnects; BOM J19 |
 | FR-STA-13 | Protect J3 (Stack-Input/STA-side) stacking connector from ESD during live mini-stack swap | J3 carries JTAG + ENC + actuation-request signals; accessible during hot-swap | §8 Thermal & ESD; BOM U9–U12, U19 |
 | FR-STA-14 | Verify the ACTUATE_REQUEST round-trip signal completes correctly, as a system self-test | CPLD U1 reads ACTUATE_REQUEST_OUT_N (J3 pin 35) and compares it against the originally-issued ACTUATE_REQUEST_IN_N | §3 Actuation Request Chain; BOM R51 |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | End-of-chain turnaround via J4 (Stack-Output/REF-side) | §4 Signal Turnaround; BOM J4 |
@@ -46,11 +47,12 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | FR-REF-03 | Return TTD_RETURN from the end of the chain to the JTAG bridge | J4 → R50 (22 Ohm) → FT232H U17 TDO | §4 Signal Turnaround; BOM R50, U17 |
 | FR-REF-04 | Provide end-of-chain JTAG signal damping | R50 = 22 Ohm 0603 series resistor on TTD_RETURN | §4 Signal Turnaround; BOM R50 |
 | FR-REF-05 | Protect J4 (Stack-Output/REF-side) stacking connector from ESD during live mini-stack swap | J4 carries TTD_RETURN + ENC return signals; accessible during hot-swap | §8 Thermal & ESD; BOM U13–U16 |
-| FR-CYP-01 | Provide USB-to-JTAG bridge for programming all 37 CPLDs in the system | FT232H in MPSSE mode; USB D+/D- via CTL dock J1 to CM5 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
+| FR-CYP-01 | Provide USB-to-JTAG bridge for programming all 37 CPLDs in the system | FT232H in MPSSE mode; USB D+/D- via CTL signal dock `J2` to CM5 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
 | FR-CYP-02 | Interface with up to 6 Rotor Mini-Stacks via keyed stacking connectors | J3 = Stack-Input/STA-side; J4 = Stack-Output/REF-side | §6 Interconnects; BOM J3, J4 |
 | FR-CYP-03 | Interface with Cypher-Input and Cypher-Output boards | J5/J6 = shared HID interconnect, mates whichever board is closest to this board (either order supported); see `Board_Layout.md §4` | §6 Interconnects; BOM J5, J6 |
 | FR-CYP-04 | Host 4 ENC module mounts on the back face for plugboard-role encoder modules | DF40C Hirose BtB receptacle sets | §6 Interconnects; BOM J7–J18 |
 | FR-CYP-05 | Carry spade blade terminal bank on the back face for jack plug harnesses | Keystone 1285-ST; 64 per ENC mount position × 4 = 256 total | §6 Interconnects; BOM J20+ |
+| FR-CYP-06 | Provide bare test-pad access to reserved CM5 PWM and GPCLK channels for future peripheral use | 4x `PWM0` channels + `GPCLK[0]`/`GPCLK[1]` from CTL signal dock `J2`, terminated at bare test-pad loops (no active devices populated) | §6 Interconnects; BOM TP1-TP12 |
 
 ### Design Requirements
 
@@ -60,7 +62,7 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | DR-STA-02 | Layer mapping | L1 Signal/front face, L2 GND, L3 Inner signal (CI), L4 Power, L5 GND, L6 Signal/back face — per `design/Standards/Global_Routing_Spec.md §2.3.4` | §9 PCB Fabrication & Stackup |
 | DR-STA-03 | Stack-Input / STA-side rotor interface | J3 = QSS-025-01-L-D-A-GP-K (50-contact vertical female); pin mapping owned by `Stack-Input/Board_Layout.md §1` (IC-STA-CHAIN, DEC-094) | §6 Interconnects; BOM J3 |
 | DR-STA-04 | ENC module and HID board interfaces | J5/J6 = QSS-025-01-L-D-A-GP-K (shared HID interconnect, vertical female — mates whichever of Cypher-Input/Cypher-Output is closest, either order); J7–J18 = DF40C-xDS sets (4x plugboard passes) | §6 Interconnects; BOM J5–J18 |
-| DR-STA-06 | Controller dock connectors | J1 = Molex 2195620015 (5V power dock + USB D+/D-); J2 = Molex 2195620015 (logic dock); mating CTL receptacle = Molex 2195630015 | §6 Interconnects; BOM J1, J2 |
+| DR-STA-06 | Controller dock connectors | J1 = Molex 2195620015 (power-only plug: 5x GND power-pitch, 8x 5V_MAIN + 7x 3V3_ENIG signal-pitch); J2 = Samtec QTS-025-01-L-D-RA-P (signal-only plug: USB D+/D-, I2C, PWM/GPCLK reserved); mating CTL receptacles = Molex 2195630015 (J1) / Samtec QSS-025-01-L-D-A-GP-K (J2). See DEC-098. | §6 Interconnects; BOM J1, J2 |
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240; 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 CPLD; BOM U1 |
 | DR-STA-08 | Power monitoring | INA219 current sensor (U2); shunt R1 = KRL6432T4-M-R010-F-T1 (10 mOhm 6432/2512 Kelvin 4-terminal) | §7 Power Telemetry; BOM U2, R1 |
 | DR-STA-09 | Maximum 3V3_ENIG load | 2.05 A worst-case typical (30 rotors + CPLD + all encoders) | §7 Power Telemetry |
@@ -87,14 +89,16 @@ Controller Board connects via Molex hybrid dock connectors (J1 and J2).
 | DR-CYP-06 | ENC module mounts (x4 on back face) | J7–J9, J10–J12, J13–J15, J16–J18 = DF40C-90DS + DF40C-24DS + DF40C-10DS per mount (Hirose 0.4mm pitch) | §6 Interconnects; BOM J7–J18 |
 | DR-CYP-07 | Spade blade terminal bank on back face | Keystone 1285-ST (6.35mm PCB vertical THT); 64 per ENC mount position x 4 = 256 total; RefDes J20+ (arrangement TBD at schematic time) | §6 Interconnects; BOM J20+ |
 | DR-CYP-08 | USB-JTAG bridge | U17 = FT232HL-REEL LQFP-48 (MPSSE mode); U18 = SN74LVC2G125DCUR VSSOP-8; Y1 = 435F12012IET 12MHz SMD-5032 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
+| DR-CYP-09 | Controller dock split by electrical function | `J1` (power-only Molex) and `J2` (signal-only Samtec) replace the former single hybrid dock pair; `J1` carries zero signal contacts, `J2` carries zero power rails. See DEC-098. | §6 Interconnects; BOM J1, J2 |
+| DR-CYP-10 | PWM/GPCLK test pads | TP1-TP6 = bare copper test-pad loops for `PWM0[0-3]` + `GPCLK[0]`/`GPCLK[1]` (one per signal, received from CTL `J2`); TP7-TP12 = paired `GND` test-pad loops, one adjacent to each signal pad. No BOM entry (bare copper feature, no component). No active devices populated at this time; any future use requires local buffering per DEC-022 precedent. See DEC-099. | §6 Interconnects; Board_Layout.md §1 |
 
 ### Component Block Diagram
 
 ```mermaid
 flowchart TD
   subgraph ctrlIface["Controller Interface"]
-    J1["J1 Molex 2195620015\nPower Dock (5V_MAIN + USB D+/D-)"]
-    J2["J2 Molex 2195620015\nLogic Dock (3V3_ENIG / JTAG / I2C)"]
+    J1["J1 Molex 2195620015\nPower-Only Dock (5V_MAIN / 3V3_ENIG / GND)"]
+    J2["J2 Samtec QTS-025-01-L-D-RA-P\nSignal-Only Dock (USB D+/D- / I2C / PWM / GPCLK)"]
   end
 
   subgraph jtagBridge["USB-JTAG Bridge"]
@@ -133,11 +137,11 @@ flowchart TD
     J16J18["J16-J18 DF40C\nMount 4 — PLG_PASS2_ENC"]
   end
 
-  J1 -- "USB D+/D- to CM5" --> U17
   J1 -- "5V_USB to FT232H VCC" --> U17
-  J2 -- "3V3_ENIG + JTAG chain entry" --> U1
-  J2 -- "I2C-1 bus" --> U6U8
-  J2 -- "I2C-1 bus" --> U2
+  J1 -- "3V3_ENIG" --> U1
+  J2 -- "USB D+/D- to CM5" --> U17
+  J2 -- "I2C1 bus" --> U6U8
+  J2 -- "I2C1 bus" --> U2
   U17 -- "TDI" --> U1
   U18 -- "TCK / TMS buffered" --> U1
   U3 --> U1
@@ -425,7 +429,7 @@ event active) and monitored through U7 for GUI / telemetry visibility.
 | `TDI` (EPM570T100I5N U1) | TTD (inbound from Mount4 TDO, DF40C Connector B) | Incoming JTAG serial data; U1 is device 7 in the chain, after the 4 Plugboard Encoder Modules |
 | `TDO` (EPM570T100I5N U1) | TTD (outbound to `J3` TTD pin) | CPLD TDO exits to the Stack-Input/STA-side connector, continuing into the Rotor mini-stack chain |
 
-### I2C-1 Bus Devices
+### I2C1 Bus Devices
 
 | Device | Ref | I2C Address | Function |
 | :--- | :--- | :--- | :--- |
@@ -534,7 +538,11 @@ connected - see §3 Configuration Bank 2.
     order above — series resistors in the R24–R29 range; exact RefDes mapping to be finalised at
     schematic capture.
 - **JTAG pull resistors (placed near U1):**
-  - R2: 10 kOhm pull-up on TTD_RETURN at J2 logic-dock boundary
+  - R2: 10 kOhm pull-up on TTD_RETURN near J4 mating edge (idle-bias for the disconnected/bench-test
+    state, e.g. Stack-Blanking Board plugged directly into J3/J4 with no mini-stacks attached;
+    mirrors the R51/ACTUATE_REQUEST_OUT_N idle-bias rationale). Not related to the Controller dock —
+    TTD_RETURN never leaves this board; the USB-JTAG bridge and full JTAG chain entry are entirely
+    native to the Cypher Board.
   - R3: 10 kOhm TMS pull-up to 3V3_ENIG (idle TAP reset)
   - R4: 10 kOhm TDI pull-up to 3V3_ENIG (holds TDI at logic-1 / BYPASS when idle)
   - R5: 10 kOhm TCK pull-down to GND (prevents spurious clocking)
@@ -586,7 +594,7 @@ of the physical Reflector (Umkehrwalze) of the historical Enigma machine.
 ### Power Architecture
 
 - FT232H VCC = **5V_USB** from J1 dock (CTL TPS2065C-protected rail; 1.6A limit).
-- FT232H VCCIO = **3V3_ENIG** from J2 dock (sets JTAG signal voltage to match CPLD I/O).
+- FT232H VCCIO = **3V3_ENIG** from J1 dock (sets JTAG signal voltage to match CPLD I/O).
 - FT232H VBUS tied to 5V_USB (always-on; USB to CM5 is internal — no VBUS monitoring).
 - C27 (4.7uF, 1210): 5V_USB entry filter.
 - C28–C36 (9x 100nF 0402): per-IC bypass — one per FT232H supply pin (VCCA, VCORE, VCCD,
@@ -594,8 +602,8 @@ of the physical Reflector (Umkehrwalze) of the historical Enigma machine.
 
 ### USB Connectivity
 
-USB D+/D- route from FT232H U17 via J1 CTL dock (Molex 2195620015) through the Controller
-Board PCB to the CM5 USB 2.0 port. USB connection is entirely internal; no USB-C connector on
+USB D+/D- route from FT232H U17 via J2 CTL signal dock (Samtec QTS-025-01-L-D-RA-P) through the
+Controller Board PCB to the CM5 USB 2.0 port. USB connection is entirely internal; no USB-C connector on
 this board. FT232H operates in self-powered USB mode. CM5 enumerates FT232H on Linux boot via
 `ftdi_sio`; no board-side power sequencing required.
 
@@ -632,10 +640,14 @@ C37, C38 (33pF C0G 0402): crystal load capacitors for Y1. Crystal specifies C_L 
 
 ### J1 / J2 — Controller Dock
 
-- **J1 (5V-biased power dock):** Molex 2195620015. 4x 5V_MAIN blades, 1x GND blade. Also carries
-  USB D+/D- from FT232H U17 to CM5. Mating CTL receptacle: Molex 2195630015.
-- **J2 (logic dock):** Molex 2195620015. 4x 3V3_ENIG blades, 1x GND blade; JTAG (TCK, TMS, TDI,
-  TTD_RETURN), I2C (SDA, SCL). Mating CTL receptacle: Molex 2195630015.
+- **J1 (power-only dock):** Molex 2195620015. Zero signal contacts — 5x `GND` (power-pitch), 8x
+  `5V_MAIN` + 7x `3V3_ENIG` (signal-pitch, 4.5A/contact rated). Mating CTL receptacle: Molex
+  2195630015.
+- **J2 (signal-only dock):** Samtec QTS-025-01-L-D-RA-P. Zero power rails — `USB_D_PLUS`/
+  `USB_D_MINUS` (to FT232H U17), `I2C1_SDA`/`SCL` (active Cypher-peripherals bus), `I2C2`/`I2C3`/
+  `I2C4`/`I2C6` `SDA`/`SCL` (reserved/NC), `PWM0[0-3]` + `GPCLK[0]`/`GPCLK[1]` (reserved, to bare
+  test pads), remaining pins `GND`. Mating CTL receptacle: Samtec QSS-025-01-L-D-A-GP-K. See
+  DEC-098.
 
 > **Pinout:** see `Board_Layout.md §1`.
 
@@ -735,8 +747,9 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 
 ## 7. Power Telemetry
 
-- **Sensor:** INA219AIDR (U2, SOIC-8) on 3V3_ENIG rail before rotor stack distribution.
-  I2C address: see `Controller/Design_Spec.md §4.1`. Minimum 15mm isolation from U1 CPLD core.
+- **Sensor:** INA219AIDR (U2, SOIC-8) on 3V3_ENIG rail before rotor stack distribution. I²C
+  address **0x40** on the `I2C1` bus (A0/A1 both tied to GND — INA219 default, no address-strap
+  components required). Minimum 15mm isolation from U1 CPLD core.
 - **Shunt:** KRL6432T4-M-R010-F-T1 (R1, 10 mOhm ±1% 2W, 6432/2512 Kelvin 4-terminal).
   Rotor rail budgeted at 1.65A (30 rotors x 55mA); 2.05A worst-case including CPLDs and
   encoders (~32% headroom vs 3.0A LDO).
@@ -750,8 +763,9 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
   of IC Vcc pin per GRS §3.2.
 - **Rail entry decoupling (Bulk Entry Bank Rule per GRS §3):**
   - C9–C13: 5x 10uF X7R 25V 1206 at J1 5V_MAIN entry.
-  - C22–C26: 5x 10uF X7R 25V 1206 at J2 3V3_ENIG entry.
-- **JTAG TTD_RETURN pull-up:** R2 (10 kOhm) at J2 logic-dock entry/exit boundary.
+  - C22–C26: 5x 10uF X7R 25V 1206 at J1 3V3_ENIG entry.
+- **JTAG TTD_RETURN pull-up:** R2 (10 kOhm) near J4 mating edge (idle-bias for the disconnected
+  state). See JTAG Hub note in §3.
 
 ## 8. Thermal & ESD
 
@@ -795,10 +809,13 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | C1-C8, C14-C21, C28-C36 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | CPLD bypass (C1-C8, C14-C21); FT232H per-IC bypass (C28-C36) | ✔ | ✔ | 25 |
-| C9-C13, C22-C26 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | Bulk entry decoupling at J1 (5V_MAIN) and J2 (3V3_ENIG) | ✔ | ✔ | 10 |
+| C9-C13, C22-C26 | 10µF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | – | Bulk entry decoupling at J1 (5V_MAIN and 3V3_ENIG) | ✔ | ✔ | 10 |
 | C27 | 4.7µF X7R 50V 1210 | CGA6P3X7R1H475K250AD | TDK | 445-10040-1-ND | 810-CGA6P3X7R1H475KD | C3877549 | - | FT232H 5V_USB entry filter | ✔ | ✔ | 1 |
 | C37, C38 | 33pF C0G/NP0 0402 crystal-load | C0402C330J5GAUTO | Kemet | 399-12979-1-ND | 80-C0402C330J5GAUTO | C2169327 | - | Y1 crystal load caps; C_L = 20pF | ✔ | ✔ | 2 |
-| J1, J2 | 5+15-pin hybrid plug | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | - | Global sourcing | CTL dock (J1: 5V_MAIN + USB D+/D-; J2: 3V3 logic) | ✔ | Pending | 2 |
+| J1 | 5-pwr+15-sig press-fit hybrid plug | 2195620015 | Molex | 900-2195620015-ND | 538-219562-0015 | - | Global sourcing | Power-only CTL dock: 5x GND (power-pitch), 8x 5V_MAIN + 7x 3V3_ENIG (signal-pitch). Mating CTL receptacle 2195630015. | ✔ | Pending | 1 |
+| J2 | 50-contact 0.635mm right-angle male SMT | QTS-025-01-L-D-RA-P | Samtec | QTS-025-01-L-D-RA-P-ND | 200-QTS02501LDRAP | C7267889 | - | Signal-only CTL dock: USB D+/D-, I2C, PWM/GPCLK reserved. Mating CTL receptacle QSS-025-01-L-D-A-GP-K. Same part as Cypher-Input/Cypher-Output J4/J5. | ✔ | ✔ | 1 |
+| TP1-TP6 | Bare copper test-pad loop | - | - | - | - | - | - | PWM0[0-3] + GPCLK[0]/GPCLK[1] test access from CTL J2. No component; no BOM entry. | - | - | 6 |
+| TP7-TP12 | Bare copper test-pad loop | - | - | - | - | - | - | GND test-pad loops, one paired with each of TP1-TP6. No component; no BOM entry. | - | - | 6 |
 | J3, J4 | 50-contact 0.635mm vertical female SMT | QSS-025-01-L-D-A-GP-K | Samtec | QSS-025-01-L-D-A-GP-K-ND | 200-QSS02501LDAGPK | C6632602 | - | Stack-Input/STA-side (J3); Stack-Output/REF-side (J4) | ✔ | ✔ | 2 |
 | J5, J6 | 50-contact 0.635mm vertical male SMT T/R | QTS-025-01-L-D-A-GP-K-TR | Samtec | QTS-025-01-L-D-A-GP-K-TR-ND | 200-QTS02501LDAGPKTR | C5714677 | - | Cypher-Input (J5); Cypher-Output (J6) | ✔ | ✔ | 2 |
 | J7, J10, J13, J16 | 90-pin 0.4mm pitch BtB receptacle | DF40C-90DS-0.4V(51) | Hirose | 26-DF40C-90DS-0.4V(51)CT-ND | 798-DF40C90DS0.4V51 | C2911197 | - | ENC mount plain-bits connector — Mounts 1/2/3/4 | ✔ | ✔ | 4 |

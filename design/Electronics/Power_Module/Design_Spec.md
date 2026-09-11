@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-22
+**Last Updated:** 2026-09-04
 
 ## 1. Overview
 
@@ -27,7 +27,7 @@ It is sequenced on only after CM5 has fully booted and explicitly enables the ro
   connectors: `J1` (regulated rails), `J2` (regulated PoE-derived auxiliary feed), and `J3`
   (low-speed control / telemetry).
   * **Provided to Controller:** `5V_MAIN`, `3V3_ENIG`, PM telemetry, `PWR_GD`, and `PWR_BUT_N`.
-  * **Received from Controller:** `VIN_POE_12V`, `I2C-1`, `PM_IO_INT_N` return path, `ROTOR_EN_N`, and `LED_PWR_N`.
+  * **Received from Controller:** `VIN_POE_12V`, `I2C0`, `PM_IO_INT_N` return path, `ROTOR_EN_N`, and `LED_PWR_N`.
   * **Cross-ref:** See `Controller/Design_Spec.md` and `Controller/Board_Layout.md` for the active dock allocation.
   * **Reference datasheets:** [`TE-1123684-7-datasheet.md`](../../Datasheets/TE-1123684-7-datasheet.md),
     [`TE-1-1674231-1-datasheet.md`](../../Datasheets/TE-1-1674231-1-datasheet.md)
@@ -72,7 +72,7 @@ It is sequenced on only after CM5 has fully booted and explicitly enables the ro
 | DR-PM-18 | 3V3_ENIG output bulk capacitor bank | A bank of 5× Samsung CL31B106KBK6PJE (10µF X7R 50V 1206) shall be placed adjacent to the J1 dock connector 3V3_ENIG output pins (C73-C77). Placement and purpose are distinct from C23 (TPS75733 LDO minimum-stability capacitor). Voltage derating: 50V rated at 3.3V = 15.2×. See DEC-068, DEC-082. | BOM C73-C77; DEC-068; DEC-082 |
 | DR-PM-19 | Per-input polyfuse protection | Each of the three power inputs (VIN_POE_12V, USB-C, Battery) shall have a Bel Fuse 0ZRB0600FF1A (6 A hold / 12 A trip, THT, AEC-Q200 qualified, ≤40 mΩ hold resistance) placed series upstream of the corresponding LM74700 OR-ing controller. F2 = VIN_POE_12V path, F3 = Battery path, F4 = USB-C path. Required for CE/UKCA compliance. F1 (AC72ABD) is the battery-cell thermal cutoff (non-PCB, welded to cell tabs) and is unaffected. See DEC-069. | BOM F2, F3, F4 (0ZRB0600FF1A); DEC-069 |
 | DR-PM-20 | TPS25751 PD profile EEPROM | U18 (M24512-RDW6TP, 64 KB SO8N) shall be connected on the U4 I2Cc bus (I2Cc_SCL ↔ U18 SCL, I2Cc_SDA ↔ U18 SDA) at I²C address 0x50 (E2=E1=E0=GND per M24512 datasheet DS6520 §2.3/Table 3, page 9). R47/R48 (4.7 kΩ to 3V3_MAIN) are the I2Cc SCL/SDA pull-ups (TPS25751 §8.3.11 requires external pull-ups to VCCIO). U18 WC pin shall be tied to GND (writes always enabled; programming is controlled via TPS25751 I2Ct protocol). C78 (100 nF, 50V X7R 0402) required on U18 VCC per DS6520 §2.6.1 (page 4). | BOM U18, R47, R48, C78; DEC-075; [TPS25751 datasheet §8.3.11, Table 8-4](../../Datasheets/tps25751-datasheet.md); [M24512 datasheet DS6520 §2.3/Table 3, §2.6.1](../../Datasheets/STM-M24512-RDW6TP-datasheet.md) |
-| DR-PM-21 | TPS25751 I2Ct field-programming interface | The I2Ct bus shall be switched via U19 (74LVC2G3157DP-Q10J dual SPDT I2C MUX). Both U19 nS pins are tied to `PROG_EN_N` (J4 pin 6, active-LOW with 10 kΩ pull-up to 3V3_MAIN). **nS=HIGH (normal operation):** U19 routes J4 SMBUS (I2Ct) → I2C-1 (SmartBattery path). **nS=LOW (programming mode):** U19 routes J4 SMBUS (I2Ct) → TPS25751 I2Ct port (0x20) for NVM profile update. R49/R50 (4.7 kΩ to 3V3_MAIN) are the I2Ct SCL/SDA pull-ups. **J6 is removed.** Programming is performed by fitting a PROG_EN_N assertion wire to J4 pin 6 per Maintenance_Guide.md §5. **Power-up safety (verified):** U19 VCC is supplied by 3V3_MAIN. Before 3V3_MAIN is available (startup steps 1-5), U19 is unpowered (VCC=0). Per 74LVC2G3157-Q100 datasheet Table 10, analog switch channels present high impedance at VCC=0 (no gate-drive path; switch transistors off); nS input leakage is ±1 μA max. The break-before-make switching characteristic prevents any momentary cross-connection during VCC ramp. No SMBUS traffic originates from J4 or the CM5 before 3V3_MAIN is available, so no inadvertent routing to TPS25751 I2Ct can occur. This power-up behaviour is confirmed safe and requires no additional protection components. | BOM U19, J4 (pin 6), R49, R50; DEC-076; [TPS25751 datasheet §8.3.11, Tables 8-4/8-5](../../Datasheets/tps25751-datasheet.md); [74LVC2G3157-Q100 datasheet Table 10](../../Datasheets/Nexperia-74LVC2G3157_Q100-datasheet.md); [Maintenance_Guide.md §5](../../Guides/Maintenance_Guide.md) |
+| DR-PM-21 | TPS25751 I2Ct field-programming interface | The I2Ct bus shall be switched via U19 (74LVC2G3157DP-Q10J dual SPDT I2C MUX). Both U19 nS pins are tied to `PROG_EN_N` (J4 pin 6, active-LOW with 10 kΩ pull-up to 3V3_MAIN). **nS=HIGH (normal operation):** U19 routes J4 SMBUS (I2Ct) → `I2C0` (SmartBattery path). **nS=LOW (programming mode):** U19 routes J4 SMBUS (I2Ct) → TPS25751 I2Ct port (0x20) for NVM profile update. R49/R50 (4.7 kΩ to 3V3_MAIN) are the I2Ct SCL/SDA pull-ups. **J6 is removed.** Programming is performed by fitting a PROG_EN_N assertion wire to J4 pin 6 per Maintenance_Guide.md §5. **Power-up safety (verified):** U19 VCC is supplied by 3V3_MAIN. Before 3V3_MAIN is available (startup steps 1-5), U19 is unpowered (VCC=0). Per 74LVC2G3157-Q100 datasheet Table 10, analog switch channels present high impedance at VCC=0 (no gate-drive path; switch transistors off); nS input leakage is ±1 μA max. The break-before-make switching characteristic prevents any momentary cross-connection during VCC ramp. No SMBUS traffic originates from J4 or the CM5 before 3V3_MAIN is available, so no inadvertent routing to TPS25751 I2Ct can occur. This power-up behaviour is confirmed safe and requires no additional protection components. | BOM U19, J4 (pin 6), R49, R50; DEC-076; [TPS25751 datasheet §8.3.11, Tables 8-4/8-5](../../Datasheets/tps25751-datasheet.md); [74LVC2G3157-Q100 datasheet Table 10](../../Datasheets/Nexperia-74LVC2G3157_Q100-datasheet.md); [Maintenance_Guide.md §5](../../Guides/Maintenance_Guide.md) |
 | DR-PM-22 | TPS25751 ADCIN startup configuration | ADCIN1 shall be tied directly to 3V3_MAIN (decoded value 7, DIV = 0.9061-1.0) and ADCIN2 shall be tied directly to GND (decoded value 0, DIV = 0-0.0228). This selects **SafeMode** startup (source-only mode, loads PD configuration from EEPROM U18 on boot - recommended when EEPROM is present per TPS25751 §8.3.6 Table 8-6) with I2Ct address Index #1 = 0x20. No resistor dividers required - direct ties to 3V3_MAIN and GND respectively. | BOM U4 (ADCIN1/ADCIN2 net assignments); DEC-075; [TPS25751 datasheet §8.3.6, Tables 8-2/8-5/8-6](../../Datasheets/tps25751-datasheet.md) |
 | DR-PM-23 | ROTOR_EN_N PM-side default-HIGH pull-up | A 10kΩ pull-up resistor (R52, ERJ-3EKF1002V) shall be fitted from `ROTOR_EN_N` to `3V3_MAIN` on the PM PCB. This ensures Q12a/Q12b (P-FET gate switch) remain OFF and `3V3_ENIG` stays de-energised during CM5 boot (between 3V3_MAIN availability and CM5 GPIO assertion). The PM shall not depend on any Controller-side pull-up for this default-safe state. The Controller Board SHALL NOT carry a pull-up on `ROTOR_EN_N` - it is an Output-only CM5 GPIO signal. | BOM R52; DEC-076 |
 | DR-PM-24 | 3V3_MAIN rail isolation - external connectors | The `3V3_MAIN` rail is a PM-internal supply only and SHALL NOT appear on any external connector. Specifically: `J1` carries `5V_MAIN` and `3V3_ENIG` only; `J2` carries `VIN_POE_12V` and GND only; `J3` carries control/telemetry signals (`I2C_SDA`, `I2C_SCL`, `PM_IO_INT_N`, `PWR_GD`, `ROTOR_EN_N`, `PWR_BUT_N`, `LED_PWR_N`, GND) only; `J4` carries battery interface signals (VBAT, GND, `BATT_PRES_N`, SMBUS SDA/SCL, `PROG_EN_N`) only; `J5` carries USB-C VBUS/GND/CC only. `3V3_MAIN` consumers are internal PM ICs: U4 (TPS25751), U18 (M24512-RDW6TP), U19 (74LVC2G3157 MUX), R47-R50 pull-ups, R51 (PROG_EN_N pull-up), and R52 (ROTOR_EN_N pull-up). **Validation:** net-list audit at schematic freeze shall confirm zero `3V3_MAIN` net connections on J1-J5 pads. | BOM U4, U18, U19, R47-R52; DEC-076 |
@@ -261,8 +261,8 @@ in design documentation and PCB net lists. These signals are the direct PM hands
   * **Sensor:** TI INA219AIDR (U10) zero-drift power monitor at I²C address **0x40**.
   * **Placement:** Inserted in the 5V_MAIN supply path on L1, downstream of the eFuse (TPS25980).
   * **Shunt:** KRL6432T4-M-R010-F-T1 (10mΩ ±1% 2W, 6432/2512 Kelvin 4-terminal) - PM R16 instance.
-    (Stator R1 is the third system shunt; total build qty: 3 - see `Power_Budgets.md`.)
-  * **Interface:** I2C-1 Telemetry Bus, directly accessible via `J3` to the Controller.
+    See `Power_Budgets.md` for the system-wide shunt build quantity.
+  * **Interface:** `I2C0` (PM-dedicated bus), directly accessible via `J3` to the Controller.
   * **Filtering:** 0.1µF VCC decoupling (C41) and RC input filter on IN+/IN-: R45 (10Ω RF1, series on IN+), R46 (10Ω RF2, series on IN-),
     C50 (100nF CF, differential across IN+/IN-); f_3dB ≈ 80kHz (differential). Suppresses PM buck switching transients (400kHz and harmonics).
     See INA219 datasheet Figure 14.
@@ -368,19 +368,19 @@ GND ------+---------------------------------------------------+---------------+-
   > EEPROM **U18** (M24512-RDW6TP, 64 KB, at I²C address **0x50** on the **I2Cc** bus; E2=E1=E0=GND
   > per M24512 datasheet DS6520 §2.3/Table 3).
   >
-  > The I2Cc bus (U4 ↔ U18) is **internal to the PM** and is not connected to system I2C-1.
+  > The I2Cc bus (U4 ↔ U18) is **internal to the PM** and is not connected to system `I2C0`.
   > The I2Ct bus (address 0x20) is accessible only via **J4 pin 6 (`PROG_EN_N`)** and
   > **U19 (74LVC2G3157DP-Q10J dual SPDT I2C MUX)**. When `PROG_EN_N` is asserted LOW,
   > U19 routes the J4 SMBUS pins to the TPS25751 I2Ct port for NVM profile update.
-  > In normal operation (`PROG_EN_N` HIGH), U19 routes J4 SMBUS to I2C-1 (SmartBattery).
-  > **J6 has been removed** - see DEC-076. **The I2Ct path is not connected to system I2C-1.**
-  > The address 0x20 conflict with system I2C-1 is irrelevant by design.
+  > In normal operation (`PROG_EN_N` HIGH), U19 routes J4 SMBUS to `I2C0` (SmartBattery).
+  > **J6 has been removed** - see DEC-076. **The I2Ct path is not connected to system `I2C0`.**
+  > The address 0x20 conflict with system `I2C0` is irrelevant by design.
   >
   > Pull-ups **R47/R48** (4.7 kΩ to 3V3_MAIN) serve the I2Cc bus (SCL/SDA); pull-ups **R49/R50**
   > (4.7 kΩ to 3V3_MAIN) serve I2Ct on the U19 I2Ct output port. U18 WC pin is tied to GND
   > (writes always enabled; programming is gated by the I2Ct interface protocol). **C78** (100 nF)
   > decouples U18 VCC per M24512 datasheet DS6520 §2.6.1. U4 is intentionally absent from the
-  > system I2C-1 address map. See
+  > system `I2C0` address map. See
   > [TPS25751 datasheet §8.3.6/§8.3.11 Tables 8-4/8-5/8-6](../../Datasheets/tps25751-datasheet.md),
   > [M24512 datasheet DS6520 §2.2/§2.3/§2.4/§2.6.1](../../Datasheets/STM-M24512-RDW6TP-datasheet.md),
   > [DR-PM-20/21/22](#design-requirements), and [Maintenance_Guide.md §5](../../Guides/Maintenance_Guide.md).
@@ -863,7 +863,7 @@ Estimated PM-local power dissipation at system peak load:
 >   Mouser: `511-M24512-RDW6TP`; DigiKey: `497-2700-1-ND` (verify before ordering);
 >   JLCPCB: global sourcing / consignment. Footprint: SO8N (150mil body, 6×4.9mm) - pending download.
 > * **U19 74LVC2G3157DP-Q10J** - Nexperia dual SPDT 2:1 I2C MUX in TSSOP-10. Both nS pins tied to `PROG_EN_N` (J4 pin 6).
->   Normal operation (nS=HIGH): J4 SMBUS → I2C-1 (SmartBattery path).
+>   Normal operation (nS=HIGH): J4 SMBUS → I2C0 (SmartBattery path).
 >   Programming mode (nS=LOW): J4 SMBUS → TPS25751 I2Ct port at 0x20 for NVM profile update.
 >   **J6 is removed per DEC-076.** See DR-PM-21 and Maintenance_Guide.md §5.
 >   Mouser: `771-4LVC2G3157DPQ10J`; DigiKey: `1727-8684-1-ND`; JLCPCB: `C548631`.

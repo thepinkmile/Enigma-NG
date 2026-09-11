@@ -4,7 +4,8 @@
 **Status:** pending
 **Category:** Electronics / Architecture Review
 **Source:** User request, 2026-08-16
-**Blocked by:** merge-final-review
+**Blocked by:** None — dependency on `merge-final-review` removed 2026-09-11 (user wants to pick
+this up sooner, directly after `jdb-ft232h-3v3-vregin`)
 
 ---
 
@@ -45,5 +46,11 @@ PWM-capable interface) rather than purely local hardware.
 - This affects `Cypher-Input/Design_Spec.md` §5/§6, all 3 variant BOM files, and (once created)
   the Cypher-Output board's equivalent circuit - both boards currently share one broadcast
   brightness/colour signal set per DEC-087.
-- Should be actioned after the design-discussion merge is fully signed off
-  (`merge-final-review`), and before `todo-clean-up-requirement-details` starts.
+- **Rescheduled (user, 2026-09-11):** no longer gated on `merge-final-review`. User wants to pick
+  this up directly after `jdb-ft232h-3v3-vregin`, since the outcome will guide the design of a
+  physical Mock Keyboard test rig (to validate the Cypher-Input board's components and allow real
+  power-draw probing) before committing to the final Cypher-Input design.
+- **User is not confident in the currently-selected RGB addressable LED part** (see
+  `merge-missing-components.md` — SK6812MINI-E was the leading candidate under evaluation, not
+  yet approved) — revisit LED part selection as part of this review, not just the drive-topology
+  question.

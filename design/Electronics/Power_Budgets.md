@@ -3,7 +3,7 @@
 **Status:** Draft
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-17
+**Last Updated:** 2026-09-11
 
 ---
 
@@ -51,28 +51,28 @@ being an unachievable worst-case peak).
 | INA219 current monitor (Stator) | 1 | 1 | 1 | Negligible |
 | INA219 current monitor (Power Module) | 1 | 1 | 1 | Negligible |
 | Stator GPIO expanders (MCP23017 x3) | 3 | 10 | 30 | `U6`, `U7`, `U8` on shared `I2C-1`; monitor / control overhead only |
-| Controller direct servo GPIO interface | - | - | Included in Controller-local housekeeping | Servo PWM / home sensing moved to direct CM5 GPIO on the Controller |
 | PM-local GPIO expander (PCA9534A x1) | 1 | 5 | 5 | `U14 @ 0x3F`; PM status + SW1 runtime RGB handoff control |
 | User Settings Module GPIO expanders (MCP23017 x3) | 3 | 25 | 75 | `U1`, `U2`, `U3` on the shared Stator `I2C-1` bus |
 | Extension Buffer ICs (SN74LVC2G125DCUR) | 5 | 2 | 10 | TCK/TMS re-drive for each 5-rotor group; one per Extension board; negligible load |
+| Stack-Input STM32G071K8T3TR MCUs (native Actuation Module, one per mini-stack) | 6 | 5 | 30 | Placeholder conservative estimate (Run mode ~2.9 mA typ @ 24 MHz per local `stm32g071.md` Table `IDD(Run)`, rounded up for GPIO/peripheral overhead); actual figure TBD once firmware clock configuration and solenoid driver circuit are finalised - see `Stack-Input/Design_Spec.md §4` |
 | Controller-local housekeeping | - | - | 50 | Controller overhead subtracted before Stator distribution |
-| **Typical total** | | | **2,163 mA** | |
-| **Rounded budget** | | | **≤ 2.17 A** | |
+| **Typical total** | | | **2,193 mA** | |
+| **Rounded budget** | | | **≤ 2.20 A** | |
 
 ### Headroom vs LDO Limit
 
 | Limit | Value | Margin |
 | :--- | :--- | :--- |
 | LDO hard limit | 3.00 A | - |
-| Typical worst-case load | 2.17 A | **+0.83 A (28%)** |
+| Typical worst-case load | 2.20 A | **+0.80 A (27%)** |
 | Controller↔Stator dock capacity | Above 3.00 A | Not the constraint |
 
-> ✔ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides ~28% headroom above the full downstream
+> ✔ **Conclusion:** The 3A TPS75733KTTRG3 LDO provides ~27% headroom above the full downstream
 > worst-case typical load.
 > No LDO upgrade is required for the current 30-rotor design.
 > **Telemetry note:** The Stator INA219 / shunt path still measures the rotor-stack distribution branch
-> at about **2.05 A typical**. The extra **75 mA** above that figure is the User Settings Module's local logic
-> load on the shared `3V3_ENIG` rail.
+> at about **2.05 A typical**. The extra **~150 mA** above that figure is the User Settings Module's local
+> logic load and the Stack-Input STM32G071 MCU placeholder on the shared `3V3_ENIG` rail.
 
 ---
 
@@ -95,8 +95,8 @@ being an unachievable worst-case peak).
 * Power dissipation at 2.05A: 2.05² x 0.010 = **42 mW** - 2512 Kelvin package (rated ≥0.5W) is adequate with >10x margin.
 * Power dissipation at 3.00A max: 3.00² x 0.010 = **90 mW** - 2512 Kelvin package ≥0.5W still OK.
 * CAL register: 0x0400 (1024) - unchanged. CAL = 0.04096 / (Current_LSB x R_SHUNT) = 0.04096 / (0.004 x 0.010) = 1024 ✔
-* Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). Used on **PM R10** (LTC3350 RSENSE), **PM R16** (INA219 U10, 0x40, 5V_MAIN monitoring) and **Stator R1**
-  (INA219 U2, 0x45, rotor-stack monitoring).
+* Part: CSS2H-2512R-R010ELF (Bourns 2512 Kelvin-sense, 10mΩ ±1%, 5A). Used on **PM R10** (LTC3350 RSENSE), **PM R16** (INA219 U10, 0x40, 5V_MAIN monitoring) and **Cypher Board R1**
+  (INA219 U2, 0x40, rotor-stack monitoring — same address as PM's U10, safe since the two devices are on independent I²C buses; see DEC-101).
   Total build qty: 3.
 
 ---
@@ -108,18 +108,19 @@ being an unachievable worst-case peak).
 | CM5 (Raspberry Pi Compute Module 5) | 5.0 A max | CM5 boot-to-load current profile; 25W at 5V = 5A |
 | 3V3_ENIG LDO quiescent (TPS75733KTTRG3) | 2.05 A | Sourced from 5V_MAIN; P_in = 5V x 2.05A = 10.25W |
 | Status LEDs, RJ45, misc. | 0.1 A | |
-| FT232H VCC (JTAG Module - via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
+| FT232H VCC (Cypher Board USB-JTAG bridge - via Controller TPS2065C) | 0.1 A | USB HS active; VCC from 5V_USB (TPS2065C-protected 5V_MAIN output) |
 | USB 3.0 external devices (TPS2065C rated max) | 1.60 A | System boundary: connected USB device load; TPS2065C hard-limits output |
 | HDMI sink device | 0.05 A | System boundary: connected HDMI sink; AP2331W-limited |
 | User Settings Module indicator rail (via Controller↔Stator dock → J13) | 0.10 A | Bank 1 only (5 LEDs x 20mA = 100mA max); Bank 2 (CFG_REFMAP switches/LEDs) removed 2026-08-16 - see `User_Settings_Module/Design_Spec.md §1` and this board's own §11/§12 |
 | Cypher-Input LED bank (via Cypher Board dock, 64-Character variant worst case) | 1.26 A | 42 LEDs x 3 colour channels x 10mA, all channels simultaneously active (mixed colour, e.g. white/yellow/cyan); broadcast onward to whichever Cypher-Output board is installed - see `Cypher-Input/Design_Spec.md §5`/§7 |
 | Cypher-Output LED bank (via Cypher Board dock, any variant - worst case is variant-independent) | 0.03 A | Only one lens position is ever lit at a time (one-hot decode); 1 lens x 3 colour channels x 10mA, all channels simultaneously active (mixed colour); local `5V_MAIN`-sourced colour-bank switching (U1-U3) - see `Cypher-Output/Design_Spec.md §4`/§7 |
-| Controller-local servo rail (via Controller J11) | 0.50 A | Budgeted Controller-side servo allocation |
+| Stack-Input Board solenoid actuation (via Cypher Board `J4` power dock → mini-stack `5V_MAIN`, one native instance per mini-stack) | 0.50 A | Placeholder worst-case figure carried forward from the retired Controller-side Actuation Module budget (DEC-100 relocated the physical host dock only, not the power draw); solenoid driver circuit and actual current are still TBD in `Stack-Input/Design_Spec.md §4` pending a future design discussion - revisit once finalised |
 | **Total 5V_MAIN worst case (system boundary)** | **10.79 A** | |
 | **LMQ61460-Q1 dual-phase capacity** | **12.0 A** | 89.9% utilisation (10.79/12.0) - reduced margin, see note below |
 
 > **Scope note:** The 7.40 A board-level budget (internal consumers: CM5 + LDO + misc + FT232H) covers internal consumers only.
-> External device loads (USB 3.0 + HDMI) plus the Stator-fed User Settings Module load, the Cypher-Input and Cypher-Output LED bank loads, and the Controller-local servo load add 3.39 A, giving a system total of 10.79 A.
+> External device loads (USB 3.0 + HDMI) plus the Stator-fed User Settings Module load, the Cypher-Input and Cypher-Output LED bank loads,
+> and the Stack-Input solenoid load add 3.39 A, giving a system total of 10.79 A.
 > Component utilisation figures (e.g. LMQ61460-Q1) are calculated against the 10.79 A system total.
 >
 > **Reduced margin note (2026-08-16, updated 2026-08-17):** adding the Cypher-Input LED bank's
@@ -153,3 +154,6 @@ being an unachievable worst-case peak).
 | 2026-04-05 | Initial document - created to resolve STA-05/STA-06/ROT-04/PM-05 inconsistencies |
 | 2026-08-16 | Added Cypher-Input LED bank to the 5V_MAIN Load Analysis table (1.26 A worst case, 64-Character variant, all 3 colour channels active) - was previously unbudgeted. Corrected User Settings Module indicator rail from a stale 0.24 A to 0.10 A, reflecting Bank 2 (`CFG_REFMAP`) removal earlier this session (DEC-089). Total 5V_MAIN worst case revised from 9.50 A to 10.76 A, LMQ61460-Q1 utilisation from 79.2% to 89.7% |
 | 2026-08-17 | Added Cypher-Output LED bank to the 5V_MAIN Load Analysis table (0.03 A worst case, variant-independent since only one lens is ever lit at a time) - was previously unbudgeted; discovered while fixing an incorrect "not consumed by this board's own circuitry" claim in `Cypher-Output/Design_Spec.md §6`. Total 5V_MAIN worst case revised from 10.76 A to 10.79 A, LMQ61460-Q1 utilisation from 89.7% to 89.9% |
+| 2026-09-04 | Relocated the "servo rail" line from a direct Controller-side draw (via the now-retired Controller `J11` AM host dock, DEC-100) to "Stack-Input Board solenoid actuation" (via Cypher Board `J4` power dock → mini-stack `5V_MAIN`) - the actuator itself was never removed from the system, only its physical host dock moved off the Controller. Figure retained as a 0.50 A placeholder pending the still-TBD solenoid driver circuit in `Stack-Input/Design_Spec.md §4`. Total 5V_MAIN worst case unchanged at 10.79 A |
+| 2026-09-08 | Corrected the shunt-part note: Cypher Board R1's INA219 (U2) I2C address changed from 0x45 to 0x40, matching the shunt-selection rationale text to the new address (see DEC-101) |
+| 2026-09-11 | Added a placeholder 3V3_ENIG line for Stack-Input's native STM32G071K8T3TR MCUs (30 mA, 6x 5 mA conservative estimate derived from the local `stm32g071.md` datasheet's Run-mode `IDD` table) - this consumer had never been budgeted (a pre-existing gap predating this session, unrelated to the recent Controller/Cypher dock rework). Typical total revised from 2,163 mA to 2,193 mA; rounded budget 2.17 A → 2.20 A; LDO headroom 28% → 27% |

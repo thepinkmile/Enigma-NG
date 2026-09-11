@@ -31,4 +31,7 @@ Add further pending requests here as they arise.
 
 ## Notes
 
-No additional notes.
+**Scheduling (user, 2026-09-11):** action this todo at the same time as the full BOM update/audit
+pass, i.e. alongside `post-merge-final-design-bom-sweep`, rather than as a standalone earlier
+task. The existing `Blocked by: full-pn-review` gate is unchanged by this note — this is a
+scheduling preference, not a dependency change.

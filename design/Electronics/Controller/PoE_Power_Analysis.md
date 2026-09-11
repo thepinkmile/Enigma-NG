@@ -130,7 +130,7 @@ Using worst-case Llk = 0.18µH MAX and I_pk = 3.100A (nominal):
 E_Ls = ½ × 0.18µH × 3.100² = ½ × 0.18 × 9.61 = 0.865µJ
 ```
 
-Minimum C17 from resonant energy-recovery formula (DR-CTL-18):
+Minimum C17 from resonant energy-recovery formula (DR-CTL-17):
 
 ```text
 Cclamp_min = Llk × Ipk² / ΔVclamp²
@@ -163,9 +163,9 @@ P_clamp = ½ × Llk × Ipk² × fsw = ½ × 0.18µH × 1.891 × 200kHz = 0.034W 
 
 Selected: **C17 = 22nF (Kemet C0805C223K2RACAUTO, 22nF X7R 200V 0805)**
 
-A 200V 0805 rating is required: worst-case Vclamp reaches 72V (steady-state SMCJ36CA clamp per DEC-064) and X7R DC bias derating at 100V reduces effective capacitance below the 19.9nF minimum. See DR-CTL-18.
+A 200V 0805 rating is required: worst-case Vclamp reaches 72V (steady-state SMCJ36CA clamp per DEC-064) and X7R DC bias derating at 100V reduces effective capacitance below the 19.9nF minimum. See DR-CTL-17.
 
-See DR-CTL-18 for the design requirement. See `design/Electronics/Controller/Design_Spec.md` BOM for
+See DR-CTL-17 for the design requirement. See `design/Electronics/Controller/Design_Spec.md` BOM for
 supplier PNs.
 
 ---
@@ -189,10 +189,10 @@ L1 specification: 33µH, ≥6A Isat, DCR ≤50mΩ, shielded ferrite, SMT.
 Peak-to-peak ripple: 1.053A / 5A = **21.1% ✔** (target ≤28%).
 
 Selected: **Yageo PA4343.333NLT** (33µH, 6.5A Isat, 48mΩ typ / 58mΩ max DCR, 1265 shielded ferrite).
-DCR note: Typ value (48mΩ) is within DR-CTL-25 (≤50mΩ); max value (58mΩ) marginally exceeds the DR.
-Accepted at design phase: best available procurable part meeting all other parameters. See DR-CTL-25.
+DCR note: Typ value (48mΩ) is within DR-CTL-22 (≤50mΩ); max value (58mΩ) marginally exceeds the DR.
+Accepted at design phase: best available procurable part meeting all other parameters. See DR-CTL-22.
 
-See DR-CTL-25 and `design/Electronics/Consolidated_BOM.md` for L1 details.
+See DR-CTL-22 and `design/Electronics/Consolidated_BOM.md` for L1 details.
 
 ### 7.2 C20 — Output Capacitor
 
@@ -203,7 +203,7 @@ Cout_min = ΔIL1 / (8 × fsw × Vripple) = 1.053 / (8 × 200kHz × 0.12V) = 1.05
 Standard: 100µF / 35V minimum (highly conservative vs 5.5µF minimum; provides margin for DC-bias derating and long-term reliability). Selected: **4× TDK CGA9N1X7R1V476M230KC** (47µF × 4 = 188µF nominal); see DEC-079.
 
 Effective worst-case capacitance (DC bias at 12V + ±20% tolerance + temperature): ≥103µF ✔
-ESR: ≤2.5mΩ total at 200kHz ✔. See DR-CTL-22.
+ESR: ≤2.5mΩ total at 200kHz ✔. See DR-CTL-19.
 
 ---
 

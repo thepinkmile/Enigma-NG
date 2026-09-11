@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-15
+**Last Updated:** 2026-09-04
 
 ---
 
@@ -14,13 +14,14 @@
 The Controller is the fixed motherboard of the enclosure and carries both removable-board docks:
 
 - **J1 / J2 / J3** - three TE 10-position connectors to the Power Module
-- **J4 / J5** - two Molex EXTreme Guardian HD hybrid connectors to the Stator
+- **J4** - Molex EXTreme Guardian HD hybrid connector to the Cypher Board (power-only)
+- **J5** - Samtec QSS-025 vertical female connector to the Cypher Board (signal-only)
 
 ```text
 rear edge of Controller
 
  [ J4 ] [ J5 ]   [ J1 ] [ J2 ] [ J3 ]
-  to Stator          to Power Module
+  to Cypher          to Power Module
 ```
 
 ---
@@ -52,8 +53,8 @@ rear edge of Controller
 
 | Signal | Direction | Notes |
 | :--- | :--- | :--- |
-| `I2C_SDA` | Bidir | Shared PM telemetry and PM-local GPIO-expander bus |
-| `I2C_SCL` | Bidir | Shared PM telemetry and PM-local GPIO-expander bus |
+| `I2C0_SDA` | Bidir | PM-dedicated I²C bus (Bank 0); shared PM telemetry and PM-local GPIO-expander bus |
+| `I2C0_SCL` | Bidir | PM-dedicated I²C bus (Bank 0); shared PM telemetry and PM-local GPIO-expander bus |
 | `PM_IO_INT_N` | PM -> CTRL | Active-low interrupt from PM `PCA9534APWR` |
 | `PWR_GD` | PM -> CTRL | Direct rail-health telemetry from MCP121T |
 | `ROTOR_EN_N` | CTRL -> PM | Direct 3V3_ENIG LDO enable control |
@@ -63,23 +64,19 @@ rear edge of Controller
 
 ---
 
-## 3. Controller ↔ Stator Dock
+## 3. Controller ↔ Cypher Dock
 
-### 3.1 J4 - 5V_MAIN-Biased Hybrid Dock
+### 3.1 J4 - Power-Only Dock (Molex 2195630015 / 2195620015)
 
-| Contact group | Allocation |
-| :--- | :--- |
-| Power blades | `4 x 5V_MAIN`, `1 x GND` |
-| Signal field | additional `GND` guards / returns |
+Zero signal contacts. See DEC-098.
 
-### 3.2 J5 - 3V3_ENIG + JTAG / I2C Hybrid Dock
+| Contact type | Allocation | Notes |
+| :--- | :--- | :--- |
+| Power-pitch (5x, big pins) | `5 x GND` | `GND` mates first on the larger, more robust contacts |
+| Signal-pitch (8x) | `8 x 5V_MAIN` | 4.5A/contact rating (Molex `2141130000-PS-000` §4.2) — 36A theoretical capacity |
+| Signal-pitch (7x) | `7 x 3V3_ENIG` | 4.5A/contact rating — 31.5A theoretical capacity |
 
-| Contact group | Allocation |
-| :--- | :--- |
-| Power blades | `4 x 3V3_ENIG`, `1 x GND` |
-| Signal field | guarded `TCK`, `TMS`, `TDI`, `TTD_RETURN`, `I2C_SDA`, `I2C_SCL`, remaining signal contacts = `GND` |
-
-**Connector family:** Molex `2195630015` receptacle on Controller ↔ `2195620015` plug on Stator.
+**Connector family:** Molex `2195630015` receptacle on Controller ↔ `2195620015` plug on Cypher.
 
 **Reference datasheets:** [`Molex-2195630015-datasheet.md`](../../Datasheets/Molex-2195630015-datasheet.md),
 [`Molex-2195630015-drawings.md`](../../Datasheets/Molex-2195630015-drawings.md),
@@ -87,10 +84,56 @@ rear edge of Controller
 [`Molex-2195620015-drawings.md`](../../Datasheets/Molex-2195620015-drawings.md),
 [`Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md`](../../Datasheets/Molex-ExtremeGuardianHD-2141130000-PS-000-specification.md)
 
-The `J5` logic connector deliberately groups the JTAG cluster and `TTD_RETURN` with the `3V3_ENIG`
-feed. The `J4` connector is reserved for 5V delivery and return-current support.
+### 3.2 J5 - Signal-Only Dock (Samtec QSS-025-01-L-D-A-GP-K / QTS-025-01-L-D-RA-P)
 
----
+Zero power rails. See DEC-098. 50 contacts: 2 center-GND-bar (1/row) + 24 usable pins/row. Pin
+numbering: column Cn, top pin = 2n-1, bottom pin = 2n. **Note:** the connector's internal ground
+wedge runs the full connector length between the top (odd) and bottom (even) pin rows — top/bottom
+crosstalk within a column is inherently shielded; the exposure to guard against is column-to-column
+(same-row) adjacency, hence the `GND` separator columns below.
+
+| Top Row Signal | Top Pin# | Bottom Pin# | Bottom Row Signal |
+| :--- | :---: | :---: | :--- |
+| GND | 1 | 2 | GND |
+| **PWM0[0]** | 3 | 4 | GND |
+| GND | 5 | 6 | **PWM0[1]** |
+| **PWM0[2]** | 7 | 8 | GND |
+| GND | 9 | 10 | **PWM0[3]** |
+| GND | 11 | 12 | GND |
+| GND | 13 | 14 | GND |
+| **GPCLK[0]** | 15 | 16 | **GPCLK[1]** |
+| GND | 17 | 18 | GND |
+| GND | 19 | 20 | GND |
+| **USB_D_PLUS** | 21 | 22 | **USB_D_MINUS** |
+| GND | 23 | 24 | GND |
+| GND (bar) | 25 | 26 | GND (bar) |
+| GND | 27 | 28 | GND |
+| GND | 29 | 30 | GND |
+| **I2C1_SDA** (Bank 1, Cypher peripherals — existing) | 31 | 32 | **I2C1_SCL** (Bank 1, existing) |
+| GND | 33 | 34 | GND |
+| **I2C2_SDA** (Bank 2, future) | 35 | 36 | **I2C2_SCL** (Bank 2, future) |
+| GND | 37 | 38 | GND |
+| **I2C3_SDA** (Bank 3, future) | 39 | 40 | **I2C3_SCL** (Bank 3, future) |
+| GND | 41 | 42 | GND |
+| **I2C4_SDA** (Bank 4, future) | 43 | 44 | **I2C4_SCL** (Bank 4, future) |
+| GND | 45 | 46 | GND |
+| **I2C6_SDA** (Bank 6, spare/HID-future) | 47 | 48 | **I2C6_SCL** (Bank 6, spare/HID-future) |
+| GND | 49 | 50 | GND |
+
+> **Note:** `I2C0` (PM-dedicated bus) is **not** present on this connector — it is routed
+> exclusively via `J3` to the Power Module (see §2.3). This connector carries only `I2C1`
+> (active) plus `I2C2`/`I2C3`/`I2C4`/`I2C6` (reserved/NC on the Cypher Board for future
+> expansion). See DR-CTL-13, DEC-099.
+
+**Connector family:** Samtec `QSS-025-01-L-D-A-GP-K` (vertical female) on Controller ↔
+`QTS-025-01-L-D-RA-P` (right-angle male) on Cypher.
+
+**Reference datasheets:** [`Samtec-QSS-Qualification_test-Report.md`](../../Datasheets/Samtec-QSS-Qualification_test-Report.md),
+[`Samtec-QSS-QTS-RA-Characterisation-Test-Report.md`](../../Datasheets/Samtec-QSS-QTS-RA-Characterisation-Test-Report.md),
+[`Samtec-QSS-QTS-RA-Power-Test-Report.md`](../../Datasheets/Samtec-QSS-QTS-RA-Power-Test-Report.md)
+
+`J4` and `J5` are split strictly by electrical function: `J4` carries all power/return (no
+signals), `J5` carries all signals/`GND` (no power rails) — see DEC-098.
 
 ## 4. External I/O Placement
 
@@ -114,71 +157,44 @@ right edge of Controller
 
 ```text
 rear / dock edge
- ________________________________________________________________________
-|     [J4] [J5]             [J9]               | (Power Module mounting) |
-|                          _________________   | [J1]               [J3] |
-|  [ JM DF40 dock ]       |                 |  |          [J2]           |
-|                         |      CM5        |  |_________________________|
-|                         |     Module      |                            |
-|                         | [ Low-Profile ] |                     [RJ45] |
-|                         | [    Area     ] |                     [USB3] |
-| [ ACTUATION MODULE ]    |_________________|                     [HDMI] |
-|________________________________________________________________________|
-left side / internal                                            right side
+ _______________________________________________________________________
+|  [J4]        [J5]              [J9]         | (Power Module mounting) |
+|  (power)    (signal)          (display)     | [J1]               [J3] |
+|                          _________________  |          [J2]           |
+|                         |                 | |_________________________|
+|                         |      CM5        |                           |
+|                         |     Module      |                           |
+|                         | [ Low-Profile ] |                    [RJ45] |
+|                         | [    Area     ] |                    [USB3] |
+|                         |_________________|                    [HDMI] |
+|_______________________________________________________________________|
+left side / internal                                           right side
 ```
 
 The Controller is the only board that must be inserted as the enclosure reference part.
-The Power Module and Stator then dock into it as mechanically independent service modules.
-
-For the shared **Actuation Module**, the Controller shall reserve the mounted-module shadow as a
-**no-component placement zone** except for J11, MH5-MH8, and the routing / copper needed to reach them.
-See **§6** for connector ownership, net-to-net mapping, standoff GND net, and PCB layout dependency.
-
----
-
-## 6. J11 - Actuation Module Host Dock
-
-> **Connector Definition Owner:** `design/Electronics/Actuation_Module/Design_Spec.md §3.1`.
-> This board provides the mating receptacle (J11). Full connector pinout is defined and owned by
-> the Actuation Module. Net connections from this board to the mounted AM:
->
-> | CTL Net | AM Net |
-> | --- | --- |
-> | `5V_MAIN` | `5V_MAIN` |
-> | `3V3_ENIG` | `3V3_ENIG` |
-> | `GND` | `GND` |
-> | `ACTUATE_REQUEST_N` | `ACTUATE_REQUEST_N` |
->
-> `ACTUATE_REQUEST_N` is sourced from CM5 GPIO 8 as an active-low output pulse.
->
-> **⚠ PCB Layout Dependency:** J11 and MH5-MH8 positions cannot be finalised until AM schematic
-> capture and PCB layout are complete. MH5-MH8 shall mirror `design/Electronics/Actuation_Module/Design_Spec.md DR-AM-03` and
-> connect to `GND`.
-
-- **J11:** Single 20-pin Hirose DF40HC(3.5)-20DS-0.4V(51) AM host socket (stacking height = 3.5mm).
-  A silkscreen pin-1 marker is required on both the Controller and AM boards (per
-  `design/Standards/Global_Routing_Spec.md §7.1`).
-- **MH5-MH8:** Four M2.5x3.5mm SMT standoffs (9774035151R); positions mirror `design/Electronics/Actuation_Module/Design_Spec.md
-  DR-AM-03`; pads connected to `GND`; no-component placement zone (except J11, MH5-MH8, and routing).
+The Power Module and Cypher Board then dock into it as mechanically independent service modules.
+`J4` (power dock, left-middle) and `J5` (signal dock, towards centre) are both mounted horizontally,
+matching the CM5's own horizontal orientation (right-middle, with Ethernet/USB/HDMI hugging the
+right edge). Exact XY placement is finalised at PCB layout time.
 
 ---
 
-## 7. CM5 Module Carrier (J13, J14, MH13–MH16)
+## 6. CM5 Module Carrier (J13, J14, MH13–MH16)
 
 The CM5 Compute Module 5 mounts on the Controller via two Amphenol `10164227-1004A1RLF` carrier
 sockets (J13, J14) and four SMT standoffs (MH13–MH16).
 
-### 7.1 J13 and J14 — CM5 Module Carrier Connectors
+### 6.1 J13 and J14 — CM5 Module Carrier Connectors
 
 - **Part:** Amphenol `10164227-1004A1RLF` — CM5 carrier socket, 4.0mm stack height.
 - **Placement:** J13 and J14 are placed in the central board region beneath the CM5 module
   footprint. Both connectors must be positioned to align with the CM5 module edge connector
   interface per the Raspberry Pi CM5 mechanical drawing. Trace routing and copper fills are
-  permitted in the CM5 shadow area; active or tall components are not (see §7.2 height rule).
+  permitted in the CM5 shadow area; active or tall components are not (see §6.2 height rule).
 - **Stack height:** 4.0mm from Controller PCB surface to the underside of the CM5 module PCB.
 - **Cross-ref:** `design/Electronics/Controller/Design_Spec.md §2.3`; BOM J13, J14.
 
-### 7.2 MH13–MH16 — CM5 Carrier Standoffs
+### 6.2 MH13–MH16 — CM5 Carrier Standoffs
 
 - **Part:** Wurth Elektronik `9774040151R` — M2.5×4.0mm SMT standoff; four instances.
 - **Function:** Mechanical standoffs that set the 4.0mm stack height for J13/J14 and provide
@@ -194,13 +210,13 @@ sockets (J13, J14) and four SMT standoffs (MH13–MH16).
 
 ---
 
-## 8. PoE ACF Front-End Placement (T1, Q1, Q2, L1, C17, C20)
+## 7. PoE ACF Front-End Placement (T1, Q1, Q2, L1, C17, C20)
 
 The PoE ACF Forward front-end occupies the right-edge zone of the board, clustered around the
 RJ45 magnetics jack and the two PoE ICs (U7 TPS2372-4RGWR, U8 TPS23730RMTR). GbE ESD arrays
 U5 and U6 are also in this zone.
 
-### 8.1 Component Summary
+### 7.1 Component Summary
 
 | RefDes | Part | Role |
 | :--- | :--- | :--- |
@@ -213,7 +229,7 @@ U5 and U6 are also in this zone.
 | C17 | C0805C223K2RACAUTO | 22nF 200V 0805 ACF primary-side clamp capacitor (Cclamp) |
 | C20 (×4) | CGA9N3X7R1E476M230KB | 47µF 25V 2220 ACF output filter capacitors (4× in parallel) |
 
-### 8.2 Placement Notes
+### 7.2 Placement Notes
 
 - **Zone:** Right edge of the Controller PCB directly adjacent to the RJ45 magnetics jack. U7
   and U8 shall be placed as close as practical to T1 to minimise the primary-side switching loop
@@ -233,12 +249,12 @@ U5 and U6 are also in this zone.
   and GND, within 5mm of U8. 200V rating is required for the primary-side environment.
 - **C20 (4× 2220):** Four CGA9N3X7R1E476M230KB in parallel on `VIN_POE_12V` at the LC filter
   output. Arrange in a 2×2 grid on the secondary side of L1 with a common pour to `VIN_POE_12V`.
-- **Cross-ref:** `design/Electronics/Controller/Design_Spec.md §7.1`; DR-CTL-18 to DR-CTL-25;
+- **Cross-ref:** `design/Electronics/Controller/Design_Spec.md §6.1`; DR-CTL-17 to DR-CTL-22;
   `design/Electronics/Controller/PoE_Power_Analysis.md`.
 
 ---
 
-## 9. Chassis Mounting Holes (MH1–MH4)
+## 8. Chassis Mounting Holes (MH1–MH4)
 
 Follows GRS §4.3 Pattern A — exact XY positions TBD at PCB layout per GRS §4.2.
 
@@ -246,4 +262,4 @@ Follows GRS §4.3 Pattern A — exact XY positions TBD at PCB layout per GRS §4
 - **Hole diameter:** Ø3.2mm (clearance for M3 fastener)
 - **Net:** `GND_CHASSIS` — bonded to chassis ground per GRS §4
 - **BOM:** No BOM entry; plain chassis mounting holes with no fitted components
-- **Cross-ref:** `design/Electronics/Controller/Design_Spec.md DR-CTL-21`; `design/Standards/Global_Routing_Spec.md §4.3`
+- **Cross-ref:** `design/Electronics/Controller/Design_Spec.md DR-CTL-18`; `design/Standards/Global_Routing_Spec.md §4.3`

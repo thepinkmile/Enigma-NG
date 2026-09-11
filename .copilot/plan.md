@@ -6,7 +6,119 @@
 
 ---
 
-## Current Status (as of 2026-09-03 — ACTUATE_REQUEST signal path complete, checkpoint 189)
+## Current Status (as of 2026-09-11 — Controller/Cypher dock rework reviewed & approved; v2.0 items re-prioritised, checkpoint 190)
+
+`merge-ctl-dock-usb-allocation` and `merge-update-ctl-board` are **done and user-reviewed**
+(review completed 2026-09-11). The 2026-09-04 Controller/Cypher dock rework (split power-only
+Molex `J4` / signal-only Samtec `J5` dock, JM/AM retirement from the Controller, 6-bank CM5 I²C
+architecture, PWM/GPCLK test pads on Cypher — DEC-098/099/100) is now closed out. Since the
+review, three small follow-up corrections were made (all reviewed inline, no new DEC needed):
+
+1. Removed two more leftover historical/contrastive sentences the user caught in
+   `Controller/Design_Spec.md` (an "entirely native to the Cypher Board" JTAG-removal explainer on
+   FR-CTL-04, and four "Relocated from GPIO X..." notes in the GPIO mapping table) — same
+   "current design only" rule as `document-rules.md`, just missed in the original pass.
+2. Fixed a board-boundary violation: `Cypher/Design_Spec.md §7` and `Power_Module/Design_Spec.md
+   §3` each referenced the *other* board's INA219 by name, despite the two boards having no
+   direct connection — removed both cross-references (system-wide view belongs only in
+   `Controller/Design_Spec.md` and `Power_Budgets.md`).
+3. **DEC-101 created:** Cypher Board's INA219 (`U2`) I²C address changed `0x45` → `0x40`, matching
+   the Power Module's `U10` default address — safe since the two devices are on independent I²C
+   buses (`I2C0`/`I2C1`), and simplifies both hardware (no address-strap components) and future
+   monitoring software (identical driver code, only the bus differs).
+4. Found and fixed a genuine pre-existing gap while investigating (3): `Power_Budgets.md`'s
+   3V3_ENIG Allocation Table never budgeted Stack-Input's native STM32G071K8T3TR MCU current draw
+   at all (pre-dates this session). Added a 30 mA (6× 5 mA) placeholder line, sourced from the
+   local `stm32g071.md` datasheet's Run-mode `IDD` table; flagged as unverified pending firmware
+   clock config and the still-TBD solenoid driver circuit. Typical total 2,163 mA → 2,193 mA.
+   Confirmed `U1` is already `STM32G071K8T3TR` (64KB flash) — not a placeholder part; noted
+   `STM32G071KBT3TR` (128KB) as a fallback only if 64KB proves insufficient once firmware exists.
+5. Logged all of the above pre-existing "known stale" documentation items (old `0x45`/"Stator"
+   INA219 references scattered across `Boards_Overview.md`, `Electrical_Design.md`,
+   `Software/Linux_OS/Power_Management.md`, `Software/GUI_App/Design_Spec.md`, and a dashboard
+   wireframe) into `merge-update-top-level-docs.md`'s notes, and the `U1` part/BOM follow-up into
+   `post-merge-final-design-bom-sweep.md`'s notes — both to be actioned at their existing scheduled
+   passes, not now.
+
+**Todo re-prioritisation (user, 2026-09-11):** of the five previously-blocked "v2.0" items, two
+are no longer deferred and have been unblocked:
+
+- `cpld-production-replacement` — **unblocked**, now tied to the `max-10-fpga-details` and
+  (partially) `rp2040-discussion` discussion threads already in `.copilot/discussions/`.
+- `jdb-ft232h-3v3-vregin` — **unblocked**, the Rev C FT232H part is now available/sourced.
+- `display-addon-board`, `display-aperture`, `ctl-t1-coilcraft-v2-review` remain correctly
+  deferred to v2.0 — no change.
+
+The confirmed next-task order (see below) was also revised: `cypher-input-led-independent-rgb-pwm-review`
+had its `merge-final-review` dependency **removed** (was gating it on the full design-merge
+sign-off) so it can be picked up directly after `jdb-ft232h-3v3-vregin` — the user wants its
+outcome to guide a physical Mock Keyboard test rig for the Cypher-Input board (component
+validation + power-draw probing) before the final Cypher-Input design is locked in, and is not
+confident in the currently-selected RGB LED part (SK6812MINI-E candidate, see
+`merge-missing-components.md`) either. `footprint-requests-pending` is rescheduled (note only, no
+dependency change) to run alongside `post-merge-final-design-bom-sweep` rather than standalone.
+
+**⏭️ Next session — start here:** resume the task order below. No pending user-review gate is
+currently open (the Controller/Cypher review this note describes is now complete). See
+checkpoint 190 for the full detailed writeup of everything summarised above.
+
+Confirmed next-task order:
+
+1. `jdb-ft232h-3v3-vregin` — Rev C FT232H 3V3 VREGIN; now native to Cypher's `U17` USB-JTAG
+   bridge section (`Cypher/Design_Spec.md §5`) rather than a separate JTAG Module.
+2. `cypher-input-led-independent-rgb-pwm-review` — independent per-channel RGB PWM + LED part
+   reconsideration; feeds directly into the user's planned Mock Keyboard test rig.
+3. `cpld-production-replacement` — MAX10 FPGA discussion (`max-10-fpga-details`,
+   `rp2040-discussion`); likely mechanical implications for Rotor boards.
+4. `footprint-requests-pending` — scheduled alongside the final BOM sweep, not standalone.
+5. `system-assembly-harnesses` and `system-config-variants-diagrams` — deferred until the above
+   list is complete.
+
+Also still queued (not yet scheduled): `design-docs-current-only-sweep` — a repo-wide sweep for
+historical/rationale wording that shouldn't be in "current design only" docs (previously only
+covered Cypher + Stack-* boards; see the todo for the specific patterns to search for).
+
+### Prior session recap (2026-09-04 — Controller/Cypher dock rework implemented, pending review at the time)
+
+`merge-ctl-dock-usb-allocation` and `merge-update-ctl-board` were implemented but not yet reviewed
+at the end of this session. This session split the Controller↔Cypher dock into a power-only Molex
+connector (`J4`) and a signal-only Samtec connector (`J5`), fully reallocating the old Stator dock
+to the Cypher Board; retired the JM (`J12`) and AM (`J11`) docks from the Controller entirely (both
+functions already native elsewhere — JTAG bridge on Cypher, solenoid MCU on Stack-Input); and
+introduced a 6-bank CM5 I²C architecture (`I2C0` PM-dedicated, `I2C1` active Cypher-peripherals,
+`I2C2`/`I2C3`/`I2C4`/`I2C6` reserved for a future Rotor-Cypher-Software-Updates discussion), plus
+reserved PWM/GPCLK channels routed to bare test pads on Cypher. Full FR/DR/BOM renumbering applied
+to the Controller (no gaps, per project convention). DEC-098, DEC-099, DEC-100 created.
+
+Files changed this session:
+
+- `Controller/Design_Spec.md` and `Board_Layout.md` — JM/AM sections removed; FR/DR fully
+  renumbered; `J4`/`J5` redefined; GPIO/I²C matrix rebuilt; MIPI1 routing; PWM/GPCLK reservation.
+- `Cypher/Design_Spec.md` and `Board_Layout.md` — `J1`/`J2` redefined to match; stale
+  Stator-copied JTAG cluster removed from `J2`; new `TP1`-`TP12` test pads.
+- `Power_Module/Design_Spec.md` — `I2C-1` → `I2C0` renamed where it's PM's own bus.
+- `Power_Budgets.md` — servo/solenoid rail line relocated (not removed) to reflect its native
+  Stack-Input attachment via Cypher's `J4`; total unchanged at 10.79 A / 89.9%. (Note: an earlier
+  pass in this same session incorrectly deleted this line entirely — caught and corrected before
+  session end; see DEC-100's Impact section, corrected in-place since it was not yet reviewed.)
+- `Global_Routing_Spec.md`, `PoE_Power_Analysis.md` — stale `DR-CTL-NN` cross-references fixed.
+- New DEC-098 (dock split), DEC-099 (I²C banks/MIPI swap/PWM-GPCLK), DEC-100 (JM/AM retirement) +
+  `Design_Log/index.md` and `directives/tertiary.md` DEC counter updated.
+- **New directive added:** `.copilot/directives/tertiary.md` now requires asking the user whether
+  a DEC written earlier in the same still-open task is already approved/sealed before deciding
+  in-place-edit vs. new-amending-DEC.
+
+**Known discovered issues, deferred (not fixed this session, by user direction):**
+
+- `Boards_Overview.md` and `System_Architecture.md` are broadly stale (still describe the
+  pre-merge Stator/Reflector/JM/AM/Extension architecture). User confirmed: leave until all
+  discussions are merged and the full design has had at least one complete review — full rewrite
+  expected at that point (`merge-update-top-level-docs` todo, already existed).
+- `Consolidated_BOM.md` is similarly stale. User confirmed: leave until all components/datasheets/
+  KiCAD footprints are located and verified at the end (`post-merge-final-design-bom-sweep` todo,
+  already existed).
+
+### Prior session recap (2026-09-03, checkpoint 189 — ACTUATE_REQUEST signal path complete)
 
 `merge-cypher-board-j3j6-pinouts` and `merge-actuate-request-routing` are now **done**
 (checkpoint 189). This session closed out Cypher's last two unresolved connectors (`J3`/`J4`),
@@ -15,10 +127,10 @@ Mini-Stack chain, fixing real gaps found at each stop. DEC-090 through DEC-097 c
 `.copilot/checkpoints/189-cypher-j3j4-complete-actuate-request-path-defined-connector-ownership-fixed.md`
 for full detail.
 
-**User is doing a final manual review of this whole change set.** Next steps, in the user's
-confirmed order:
+**User did a final manual review of this whole change set**, then confirmed the task order that
+was carried out at the start of the following session (see "Current Status" above):
 
-1. User's manual review of this session's change set (in progress).
+1. User's manual review of this session's change set.
 2. **Controller board updates** — `merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`:
    define USB D+/D- on Cypher's `J1` dock; remove JM (`J12`) and AM (`J11`) from Controller (user
    believes no JTAG traces should remain on Controller now that JM is native to Cypher — needs
@@ -197,17 +309,17 @@ Next up:
 | Board | Status | Notes |
 | --- | --- | --- |
 | Power Module (PM) | In Review | All P10 findings closed |
-| Controller Board (CTL) | In Review | T1 decision complete (DEC-067); all P10 closed; JM/AM removal pending (`merge-update-ctl-board`) |
+| Controller Board (CTL) | In Review | T1 decision complete (DEC-067); all P10 closed; JM/AM removal implemented 2026-09-04 (`merge-update-ctl-board`, DEC-098/099/100), awaiting user review |
 | Stator | **Retiring** | Circuits migrated to Cypher Board |
 | Rotor (26-char) | In Review | All P10 findings closed |
 | Rotor (64-char) | In Review | All P10 findings closed |
 | Reflector | **Retiring** | Circuits migrated to Cypher Board |
 | Extension Board (EXT) | **Retiring** | Circuits split into Stack-Input + Stack-Output |
-| JTAG Module (JM) | **Retiring** | Circuits migrated to Cypher Board |
+| JTAG Module (JM) | **Retiring** | Circuits migrated to Cypher Board; Controller-side dock removed 2026-09-04 (DEC-100) |
 | User Settings Module (USM) | In Review | All P10 findings closed |
 | Encoder (ENC) | In Review | Module redesign pending |
-| Actuation Module (AM) | **Retiring** | Circuits migrated native to Stack-Input Board |
-| **Cypher Board** | **Draft** | Created 2026-07-05; consolidates STA + REF + JM; J5/J6 HID interconnect redesigned 2026-08-09 (4-connector architecture, shared board-agnostic template) |
+| Actuation Module (AM) | **Retiring** | Circuits migrated native to Stack-Input Board; Controller-side host dock removed 2026-09-04 (DEC-100) |
+| **Cypher Board** | **Draft** | Created 2026-07-05; consolidates STA + REF + JM; J5/J6 HID interconnect redesigned 2026-08-09 (4-connector architecture, shared board-agnostic template); J1/J2 Controller dock split into power-only Molex/signal-only Samtec 2026-09-04 (DEC-098), TP1-TP12 PWM/GPCLK test pads added |
 | **Stack-Input Board** | **Draft** | Created 2026-07-05; EXT input-side + native solenoid AM |
 | **Stack-Output Board** | **Draft** | Created 2026-07-12; J6 updated to SQT-115-01-L-D-RA (from 2BHR-30-VUA); DEC-085 |
 | **Stack-Interposer Board** | **Draft** | Created 2026-07-25; TMMH-115-01-L-D-ES J1/J2; SQT-115-01-L-D-RA mating; mirror-corrected routing note |
@@ -228,23 +340,26 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 1. **Design Discussion Merge** (`design-discussion-merge` — in_progress)
    - `merge-create-cypher-output` — **done** (checkpoints 186-187).
    - `merge-create-plugboard` — **done** (checkpoint 188), board renamed to Cypher-Plugboard.
-   - `merge-ctl-dock-usb-allocation` → `merge-update-ctl-board` — **resume here.**
+   - `merge-cypher-board-j3j6-pinouts` / `merge-actuate-request-routing` — **done** (checkpoint 189).
+   - `merge-ctl-dock-usb-allocation` / `merge-update-ctl-board` — **done and user-reviewed**
+     (2026-09-11) — see "Current Status" at the top of this file for full detail.
    - `merge-diagrams-review` — review/update stale Rotor Mini-Stack diagrams, create dedicated
      Cypher-system diagrams; blocks `merge-final-review`
    - Full sequence tracked in `.copilot/todos/design-discussion-merge.md`
-2. **Pending pinout work** (`merge-cypher-board-j3j6-pinouts`) — **also resume here.**
-   - J5/J6 portion now **resolved** (2026-08-19: fully 50-pin allocated, including this session's
-     `TTD_HID_*` rename and the Cypher-Output I2C passthrough fix).
-   - Remaining scope: **J3/J4 only** - the Stack-Input/STA-side (J3) and Stack-Output/REF-side
-     (J4) rotor-stack connectors still only have 26/24 of 50 contacts defined (pins beyond that
-     tied to GND as placeholders). See `.copilot/todos/merge-cypher-board-j3j6-pinouts.md`.
+2. **Pending pinout work** (`merge-cypher-board-j3j6-pinouts`) — **done** (checkpoint 189, all of
+   J3/J4/J5/J6 fully 50-pin allocated).
+3. **Next up, in confirmed order** (see "Current Status" at the top of this file for full
+   rationale): `jdb-ft232h-3v3-vregin` → `cypher-input-led-independent-rgb-pwm-review` →
+   `cpld-production-replacement` → `footprint-requests-pending` → `system-assembly-harnesses`/
+   `system-config-variants-diagrams`.
 
 ### Deferred / Blocked
 
 - `battery-connector-final-review` — blocked: awaiting supplier response
-- `jdb-ft232h-3v3-vregin` — blocked (v2.0)
-- `display-addon-board`, `cpld-production-replacement`, `display-aperture` — blocked (v2.0)
-- `ctl-t1-coilcraft-v2-review` — blocked (v2.0)
+- `display-addon-board`, `display-aperture`, `ctl-t1-coilcraft-v2-review` — blocked (v2.0);
+  `jdb-ft232h-3v3-vregin` and `cpld-production-replacement` were also v2.0 but were **unblocked
+  2026-09-11** (see "Current Status" — part now available / active discussion threads exist) and
+  are no longer in this list.
 
 ### Process items to review
 
@@ -324,10 +439,11 @@ All 91 Pass-10 findings are resolved. REF-P10-05 closed: 2BHR-30-VUA uses KiCAD 
 ## Next Session Start Point
 
 Follow `.copilot/SESSION_START.md` — canonical bootstrap order.
-Then read checkpoint 188 in full (most recent). `merge-create-plugboard` is **done** (board
-renamed to Cypher-Plugboard). **Start with `merge-cypher-board-j3j6-pinouts` (J3/J4 only - J5/J6
-already resolved) or `merge-ctl-dock-usb-allocation` → `merge-update-ctl-board`** - either is
-ready; pick whichever the user prefers to continue with first.
+Then read checkpoint 190 in full (most recent), plus this file's "Current Status" section at the
+top for the full state of the reviewed Controller/Cypher dock rework and the 2026-09-11 todo
+re-prioritisation. **Start with `jdb-ft232h-3v3-vregin`**, then
+`cypher-input-led-independent-rgb-pwm-review` (see the confirmed next-task order above) — no
+pending user-review gate is currently open.
 
 The old wiring-notes draft `.copilot/todos/merge-create-cypher-output.md` has been archived to
 `.recycle-bin/` (the actual implemented architecture differed in several ways from that early
@@ -343,4 +459,3 @@ After those two: RGB LED part sourcing remains deferred to `merge-missing-compon
 row/column scanning to reduce power draw; a PoC test board step with Kailh sockets/keyswitches has
 been added to that todo before committing - see checkpoint 187). Mechanical/software sections
 remain out of scope until a dedicated overhaul pass after the electronics merge completes.
-
