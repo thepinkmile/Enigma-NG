@@ -55,3 +55,12 @@ renumbering work twice.
   tracking/reminder item to action **before the next full design review pass** (i.e. before
   `review-pass-11`/whichever is the next pending full review gate), not before any specific
   Cypher-family board todo.
+
+## Superseded (2026-09-16)
+
+The "another discussion" referenced above has now happened: the wider User Settings Module
+redesign (tracked in `usm-redesign-implementation`) confirms CFG_ROUTE and CFG_REFMAP are both
+fully removed from USM (all config now applied by the CM5), repurposes USM as a shared LED-colour/
+buzzer hub for Cypher-Input/Cypher-Output, and explicitly includes doing the full RefDes renumber
+(open item 3 above) as part of that same changeset. This todo is superseded by, and will be closed
+alongside, `usm-redesign-implementation` - do not action it separately.
