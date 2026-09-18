@@ -7,6 +7,69 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
+**2026-09-18 session update (checkpoint 192): USM redesign connectors finalised; implementation
+partially damaged, paused for weekend handoff.**
+
+**Read checkpoint 192 in full before doing anything else this next session.**
+
+The USM redesign's connector-level decisions are fully settled after a very long interactive
+pin-mapping session with the user (three shared templates finalised: HID-to-Cypher left pair,
+Cypher↔USM↔Plugboard hub connector, USM-to-HID left connector). `Cypher-Input/Design_Spec.md`,
+`Board_Layout.md`, and `Cypher_Input_64_Char_Design.md` are correctly implemented and verified
+against git history.
+
+A background-agent implementation pass across the other 4 boards (`Cypher-Output`,
+`Cypher-Plugboard`, `Cypher`, `User_Settings_Module`) was destructive despite explicit
+"surgical, don't touch unrelated content" instructions — it discarded large amounts of
+legitimate pre-existing content on top of the intended edits (net 883 insertions / 2221
+deletions across the 8 files it touched, confirmed via `git diff --stat` against pre-agent
+`HEAD`). The user is handling the revert/keep decision themselves via their own git workflow
+before next session resumes — **do not assume any of those 8 files are correct without checking
+`git status` first.**
+
+**What changed and is confirmed good this session:**
+
+1. USM redesign connector pin-maps finalised (Template 1/2/3 — see checkpoint 192 for full
+   tables and the exact wiring rules for each).
+2. `Cypher-Input/Design_Spec.md`/`Board_Layout.md` — RefDes renumbered (`J1`/`J2` = Cypher left
+   pair, `J3` = USM connector, `J4`-`J6` = ENC module mount), connector pin-map ownership moved to
+   `Cypher/Board_Layout.md §4` and `User_Settings_Module/Board_Layout.md` respectively (no more
+   duplicated full pin tables on the HID board's own docs), `ENC_ACTIVE_INPUT_N`/
+   `ENC_ACTIVE_OUTPUT_N` propagation-delay constraint documented explicitly (must only
+   originate/terminate at Cypher, never tapped by an intermediate HID board).
+3. `Cypher_Input_64_Char_Design.md` — restored from a badly-gutted state (background agent had
+   stripped ~75% of the file and changed its title/header format) back to full original detail,
+   with only the genuinely-affected LED section (§5) rewritten to remove the obsolete `U9`/`D9`/
+   `R9` local Colour-A/B mux (colour is now USM-sourced) and correctly state the real behaviour:
+   Shift is a **global** state — holding it switches **all** keys from Colour1 to Colour3
+   baseline (since Shift changes `[a-z]`→`[A-Z]`), with the pressed key still showing Colour2 on
+   top of whichever baseline is active.
+4. New todos: `usm-3-part-hid-module-mechanical-review` (mechanical, deferred),
+   `encoder-module-pin-agnostic-redesign-review` (Encoder Module should become CPLD/FPGA +
+   passives only, with direct pin→connector mapping owned by the module and per-carrier-board
+   usage tables — triggered by the `ENC_ACTIVE_N` single-role-pin gap found this session),
+   `usm-redesign-implementation` (master tracking todo, status currently `done` in the DB from
+   the background agent's pass but should likely be flipped back to `in_progress` — see
+   checkpoint 192).
+5. `cypher-input-led-independent-rgb-pwm-review.md` updated with the corrected Shift/colour
+   behaviour, an I2C-bus-allocation preference (fold onto `I2C1` unless over-populated; if a
+   dedicated bus is still needed, lean towards `I2C6` not `I2C2`, to keep `I2C{1-4}` free for an
+   unrelated future discussion), and a note that the `0x39` colour-store address is provisional.
+6. `usm-cfg-refmap-removal-review.md` archived to `.recycle-bin/todos/` as superseded.
+
+**What's broken and needs fixing next session (after the user's git decision):**
+
+`Cypher-Output/{Design_Spec.md,Board_Layout.md}`, `Cypher-Plugboard/{Design_Spec.md,
+Board_Layout.md}`, `Cypher/{Design_Spec.md,Board_Layout.md}`,
+`User_Settings_Module/{Design_Spec.md,Board_Layout.md}` — all need the same careful,
+one-section-at-a-time, diff-checked treatment used to fix `Cypher-Input`. **Do not dispatch
+another single large background-agent pass for this** — it produced this exact problem once
+already. DEC-103 through DEC-106 (created this session, documenting the topology/role decisions)
+are believed sound as decision records even if the implementation files need redoing — just
+double-check they don't cite pin numbers/specifics that end up not matching after a revert.
+
+### Prior session update (2026-09-11, checkpoint 191)
+
 **2026-09-11 session update (checkpoint 191):** `jdb-ft232h-3v3-vregin` is now **done**.
 Investigation found the todo's referenced part number (`FT232HPQ-TRAY`) was actually FTDI's
 unrelated "HP" USB Type-C/Power-Delivery chip family, not a Rev C variant of the plain FT232H — no

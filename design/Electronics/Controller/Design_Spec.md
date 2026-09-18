@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-08
+**Last Updated:** 2026-09-17
 
 ---
 
@@ -48,7 +48,7 @@ source is active.
 | FR-CTL-04 | Route CM5 USB 2.0 D+/D- to the Cypher Board's native USB-JTAG bridge | Via Cypher signal dock `J5` | §7 Connectivity; BOM J5 |
 | FR-CTL-05 | Monitor system power and PM status via I²C, with only essential direct PM handshakes kept as dedicated pins | Telemetry: LTC3350 @ 0x09, STUSB4500 @ 0x28, PCA9534A @ 0x3F, INA219 x2 (PM U10 @ 0x40 on `I2C0`; Cypher U2 @ 0x40 on `I2C1` — same address, independent buses, see DEC-101); Direct handshakes: `PWR_GD`, `ROTOR_EN_N`, `PWR_BUT_N`, `LED_PWR_N` | §3 Telemetry & Logic; §5 CM5 GPIO Mapping Matrix |
 | FR-CTL-06 | Maintain RTC operation across power cycles using a CR2032 backup battery | Non-rechargeable; service by disassembly | §5 RTC Backup Battery; BOM BT1, D1 (BAT54) |
-| FR-CTL-07 | Provide six independent CM5 I²C bus instances: one PM-dedicated bus plus five routed to the Cypher Board (one active, four reserved for future expansion) | `I2C0` (PM-dedicated) via PM dock `J3`; `I2C1` (active Cypher peripherals bus, existing) + `I2C2`/`I2C3`/`I2C4`/`I2C6` (reserved/NC) via Cypher signal dock `J5` | §3.1 I²C Bus Topology; §7 Connectivity; BOM J3, J5 |
+| FR-CTL-07 | Provide six independent CM5 I²C bus instances: one PM-dedicated bus plus five routed to the Cypher Board (two active, three reserved for future expansion) | `I2C0` (PM-dedicated) via PM dock `J3`; `I2C1` (Cypher-local devices) + `I2C2` (Cypher-peripherals / USM / HID lighting) + `I2C3`/`I2C4`/`I2C6` (reserved) via Cypher signal dock `J5` | §3.1 I²C Bus Topology; §7 Connectivity; BOM J3, J5 |
 | FR-CTL-08 | Provide DSI1 display interface connector for optional lid-mounted touchscreen add-on | DSI1 4-lane FPC connector (J9) on Controller Board, routed to CM5 MIPI1; display add-on board to be designed separately | §7 Connectivity; BOM J9 |
 | FR-CTL-09 | Reserve CM5 PWM and GPCLK channels for future peripheral expansion | 4x `PWM0` channels + `GPCLK[0]`/`GPCLK[1]`, routed to the Cypher Board's bare test pads via Cypher signal dock `J5`; no active devices populated at this time | §5 CM5 GPIO Mapping Matrix; §7 Connectivity; BOM J5 |
 
@@ -200,9 +200,9 @@ For DT bindings and driver configuration for both INA219 devices, see
 ### 3.1. I²C Bus Topology
 
 The Controller now exposes six independent I²C bus instances (see §6 and DR-CTL-13): `I2C0` is
-PM-dedicated, routed via PM dock `J3`; `I2C1` is the active Cypher-peripherals bus (existing
-wiring, unchanged), routed via Cypher signal dock `J5`; `I2C2`/`I2C3`/`I2C4`/`I2C6` are reserved/NC
-on the Cypher Board for future expansion, also routed via `J5`.
+PM-dedicated, routed via PM dock `J3`; `I2C1` is the active Cypher-local bus on the Cypher Board; `I2C2` is the active Cypher-peripherals
+bus feeding USM and HID lighting; `I2C3`/`I2C4`/`I2C6` remain reserved for future expansion, all
+via Cypher signal dock `J5`.
 
 | Bus | Address | Device | Location | Function |
 | :--- | :--- | :--- | :--- | :--- |
@@ -214,10 +214,8 @@ on the Cypher Board for future expansion, also routed via `J5`.
 | `I2C1` | 0x20 | MCP23017 (U6) | Cypher Board | ENC_IN/ENC_OUT monitoring (16 GPIO) |
 | `I2C1` | 0x21 | MCP23017 (U7) | Cypher Board | Virtual keypress injection, SOURCE_SEL, CPLD_RESET_N, spare GPIO |
 | `I2C1` | 0x22 | MCP23017 (U8) | Cypher Board | CPLD config output driver (DEC-032) |
-| `I2C1` | 0x23 | MCP23017 (U1) | User Settings Module | Switch input reader (DEC-032) |
-| `I2C1` | 0x24 | MCP23017 (U2) | User Settings Module | Bank 1 LED controller: 5x anodes + RGB bank-rail drivers (DEC-034) |
-| `I2C1` | 0x25 | MCP23017 (U3) | User Settings Module | Bank 2 LED controller: 7x anodes + RGB bank-rail drivers (DEC-034) |
-| `I2C1` | 0x38 | PCA9534A (U4) | Cypher-Input (all variants) | Single fixed address; variant identified via `BOARD_ROLE_ID[3:0]`, not I2C address; Space + Enter GPIO on the 64-Character variant only |
+| `I2C2` | 0x38 | PCA9534A (U4) | Cypher-Input (all variants) | Single fixed address; variant identified via `BOARD_ROLE_ID_IN[3:0]`, not I2C address; Space + Enter GPIO where populated |
+| `I2C2` | 0x39 | Colour-value store (`U1`, TBD) | User Settings Module | Reserved address for the shared HID colour-value store / drive logic |
 | `I2C1` | 0x40 | INA219 (U2) | Cypher Board | Rotor stack current/power telemetry. Same address as PM's `I2C0` INA219 (`U10`) — deliberate reuse of the INA219 default (A0/A1 both GND), safe since the two devices are on independent buses. See DEC-101. |
 
 > **MCP23017 configuration cross-reference:** Full GPIO pin assignments, port-function tables, and
@@ -268,7 +266,7 @@ All GPIOs are referenced to **3V3_ENIG**. BCM2712 silicon limit: 50mA aggregate 
 | GPIO | Function | Type | Logic Level | Description |
 | :--- | :--- | :--- | :--- | :--- |
 | **2 / 3** | **I2C1_SDA/SCL** | I2C | 3.3V | Active Cypher-peripherals bus (Bank 1) shared with the devices listed in §3.1. Routed on `J5`. |
-| **4 / 5** | **I2C2_SDA/SCL** | I2C | 3.3V | Reserved/NC on the Cypher Board (Bank 2, future expansion). Routed on `J5`. See DR-CTL-13. |
+| **4 / 5** | **I2C2_SDA/SCL** | I2C | 3.3V | Active Cypher-peripherals bus for USM and HID lighting. Routed on `J5`. See DR-CTL-13. |
 | **6 / 7** | **I2C3_SDA/SCL** | I2C | 3.3V | Reserved/NC on the Cypher Board (Bank 3, future expansion). Routed on `J5`. See DR-CTL-13. |
 | **8 / 9** | **I2C0_SDA/SCL** | I2C | 3.3V | PM-dedicated bus (Bank 0). Routed on `J3`. See DR-CTL-13. |
 | **12** | **PWM0[0]** | Output | 3.3V | Reserved for future peripheral use; routed to Cypher Board bare test pad `TP1` via `J5`. No active devices populated. See DR-CTL-16. |
@@ -425,8 +423,8 @@ between the Cypher Board and its Stack-Input/Stack-Output/HID interconnects), ca
 [`Samtec-QSS-QTS-RA-Power-Test-Report.md`](design/Datasheets/Samtec-QSS-QTS-RA-Power-Test-Report.md)
 
 `J5` carries `USB_D_PLUS`/`USB_D_MINUS` (to the Cypher Board's native FT232H USB-JTAG bridge),
-`I2C1_SDA`/`SCL` (active Cypher-peripherals bus), `I2C0`/`I2C2`/`I2C3`/`I2C4`/`I2C6` are NOT present
-here (`I2C0` is PM-dedicated on `J3`; `I2C2`/`I2C3`/`I2C4`/`I2C6` are reserved/future banks — see
+`I2C1_SDA`/`SCL` (active Cypher-local bus), `I2C2_SDA`/`SCL` (active USM / HID lighting bus), and
+reserved `I2C3`/`I2C4`/`I2C6` pairs. `I2C0` is PM-dedicated on `J3`; see
 DR-CTL-13), `PWM0[0-3]`, and `GPCLK[0]`/`GPCLK[1]` (reserved, terminating at bare test pads on the
 Cypher Board — see DR-CTL-16). All remaining pins are `GND`.
 

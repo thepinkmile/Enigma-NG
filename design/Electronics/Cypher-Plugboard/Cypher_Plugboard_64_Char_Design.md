@@ -1,4 +1,4 @@
-# Cypher-Plugboard Board - 64-Character Variant Design Specification
+﻿# Cypher-Plugboard Board - 64-Character Variant Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -16,8 +16,7 @@ supports the full extended cipher alphabet - `A-Za-z0-9+/` (26 uppercase letters
 letters + 10 digits + 2 base64-extra symbols), mirroring Cypher-Input's/Cypher-Output's own
 64-Character variant character set.
 
-All three Cypher-Plugboard variants share an identical electrical circuit (HID-chain termination,
-power passthrough) and an identical PCB strip (`J1`/`J2`/R1-R3 only - see
+All three Cypher-Plugboard variants share an identical electrical circuit (connector-only HID / USM mating) and an identical PCB strip (`J1`/`J2` only - see
 `design/Electronics/Cypher-Plugboard/Design_Spec.md`). Only the jack field's row count, character
 layout, and jack quantity differ between variants; since the jack field mounts to a separate
 machined metal enclosure (not the PCB), this is the variant with the tallest enclosure of the
