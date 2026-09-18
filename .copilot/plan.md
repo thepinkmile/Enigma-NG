@@ -6,7 +6,36 @@
 
 ---
 
-## Current Status (as of 2026-09-11 — FT232H 3.3V VREGIN complete, checkpoint 191)
+## Current Status (as of 2026-09-18 — USM redesign connectors finalised, checkpoint 192)
+
+**⚠️ Session paused mid-implementation for a clean weekend handoff — start next session by reading
+checkpoint 192 in full before doing anything else.**
+
+The User Settings Module (USM) redesign's connector-level and role-level decisions are now fully
+settled (three shared connector pin-map templates finalised pin-by-pin with the user; USM's new
+role as HID colour/brightness/audio + JTAG/I2C spine; Cypher-Plugboard reduced to a purely
+mechanical connector board). `Cypher-Input/Design_Spec.md`, `Board_Layout.md`, and
+`Cypher_Input_64_Char_Design.md` are correctly updated and verified.
+
+**However:** a background agent's implementation pass across the other 4 boards
+(`Cypher-Output`, `Cypher-Plugboard`, `Cypher`, `User_Settings_Module` — Design_Spec.md +
+Board_Layout.md each) was destructive — it discarded large amounts of legitimate pre-existing
+content on top of the intended edits (confirmed via `git diff --stat`: net 883 insertions / 2221
+deletions across those 8 files). The user is handling the git-level revert/keep decision
+themselves before next session resumes. **Do not assume any of those 8 files are in a good state
+without checking `git status`/`git diff --stat` first.** See checkpoint 192 for the full
+per-file table and the exact next steps.
+
+**Next session must start with:** confirm what the user decided for the flagged files, then
+redo any still-needed changes file-by-file with the same careful, diff-checked-before-moving-on
+approach used to fix `Cypher-Input` (not another single large background-agent pass).
+
+Once the connector/role implementation across all 5 boards is confirmed correct and complete, the
+user's stated next step is to move on to planning small test boards for the LED
+implementation PoC (`cypher-input-led-independent-rgb-pwm-review` — analog RGB drive vs.
+addressable LEDs, still an open decision).
+
+### Prior status (as of 2026-09-11 — FT232H 3.3V VREGIN complete, checkpoint 191)
 
 `jdb-ft232h-3v3-vregin` is now **done**. Investigation found the todo's referenced part number
 (`FT232HPQ-TRAY`) was actually FTDI's unrelated "HP" USB Type-C/Power-Delivery chip family, not a

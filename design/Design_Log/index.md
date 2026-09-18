@@ -1,16 +1,18 @@
-# Enigma-NG Design Decision Log
+﻿# Enigma-NG Design Decision Log
 
 **Status:** Active
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-11
+**Last Updated:** 2026-09-17
 
 This file records key architectural and component decisions made during the design of the Enigma-NG system. Each entry captures the decision taken, the rationale behind it, the alternatives that were
 considered, and any constraints or caveats that future designers should be aware of.
 
 Entries are numbered sequentially as **DEC-NNN**. Where a decision supersedes a previous one, the earlier entry is updated with a cross-reference.
+
+<!-- markdownlint-disable MD013 -->
 
 ---
 
@@ -118,3 +120,10 @@ Entries are numbered sequentially as **DEC-NNN**. Where a decision supersedes a 
 | [DEC-100](DEC-100_jtag-module-actuation-module-retirement-from-controller-board.md) | JTAG Module and Actuation Module Retirement from Controller Board | 2026-09-04 | Decided | Removes the JM dock (J12, MH9-MH12) and AM host dock (J11, MH5-MH8, GPIO8 ACTUATE_REQUEST_N, R4 pull-up) from the Controller Board - both functions already consolidated elsewhere (JTAG bridge native to Cypher; Actuation Module MCU/solenoid circuitry native to Stack-Input, one instance per mini-stack, per DEC-093/DEC-097's round-trip chain). Frees GPIO8 for I2C0 (DEC-099). Full FR/DR/BOM renumbering on the Controller per project convention (DEC-055/DEC-080). Power_Budgets.md's "servo rail" line relocated (not removed) to reflect the solenoid's continued draw via its native Stack-Input instance. |
 | [DEC-101](DEC-101_cypher-ina219-i2c-address-aligned-to-pm-default.md) | Cypher Board INA219 I2C Address Aligned to PM Default (0x45 → 0x40) | 2026-09-08 | Decided | Changes Cypher Board's INA219 (U2, rotor-stack telemetry) I2C address from 0x45 to 0x40, matching the Power Module's INA219 (U10) default address. Both now use the INA219's zero-strap default (A0/A1 to GND) - safe to duplicate since the two devices sit on independent I2C buses (I2C0 for PM, I2C1 for Cypher, per DEC-098/DEC-099). Simplifies both hardware (no address-strap components) and monitoring software (identical driver code, only the bus/bank differs). |
 | [DEC-102](DEC-102_cypher-ft232h-3v3-vregin-self-powered-5v-usb-net-retired.md) | Cypher FT232H Moved to 3.3V VREGIN Self-Powered Operation (5V_USB Net Retired) | 2026-09-11 | Decided | FT232H (U17) moved to self-powered 3.3V VREGIN operation using the already-specified FT232HL-REEL's Rev C silicon capability - VREGIN and VCCD (an input in this mode, previously self-generated) both tied to 3V3_ENIG. Retires the `5V_USB` net and its entry filter (C27) entirely - found to be a phantom/stale net left over from the pre-merge JTAG Daughterboard architecture, never actually present on the current Cypher/Controller dock (DEC-098). No 5V rail required anywhere in the USB-JTAG bridge. Closes `jdb-ft232h-3v3-vregin`. |
+
+| [DEC-103](DEC-103_hid-usm-hub-connector-topology-rework.md) | HID / USM Hub Connector Topology Rework | 2026-09-17 | Decided | Retires the HID boards' former right-pair J5/J7 chain-through connectors, adds a dedicated USM-facing right-edge connector on both HID boards, repurposes Cypher `J6` as the USM hub, and repurposes Cypher-Plugboard `J2` to mate USM rather than a HID board. |
+| [DEC-104](DEC-104_user-settings-module-role-reworked-as-hid-colour-audio-hub-and-jtag-i2c-spine.md) | User Settings Module Reworked as HID Colour / Audio Hub and JTAG/I2C Spine | 2026-09-17 | Decided | USM is now the shared HID lighting-colour / brightness hub, the placeholder audio board, and the JTAG / I2C spine between Cypher and the HID boards. CFG_ROUTE and panel-switch behaviour are removed from USM. |
+| [DEC-105](DEC-105_cfg-route-moved-to-full-cm5-software-control-physical-usm-switches-retired.md) | CFG_ROUTE Moved to Full CM5 Software Control; Physical USM Switches Retired | 2026-09-17 | Decided | `CFG_ROUTE[3:0]` is now CM5-owned only. The physical USM switch and apply-button path is removed. `CFG_REFMAP` remains governed by DEC-089's JTAG UFM write decision. |
+| [DEC-106](DEC-106_cypher-plugboard-reduced-to-mechanical-connector-only-board.md) | Cypher-Plugboard Reduced to Mechanical / Connector-Only Board | 2026-09-17 | Decided | Cypher-Plugboard now carries only the two board-to-board connectors and no active electrical components. The plugboard jack field remains mechanically mounted and harnessed directly to Cypher `J20+`. |
+
+<!-- markdownlint-enable MD013 -->

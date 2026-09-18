@@ -1,4 +1,4 @@
--- Enigma-NG Todo Database Seed
+﻿-- Enigma-NG Todo Database Seed
 -- Run this at session start via the sql tool (INSERT OR IGNORE = idempotent).
 
 INSERT OR IGNORE INTO todos (id, title, status) VALUES
@@ -154,6 +154,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('todo-clean-up-requirement-details', 'Cleaning up FR/DR requirement detail across design files',         'pending'),
 ('merge-diagrams-review',            'Review and update draw.io diagrams for Cypher system merge',       'pending'),
 ('cypher-input-led-independent-rgb-pwm-review', 'Review LED colour controls for independent per-channel RGB PWM', 'pending'),
-('usm-cfg-refmap-removal-review', 'Revisit USM Bank 2/CFG_REFMAP removal before next full design review', 'pending'),
+('usm-cfg-refmap-removal-review', 'Revisit USM Bank 2/CFG_REFMAP removal before next full design review', 'done'),
 ('merge-actuate-request-routing', 'Define ACTUATE_REQUEST_IN_N/OUT_N routing through Rotor and Stack-Interposer boards', 'done'),
-('design-docs-current-only-sweep', 'Sweep all design documents for historical/rationale wording (current-design-only rule)', 'pending');
+('design-docs-current-only-sweep', 'Sweep all design documents for historical/rationale wording (current-design-only rule)', 'pending'),
+('usm-redesign-implementation', 'Implement the agreed User Settings Module and HID connector redesign', 'done');

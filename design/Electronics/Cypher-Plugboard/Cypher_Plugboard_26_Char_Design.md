@@ -1,4 +1,4 @@
-# Cypher-Plugboard Board - 26-Char Classic Variant Design Specification
+﻿# Cypher-Plugboard Board - 26-Char Classic Variant Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -15,8 +15,7 @@ This document specifies the **26-Char Classic** variant of the Enigma-NG Cypher-
 It supports the classic 26-letter cipher alphabet (`A-Z`, uppercase only), mirroring
 Cypher-Input's/Cypher-Output's own 26-Char Classic variant character set.
 
-All three Cypher-Plugboard variants share an identical electrical circuit (HID-chain termination,
-power passthrough) and an identical PCB strip (`J1`/`J2`/R1-R3 only - see
+All three Cypher-Plugboard variants share an identical electrical circuit (connector-only HID / USM mating) and an identical PCB strip (`J1`/`J2` only - see
 `design/Electronics/Cypher-Plugboard/Design_Spec.md`). Only the jack field's row count, character
 layout, and jack quantity differ between variants; the jack field mounts to its own machined
 metal enclosure (not the PCB), sized to this variant's own 3-row layout - it is not sized to the

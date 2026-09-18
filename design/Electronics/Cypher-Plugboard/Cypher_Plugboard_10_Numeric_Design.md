@@ -1,4 +1,4 @@
-# Cypher-Plugboard Board - 10-Numeric Variant Design Specification
+﻿# Cypher-Plugboard Board - 10-Numeric Variant Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -15,8 +15,7 @@ This document specifies the **10-Numeric** variant of the Enigma-NG Cypher-Plugb
 supports the 10-digit numeric-only cipher alphabet (`0-9`), mirroring Cypher-Input's/
 Cypher-Output's own 10-Numeric variant character set.
 
-All three Cypher-Plugboard variants share an identical electrical circuit (HID-chain termination,
-power passthrough) and an identical PCB strip (`J1`/`J2`/R1-R3 only - see
+All three Cypher-Plugboard variants share an identical electrical circuit (connector-only HID / USM mating) and an identical PCB strip (`J1`/`J2` only - see
 `design/Electronics/Cypher-Plugboard/Design_Spec.md`). Only the jack field's row count, character
 layout, and jack quantity differ between variants; the jack field mounts to its own machined
 metal enclosure (not the PCB), sized to this variant's own 2-row layout - the smallest of the

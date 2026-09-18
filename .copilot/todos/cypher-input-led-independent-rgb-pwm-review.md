@@ -70,9 +70,12 @@ Key outcomes to carry forward into this review:
   per-key logic itself — applying the 3 colours to actual LEDs is entirely the HID board's own
   responsibility, using whichever local implementation this review selects.
 - **Required per-key/per-lens behaviour (drives the PoC test plan):**
-  - Cypher-Input: static/idle state = **all** keys show Colour1; the currently-pressed key shows
-    Colour2; on the 64-Character variant, if Shift is also held, the pressed key shows Colour3
-    instead.
+  - Cypher-Input: static/idle state = **all** keys show Colour1. The currently-pressed key shows
+    Colour2. On the 64-Character variant, holding Shift is a **global** state change (not
+    per-key): while Shift is held, **all** keys switch their baseline illumination from Colour1 to
+    Colour3 (indicating the letter keys are now producing uppercase output - Shift changes the
+    `[a-z]` keys' cipher meaning to `[A-Z]`), and the currently-pressed key still shows Colour2 on
+    top of that Colour3 baseline exactly as it would on top of the normal Colour1 baseline.
   - Cypher-Output: the ENC module's `LBD_DEC` CPLD decodes whether the output character is
     uppercase (treated as "shifted") from `ENC_DATA[5:0]` and lights that position's LED Colour3
     if so, Colour2 otherwise; **no** lens is illuminated at all when no key is currently active.
@@ -108,3 +111,22 @@ Key outcomes to carry forward into this review:
   resolved.
 - `Power_Budgets.md`'s existing 5V_MAIN LED-bank figures remain the current-best-estimate ceiling
   until this review's PoC and final option choice - do not recalculate until then.
+
+## Follow-up items from USM redesign implementation (2026-09-17)
+
+- **I2C bus allocation review needed once the LED implementation is chosen.** The USM redesign
+  implementation created a dedicated `I2C2` bus ("Cypher-peripherals") purely as a placeholder for
+  the USM colour-value store. User's preference: only keep a genuinely separate dedicated bus if
+  `I2C1` actually becomes over-populated as a result of whatever LED implementation this review
+  selects - if `I2C1` has enough headroom, prefer folding the colour-value store onto it instead
+  of keeping a second bus. User also wants to reserve the numbering `I2C{1-4}` for a **different,
+  not-yet-had discussion** (a future idea, unrelated to this review) - so if a dedicated bus does
+  turn out to be needed, user is currently leaning towards naming it `I2C6` (the "Cypher-local"
+  bus) rather than `I2C2`, specifically to keep `I2C{1-4}` free for that other discussion. Nothing
+  needs to change right now - this is deferred until the LED PoC/decision is made, then revisit the
+  bus numbering/allocation as part of wrapping up this review.
+- **Colour-store I2C address (`0x39` on the placeholder `I2C2` bus, per `User_Settings_Module/
+  Design_Spec.md` DR-USM-07) is provisional only.** It's probably fine as a starting point, but
+  the final address (and which bus it sits on - see point above) will likely depend on the outcome
+  of the LED selection PoC and whatever the chosen implementation actually needs. Re-confirm/update
+  this address as part of closing out this review, don't assume `0x39`/`I2C2` is final.

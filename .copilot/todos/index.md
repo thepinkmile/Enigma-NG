@@ -1,4 +1,4 @@
-# Enigma-NG Todo Index
+﻿# Enigma-NG Todo Index
 
 > **Canonical deferred-work reference.** Summary table only — no prose or inline notes.
 > Per-todo detail files are in `.copilot/todos/<id>.md` (active todos only).
@@ -8,7 +8,7 @@
 >
 > **Design Log** entries: `design/Design_Log/` (per-DEC files; see `design/Design_Log/index.md`).
 
-Last updated: 2026-09-02
+Last updated: 2026-09-17
 
 ---
 
@@ -153,3 +153,5 @@ Last updated: 2026-09-02
 | `merge-missing-components` | [merge-missing-components.md](merge-missing-components.md) | pending | `merge-consistency-review` |
 | `merge-final-review` | [merge-final-review.md](merge-final-review.md) | pending | `merge-consistency-review`, `merge-missing-components` |
 | `todo-clean-up-requirement-details` | [todo-clean-up-requirement-details.md](todo-clean-up-requirement-details.md) | pending | `design-discussion-merge` |
+| `usm-cfg-refmap-removal-review` | — | done | — |
+| `usm-redesign-implementation` | — | done | — |
