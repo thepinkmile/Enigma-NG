@@ -1,386 +1,137 @@
-# Cypher Board V1.0 Pinout Reference
+﻿# Cypher Board V1.0 Pinout Reference
 
 **Status:** Draft
 **Project:** Enigma-NG
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-04
+**Last Updated:** 2026-09-17
 
-> **Board_Layout.md is a visualisation-only document.** Design narrative, specifications, and
-> component rationale belong in `Design_Spec.md`. This file contains connector pinout references
-> and board orientation notes only.
+> **Board_Layout.md is a visualisation-only document.** Design narrative and requirements belong in
+> `Design_Spec.md`.
 
 ---
 
 ## Orientation Convention
 
 - **Front face:** faces the first Rotor Mini-Stack.
-- **Back face:** carries ENC module mounts (J7–J18), the CTL dock connectors (J1/J2), and the
-  spade blade terminal bank (J20+) along the **bottom edge** of this face (the HID interconnect
-  connectors, J5/J6, are at the top edge of the same face - general placement only, exact
-  per-terminal arrangement TBD at layout - see DEC-088).
-- **STA side:** the edge where J3 (Stack-Input / STA-side QSS-025 female) is mounted.
-- **REF side:** the edge where J4 (Stack-Output / REF-side QSS-025 female) is mounted.
+- **Back face:** carries the ENC module mounts (`J7`-`J18`), the Controller dock connectors
+  (`J1` / `J2`), the HID connectors (`J5` / `J6`), and the spade blade terminal bank (`J20+`).
+- **STA side:** `J3`.
+- **REF side:** `J4`.
 
 ---
 
-## 1. J1 / J2 — Controller Dock (Power-Only Molex / Signal-Only Samtec)
+## 1. J1 / J2 - Controller Dock
 
-> **Connector Definition Owner:** `Controller/Board_Layout.md §2`/§3`.
-> `J1` uses the plug (Molex 2195620015) mating with the CTL receptacle (Molex 2195630015).
-> `J2` uses the right-angle male plug (Samtec QTS-025-01-L-D-RA-P) mating with the CTL vertical
-> female receptacle (Samtec QSS-025-01-L-D-A-GP-K). See DEC-098.
+Connector definitions remain as documented by `Controller/Board_Layout.md`.
 
-### J1 — Power-Only Dock (Molex 2195620015)
+---
 
-Zero signal contacts.
+## 2. J3 - Stack-Input / STA-Side Stacking Connector
 
-| Contact type | Allocation | Notes |
-| :--- | :--- | :--- |
-| Power-pitch (5x, big pins) | `5 x GND` | `GND` mates first on the larger, more robust contacts |
-| Signal-pitch (8x) | `8 x 5V_MAIN` | 4.5A/contact rating — 36A theoretical capacity |
-| Signal-pitch (7x) | `7 x 3V3_ENIG` | 4.5A/contact rating — 31.5A theoretical capacity |
+Connector definition remains owned by `Stack-Input/Board_Layout.md §1`.
 
-### J2 — Signal-Only Dock (Samtec QTS-025-01-L-D-RA-P)
+---
 
-Zero power rails. 50 contacts: 2 center-GND-bar (1/row) + 24 usable pins/row. Pin numbering:
-column Cn, top pin = 2n-1, bottom pin = 2n. **Note:** the connector's internal ground wedge runs
-the full connector length between the top (odd) and bottom (even) pin rows — top/bottom crosstalk
-within a column is inherently shielded; the exposure to guard against is column-to-column
-(same-row) adjacency, hence the `GND` separator columns below. Full pin map matches
-`Controller/Board_Layout.md §3.2` exactly (this board carries the mating plug of the same net map).
+## 3. J4 - Stack-Output / REF-Side Stacking Connector
+
+Connector definition remains owned by `Stack-Output/Board_Layout.md §1`.
+
+---
+
+## 4. J5 / J6 - HID / USM Interfaces
+
+### J5 - HID Left Pair Template
 
 | Top Row Signal | Top Pin# | Bottom Pin# | Bottom Row Signal |
 | :--- | :---: | :---: | :--- |
-| GND | 1 | 2 | GND |
-| **PWM0[0]** | 3 | 4 | GND |
-| GND | 5 | 6 | **PWM0[1]** |
-| **PWM0[2]** | 7 | 8 | GND |
-| GND | 9 | 10 | **PWM0[3]** |
-| GND | 11 | 12 | GND |
-| GND | 13 | 14 | GND |
-| **GPCLK[0]** | 15 | 16 | **GPCLK[1]** |
-| GND | 17 | 18 | GND |
-| GND | 19 | 20 | GND |
-| **USB_D_PLUS** | 21 | 22 | **USB_D_MINUS** |
+| `5V_MAIN` | 1 | 2 | `5V_MAIN` |
+| `5V_MAIN` | 3 | 4 | `5V_MAIN` |
+| GND | 5 | 6 | GND |
+| GND | 7 | 8 | GND |
+| `ENC_ACTIVE_INPUT_N` | 9 | 10 | `ENC_DATA_OUT[5]` |
+| GND | 11 | 12 | `ENC_DATA_OUT[4]` |
+| GND | 13 | 14 | `ENC_DATA_OUT[3]` |
+| `BOARD_ROLE_ID_IN[0]` | 15 | 16 | `ENC_DATA_OUT[2]` |
+| `BOARD_ROLE_ID_IN[1]` | 17 | 18 | `ENC_DATA_OUT[1]` |
+| `BOARD_ROLE_ID_IN[2]` | 19 | 20 | `ENC_DATA_OUT[0]` |
+| `BOARD_ROLE_ID_IN[3]` | 21 | 22 | GND |
 | GND | 23 | 24 | GND |
 | GND (bar) | 25 | 26 | GND (bar) |
 | GND | 27 | 28 | GND |
-| GND | 29 | 30 | GND |
-| **I2C1_SDA** (Bank 1, Cypher peripherals — existing) | 31 | 32 | **I2C1_SCL** (Bank 1, existing) |
-| GND | 33 | 34 | GND |
-| **I2C2_SDA** (Bank 2, future — NC) | 35 | 36 | **I2C2_SCL** (Bank 2, future — NC) |
-| GND | 37 | 38 | GND |
-| **I2C3_SDA** (Bank 3, future — NC) | 39 | 40 | **I2C3_SCL** (Bank 3, future — NC) |
-| GND | 41 | 42 | GND |
-| **I2C4_SDA** (Bank 4, future — NC) | 43 | 44 | **I2C4_SCL** (Bank 4, future — NC) |
+| GND | 29 | 30 | `BOARD_ROLE_ID_OUT[3]` |
+| `ENC_DATA_IN[0]` | 31 | 32 | `BOARD_ROLE_ID_OUT[2]` |
+| `ENC_DATA_IN[1]` | 33 | 34 | `BOARD_ROLE_ID_OUT[1]` |
+| `ENC_DATA_IN[2]` | 35 | 36 | `BOARD_ROLE_ID_OUT[0]` |
+| `ENC_DATA_IN[3]` | 37 | 38 | GND |
+| `ENC_DATA_IN[4]` | 39 | 40 | GND |
+| `ENC_DATA_IN[5]` | 41 | 42 | `ENC_ACTIVE_OUTPUT_N` |
+| GND | 43 | 44 | GND |
 | GND | 45 | 46 | GND |
-| **I2C6_SDA** (Bank 6, spare/HID-future — NC) | 47 | 48 | **I2C6_SCL** (Bank 6, spare/HID-future — NC) |
-| GND | 49 | 50 | GND |
+| `5V_MAIN` | 47 | 48 | `5V_MAIN` |
+| `5V_MAIN` | 49 | 50 | `5V_MAIN` |
 
-> **Note:** `I2C0` (PM-dedicated bus) is **not** present on this connector — it is routed
-> exclusively via the Controller's `J3` to the Power Module. `I2C2`/`I2C3`/`I2C4`/`I2C6` are
-> reserved for future expansion (see DEC-099) and are NC on this board; `PWM0[0-3]` and
-> `GPCLK[0]`/`GPCLK[1]` are also reserved and are wired only to the bare test-pad loops
-> (`TP1`-`TP6`, each paired with a `GND` test-pad loop `TP7`-`TP12`) defined below — see
-> `Design_Spec.md DR-CYP-10`.
+#### Cypher Board wiring at J5
 
----
+| Pins | Wiring |
+| :--- | :--- |
+| 9 | `ENC_ACTIVE_INPUT_N` to the Cypher monitoring path |
+| 15, 17, 19, 21 | `BOARD_ROLE_ID_IN[3:0]` to the CPLD compatibility comparator |
+| 30, 32, 34, 36 | `BOARD_ROLE_ID_OUT[3:0]` to the CPLD compatibility comparator |
+| 31, 33, 35, 37, 39, 41 | `ENC_IN_KBD[5:0]` to CPLD `U1` |
+| 10, 12, 14, 16, 18, 20 | `ENC_OUT_LBD[5:0]` from CPLD `U1` |
+| 42 | `ENC_ACTIVE_OUTPUT_N` to the Cypher monitoring path |
+| `5V_MAIN` and GND | HID power / return distribution |
 
-## 2. J3 — Stack-Input / STA-Side Stacking Connector (QSS-025-01-L-D-A-GP-K)
+### J6 - USM Hub Template
 
-> **Connector Definition Owner:** `Stack-Input/Board_Layout.md §1` (per DEC-094 — the IC-STA-CHAIN
-> template is reused identically at every Stack-Input front/rear junction along the chain).
-> This board carries the female receptacle (QSS-025-01-L-D-A-GP-K); Stack-Input's front face
-> carries the mating male QTS-025-01-L-D-RA-P.
-
-**Fully 50-pin allocated** per DEC-090/DEC-093 — see `Stack-Input/Board_Layout.md §1` for the
-full canonical pin map.
-
-> **Cypher Board's own wiring at J3:** `ACTUATE_REQUEST_IN_N` (pin 16) → CPLD U1 input, driving
-> first-rotor actuation per U1's programmed configuration (based on `ENC_ACTIVE_N` from
-> Cypher-Input and U1's firmware, per DEC-091). `ACTUATE_REQUEST_OUT_N` (pin 35) → CPLD U1 input
-> **and** R51 (10 kOhm pull-up to 3V3_ENIG, idle-bias) — this is the far-end return of the full
-> round-trip signal path (DEC-093); U1 firmware compares it against the originally-issued
-> `ACTUATE_REQUEST_IN_N` to verify the request successfully completed its round trip through the
-> entire rotor stack, as a system self-test/diagnostic. The pull-up defines the idle/disconnected
-> state (e.g. Stack-Blanking Board plugged directly into `J3`/`J4` for bench testing with no
-> mini-stacks attached, where nothing actively drives this pin). See DEC-090, DEC-091, DEC-093,
-> DEC-094, DEC-097.
-
----
-
-## 3. J4 — Stack-Output / REF-Side Stacking Connector (QSS-025-01-L-D-A-GP-K)
-
-> **Connector Definition Owner:** `Stack-Output/Board_Layout.md §1` (per DEC-094 — the
-> IC-REF-CHAIN template is reused identically at every Stack-Output front/rear junction along the
-> chain). This board carries the female receptacle (QSS-025-01-L-D-A-GP-K); Stack-Output's
-> front face carries the mating male QTS-025-01-L-D-RA-P.
-
-**Fully 50-pin allocated** per DEC-092/DEC-093 — see `Stack-Output/Board_Layout.md §1` for the
-full canonical pin map.
-
-> **Cypher Board's own wiring at J4:** `TTD_RETURN` (pin 30) mirrors `TTD`'s position on `J3`
-> (pin 30) — routed via R50 (22 Ohm) to FT232H U17 TDO, per §4 Signal Turnaround. `3V3_ENIG`
-> (8 pins total, matching `J3`'s power pin count on this single-rail connector) feeds the
-> Stack-Output Board, which requires no `5V_MAIN` (per `Stack-Output/Design_Spec.md DR-SOUT-07`).
-> `ACTUATE_REQUEST_REF_IN_N`/`ACTUATE_REQUEST_REF_OUT_N` are logically distinct nets from `J3`'s
-> `ACTUATE_REQUEST_IN_N`/`ACTUATE_REQUEST_OUT_N` (same pin positions, per the board-agnostic
-> template, but different roles — matching the existing `ENC_IN_REF`/`ENC_OUT_REF` vs
-> `ENC_IN_ROT`/`ENC_OUT_ROT` naming precedent). `ACTUATE_REQUEST_REF_IN_N` (pin 16) → CPLD U1
-> input; based on U1's firmware configuration, U1 drives `ACTUATE_REQUEST_REF_OUT_N` (pin 35) in
-> response. See DEC-093 for the full end-to-end `ACTUATE_REQUEST` signal path.
-
----
-
-## 4. J5 / J6 — HID Board Interconnect (Cypher-Input / Cypher-Output, either order)
-
-> **Connector Definition Owner:** this board.
-> **Architecture:** Cypher-Input and Cypher-Output each carry **4 connectors** rather than a
-> single interconnect: 2 male at their top edge, mounted flush with the board edge so the
-> connector face sits flush with the enclosure lid's edge once cased; 2 female at their bottom
-> edge, mounted protruding past the board edge far enough to span the enclosure gap and fully
-> mate with the neighbouring board's flush-mounted male connector. Only **one** HID board
-> connects directly to the Cypher Board at a time — whichever board is physically closest
-> (its top/male pair mates here). The second HID board connects only to the first board's
-> bottom/female pair, one level further down; a future Plugboard board terminates the bottom of
-> that local 2-board stack. Either Cypher-Input or Cypher-Output may occupy the position closest
-> to the Cypher Board — this connector pair's pinout is therefore identical regardless of which
-> board is plugged in ("either order" support).
->
-> **J5 (left, female, QSS-025-01-L-D-A-GP-K, vertical):** mates the top-left (right-angle male,
-> QTS-025-01-L-D-RA-P) connector of whichever HID board is present. Carries 3V3_ENIG, 5V_MAIN,
-> and GND (2 pins each, excluding the center GND bar), the LED colour/brightness broadcast
-> signals from Cypher-Input, and the `BOARD_ROLE_ID` compatibility comparator inputs - full pin
-> map below. The physical plugboard patch-jack harness does **not** route through this
-> connector - it wires directly to this board's own spade terminal bank (`J20+`) instead, per
-> DEC-088.
->
-> **J6 (right, female, QSS-025-01-L-D-A-GP-K, vertical):** mates the top-right (right-angle male,
-> QTS-025-01-L-D-RA-P) connector of whichever HID board is present. Carries GND on the center
-> pin/bar (inherent to the QSS/QTS-025-GP family) plus the JTAG chain-through signals below.
-> Cypher-bits/ENC_DATA and I2C passthrough signal reallocation into this connector is a separate
-> follow-up not yet defined.
-
-### J5 — Full Pin Map (Power + LED Broadcast + `BOARD_ROLE_ID` Comparator Inputs)
-
-50 contacts: 2 center-GND-bar (1/row) + 24 usable pins/row. Pin numbering: column Cn, top pin =
-2n-1, bottom pin = 2n. This is a **board-agnostic template** — how each specific board
-(Cypher-Input, Cypher-Output, Plugboard) wires a given pin internally is defined in that board's
-own `Design_Spec.md`.
-
-| Top Row Signal | Top Row Pin# | Bottom Row Pin# | Bottom Row Signal |
+| Top Row Signal | Top Pin# | Bottom Pin# | Bottom Row Signal |
 | :--- | :---: | :---: | :--- |
-| **3V3_ENIG** | 1 | 2 | **3V3_ENIG** |
-| **3V3_ENIG** | 3 | 4 | **3V3_ENIG** |
-| **5V_MAIN** | 5 | 6 | **5V_MAIN** |
-| **5V_MAIN** | 7 | 8 | **5V_MAIN** |
+| `3V3_ENIG` | 1 | 2 | `3V3_ENIG` |
+| `3V3_ENIG` | 3 | 4 | `3V3_ENIG` |
+| GND | 5 | 6 | GND |
+| GND | 7 | 8 | GND |
 | GND | 9 | 10 | GND |
 | GND | 11 | 12 | GND |
-| GND | 13 | 14 | **RED_DRIVE_N** |
-| GND | 15 | 16 | **GREEN_DRIVE_N** |
-| **BOARD_ROLE_ID_IN[0]** | 17 | 18 | GND |
-| **BOARD_ROLE_ID_IN[1]** | 19 | 20 | GND |
-| **BOARD_ROLE_ID_IN[2]** | 21 | 22 | GND |
-| **BOARD_ROLE_ID_IN[3]** | 23 | 24 | GND |
+| GND | 13 | 14 | GND |
+| GND | 15 | 16 | GND |
+| GND | 17 | 18 | `I2C_SDA` |
+| GND | 19 | 20 | GND |
+| `CPLD_RESET_N` | 21 | 22 | `I2C_SCL` |
+| GND | 23 | 24 | GND |
 | GND (bar) | 25 | 26 | GND (bar) |
-| GND | 27 | 28 | **BOARD_ROLE_ID_OUT[3]** |
-| GND | 29 | 30 | **BOARD_ROLE_ID_OUT[2]** |
-| GND | 31 | 32 | **BOARD_ROLE_ID_OUT[1]** |
-| GND | 33 | 34 | **BOARD_ROLE_ID_OUT[0]** |
-| **BRIGHTNESS_PWM_EN** | 35 | 36 | GND |
-| **BLUE_DRIVE_N** | 37 | 38 | GND |
+| GND | 27 | 28 | GND |
+| `TMS` | 29 | 30 | `TCK` |
+| GND | 31 | 32 | GND |
+| `TDI` | 33 | 34 | `TDO` |
+| GND | 35 | 36 | GND |
+| GND | 37 | 38 | GND |
 | GND | 39 | 40 | GND |
 | GND | 41 | 42 | GND |
-| **5V_MAIN** | 43 | 44 | **5V_MAIN** |
-| **5V_MAIN** | 45 | 46 | **5V_MAIN** |
-| **3V3_ENIG** | 47 | 48 | **3V3_ENIG** |
-| **3V3_ENIG** | 49 | 50 | **3V3_ENIG** |
-
-> **Power/GND pin budget rule:** `3V3_ENIG`, `5V_MAIN`, and GND (excluding the center GND bar and
-> the GND pin that is the silent partner row of a signal column) are equally split at 8 pins
-> each.
->
-> **Rotational (180°) symmetry:** this pin map is a point-symmetric pattern about the center GND
-> bar (column 13, pins 25/26) - rotating the connector 180° maps every populated pin onto its
-> counterpart at the mirrored column/row (column *n* maps to column 26-*n*). `3V3_ENIG` (columns
-> 1/2/24/25), `5V_MAIN` (columns 3/4/22/23), and the two fully-spare GND columns (5/6/20/21) each
-> occupy identical nets on both sides of the connector. `RED_DRIVE_N`/`GREEN_DRIVE_N` (columns
-> 7/8, bottom row) diagonally oppose `BLUE_DRIVE_N`/`BRIGHTNESS_PWM_EN` (columns 18/19, top row) -
-> deliberately kept off the `BOARD_ROLE_ID` block's own row so the two signal groups are visually
-> and electrically independent, not contiguous; `BOARD_ROLE_ID_IN[3:0]` (columns 9-12, top row)
-> diagonally opposes `BOARD_ROLE_ID_OUT[3:0]` (columns 14-17, bottom row, bit order reversed by
-> the rotation).
->
-> **`5V_MAIN`:** board power net; final downstream consumption depends on the LED component
-> selected in `merge-missing-components.md`.
->
-> **LED colour/brightness broadcast:** `RED_DRIVE_N` (pin 14) and `GREEN_DRIVE_N` (pin 16) are
-> generated by Cypher-Input on the bottom row; `BLUE_DRIVE_N` (pin 37) and `BRIGHTNESS_PWM_EN`
-> (pin 35) are generated by Cypher-Input on the top row - all 4 signals are generated only by
-> Cypher-Input (from its own §5 LED Indicator Circuit and §6 Brightness Control) and consumed
-> only by Cypher-Output; the row each occupies is a physical placement choice for connector
-> symmetry, not a row-ownership convention (unlike `BOARD_ROLE_ID` below). The other row of each
-> of these 4 columns is GND.
->
-> **`BOARD_ROLE_ID_IN[3:0]`/`BOARD_ROLE_ID_OUT[3:0]`:** `BOARD_ROLE_ID_IN[3:0]` (pins 17/19/21/23)
-> is Cypher-Input's own ID, driven on the top row; `BOARD_ROLE_ID_OUT[3:0]` (pins 34/32/30/28) is
-> Cypher-Output's own ID, driven on the bottom row - fixed by each board's own passthrough wiring
-> convention, regardless of physical stacking order (see `Design_Spec.md §3a`). As a permanently-
-> tied hardware identification strap (not a dynamic/switching signal), no additional GND shielding
-> is required beyond the fixed center bar. `BOARD_ROLE_ID[3:0]` resides on this connector because
-> the right-hand (`J6`) JTAG-template connector has no pin budget available for a 4-bit strap -
-> see §3a `BOARD_ROLE_ID` Compatibility Comparator in `Design_Spec.md`. Capability bit encoding
-> (`ID[3]:ID[2]:ID[1]:ID[0]`, shared meaning on both Input and Output IDs):
->
-> | Bit | Meaning |
-> | :---: | :--- |
-> | 0 | Characters (A-Z letters) |
-> | 1 | Numbers (0-9 digits) |
-> | 2 | Special (symbols, e.g. base64-extra `+`/`/`) |
-> | 3 | Custom (board declares support for a non-standard capability combination) |
->
-> Known values: 26-Char Classic = `0b0001`; 10-Numeric = `0b0010`; 64-Character (default) =
-> `0b0111`; 64-Character (custom-support enabled via user-accessible switch) = `0b1111`. See
-> `Design_Spec.md §3a` for the full compatibility rule and `HID_VARIANT_ID[3:0]` comparator
-> output.
-
-### J6 — Full Pin Map (JTAG + ENC_DATA + Board ID + I2C + PWM)
-
-50 contacts: 2 center-GND-bar (1/row) + 24 usable pins/row. Pin numbering: column Cn, top pin =
-2n-1, bottom pin = 2n. This is a **board-agnostic template** — pin function (e.g. `TTD_HID_IN`) is
-fixed by position; how each specific board (Cypher-Input, Cypher-Output, Plugboard) wires a given
-pin internally is defined in that board's own `Design_Spec.md`.
-
-| Top Row Signal | Top Row Pin# | Bottom Row Pin# | Bottom Row Signal |
-| :--- | :---: | :---: | :--- |
-| GND | 1 | 2 | GND |
-| **ENC_DATA[0]** | 3 | 4 | **ENC_DATA[0]** |
-| **ENC_DATA[1]** | 5 | 6 | **ENC_DATA[1]** |
-| **ENC_DATA[2]** | 7 | 8 | **ENC_DATA[2]** |
-| **ENC_DATA[3]** | 9 | 10 | **ENC_DATA[3]** |
-| **ENC_DATA[4]** | 11 | 12 | **ENC_DATA[4]** |
-| **ENC_DATA[5]** | 13 | 14 | **ENC_DATA[5]** |
-| GND | 15 | 16 | GND |
-| GND | 17 | 18 | GND |
-| GND | 19 | 20 | GND |
-| GND | 21 | 22 | GND |
-| **CPLD_RESET_N** | 23 | 24 | **ENC_ACTIVE_INPUT_N** |
-| GND (bar) | 25 | 26 | GND (bar) |
-| **I2C_SDA** | 27 | 28 | **I2C_SCL** |
-| GND | 29 | 30 | GND |
-| GND | 31 | 32 | GND |
-| GND | 33 | 34 | GND |
-| GND | 35 | 36 | **TTD_HID_PASS** |
-| **TTD_HID_IN** | 37 | 38 | GND |
-| GND | 39 | 40 | **TTD_HID_OUT** |
-| GND | 41 | 42 | GND |
-| **TMS** | 43 | 44 | **TMS** |
+| GND | 43 | 44 | GND |
 | GND | 45 | 46 | GND |
-| **TCK** | 47 | 48 | **TCK** |
-| GND | 49 | 50 | GND |
+| `3V3_ENIG` | 47 | 48 | `3V3_ENIG` |
+| `3V3_ENIG` | 49 | 50 | `3V3_ENIG` |
 
-> `BOARD_ROLE_ID[3:0]` (pins 17-24) is carried on `J5` - see the `J5 — Full Pin Map` section above
-> for the full encoding table and rationale.
->
-> `CPLD_RESET_N` uses only the top-row pin (23) — a single instance is sufficient since it is a
-> broadcast/unchained signal; the bottom-row pin at this column (24) is reassigned to
->
-> `ENC_ACTIVE_INPUT_N` (this board's own internal net name — see `Design_Spec.md §3` I2C1 Bus
-> Devices / U6).
+#### Cypher Board wiring at J6
 
-### Cypher Board's own wiring at J6
-
-| Pin(s) | Wiring |
+| Pins | Wiring |
 | :--- | :--- |
-| Top row (3,5,7,9,11,13) — `ENC_DATA[5:0]` | → CPLD U1 `ENC_IN_KBD[5:0]` (per `Design_Spec.md §3` Port Mapping, `KBD_ENC` role) |
-| Bottom row (4,6,8,10,12,14) — `ENC_DATA[5:0]` | → CPLD U1 `ENC_OUT_LBD[5:0]` (per `Design_Spec.md §3` Port Mapping, `LBD_DEC` role) |
-| 17-22 — GND | Tied to GND |
-| 23 — `CPLD_RESET_N` | Broadcast from the JTAG Hub (see `Design_Spec.md §3`) |
-| 24 — `ENC_ACTIVE_INPUT_N` | → I2C GPIO expander (U6), matching the existing `ENC_ACTIVE_INPUT_N` net (GPA[6]) — so the system knows when a key has been depressed, to trigger any initial rotor actuations |
-| 27/28 — `I2C_SDA`/`I2C_SCL` | Part of the `I2C1` bus (shared with U6/U7/U8 and U2) |
-| 29-32 — GND | Tied to GND |
-| 36 — `TTD_HID_PASS` | NC |
-| 37 — `TTD_HID_IN` | TDI — driven from FT232H (U17) MPSSE TDI (AD1); this is the chain's TDI source |
-| 40 — `TTD_HID_OUT` | Received here (Cypher-Output's own real TDO, the exit of the local HID sub-chain) and forwarded to Mount1 (first Plugboard Encoder Module, `J8`) TDI |
-| 43/44, 47/48 | TMS / TCK — broadcast from the JTAG Hub (see `Design_Spec.md §3` JTAG Hub) |
-
-> **Chain order (see `Design_Spec.md §3` JTAG Hub for full derivation):** FT232H (U17) → Cypher-Input
-> CPLD → Cypher-Output CPLD → Mount1 → Mount2 → Mount3 → Mount4 → U1 (this board's own CPLD) →
-> `J3` → 30x Rotor CPLDs → `J4` `TTD_RETURN` → R50 → U17 TDO. All "static" CPLDs (Cypher-Input,
-> Cypher-Output, 4x Plugboard Encoder Modules, this board's own U1) precede the "dynamic" Rotor
-> stack in the chain.
+| 18 / 22 | Dedicated `I2C2_SDA` / `I2C2_SCL` bus to USM |
+| 21 / 29 / 30 | Broadcast `CPLD_RESET_N`, `TMS`, `TCK` from the Cypher JTAG hub |
+| 33 | FT232H `U17` TDI source into the HID sub-chain |
+| 34 | HID sub-chain TDO return from USM, then onward through `R50` to `U17` TDO |
+| `3V3_ENIG` and GND | USM logic power / return |
 
 ---
 
-## 5. J7–J18 — ENC Module Mounts (back face)
+## 5. J7-J18 - ENC Module Mounts
 
-> **Connector Definition Owner:** `Encoder_Module/Board_Layout.md §1a-1c`. This board carries only
-> the mating DF40C-xDS receptacles; the ENC module owns the DF40C-xDP plug pin-mapping standard.
-
-Four Hirose DF40C-xDS receptacle sets. Each mount:
-
-| Position | Connector | MPN | Pins | Role |
-| :--- | :--- | :--- | :--- | :--- |
-| A (left) | J7 / J10 / J13 / J16 | DF40C-90DS-0.4V(51) | 90 | plain-bits[63:0] |
-| B (centre) | J8 / J11 / J14 / J17 | DF40C-24DS-0.4V(51) | 24 | cypher-bits + JTAG + ENC_ACTIVE_N |
-| C (right) | J9 / J12 / J15 / J18 | DF40C-10DS-0.4V(51) | 10 | 3V3_ENIG power |
-
-Pin assignments per connector follow the ENC Module Interface definition in
-`Encoder_Module/Board_Layout.md §1a-1c` (reproduced for layout reference in `Design_Spec.md §6
-J7–J18`; in case of conflict, the Encoder Module definition is authoritative).
+Connector definitions remain owned by `Encoder_Module/Board_Layout.md §1a-1c`.
 
 ---
 
-## 6. J19 — USM Harness (B6B-PH-K-S)
+## 6. J20+ - Spade Blade Terminal Bank
 
-| Pin | Signal |
-| :--- | :--- |
-| 1 | 3V3_ENIG |
-| 2 | 5V_MAIN |
-| 3 | GND |
-| 4 | SDA |
-| 5 | SCL |
-| 6 | GND |
-
----
-
-## 7. J20+ — Spade Blade Terminal Bank (back face, bottom edge)
-
-64 Keystone 1285-ST spade blade terminals required per ENC module mount position
-(4 mounts = 256 terminals total). Full component details and RefDes allocation:
-see `Design_Spec.md §6 J20+` and `§11 BOM`. General location is the bottom edge of the back face
-(HID interconnect connectors J5/J6 are at the top edge of the same face); exact per-terminal
-arrangement within that region is TBD at schematic/layout time. Wired via external spade-to-spade
-jumper cables directly to the physical plugboard patch jacks, which are mounted (mechanically
-only, no electrical connection) on the Plugboard board - see DEC-088.
-
----
-
-## 8. TP1–TP12 — PWM/GPCLK Test Pad Loops (back face)
-
-Bare copper test-pad loops (no component, no BOM entry) receiving the reserved `PWM0[0-3]` and
-`GPCLK[0]`/`GPCLK[1]` signals from Controller `J2` (see §1). Each signal pad is paired with an
-adjacent `GND` test-pad loop for convenient scope/multimeter probing. No active devices are
-populated; see `Design_Spec.md DR-CYP-10`.
-
-| RefDes | Signal | Paired GND RefDes |
-| :--- | :--- | :--- |
-| TP1 | `PWM0[0]` | TP7 |
-| TP2 | `PWM0[1]` | TP8 |
-| TP3 | `PWM0[2]` | TP9 |
-| TP4 | `PWM0[3]` | TP10 |
-| TP5 | `GPCLK[0]` | TP11 |
-| TP6 | `GPCLK[1]` | TP12 |
-
-Exact physical placement is TBD at schematic/layout time; general location is the back face,
-away from the high-speed JTAG/ENC signal routing at J3/J4.
-
----
-
-## Diagram Reference
-
-See `design/Diagrams/cypher-system-layout.drawio` and renders in `design/Diagrams/renders/`
-for the system-level layout diagram showing the Cypher Board's position within the
-Rotor Mini-Stack assembly.
+The plugboard jack harness still terminates at `J20+` on this board.

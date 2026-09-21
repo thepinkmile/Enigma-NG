@@ -1,4 +1,4 @@
-# Cypher-Output Board - 64-Character Variant Design Specification
+﻿# Cypher-Output Board - 64-Character Variant Design Specification
 
 **Status:** Draft
 **Project:** Enigma-NG
@@ -82,7 +82,7 @@ switch, unique to this variant) differ between variants.
 A single user-accessible panel-mount SPDT switch controls `BOARD_ROLE_ID_OUT[3]` (bit3, Custom):
 
 * **SW1 = SPDT, panel-mount, top face** - placed in the keyless keepout zone that mirrors
-  Cypher-Input's own RV1 "keyboard settings" panel location (per `Design_Spec.md §1`/§2), since
+  the shared HID control zone on the Cypher assembly (per `Design_Spec.md §1`/§2), since
   this is the only variant with a user-facing configuration control on this board.
 * **Wiring:** common pin -> `BOARD_ROLE_ID_OUT[3]` (Cypher Board interconnect `J4`/`J6` pin 28,
   tied both connectors - see `Board_Layout.md §4`); one throw -> GND (default position, bit3=0,
