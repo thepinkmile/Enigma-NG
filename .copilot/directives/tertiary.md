@@ -25,5 +25,5 @@ The Design Log is `design/Design_Log/` — a directory of per-DEC files.
 - Changes to a prior decision → new DEC entry with `Amends: DEC-NNN` or `Supersedes: DEC-NNN`.
 - Changes to a decision written earlier in the same still-open task → ask the user first (see
   exception check above) before choosing between an in-place fix and a new amending DEC.
-- **Next entry: DEC-107** → file `design/Design_Log/DEC-107_{kebab-title}.md`.
+- **Next entry: DEC-108** → file `design/Design_Log/DEC-108_{kebab-title}.md`.
 - This rule applies to all agents and orchestrating sessions equally.

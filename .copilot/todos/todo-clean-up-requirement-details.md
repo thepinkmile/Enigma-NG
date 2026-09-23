@@ -42,3 +42,12 @@ itself.
 Every board `Design_Spec.md` under `design/Electronics/` (and any board added during the
 design-discussion merge) should be swept for this issue. This is a repository-wide documentation
 consistency pass, not limited to any single board.
+
+## Known example: broken FR/DR numbering sequences
+
+`Cypher-Input/Design_Spec.md` has a DR-xxx numbering gap: `DR-CYPI-09` is immediately followed by
+`DR-CYPI-11a` (no `DR-CYPI-10` exists, and `11a` implies an insertion after a `DR-CYPI-11` that was
+never numbered before it). This kind of gap/insertion-suffix numbering has likely crept in on other
+boards too during incremental edits across sessions - as part of this sweep, also renumber each
+board's FR-xxx/DR-xxx sequences to be gap-free and consecutive (no skipped numbers, no `a`/`b`
+insertion suffixes left in place), updating any Notes/Cross-Ref references to the renumbered IDs.

@@ -7,6 +7,59 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
+**2026-09-23 session update (checkpoint 193): USM and Cypher-Input rebuilt cleanly and reviewed;
+connector naming cleaned up; paused for a token-limit reset.**
+
+**Read checkpoint 193 in full before doing anything else this next session.**
+
+Following the 2026-09-18 revert (background agent had damaged 8 of 9 files), USM and Cypher-Input
+have both been rebuilt by hand this session — no background agents, one file at a time, each
+diff-checked before moving on — and reviewed/corrected directly by the user.
+
+**What changed and is confirmed good:**
+
+1. `User_Settings_Module/{Design_Spec.md,Board_Layout.md}` — role as HID colour/audio/JTAG-I2C
+   spine; **4** colour styles (corrected mid-session from an initial 3, see DEC-107); two
+   connector templates (Hub Connector Template = `J1`/`J2`; HID-Facing Connector Template =
+   `J3`/`J4`), both full pin maps moved into `Board_Layout.md` only (not duplicated in
+   `Design_Spec.md`, matching existing repo convention).
+2. `Cypher-Input/{Design_Spec.md,Board_Layout.md}` + all 3 variant files — RefDes renumbered
+   (`J1`/`J2` Cypher pair, `J3` USM connector, `J4`-`J6` ENC mount), connector tables de-duplicated
+   to ownership pointers, USM 4-colour-style signal repointing, `ENC_ACTIVE` propagation-delay
+   note added, 64-Char variant's Shift behaviour corrected (global state, not per-key).
+3. **Naming convention fixed repo-wide:** bare "Template 1/2/3" replaced everywhere with
+   functional names ("Cypher Left Pair Template", "Hub Connector Template", "HID-Facing Connector
+   Template") — confirmed via repo-wide grep, no bare numeric template names remain anywhere in
+   `design/Electronics`.
+4. DEC-107 created (4-colour-style signal expansion rationale).
+5. Todos updated/created: `encoder-module-pin-agnostic-redesign-review` (recreated on disk, plus a
+   new note about Cypher-Input's `J4` table incorrectly showing all 64 `PB[]` positions for every
+   variant), `usm-template2-template1-unification-review` (new — captures user's idea to unify
+   the Hub Connector Template with the Cypher Left Pair Template for future flexibility, not to be
+   actioned yet), `todo-clean-up-requirement-details` (expanded with the `DR-CYPI-09`→`11a`
+   numbering-gap example), `cypher-input-led-independent-rgb-pwm-review` (two notes: addressable
+   LEDs would move to rear face + join JLCPCB SMT assembly if chosen; Colour4 could be a "shifted +
+   pressed" 4th indicator — both open ideas, not decided).
+
+**Recurring review-issue checklist (from checkpoint 193) — check proactively before presenting
+Cypher-Output/Cypher-Plugboard/Cypher next session:**
+
+1. Historical/past-tense wording in "current design only" docs.
+2. Describing another board's own internal wiring from this board's own spec.
+3. Bare numeric template names instead of functional names.
+4. Connector pin maps duplicated in `Design_Spec.md` instead of living only in `Board_Layout.md`.
+5. FR/DR entries citing prose "Section N" instead of pointing directly to `Board_Layout.md`.
+6. Directional/logic errors in passthrough descriptions (which physical position actually relays).
+7. Falsely resolved open items (e.g. asserting an ESD/standard requirement doesn't apply when it's
+   actually just not covered by the standard at all — say so honestly instead).
+
+**Not yet done (blocks `usm-redesign-implementation` completion):** Cypher-Output,
+Cypher-Plugboard, and Cypher still need the same rebuild Cypher-Input just received — full
+per-board scope is in checkpoint 193's "Not Yet Done" section. Do this next, in that order, using
+the same careful one-file-at-a-time approach.
+
+### Prior session update (2026-09-18, checkpoint 192)
+
 **2026-09-18 session update (checkpoint 192): USM redesign connectors finalised; implementation
 partially damaged, paused for weekend handoff.**
 

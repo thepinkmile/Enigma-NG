@@ -5,17 +5,17 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-17
+**Last Updated:** 2026-09-21
 
 ## 1. Overview
 
 The Cypher-Input Board is the physical keyboard input panel of the Enigma-NG system. It hosts one
-ENC module in its **keyboard (encoder)** cipher role and connects to the Cypher Board `J5`
-connector as the `KBD_ENC` cipher pipeline entry point. This specification documents **three board
-variants** sharing an identical circuit topology (ENC module mount, LED indicator bank,
-brightness control, Cypher Board interconnect, board-identification strap plus a shared
-non-cipher-key/LED-colour I2C expander); only key count/layout, LED/resistor/socket quantities,
-`plain-bits` allocation, and
+ENC module in its **keyboard (encoder)** cipher role and connects to the Cypher Board's shared
+left-pair connector as the `KBD_ENC` cipher pipeline entry point. This specification documents
+**three board variants** sharing an identical circuit topology (ENC module mount, LED indicator
+bank, Cypher Board interconnect, USM interconnect, board-identification strap plus a shared
+non-cipher-key I2C expander); only key count/layout, LED/resistor/socket quantities, `plain-bits`
+allocation, and
 `BOARD_ROLE_ID[3:0]` strap value differ between them. Variant-specific detail lives in a dedicated
 document per variant, mirroring the Rotor board's common-spec/variant-file split:
 
@@ -37,13 +37,13 @@ document per variant, mirroring the Rotor board's common-spec/variant-file split
 >
 > **I2C address vs. variant identification:** all three variants share a single fixed I2C address
 > for U4 (`0x38` - see §3a). Variant identification is carried **only** by the hardwired
-> `BOARD_ROLE_ID[3:0]` strap on the Cypher Board interconnect (`J4`/`J6`, per
+> `BOARD_ROLE_ID[3:0]` strap on the Cypher Board interconnect (`J1`/`J2`, per
 > `Cypher/Board_Layout.md §4`), not by the I2C
 > address.
-> **Board family / interface contract:** the Cypher Board `J5` connector (Samtec
+> **Board family / interface contract:** the Cypher Board's own left-pair connector (Samtec
 > QSS-025-01-L-D-RA-K mating female, per `Cypher/Board_Layout.md §4`) plus the ENC module DF40C
 > BtB mount standard (owned by `Encoder_Module/Board_Layout.md §1a-1c`; reproduced for layout
-> reference in this board's own `Board_Layout.md §1-3`) form the fixed hardware interface that
+> reference in this board's own `Board_Layout.md §3`) form the fixed hardware interface that
 > any keyboard front-end board must honour. Fully custom keyboard designs are supported as long as
 > they use this same interface; each such board reuses the same shared `0x38` I2C address for its
 > U4-equivalent (see §3a) - the I2C address identifies the *device role* (keyboard/HID expander),
@@ -58,18 +58,16 @@ document per variant, mirroring the Rotor board's common-spec/variant-file split
 
 | Circuit Responsibility | Board Role | Key Component |
 | :--- | :--- | :--- |
-| **Keyboard cipher entry** | Hosts one ENC module (keyboard/encoder role); forwards keystroke plain-bits to the module and receives cipher-bits/JTAG back | J1-J3 - DF40C BtB mount |
+| **Keyboard cipher entry** | Hosts one ENC module (keyboard/encoder role); forwards keystroke plain-bits to the module and receives cipher-bits/JTAG back | J4-J6 - DF40C BtB mount |
 | **Mechanical keyswitch panel** | 26 (Classic), 42 (64-Character), or 12 (10-Numeric) hot-swap keyswitch positions | SW1-SW26 / SW1-SW42 / SW1-SW12 - Kailh PG151101S11 |
-| **Key indicator LEDs** | RGB LED per key (part TBD - pending user confirmation of footprint fit under Cherry MX keyswitches); software-configurable colour(s), generated locally on this board and also broadcast to the Cypher-Output board via `J4`/`J6` - see §5; qty matches variant key count | D1-D26 / D1-D42 / D1-D12 - TBD RGB SMD (placeholder) |
-| **LED colour selection** | 3-line `RED_DRIVE_N`/`GREEN_DRIVE_N`/`BLUE_DRIVE_N`, generated entirely on this board; software-defined via U4 GPIO into a single configurable colour per variant. Variants with more than one colour-source key (e.g. Shift) may add local hardware to switch between multiple configured colours in real time - see that variant's own design file | U4 (PCA9534A) - see §5; any per-variant switching hardware is documented in that variant's own design file |
-| **Brightness control** | Single panel-mount rotary dial (on this board only) sets a shared PWM duty cycle via a 555 astable oscillator; the resulting `BRIGHTNESS_PWM_EN` gates a common low-side switch at the LED bank's cathode return (downstream of colour selection) and is also broadcast to `J4`/`J6` so one dial dims every LED on this board and on whichever Cypher-Output board is installed | RV1 - Bourns 3310P-001-503L; U1 - MIC1555YM5-TR; U8 - BSS138 (cathode-return switch) |
+| **Key indicator LEDs** | RGB LED per key (part TBD - pending user confirmation of footprint fit under Cherry MX keyswitches); colour/brightness values sourced from the User Settings Module via `J3`, applied locally by this board's own drive stage - see §5; qty matches variant key count | D1-D26 / D1-D42 / D1-D12 - TBD RGB SMD (placeholder) |
+| **LED drive stage** | Local high-current colour-bank and illumination switches, driven by whichever of the four received colour styles this board's own local logic selects | U5-U8 - see §5 |
 | **Board ID / non-cipher key I/O** | I2C expander at a single fixed address shared by all variants (variant identity is carried by `BOARD_ROLE_ID[3:0]`, not I2C address); on the 64-Character and 10-Numeric variants it also reads Space and Enter (not part of the cipher pipeline) | U4 - PCA9534A @ 0x38 |
-| **Cypher Board interconnect** | 4 connectors (2 male top, 2 female bottom) to whichever HID board is closest to the Cypher Board, either order | J4-J7 - Samtec QTS/QSS-025 family |
+| **Cypher Board interconnect** | 2 connectors (top male, bottom female) to whichever HID board is closest to the Cypher Board, either order | J1/J2 - Samtec QTS/QSS-025 family |
+| **User Settings Module interconnect** | 1 connector carrying `3V3_ENIG`, `I2C2`, JTAG, and the LED colour/brightness drive signals | J3 - Samtec QTS-025 family |
 
-The top face (L1) carries only the LED bank (D1-Dxx) and the brightness potentiometer (RV1);
-RV1 sits in the keyless region that corresponds to a number-pad area on a conventional keyboard,
-off to the side of the main keyswitch cluster. **Neither is part of the JLCPCB PCBA order** -
-both are hand-soldered by the user after the bare-assembled board is delivered, the same way the
+The top face (L1) carries only the LED bank (D1-Dxx). **It is not part of the JLCPCB PCBA order** -
+it is hand-soldered by the user after the bare-assembled board is delivered, the same way the
 keyswitches and keycaps already are (see below). This keeps JLCPCB's automated SMT assembly
 **single-sided** (rear face only), consistent with the standard PCBA service constraint in
 `design/Production/JLCPCB_Manufacturing.md §3.1` (dual-sided SMT is only available on Economic
@@ -78,45 +76,44 @@ PCBA with limitations) - the top face is never part of the machine-placed SMT pa
 > **Open item - LED mounting face is provisional, pending LED part selection:** a reverse-mount
 > addressable candidate is under evaluation (`merge-missing-components.md`) that could mount on
 > the **rear face** instead (via light-pipe cutouts through the board), which would remove the
-> LED bank from this board's own hand-soldered top-face list, leaving only RV1 manually fitted.
-> This has **not** been decided - do not assume rear-face mounting until the LED part and its
-> mounting orientation are confirmed; the same open item applies to Cypher-Output's own LED bank
+> LED bank from this board's own hand-soldered top-face list entirely. This has **not** been
+> decided - do not assume rear-face mounting until the LED part and its mounting orientation are
+> confirmed; the same open item applies to Cypher-Output's own LED bank
 > (`Cypher-Output/Design_Spec.md §2`), which uses the same part.
 
-The rear face (L4) carries everything else: the ENC module mount (J1-J3) - positioned directly
-beneath RV1, in that same keyless region, since no keyswitches occupy that area on the top face -
-the Cypher Board interconnect (J4-J7), the I2C GPIO expander (U4), the 555 oscillator (U1), the
-LED current-limit resistors (R1-Rxx, one per colour channel per LED), the three LED bank P-MOSFET
-switches (U5, U6, U7) plus the shared cathode-return switch (U8), any variant-specific local
-colour-switching hardware (e.g. the 64-Character variant's mux/Shift-sense circuit - see that
-variant's own design file), the Kailh hot-swap sockets (quantity per variant - see the per-variant
-design files), and local decoupling - all fully populated by JLCPCB's standard single-sided SMT
-PCBA pass. Mechanical switches and keycaps are **not** part of the PCBA either; they are sourced
-and fitted separately (JLCPCB post-PCBA or end-user), plugging down through the top face into the
-rear-mounted hot-swap sockets.
+The rear face (L4) carries everything else: the ENC module mount (J4-J6) - positioned in the
+keyless region that corresponds to a number-pad area on a conventional keyboard, off to the side
+of the main keyswitch cluster - the Cypher Board interconnect (J1/J2), the User Settings Module
+interconnect (J3), the I2C GPIO expander (U4), the LED current-limit resistors (R1-Rxx, one per
+colour channel per LED), the three LED bank P-MOSFET switches (U5, U6, U7) plus the shared
+cathode-return switch (U8), any variant-specific local hardware, the Kailh hot-swap sockets
+(quantity per variant - see the per-variant design files), and local decoupling - all fully
+populated by JLCPCB's standard single-sided SMT PCBA pass. Mechanical switches and keycaps are
+**not** part of the PCBA either; they are sourced and fitted separately (JLCPCB post-PCBA or
+end-user), plugging down through the top face into the rear-mounted hot-swap sockets.
 
 > **Character set composition:** each variant's key layout and cipher-alphabet composition is
 > defined in its own design file (`Cypher_Input_26_Char_Design.md`,
 > `Cypher_Input_64_Char_Design.md`, `Cypher_Input_10_Numeric_Design.md` §1-§2). Space and Enter
 > (present on the 64-Character and 10-Numeric variants) are never part of a cipher alphabet -
 > they exist only for CM5 UI input clarity and are read via the on-board I2C GPIO expander (U4),
-> not via the ENC module plain-bits bus. **LED colour selection is entirely local to this board
-> and never touches the ENC module or the `plain-bits` bus** - see §5 for the full circuit. All 64
-> `plain-bits` lines are reserved exclusively for keyswitch/cipher-path use across every variant
-> (see §3), including headroom for a possible future variant using all 64 lines as one signal per
-> character.
+> not via the ENC module plain-bits bus. **LED colour/brightness values are sourced entirely from
+> the User Settings Module and never touch the ENC module or the `plain-bits` bus** - see §5 for
+> the full circuit. All 64 `plain-bits` lines are reserved exclusively for keyswitch/cipher-path
+> use across every variant (see §3), including headroom for a possible future variant using all
+> 64 lines as one signal per character.
 
 ### Functional Requirements
 
 | ID | Functional Requirement | Notes | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
-| FR-CYPI-01 | Host one ENC module in the keyboard (encoder) cipher role | DF40C BtB mount; `plain-bits[63:0]` carry the variant's cipher-path keyswitch inputs only - no LED signals ever share this bus - see per-variant design files §3 | §3 ENC Module Interface; BOM J1-J3 |
+| FR-CYPI-01 | Host one ENC module in the keyboard (encoder) cipher role | DF40C BtB mount; `plain-bits[63:0]` carry the variant's cipher-path keyswitch inputs only - no LED signals ever share this bus - see per-variant design files §3 | §3 ENC Module Interface; BOM J4-J6 |
 | FR-CYPI-02 | Provide 26 (Classic), 42 (64-Character), or 12 (10-Numeric) hot-swappable mechanical keyswitch positions | Kailh PG151101S11 hot-swap sockets, rear face; switches/keycaps sourced separately | §4 Keyswitch Panel; BOM SW1-SW26 / SW1-SW42 / SW1-SW12 |
-| FR-CYPI-03 | Provide one RGB LED indicator per key with software-configurable colour(s) | On the 64-Character variant, two software-configured colours are selected in real time by the Shift keys (local hardware logic, no CPLD/firmware involvement); Classic/10-Numeric variants show one fixed (but still software-configurable) colour, since they have no Shift key; qty matches variant key count (26, 42, or 12) | §5 LED Indicator Circuit; BOM D1-D26 / D1-D42 / D1-D12 |
-| FR-CYPI-04 | Provide a single panel-mount hardware dial controlling LED brightness for this board, independent of CPLD firmware, and broadcast that brightness for use by whichever Cypher-Output board is installed | 555 astable oscillator output gates a shared cathode-return switch downstream of colour selection; broadcast to Cypher-Output via `J4`/`J6` | §6 Brightness Control; BOM RV1, U1, U8 |
-| FR-CYPI-05 | Connect to the Cypher Board as the `KBD_ENC` cipher pipeline entry point | J4-J7 = Samtec QTS/QSS-025 family (2 male top, 2 female bottom); mates whichever of Cypher Board / Cypher-Output is closest, either order | §7 Interconnects; BOM J4-J7 |
-| FR-CYPI-06 | Forward selected keyboard-source activity state to the Cypher Board | `ENC_ACTIVE_INPUT_N`; pin 24 on `J5`/`J7`, tied both connectors; consumed by Cypher-Output (LED activation) and the Cypher Board's I2C expander (rotor-actuation trigger) | §7 Interconnects |
-| FR-CYPI-07 | Protect no connector on this board with TVS/ESD suppression | All connectors (J1-J7) are internal BtB/dock connectors, not hot-swapped or externally accessible, per `design/Standards/Global_Routing_Spec.md §9` | §9 Thermal & ESD |
+| FR-CYPI-03 | Provide one RGB LED indicator per key, coloured/lit using values sourced from the User Settings Module | Colour/brightness values arrive via `J3`; local drive stage (U5-U8) applies them; qty matches variant key count (26, 42, or 12) | §5 LED Indicator Circuit; BOM D1-D26 / D1-D42 / D1-D12 |
+| FR-CYPI-04 | Receive shared LED colour/brightness drive signals and JTAG/I2C from the User Settings Module | `J3` is the only USM-facing connector on this board | §6 User Settings Module Interface; BOM J3 |
+| FR-CYPI-05 | Connect to the Cypher Board as the `KBD_ENC` cipher pipeline entry point | J1/J2 = Samtec QTS/QSS-025 family (top male, bottom female); mates whichever of Cypher Board / Cypher-Output is closest, either order | §7 Interconnects; BOM J1, J2 |
+| FR-CYPI-06 | Drive the Input-role signals on the Cypher Board interconnect | `ENC_DATA_IN[5:0]`, `ENC_ACTIVE_INPUT_N`, and `BOARD_ROLE_ID_IN[3:0]` originate on this board | §7 Interconnects |
+| FR-CYPI-07 | Protect no connector on this board with TVS/ESD suppression | All connectors (J1-J6) are internal BtB/dock connectors, not hot-swapped or externally accessible, per `design/Standards/Global_Routing_Spec.md §9` | §9 Thermal & ESD |
 | FR-CYPI-08 | Identify which board variant is connected via `BOARD_ROLE_ID[3:0]`, and (64-Character and 10-Numeric variants only) read Space and Enter key state without entering the cipher pipeline | `BOARD_ROLE_ID[3:0]` strap carries variant identity as a 4-bit capability bitmask; local I2C GPIO expander (U4) at a single fixed address shared by all variants; not part of the ENC module plain-bits bus | §3a Non-Cipher Key I/O; BOM U4 |
 
 ### Design Requirements
@@ -124,38 +121,34 @@ rear-mounted hot-swap sockets.
 | ID | Design Requirement | Specification | Satisfied By / Cross-Ref |
 | :--- | :--- | :--- | :--- |
 | DR-CYPI-01 | PCB stackup | 4-layer standard per `design/Standards/Global_Routing_Spec.md §2.3.1` | §8 PCB Fabrication & Stackup |
-| DR-CYPI-02 | ENC module mount connectors | J1 = DF40C-90DS-0.4V(51) (plain-bits[63:0]); J2 = DF40C-24DS-0.4V(51) (cypher-bits + JTAG + ENC_ACTIVE_N); J3 = DF40C-10DS-0.4V(51) (3V3_ENIG power); pin mapping owned by `Encoder_Module/Board_Layout.md §1a-1c`, reproduced in this board's `Board_Layout.md §1-3` | §3 ENC Module Interface; BOM J1-J3 |
-| DR-CYPI-03 | Cypher Board interconnect | J4 (TL, male), J5 (TR, male) = QTS-025-01-L-D-RA-P; J6 (BL, female), J7 (BR, female) = QSS-025-01-L-D-RA-K; left pair (J4/J6) = 3V3_ENIG/GND/5V_MAIN/LED colour+brightness broadcast/`BOARD_ROLE_ID[3:0]`; right pair (J5/J7) = shared JTAG chain-through template per `Cypher/Board_Layout.md §4`; pin mapping per `Board_Layout.md §4` | §7 Interconnects; BOM J4-J7 |
+| DR-CYPI-02 | ENC module mount connectors | J4 = DF40C-90DS-0.4V(51) (plain-bits[63:0]); J5 = DF40C-24DS-0.4V(51) (cypher-bits + JTAG + ENC_ACTIVE_N); J6 = DF40C-10DS-0.4V(51) (3V3_ENIG power); pin mapping owned by `Encoder_Module/Board_Layout.md §1a-1c`, reproduced in this board's `Board_Layout.md §3` | §3 ENC Module Interface; BOM J4-J6 |
+| DR-CYPI-03 | Cypher Board interconnect | J1 (top, male) = QTS-025-01-L-D-RA-P; J2 (bottom, female) = QSS-025-01-L-D-RA-K; pin-level template owned by `Cypher/Board_Layout.md §4` (its own `J5`) | §7 Interconnects; BOM J1, J2 |
+| DR-CYPI-03a | User Settings Module interconnect | J3 = QTS-025-01-L-D-RA-P; pin-level template owned by `User_Settings_Module/Board_Layout.md` (its own left connectors) | §6 User Settings Module Interface; BOM J3 |
 | DR-CYPI-04 | Keyswitch hot-swap sockets | SW1-SW26 (Classic), SW1-SW42 (64-Character), or SW1-SW12 (10-Numeric) = Kailh PG151101S11; JLCPCB consignment part C41430893; rear face (L4); no hand-soldering | §4 Keyswitch Panel; BOM SW1-SW26 / SW1-SW42 / SW1-SW12 |
 | DR-CYPI-05 | Mechanical switches and keycaps | Cherry MX2A-71NB; **not populated in PCBA** - sourced separately (Mouser 540-MX2A-71NB, DigiKey 1644-MX2A-71NB-ND, JLCPCB global sourcing/consignment, or Amazon for prototyping); installed post-PCBA by JLCPCB or end-user | §4 Keyswitch Panel |
-| DR-CYPI-06 | LED bank | D1-D26 / D1-D42 / D1-D12 = **TBD RGB SMD LED (placeholder)** - pending user confirmation of a part that physically fits under Cherry MX2A-71NB keyswitches; every variant supports software-configurable colour, not just fixed Yellow/Green | §5 LED Indicator Circuit; BOM D1-D26 / D1-D42 / D1-D12 |
+| DR-CYPI-06 | LED bank | D1-D26 / D1-D42 / D1-D12 = **TBD RGB SMD LED (placeholder)** - pending user confirmation of a part that physically fits under Cherry MX2A-71NB keyswitches | §5 LED Indicator Circuit; BOM D1-D26 / D1-D42 / D1-D12 |
 | DR-CYPI-07 | LED current-limit resistors | One resistor per LED per colour channel (Red/Green/Blue); values TBD pending the RGB LED part's V_F per channel (see DR-CYPI-06); target 10mA drive per channel | §5 LED Indicator Circuit; BOM R1-R26 / R1-R42 / R1-R12 (each colour) |
-| DR-CYPI-08 | LED bank drive topology | P-channel MOSFET high-side switch per colour bank, sourced from `5V_MAIN` (not `3V3_ENIG` - see DR-CYPI-14a): U5 (Red), U6 (Green), U7 (Blue); gated by `RED_DRIVE_N`/`GREEN_DRIVE_N`/`BLUE_DRIVE_N`, generated entirely on this board (never by the ENC module or its `plain-bits` bus) - see §5; active-LOW gate drive; same circuit on all variants | §5 LED Indicator Circuit; BOM U5-U7 |
+| DR-CYPI-08 | LED bank drive topology | P-channel MOSFET high-side switch per colour bank, sourced from `5V_MAIN`: U5 (Red), U6 (Green), U7 (Blue); gated by whichever colour style's `RED_DRIVE_{n}_N`/`GREEN_DRIVE_{n}_N`/`BLUE_DRIVE_{n}_N` this board's own local logic selects from the four received via `J3` - see §5; active-LOW gate drive; same circuit on all variants | §5 LED Indicator Circuit; BOM U5-U7 |
 | DR-CYPI-09 | LED bank MOSFET rating | SQ2319ADS-T1_BE3 (SOT-23, single P-channel; same part as USM Q19-Q30) for U5-U7; I_D = -4.6A, R_DS(on) = 0.145 Ohm @ V_GS = -4.5V; comfortably exceeds a 10mA-per-channel-per-LED bank load on any variant (each MOSFET only ever carries its own channel's current - see §5 Drive Topology for the combined `5V_MAIN` rail figure across all 3 channels) | §5 LED Indicator Circuit; BOM U5-U7 |
-| DR-CYPI-10 | Brightness dial | RV1 = Bourns 3310P-001-503L (0-50 kOhm linear panel-mount potentiometer); feeds 555 astable R_A leg | §6 Brightness Control; BOM RV1 |
-| DR-CYPI-11 | 555 astable oscillator | U1 = MIC1555YM5-TR (SOT23-5, same part as Power Module U9/U13); R_A = RV1 (0-50 kOhm); R_B = R81 (1 kOhm, discharge limiter); C = C1 (10nF, timing); C_CV = C2 (100nF, pin 5 noise bypass); output drives U8 gate (`BRIGHTNESS_PWM_EN`) | §6 Brightness Control; BOM U1, R81, C1, C2 |
-| DR-CYPI-11a | Brightness termination switch | U8 = BSS138 (N-channel MOSFET, SOT-23; same part family as the User Settings Module's colour-rail sink stage, DEC-034); common low-side switch at the LED bank's shared cathode return, downstream of all colour selection; gated by `BRIGHTNESS_PWM_EN` from U1; broadcast via `J4`/`J6` so a single dial dims every LED on this board and on whichever Cypher-Output board is installed | §6 Brightness Control; BOM U8 |
-| DR-CYPI-12 | Brightness frequency range | f_high ~= 72 kHz (RV1 at 0 Ohm, practical wiper-contact limited); f_low ~= 2.8 Hz (RV1 at 50 kOhm - dim glow, never full-off, indicates system powered) | §6 Brightness Control |
-| DR-CYPI-13 | 555 VCC bypass | C3 = 100nF X7R 0402 per `design/Standards/Global_Routing_Spec.md §3.2` | §8 PCB Fabrication; BOM C3 |
-| DR-CYPI-14 | 3V3_ENIG entry decoupling bank | C4-C8 (5x 10uF X7R 50V 1206) at J4/J6 3V3_ENIG entry per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule | §7 Power; BOM C4-C8 |
-| DR-CYPI-14a | 5V_MAIN entry decoupling bank | C9-C13 (5x 10uF X7R 50V 1206) at J4/J6 5V_MAIN entry per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule (second distinct rail present on this board, alongside 3V3_ENIG - see DR-CYPI-14); required because the LED bank's colour banks (U5-U7) switch on `5V_MAIN`, not `3V3_ENIG` - see §5 Drive Topology and `Power_Budgets.md` 5V_MAIN Load Analysis for the worst-case 1.26A (64-Character variant) this rail must support | §7 Power; BOM C9-C13 |
+| DR-CYPI-11a | Illumination termination switch | U8 = BSS138 (N-channel MOSFET, SOT-23; same part family as the User Settings Module's colour-rail sink stage, DEC-034); common low-side switch at the LED bank's shared cathode return, downstream of all colour selection; gated by whichever `ILLUMINATION_DRIVE_{n}_N` signal this board's own local logic selects from the four received via `J3` | §5 LED Indicator Circuit; BOM U8 |
+| DR-CYPI-14 | 3V3_ENIG entry decoupling bank | C4-C8 (5x 10uF X7R 50V 1206) at `J3` `3V3_ENIG` entry per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule | §7 Power; BOM C4-C8 |
+| DR-CYPI-14a | 5V_MAIN entry decoupling bank | C9-C13 (5x 10uF X7R 50V 1206) at `J1`/`J2` `5V_MAIN` entry per `design/Standards/Global_Routing_Spec.md §3` Bulk Entry Bank Rule (second distinct rail present on this board, alongside 3V3_ENIG - see DR-CYPI-14); required because the LED bank's colour banks (U5-U7) switch on `5V_MAIN`, not `3V3_ENIG` - see §5 Drive Topology and `Power_Budgets.md` 5V_MAIN Load Analysis for the worst-case 1.26A (64-Character variant) this rail must support | §7 Power; BOM C9-C13 |
 | DR-CYPI-15 | Mounting holes | MH1-MH4: M3 PTH (3.2mm drill) tied to GND_CHASSIS per GRS §4; placement per GRS §4.3 Pattern A (standard rectangular board). No BOM entry. | §8 PCB Fabrication; GRS §4.3 |
-| DR-CYPI-16 | ESD protection | Not required. J1-J7 are internal BtB/dock connectors, not hot-swapped and not externally accessible during normal servicing, per `design/Standards/Global_Routing_Spec.md §9` | §9 Thermal & ESD |
-| DR-CYPI-17 | Board-ID / non-cipher key I/O expander | U4 = PCA9534A @ 0x38, the single fixed address shared by all Cypher-Input variants; same IC family already used in the system (Power Module PCA9534A @ 0x3F); variant is identified by the `BOARD_ROLE_ID[3:0]` strap on `J4`/`J6`, not by I2C address (see §3a); GPIO budget (of 8 total) varies by variant, including whether any local colour-switching hardware is populated - see each variant's own design file §4; connects to `I2C_SDA`/`I2C_SCL` on `J5`/`J7` pins 27/28, this board's own bus master on the shared interconnect | §3a Non-Cipher Key I/O; §5 LED Indicator Circuit; BOM U4 |
+| DR-CYPI-16 | ESD protection | Not required. J1-J6 are internal BtB/dock connectors, not hot-swapped and not externally accessible during normal servicing, per `design/Standards/Global_Routing_Spec.md §9` | §9 Thermal & ESD |
+| DR-CYPI-17 | Board-ID / non-cipher key I/O expander | U4 = PCA9534A @ 0x38, the single fixed address shared by all Cypher-Input variants; same IC family already used in the system (Power Module PCA9534A @ 0x3F); variant is identified by the `BOARD_ROLE_ID[3:0]` strap on `J1`/`J2`, not by I2C address (see §3a); GPIO budget (of 8 total) varies by variant - see each variant's own design file §4; connects to `I2C_SDA`/`I2C_SCL` on `J3`, this board's own bus master on the dedicated `I2C2` Cypher-peripherals bus | §3a Non-Cipher Key I/O; §5 LED Indicator Circuit; BOM U4 |
 
 ### Component Block Diagram
 
 > This diagram shows the baseline circuit common to **all** Cypher-Input variants. It does
-> **not** include any variant-specific local colour-switching hardware (e.g. the 64-Character
-> variant's mux/Shift-sense circuit) - see that variant's own design file for its full circuit
-> including that hardware.
+> **not** include any variant-specific local hardware - see that variant's own design file for its
+> full circuit including any such hardware.
 
 ```mermaid
 flowchart TD
   subgraph encMount["ENC Module Mount (rear face)"]
-    J1["J1 DF40C-90DS\nplain-bits[63:0]"]
-    J2["J2 DF40C-24DS\ncypher-bits + JTAG + ENC_ACTIVE_N"]
-    J3["J3 DF40C-10DS\n3V3_ENIG power"]
+    J4["J4 DF40C-90DS\nplain-bits[63:0]"]
+    J5["J5 DF40C-24DS\ncypher-bits + JTAG + ENC_ACTIVE_N"]
+    J6["J6 DF40C-10DS\n3V3_ENIG power"]
   end
 
   subgraph keySwitches["Keyswitch Panel (top face keycaps, rear face sockets)"]
@@ -163,7 +156,7 @@ flowchart TD
   end
 
   subgraph nonCipher["Board ID / Non-Cipher Key I/O (rear face)"]
-    U4["U4 PCA9534A @ 0x38 (all variants)\nBoard ID via BOARD_ROLE_ID; Space+Enter GPIO (64-Character/10-Numeric); colour code GPIO"]
+    U4["U4 PCA9534A @ 0x38 (all variants)\nBoard ID via BOARD_ROLE_ID; Space+Enter GPIO (64-Character/10-Numeric)"]
   end
 
   subgraph ledBank["LED Indicator Bank (top face LEDs, hand-soldered; rear face resistors/MOSFETs, JLCPCB SMT)"]
@@ -174,43 +167,33 @@ flowchart TD
     U5["U5 SQ2319ADS-T1_BE3\nRed bank P-MOSFET"]
     U6["U6 SQ2319ADS-T1_BE3\nGreen bank P-MOSFET"]
     U7["U7 SQ2319ADS-T1_BE3\nBlue bank P-MOSFET"]
-    U8["U8 BSS138\nShared cathode-return brightness switch"]
-  end
-
-  subgraph brightness["Brightness Control (RV1 top face, hand-soldered; U1 rear face, JLCPCB SMT)"]
-    RV1["RV1 Bourns 3310P-001-503L\n0-50k dial"]
-    U1["U1 MIC1555\n555 astable oscillator"]
+    U8["U8 BSS138\nShared cathode-return illumination switch"]
   end
 
   subgraph cypherIface["Cypher Board Interconnect (rear face)"]
-    J4["J4 top-left male\n3V3/5V_MAIN/GND + LED colour/brightness broadcast"]
-    J5["J5 top-right male\nJTAG chain-through"]
-    J6["J6 bottom-left female\n3V3/5V_MAIN/GND + LED colour/brightness broadcast"]
-    J7["J7 bottom-right female\nJTAG chain-through"]
+    J1["J1 top male\nGND/5V_MAIN + ENC_DATA/ENC_ACTIVE/BOARD_ROLE_ID"]
+    J2["J2 bottom female\nGND/5V_MAIN + ENC_DATA/ENC_ACTIVE/BOARD_ROLE_ID"]
   end
 
-  SW -- "cipher-path keyswitch closures (26 or 40)" --> J1
+  subgraph usmIface["User Settings Module Interconnect (rear face)"]
+    J3["J3 right edge\n3V3_ENIG/I2C2/JTAG + LED colour/brightness drive"]
+  end
+
+  SW -- "cipher-path keyswitch closures (26 or 40)" --> J4
   SW -- "Space + Enter closures (64-Character/10-Numeric, non-cipher)" --> U4
-  J1 -- "plain-bits keystrokes" --> J2
-  U4 -- "RED_DRIVE_N / GREEN_DRIVE_N / BLUE_DRIVE_N (software-configured colour code)" --> U5
-  U4 --> U6
-  U4 --> U7
+  J4 -- "plain-bits keystrokes" --> J5
+  J3 -- "I2C2" --> U4
+  J3 -- "4x colour styles: RED/GREEN/BLUE_DRIVE_{1-4}_N" --> U5
   U5 --> R1 --> D
   U6 --> R2 --> D
   U7 --> R3 --> D
   D --> U8
   U8 -- "cathode return" --> GND[GND]
-  RV1 --> U1
-  U1 -- "BRIGHTNESS_PWM_EN" --> U8
-  J2 -- "TDI/TDO/TCK/TMS/CPLD_RESET_N" --> J5
-  J5 -- "TDO passthrough" --> J7
-  J3 -- "3V3_ENIG" --> J2
-  J4 -- "3V3_ENIG entry" --> J3
-  J4 -- "I2C_SCL / I2C_SDA (shared w/ Cypher-Output U4)" --> U4
-  U4 -- "RED/GREEN/BLUE_DRIVE_N broadcast" --> J4
-  U4 --> J6
-  U8 -- "BRIGHTNESS_PWM_EN broadcast" --> J4
-  U8 --> J6
+  J3 -- "4x colour styles: ILLUMINATION_DRIVE_{1-4}_N" --> U8
+  J3 -- "TDI/TDO/TMS/TCK/CPLD_RESET_N" --> J5
+  J6 -- "3V3_ENIG" --> J5
+  J5 -- "ENC_DATA_IN[5:0] / ENC_ACTIVE_INPUT_N" --> J1
+  J5 --> J2
 ```
 
 ## 2. Architecture
@@ -219,18 +202,16 @@ flowchart TD
   2.0mm filleted corners.
 - **Assembly:** Single-sided JLCPCB SMT (rear face, L4, only) - required to stay within the
   standard PCBA service constraint (`design/Production/JLCPCB_Manufacturing.md §3.1`: dual-sided
-  SMT is only available on Economic PCBA, with limitations). Top face (L1): LED bank (D1-Dxx) and
-  the brightness potentiometer (RV1) only - RV1 positioned in the keyless region corresponding to
-  a number-pad area, off to the side of the main keyswitch cluster; keyswitches occupy the rest of
-  this face via rear-mounted hot-swap sockets. **Neither the LEDs nor RV1 are part of the JLCPCB
-  PCBA order** - both are hand-soldered by the user after the bare-assembled board is delivered.
-  Rear face (L4, fully populated by JLCPCB's single-sided SMT pass): ENC module mount (J1-J3),
-  positioned directly beneath RV1 in that same keyless region; Cypher Board interconnect (J4-J7);
-  I2C GPIO expander (U4); 555 oscillator (U1); LED current-limit resistors (R1-Rxx, one per colour
-  channel per LED); LED bank P-MOSFET switches (U5, U6, U7); shared cathode-return switch (U8);
-  any variant-specific local colour-switching hardware (e.g. the 64-Character variant's
-  mux/Shift-sense circuit - see that variant's own design file); Kailh hot-swap sockets (quantity
-  per variant - see the per-variant design files); local decoupling.
+  SMT is only available on Economic PCBA, with limitations). Top face (L1): LED bank (D1-Dxx)
+  only - keyswitches occupy the rest of this face via rear-mounted hot-swap sockets. **The LEDs
+  are not part of the JLCPCB PCBA order** - they are hand-soldered by the user after the
+  bare-assembled board is delivered. Rear face (L4, fully populated by JLCPCB's single-sided SMT
+  pass): ENC module mount (J4-J6), positioned in the keyless region that corresponds to a
+  number-pad area; Cypher Board interconnect (J1/J2); User Settings Module interconnect (J3);
+  I2C GPIO expander (U4); LED current-limit resistors (R1-Rxx, one per colour channel per LED);
+  LED bank P-MOSFET switches (U5, U6, U7); shared cathode-return switch (U8); any
+  variant-specific local hardware; Kailh hot-swap sockets (quantity per variant - see the
+  per-variant design files); local decoupling.
   No components are placed above rear-side sockets (mechanical clearance for switch stems and
   keycaps).
 - **Manufacturer:** JLCPCB (standard 4-layer; single-sided SMT PCBA, rear face only; consignment
@@ -250,11 +231,11 @@ Hirose DF40C BtB receptacle sets, per the connector topology defined in
 
 | Connector | MPN | Pins | Content |
 | :--- | :--- | :--- | :--- |
-| J1 | DF40C-90DS-0.4V(51) | 90 (2x45) | plain-bits[63:0] (64 signals) + GND (26); zig-zag distributed |
-| J2 | DF40C-24DS-0.4V(51) | 24 (2x12) | cypher-bits[5:0] (6) + JTAG (TCK, RST_N/CPLD_RESET_N, TMS, TDI, TDO) + ENC_ACTIVE_N (1) + GND (12); full zig-zag |
-| J3 | DF40C-10DS-0.4V(51) | 10 (2x5) | 3V3_ENIG (5) + GND (5); power only |
+| J4 | DF40C-90DS-0.4V(51) | 90 (2x45) | plain-bits[63:0] (64 signals) + GND (26); zig-zag distributed |
+| J5 | DF40C-24DS-0.4V(51) | 24 (2x12) | cypher-bits[5:0] (6) + JTAG (TCK, RST_N/CPLD_RESET_N, TMS, TDI, TDO) + ENC_ACTIVE_N (1) + GND (12); full zig-zag |
+| J6 | DF40C-10DS-0.4V(51) | 10 (2x5) | 3V3_ENIG (5) + GND (5); power only |
 
-> **Pinout:** see `Board_Layout.md §1-3` for the full per-pin zig-zag GND distribution tables.
+> **Pinout:** see `Board_Layout.md §3` for the full per-pin zig-zag GND distribution tables.
 > This board is the documentation owner of the ENC-module BtB pin-mapping standard; the Cypher
 > Board's own J7-J18 ENC mounts and the Cypher-Output Board follow the same pin map.
 
@@ -269,16 +250,23 @@ design file:
 - `Cypher_Input_64_Char_Design.md §3`
 - `Cypher_Input_10_Numeric_Design.md §3`
 
-> Provisional pending Quartus pin-planning and PCB layout on the ENC module side (per Entry 17).
-> Space and Enter (64-Character and 10-Numeric variants) are **not** part of this bus - see §3a. A
-> future variant could use all 64 lines as one signal per character, since none are reserved for
-> anything other than keyswitches.
+> Provisional pending Quartus pin-planning and PCB layout on the ENC module side. Space and Enter
+> (64-Character and 10-Numeric variants) are **not** part of this bus - see §3a. A future variant
+> could use all 64 lines as one signal per character, since none are reserved for anything other
+> than keyswitches.
 
 ### ENC_ACTIVE_N Bidirectionality
 
 In this board's keyboard (encoder) role, the ENC module CPLD **drives** `ENC_ACTIVE_N` (output,
-active-low keypress notification) via J2. This board forwards it to the Cypher Board interconnect
-(J5/J7) as `ENC_ACTIVE_INPUT_N`.
+active-low keypress notification) via J5. This board forwards it to the Cypher Board interconnect
+(J1/J2) as `ENC_ACTIVE_INPUT_N`.
+
+> **Propagation-delay constraint:** `ENC_ACTIVE_INPUT_N` (and its counterpart
+> `ENC_ACTIVE_OUTPUT_N`, generated on Cypher-Output) may only ever originate from and terminate at
+> the Cypher Board. This board generates `ENC_ACTIVE_INPUT_N` locally, but must never tap or
+> locally consume `ENC_ACTIVE_OUTPUT_N` when relaying it through on the bottom row of `J1`/`J2` -
+> both signals are timing-sensitive against the Rotor/Stack encoder chain's propagation delay, so
+> only Cypher may terminate them.
 
 ## 3a. Board ID / Non-Cipher Key I/O
 
@@ -288,23 +276,23 @@ hardwired strap on the Cypher Board interconnect (`Cypher/Board_Layout.md §4`) 
 **not** vary by variant. On the 64-Character and 10-Numeric variants, this same expander also
 reads Space and Enter, which exist only for CM5 UI input clarity and are **not** part of the
 cipher alphabet - they are read via U4 rather than the ENC module plain-bits bus, so they never
-enter the cipher pipeline. U4 also drives the software-configurable LED colour code(s) for this
-board's own LED bank (see §5), fully allocating U4's GPIO headroom to LED colour configuration.
+enter the cipher pipeline.
 
 - **U4 = PCA9534A** (same family already used elsewhere in the system - Power Module carries a
   PCA9534A @ 0x3F; chosen over MCP23017 since MCP23017's fixed `0100xxx` address prefix gives only
-  0x20-0x27, which is entirely consumed by existing devices (Stator/Cypher U6-U8, USM U1-U3),
+  0x20-0x27, which is entirely consumed by existing devices (Cypher U6-U8, USM colour store),
   leaving no room for other board types. PCA9534A's fixed `0111xxx` prefix gives a separate
   0x38-0x3F block instead).
-- **Bus:** connects directly to `I2C_SDA`/`I2C_SCL` on the Cypher Board interconnect (`J5`/`J7`
-  pins 27/28) - see `Cypher/Board_Layout.md §4` for this template pin definition. This board is
-  not the documentation owner of what (if anything) other board types connect to this shared bus.
+- **Bus:** connects directly to `I2C_SDA`/`I2C_SCL` on the User Settings Module interconnect
+  (`J3`) - the dedicated `I2C2` Cypher-peripherals bus, distinct from the system `I2C1` bus. See
+  `User_Settings_Module/Board_Layout.md` for this template's pin definition. This board is not the
+  documentation owner of what (if anything) other board types connect to this shared bus.
 - **I2C address (single, shared by all Cypher-Input variants; see `Controller/Design_Spec.md**
   **§4.1` for the full system-wide I2C address table):**
 
   | I2C Address | A2/A1/A0 | Applies To | Pin usage |
   | :--- | :--- | :--- | :--- |
-  | **0x38** | LOW/LOW/LOW (base 0x38 \| 0b000) | All Cypher-Input variants | Up to 8 GPIO; exact allocation (Space/Enter, colour config, any local switching hardware) varies by variant - see each variant's own design file §4 |
+  | **0x38** | LOW/LOW/LOW (base 0x38 \| 0b000) | All Cypher-Input variants | Up to 8 GPIO; exact allocation (Space/Enter, any local switching hardware) varies by variant - see each variant's own design file §4 |
 
 - **Variant identification:** carried solely by `BOARD_ROLE_ID[3:0]` (see
   `Cypher/Board_Layout.md §4` encoding table and each variant's own design file §4) - **not** by
@@ -328,7 +316,7 @@ board's own LED bank (see §5), fully allocating U4's GPIO headroom to LED colou
   separately and installed post-PCBA (JLCPCB or end-user), snap-fit into the hot-swap sockets with
   zero-force insertion; no hand-soldering.
 - **Routing:** Through-hole socket pads route to front-layer (L1) signals: cipher-path keys (26,
-  40, or 10) to J1 (plain-bits); on the 64-Character and 10-Numeric variants, 2 non-cipher keys
+  40, or 10) to J4 (plain-bits); on the 64-Character and 10-Numeric variants, 2 non-cipher keys
   (Space, Enter) to U4 (I2C GPIO expander); on variants with a Shift key, the Shift keys are
   additionally tapped in parallel into that variant's own local Shift-sense hardware (if any) -
   see that variant's own design file for detail.
@@ -338,10 +326,13 @@ board's own LED bank (see §5), fully allocating U4's GPIO headroom to LED colou
 ## 5. LED Indicator Circuit
 
 One RGB LED per key, quantity matching the variant's key count (26 for Classic, 42 for 64-Character,
-12 for 10-Numeric). Colour selection is generated **entirely on this board**, driven off local
-hardware and software-configurable state - it never touches the ENC module or its `plain-bits`
-bus (superseding the original design, which piggybacked 2 spare `plain-bits` positions per
-variant - see DEC-087).
+12 for 10-Numeric). Four independent RGB colour styles are stored and configured entirely on the
+User Settings Module and delivered to this board's local drive stage via `J3`
+(`RED_DRIVE_{1,2,3,4}_N`/`GREEN_DRIVE_{1,2,3,4}_N`/`BLUE_DRIVE_{1,2,3,4}_N`/
+`ILLUMINATION_DRIVE_{1,2,3,4}_N`) - see §6. This board never generates colour/brightness values
+itself; it only applies whichever of the four styles are relevant to its own local LED bank. Which
+style(s) apply to a given key at a given moment, and the local circuit that decides this in real
+time, are open items tracked in `.copilot/todos/cypher-input-led-independent-rgb-pwm-review.md`.
 
 ### LED Specification (placeholder - part TBD)
 
@@ -359,53 +350,42 @@ variant - see DEC-087).
 
 ### Current-Limit Resistors (placeholder values)
 
-One series resistor per LED per colour channel, target 10mA drive per channel (same target as
-the previous bicolour design) - exact values to be recalculated once the LED part is confirmed:
+One series resistor per LED per colour channel, target 10mA drive per channel - exact values to
+be recalculated once the LED part is confirmed:
 
 - R1-R26 / R1-R42 / R1-R12 (Red): value TBD.
 - R1-R26 / R1-R42 / R1-R12 (Green): value TBD.
 - R1-R26 / R1-R42 / R1-R12 (Blue): value TBD.
 
-### Colour Selection Architecture
-
-Colour is defined by software via U4 (PCA9534A) GPIO outputs, driving
-`RED_DRIVE_N`/`GREEN_DRIVE_N`/`BLUE_DRIVE_N` directly - one software-configured 3-bit RGB code per
-variant, common to every Cypher-Input board regardless of key layout:
-
-- GPIO budget: 3 of U4's 8 GPIO for the colour code, plus 2 more for Space/Enter on variants that
-  have those keys. The remaining GPIO headroom (if any) is available for a variant to add local
-  hardware that switches between multiple configured colours in real time (e.g. a Shift-triggered
-  mux), without any CPLD firmware or per-keystroke I2C writes involved - see that variant's own
-  design file for whether it implements this, and the full circuit if so.
-- On variants with no such switching hardware, U4 drives
-  `RED_DRIVE_N`/`GREEN_DRIVE_N`/`BLUE_DRIVE_N` straight to the LED bank MOSFETs (below) - a single
-  software-configured colour, never switched in real time.
-
 ### Drive Topology - P-Channel MOSFET High-Side Switching
 
 Each colour bank (26, 42, or 12 parallel LEDs, depending on variant) is switched at the anode side
-by one dedicated P-channel MOSFET (SOT-23), sourced from `5V_MAIN` (not `3V3_ENIG` - see
-DR-CYPI-14a for the corresponding entry decoupling bank):
+by one dedicated P-channel MOSFET (SOT-23), sourced from `5V_MAIN`:
 
-- U5 (Red bank): gate driven by `RED_DRIVE_N` (directly from U4, or from that variant's own local
-  switching hardware if populated - see §5 Colour Selection Architecture).
-- U6 (Green bank): gate driven by `GREEN_DRIVE_N` (same source pattern as U5).
-- U7 (Blue bank): gate driven by `BLUE_DRIVE_N` (same source pattern as U5); reserved for future
-  use until the RGB LED part and its Blue-channel use are confirmed.
+- U5 (Red bank): gate driven by whichever `RED_DRIVE_{n}_N` signal this board's own local logic
+  currently selects from the four received on `J3`.
+- U6 (Green bank): gate driven by the corresponding `GREEN_DRIVE_{n}_N` signal (same source
+  pattern as U5).
+- U7 (Blue bank): gate driven by the corresponding `BLUE_DRIVE_{n}_N` signal (same source pattern
+  as U5).
 - Active-LOW gate drive: driver output LOW -> MOSFET ON -> LEDs light (subject to the shared
-  brightness switch, §6). Driver output HIGH -> MOSFET OFF -> LEDs dark.
-- No external gate resistors required at these switching frequencies (~100-300 Hz).
+  illumination switch, §6). Driver output HIGH -> MOSFET OFF -> LEDs dark.
+- No external gate resistors required at these switching frequencies.
 - No external pull-down resistors required - the driving GPIO/logic outputs hold a defined state
   from power-up.
 
+> **Open item:** the exact local circuit/logic that selects which of the four received colour
+> styles (per style: `RED`/`GREEN`/`BLUE`/`ILLUMINATION_DRIVE_{n}_N`) drives U5-U7 at any given
+> moment - e.g. a real-time mux keyed on Shift/key-press state - is not yet finalised; see
+> `.copilot/todos/cypher-input-led-independent-rgb-pwm-review.md`.
+
 **MOSFET selection:** SQ2319ADS-T1_BE3 (Vishay Siliconix, SOT-23, single P-channel - same part
-already used on the User Settings Module, Q19-Q30) for U5-U7. I_D = -4.6A, R_DS(on) = 0.145 Ohm @
+already used on the User Settings Module) for U5-U7. I_D = -4.6A, R_DS(on) = 0.145 Ohm @
 V_GS = -4.5V - comfortably exceeds a worst-case 420mA single-channel load (42 keys x 10mA,
 64-Character variant) with wide margin; the 26-key Classic and 12-key 10-Numeric variant loads
 (260mA and 120mA) are even further within margin.
 
-> **Combined `5V_MAIN` current (all 3 channels, mixed colour):** since any 3-bit RGB code is a
-> valid software-configured colour (§5 Colour Selection Architecture), a mixed colour (e.g.
+> **Combined `5V_MAIN` current (all 3 channels, mixed colour):** a mixed colour (e.g.
 > white/yellow/cyan/magenta) can hold all 3 colour banks active simultaneously - up to
 > **1.26A worst case** (42 keys x 3 channels x 10mA, 64-Character variant; 0.78A for 26-Char
 > Classic, 0.36A for 10-Numeric) on the shared `5V_MAIN` entry, not just the 420mA single-channel
@@ -414,138 +394,69 @@ V_GS = -4.5V - comfortably exceeds a worst-case 420mA single-channel load (42 ke
 > and its entry decoupling, DR-CYPI-14a, and the system-level `Power_Budgets.md` 5V_MAIN Load
 > Analysis).
 
-## 6. Brightness Control
+## 6. User Settings Module Interface
 
-A single panel-mount rotary dial (RV1) on this board controls LED brightness for this board's own
-LED bank, and is broadcast for use by whichever Cypher-Output board is installed - one dimmer for
-the whole Cypher system. RV1 feeds a
-555 astable oscillator (U1), whose PWM output (`BRIGHTNESS_PWM_EN`) gates U8 (BSS138, N-channel
-MOSFET - same part family as the User Settings Module's colour-rail sink stage, DEC-034), a
-shared low-side switch common to every LED's cathode return, placed downstream of all colour
-selection so brightness applies uniformly regardless of which colour(s) are currently active.
-`BRIGHTNESS_PWM_EN` is broadcast to `J4`/`J6` for use by whichever Cypher-Output board is
-installed (§7). Brightness control is fully independent of the ENC module CPLD.
+This board's illumination switch (U8, BSS138 - same part family as the User Settings Module's
+colour-rail sink stage, DEC-034) is a common low-side switch at the LED bank's shared cathode
+return, downstream of all colour selection, gated by whichever `ILLUMINATION_DRIVE_{n}_N` signal
+this board's own local logic currently selects from the four received via `J3`. Brightness control
+(the physical dial) is hosted entirely on the User Settings Module, not on this board - see
+`User_Settings_Module/Design_Spec.md`.
 
-### 555 Astable Component Values
+### J3 - USM Right-Edge Connector
 
-| Ref | Component | Value | Notes |
-| :--- | :--- | :--- | :--- |
-| RV1 | Rotary pot (R_A) | 0-50 kOhm | Bourns 3310P-001-503L; panel-mount brightness dial |
-| R81 | Fixed resistor (R_B) | 1 kOhm 0402 | Discharge path limiter; prevents short when RV1 -> 0 |
-| C1 | Timing capacitor (C) | 10nF X7R 0402 | Sets oscillation period with RV1 + R81 |
-| C2 | Noise-bypass capacitor (C_CV) | 100nF X7R 0402 | U1 pin 5 (CV) to GND; suppresses supply noise on duty cycle |
-| C3 | VCC bypass | 100nF X7R 0402 | Per GRS §3.2 per-IC bypass rule |
+> **Connector Definition Owner:** `User_Settings_Module/Board_Layout.md` (its own left
+> connectors). Full 50-pin template defined there; this board's own use of it is:
 
-### Frequency Range
-
-```text
-f_high ~= 1.44 / ((RV1_min + 2 x R81) x C1) ~= 72 kHz  (practical pot wiper-contact limited)
-f_low  ~= 1.44 / ((RV1_max + 2 x R81) x C1) ~= 2.8 Hz  (very dim glow at dial minimum)
-```
-
-> The 555 astable never produces zero duty cycle; at dial minimum the LEDs produce a very dim
-> glow, indicating the system is powered and active. Full-off behaviour can be implemented in a
-> future update if required (e.g. an additional software-controlled enable via U4).
-
-### 555 Oscillator Circuit
-
-```text
-   3V3_ENIG
-       |
-       +--[RV1 0-50k pot]--+--[R81 1k]--+-- Pin 7 (DISCHARGE)
-       |                   |            |
-       |                (wiper)         +-- Pin 6 (THRESHOLD)
-       |                   |                    |
-       |                   +------- Pin 2 (TRIGGER)
-       |                                    [C1 10nF]
-       |                                        |
-       |   Pin 8 (VCC)   -- 3V3_ENIG           GND
-       |   Pin 4 (RESET) -- 3V3_ENIG (tie HIGH - always running)
-       |   Pin 1 (GND)   -- GND
-       |   Pin 5 (CV)    -- [C2 100nF] -- GND (noise bypass)
-       |
-       +-- Pin 3 (OUTPUT) ------------------------------> U8 (BSS138) gate: BRIGHTNESS_PWM_EN
-```
+- `TDI_INPUT`/`TDO_INPUT` -> ENC module TDI/TDO (this board occupies the HID-Facing Connector
+  Template's **top row**, the Input role).
+- `TDI_OUTPUT`/`TDO_OUTPUT` are NC on this board (Output-role pins).
+- `I2C_SDA`/`I2C_SCL` -> `U4` (`I2C2`).
+- `RED_DRIVE_{1,2,3,4}_N`/`GREEN_DRIVE_{1,2,3,4}_N`/`BLUE_DRIVE_{1,2,3,4}_N` -> local colour-bank
+  drive inputs (U5-U7); all four colour styles are received, but which style(s) actually drive the
+  LED bank at a given moment is an open item - see §5.
+- `ILLUMINATION_DRIVE_{1,2,3,4}_N` -> local `U8` gate input, same open item as above.
+- `TCK`, `TMS`, and `CPLD_RESET_N` -> ENC module JTAG pins.
+- `3V3_ENIG` -> board logic supply.
 
 ## 7. Interconnects
 
-### J1-J3 - ENC Module Mount
+### J4-J6 - ENC Module Mount
 
-See §3 ENC Module Interface for connector definitions. Pinout: `Board_Layout.md §1-3`.
+See §3 ENC Module Interface for connector definitions. Pinout: `Board_Layout.md §3`.
 
-### J4-J7 - Cypher Board Interconnect
+### J1 / J2 - Cypher Left Pair Template
 
-**Pin-level template owned by the Cypher Board (`Board_Layout.md §4`) - this board owns only its
-own physical connector placement and gender, per that shared template.**
+> **Connector Definition Owner:** `Cypher/Board_Layout.md §4` (its own `J5`). Full 50-pin template
+> defined there.
 
-- **Architecture:** 4 connectors: J4 (top-left, male), J5 (top-right, male) - mounted flush with
-  the board's top edge so the connector face sits flush with the enclosure lid's edge once cased;
-  J6 (bottom-left, female), J7 (bottom-right, female) - mounted protruding past the board's
-  bottom edge far enough to span the enclosure gap and fully mate with the neighbouring board's
-  flush-mounted male connector. Top connectors mate upward - directly to the Cypher Board if
-  this board is closest to it, or to the other HID board's bottom connectors if this board is
-  not closest. Bottom connectors mate downward - to the other HID board's top connectors, or to
-  a future Plugboard board. This lets Cypher-Input and Cypher-Output attach to the Cypher Board
-  in either order.
-- **MPN:** J4/J5 = QTS-025-01-L-D-RA-P (Samtec 50-contact 0.635mm right-angle male SMT); J6/J7 =
-  QSS-025-01-L-D-RA-K (Samtec 50-contact 0.635mm right-angle female SMT).
-- **J4/J6 (left pair):** mates the Cypher Board's own `J5` template (`Cypher/Board_Layout.md §4`)
-  - `3V3_ENIG` (pins 1-4), `5V_MAIN` (pins 5-8; feeds this board's own LED colour-bank MOSFETs
-  U5-U7 - see §5 Drive Topology; worst-case 1.26A combined across all 3 channels on the
-  64-Character variant, see `Power_Budgets.md` 5V_MAIN Load Analysis; exact per-channel current
-  still depends on the LED part selected in `merge-missing-components.md`), GND (pins 9-12), this board's LED
-  colour/brightness broadcast -
-  `RED_DRIVE_N` (14), `GREEN_DRIVE_N` (16) on the bottom row (top row 13/15 is GND), and this
-  board's own `BOARD_ROLE_ID_IN[3:0]` variant-ID strap on pins 17/19/21/23 (top row; bottom row
-  18/20/22/24 is GND) (see §3a/table above for values) - all generated by this board, tied both
-  J4 and J6. Pins 25/26 are the connector's fixed center GND bar. On the far side of the bar,
-  pins 28/30/32/34 (bottom row) carry `BOARD_ROLE_ID_OUT[3:0]` - a straight passthrough relaying
-  Cypher-Output's own `BOARD_ROLE_ID_OUT[3:0]` value (top row 27/29/31/33 is GND); pins 35/37 (top
-  row) carry `BRIGHTNESS_PWM_EN`/`BLUE_DRIVE_N` (bottom row 36/38 is GND) - generated by this
-  board, broadcast for use by whichever Cypher-Output board is installed. Pins
-  39-42 are GND, pins 43-50 are `5V_MAIN` (43-46) and `3V3_ENIG` (47-50), matching the Cypher
-  Board's own J5 template. The physical
-  plugboard patch-jack harness does **not** route through this connector -
-  it wires directly to the Cypher Board's own spade terminal bank (`J20+`) instead, per DEC-088.
-- **J5/J7 (right pair):** share the Cypher Board's board-agnostic HID Interconnect pin template
-  (`Cypher/Board_Layout.md §4`, its own `J6`) - `TTD_HID_IN`/`TTD_HID_OUT`/`TTD_HID_PASS` (JTAG
-  serial data, per-hop names distinguishing this board's own TDI/TDO from the passthrough relay
-  pin - see below), `TCK`, `TMS`, `CPLD_RESET_N` (broadcast, unchained; single pin - pin 23 only), plus
-  `ENC_DATA[5:0]`, `I2C_SDA`/`I2C_SCL`, `ENC_ACTIVE_INPUT_N`. Pins 17-22 are GND on this
-  template - `BOARD_ROLE_ID[3:0]` is carried on the `J4`/`J6` left pair. Pins
-  30/32 are unused (NC) on this template - LED
-  colour/brightness broadcast is carried on `J4`/`J6`, since it is generated
-  entirely on this board and never touches the ENC module's JTAG/cypher-bits connector at all.
-  This board's own wiring at J5/J7 (full pin numbers per `Board_Layout.md §4`):
-  - Pin 37 (`TTD_HID_IN`, J5 active, NC on J7) -> ENC module CPLD TDI (this board's own real TDI,
-    single-sided)
-  - Pin 36 (`TTD_HID_PASS`, J5 & J7, tied) -> ENC module CPLD TDO (this board's own real TDO,
-    broadcast so it reaches Cypher-Output's own TDI)
-  - Pin 40 (`TTD_HID_OUT`, J5 <-> J7) - direct passthrough wire, not connected to the ENC module
-    CPLD; carries Cypher-Output's own TDO back up toward the Cypher Board's `J6` pin 40 when
-    this board is directly beneath the Cypher Board
-  - `TMS`/`TCK` (pins 43/44, 47/48) - broadcast, tied on both J5 and J7, both rows
-  - `CPLD_RESET_N` (pin 23 only, tied J5 & J7) - broadcast, tied on both J5 and J7
-  - `ENC_ACTIVE_INPUT_N` (pin 24, tied J5 & J7) - this board's own generated keypress-activity
-    signal (matches the Cypher Board's internal `ENC_ACTIVE_INPUT_N` net)
-  - Top row `ENC_DATA[5:0]` (pins 3/5/7/9/11/13) - this board's own generated cipher data (from
-    ENC module `CB[0:5]`, tied both J5 and J7); bottom row (4/6/8/10/12/14) - straight passthrough
-    only, relays Cypher-Output's own data
-  - `I2C_SDA`/`I2C_SCL` (pins 27/28, tied both J5 and J7) - connects to this board's own U4
-    (PCA9534A); shared multidrop bus, no row distinction
+This board drives / uses the Cypher Left Pair Template's **top row** locally and straight-passes
+the **bottom row**:
 
-> **Pinout:** see `Board_Layout.md §4` for the full connector definitions and this board's
-> pin-level wiring, including the JTAG chain-through wiring between this board's ENC module JTAG
-> TDI/TDO and the Cypher Board interconnect. See `Cypher/Design_Spec.md §3` JTAG Hub for the full
-> 37-device chain order.
+- `ENC_ACTIVE_INPUT_N` is driven from the local ENC module activity output.
+- `ENC_DATA_IN[5:0]` is driven from the local ENC module cipher-data outputs.
+- `BOARD_ROLE_ID_IN[3:0]` carries this board's hardwired variant strap.
+- `ENC_DATA_OUT[5:0]`, `ENC_ACTIVE_OUTPUT_N`, and `BOARD_ROLE_ID_OUT[3:0]` are straight-through
+  relay traces on this board and are not tapped locally.
+- `5V_MAIN` and GND are continuous entry / distribution rails for the local LED drive stage.
+
+> **Note:** `ENC_ACTIVE_INPUT_N`/`ENC_ACTIVE_OUTPUT_N` originate from and terminate at the Cypher
+> Board only. This board never taps `ENC_ACTIVE_OUTPUT_N` locally, even while relaying it through
+> to Cypher - these signals are timing-sensitive against the Rotor/Stack encoder chain's
+> propagation delay, so no HID board other than Cypher may intercept or buffer them.
+
+The physical plugboard patch-jack harness does **not** route through this connector - it wires
+directly to the Cypher Board's own spade terminal bank (`J20+`) instead, per DEC-088.
+
+See §6 User Settings Module Interface for the `J3` connector.
 
 ## 8. PCB Fabrication & Stackup
 
 - **Stackup:** 4-layer standard per `design/Standards/Global_Routing_Spec.md §2.3.1`.
-- **Manufacturer:** JLCPCB. Single-sided SMT PCBA (rear face, L4, only - ENC mount, Cypher
-  interconnect, brightness/colour ICs and MOSFETs, LED current-limit resistors, and Kailh
-  hot-swap sockets, consignment part C41430893). Top face (L1: LEDs and RV1) is hand-soldered by
-  the user after PCBA delivery, not part of the JLCPCB order - see §2 Architecture.
+- **Manufacturer:** JLCPCB. Single-sided SMT PCBA (rear face, L4, only - ENC mount, Cypher and
+  USM interconnects, LED drive MOSFETs, LED current-limit resistors, and Kailh hot-swap sockets,
+  consignment part C41430893). Top face (L1: LEDs) is hand-soldered by the user after PCBA
+  delivery, not part of the JLCPCB order - see §2 Architecture.
 - **Fillets:** 2.0mm rounded PCB corners.
 - **Mounting Holes:** MH1-MH4, M3 PTH (3.2mm drill), tied to GND_CHASSIS per GRS §4. Placement
   per GRS §4.3 Pattern A (standard rectangular board, 7mm inset from both nearest edges at each
@@ -554,10 +465,10 @@ own physical connector placement and gender, per that shared template.**
 
 ## 9. Thermal & ESD
 
-- **Thermal:** No active cooling required. U1 (MIC1555), U5-U7 (SQ2319ADS-T1_BE3), and U8
-  (BSS138) dissipate well below 100mW combined. Any variant-specific switching ICs (see each
-  variant's own design file) are equally low-power.
-- **ESD:** No TVS/ESD protection required. J1-J4 are internal BtB/dock connectors that are not
+- **Thermal:** No active cooling required. U5-U7 (SQ2319ADS-T1_BE3) and U8 (BSS138) dissipate
+  well below 100mW combined. Any variant-specific switching ICs (see each variant's own design
+  file) are equally low-power.
+- **ESD:** No TVS/ESD protection required. J1-J6 are internal BtB/dock connectors that are not
   hot-swapped and not externally accessible during normal servicing, per
   `design/Standards/Global_Routing_Spec.md §9`.
 
@@ -568,16 +479,15 @@ own physical connector placement and gender, per that shared template.**
   variant), `CHIFFRIER-EINGABE-64 [Cypher-Input] V1.0` (64-Character variant), or
   `CHIFFRIER-EINGABE-10N [Cypher-Input] V1.0` (10-Numeric variant), matching the Rotor board's
   `WALZE-{variant}` naming convention.
-- **Connector Pin-1 Markers:** J1-J4 silkscreen pin-1 markers required per GRS §7.1.
+- **Connector Pin-1 Markers:** J1-J6 silkscreen pin-1 markers required per GRS §7.1.
 
 ## 11. Bill of Materials
 
 > This BOM lists only components common to **all** Cypher-Input variants (fixed quantity,
-> independent of variant) - connectors, brightness control, decoupling, LED drive electronics, and
-> the board-ID expander. Variant-specific components (LED bank, current-limit resistors, hot-swap
-> sockets, mechanical keyswitches, and any local colour-switching hardware such as the
-> 64-Character variant's mux/Shift-sense circuit) with their per-variant quantities are listed in
-> each variant's own design file §6 (`Cypher_Input_26_Char_Design.md`,
+> independent of variant) - connectors, decoupling, LED drive electronics, and the board-ID
+> expander. Variant-specific components (LED bank, current-limit resistors, hot-swap
+> sockets, mechanical keyswitches, and any local hardware) with their per-variant quantities are
+> listed in each variant's own design file §6 (`Cypher_Input_26_Char_Design.md`,
 > `Cypher_Input_64_Char_Design.md`, `Cypher_Input_10_Numeric_Design.md`), mirroring the Rotor
 > board's common/variant BOM split. **One open sourcing item remains:** the RGB LED part itself
 > (variant files) is a placeholder pending user confirmation of a part that fits under the Cherry
@@ -585,21 +495,16 @@ own physical connector placement and gender, per that shared template.**
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C1 | 10nF X7R 50V 0402 | CL05B103KB5NNNC | Samsung | 1276-1008-1-ND | 187-CL05B103KB5NNNC | C15195 | - | 555 timing capacitor; same part as Power Module C49 | ✔ | ✔ | 1 |
-| C2, C3 | 100nF X7R 50V 0402 | CL05B104KB5NNNC | Samsung | 1276-CL05B104KB5NNNCCT-ND | 187-CL05B104KB5NNNC | C960916 | - | C2: 555 CV noise bypass (pin 5); C3: U1 VCC bypass per GRS §3.2 | ✔ | ✔ | 2 |
-| C4-C8 | 10uF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | - | 3V3_ENIG entry decoupling bank at J4 | ✔ | ✔ | 5 |
-| C9-C13 | 10uF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | - | 5V_MAIN entry decoupling bank at J4, feeding the LED bank colour-switch MOSFETs (U5-U7) - see DR-CYPI-14a | ✔ | ✔ | 5 |
-| J1 | 90-pin 0.4mm pitch BtB receptacle | DF40C-90DS-0.4V(51) | Hirose | 26-DF40C-90DS-0.4V(51)CT-ND | 798-DF40C90DS0.4V51 | C2911197 | - | ENC module mount - plain-bits connector | ✔ | ✔ | 1 |
-| J2 | 24-pin 0.4mm pitch BtB receptacle | DF40C-24DS-0.4V(51) | Hirose | H11621CT-ND | 798-DF40C24DS0.4V51 | C424640 | - | ENC module mount - cypher-bits + JTAG + ENC_ACTIVE_N | ✔ | ✔ | 1 |
-| J3 | 10-pin 0.4mm pitch BtB receptacle | DF40C-10DS-0.4V(51) | Hirose | H11617CT-ND | 798-DF40C10DS0.4V51 | C424636 | - | ENC module mount - 3V3_ENIG power | ✔ | ✔ | 1 |
-| J4, J5 | 50-contact 0.635mm right-angle male SMT | QTS-025-01-L-D-RA-P | Samtec | QTS-025-01-L-D-RA-P-ND | 200-QTS02501LDRAP | C7267889 | - | Cypher Board interconnect, top edge (KBD_ENC role); J4=left (power + LED broadcast + BOARD_ROLE_ID), J5=right (JTAG chain-through); mates whichever board is above, either order; same part as Stack-Input J1 | ✔ | ✔ | 1 |
-| J6, J7 | 50-contact 0.635mm right-angle female SMT | QSS-025-01-L-D-RA-K | Samtec | QSS-025-01-L-D-RA-K-ND | 200-QSS02501LDRAK | C6156774 | - | Cypher Board interconnect, bottom edge (KBD_ENC role); J6=left (power + LED broadcast + BOARD_ROLE_ID), J7=right (JTAG chain-through); mates whichever board is below, either order; same part as Stack-Input/Stack-Output J2 | ✔ | ✔ | 1 |
-| R81 | 1 kOhm 1% 0402 | ERJ-2RKF1001X | Panasonic | P1.00KLCT-ND | 667-ERJ-2RKF1001X | C242161 | - | 555 discharge path limiter (R_B); same part used widely elsewhere in the BOM (e.g. PM R24-R26/R30-R31, USM R12-R17/R54-R65) | ✔ | ✔ | 1 |
-| RV1 | 0-50 kOhm linear rotary potentiometer, panel-mount | 3310P-001-503L | Bourns | 3310P-001-503L-ND | 652-3310P-001-503L | C5891432 | - | Brightness dial; feeds 555 R_A leg; top face - **not populated in PCBA**, hand-soldered by the user after delivery (see §2 Architecture) | ✔ | ✔ | 1 |
-| U1 | 555 astable oscillator, SOT23-5 | MIC1555YM5-TR | Microchip Technology | 576-2576-1-ND | 998-MIC1555YM5TR | C145373 | - | Brightness PWM oscillator; same part as Power Module U9/U13 | ✔ | ✔ | 1 |
-| U5-U7 | P-channel MOSFET, SOT-23 | SQ2319ADS-T1_BE3 | Vishay Siliconix | 742-SQ2319ADS-T1_BE3CT-ND | 78-SQ2319ADS-T1_BE3 | C3280190 | - | U5: Red bank switch; U6: Green bank switch; U7: Blue bank switch; same part as User Settings Module Q19-Q30 | ✔ | ✔ | 3 |
-| U8 | N-channel MOSFET, SOT-23 | BSS138 | onsemi (or equiv.) | - | - | - | - | Shared LED-bank cathode-return brightness switch, gated by `BRIGHTNESS_PWM_EN`; same part family as User Settings Module colour-rail sink stage (Q1-Q6, DEC-034) - exact supplier PN to be confirmed at schematic capture | ✔ | - | 1 |
-| U4 | 8-bit I2C GPIO expander, TSSOP-16 | PCA9534APWR | NXP Semiconductors | 296-21760-1-ND | 595-PCA9534APWR | C2871127 | - | Board-ID expander; single fixed address 0x38 across all variants (variant identity carried by `BOARD_ROLE_ID[3:0]`, not I2C address); also drives software-configured LED colour code(s), see §5; same part as Power Module U14 (@ 0x3F, different address) | ✔ | ✔ | 1 |
+| C4-C8 | 10uF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | - | 3V3_ENIG entry decoupling bank at J3 | ✔ | ✔ | 5 |
+| C9-C13 | 10uF X7R 50V 1206 | CL31B106KBK6PJE | Samsung | 1276-CL31B106KBK6PJECT-ND | 187-CL31B106KBK6PJE | C43935922 | - | 5V_MAIN entry decoupling bank at J1/J2, feeding the LED bank colour-switch MOSFETs (U5-U7) - see DR-CYPI-14a | ✔ | ✔ | 5 |
+| J4 | 90-pin 0.4mm pitch BtB receptacle | DF40C-90DS-0.4V(51) | Hirose | 26-DF40C-90DS-0.4V(51)CT-ND | 798-DF40C90DS0.4V51 | C2911197 | - | ENC module mount - plain-bits connector | ✔ | ✔ | 1 |
+| J5 | 24-pin 0.4mm pitch BtB receptacle | DF40C-24DS-0.4V(51) | Hirose | H11621CT-ND | 798-DF40C24DS0.4V51 | C424640 | - | ENC module mount - cypher-bits + JTAG + ENC_ACTIVE_N | ✔ | ✔ | 1 |
+| J6 | 10-pin 0.4mm pitch BtB receptacle | DF40C-10DS-0.4V(51) | Hirose | H11617CT-ND | 798-DF40C10DS0.4V51 | C424636 | - | ENC module mount - 3V3_ENIG power | ✔ | ✔ | 1 |
+| J1, J3 | 50-contact 0.635mm right-angle male SMT | QTS-025-01-L-D-RA-P | Samtec | QTS-025-01-L-D-RA-P-ND | 200-QTS02501LDRAP | C7267889 | - | J1 Cypher left-pair top connector; J3 USM connector | ✔ | ✔ | 2 |
+| J2 | 50-contact 0.635mm right-angle female SMT | QSS-025-01-L-D-RA-K | Samtec | QSS-025-01-L-D-RA-K-ND | 200-QSS02501LDRAK | C6156774 | - | Cypher left-pair bottom connector | ✔ | ✔ | 1 |
+| U5-U7 | P-channel MOSFET, SOT-23 | SQ2319ADS-T1_BE3 | Vishay Siliconix | 742-SQ2319ADS-T1_BE3CT-ND | 78-SQ2319ADS-T1_BE3 | C3280190 | - | U5: Red bank switch; U6: Green bank switch; U7: Blue bank switch; same part as User Settings Module | ✔ | ✔ | 3 |
+| U8 | N-channel MOSFET, SOT-23 | BSS138 | onsemi (or equiv.) | - | - | - | - | Shared LED-bank cathode-return illumination switch, gated by whichever colour style's `ILLUMINATION_DRIVE_{n}_N` this board's own local logic selects; same part family as User Settings Module colour-rail sink stage (DEC-034) - exact supplier PN to be confirmed at schematic capture | ✔ | - | 1 |
+| U4 | 8-bit I2C GPIO expander, TSSOP-16 | PCA9534APWR | NXP Semiconductors | 296-21760-1-ND | 595-PCA9534APWR | C2871127 | - | Board ID + UI-only key readback; single fixed address 0x38 across all variants (variant identity carried by `BOARD_ROLE_ID[3:0]`, not I2C address) on `I2C2`; same part as Power Module U14 (@ 0x3F, different address) | ✔ | ✔ | 1 |
 
 > **Sourcing status:** most components in this BOM have confirmed sourcing (either from the source
 > discussion directly, or reused from an already-approved part elsewhere in the design). **One

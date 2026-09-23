@@ -130,3 +130,47 @@ Key outcomes to carry forward into this review:
   the final address (and which bus it sits on - see point above) will likely depend on the outcome
   of the LED selection PoC and whatever the chosen implementation actually needs. Re-confirm/update
   this address as part of closing out this review, don't assume `0x39`/`I2C2` is final.
+
+## Follow-up items from connector redesign (2026-09-21)
+
+- **USM now stores/broadcasts 4 colour styles, not 3.** Reviewing the 64-Character variant's
+  Shift-triggered colour-switching requirement surfaced a real gap: the USM-to-HID connector
+  (the HID-Facing Connector Template) originally carried only ONE generic `RED_DRIVE_N`/`GREEN_DRIVE_N`/`BLUE_DRIVE_N`/
+  `ILLUMINATION_DRIVE_N` signal group, which cannot give a HID board's own local logic (e.g. a
+  colour-select mux) simultaneous access to more than one stored colour value at once - it can
+  only ever carry whichever single colour happens to be "current". This is now resolved (see
+  DEC-107): the connector carries **four independent signal groups**
+  (`RED_DRIVE_{1,2,3,4}_N`/`GREEN_DRIVE_{1,2,3,4}_N`/`BLUE_DRIVE_{1,2,3,4}_N`/
+  `ILLUMINATION_DRIVE_{1,2,3,4}_N`), one per colour style, all broadcast simultaneously and
+  identically to both HID connectors. USM's colour-value store (`U1`) now holds 4 styles; the
+  initial system configuration still only uses 3 (Colour1 = idle baseline, Colour2 = key-press,
+  Colour3 = shifted key-press) - Colour4 is reserved for future use.
+- **This does NOT resolve the analog-vs-addressable LED implementation decision** - it only
+  resolves how USM delivers multiple colour values to a HID board's own connector. Whichever local
+  circuit is eventually chosen (existing analog ICs, restored/repointed Shift-mux hardware like
+  the original `U9`/`D9`/`R9` circuit, or an addressable-LED CPLD protocol) will select from
+  among these four received signal groups in real time - the PoC/implementation choice remains
+  fully open. When restoring/adapting local mux-style circuits (e.g. Cypher-Input's 64-Character
+  variant), keep them as the existing default circuit description, only repointing their inputs
+  to source from USM's per-style signal groups instead of locally-generated codes - do not delete
+  such circuits outright.
+
+## Follow-up items from Cypher-Input review (2026-09-23)
+
+- **LED mounting face depends on this review's outcome, and materially affects production
+  complexity.** If the addressable-LED option is chosen, the LEDs are expected to move to the
+  **rear face** (via light-pipe cutouts through the board) and become part of the standard JLCPCB
+  SMT assembly pass, rather than remaining top-face, hand-soldered-by-the-user components as they
+  are under the current analog-RGB default. This would simplify production significantly (removes
+  a manual assembly step entirely). Confirm this as part of the PoC/decision, and update
+  `Cypher-Input/Design_Spec.md §2`/`Board_Layout.md` (top/rear face component lists) and the
+  equivalent Cypher-Output sections once the LED implementation choice is finalised - do not change
+  the mounting-face description before then, since it is genuinely undecided.
+- **Possible use for Colour4:** reviewing the 64-Character variant's Shift-triggered behaviour
+  (Colour1 = unshifted baseline, Colour2 = pressed-key, Colour3 = shifted baseline) suggests a
+  natural role for the previously-unused 4th colour style: Colour4 could be the "shifted +
+  pressed" indicator, i.e. when Shift is held AND a key is pressed, that key shows Colour4 instead
+  of Colour2 - giving the user 4 independently configurable colours instead of overlaying Colour2
+  on every baseline regardless of Shift state. This is not yet decided - just an idea worth
+  weighing during the PoC/implementation-choice discussion in this review, since it uses the 4th
+  colour style for something concrete rather than leaving it fully reserved.

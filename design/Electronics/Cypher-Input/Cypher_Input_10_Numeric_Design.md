@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-09-21
 **Parent Document:** `design/Electronics/Cypher-Input/Design_Spec.md`
 
 ---
@@ -17,9 +17,9 @@ layout, plus Space and Enter for CM5 UI input clarity. There is no Shift key on 
 digit character set has no case distinction.
 
 All three Cypher-Input variants (26-Char Classic, 64-Character, 10-Numeric) share an identical
-circuit topology (ENC module mount, LED indicator bank, brightness control, Cypher Board
-interconnect, board-identification strap plus a shared non-cipher-key/LED-colour I2C expander) -
-see `design/Electronics/Cypher-Input/Design_Spec.md`. Only key count/layout, LED/resistor/socket
+circuit topology (ENC module mount, LED indicator bank, Cypher Board interconnect, USM
+interconnect, board-identification strap plus a shared non-cipher-key I2C expander) - see
+`design/Electronics/Cypher-Input/Design_Spec.md`. Only key count/layout, LED/resistor/socket
 quantities, `plain-bits` allocation, and `BOARD_ROLE_ID` value differ between variants.
 
 ---
@@ -51,9 +51,10 @@ quantities, `plain-bits` allocation, and `BOARD_ROLE_ID` value differ between va
 | PB[10:63] | Unused - spare plain-bit positions |
 
 > Provisional pending Quartus pin-planning and PCB layout on the ENC module side. See
-> `Design_Spec.md §3` for the common ENC module interface and full J1 zig-zag pin map
+> `Design_Spec.md §3` for the common ENC module interface and full J4 zig-zag pin map
 > (`Board_Layout.md §1`). Space and Enter are **not** part of this bus - see §4 below. **LED
-> colour selection never uses any `plain-bits` position** - see §5.
+> colour selection never uses any `plain-bits` position** - colour is sourced entirely from the
+> User Settings Module, see §5.
 
 ---
 
@@ -62,20 +63,18 @@ quantities, `plain-bits` allocation, and `BOARD_ROLE_ID` value differ between va
 * **`BOARD_ROLE_ID[3:0]` strap value:** `0b0010` (Numbers only; see `Cypher/Board_Layout.md §4`
   encoding table).
 * **U4 (PCA9534A) I2C address:** `0x38`, the single fixed address shared by all Cypher-Input
-  variants (see `Design_Spec.md §3a`). 5 of 8 GPIO used: 2 for Space/Enter, 3 for a single
-  software-configured RGB colour code (no Shift key on this variant - see §5); 3 GPIO spare.
+  variants (see `Design_Spec.md §3a`). 2 of 8 GPIO used for Space/Enter; 6 GPIO spare.
 
 ---
 
 ## 5. LED Indicator Behaviour
 
-This variant has no Shift key, so it shows a single fixed colour - still software-configurable via
-U4, but never switched in real time; no local switching hardware (mux/Shift-sense network) is
-populated on this variant. See `Design_Spec.md §5` for the common colour-selection architecture.
-
-| Condition | Active colour |
-| :--- | :--- |
-| Always (no Shift key exists) | Single colour, software-configured via U4 GPIO |
+Colour and illumination values (four independent styles) are stored and configured entirely on the
+User Settings Module and delivered to this board on the common `J3` connector
+(`RED_DRIVE_{1,2,3,4}_N`/`GREEN_DRIVE_{1,2,3,4}_N`/`BLUE_DRIVE_{1,2,3,4}_N`/
+`ILLUMINATION_DRIVE_{1,2,3,4}_N` - see `Design_Spec.md §5`/§6 and
+`User_Settings_Module/Design_Spec.md`). This variant has no Shift key and carries no dedicated
+local colour-selection circuit of its own.
 
 LED count matches total physical keyswitches (12: 10 digits + Space + Enter), so Space and Enter
 also carry an indicator LED even though they are not part of the cipher pipeline.
@@ -89,7 +88,7 @@ Cypher-Input variants are listed in **`design/Electronics/Cypher-Input/Design_Sp
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D1-D12 | RGB SMD LED (placeholder - MPN TBD, pending user confirmation of a part that fits under Cherry MX2A-71NB) | TBD | TBD | - | - | - | - | One per key (10 digits + Space + Enter); single software-configured colour (no Shift key on this variant); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 12 |
+| D1-D12 | RGB SMD LED (placeholder - MPN TBD, pending user confirmation of a part that fits under Cherry MX2A-71NB) | TBD | TBD | - | - | - | - | One per key (10 digits + Space + Enter); colour source is the User Settings Module (see `Design_Spec.md §5`); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 12 |
 | R1-R12 (Red) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Red channel current-limit | - | - | 12 |
 | R1-R12 (Green) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Green channel current-limit | - | - | 12 |
 | R1-R12 (Blue) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Blue channel current-limit | - | - | 12 |

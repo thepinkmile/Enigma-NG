@@ -6,7 +6,39 @@
 
 ---
 
-## Current Status (as of 2026-09-18 — USM redesign connectors finalised, checkpoint 192)
+## Current Status (as of 2026-09-23 — USM/Cypher-Input rebuilt & reviewed, checkpoint 193)
+
+**⏸️ Paused for a token-limit reset — start next session by reading checkpoint 193 in full before
+doing anything else.**
+
+Following the checkpoint-192 revert, the User Settings Module and Cypher-Input have both been
+fully rebuilt by hand (no background agents) and reviewed/corrected by the user directly:
+
+- **USM** (`Design_Spec.md`/`Board_Layout.md`): role as HID colour/audio/JTAG-I2C spine; **4**
+  colour styles (not 3 — corrected mid-session, DEC-107); two connector templates, now named by
+  function only ("Cypher Left Pair Template" lives on Cypher, "Hub Connector Template" and
+  "HID-Facing Connector Template" live on USM — no more bare "Template 1/2/3").
+- **Cypher-Input** (`Design_Spec.md`, `Board_Layout.md`, 3 variant files): RefDes renumbered,
+  connector pin maps de-duplicated (ownership pointers only), USM 4-colour-style signal repointing,
+  `ENC_ACTIVE` propagation-delay note, 64-Char variant's LED behaviour corrected (Shift = global
+  state, not per-key).
+
+Checkpoint 193 documents the full detail plus a **"Recurring review issues" checklist** — 7
+issue classes the user caught repeatedly across both boards (historical wording, cross-board
+assertions, bare numeric template names, duplicated connector tables, indirect FR/DR
+cross-refs, passthrough-direction logic errors, falsely-resolved open items). **Actively check
+for all 7 before presenting Cypher-Output/Cypher-Plugboard/Cypher for review next session**, to
+save review cycles.
+
+**Not yet done** (blocks `usm-redesign-implementation` completion): Cypher-Output,
+Cypher-Plugboard, and Cypher still need the same rebuild treatment Cypher-Input just got — see
+checkpoint 193 "Not Yet Done" section for the exact per-board scope.
+
+**Next session must start with:** re-read checkpoint 193 in full, confirm git state is clean on
+`main`, then redo Cypher-Output next (mirroring Cypher-Input's approach), one file at a time,
+diff-checked before moving to the next.
+
+### Prior status (as of 2026-09-18 — USM redesign connectors finalised, checkpoint 192)
 
 **⚠️ Session paused mid-implementation for a clean weekend handoff — start next session by reading
 checkpoint 192 in full before doing anything else.**

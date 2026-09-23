@@ -153,5 +153,8 @@ Last updated: 2026-09-17
 | `merge-missing-components` | [merge-missing-components.md](merge-missing-components.md) | pending | `merge-consistency-review` |
 | `merge-final-review` | [merge-final-review.md](merge-final-review.md) | pending | `merge-consistency-review`, `merge-missing-components` |
 | `todo-clean-up-requirement-details` | [todo-clean-up-requirement-details.md](todo-clean-up-requirement-details.md) | pending | `design-discussion-merge` |
+| `encoder-module-pin-agnostic-redesign-review` | [encoder-module-pin-agnostic-redesign-review.md](encoder-module-pin-agnostic-redesign-review.md) | pending | — |
+| `usm-3-part-hid-module-mechanical-review` | [usm-3-part-hid-module-mechanical-review.md](usm-3-part-hid-module-mechanical-review.md) | pending | `usm-redesign-implementation` |
+| `usm-template2-template1-unification-review` | [usm-template2-template1-unification-review.md](usm-template2-template1-unification-review.md) | pending | — |
 | `usm-cfg-refmap-removal-review` | — | done | — |
 | `usm-redesign-implementation` | — | in_progress | — |

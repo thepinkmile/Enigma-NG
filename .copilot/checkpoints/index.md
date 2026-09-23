@@ -197,3 +197,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 190 | Controller/Cypher dock rework complete & user-reviewed; INA219 address aligned; v2.0 todos re-prioritised (DEC-098 through DEC-101) | 190-controller-cypher-dock-rework-reviewed-ina219-aligned-v2-todos-reprioritised.md |
 | 191 | FT232H moved to 3.3V VREGIN self-powered operation; 5V_USB net retired (DEC-102) | 191-ft232h-3v3-vregin-self-powered-5v-usb-retired.md |
 | 192 | USM redesign connectors finalised; implementation partially damaged, pending revert | 192-usm-redesign-connectors-finalised-implementation-partially-damaged-pending-revert.md |
+| 193 | USM/Cypher-Input rebuilt & reviewed; connector naming cleaned up | 193-usm-cypher-input-rebuilt-reviewed-connector-naming-cleaned-up.md |

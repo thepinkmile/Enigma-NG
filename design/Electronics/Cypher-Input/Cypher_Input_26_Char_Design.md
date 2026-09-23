@@ -4,7 +4,7 @@
 **Project:** Enigma-NG
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-09-21
 **Parent Document:** `design/Electronics/Cypher-Input/Design_Spec.md`
 
 ---
@@ -16,9 +16,9 @@ mimics the original German Enigma machine keyboard: a QWERTZ layout of 26 letter
 no Shift, digit, symbol, Space, or Enter keys. This is the simplest Cypher-Input variant.
 
 All three Cypher-Input variants (26-Char Classic, 64-Character, 10-Numeric) share an identical
-circuit topology (ENC module mount, LED indicator bank, brightness control, Cypher Board
-interconnect, board-identification strap plus a shared non-cipher-key/LED-colour I2C expander) -
-see `design/Electronics/Cypher-Input/Design_Spec.md`. Only key count/layout, LED/resistor/socket
+circuit topology (ENC module mount, LED indicator bank, Cypher Board interconnect, USM
+interconnect, board-identification strap plus a shared non-cipher-key I2C expander) - see
+`design/Electronics/Cypher-Input/Design_Spec.md`. Only key count/layout, LED/resistor/socket
 quantities, `plain-bits` allocation, and `BOARD_ROLE_ID` value differ between variants.
 
 ---
@@ -49,8 +49,9 @@ row, and the bottom row realigns back under the top row (`P` sits under `Q`):
 | PB[26:63] | Unused - spare plain-bit positions |
 
 > Provisional pending Quartus pin-planning and PCB layout on the ENC module side. See
-> `Design_Spec.md §3` for the common ENC module interface and full J1 zig-zag pin map
-> (`Board_Layout.md §1`). **LED colour selection never uses any `plain-bits` position** - see §5.
+> `Design_Spec.md §3` for the common ENC module interface and full J4 zig-zag pin map
+> (`Board_Layout.md §1`). **LED colour selection never uses any `plain-bits` position** - colour
+> is sourced entirely from the User Settings Module, see §5.
 
 ---
 
@@ -59,20 +60,18 @@ row, and the bottom row realigns back under the top row (`P` sits under `Q`):
 * **`BOARD_ROLE_ID[3:0]` strap value:** `0b0001` (Characters only; see `Cypher/Board_Layout.md §4`
   encoding table).
 * **U4 (PCA9534A) I2C address:** `0x38`, the single fixed address shared by all Cypher-Input
-  variants (see `Design_Spec.md §3a`). 3 of 8 GPIO used (single software-configured RGB colour
-  code - see §5); no Space/Enter keys exist on this variant; 5 GPIO spare.
+  variants (see `Design_Spec.md §3a`). No Space/Enter keys exist on this variant; all 8 GPIO spare.
 
 ---
 
 ## 5. LED Indicator Behaviour
 
-This variant has no Shift key, so it shows a single fixed colour - still software-configurable via
-U4, but never switched in real time; no local switching hardware (mux/Shift-sense network) is
-populated on this variant. See `Design_Spec.md §5` for the common colour-selection architecture.
-
-| Condition | Active colour |
-| :--- | :--- |
-| Always (no Shift key exists) | Single colour, software-configured via U4 GPIO |
+Colour and illumination values (four independent styles) are stored and configured entirely on the
+User Settings Module and delivered to this board on the common `J3` connector
+(`RED_DRIVE_{1,2,3,4}_N`/`GREEN_DRIVE_{1,2,3,4}_N`/`BLUE_DRIVE_{1,2,3,4}_N`/
+`ILLUMINATION_DRIVE_{1,2,3,4}_N` - see `Design_Spec.md §5`/§6 and
+`User_Settings_Module/Design_Spec.md`). This variant has no Shift key and carries no dedicated
+local colour-selection circuit of its own.
 
 ---
 
@@ -83,7 +82,7 @@ Cypher-Input variants are listed in **`design/Electronics/Cypher-Input/Design_Sp
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D1-D26 | RGB SMD LED (placeholder - MPN TBD, pending user confirmation of a part that fits under Cherry MX2A-71NB) | TBD | TBD | - | - | - | - | One per key; single software-configured colour (no Shift key on this variant); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 26 |
+| D1-D26 | RGB SMD LED (placeholder - MPN TBD, pending user confirmation of a part that fits under Cherry MX2A-71NB) | TBD | TBD | - | - | - | - | One per key; colour source is the User Settings Module (see `Design_Spec.md §5`); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 26 |
 | R1-R26 (Red) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Red channel current-limit | - | - | 26 |
 | R1-R26 (Green) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Green channel current-limit | - | - | 26 |
 | R1-R26 (Blue) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Blue channel current-limit | - | - | 26 |

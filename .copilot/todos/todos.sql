@@ -157,4 +157,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('usm-cfg-refmap-removal-review', 'Revisit USM Bank 2/CFG_REFMAP removal before next full design review', 'done'),
 ('merge-actuate-request-routing', 'Define ACTUATE_REQUEST_IN_N/OUT_N routing through Rotor and Stack-Interposer boards', 'done'),
 ('design-docs-current-only-sweep', 'Sweep all design documents for historical/rationale wording (current-design-only rule)', 'pending'),
+('encoder-module-pin-agnostic-redesign-review', 'Reviewing Encoder Module design to make it role-agnostic with direct CPLD-pin-to-connector-pin mapping', 'pending'),
+('usm-3-part-hid-module-mechanical-review', 'Reviewing mechanical design for the new Cypher-Input/Cypher-Output/USM 3-part HID module', 'pending'),
+('usm-template2-template1-unification-review', 'Reviewing whether USM hub connector should reuse the HID left-pair pin map for future flexibility', 'pending'),
 ('usm-redesign-implementation', 'Implement the agreed User Settings Module and HID connector redesign', 'in_progress');
