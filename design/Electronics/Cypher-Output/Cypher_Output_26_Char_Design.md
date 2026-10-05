@@ -50,9 +50,9 @@ the paired 26-Char Classic keyboard, per `Mechanical/Lightboard_Assembly/Design_
 | PB[26:63] | Unused - spare plain-bit positions |
 
 > Provisional pending Quartus pin-planning and PCB layout on the ENC module side. See
-> `Design_Spec.md §3` for the common ENC module interface and full J1 zig-zag pin map
-> (`Board_Layout.md §1`). **LED colour and brightness are received entirely as a broadcast from
-> Cypher-Input and never use any `plain-bits` position** - see `Design_Spec.md §1`.
+> `Design_Spec.md §3` for the common ENC module interface and full J4 zig-zag pin map
+> (`Board_Layout.md §1`). **LED colour and illumination are received entirely from the User
+> Settings Module and never use any `plain-bits` position** - see `Design_Spec.md §1`.
 
 ---
 
@@ -69,11 +69,11 @@ This variant has no custom-support switch - only the 64-Character variant carrie
 ## 5. Bill of Materials (26-Char Variant-Specific Components)
 
 Variant-specific components for the 26-Char Classic variant. Common components shared across all
-Cypher-Output variants are listed in **`design/Electronics/Cypher-Output/Design_Spec.md` §10**.
+Cypher-Output variants are listed in **`design/Electronics/Cypher-Output/Design_Spec.md` §11**.
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D1-D26 | RGB SMD LED (placeholder - MPN TBD, same part as Cypher-Input, pending confirmation) | TBD | TBD | - | - | - | - | One per lens position; colour/brightness received entirely as a broadcast (no local generation); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 26 |
+| D1-D26 | RGB SMD LED (placeholder - MPN TBD, same part as Cypher-Input, pending confirmation) | TBD | TBD | - | - | - | - | One per lens position; colour/illumination received entirely from the User Settings Module (no local generation); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 26 |
 | R1-R26 (Red) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Red channel current-limit | - | - | 26 |
 | R1-R26 (Green) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Green channel current-limit | - | - | 26 |
 | R1-R26 (Blue) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Blue channel current-limit | - | - | 26 |

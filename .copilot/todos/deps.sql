@@ -222,4 +222,5 @@ INSERT OR IGNORE INTO todo_deps (todo_id, depends_on) VALUES
 ('merge-diagrams-review',           'merge-create-plugboard'),
 ('cypher-input-led-independent-rgb-pwm-review', 'merge-final-review'),
 ('todo-clean-up-requirement-details', 'cypher-input-led-independent-rgb-pwm-review'),
-('todo-clean-up-requirement-details', 'design-discussion-merge');
+('todo-clean-up-requirement-details', 'design-discussion-merge'),
+('mini-stack-connector-flush-protrude-review', 'usm-redesign-implementation');

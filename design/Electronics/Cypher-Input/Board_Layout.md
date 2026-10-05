@@ -28,13 +28,14 @@
   switches (U5, U6, U7) and shared cathode-return illumination switch (U8); Kailh hot-swap
   sockets (SW1-SW26, SW1-SW42, or SW1-SW12, depending on variant); entry decoupling banks; local
   decoupling; Data Plate.
-- **J1 (top, male):** Cypher Board interconnect, mounted flush with the board's top edge so the
-  connector face sits flush with the enclosure lid's edge once cased. Mates upward, toward
-  whichever is physically above this board (the Cypher Board directly, or the other HID board if
-  this board is not closest to the Cypher Board).
-- **J2 (bottom, female):** Cypher Board interconnect, mounted protruding past the board's bottom
-  edge far enough to span the enclosure gap and fully mate with the neighbouring board's
-  flush-mounted male connector. Mates downward, toward the other HID board or Cypher-Plugboard.
+- **J1 (top, male):** Cypher Board interconnect, mounted protruding past the board's top edge
+  far enough to span the enclosure gap and fully mate with the neighbouring board's flush-mounted
+  female connector. Mates upward, toward whichever is physically above this board (the Cypher
+  Board directly, or the other HID board if this board is not closest to the Cypher Board).
+- **J2 (bottom, female):** Cypher Board interconnect, mounted flush with the board's bottom edge
+  so the connector's socket opening sits flush with the enclosure lid's edge once cased, forming
+  a clean opening for the next board's protruding male pins to enter. Mates downward, toward the
+  other HID board or Cypher-Plugboard.
 - **J3 (right edge, male):** User Settings Module interconnect - mates whichever of USM's two
   left-edge connectors is wired to this board's physical position.
 

@@ -64,7 +64,7 @@ switch, unique to this variant) differ between variants.
 | PB[40:63] | Unused - spare plain-bit positions |
 
 > Provisional pending Quartus pin-planning and PCB layout on the ENC module side. See
-> `Design_Spec.md §3` for the common ENC module interface and full J1 zig-zag pin map
+> `Design_Spec.md §3` for the common ENC module interface and full J4 zig-zag pin map
 > (`Board_Layout.md §1`). **LED colour and brightness are received entirely as a broadcast from
 > Cypher-Input and never use any `plain-bits` position** - see `Design_Spec.md §1`.
 
@@ -81,37 +81,37 @@ switch, unique to this variant) differ between variants.
 
 A single user-accessible panel-mount SPDT switch controls `BOARD_ROLE_ID_OUT[3]` (bit3, Custom):
 
-* **SW1 = SPDT, panel-mount, top face** - placed in the keyless keepout zone that mirrors
-  Cypher-Input's own RV1 "keyboard settings" panel location (per `Design_Spec.md §1`/§2), since
-  this is the only variant with a user-facing configuration control on this board.
-* **Wiring:** common pin -> `BOARD_ROLE_ID_OUT[3]` (Cypher Board interconnect `J4`/`J6` pin 28,
-  tied both connectors - see `Board_Layout.md §4`); one throw -> GND (default position, bit3=0,
-  strap value `0b0111`); other throw -> 3V3_ENIG (custom-support position, bit3=1, strap value
-  `0b1111`).
+* **SW1 = SPDT, panel-mount, top face** - placed in the keyless keepout zone (per
+  `Design_Spec.md §1`/§2), since this is the only variant with a user-facing configuration
+  control on this board.
+* **Wiring:** common pin -> `BOARD_ROLE_ID_OUT[3]` (Cypher Left Pair Template bottom row, carried
+  on this board's `J1`/`J2` - see `Board_Layout.md §4`); one throw -> GND (default position,
+  bit3=0, strap value `0b0111`); other throw -> 3V3_ENIG (custom-support position, bit3=1, strap
+  value `0b1111`).
 * **R_CUST (0 Ohm, DNF - Do Not Fit):** wired in parallel with SW1's 3V3_ENIG throw, so a user
   building a permanently-custom lightboard variant can fit this 0 Ohm link instead of relying on
   the switch position, hardwiring bit3=1 without needing SW1 present at all. Not fitted by
   default (SW1 alone determines the strap state in the standard build).
 * **Not part of the JLCPCB PCBA order** - SW1 is hand-soldered by the user after the
-  bare-assembled board is delivered, the same way Cypher-Input's own RV1 is (see `Design_Spec.md
-  §2` Architecture). R_CUST, if fitted, would be a rear-face (L4) component within JLCPCB's
-  standard SMT pass, but is not populated by default.
+  bare-assembled board is delivered (see `Design_Spec.md §2` Architecture). R_CUST, if fitted,
+  would be a rear-face (L4) component within JLCPCB's standard SMT pass, but is not populated by
+  default.
 
 ---
 
 ## 5. Bill of Materials (64-Char Variant-Specific Components)
 
 Variant-specific components for the 64-Character variant. Common components shared across all
-Cypher-Output variants are listed in **`design/Electronics/Cypher-Output/Design_Spec.md` §10**.
+Cypher-Output variants are listed in **`design/Electronics/Cypher-Output/Design_Spec.md` §11**.
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D1-D40 | RGB SMD LED (placeholder - MPN TBD, same part as Cypher-Input, pending confirmation) | TBD | TBD | - | - | - | - | One per lens position (40: 26 letters + 10 digits + 2 symbols); colour/brightness received entirely as a broadcast (no local generation); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 40 |
+| D1-D40 | RGB SMD LED (placeholder - MPN TBD, same part as Cypher-Input, pending confirmation) | TBD | TBD | - | - | - | - | One per lens position (40: 26 letters + 10 digits + 2 symbols); colour/illumination received entirely from the User Settings Module (no local generation); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 40 |
 | R1-R40 (Red) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Red channel current-limit | - | - | 40 |
 | R1-R40 (Green) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Green channel current-limit | - | - | 40 |
 | R1-R40 (Blue) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Blue channel current-limit | - | - | 40 |
 | Q1-Q40 | N-channel MOSFET, SOT-23 | 2N7002K | onsemi (or equiv.) | - | - | - | - | Per-position LED select, gated by that position's decoded `plain-bits` line; see `Design_Spec.md §4` | ✔ | - | 40 |
-| SW1 | SPDT switch, panel-mount | TBD | TBD | - | - | - | - | Custom-support strap switch for `BOARD_ROLE_ID_OUT[3]`; top face - **not populated in PCBA**, hand-soldered by the user after delivery; exact supplier part TBD at schematic capture (same sourcing approach as other panel-mount controls, e.g. Cypher-Input RV1) | - | - | 1 |
+| SW1 | SPDT switch, panel-mount | TBD | TBD | - | - | - | - | Custom-support strap switch for `BOARD_ROLE_ID_OUT[3]`; top face - **not populated in PCBA**, hand-soldered by the user after delivery; exact supplier part TBD at schematic capture | - | - | 1 |
 | R_CUST | 0 Ohm link, 0402, **Do Not Fit (DNF)** | TBD | TBD | - | - | - | - | Optional permanent bit3=1 hardwire, in parallel with SW1's 3V3_ENIG throw; not populated by default - see §4 | - | - | 0 (DNF) |
 
 > **Sourcing status:** Q1-Q40 has confirmed sourcing (same part as the 26-Char Classic and

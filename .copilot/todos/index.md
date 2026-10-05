@@ -158,3 +158,4 @@ Last updated: 2026-09-17
 | `usm-template2-template1-unification-review` | [usm-template2-template1-unification-review.md](usm-template2-template1-unification-review.md) | pending | — |
 | `usm-cfg-refmap-removal-review` | — | done | — |
 | `usm-redesign-implementation` | — | in_progress | — |
+| `mini-stack-connector-flush-protrude-review` | [mini-stack-connector-flush-protrude-review.md](mini-stack-connector-flush-protrude-review.md) | pending | `usm-redesign-implementation` |

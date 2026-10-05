@@ -24,8 +24,9 @@
   are variant-specific, and the enclosure itself is sized per variant (see each variant's own
   design file). Every jack's metal bushing bonds directly to this enclosure, keeping the whole
   jack field on the system's `GND_CHASSIS` network (see `Design_Spec.md §2`).
-- **J1 (left, male)** and **J2 (right, male):** mounted flush with this board's top edge, mating
-  upward with whichever HID board (Cypher-Input or Cypher-Output) sits directly above - the
+- **J1 (left, male)** and **J2 (right, male):** mounted protruding past this board's top edge
+  far enough to span the enclosure gap and fully mate with the flush-mounted female connector of
+  whichever HID board (Cypher-Input or Cypher-Output) sits directly above - the
   bottom-most board of the local 2-board HID stack. This board carries no bottom (female)
   connector pair of its own - it is always the last board in the local stack, per DEC-088.
 

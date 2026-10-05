@@ -53,9 +53,9 @@ count/layout, `plain-bits` allocation, and `BOARD_ROLE_ID_OUT` value differ betw
 | PB[10:63] | Unused - spare plain-bit positions |
 
 > Provisional pending Quartus pin-planning and PCB layout on the ENC module side. See
-> `Design_Spec.md §3` for the common ENC module interface and full J1 zig-zag pin map
-> (`Board_Layout.md §1`). **LED colour and brightness are received entirely as a broadcast from
-> Cypher-Input and never use any `plain-bits` position** - see `Design_Spec.md §1`.
+> `Design_Spec.md §3` for the common ENC module interface and full J4 zig-zag pin map
+> (`Board_Layout.md §1`). **LED colour and illumination are received entirely from the User
+> Settings Module and never use any `plain-bits` position** - see `Design_Spec.md §1`.
 
 ---
 
@@ -72,11 +72,11 @@ This variant has no custom-support switch - only the 64-Character variant carrie
 ## 5. Bill of Materials (10-Numeric Variant-Specific Components)
 
 Variant-specific components for the 10-Numeric variant. Common components shared across all
-Cypher-Output variants are listed in **`design/Electronics/Cypher-Output/Design_Spec.md` §10**.
+Cypher-Output variants are listed in **`design/Electronics/Cypher-Output/Design_Spec.md` §11**.
 
 | RefDes | Specification | MPN | Manufacturer | DigiKey PN | Mouser PN | JLCPCB PN | Alt Supplier + PN | Notes | Footprint Available | Footprint Downloaded | Qty |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| D1-D10 | RGB SMD LED (placeholder - MPN TBD, same part as Cypher-Input, pending confirmation) | TBD | TBD | - | - | - | - | One per lens position (10 digits); colour/brightness received entirely as a broadcast (no local generation); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 10 |
+| D1-D10 | RGB SMD LED (placeholder - MPN TBD, same part as Cypher-Input, pending confirmation) | TBD | TBD | - | - | - | - | One per lens position (10 digits); colour/illumination received entirely from the User Settings Module (no local generation); top face - **not populated in PCBA**, hand-soldered by the user after delivery (see `Design_Spec.md §2` Architecture) | - | - | 10 |
 | R1-R10 (Red) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Red channel current-limit | - | - | 10 |
 | R1-R10 (Green) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Green channel current-limit | - | - | 10 |
 | R1-R10 (Blue) | 0402, value TBD pending LED part confirmation | TBD | TBD | - | - | - | - | Blue channel current-limit | - | - | 10 |

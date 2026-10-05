@@ -138,16 +138,18 @@ full canonical pin map.
 
 > **Connector Definition Owner:** this board.
 > **Architecture:** Cypher-Input and Cypher-Output each carry **4 connectors** rather than a
-> single interconnect: 2 male at their top edge, mounted flush with the board edge so the
-> connector face sits flush with the enclosure lid's edge once cased; 2 female at their bottom
-> edge, mounted protruding past the board edge far enough to span the enclosure gap and fully
-> mate with the neighbouring board's flush-mounted male connector. Only **one** HID board
-> connects directly to the Cypher Board at a time — whichever board is physically closest
-> (its top/male pair mates here). The second HID board connects only to the first board's
-> bottom/female pair, one level further down; a future Plugboard board terminates the bottom of
-> that local 2-board stack. Either Cypher-Input or Cypher-Output may occupy the position closest
-> to the Cypher Board — this connector pair's pinout is therefore identical regardless of which
-> board is plugged in ("either order" support).
+> single interconnect: 2 male at their top edge, mounted protruding past the board edge far
+> enough to span the enclosure gap and fully mate with the neighbouring board's flush-mounted
+> female connector; 2 female at their bottom edge, mounted flush with the board edge so the
+> connector's socket opening sits flush with the enclosure lid's edge once cased, forming a
+> clean opening for the next board's male pins to enter. Only **one** HID board connects
+> directly to the Cypher Board at a time — whichever board is physically closest (its top/male
+> pair mates here, protruding upward into this board's own flush female `J5`/`J6`). The second
+> HID board connects only to the first board's bottom/female pair, one level further down; a
+> future Plugboard board terminates the bottom of that local 2-board stack. Either Cypher-Input
+> or Cypher-Output may occupy the position closest to the Cypher Board — this connector pair's
+> pinout is therefore identical regardless of which board is plugged in ("either order"
+> support).
 >
 > **J5 (left, female, QSS-025-01-L-D-A-GP-K, vertical):** mates the top-left (right-angle male,
 > QTS-025-01-L-D-RA-P) connector of whichever HID board is present. Carries 3V3_ENIG, 5V_MAIN,

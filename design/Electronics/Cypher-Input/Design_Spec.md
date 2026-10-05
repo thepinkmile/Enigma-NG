@@ -79,7 +79,7 @@ PCBA with limitations) - the top face is never part of the machine-placed SMT pa
 > LED bank from this board's own hand-soldered top-face list entirely. This has **not** been
 > decided - do not assume rear-face mounting until the LED part and its mounting orientation are
 > confirmed; the same open item applies to Cypher-Output's own LED bank
-> (`Cypher-Output/Design_Spec.md §2`), which uses the same part.
+> (`Cypher-Output/Design_Spec.md §1`), which uses the same part.
 
 The rear face (L4) carries everything else: the ENC module mount (J4-J6) - positioned in the
 keyless region that corresponds to a number-pad area on a conventional keyboard, off to the side
