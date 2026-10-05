@@ -149,7 +149,7 @@ full canonical pin map.
 > future Plugboard board terminates the bottom of that local 2-board stack. Either Cypher-Input
 > or Cypher-Output may occupy the position closest to the Cypher Board — this connector pair's
 > pinout is therefore identical regardless of which board is plugged in ("either order"
-> support).
+> support). Mating gap/tolerance: `design/Standards/Global_Routing_Spec.md §4.1a`.
 >
 > **J5 (left, female, QSS-025-01-L-D-A-GP-K, vertical):** mates the top-left (right-angle male,
 > QTS-025-01-L-D-RA-P) connector of whichever HID board is present. Carries 3V3_ENIG, 5V_MAIN,

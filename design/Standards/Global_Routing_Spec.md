@@ -237,6 +237,22 @@ placed within 1mm of the IC on the same layer.
 * **Exceptions:** Panel-mounted switches, LEDs, buttons, and any connector family whose datasheet
   mechanically prevents a 2.0mm nominal overhang must be handled by explicit board-level documentation.
 
+## 4.1a. Internal Board-to-Board Connector Mating Tolerance (Placeholder)
+
+* **Scope:** Applies to internal board-to-board stacking connectors (e.g. the Cypher system's
+  male/female interconnect pairs), where a male connector on one board protrudes past its board
+  edge to mate into a female connector on the neighbouring board, which sits flush with its own
+  board edge.
+* **Placeholder tolerance value:** A nominal **0.02mm** stack-up gap/clearance is assumed between
+  the mating faces, intended to keep module housings flush and gapless once fully mated.
+* **Status - not yet confirmed:** This value has **not** been verified against the actual
+  connector datasheets (mating length, float/wipe tolerance) or PoC board testing, and must be
+  reviewed and confirmed before being relied upon for mechanical/enclosure design. Treat it as a
+  provisional placeholder only.
+* **Intent:** This is a general connector-protrusion tolerance rule, to be referenced by any board
+  pair using this mating style. Once confirmed, it is expected to be refined into separate values
+  per connector family/type, rather than remaining one single global figure.
+
 ## 4.2. Mounting Hole BOM Policy
 
 Every board design specification shall explicitly list its mounting holes (designators, size, and

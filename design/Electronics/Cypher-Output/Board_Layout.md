@@ -38,7 +38,8 @@
 - **J2 (bottom, female):** Cypher Board interconnect, mounted flush with the board's bottom edge
   so the connector's socket opening sits flush with the enclosure lid's edge once cased, forming
   a clean opening for the next board's protruding male pins to enter. Mates downward, toward
-  Cypher-Input or the Cypher-Plugboard.
+  Cypher-Input or the Cypher-Plugboard. Mating gap/tolerance:
+  `design/Standards/Global_Routing_Spec.md §4.1a`.
 - **J3 (right edge, male):** User Settings Module interconnect - mates whichever of USM's two
   left-edge connectors is wired to this board's physical position.
 

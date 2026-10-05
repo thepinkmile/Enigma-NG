@@ -29,6 +29,7 @@
   whichever HID board (Cypher-Input or Cypher-Output) sits directly above - the
   bottom-most board of the local 2-board HID stack. This board carries no bottom (female)
   connector pair of its own - it is always the last board in the local stack, per DEC-088.
+  Mating gap/tolerance: `design/Standards/Global_Routing_Spec.md §4.1a`.
 
 ---
 
