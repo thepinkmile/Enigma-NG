@@ -198,3 +198,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 191 | FT232H moved to 3.3V VREGIN self-powered operation; 5V_USB net retired (DEC-102) | 191-ft232h-3v3-vregin-self-powered-5v-usb-retired.md |
 | 192 | USM redesign connectors finalised; implementation partially damaged, pending revert | 192-usm-redesign-connectors-finalised-implementation-partially-damaged-pending-revert.md |
 | 193 | USM/Cypher-Input rebuilt & reviewed; connector naming cleaned up | 193-usm-cypher-input-rebuilt-reviewed-connector-naming-cleaned-up.md |
+| 194 | Cypher-Output and Cypher-Plugboard rebuilt & reviewed; connector mating convention corrected | 194-cypher-output-plugboard-rebuilt-connector-convention-fixed.md |

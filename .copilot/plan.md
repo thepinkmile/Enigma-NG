@@ -6,7 +6,27 @@
 
 ---
 
-## Current Status (as of 2026-09-23 — USM/Cypher-Input rebuilt & reviewed, checkpoint 193)
+## Current Status (as of 2026-10-06 — Cypher-Output/Cypher-Plugboard rebuilt & reviewed, checkpoint 194)
+
+**⏸️ Paused for user availability — start next session by reading checkpoint 194 in full before
+doing anything else.**
+
+Cypher-Output and Cypher-Plugboard have both been fully rebuilt (mirroring Cypher-Input's
+approach from checkpoint 193) and reviewed/corrected by the user directly. A repo-wide connector
+mating-convention error (male/female flush-vs-protruding was backwards) was also found and fixed
+across all four Cypher-system `Board_Layout.md` files, and a new placeholder tolerance rule was
+added at `Global_Routing_Spec.md §4.1a`.
+
+**Not yet done** (blocks `usm-redesign-implementation` completion): **Cypher** itself still needs
+the same rebuild treatment - its own `J5`/`J6` pin maps are still the stale pre-redesign
+templates, out of sync with the already-rebuilt Cypher-Input/Cypher-Output. See checkpoint 194
+"Not Yet Done" section for the exact scope.
+
+**Next session must start with:** re-read checkpoint 194 in full, confirm git state is clean on
+`main`, then redo Cypher itself (the last board blocking `usm-redesign-implementation`), one file
+at a time, diff-checked before moving to the next.
+
+### Prior status (as of 2026-09-23 — USM/Cypher-Input rebuilt & reviewed, checkpoint 193)
 
 **⏸️ Paused for a token-limit reset — start next session by reading checkpoint 193 in full before
 doing anything else.**

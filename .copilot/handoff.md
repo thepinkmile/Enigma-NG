@@ -7,8 +7,41 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**2026-09-23 session update (checkpoint 193): USM and Cypher-Input rebuilt cleanly and reviewed;
-connector naming cleaned up; paused for a token-limit reset.**
+**2026-10-06 session update (checkpoint 194): Cypher-Output and Cypher-Plugboard rebuilt cleanly
+and reviewed; connector mating convention corrected repo-wide; paused for user availability.**
+
+**Read checkpoint 194 in full before doing anything else this next session.**
+
+Cypher-Output and Cypher-Plugboard have both been rebuilt by hand this session (mirroring
+Cypher-Input's approach from checkpoint 193) and reviewed/corrected directly by the user.
+
+**What changed and is confirmed good:**
+
+1. `Cypher-Output/{Design_Spec.md,Board_Layout.md}` + all 3 variant files — RefDes renumbered,
+   connector tables de-duplicated, USM 4-colour-style signal repointing,
+   `ENC_ACTIVE_INPUT_N`/`ENC_ACTIVE_OUTPUT_N` correctly resolved as two distinct signals (not one
+   relayed under two names), stale "broadcast from Cypher-Input"/`RV1` references removed from
+   all variant files (caught on a second pass after the user asked whether the variant files were
+   updated too), SW1 kept (no DEC change needed) with its PCBA-exclusion rationale corrected
+   (THT part, not single-sided-SMT).
+2. **Connector mating convention fixed repo-wide:** male connectors protrude, female connectors
+   sit flush (was backwards) — fixed across `Cypher`, `Cypher-Input`, `Cypher-Output`,
+   `Cypher-Plugboard` `Board_Layout.md` files. New todo `mini-stack-connector-flush-protrude-review`
+   properly persisted to `.copilot/todos/` (not just the session DB).
+3. New placeholder rule `Global_Routing_Spec.md §4.1a` (~0.02mm mating tolerance, unconfirmed),
+   cross-referenced from all four Cypher-system `Board_Layout.md` files.
+4. `Cypher-Plugboard/{Design_Spec.md,Board_Layout.md}` — `R1`-`R3` JTAG termination removed
+   entirely (moved to USM per DEC-103) - this board now has **no active components at all**; `J2`
+   retargeted from the old retired HID JTAG template to USM's own bottom Hub connector; BOM qty
+   bug fixed; a GND/`3V3_ENIG` NC-vs-continuity contradiction was caught and fixed (GND must stay
+   continuous for return-path integrity, `3V3_ENIG` is genuinely NC).
+
+**Not yet done (blocks `usm-redesign-implementation` completion):** **Cypher** itself still has
+the stale pre-redesign connector topology (`J5`/`J6` out of sync with the already-rebuilt
+Cypher-Input/Cypher-Output). Full scope is in checkpoint 194's "Not Yet Done" section. Do this
+next, using the same careful one-file-at-a-time approach.
+
+### Prior session update (2026-09-23, checkpoint 193)
 
 **Read checkpoint 193 in full before doing anything else this next session.**
 
