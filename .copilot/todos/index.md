@@ -157,5 +157,6 @@ Last updated: 2026-09-17
 | `usm-3-part-hid-module-mechanical-review` | [usm-3-part-hid-module-mechanical-review.md](usm-3-part-hid-module-mechanical-review.md) | pending | `usm-redesign-implementation` |
 | `usm-template2-template1-unification-review` | [usm-template2-template1-unification-review.md](usm-template2-template1-unification-review.md) | pending | — |
 | `usm-cfg-refmap-removal-review` | — | done | — |
-| `usm-redesign-implementation` | — | in_progress | — |
+| `usm-redesign-implementation` | — | done | — |
 | `mini-stack-connector-flush-protrude-review` | [mini-stack-connector-flush-protrude-review.md](mini-stack-connector-flush-protrude-review.md) | pending | `usm-redesign-implementation` |
+| `usm-extension-discussion-diagrams-integration` | [usm-extension-discussion-diagrams-integration.md](usm-extension-discussion-diagrams-integration.md) | pending | `mini-stack-connector-flush-protrude-review` |

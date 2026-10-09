@@ -6,7 +6,21 @@
 
 ---
 
-## Current Status (as of 2026-10-06 — Cypher-Output/Cypher-Plugboard rebuilt & reviewed, checkpoint 194)
+## Current Status (as of 2026-10-09 — USM redesign implementation complete, checkpoint 195)
+
+**`usm-redesign-implementation` is DONE.** All five boards (User Settings Module, Cypher-Input,
+Cypher-Output, Cypher-Plugboard, Cypher) have been rebuilt around the new connector topology,
+reviewed/corrected by the user, and cross-checked in two full consistency-review passes (plus a
+third pass extending the flush/protruding connector-mating fix to USM, which had been missed in
+the first pass). No known open inconsistencies remain across this board set.
+
+**Next session:** read checkpoint 195 in full, confirm git state is clean on `main`, then ask the
+user which of the two live follow-on items to tackle: `mini-stack-connector-flush-protrude-review`
+(check the mini-stack sub-system for the same male/female mating-convention mismatch already fixed
+on the Cypher system + USM) or the LED implementation PoC planning
+(`cypher-input-led-independent-rgb-pwm-review`).
+
+### Prior status (as of 2026-10-06 — Cypher-Output/Cypher-Plugboard rebuilt & reviewed, checkpoint 194)
 
 **⏸️ Paused for user availability — start next session by reading checkpoint 194 in full before
 doing anything else.**

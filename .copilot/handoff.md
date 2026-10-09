@@ -7,8 +7,27 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**2026-10-06 session update (checkpoint 194): Cypher-Output and Cypher-Plugboard rebuilt cleanly
-and reviewed; connector mating convention corrected repo-wide; paused for user availability.**
+**2026-10-09 session update (checkpoint 195): USM redesign implementation complete - all five
+boards rebuilt, reviewed, and cross-checked; `usm-redesign-implementation` marked done.**
+
+**Read checkpoint 195 in full before doing anything else this next session.**
+
+This closes out the multi-session USM redesign effort. Cypher itself (the last remaining board)
+was rebuilt this session, plus two full consistency-review passes were run across
+Cypher/Cypher-Input/Cypher-Output/Cypher-Plugboard/USM/Controller, finding and fixing: an MPN
+mismatch, a stale cross-reference, several historical-wording violations, and a gap where USM's
+own `Board_Layout.md` had been missed by the earlier flush/protruding connector-mating fix (now
+extended to USM's `J1`-`J4`).
+
+**No known open inconsistencies remain across this board set.** Two live follow-on items are
+queued, in no stated order - ask the user which to start with:
+
+1. `mini-stack-connector-flush-protrude-review` - check the mini-stack sub-system's own
+   `Board_Layout.md` files for the same male/female mating-convention mismatch.
+2. `cypher-input-led-independent-rgb-pwm-review` - planning small test boards for the LED
+   implementation PoC (analog multi-colour-bank vs. addressable LED decision).
+
+### Prior session update (2026-10-06, checkpoint 194)
 
 **Read checkpoint 194 in full before doing anything else this next session.**
 

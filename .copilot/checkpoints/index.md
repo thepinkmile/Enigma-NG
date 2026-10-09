@@ -199,3 +199,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 192 | USM redesign connectors finalised; implementation partially damaged, pending revert | 192-usm-redesign-connectors-finalised-implementation-partially-damaged-pending-revert.md |
 | 193 | USM/Cypher-Input rebuilt & reviewed; connector naming cleaned up | 193-usm-cypher-input-rebuilt-reviewed-connector-naming-cleaned-up.md |
 | 194 | Cypher-Output and Cypher-Plugboard rebuilt & reviewed; connector mating convention corrected | 194-cypher-output-plugboard-rebuilt-connector-convention-fixed.md |
+| 195 | USM redesign implementation complete (Cypher rebuilt; full consistency review passed) | 195-usm-redesign-implementation-complete.md |
