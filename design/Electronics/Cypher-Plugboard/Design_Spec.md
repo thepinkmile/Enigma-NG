@@ -22,9 +22,9 @@ variant split. Variant-specific detail lives in a dedicated document per variant
 - `design/Electronics/Cypher-Plugboard/Cypher_Plugboard_10_Numeric_Design.md`
 
 **Electrically, per DEC-088 and DEC-103, this board is deliberately simple:** it carries no
-plugboard-signal-specific pins at all, no `BOARD_ROLE_ID` strap, and (since DEC-103 retargeted its
-former JTAG connector to the User Settings Module) **no active components of its own at all** -
-JTAG spoke termination now lives on the User Settings Module instead (see
+plugboard-signal-specific pins at all, no `BOARD_ROLE_ID` strap, and
+**no active components of its own at all** -
+JTAG spoke termination lives on the User Settings Module instead (see
 `User_Settings_Module/Design_Spec.md §4`). **This board's PCB is a thin strip along the top edge
 only** - just large enough to carry the two interconnect connectors (`J1`/`J2`). The physical
 plugboard patch jacks are **not** mounted on this PCB at all - they mount directly to a **machined
@@ -150,10 +150,9 @@ Power Module.
 This board carries no active components and no plugboard-signal-specific pins - every signal
 reaching either connector other than GND (kept continuous for return-path integrity) is simply
 left NC, including `3V3_ENIG` and (at `J1`) `5V_MAIN`.
-JTAG spoke termination (`TCK`/`TMS`/`CPLD_RESET_N`) now lives entirely on the User Settings
+JTAG spoke termination (`TCK`/`TMS`/`CPLD_RESET_N`) lives entirely on the User Settings
 Module (`R1`-`R3`, see `User_Settings_Module/Design_Spec.md §4`), not on this board - per
-DEC-103, this board's own former JTAG connector was retargeted to mate USM directly, rather than
-continuing to terminate the old HID JTAG spoke itself.
+DEC-103, `J2` mates the User Settings Module directly.
 
 ### NC / dead-end signals at `J1` (Cypher Left Pair Template)
 
