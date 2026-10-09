@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-11
+**Last Updated:** 2026-10-08
 
 ## 1. Overview
 
@@ -20,9 +20,12 @@ consolidated 6-layer PCB, and hosts the USB-JTAG programming bridge for the syst
 | **JTAG Bridge** | USB-to-JTAG programming for all 37 system CPLDs | U17 — FT232H (MPSSE) |
 
 Rotor Mini-Stacks attach to the Cypher Board via keyed Samtec QSS-025 vertical female
-connectors (J3 and J4). Cypher-Input and Cypher-Output boards chain from J5 and J6. The
-Controller Board connects via a split power/signal dock pair (Molex `J1`, power-only; Samtec `J2`,
-signal-only).
+connectors (J3 and J4). Whichever HID board (Cypher-Input or Cypher-Output) is physically closest
+chains from J5 (Cypher Left Pair Template); the other HID board attaches further down the local
+stack via that board's own connectors. The User Settings Module connects via J6 (Hub Connector
+Template), relaying JTAG and the dedicated Cypher-peripherals I2C bus onward to both HID boards
+and to Cypher-Plugboard. The Controller Board connects via a split power/signal dock pair (Molex
+`J1`, power-only; Samtec `J2`, signal-only).
 
 ### Functional Requirements
 
@@ -32,14 +35,14 @@ signal-only).
 | FR-STA-02 | Distribute 3V3_ENIG power to all 30 rotor positions simultaneously | Via J3 and J4 power pins; 2oz copper pour; 4x ferrite beads L1–L4 | §7 Power Telemetry; BOM L1–L4 |
 | FR-STA-03 | Route the JTAG chain from the Controller Board through all 30 rotor positions in sequence | Serial daisy-chain; CPLD U1 is device 7 (after the 4 Plugboard Encoder Modules); exits via J3 TTD pin | §3 JTAG Hub; BOM U1 |
 | FR-STA-04 | Receive TTD_RETURN from the end of the rotor chain and deliver it to the JTAG bridge | Via J4 (Stack-Output/REF-side) → R50 → FT232H U17 TDO | §4 Signal Turnaround; BOM J4, R50, U17 |
-| FR-STA-05 | Interface with ENC modules for all cipher pipeline roles | 4x back-face DF40C mounts for plugboard passes (J7–J18); J5/J6 for HID (Cypher-Input / Cypher-Output, either order) | §6 Interconnects; BOM J5–J18 |
+| FR-STA-05 | Interface with ENC modules for all cipher pipeline roles | 4x back-face DF40C mounts for plugboard passes (J7–J18); J5 for HID (whichever of Cypher-Input/Cypher-Output is closest, either order) | §6 Interconnects; BOM J5, J7–J18 |
 | FR-STA-06 | Host a CPLD in the "static" portion of the system JTAG chain (after the 4 Plugboard Encoder Modules, before the Rotor stack) | Intel MAX II EPM570T100I5N (570 LEs); device 7 of 37 | §3 CPLD; BOM U1 |
 | FR-STA-07 | Connect to the Controller Board via two docks split by electrical function | `J1` = power-only Molex dock (5V_MAIN, 3V3_ENIG, GND); `J2` = signal-only Samtec dock (USB D+/D-, I2C, PWM/GPCLK reserved) | §6 Interconnects; BOM J1, J2 |
 | FR-STA-08 | Select the active plugboard routing configuration from the User Settings Module via I2C | CFG_ROUTE[3:0] via U8 GPA[3:0]; 13 valid configurations (indices 0–12); indices 13–15 reserved | §3 Configuration Bank 1; BOM U8 |
 | FR-STA-09 | Select and apply a stored reflector substitution map at the reflection boundary | CM5 writes the active map index directly into the CPLD via the existing JTAG chain (UFM in-system write) at configuration-apply time - no dedicated parallel GPIO bus; 21 pre-loaded maps | §3 Configuration Bank 2; BOM U1 |
 | FR-STA-10 | Provide I2C GPIO expansion for CM5 virtual keypress, HID monitoring, ENC service-bus monitoring, CPLD_RESET_N management, and CPLD configuration driving | Three MCP23017 expanders U6, U7, U8 on `I2C1` bus | §3 I2C Devices; BOM U6–U8 |
 | FR-STA-11 | Select between the physical keyboard source and CM5 virtual key source before the cipher pipeline | 7-channel 2:1 mux (U4/U5); KEY_CM5_ACTIVE selects source | §3 External Keyboard Source Mux; BOM U4, U5 |
-| FR-STA-12 | Connect to the User Settings Module via `I2C1` bus | J19 = 6-pin JST PH 2.0mm harness | §6 Interconnects; BOM J19 |
+| FR-STA-12 | Relay the dedicated Cypher-peripherals I2C bus and JTAG to the User Settings Module | J6 = Hub Connector Template (owned by `User_Settings_Module/Board_Layout.md §2`); USM relays this bus and JTAG onward to both HID boards and to Cypher-Plugboard itself | §6 Interconnects; BOM J6 |
 | FR-STA-13 | Protect J3 (Stack-Input/STA-side) stacking connector from ESD during live mini-stack swap | J3 carries JTAG + ENC + actuation-request signals; accessible during hot-swap | §8 Thermal & ESD; BOM U9–U12, U19 |
 | FR-STA-14 | Verify the ACTUATE_REQUEST round-trip signal completes correctly, as a system self-test | CPLD U1 reads ACTUATE_REQUEST_OUT_N (J3 pin 35) and compares it against the originally-issued ACTUATE_REQUEST_IN_N | §3 Actuation Request Chain; BOM R51 |
 | FR-REF-01 | Terminate the JTAG daisy-chain at the end of the 30-rotor stack | End-of-chain turnaround via J4 (Stack-Output/REF-side) | §4 Signal Turnaround; BOM J4 |
@@ -49,7 +52,8 @@ signal-only).
 | FR-REF-05 | Protect J4 (Stack-Output/REF-side) stacking connector from ESD during live mini-stack swap | J4 carries TTD_RETURN + ENC return signals; accessible during hot-swap | §8 Thermal & ESD; BOM U13–U16 |
 | FR-CYP-01 | Provide USB-to-JTAG bridge for programming all 37 CPLDs in the system | FT232H in MPSSE mode, self-powered from `3V3_ENIG`; USB D+/D- via CTL signal dock `J2` to CM5 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
 | FR-CYP-02 | Interface with up to 6 Rotor Mini-Stacks via keyed stacking connectors | J3 = Stack-Input/STA-side; J4 = Stack-Output/REF-side | §6 Interconnects; BOM J3, J4 |
-| FR-CYP-03 | Interface with Cypher-Input and Cypher-Output boards | J5/J6 = shared HID interconnect, mates whichever board is closest to this board (either order supported); see `Board_Layout.md §4` | §6 Interconnects; BOM J5, J6 |
+| FR-CYP-03 | Interface with whichever HID board (Cypher-Input or Cypher-Output) is physically closest | J5 = Cypher Left Pair Template (the other HID board attaches further down the local stack via that board's own connectors, not directly to this board); see `Board_Layout.md §4` | §6 Interconnects; BOM J5 |
+| FR-CYP-03a | Interface with the User Settings Module as the JTAG/I2C spine hub | J6 = Hub Connector Template, mates USM's own top connector; see `Board_Layout.md §5` | §6 Interconnects; BOM J6 |
 | FR-CYP-04 | Host 4 ENC module mounts on the back face for plugboard-role encoder modules | DF40C Hirose BtB receptacle sets | §6 Interconnects; BOM J7–J18 |
 | FR-CYP-05 | Carry spade blade terminal bank on the back face for jack plug harnesses | Keystone 1285-ST; 64 per ENC mount position × 4 = 256 total | §6 Interconnects; BOM J20+ |
 | FR-CYP-06 | Provide bare test-pad access to reserved CM5 PWM and GPCLK channels for future peripheral use | 4x `PWM0` channels + `GPCLK[0]`/`GPCLK[1]` from CTL signal dock `J2`, terminated at bare test-pad loops (no active devices populated) | §6 Interconnects; BOM TP1-TP12 |
@@ -61,7 +65,7 @@ signal-only).
 | DR-STA-01 | PCB stackup | 6-layer / 2oz copper per `design/Standards/Global_Routing_Spec.md §2.3.4` | §9 PCB Fabrication & Stackup |
 | DR-STA-02 | Layer mapping | L1 Signal/front face, L2 GND, L3 Inner signal (CI), L4 Power, L5 GND, L6 Signal/back face — per `design/Standards/Global_Routing_Spec.md §2.3.4` | §9 PCB Fabrication & Stackup |
 | DR-STA-03 | Stack-Input / STA-side rotor interface | J3 = QSS-025-01-L-D-A-GP-K (50-contact vertical female); pin mapping owned by `Stack-Input/Board_Layout.md §1` (IC-STA-CHAIN, DEC-094) | §6 Interconnects; BOM J3 |
-| DR-STA-04 | ENC module and HID board interfaces | J5/J6 = QSS-025-01-L-D-A-GP-K (shared HID interconnect, vertical female — mates whichever of Cypher-Input/Cypher-Output is closest, either order); J7–J18 = DF40C-xDS sets (4x plugboard passes) | §6 Interconnects; BOM J5–J18 |
+| DR-STA-04 | ENC module and HID board interface | J5 = QSS-025-01-L-D-A-GP-K (Cypher Left Pair Template, vertical female - mates whichever of Cypher-Input/Cypher-Output is closest, either order); J7–J18 = DF40C-xDS sets (4x plugboard passes) | §6 Interconnects; BOM J5, J7–J18 |
 | DR-STA-06 | Controller dock connectors | J1 = Molex 2195620015 (power-only plug: 5x GND power-pitch, 8x 5V_MAIN + 7x 3V3_ENIG signal-pitch); J2 = Samtec QTS-025-01-L-D-RA-P (signal-only plug: USB D+/D-, I2C, PWM/GPCLK reserved); mating CTL receptacles = Molex 2195630015 (J1) / Samtec QSS-025-01-L-D-A-GP-K (J2). See DEC-098. | §6 Interconnects; BOM J1, J2 |
 | DR-STA-07 | CPLD | Intel MAX II EPM570T100I5N (TQFP-100); 570 LEs; same footprint as EPM240; 570 LEs required for startup-loaded 64-char reflector map (384 FFs) + routing matrix logic | §3 CPLD; BOM U1 |
 | DR-STA-08 | Power monitoring | INA219 current sensor (U2); shunt R1 = KRL6432T4-M-R010-F-T1 (10 mOhm 6432/2512 Kelvin 4-terminal) | §7 Power Telemetry; BOM U2, R1 |
@@ -70,7 +74,7 @@ signal-only).
 | DR-STA-11 | Reflector map selection | Active map index written directly into the CPLD's UFM via the existing JTAG chain at CM5 configuration-apply time - see §3 Configuration Bank 2. No dedicated parallel input pins or pull-down resistors required | §3 Configuration Bank 2; BOM U1 |
 | DR-STA-12 | I2C GPIO expanders | U6 = MCP23017T-E/SO @ 0x20; U7 = MCP23017T-E/SO @ 0x21; U8 = MCP23017T-E/SO @ 0x22; SOIC-28; dedicated /RESET pull-ups R36 (U6), R37 (U7), R38 (U8) — 10 kOhm each to 3V3_ENIG | BOM U6–U8, R36–R38 |
 | DR-STA-13 | U8 specification | U8 = MCP23017T-E/SO; SOIC-28; A2=LOW, A1=HIGH, A0=LOW; GPA[3:0] = CFG_ROUTE[3:0]; GPA[6] = CFG_APPLY_N; GPB[5:0] not connected | BOM U8 |
-| DR-STA-14 | USM harness | J19 = B6B-PH-K-S(LF)(SN) 6-pin JST PH 2.0mm; signals: 3V3_ENIG, 5V_MAIN, GND, SDA, SCL, GND | §6 Interconnects; BOM J19 |
+| DR-STA-14 | USM Hub connector | J6 = QSS-025-01-L-D-A-GP-K (vertical female), Hub Connector Template (owned by `User_Settings_Module/Board_Layout.md §2`); carries `3V3_ENIG`, the dedicated Cypher-peripherals I2C bus, and JTAG | §6 Interconnects; BOM J6 |
 | DR-STA-15 | CFG_APPLY_N signal | CFG_APPLY_N = active-low Stator-only reload pulse from U8 GPA[6]; ANDed with CPLD_RESET_N through U3 (SN74LVC1G08DBVR) to drive CPLD DEV_CLR_N; R17 (10 kOhm pull-up to 3V3_ENIG) holds CFG_APPLY_N deasserted at power-up | BOM U8, U3, R17 |
 | DR-STA-16 | ESD protection — J3 Stack-Input/STA-side | U9 (JTAG: TTD, TMS, TCK, CPLD_RESET_N) + U10–U12 (ENC: ENC_IN[5:0] + ENC_OUT[5:0]) + U19 (ACTUATE_REQUEST_IN_N/OUT_N); placed within 3mm of J3 mating edge | §8 Thermal & ESD; BOM U9–U12, U19 |
 | DR-STA-17 | Mounting holes | MH1–MH4: M3 PTH (3.2 mm drill) tied to GND_CHASSIS per GRS §4; placement per GRS §4.3 (pattern TBD — board shape TBD). No BOM entry. | §9 PCB Fabrication; GRS §4.3 |
@@ -85,7 +89,8 @@ signal-only).
 | DR-CYP-02 | Prototype manufacturer | PCBWay (JLCPCB not suitable for 6-layer + double-sided assembly) | §9 PCB Fabrication & Stackup |
 | DR-CYP-03 | Stack-Input stacking connector | J3 = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT) | §6 Interconnects; BOM J3 |
 | DR-CYP-04 | Stack-Output stacking connector | J4 = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT) | §6 Interconnects; BOM J4 |
-| DR-CYP-05 | Cypher-Input and Cypher-Output connectors | J5 (left, power + LED broadcast + `BOARD_ROLE_ID[3:0]`), J6 (right, JTAG chain-through) = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT — matches the J3/J4 hub-side pattern); mates whichever HID board's top (right-angle male, QTS-025-01-L-D-RA-P) pair is closest — either order supported; pin mapping `Board_Layout.md §4` | §6 Interconnects; BOM J5, J6 |
+| DR-CYP-05 | Cypher-Input/Cypher-Output connector | J5 = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT); **Cypher Left Pair Template** (owned by this board) - carries `3V3_ENIG`/`5V_MAIN`/GND, `ENC_DATA_IN[5:0]`/`ENC_DATA_OUT[5:0]`, `ENC_ACTIVE_INPUT_N`/`ENC_ACTIVE_OUTPUT_N`, and `BOARD_ROLE_ID_IN[3:0]`/`BOARD_ROLE_ID_OUT[3:0]`; mates whichever HID board's top (right-angle male, QTS-025-01-L-D-RA-P) connector is closest — either order supported; pin mapping `Board_Layout.md §4` | §6 Interconnects; BOM J5 |
+| DR-CYP-05a | User Settings Module connector | J6 = QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT); mates USM's own top (right-angle male, QTS-025-01-L-D-RA-P) Hub connector; pin-level template owned by `User_Settings_Module/Board_Layout.md §2` | §6 Interconnects; BOM J6 |
 | DR-CYP-06 | ENC module mounts (x4 on back face) | J7–J9, J10–J12, J13–J15, J16–J18 = DF40C-90DS + DF40C-24DS + DF40C-10DS per mount (Hirose 0.4mm pitch) | §6 Interconnects; BOM J7–J18 |
 | DR-CYP-07 | Spade blade terminal bank on back face | Keystone 1285-ST (6.35mm PCB vertical THT); 64 per ENC mount position x 4 = 256 total; RefDes J20+ (arrangement TBD at schematic time) | §6 Interconnects; BOM J20+ |
 | DR-CYP-08 | USB-JTAG bridge | U17 = FT232HL-REEL LQFP-48 (MPSSE mode; Rev C silicon, self-powered from `3V3_ENIG` via `VREGIN` — see DR-CYP-11); U18 = SN74LVC2G125DCUR VSSOP-8; Y1 = 435F12012IET 12MHz SMD-5032 | §5 USB-JTAG Bridge; BOM U17, U18, Y1 |
@@ -127,8 +132,11 @@ flowchart TD
   end
 
   subgraph ioCypher["Cypher-Input / Cypher-Output Interface"]
-    J5["J5 QTS-025 male\nCypher-Input (KBD_ENC)"]
-    J6["J6 QTS-025 male\nCypher-Output (LBD_DEC)"]
+    J5["J5 QSS-025 female\nCypher Left Pair Template\n(whichever HID board is closest)"]
+  end
+
+  subgraph usmIface["User Settings Module Interface"]
+    J6["J6 QSS-025 female\nHub Connector Template\n(JTAG + Cypher-peripherals I2C)"]
   end
 
   subgraph encMounts["ENC Module Mounts — back face"]
@@ -143,7 +151,8 @@ flowchart TD
   J2 -- "USB D+/D- to CM5" --> U17
   J2 -- "I2C1 bus" --> U6U8
   J2 -- "I2C1 bus" --> U2
-  U17 -- "TDI" --> U1
+  U17 -- "TDI (chain entry)" --> J6
+  J6 -- "HID sub-chain TDO (chain continues)" --> J7J9
   U18 -- "TCK / TMS buffered" --> U1
   U3 --> U1
   U6U8 -- "CPLD_RESET_N" --> Q1
@@ -153,7 +162,6 @@ flowchart TD
   J3 --> R51
   J4 -- "TTD_RETURN + ENC return" --> U1
   U1 <--> J5
-  U1 <--> J6
   U1 <--> J7J9
   U1 <--> J10J12
   U1 <--> J13J15
@@ -188,14 +196,15 @@ carried forward in parentheses for schematic capture continuity.
 
 | Cypher Connector | Stator Port Group | CPLD Role |
 | :--- | :--- | :--- |
-| J5 QTS-025 (Cypher-Input) | `KBD_ENC` | Keyboard encode source — Forward entry Step 1 |
-| J6 QTS-025 (Cypher-Output) | `LBD_DEC` | Lightboard decode destination — Final exit Step 3 |
+| J5 QSS-025 (Cypher Left Pair Template) top row | `KBD_ENC` | Keyboard encode source — Forward entry Step 1 (whichever HID board is closest relays this row from Cypher-Input) |
+| J5 QSS-025 (Cypher Left Pair Template) bottom row | `LBD_DEC` | Lightboard decode destination — Final exit Step 3 (relayed onward to Cypher-Output) |
 | J7–J9 DF40C Mount 1 | `PLG_PASS1_DEC` | Plugboard Pass 1 decode |
 | J10–J12 DF40C Mount 2 | `PLG_PASS1_ENC` | Plugboard Pass 1 encode |
 | J13–J15 DF40C Mount 3 | `PLG_PASS2_DEC` | Plugboard Pass 2 decode |
 | J16–J18 DF40C Mount 4 | `PLG_PASS2_ENC` | Plugboard Pass 2 encode |
 | J3 QSS-025 (Stack-Input/STA-side) | Mini-Stack 1 Rotor 1 | JTAG + ENC forward into first mini-stack |
 | J4 QSS-025 (Stack-Output/REF-side) | Reflection Interconnect | TTD_RETURN + ENC reflection return |
+| J6 QSS-025 (Hub Connector Template) | USM Spine | JTAG + Cypher-peripherals I2C relay to/from the User Settings Module |
 
 ### CPLD Signal Routing Matrix
 
@@ -203,8 +212,12 @@ The CPLD (U1) is the bidirectional ENC_DATA routing hub for the full encryption 
 
 Fixed interfaces:
 
-- `J5 KBD_ENC` — keyboard encode source (Cypher-Input board)
-- `J6 LBD_DEC` — lightboard decode destination (Cypher-Output board)
+- `J5` top row (`ENC_DATA_IN[5:0]`/`ENC_ACTIVE_INPUT_N`) — `KBD_ENC` keyboard encode source,
+  originating at Cypher-Input, relayed through whichever HID board is closest if that is
+  Cypher-Output
+- `J5` bottom row (`ENC_DATA_OUT[5:0]`/`ENC_ACTIVE_OUTPUT_N`) — `LBD_DEC` lightboard decode
+  destination, generated by this board (see ENC_ACTIVE_N note below) and relayed onward to
+  Cypher-Output
 - `J3` — Mini-Stack 1 Rotor 1 connector (Stack-Input/STA-side stacking connector)
 - `J4` — Reflection Interconnect connector (Stack-Output/REF-side stacking connector)
 
@@ -217,13 +230,17 @@ The encryption signal passes through U1 at three defined interception points:
 
 | Step | CPLD receives from | Optional plugboard insertion | CPLD drives to |
 | :--- | :--- | :--- | :--- |
-| **1 — Forward entry** | J5 `ENC_IN_KBD[5:0]` — keyboard keystroke | Pre-Rotor 1: Pass 1 and/or Pass 2 | J3 `ENC_OUT_ROT[5:0]` → Rotor 1 (forward pass through rotor stack) |
+| **1 — Forward entry** | J5 top row `ENC_DATA_IN[5:0]` — keyboard keystroke | Pre-Rotor 1: Pass 1 and/or Pass 2 | J3 `ENC_OUT_ROT[5:0]` → Rotor 1 (forward pass through rotor stack) |
 | **2 — Reflector return** | J4 `ENC_IN_REF[5:0]` — reflected signal from Stack-Output | At Reflector boundary: Pass 1 and/or Pass 2 | J4 `ENC_OUT_REF[5:0]` → Stack-Output → Rotor 30 (return pass through rotor stack) |
-| **3 — Final exit** | J3 `ENC_IN_ROT[5:0]` — Rotor 1 return-pass output | Post-Rotor 1 return: Pass 1 and/or Pass 2 | J6 `ENC_OUT_LBD[5:0]` → Cypher-Output (lightboard) |
+| **3 — Final exit** | J3 `ENC_IN_ROT[5:0]` — Rotor 1 return-pass output | Post-Rotor 1 return: Pass 1 and/or Pass 2 | J5 bottom row `ENC_DATA_OUT[5:0]` → Cypher-Output (lightboard) |
 
-`ENC_ACTIVE_N` is a HID-local sideband only — selected keyboard-source activity state forwarded
-to `LBD_DEC` (J6) so Cypher-Output can blank when no key event is active. Not propagated through
-the plugboard, rotor, or reflector interfaces.
+`ENC_ACTIVE_N` is a HID-local sideband only. Cypher-Input generates its own `ENC_ACTIVE_INPUT_N`
+on `J5`'s top row, which terminates at this board only (never tapped or relayed further by any
+intermediate HID board). This board's own CPLD firmware accounts for the cipher pipeline's
+propagation delay and then generates a **separate** `ENC_ACTIVE_OUTPUT_N` signal on `J5`'s bottom
+row, for Cypher-Output to consume - Cypher-Output is `ENC_ACTIVE_OUTPUT_N`'s legitimate
+destination, not an intermediate relay of Cypher-Input's own signal. Neither signal is propagated
+through the plugboard, rotor, or reflector interfaces.
 
 ### Actuation Request Chain (`J3` / `J4`)
 
@@ -345,8 +362,8 @@ DEV_CLR_N) are not part of the user I/O budget.
 | :--- | :--- | :--- |
 | J3 Stack-Input/STA-side — ENC_OUT_ROT[5:0] | 6 | Output |
 | J3 Stack-Input/STA-side — ENC_IN_ROT[5:0] | 6 | Input |
-| J5 `KBD_ENC` — ENC_IN_KBD[5:0] | 6 | Input |
-| J6 `LBD_DEC` — ENC_OUT_LBD[5:0] | 6 | Output |
+| J5 top row `KBD_ENC` — ENC_DATA_IN[5:0] | 6 | Input |
+| J5 bottom row `LBD_DEC` — ENC_DATA_OUT[5:0] | 6 | Output |
 | J7–J9 `PLG_PASS1_DEC` — decode output | 6 | Output |
 | J10–J12 `PLG_PASS1_ENC` — encode input | 6 | Input |
 | J13–J15 `PLG_PASS2_DEC` — decode output | 6 | Output |
@@ -355,8 +372,8 @@ DEV_CLR_N) are not part of the user I/O budget.
 | J4 Stack-Output/REF-side — ENC_IN_REF[5:0] | 6 | Input |
 | **ENC routing subtotal** | **60** | — |
 | U8 routing config input — CFG_ROUTE[3:0] | 4 | Input |
-| `BOARD_ROLE_ID_IN[3:0]` — Cypher-Input capability ID (from `J4`/`J6` left pair, top row) | 4 | Input |
-| `BOARD_ROLE_ID_OUT[3:0]` — Cypher-Output capability ID (from `J4`/`J6` left pair, bottom row) | 4 | Input |
+| `BOARD_ROLE_ID_IN[3:0]` — Cypher-Input capability ID (from `J5` top row) | 4 | Input |
+| `BOARD_ROLE_ID_OUT[3:0]` — Cypher-Output capability ID (from `J5` bottom row) | 4 | Input |
 | `HID_VARIANT_ID[3:0]` — resolved compatibility result to U7 GPIO expander | 4 | Output |
 | **Config subtotal** | **16** | — |
 | **Total user I/O** | **76 / 76** | — |
@@ -371,11 +388,11 @@ not counted in CPLD user I/O budget.
 ### §3a `BOARD_ROLE_ID` Compatibility Comparator
 
 The Cypher Board's own CPLD (U1) receives both HID boards' `BOARD_ROLE_ID[3:0]` capability values
-directly - the `J4`/`J6` left connector pair's top row always carries the Cypher-Input board's own
+directly - `J5`'s top row always carries the Cypher-Input board's own
 ID (`BOARD_ROLE_ID_IN[3:0]`) and the bottom row always carries the Cypher-Output board's own ID
 (`BOARD_ROLE_ID_OUT[3:0]`), per each board's own fixed passthrough wiring convention (regardless of
 which physical HID board occupies the position closest to the Cypher Board) - see
-`Board_Layout.md §4a`.
+`Board_Layout.md §4`.
 
 **Capability bit definition** (shared meaning on both Input and Output IDs):
 
@@ -412,14 +429,16 @@ visibility.
 
 ### External Keyboard Source Mux
 
-7-channel 2:1 mux using U4 and U5 (74HC157PW-Q100,118) at the `J5 KBD_ENC` entry point:
+7-channel 2:1 mux using U4 and U5 (74HC157PW-Q100,118) at the `J5` top-row `KBD_ENC` entry point:
 
 - `KEY_CM5_ACTIVE=0` (default): physical keyboard bundle forwarded — `ENC_IN_KBD[5:0]` + `ENC_ACTIVE_INPUT_N`
 - `KEY_CM5_ACTIVE=1`: CM5 virtual-key bundle forwarded — `CM5_KEY_DATA[5:0]` + `CM5_KEY_ACTIVE_N`
 
 Both `E` pins of U4/U5 tied to GND; mux path always enabled when board is powered.
-Selected activity state routed to J6 `ENC_ACTIVE_LBD_N` (Cypher-Output can blank when no key
-event active) and monitored through U7 for GUI / telemetry visibility.
+Selected activity state, after this board's own CPLD firmware accounts for the cipher pipeline's
+propagation delay, is driven onto `J5`'s bottom row as `ENC_ACTIVE_OUTPUT_N` (a signal this board
+generates, not merely forwards - see §3 CPLD Signal Routing Matrix) so Cypher-Output can blank
+when no key event is active, and is also monitored through U7 for GUI / telemetry visibility.
 
 ### Device-to-Design Net Name Mapping
 
@@ -522,22 +541,26 @@ connected - see §3 Configuration Bank 2.
 ### JTAG Hub
 
 - **Chain order (all "static" CPLDs precede the "dynamic" Rotor stack):**
-  FT232H (U17) drives Cypher-Input CPLD (device 1, via `J6` pin 37) → Cypher-Input CPLD TDO →
-  Cypher-Output CPLD TDI (device 2) → Cypher-Output CPLD TDO → Mount1 TDI (device 3) → Mount1 TDO
+  FT232H (U17) drives `J6` TDI (device 1 entry, via the Hub Connector Template) → User Settings
+  Module relays this to whichever HID board self-identifies as the Input-role board (device 1,
+  Cypher-Input CPLD) → Cypher-Input CPLD TDO → USM relays this to whichever HID board
+  self-identifies as the Output-role board (device 2, Cypher-Output CPLD) → Cypher-Output CPLD
+  TDO → USM relays this back to `J6` TDO → Mount1 TDI (device 3) → Mount1 TDO
   → Mount2 TDI (device 4) → Mount2 TDO → Mount3 TDI (device 5) → Mount3 TDO → Mount4 TDI
   (device 6) → Mount4 TDO → this board's own U1 CPLD TDI (device 7) → U1 TDO → `J3` TTD pin →
   30x Rotor CPLDs (devices 8–37) → `J4` TTD_RETURN → R50 (22 Ohm) → U17 TDO.
   U1 sits between the 4 Plugboard Encoder Modules and the Rotor mini-stack chain. See
-  `Board_Layout.md §4` for the `J6` pin-level mapping and per-board wiring (Cypher-Input,
-  Cypher-Output, Cypher-Plugboard) that realises this chain regardless of which HID board occupies the
-  position closest to this board.
+  `User_Settings_Module/Design_Spec.md §4` for the Input/Output sub-chain routing within USM, and
+  `Board_Layout.md §5` for this board's own `J6` pin-level wiring.
 - **JTAG series termination at encoder-equivalent ports (all BtB — 33 Ohm per DEC-024):**
   - TCK, TMS, CPLD_RESET_N: broadcast from the JTAG Hub via individual 33 Ohm series resistors to
-    `J3`, `J6` (HID interconnect), and DF40C Mounts 1–4 (one per port) — not chained, each port
+    `J3`, `J6` (USM Hub connector), and DF40C Mounts 1–4 (one per port) — not chained, each port
     gets its own dedicated wire from the hub.
-  - TDI/TDO (`TTD`): daisy-chained port-to-port entirely via traces on this board, per the chain
-    order above — series resistors in the R24–R29 range; exact RefDes mapping to be finalised at
-    schematic capture.
+  - TDI/TDO (`TTD`): daisy-chained port-to-port entirely via traces on this board (`J6` to Mount1,
+    Mount1 to Mount2, etc.), per the chain order above — series resistors in the R24–R29 range;
+    exact RefDes mapping to be finalised at schematic capture. The Cypher-Input/Cypher-Output
+    sub-chain hop (device 1 to device 2) is realised entirely within the User Settings Module and
+    the two HID boards' own wiring, not on this board's own copper.
 - **JTAG pull resistors (placed near U1):**
   - R2: 10 kOhm pull-up on TTD_RETURN near J4 mating edge (idle-bias for the disconnected/bench-test
     state, e.g. Stack-Blanking Board plugged directly into J3/J4 with no mini-stacks attached;
@@ -548,6 +571,11 @@ connected - see §3 Configuration Bank 2.
   - R4: 10 kOhm TDI pull-up to 3V3_ENIG (holds TDI at logic-1 / BYPASS when idle)
   - R5: 10 kOhm TCK pull-down to GND (prevents spurious clocking)
   - R6: 10 kOhm CPLD_RESET_N pull-up to 3V3_ENIG (CPLD out of reset by default)
+
+  R3-R6 provide the broadcast net's master idle-bias at the hub itself (the signals' origin
+  point) - this is independent of, and not redundant with, the User Settings Module's own local
+  `R1`-`R3` termination (`User_Settings_Module/Design_Spec.md §4`), which exists to give the USM
+  branch a defined idle state if the hub side is ever disconnected during bench testing.
 - **JTAG trace width:** all JTAG traces routed per GRS §2.3.x targeting 50 Ohm CI.
 
 ## 4. Signal Turnaround (Reflector Responsibility)
@@ -682,18 +710,36 @@ Mates with Stack-Output Board front-face male QTS-025.
 > **Pinout:** see `Stack-Output/Board_Layout.md §1` for the full canonical pin map; `Board_Layout.md §3`
 > of this board for Cypher's own local wiring notes. Fully 50-pin allocated per DEC-092/DEC-093.
 
-### J5 / J6 — Cypher-Input and Cypher-Output Connectors (`KBD_ENC` / `LBD_DEC` group)
+### J5 — Cypher Left Pair Template (Cypher-Input / Cypher-Output HID Interconnect)
 
-**Connector definition owner: this board.** Mate with right-angle female QSS-025-01-L-D-RA-K on
-the bottom edges of Cypher-Input (J5) and Cypher-Output (J6) boards.
+**Connector definition owner: this board.** Mates with whichever HID board's top (right-angle
+male, QTS-025-01-L-D-RA-P) connector is physically closest - the other HID board attaches further
+down the local stack via that board's own bottom connector, not directly to this board.
 
-- **MPN:** QTS-025-01-L-D-A-GP-K-TR (Samtec 50-contact 0.635mm vertical male SMT)
-- **J5 role:** Cypher-Input Board (keyboard source — `KBD_ENC` cipher role)
-- **J6 role:** Cypher-Output Board (lightboard destination — `LBD_DEC` cipher role)
-- Either board can be inserted first; chaining passthrough pins allow both orders.
-- GREEN_PWM_N (pin 19) and YELLOW_PWM_N (pin 32) are NC on this board.
+- **MPN:** QSS-025-01-L-D-A-GP-K-TR (Samtec 50-contact 0.635mm vertical female SMT)
+- Carries `3V3_ENIG`/`5V_MAIN`/GND, `ENC_DATA_IN[5:0]`/`ENC_DATA_OUT[5:0]`,
+  `ENC_ACTIVE_INPUT_N`/`ENC_ACTIVE_OUTPUT_N`, and `BOARD_ROLE_ID_IN[3:0]`/`BOARD_ROLE_ID_OUT[3:0]`.
+- Top row = Cypher-Input's own signals (`KBD_ENC`); bottom row = this board's own generated
+  signals bound for Cypher-Output (`LBD_DEC`) - see §3 CPLD Signal Routing Matrix.
+- Either HID board can occupy the position closest to this board; chaining passthrough pins on
+  each HID board's own connectors allow both orders.
 
 > **Pinout:** see `Board_Layout.md §4`.
+
+### J6 — User Settings Module Hub Connector
+
+**Connector definition owner: `User_Settings_Module/Board_Layout.md §2`** (its own `J1`) - this
+board owns only its own physical connector placement and gender, per that shared template.
+
+- **MPN:** QSS-025-01-L-D-A-GP-K-TR (Samtec 50-contact 0.635mm vertical female SMT)
+- Mates USM's own top (right-angle male, QTS-025-01-L-D-RA-P) Hub connector.
+- Carries `3V3_ENIG`, the dedicated Cypher-peripherals I2C bus, and JTAG (`TDI`/`TDO`/`TMS`/`TCK`/
+  `CPLD_RESET_N`). USM relays this bus
+  and JTAG onward to both HID boards and to Cypher-Plugboard - see §3 JTAG Hub and
+  `User_Settings_Module/Design_Spec.md §4`.
+
+> **Pinout:** see `Board_Layout.md §5` for this board's own wiring; full pin numbering owned by
+> `User_Settings_Module/Board_Layout.md §2`.
 
 ### J7–J18 — ENC Module Mounts (x4, back face)
 
@@ -723,22 +769,12 @@ Per-mount connector function:
 > see `Encoder_Module/Design_Spec.md §4` and `Encoder_Module/Board_Layout.md §1a-1c`. Cypher
 > Board carries the mating DF40C-xDS receptacles.
 
-### J19 — USM Harness
-
-6-pin JST PH 2.0mm connector to the User Settings Module.
-
-- **MPN:** B6B-PH-K-S(LF)(SN)
-- **Signals:** 3V3_ENIG, 5V_MAIN, GND, SDA, SCL, GND
-- **5V_MAIN role:** pass-through LED supply from J1 branch only.
-
-> **Pinout:** see `Board_Layout.md §6`.
-
 ### J20+ — Spade Blade Terminal Bank (back face)
 
 Jack plug harness attachment points on the back face, located along the **bottom edge** of that
-face (the HID interconnect connectors, `J5`/`J6`, are at the top edge of the same face - see
-`Board_Layout.md §4`) - this is a general placement decision only; exact per-terminal arrangement
-within that bottom-edge region is TBD at schematic/layout time.
+face (the HID/USM interconnect connectors, `J5`/`J6`, are at the top edge of the same face - see
+`Board_Layout.md §4`-`§5`) - this is a general placement decision only; exact per-terminal
+arrangement within that bottom-edge region is TBD at schematic/layout time.
 
 - **MPN:** 1285-ST (Keystone Electronics) — 6.35mm PCB spade blade terminal, THT vertical
 - **DigiKey PN:** 36-1285-ST-ND
@@ -752,8 +788,8 @@ Board copper layers. **The physical plugboard patch jacks are not on this board*
 mounted on the Cypher-Plugboard board (mechanical mounting only, no electrical connection to that
 board's own circuitry - see `Cypher-Plugboard`'s own design file) and wired back to this
 spade bank via discrete spade-to-spade jumper cables, per DEC-088. This keeps the Cypher-Plugboard
-board's only electrical role limited to passive termination of the HID interconnect chain (see
-DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its own.
+board's only electrical role limited to passive dead-ending of its own connectors (see
+DR-CYP-05/§6 J5/J6 above) - it carries no plugboard-signal-specific pins of its own.
 
 ## 7. Power Telemetry
 
@@ -795,7 +831,7 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
   (max 3.465V at +5%), all U9–U16, U19 are within rated limits with >= 2.0V margin.
 - **ESD — all other connectors (no TVS required):**
   J1, J2 (blind-mate dock); J5, J6 (internal BtB); J7–J18 (back-face mounts, not live-swap);
-  J19 (internal harness); J20+ (passive blade terminals — ESD TBD at harness definition).
+  J20+ (passive blade terminals — ESD TBD at harness definition).
   Per `design/Standards/Global_Routing_Spec.md §9`.
 
 ## 9. PCB Fabrication & Stackup
@@ -812,7 +848,7 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 ## 10. Branding & Traceability
 
 - **Data Plate:** Per GRS §6 on bottom layer (L6). Revision block: `CHIFFRIERWERK [Cypher Board] V1.0`.
-- **Connector Pin-1 Markers:** J1–J19 silkscreen pin-1 markers required per GRS §7.1.
+- **Connector Pin-1 Markers:** J1–J18, J20+ silkscreen pin-1 markers required per GRS §7.1.
 
 ## 11. Bill of Materials
 
@@ -826,11 +862,10 @@ DR-CYP-05/§6 J5/J6 below) - it carries no plugboard-signal-specific pins of its
 | TP1-TP6 | Bare copper test-pad loop | - | - | - | - | - | - | PWM0[0-3] + GPCLK[0]/GPCLK[1] test access from CTL J2. No component; no BOM entry. | - | - | 6 |
 | TP7-TP12 | Bare copper test-pad loop | - | - | - | - | - | - | GND test-pad loops, one paired with each of TP1-TP6. No component; no BOM entry. | - | - | 6 |
 | J3, J4 | 50-contact 0.635mm vertical female SMT | QSS-025-01-L-D-A-GP-K | Samtec | QSS-025-01-L-D-A-GP-K-ND | 200-QSS02501LDAGPK | C6632602 | - | Stack-Input/STA-side (J3); Stack-Output/REF-side (J4) | ✔ | ✔ | 2 |
-| J5, J6 | 50-contact 0.635mm vertical male SMT T/R | QTS-025-01-L-D-A-GP-K-TR | Samtec | QTS-025-01-L-D-A-GP-K-TR-ND | 200-QTS02501LDAGPKTR | C5714677 | - | Cypher-Input (J5); Cypher-Output (J6) | ✔ | ✔ | 2 |
+| J5, J6 | 50-contact 0.635mm vertical female SMT | QSS-025-01-L-D-A-GP-K | Samtec | QSS-025-01-L-D-A-GP-K-ND | 200-QSS02501LDAGPK | C6632602 | - | J5: Cypher Left Pair Template (whichever HID board is closest); J6: User Settings Module Hub connector; same part as J3/J4 | ✔ | ✔ | 2 |
 | J7, J10, J13, J16 | 90-pin 0.4mm pitch BtB receptacle | DF40C-90DS-0.4V(51) | Hirose | 26-DF40C-90DS-0.4V(51)CT-ND | 798-DF40C90DS0.4V51 | C2911197 | - | ENC mount plain-bits connector — Mounts 1/2/3/4 | ✔ | ✔ | 4 |
 | J8, J11, J14, J17 | 24-pin 0.4mm pitch BtB receptacle | DF40C-24DS-0.4V(51) | Hirose | H11621CT-ND | 798-DF40C24DS0.4V51 | C424640 | - | ENC mount cypher-bits + JTAG — Mounts 1/2/3/4 | ✔ | ✔ | 4 |
 | J9, J12, J15, J18 | 10-pin 0.4mm pitch BtB receptacle | DF40C-10DS-0.4V(51) | Hirose | H11617CT-ND | 798-DF40C10DS0.4V51 | C424636 | - | ENC mount power — Mounts 1/2/3/4 | ✔ | ✔ | 4 |
-| J19 | 6-pin JST PH 2.0mm THT | B6B-PH-K-S(LF)(SN) | JST | 455-1708-ND | 306-B6B-PH-K-SLFSN | C131342 | - | USM harness | ✔ | ✔ | 1 |
 | J20+ | 6.35mm PCB spade blade terminals THT vertical | 1285-ST | Keystone Electronics | 36-1285-ST-ND | 534-1285-ST | C5370868 | - | Jack plug harness; 64 per ENC mount x 4 = 256 total; RefDes/arrangement TBD at schematic | ✔ | ✔ | 256 |
 | L1-L4 | 120Ω @100MHz 4.0A 1206 ferrite bead | HI1206P121R-10 | Laird Performance Materials | 240-2410-1-ND | 875-HI1206P121R-10 | C2442103 | - | 3V3_ENIG rotor power entry beads | ✔ | ✔ | 4 |
 | Q1 | BSS138 N-ch MOSFET SOT-23 | BSS138LT1G | ON Semiconductor | BSS138LT1GOSCT-ND | 863-BSS138LT1G | C6568483 | - | CPLD_RESET_N open-drain buffer; prevents MCP23017 IOL overload (30-rotor stack) | ✔ | Pending | 1 |
