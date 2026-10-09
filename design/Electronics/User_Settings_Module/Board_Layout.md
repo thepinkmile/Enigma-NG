@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-09-21
+**Last Updated:** 2026-10-09
 
 ---
 
@@ -38,8 +38,13 @@ location is deferred to `.copilot/todos/usm-3-part-hid-module-mechanical-review.
 ## 2. J1 / J2 - Hub Connector Template
 
 > **Connector Definition Owner:** this board. `J1` (top, male, `QTS-025-01-L-D-RA-P`) mates the
-> Cypher Board's own hub connector. `J2` (bottom, female, `QSS-025-01-L-D-RA-K`) mates
-> Cypher-Plugboard's own connector; identical pin map to `J1`.
+> Cypher Board's own hub connector; mounted protruding past this board's top edge far enough to
+> span the enclosure gap and fully mate with Cypher's flush-mounted female connector. `J2`
+> (bottom, female, `QSS-025-01-L-D-RA-K`) mates Cypher-Plugboard's own connector; identical pin
+> map to `J1`; mounted flush with this board's bottom edge so the connector's socket opening sits
+> flush with the enclosure lid's edge once cased, forming a clean opening for Cypher-Plugboard's
+> protruding male pins to enter. Mating gap/tolerance:
+> `design/Standards/Global_Routing_Spec.md §4.1a`.
 
 | Top Row Signal | Top Pin# | Bottom Pin# | Bottom Row Signal |
 | :--- | :---: | :---: | :--- |
@@ -85,7 +90,10 @@ still relayed/broadcast here.
 
 > **Connector Definition Owner:** this board. `J3` (left-upper, female, `QSS-025-01-L-D-RA-K`)
 > mates whichever HID board is topmost; `J4` (left-lower, female, `QSS-025-01-L-D-RA-K`) mates
-> whichever HID board is bottommost. Identical pin map on both.
+> whichever HID board is bottommost. Identical pin map on both. Both connectors are mounted flush
+> with this board's left edge so each socket opening sits flush with the enclosure lid's edge once
+> cased, forming a clean opening for the mating HID board's protruding male pins to enter. Mating
+> gap/tolerance: `design/Standards/Global_Routing_Spec.md §4.1a`.
 
 | Top Row Signal | Top Pin# | Bottom Pin# | Bottom Row Signal |
 | :--- | :---: | :---: | :--- |

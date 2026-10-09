@@ -716,7 +716,7 @@ Mates with Stack-Output Board front-face male QTS-025.
 male, QTS-025-01-L-D-RA-P) connector is physically closest - the other HID board attaches further
 down the local stack via that board's own bottom connector, not directly to this board.
 
-- **MPN:** QSS-025-01-L-D-A-GP-K-TR (Samtec 50-contact 0.635mm vertical female SMT)
+- **MPN:** QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT)
 - Carries `3V3_ENIG`/`5V_MAIN`/GND, `ENC_DATA_IN[5:0]`/`ENC_DATA_OUT[5:0]`,
   `ENC_ACTIVE_INPUT_N`/`ENC_ACTIVE_OUTPUT_N`, and `BOARD_ROLE_ID_IN[3:0]`/`BOARD_ROLE_ID_OUT[3:0]`.
 - Top row = Cypher-Input's own signals (`KBD_ENC`); bottom row = this board's own generated
@@ -731,7 +731,7 @@ down the local stack via that board's own bottom connector, not directly to this
 **Connector definition owner: `User_Settings_Module/Board_Layout.md §2`** (its own `J1`) - this
 board owns only its own physical connector placement and gender, per that shared template.
 
-- **MPN:** QSS-025-01-L-D-A-GP-K-TR (Samtec 50-contact 0.635mm vertical female SMT)
+- **MPN:** QSS-025-01-L-D-A-GP-K (Samtec 50-contact 0.635mm vertical female SMT)
 - Mates USM's own top (right-angle male, QTS-025-01-L-D-RA-P) Hub connector.
 - Carries `3V3_ENIG`, the dedicated Cypher-peripherals I2C bus, and JTAG (`TDI`/`TDO`/`TMS`/`TCK`/
   `CPLD_RESET_N`). USM relays this bus
