@@ -786,10 +786,8 @@ arrangement within that bottom-edge region is TBD at schematic/layout time.
 Trace routing from spade blade terminals to relevant CPLD signal nets is done within the Cypher
 Board copper layers. **The physical plugboard patch jacks are not on this board** - they are
 mounted on the Cypher-Plugboard board (mechanical mounting only, no electrical connection to that
-board's own circuitry - see `Cypher-Plugboard`'s own design file) and wired back to this
-spade bank via discrete spade-to-spade jumper cables, per DEC-088. This keeps the Cypher-Plugboard
-board's only electrical role limited to passive dead-ending of its own connectors (see
-DR-CYP-05/§6 J5/J6 above) - it carries no plugboard-signal-specific pins of its own.
+board's own circuitry - see `Cypher-Plugboard/Design_Spec.md §3` Signal Routing) and wired back to
+this spade bank via discrete spade-to-spade jumper cables, per DEC-088.
 
 ## 7. Power Telemetry
 
