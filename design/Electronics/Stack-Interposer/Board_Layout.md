@@ -20,9 +20,11 @@
   faces upward on that edge.
 - The **Stack-Input Board** stands vertically on the **right side** — J2 (Stack-Input side)
   faces upward on that edge.
-- Both J1 and J2 are straight/vertical connectors on the top surface of this board (no
-  right-angle). The right-angle connectors on the Stack-Output and Stack-Input bottom edges mate
-  downward into J1 and J2 respectively.
+- Both J1 and J2 are straight/vertical male connectors on the top surface of this board (no
+  right-angle), mounted protruding upward to span the enclosure gap and mate with the facing
+  Stack-Output/Stack-Input board's flush-mounted female `J6` socket. The right-angle connectors
+  on the Stack-Output and Stack-Input bottom edges mate downward into J1 and J2 respectively.
+  Mating gap/tolerance: `design/Standards/Global_Routing_Spec.md §4.1a`.
 
 ---
 

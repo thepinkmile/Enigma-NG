@@ -16,7 +16,7 @@ and the Cypher Board return path.
 
 | Circuit Responsibility | Board Role | Key Component |
 | :--- | :--- | :--- |
-| **Mini-Stack Cypher Output** | Receives ENC data and TTD from last ROT board; passes return signals (SIG-BLOCK-B/C/F) through stacking connectors toward Cypher Board; routes SIG-BLOCK-A/D/E via passive interposer link to Stack-Input | ERF8 ROT-facing input sockets + 2BHR-30-VUA interposer link |
+| **Mini-Stack Cypher Output** | Receives ENC data and TTD from last ROT board; passes return signals (SIG-BLOCK-B/C/F) through stacking connectors toward Cypher Board; routes SIG-BLOCK-A/D/E via passive interposer link to Stack-Input | ERF8 ROT-facing input sockets + SQT-115-01-L-D-RA interposer link |
 
 The left edge (front face when viewed from the front of the mini-stack assembly) carries a keyed
 Samtec QTS-025 male right-angle connector (J1) that mates with the Cypher Board J4 (REF side) or
@@ -38,7 +38,7 @@ Stack-Interposer Board.
 | FR-SOUT-01 | Connect on the front side to the Cypher Board REF side or the rear of the previous Rotor Mini-Stack | J1 = QTS-025-01-L-D-RA-P male right-angle (front / left edge) | §6 Interconnects; BOM J1 |
 | FR-SOUT-02 | Connect on the rear side to the next Rotor Mini-Stack or Stack-Blanking Board | J2 = QSS-025-01-L-D-RA-K female right-angle (rear / right edge) | §6 Interconnects; BOM J2 |
 | FR-SOUT-03 | Receive JTAG TTD, TCK, TMS, CPLD_RESET_N and ENC data from the last ROT board of this mini-stack | J3 = ERF8-005 (JTAG); J4 = ERF8-005 (Power — all pins NC); J5 = ERF8-010 (ENC data) | §6 Interconnects; BOM J3–J5 |
-| FR-SOUT-04 | Route SIG-BLOCK-A ENC data, SIG-BLOCK-E TTD, and SIG-BLOCK-G/H ACTUATE_REQUEST (per DEC-093) from the last ROT board to Stack-Input via the passive interposer link | J6 = 2BHR-30-VUA 30-pin THT male header; mates with Stack-Interposer Board SQT-115-01-L-D-RA female | §6 Interconnects; BOM J6 |
+| FR-SOUT-04 | Route SIG-BLOCK-A ENC data, SIG-BLOCK-E TTD, and SIG-BLOCK-G/H ACTUATE_REQUEST (per DEC-093) from the last ROT board to Stack-Input via the passive interposer link | J6 = SQT-115-01-L-D-RA right-angle female; mates with Stack-Interposer Board TMMH-115-01-L-D-ES male | §6 Interconnects; BOM J6 |
 | FR-SOUT-05 | Receive SIG-BLOCK-D ENC data from Stack-Input via the passive interposer link and route it into the ROT chain return pass | J6 → J5; ROT chain traversal (left-to-right return direction) | §3 Signal Return Path; §6 Interconnects |
 | FR-SOUT-06 | Pass SIG-BLOCK-B ENC return and SIG-BLOCK-F TTD_RETURN toward the Cypher Board via front stacking connector J1 | Signals sourced on J2 rear stacking (from blanking board / next Stack-Output passthrough); J2 → J1 internal passthrough per mini-stack | §3 Signal Return Path; §6 Interconnects |
 | FR-SOUT-07 | Pass SIG-BLOCK-C ENC reflector signals rearward toward the Stack-Blanking Board via rear stacking connector J2 | Signals sourced on J1 (from Cypher Board REF output); J1 → J2 internal passthrough | §3 Signal Return Path; §6 Interconnects |
@@ -80,7 +80,7 @@ flowchart TD
   end
 
   subgraph interposer["Passive Interposer Link"]
-    J6["J6 2BHR-30-VUA 30-pin THT male\nSIG-BLOCK-A ENC data + SIG-BLOCK-E TTD\nSIG-BLOCK-D ENC return + SIG-BLOCK-G/H ACTUATE_REQUEST"]
+    J6["J6 SQT-115-01-L-D-RA 30-pin female\nSIG-BLOCK-A ENC data + SIG-BLOCK-E TTD\nSIG-BLOCK-D ENC return + SIG-BLOCK-G/H ACTUATE_REQUEST"]
   end
 
   subgraph esd["ESD Protection"]

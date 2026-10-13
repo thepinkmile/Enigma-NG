@@ -158,5 +158,5 @@ Last updated: 2026-09-17
 | `usm-template2-template1-unification-review` | [usm-template2-template1-unification-review.md](usm-template2-template1-unification-review.md) | pending | — |
 | `usm-cfg-refmap-removal-review` | — | done | — |
 | `usm-redesign-implementation` | — | done | — |
-| `mini-stack-connector-flush-protrude-review` | [mini-stack-connector-flush-protrude-review.md](mini-stack-connector-flush-protrude-review.md) | pending | `usm-redesign-implementation` |
+| `mini-stack-connector-flush-protrude-review` | — | done | — |
 | `usm-extension-discussion-diagrams-integration` | [usm-extension-discussion-diagrams-integration.md](usm-extension-discussion-diagrams-integration.md) | pending | `mini-stack-connector-flush-protrude-review` |

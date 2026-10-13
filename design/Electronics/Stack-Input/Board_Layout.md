@@ -16,11 +16,18 @@
 ## Orientation Convention
 
 - **Front face / right edge:** J1 QTS-025 male stacking connector — faces Cypher Board J3 or
-  previous mini-stack rear.
+  previous mini-stack rear. Mounted protruding past this board's edge to span the enclosure gap
+  and mate with the facing board's flush-mounted female connector. Mating gap/tolerance:
+  `design/Standards/Global_Routing_Spec.md §4.1a`.
 - **Rear face / left edge:** J2 QSS-025 female stacking connector — faces next mini-stack or
-  Stack-Blanking Board.
+  Stack-Blanking Board. Mounted flush with this board's edge, forming the socket opening for the
+  mating board's protruding male connector.
 - **Rotor-facing face:** J3/J4/J5 ERF8 sockets — connects to first ROT board in the mini-stack.
-- **Bottom edge:** J6 SQT-115 right-angle female — Stack-Interposer return link.
+  Internal to this mini-stack assembly, not enclosure-boundary connectors - flush/protruding
+  mounting convention does not apply.
+- **Bottom edge:** J6 SQT-115 right-angle female — Stack-Interposer return link. Mounted flush
+  with this board's bottom edge, mating with the Stack-Interposer Board's protruding male
+  connector.
 - **Service headers:** J7–J10, SW1, SW2 — accessible for service.
   J7 = solenoid loom; J8 = dual position switch loom; J9 = SWD programming; J10 = UART/BOOT0.
 
@@ -32,7 +39,10 @@
 > reused identically at every junction along the STA-side chain: Cypher `J3`, this board's own
 > `J1`/`J2`, and every subsequent mini-stack's `J1`/`J2`, terminating at the Stack-Blanking Board.
 > This board carries the mating male connector (QTS-025-01-L-D-RA-P); the Cypher Board
-> and every other mating board carry the female receptacle (QSS-025-01-L-D-A-GP-K).
+> and every other mating board carry the female receptacle (QSS-025-01-L-D-A-GP-K). Mounted
+> protruding past this board's edge to span the enclosure gap and mate with the facing board's
+> flush-mounted female connector. Mating gap/tolerance:
+> `design/Standards/Global_Routing_Spec.md §4.1a`.
 
 **Fully 50-pin allocated** per DEC-090/DEC-093. Pin numbering: column Cn, top pin = 2n-1, bottom
 pin = 2n; center GND bar at column 13 (pins 25/26), matching the `J5`/`J6` board-agnostic
@@ -83,7 +93,8 @@ this connector (Cypher `J3`, and every mini-stack's `J1`/`J2`).
 
 > **Connector Definition Owner:** this board (IC-STA-CHAIN, §1 above — same template, I/O
 > inverted). Mates with next mini-stack J1 (front stacking male) or Stack-Blanking Board male
-> connector.
+> connector. Mounted flush with this board's edge, forming the socket opening for the mating
+> board's protruding male connector.
 
 Same canonical IC-STA-CHAIN pin map as J1 (§1 above), with I/O directions inverted
 (chain-through). This board's own wiring at J2 (rear):
@@ -113,7 +124,9 @@ Same canonical IC-STA-CHAIN pin map as J1 (§1 above), with I/O directions inver
 
 ## 4. J6 — Stack-Interposer Return Link (SQT-115-01-L-D-RA)
 
-> **Connector Definition Owner:** `Stack-Interposer/Board_Layout.md`.
+> **Connector Definition Owner:** `Stack-Interposer/Board_Layout.md`. Mounted flush with this
+> board's bottom edge, mating with the Stack-Interposer Board's protruding male connector. Mating
+> gap/tolerance: `design/Standards/Global_Routing_Spec.md §4.1a`.
 
 | Ref | MPN | Pins | Role |
 | :--- | :--- | :--- | :--- |

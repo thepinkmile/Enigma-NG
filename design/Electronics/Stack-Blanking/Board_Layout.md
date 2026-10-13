@@ -16,9 +16,13 @@
 ## Orientation Convention
 
 - **Right side (J1):** Stack-Input mating connector — mates with Stack-Input Board J2 (rear
-  stacking connector) in normal use, or Cypher Board J3 for transport.
+  stacking connector) in normal use, or Cypher Board J3 for transport. Mounted protruding past
+  this board's edge to span the enclosure gap and mate with the facing board's flush-mounted
+  female connector. Mating gap/tolerance: `design/Standards/Global_Routing_Spec.md §4.1a`.
 - **Left side (J2):** Stack-Output mating connector — mates with Stack-Output Board J2 (rear
-  stacking connector) in normal use, or Cypher Board J4 for transport.
+  stacking connector) in normal use, or Cypher Board J4 for transport. Mounted protruding past
+  this board's edge to span the enclosure gap and mate with the facing board's flush-mounted
+  female connector.
 - **Signal routing:** all bridging traces run on inner layers L2/L3 (right-to-left, J1 → J2, and
   left-to-right, J2 → J1, for the return-direction signals).
 - **Termination resistors R1–R3:** placed close to J1 (Stack-Input side).
@@ -30,7 +34,9 @@
 > **Connector Definition Owner:** `Stack-Input/Board_Layout.md §1` (IC-STA-CHAIN, per DEC-094).
 > Same signal pinout as every Stack-Input `J1`/`J2`.
 > Mates with Stack-Input Board J2 (QSS-025-01-L-D-RA-K) in normal use;
-> mates with Cypher Board J3 (QSS-025-01-L-D-A-GP-K) for transport / bench testing.
+> mates with Cypher Board J3 (QSS-025-01-L-D-A-GP-K) for transport / bench testing. Mounted
+> protruding past this board's edge to span the enclosure gap and mate with the facing board's
+> flush-mounted female connector.
 
 Fully 50-pin allocated per DEC-090/DEC-093 — see `Stack-Input/Board_Layout.md §1` for the full
 canonical pin map.
@@ -55,7 +61,9 @@ The following signals are **bridged** to J2, not terminated (see §3 Signal Brid
 > **Connector Definition Owner:** `Stack-Output/Board_Layout.md §1` (IC-REF-CHAIN, per DEC-094).
 > Same signal pinout as every Stack-Output `J1`/`J2`.
 > Mates with Stack-Output Board J2 (QSS-025-01-L-D-RA-K) in normal use;
-> mates with Cypher Board J4 (QSS-025-01-L-D-A-GP-K) for transport / bench testing.
+> mates with Cypher Board J4 (QSS-025-01-L-D-A-GP-K) for transport / bench testing. Mounted
+> protruding past this board's edge to span the enclosure gap and mate with the facing board's
+> flush-mounted female connector.
 
 Fully 50-pin allocated per DEC-092/DEC-093 — see `Stack-Output/Board_Layout.md §1` for the full
 canonical pin map. Bottom power region (3V3_ENIG + GND) mirrors J1 bottom.

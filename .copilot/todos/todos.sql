@@ -161,5 +161,5 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('usm-3-part-hid-module-mechanical-review', 'Reviewing mechanical design for the new Cypher-Input/Cypher-Output/USM 3-part HID module', 'pending'),
 ('usm-template2-template1-unification-review', 'Reviewing whether USM hub connector should reuse the HID left-pair pin map for future flexibility', 'pending'),
 ('usm-redesign-implementation', 'Implement the agreed User Settings Module and HID connector redesign', 'done'),
-('mini-stack-connector-flush-protrude-review', 'Reviewing mini-stack connector flush/protrude convention', 'pending'),
+('mini-stack-connector-flush-protrude-review', 'Reviewing mini-stack connector flush/protrude convention', 'done'),
 ('usm-extension-discussion-diagrams-integration', 'Pulling usm-redesign and extension-mechanical-usage discussion diagrams into documentation', 'pending');
