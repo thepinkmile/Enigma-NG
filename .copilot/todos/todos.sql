@@ -146,7 +146,7 @@ INSERT OR IGNORE INTO todos (id, title, status) VALUES
 ('merge-create-cypher-input',        'Create Cypher-Input Board Design',                                 'done'),
 ('merge-create-cypher-output',       'Create Cypher-Output Board Design',                                'done'),
 ('merge-create-plugboard',           'Create Cypher-Plugboard Board Design',                             'done'),
-('merge-update-top-level-docs',      'Update Boards_Overview, System_Architecture and related docs',     'pending'),
+('merge-update-top-level-docs',      'Update Boards_Overview, System_Architecture and related docs',     'done'),
 ('merge-remove-old-boards',          'Move retiring board design files to .recycle-bin/',                'pending'),
 ('merge-consistency-review',         'Review all merged design files for consistency',                   'pending'),
 ('merge-missing-components',         'Identify and select missing/supporting BOM components',            'pending'),

@@ -147,12 +147,14 @@ Last updated: 2026-09-17
 | `merge-create-cypher-input` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-cypher-output` | | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-plugboard` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup`, `merge-create-cypher-input`, `merge-create-cypher-output` |
-| `merge-update-top-level-docs` | [merge-update-top-level-docs.md](merge-update-top-level-docs.md) | pending | `merge-create-cypher-board`, `merge-create-stack-input`, `merge-update-ctl-board`, `merge-create-stack-output`, `merge-create-stack-blanking`, `merge-create-stack-interposer`, `merge-create-cypher-input`, `merge-create-cypher-output`, `merge-create-plugboard` |
+| `merge-update-top-level-docs` | — | done | — |
 | `merge-remove-old-boards` | [merge-remove-old-boards.md](merge-remove-old-boards.md) | pending | `merge-update-top-level-docs` |
-| `merge-consistency-review` | [merge-consistency-review.md](merge-consistency-review.md) | pending | `merge-remove-old-boards` |
-| `merge-missing-components` | [merge-missing-components.md](merge-missing-components.md) | pending | `merge-consistency-review` |
-| `merge-final-review` | [merge-final-review.md](merge-final-review.md) | pending | `merge-consistency-review`, `merge-missing-components` |
-| `todo-clean-up-requirement-details` | [todo-clean-up-requirement-details.md](todo-clean-up-requirement-details.md) | pending | `design-discussion-merge` |
+| `merge-diagrams-review` | [merge-diagrams-review.md](merge-diagrams-review.md) | pending | `merge-create-cypher-output`, `merge-create-plugboard`, `merge-remove-old-boards` |
+| `cypher-input-led-independent-rgb-pwm-review` | [cypher-input-led-independent-rgb-pwm-review.md](cypher-input-led-independent-rgb-pwm-review.md) | pending | `merge-diagrams-review` |
+| `merge-consistency-review` | [merge-consistency-review.md](merge-consistency-review.md) | pending | `merge-diagrams-review`, `cypher-input-led-independent-rgb-pwm-review` |
+| `merge-missing-components` | [merge-missing-components.md](merge-missing-components.md) | pending | `cypher-input-led-independent-rgb-pwm-review` |
+| `merge-final-review` | [merge-final-review.md](merge-final-review.md) | pending | `merge-consistency-review`, `merge-missing-components`, `todo-clean-up-requirement-details` |
+| `todo-clean-up-requirement-details` | [todo-clean-up-requirement-details.md](todo-clean-up-requirement-details.md) | pending | `merge-missing-components`, `merge-consistency-review` |
 | `encoder-module-pin-agnostic-redesign-review` | [encoder-module-pin-agnostic-redesign-review.md](encoder-module-pin-agnostic-redesign-review.md) | pending | — |
 | `usm-3-part-hid-module-mechanical-review` | [usm-3-part-hid-module-mechanical-review.md](usm-3-part-hid-module-mechanical-review.md) | pending | `usm-redesign-implementation` |
 | `usm-template2-template1-unification-review` | [usm-template2-template1-unification-review.md](usm-template2-template1-unification-review.md) | pending | — |
