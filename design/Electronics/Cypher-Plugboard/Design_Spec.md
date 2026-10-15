@@ -5,7 +5,11 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-10-05
+**Last Updated:** 2026-10-13
+
+## Diagrams
+
+- [Cypher & Stack Configuration](../../Diagrams/renders/cypher-and-single-stack-configuration.png) - source: `design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`
 
 ## 1. Overview
 

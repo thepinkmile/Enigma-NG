@@ -7,6 +7,13 @@
 **Associated Hardware Revision:** Rev A
 **Last Updated:** 2026-10-08
 
+## Diagrams
+
+- [Cypher & Stack Configuration (single mini-stack)](../../Diagrams/renders/cypher-and-single-stack-configuration.png)
+  / [dual mini-stack chaining](../../Diagrams/renders/cypher-and-dual-stack-configuration.png) -
+  source: `design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`
+- [USM Connector Topology](../../Diagrams/renders/usm-connector-topology.png) - source: `design/Diagrams/usm-connector-topology.drawio`
+
 ## 1. Overview
 
 The Cypher Board is the central backplane of the Enigma-NG encryption engine. It fulfils the

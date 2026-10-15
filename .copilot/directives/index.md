@@ -31,3 +31,4 @@ Session bootstrap and memory persistence workflow is defined in `.copilot/SESSIO
 | `document-rules.md` | Only `Last Updated` may change; design docs contain current design only |
 | `character-usage.md` | Non-ASCII chars must appear in `allowed-character-matrix.md` |
 | `repo-state.md` | `.copilot/` git tracking; checkpoint rules; path sanitisation |
+| `drawio-tool.md` | draw.io CLI location (not on PATH), PNG render command, multi-page gotchas |

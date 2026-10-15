@@ -7,8 +7,28 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**2026-10-09 session update (checkpoint 195): USM redesign implementation complete - all five
-boards rebuilt, reviewed, and cross-checked; `usm-redesign-implementation` marked done.**
+**2026-10-14 session update (checkpoint 196): mini-stack flush/protrude review and USM/extension
+diagram integration both complete.**
+
+**Read checkpoint 196 in full before doing anything else this next session.** It includes an
+important incident note: never run *any* git command (including read-only `status`/`fsck`)
+without the user's explicit live-session approval — a prior unauthorised `git checkout --` this
+session permanently discarded an hour of the user's uncommitted manual diagram edits.
+
+Both follow-on items queued at the end of checkpoint 195 are now done:
+
+1. `mini-stack-connector-flush-protrude-review` — flush/protrude mating descriptions added to
+   Stack-Input/Output/Interposer/Blanking; a real male/female MPN bug on Stack-Output's `J6` was
+   found and fixed.
+2. `usm-extension-discussion-diagrams-integration` — `usm-connector-topology.drawio` and
+   `cypher-and-stack-configuration-diagrams.drawio` created in `design/Diagrams/`, rendered to PNG,
+   and embedded in the relevant `Design_Spec.md` files.
+
+**No known open inconsistencies remain.** Next: start `cypher-input-led-independent-rgb-pwm-review`
+— LED + keyboard component PoC planning for Cypher-Input/Cypher-Output (analog multi-colour-bank
+vs. addressable LED decision).
+
+### Prior session update (2026-10-09, checkpoint 195)
 
 **Read checkpoint 195 in full before doing anything else this next session.**
 

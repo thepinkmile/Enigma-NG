@@ -159,4 +159,4 @@ Last updated: 2026-09-17
 | `usm-cfg-refmap-removal-review` | — | done | — |
 | `usm-redesign-implementation` | — | done | — |
 | `mini-stack-connector-flush-protrude-review` | — | done | — |
-| `usm-extension-discussion-diagrams-integration` | [usm-extension-discussion-diagrams-integration.md](usm-extension-discussion-diagrams-integration.md) | pending | `mini-stack-connector-flush-protrude-review` |
+| `usm-extension-discussion-diagrams-integration` | — | done | — |

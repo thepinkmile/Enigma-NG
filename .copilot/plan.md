@@ -6,7 +6,19 @@
 
 ---
 
-## Current Status (as of 2026-10-09 — USM redesign implementation complete, checkpoint 195)
+## Current Status (as of 2026-10-14 — USM/extension diagrams integrated; mini-stack flush/protrude review complete, checkpoint 196)
+
+Both follow-on items from checkpoint 195 are now **done**: `mini-stack-connector-flush-protrude-review`
+and `usm-extension-discussion-diagrams-integration`. No known open inconsistencies remain across the
+Cypher system, USM, or mini-stack board set. See checkpoint 196 for full detail, including an
+important incident note on git misuse (never run git commands without the user's explicit
+live-session approval, including read-only ones).
+
+**Next session:** read checkpoint 196 in full, then start `cypher-input-led-independent-rgb-pwm-review`
+(LED + keyboard component PoC planning for Cypher-Input/Cypher-Output — analog multi-colour-bank vs.
+addressable LED decision).
+
+### Prior status (as of 2026-10-09 — USM redesign implementation complete, checkpoint 195)
 
 **`usm-redesign-implementation` is DONE.** All five boards (User Settings Module, Cypher-Input,
 Cypher-Output, Cypher-Plugboard, Cypher) have been rebuilt around the new connector topology,
