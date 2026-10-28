@@ -2,7 +2,7 @@
 
 **Status:** Reference
 **Version:** v.0.1.0
-**Last Updated:** 2026-08-16
+**Last Updated:** 2026-10-28
 
 ## 1. Component Rules (The "Museum-Grade" Standard)
 
@@ -13,21 +13,20 @@
 
 ## 2. I2C Bus Address Table
 
-| I2C Address | Device | Module | Function |
-| :--- | :--- | :--- | :--- |
-| 0x09 | LTC3350 | Power Module | Supercap charger / health monitor |
-| 0x0B | Smart Battery | Power Module | Smart battery / SMBus monitor |
-| 0x28 | STUSB4500 | Power Module | USB-C PD Controller |
-| 0x38 | PCA9534A | Cypher-Input (all variants) | Single fixed address (`U4`); variant identified via `BOARD_ROLE_ID[3:0]`, not I2C address; Space + Enter GPIO on the 64-Character variant only - see `Cypher-Input/Design_Spec.md §3a` |
-| 0x3F | PCA9534A | Power Module | PM-local GPIO expander (`POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`, SW1 RGB control) |
-| 0x40 | INA219 | Power Module | 5V_MAIN current/power monitoring (10mΩ Kelvin-sense shunt R16) |
-| 0x20 | MCP23017 | Stator | ENC monitor expander (`U6`) |
-| 0x21 | MCP23017 | Stator | Virtual keypress / SOURCE_SEL / CPLD_RESET_N expander (`U7`) |
-| 0x22 | MCP23017 | Stator | CPLD configuration output expander (`U8`) |
-| 0x23 | MCP23017 | User Settings Module | Switch input expander (`U1`) |
-| 0x24 | MCP23017 | User Settings Module | Bank 1 LED controller (`U2`) |
-| 0x25 | MCP23017 | User Settings Module | Bank 2 LED controller (`U3`) |
-| 0x45 | INA219 | Stator | Rotor stack power telemetry (CSS2H-2512R-R010ELF 10mΩ shunt R1) |
+| Bus | I2C Address | Device | Module | Function |
+| :--- | :--- | :--- | :--- | :--- |
+| `I2C0` | 0x09 | LTC3350 | Power Module | Supercap charger / health monitor |
+| `I2C0` | 0x0B | Smart Battery | Power Module | Smart battery / SMBus monitor |
+| `I2C0` | 0x28 | STUSB4500 | Power Module | USB-C PD Controller |
+| `I2C0` | 0x3F | PCA9534A | Power Module | PM-local GPIO expander (`POE_STAT`, `SYS_FAULT`, `BATT_PRES_N`, `USB_STAT`, SW1 RGB control) |
+| `I2C0` | 0x40 | INA219 | Power Module | 5V_MAIN current/power monitoring (10mΩ Kelvin-sense shunt R16) |
+| `I2C1` | 0x20 | MCP23017 (U6) | Cypher Board | ENC_IN/ENC_OUT monitoring (16 GPIO) |
+| `I2C1` | 0x21 | MCP23017 (U7) | Cypher Board | Virtual keypress injection, SOURCE_SEL, CPLD_RESET_N, spare GPIO |
+| `I2C1` | 0x22 | MCP23017 (U8) | Cypher Board | CPLD configuration output driver (DEC-032) |
+| `I2C1` | 0x40 | INA219 (U2) | Cypher Board | Rotor stack current/power telemetry (same address as PM's `I2C0` INA219 — safe reuse, independent buses; see DEC-101) |
+| `I2C2` | 0x38 | PCA9534A (U4) | Cypher-Input (all variants) | Single fixed address; variant identified via `BOARD_ROLE_ID_IN[3:0]`, not I2C address; Space + Enter GPIO where populated |
+| `I2C2` | 0x39 | Colour-value store (U1, TBD) | User Settings Module | Reserved address for the shared HID colour-value store / drive logic |
 
 > **Note:** This document captures global electrical design rules. Board-specific design rules are in each board's Design_Spec.md.
+> **Authoritative I2C address table:** `Controller/Design_Spec.md §4.1` is the single source of truth for this table; it is duplicated here for convenience only and must be kept in sync.
 > Full design decision history: See `design/Design_Log/index.md`.
