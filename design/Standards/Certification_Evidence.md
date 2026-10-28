@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-18
+**Last Updated:** 2026-10-28
 
 > **Document Status:** Draft - Power Module design rationale complete; additional sections to be added as design review progresses.
 >
@@ -235,13 +235,13 @@ inter-modulation products would appear at sum and difference frequencies, partia
 | Input | 5V_MAIN bus | Dropout: 5V - 3.3V = 1.7V; TPS75733 Vdo ≈ 0.22V worst-case at 2.05A - well above minimum input requirement |
 | Output noise | Low-noise linear LDO | CPLD VCCIO noise sensitivity; low-noise LDO mandatory vs. second switching regulator |
 | PSRR | High PSRR linear LDO | Attenuates Buck output ripple (800kHz effective) - negligible at CPLD supply |
-| Max output current | 3A | Peak load: 37 CPLDs x 50mA (1,850mA) + 60x FDC2114RGHR at 2.1mA typ (126mA) + FT232H VCCIO (10mA) + INA219 x2 (2mA) + Extension buffers (10mA) + Controller-local (50mA) = 2,048mA → **2.05A rounded; 68.3% utilisation** ✔ (per Power_Budgets.md) |
+| Max output current | 3A | Peak load per `Power_Budgets.md`'s authoritative 3V3_ENIG Allocation Table: **2.22A typical total; 74.0% utilisation** ✔ (see `Power_Budgets.md` for the full per-consumer breakdown) |
 | Package | TO-263 (KTT) 5-pin 10.16x15.24mm | Standard power package; thermal pad to PCB; no large copper pour required |
-| Input power dissipation | Vdo≈0.18V x 2.05A = **~0.37W** (typ.); ≤**0.45W** worst-case | Standard TO-263 thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
+| Input power dissipation | Vdo≈0.18V x 2.22A = **~0.40W** (typ.); ≤**0.45W** worst-case | Standard TO-263 thermal pad and ground vias sufficient; ≥200mm² copper pour requirement removed |
 
 **Why not a second switching regulator for 3V3_ENIG?**
 
-The 37 CPLDs (6x Encoder + 30x Rotor + 1x Stator, all `EPM570T100I5N`) share this rail as their
+The 37 CPLDs (6x Encoder Module + 30x Rotor + 1x Cypher Board, all `EPM570T100I5N`) share this rail as their
 VCCIO (I/O voltage reference).
 Any ripple or noise on this rail corrupts the logic signal thresholds, causing indeterminate switching and
 potential JTAG chain errors. A linear LDO provides high PSRR isolation from Buck switching noise that no practical switching converter could match in this topology without substantial additional
@@ -346,7 +346,7 @@ GND_CHASSIS (not signal GND) to prevent ESD injection into the signal reference.
 | Battery Presence (BATT_PRES_N) | TPD1E10B06DYARQ1 (D1) | SOD-523 | Single-line presence detect |
 
 **Internal connections (Board-to-Board links):** Internal BtB connectors (the PM dock cluster and the
-Stator dock pair) are not individually ESD-protected in the standard configuration, as they are
+Cypher Board dock pair) are not individually ESD-protected in the standard configuration, as they are
 considered internal interfaces not subject to user contact during normal operation.
 
 **Coupon-based bring-up access:** If removable coupon probe access is added later, any exposed pads
@@ -372,7 +372,7 @@ additional headroom.
 | Resistors (power) | Power | ≤50% of rated | Long-term stability; 50% derating is standard for resistors |
 | Resistors (precision, 0.1%) | Power | ≤25% of rated | Maintains temperature coefficient specification |
 | PCB traces (power) | Current | Per IPC-2221B at 70°C | 2oz copper; trace width calculated per IPC standard |
-| BtB connector (power pins) | Current | ≤75% of per-contact rating | PM dock: 6A/contact rated; max design load 3.17A/contact (52.8%). Stator dock: 130A/contact rated; max design load <1A/contact (<0.8%). See §5.1 for full analysis. |
+| BtB connector (power pins) | Current | ≤75% of per-contact rating | PM dock: 6A/contact rated; max design load 3.17A/contact (52.8%). Cypher Board dock `J4` (power-only): 130A/contact rated; max design load <1A/contact (<0.8%). See §5.1 for full analysis. |
 
 ---
 
@@ -460,7 +460,7 @@ confirmation of -40°C continuous operation for this family would be recommended
 
 ---
 
-#### Molex EXTreme Guardian HD - Stator Dock (Stator J11/J12 ↔ Controller J4/J5)
+#### Molex EXTreme Guardian HD - Cypher Board Power Dock (`J4`, Controller ↔ Cypher Board)
 
 **Parts:** `2195620015` (plug) / `2195630015` (receptacle)
 
@@ -469,15 +469,47 @@ confirmation of -40°C continuous operation for this family would be recommended
 | Current | **130A per contact** |
 | Operating Temperature | -40°C to +125°C ✔ meets DEFSTAN target |
 
-The Stator dock connectors carry 5V\_MAIN and 3V3\_ENIG between the Controller Board and the Stator Board.
-Maximum combined system load served through these connectors is approximately 2.2A (37 CPLDs + FDC2114 sensors + routing logic - see Power\_Budgets.md).
+`J4` is the power-only dock between the Controller and Cypher Board, carrying `5V_MAIN` and
+`3V3_ENIG` (see `Controller/Design_Spec.md` DR-CTL-04). Maximum combined system load served through
+this connector is `5V_MAIN` ≤0.74A (8 signal-pitch contacts) and `3V3_ENIG` ≤2.22A (7 signal-pitch
+contacts) - see `Power_Budgets.md`.
 
 | Net | Max Total Load | Per-Contact Load | % of 130A Rating | Assessment |
 | --- | --- | --- | :---: | --- |
-| 5V\_MAIN | ≤ 0.74A | ≤ 0.19A | **< 0.2%** ✔✔ | Trivially within rating |
-| 3V3\_ENIG | ≤ 2.05A | ≤ 0.51A | **< 0.4%** ✔✔ | Trivially within rating |
+| 5V\_MAIN | ≤ 0.74A | ≤ 0.09A | **< 0.1%** ✔✔ | Trivially within rating |
+| 3V3\_ENIG | ≤ 2.22A | ≤ 0.32A | **< 0.3%** ✔✔ | Trivially within rating |
 
 **Result:** Molex EXTreme Guardian HD connectors are overrated by a factor of >100x for this application.
+
+#### Samtec QSS/QTS-025 - Cypher Board Signal Dock (`J5`, Controller ↔ Cypher Board)
+
+**Parts:** `QSS-025-01-L-D-A-GP-K` (Controller, vertical female) / `QTS-025-01-L-D-RA-P` (Cypher
+Board, right-angle male). Source data: Samtec QSS/QTS-RA Power Test Report - see
+[../Datasheets/Samtec-QSS-QTS-RA-Power-Test-Report.md](../Datasheets/Samtec-QSS-QTS-RA-Power-Test-Report.md).
+
+`J5` is the signal-only dock between the Controller and Cypher Board, carrying JTAG, the active
+`I2C1`/`I2C2` buses, reserved `I2C3`/`I2C4`/`I2C6`, USB D+/D-, and reserved PWM/GPCLK lines - no
+power rails (see `Controller/Design_Spec.md` DR-CTL-12). The Power Test Report gives current
+carrying capacity (CCC) at a 30°C temperature rise, 20% derated, across several simultaneous
+contact-loading configurations:
+
+| Contacts energized simultaneously | CCC per contact (30°C rise, 20% derated) |
+| :---: | :---: |
+| 2 | 2.0 A |
+| 4 | 1.7 A |
+| 6 | 1.3 A |
+| 8 | 1.2 A |
+| 200 | 0.5 A |
+
+`J5` carries roughly 14 active signal nets simultaneously at most (JTAG `TCK`/`TMS`/`TDI`/
+`TTD_RETURN`, `I2C1`/`I2C2` `SDA`/`SCL`, USB `D+`/`D-`, `PWM0[0-3]`, `GPCLK[0]`/`[1]`) out of 50
+total contacts, with the remainder tied to `GND`. Typical signal-level currents on these nets
+(I2C, USB D+/D- logic swing, GPIO/PWM) are well under 50 mA per net.
+
+**Result:** using the most conservative tabulated figure (0.5 A/contact, the 200-simultaneous-contact
+case, far more heavily loaded than `J5`'s actual ~14 active signal contacts) as a worst-case floor,
+realistic signal currents (<50 mA) sit at **under 10%** of even this conservative rating. `J5` is
+trivially within its current-carrying capacity for a signal-only dock.
 No current or thermal derating concerns. Temperature rating (-40°C to +125°C) fully meets the DEFSTAN
 target of -40°C to +80°C. ✔
 
@@ -534,15 +566,15 @@ on the Controller using:
 This section records components that have active end-of-life (EOL) or product change notices (PCN) at the time of design. For each such component, the design team's acceptance rationale and any
 mitigation plan are documented.
 
-### 7.1 MAX II EPM570T100I5N (CPLD - Encoder, Rotor, and Stator Boards)
+### 7.1 MAX II EPM570T100I5N (CPLD - Encoder Module, Rotor, and Cypher Board)
 
 | Attribute | Detail |
 | --- | --- |
 | **Manufacturer** | Intel (formerly Altera) |
 | **Part Number** | EPM570T100I5N |
 | **Family** | MAX II |
-| **Function** | Encoder sampled debounce + 64-to-6 / 6-to-64 conversion logic (Encoder x6); rotor wiring-map lookup + mod-N adder + STGC/RBGC encoder decode (Rotor x30); Stator routing matrix and reflector map application (Stator x1) |
-| **Quantity** | 37 devices (Encoder x6, Rotor x30, Stator x1) |
+| **Function** | Encoder sampled debounce + 64-to-6 / 6-to-64 conversion logic (Encoder Module x6); rotor wiring-map lookup + mod-N adder + STGC/RBGC encoder decode (Rotor x30); Cypher Board routing matrix and reflector map application (Cypher Board x1) |
+| **Quantity** | 37 devices (Encoder Module x6, Rotor x30, Cypher Board x1) |
 | **EOL/PCN Status** | Active lifecycle notice issued by Intel |
 | **Notice Type** | Product Discontinuation / Last-Time-Buy notification |
 | **Supply** | 3.3 V (3V3_ENIG rail) |
@@ -557,7 +589,7 @@ The MAX II EPM570T100I5N is accepted for use in the prototype design for the fol
 1. **Cost effectiveness:** These devices remain significantly lower in cost than their recommended
    successors (MAX 10, Cyclone 10 LP). Although noted as "obsolete", they remain readily available
    through established distribution channels and continue to be supported by Intel.
-2. **Architecture consolidation:** Using one MAX II device across Encoder, Rotor, and Stator boards simplifies bulk purchasing, programming workflows, and spare-holding during
+2. **Architecture consolidation:** Using one MAX II device across Encoder Module, Rotor, and Cypher Board simplifies bulk purchasing, programming workflows, and spare-holding during
    prototype-stage development where design changes are expected.
 3. **Developer tooling:** The designer holds a MAX II FPGA/CPLD development board, enabling direct verification of programming chains and JTAG connectivity prior to committing to PCB fabrication.
 4. **Prototype scope:** The prototype is not intended for customer-facing deployment. Obsolescence risk during the prototype phase (expected duration: 6-12 months) is considered acceptable,
@@ -594,7 +626,7 @@ Any replacement CPLD must be verified for:
 | OA-02 | ~~Evaluate supercapacitor charge rate throttling during PoE-only operation to bring peak PoE utilisation below 75% (currently 80.6% during charge phase).~~ | ~~Hardware Designer~~ | **CLOSED** - LTC3350 RICHARGE programming resistor set for 0.5A charge current (halved from 1A nominal). During initial ~9 min charge from cold: 53.2W / 72W = 73.9% ✔ - within 75% design rule. Steady-state: 50.3W / 72W = 69.9% ✔. |
 | ~~OA-03~~ | ~~Confirm specific 802.3bt Type 4 PoE module part number~~ | ~~Hardware Designer~~ | **CLOSED** - Replaced by discrete design: TPS2372-4 + TPS23730 + Coilcraft POE600F-12L ACF transformer (`D` suffix = packaging only). Capacity 72W. See §6 for full rationale. |
 | OA-04 | Review replacement CPLD for production stage. Update §7.1 with selected part. | Hardware Designer | Low (pre-production) |
-| ~~OA-05~~ | ~~Thermal / current-capacity verification of the active PM and Stator dock connectors using the TE `1-1674231-1` / `1123684-7` and Molex `2195630015` / `2195620015` datasheets. Document the final derating rule for §5.~~ | ~~Hardware Designer~~ | **CLOSED** - Full connector current and thermal derating analysis documented in §5.1. PM dock: 6A/contact rated; worst-case 3.17A/contact (52.8%). Stator dock: 130A/contact rated; worst-case <0.51A/contact (<0.4%). Temperature exception noted: TE lower operating limit is -20°C vs DEFSTAN -40°C; thermal shock test to -40°C provides supporting evidence. DEFSTAN certification is a nice-to-have aspiration, not a hard requirement; primary targets are CE/UKCA. |
+| ~~OA-05~~ | ~~Thermal / current-capacity verification of the active PM and Cypher Board dock connectors using the TE `1-1674231-1` / `1123684-7`, Molex `2195630015` / `2195620015`, and Samtec QSS/QTS-025 datasheets. Document the final derating rule for §5.~~ | ~~Hardware Designer~~ | **CLOSED** - Full connector current and thermal derating analysis documented in §5.1. PM dock: 6A/contact rated; worst-case 3.17A/contact (52.8%). Cypher Board power dock (`J4`, Molex): 130A/contact rated; worst-case <0.32A/contact (<0.3%). Cypher Board signal dock (`J5`, Samtec QSS/QTS-025): worst-case realistic signal current <10% of the most conservative tabulated derating figure. Temperature exception noted: TE lower operating limit is -20°C vs DEFSTAN -40°C; thermal shock test to -40°C provides supporting evidence. DEFSTAN certification is a nice-to-have aspiration, not a hard requirement; primary targets are CE/UKCA. |
 | ~~OA-06~~ | ~~Verify TPS25751DREFR CC1/CC2 routing to CM5 is present on Link-Alpha connector pin map. Confirm PDO presented is 5V/5A (25W).~~ | ~~Hardware Designer~~ | **CLOSED** - CC1/CC2 pins of TPS25751DREFR routed to CM5 via Link-Alpha connector. PDO programmed to 5V/5A (25W) to prevent Linux OS power-throttling during initial boot and full-load operation. Verified in Controller Board_Layout §4 Link-Alpha pin map. |
 | ~~OA-07~~ | ~~Resolve Link-Alpha pins 21-24 reallocation (currently freed from `CM5 3V3` removal). Confirm new assignment and update Board_Layout.md.~~ | ~~Hardware Designer~~ | **CLOSED** - DEC-001 confirmed: pins 21-22 = 5V_MAIN, pins 23-24 = GND. Formally documented in Controller/Board_Layout.md BtB Link-Alpha table (all 80 pins assigned). |
 | ~~OA-08~~ | ~~Engage Wurth Elektronik application support for custom ACF transformer T2 winding specification. Provide full electrical spec (EF20 core, Np:Ns 2.8:1, Lm 150-200µH, ≥1500Vrms, 51W/250kHz, -40°C to +125°C). Reference TI TIDA-050045 and PMP23365 design magnetics. Obtain prototype quantity quote and lead time.~~ | ~~Hardware Designer~~ | **CLOSED** - Superseded by selection of Coilcraft POE600F-12L (off-the-shelf 60W ACF PoE transformer, 12V output, ≥1500Vrms, Coilcraft-direct consignment part; `D` suffix = packaging only). No custom winding required. |
@@ -605,7 +637,7 @@ Any replacement CPLD must be verified for:
 | --- | --- | --- |
 | DA-01 | If coupon-based diagnostic access is introduced, exposed ENIG pads must receive dedicated ESD protection or documented justification before production release and any classroom deployment. | Post-coupon diagnostic design |
 | DA-02 | ESD policy for classroom deployment variant - define which internal BtB-accessible connections require additional ESD protection when the device is used in an educational/student-access configuration. | Pre-production (classroom variant) |
-| DA-03 | Full consistency documentation pass - legacy Link-Alpha / Link-Beta references must remain historical-only after DEC-038. Dock connector designators are now formally ratified by DEC-080 (J1/J2/J3 on PM and CTL PM dock; J4/J5 on CTL Stator dock). If further active docs are added, ensure they use the PM dock and Stator dock naming from DEC-080 from the start. | Ongoing document maintenance |
+| DA-03 | Full consistency documentation pass - legacy Link-Alpha / Link-Beta references must remain historical-only after DEC-038. Dock connector designators are now formally ratified by DEC-080 (J1/J2/J3 on PM and CTL PM dock; J4/J5 on CTL Cypher Board dock). If further active docs are added, ensure they use the PM dock and Cypher Board dock naming from DEC-080 from the start. | Ongoing document maintenance |
 | DA-04 | Update Consolidated BOM with all locked Power Module components. Format: component description, specification, boards requiring, quantity, notes (no reference designators - these are per-board). | Post-eFuse part lock (OA-01) |
 
 ---
