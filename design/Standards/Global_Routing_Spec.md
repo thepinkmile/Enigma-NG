@@ -3,7 +3,7 @@
 **Status:** Draft
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-07-05
+**Last Updated:** 2026-10-28
 
 ## 1. Trace & Via Geometry
 
@@ -80,7 +80,8 @@ are documented in `design/Production/JLCPCB_Manufacturing.md §1`.
 
 #### 2.3.1 Standard 4-Layer — JLC041621-3313
 
-Used by: **Rotor (A+B), Stator, Extension, Reflector, Encoder, User Settings Module (USM)**
+Used by: **Rotor (A+B), Cypher-Input, Cypher-Output, Cypher-Plugboard, Stack-Input, Stack-Output,
+Stack-Interposer, Stack-Blanking, Encoder Module, User Settings Module (USM)**
 
 | Layer | Role | Typical Content |
 | :--- | :--- | :--- |
@@ -90,21 +91,6 @@ Used by: **Rotor (A+B), Stator, Extension, Reflector, Encoder, User Settings Mod
 | **L4 (Bottom outer)** | Signal + shield | Signal routing; GND\_CHASSIS pour; Data Plate silkscreen |
 
 Physical properties and CI trace widths: see `design/Production/JLCPCB_Manufacturing.md §1.1`.
-
-#### 2.3.2 Inverted 4-Layer — JLC041621-3313
-
-Used by: **JTAG Module, Actuation Module**
-
-Same physical stackup code as §2.3.1. Layer assignment is **inverted** because both modules mount
-upside-down on the carrier (Controller) Board — connectors face the host PCB, placing L1 against
-the carrier board surface and L4 as the user-visible exterior face.
-
-| Layer | Role | Typical Content |
-| :--- | :--- | :--- |
-| **L1 (Component/connector side — host-PCB facing)** | GND plane | Solid GND pour; faces carrier PCB when installed |
-| **L2 (Inner)** | Signal routing | All signal traces; shielded between L1 GND and L3 power planes |
-| **L3 (Inner)** | Power distribution | Power pours (5V and 3V3\_ENIG as applicable) |
-| **L4 (Exterior — user-visible face)** | GND shield | GND pour; user-visible exterior face |
 
 Assembly is single-sided (components on L1 only). Physical properties and CI trace widths:
 see `design/Production/JLCPCB_Manufacturing.md §1.1`. Reference: DEC-016, DEC-065.
@@ -176,7 +162,6 @@ These rules apply to all boards in the Enigma-NG system unless a board's design 
   board), placed at the rail entry point in a **Symmetrical Star/Spoke pattern**.
   Standard part: Samsung CL31B106KBK6PJE (10µF ±10% X7R 50V 1206; DigiKey: 1276-CL31B106KBK6PJECT-ND; Mouser: 187-CL31B106KBK6PJE; JLCPCB: C43935922).
   Voltage derating: 50V ÷ 3.3V ≈ 15.2x (3V3\_ENIG) and 50V ÷ 5.0V = 10.0x (5V\_MAIN) - both exceed the mandatory 2x minimum.
-  * Exception: The JTAG Module is exempt from this rule - see `design/Electronics/JTAG_Module/Design_Spec.md` DR-JM-09.
 
 ### 3.1. Common RGB Sink-Stage Pattern
 
@@ -261,8 +246,8 @@ location). The BOM treatment depends on hole purpose:
 * **Plain chassis mounting holes** (board-to-enclosure): Use the KiCAD built-in `MountingHole`
   footprint. These are physical PCB features only - no purchasable component exists and **no BOM
   row shall be added** for them.
-* **Module attachment standoffs** (board-to-Module): Where a Module (e.g. CM5 = Compute Module 5,
-  AM = Actuation Module) is mechanically secured to the host board, SMT standoff components are
+* **Module attachment standoffs** (board-to-Module): Where a Module (e.g. CM5 = Compute Module 5)
+  is mechanically secured to the host board, SMT standoff components are
   required. These are purchasable parts with a specific footprint and **shall have a BOM row**.
 * **Identification:** The term "Module" in this context means a discrete sub-assembly that mounts
   onto the host board (not merely a board-to-board connector). If in doubt, presence of a
@@ -292,8 +277,7 @@ Applicable to: PM, Encoder (ENC), USM.
 
 ### Pattern B — D-Shaped (Rounded-Top) Boards
 
-Used where the top edge is a full-width arc (Stator, Extension, Reflector). The top two corners do
-not exist; the upper holes are replaced by a board-centre hole and a top-centre arc hole:
+Used where the top edge is a full-width arc. The top two corners do not exist; the upper holes are replaced by a board-centre hole and a top-centre arc hole:
 
 | Designator | Position |
 | :--- | :--- |
@@ -302,16 +286,14 @@ not exist; the upper holes are replaced by a board-centre hole and a top-centre 
 | MH3 | Board geometric centre |
 | MH4 | Top-centre: midpoint of the rounded top arc, 7 mm inset along the arc normal |
 
-Applicable to: STA, EXT (chassis holes MH1–MH4), REF.
+Applicable to: Stack-Input, Stack-Output (rotor-assembly enclosure aesthetics).
 
 ### Named Exceptions
 
 | Board | Override | Reference |
 | :--- | :--- | :--- |
-| AM | Asymmetric 4-hole pattern for single-orientation keying: MH1 (top-left) and MH3 (bottom-left) at 7 mm from left edge and 7 mm from top/bottom edges; MH2 (top-right) and MH4 (bottom-right) at 7 mm from right edge and **12 mm** from top/bottom edges. NPTH M2.5, GND only (not GND_CHASSIS). | `DR-AM-03`; DEC-057 |
 | ROT | Circular board — excluded from both patterns; mounting holes positioned on an inscribed pattern defined by board-specific DR. | `DR-ROT-08`; `Rotor/Board_Layout.md §9` |
 | CTL | Multiple hole groups: chassis holes MH1–MH4 (Pattern A, M3 PTH, GND_CHASSIS), CM5 SoM standoffs MH13–MH16 (M2.5×4mm). Each group is defined by its own DR. | `Controller/Board_Layout.md §8`; `DR-CTL-18` |
-| JM | Daughterboard (NPTH M2.5, GND only — not GND_CHASSIS); mounting hardware owned by and specified in the Controller Board BOM (MH9–MH12). | `DR-JM-18`; DEC-057 |
 
 ## 5. Single-Point GND ↔ GND_CHASSIS Bond (Global Rule)
 
@@ -408,8 +390,8 @@ These rules apply to all boards in the Enigma-NG system.
   servicing while the system may be powered (e.g., Rotor ERM8/ERF8 connectors for rotor hot-swap - see DEC-045) are treated as
   equivalent to external connectors and **must** be protected with an appropriate TVS/ESD suppressor. The specific device, protected
   nets, working voltage, package, and MPN shall be documented in the owning board design specification.
-* **Internal connectors:** Board-to-board connectors (Samtec ERM8/ERF8 BtB stacks **used in a non-hot-swappable context**), inter-board ribbon and harness connectors
-  (Extension Port BHR-20, encoder ribbons), Controller dock connectors, service headers (SWD, UART, JTAG), and any other connector
+* **Internal connectors:** Board-to-board connectors (Samtec ERM8/ERF8 BtB stacks **used in a non-hot-swappable context**, Encoder Module BtB mounts), inter-board harness connectors
+  (Cypher-Plugboard wiring harness spade terminals), Controller dock connectors, service headers (SWD, UART, JTAG), and any other connector
   whose mating occurs exclusively inside the closed enclosure during normal operation do **not** require TVS/ESD protection. Internal signal integrity relies
   on enclosure shielding and the system GND plane.
 * **Do not add UNSOURCED ESD placeholders for internal-only boards.** Boards that carry only internal connectors shall state "No
