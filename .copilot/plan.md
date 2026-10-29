@@ -6,7 +6,24 @@
 
 ---
 
-## Current Status (as of 2026-10-14 — USM/extension diagrams integrated; mini-stack flush/protrude review complete, checkpoint 196)
+## Current Status (as of 2026-10-29 — top-level docs merge sweep complete; old boards retired, checkpoint 197)
+
+`merge-update-top-level-docs` (all 14 file-by-file sub-todos) and `merge-diagrams-review` are both
+**done**. `merge-remove-old-boards` is **in progress** (file moves complete; retiring boards
+Stator/Reflector/Extension/JTAG_Module moved to `.recycle-bin/`, Actuation_Module moved to
+`.copilot/discussions/max-10-fpga-details/` for a possible future redesign; JTAG_Integrity.md
+rescued and relocated to Cypher before it could be lost). Two new retrospective DEC entries
+(DEC-108, DEC-109) were created to permanently capture decisions that had only ever been recorded
+in working discussion documents or an in-document "conflict resolution" log, both of which are now
+removed/retired per the current-design-only rule. See checkpoint 197 for full detail.
+
+**Next session:** read checkpoint 197 in full, finish verifying `merge-remove-old-boards` has no
+remaining live cross-references, mark it done, then continue down the merge chain
+(`merge-consistency-review`/`merge-missing-components`, both gated on the not-yet-started LED/
+keyboard PoC — `cypher-input-led-independent-rgb-pwm-review`) or start the PoC first, per the
+user's direction.
+
+### Prior status (as of 2026-10-14 — USM/extension diagrams integrated; mini-stack flush/protrude review complete, checkpoint 196)
 
 Both follow-on items from checkpoint 195 are now **done**: `mini-stack-connector-flush-protrude-review`
 and `usm-extension-discussion-diagrams-integration`. No known open inconsistencies remain across the

@@ -141,7 +141,7 @@ Transmission line effects are negligible; no series resistor required.
 > **Exception:** the JTAG Module (JM) uses an inverted stackup (L1=GND/SMT, L2=signals,
 > L3=Power, L4=GND) to orient SMT components toward the Controller Board when mounted as a hat.
 > On the JM, JTAG signals are routed on L2 over the L1 GND reference plane. See
-> `design/Electronics/JTAG_Module/Design_Spec.md §4` and DEC-017.
+> `design/Electronics/Cypher/Design_Spec.md §4` and DEC-017.
 >
 ### 3.2 6-Layer 1.6mm FR4 - Controller
 
@@ -268,7 +268,7 @@ Standard 2.54 mm pitch IDC flat ribbon cable has the following impedance charact
 | Shielded ribbon (overall foil) | ~100 Ω | Foil improves EMI; minimal Zo change |
 
 The Enigma-NG 20-pin encoder port connector specifies **alternating GND pins between all JTAG
-signals** (J4-J9 pin table in `design/Electronics/Stator/Board_Layout.md`). This places the cable Zo at approximately
+signals** (J4-J9 pin table in `design/Electronics/Cypher/Board_Layout.md`). This places the cable Zo at approximately
 **100 Ω**.
 
 > **Key implication:** The PCB-to-cable impedance discontinuity is from 50 Ω (PCB trace) to 100 Ω

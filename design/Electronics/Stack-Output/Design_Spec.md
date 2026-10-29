@@ -150,7 +150,7 @@ handling on this same connector pair. Per DEC-093/DEC-095.
 
 ### TTD vs TTD_RETURN naming
 
-Per `.copilot/discussions/cypher-system-discussion/extension-mechanical-usage.md` Entry 20:
+Per DEC-109 (ENC module BtB connector topology and TTD/TTD_RETURN naming convention):
 
 - **TTD** on the interposer link (J6): the JTAG serial chain signal from the last ROT TDO output,
   forwarded to Stack-Input. Named **TTD** here — it is not yet renamed at this point in the chain.
@@ -261,7 +261,7 @@ Stack-Input Board.
 - **Decoupling:** per `design/Standards/Global_Routing_Spec.md §3`.
 - **JTAG trace width:** All JTAG traces on L1 shall be routed at the CI width per
   `design/Standards/Global_Routing_Spec.md §2.3.1`, targeting 50 Ohm controlled impedance.
-  See `design/Electronics/JTAG_Module/JTAG_Integrity.md` and DEC-016.
+  See `design/Electronics/Cypher/JTAG_Integrity.md` and DEC-016.
 
 ## 8. Thermal & ESD
 

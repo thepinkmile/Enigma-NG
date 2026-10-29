@@ -231,8 +231,7 @@ system's only galvanic GND to GND_CHASSIS bond remains on the Power Module.
 ## 3. ENC Module Interface
 
 The Cypher-Input Board hosts one ENC module in the keyboard (encoder) cipher role via three
-Hirose DF40C BtB receptacle sets, per the connector topology defined in
-`.copilot/discussions/cypher-system-discussion/extension-mechanical-usage.md` Entry 16.
+Hirose DF40C BtB receptacle sets, per the connector topology defined in DEC-109.
 
 | Connector | MPN | Pins | Content |
 | :--- | :--- | :--- | :--- |

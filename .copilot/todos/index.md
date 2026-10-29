@@ -1,4 +1,4 @@
-﻿# Enigma-NG Todo Index
+# Enigma-NG Todo Index
 
 > **Canonical deferred-work reference.** Summary table only — no prose or inline notes.
 > Per-todo detail files are in `.copilot/todos/<id>.md` (active todos only).
@@ -148,22 +148,22 @@ Last updated: 2026-09-17
 | `merge-create-cypher-output` | | done | `design-discussion-merge`, `merge-grs-6layer-stackup` |
 | `merge-create-plugboard` | — | done | `design-discussion-merge`, `merge-grs-6layer-stackup`, `merge-create-cypher-input`, `merge-create-cypher-output` |
 | `merge-update-top-level-docs` | [merge-update-top-level-docs.md](merge-update-top-level-docs.md) | pending | `merge-top-level-docs-readme` |
-| `merge-top-level-docs-boards-overview` | — | pending | — |
-| `merge-top-level-docs-system-architecture` | — | pending | `merge-top-level-docs-boards-overview` |
-| `merge-top-level-docs-consolidated-bom` | — | pending | `merge-top-level-docs-system-architecture` |
-| `merge-top-level-docs-electrical-design` | — | pending | `merge-top-level-docs-consolidated-bom` |
-| `merge-top-level-docs-power-budgets` | — | pending | `merge-top-level-docs-electrical-design` |
-| `merge-top-level-docs-global-routing-spec` | — | pending | `merge-top-level-docs-power-budgets` |
-| `merge-top-level-docs-certification-evidence` | — | pending | `merge-top-level-docs-global-routing-spec` |
-| `merge-top-level-docs-jlcpcb-manufacturing` | — | pending | `merge-top-level-docs-certification-evidence` |
-| `merge-top-level-docs-pas-powermodule` | — | pending | `merge-top-level-docs-jlcpcb-manufacturing` |
-| `merge-top-level-docs-lab-tests` | — | pending | `merge-top-level-docs-pas-powermodule` |
-| `merge-top-level-docs-user-manual` | — | pending | `merge-top-level-docs-lab-tests` |
-| `merge-top-level-docs-maintenance-guide` | — | pending | `merge-top-level-docs-user-manual` |
-| `merge-top-level-docs-classroom-guide` | — | pending | `merge-top-level-docs-maintenance-guide` |
-| `merge-top-level-docs-readme` | — | pending | `merge-top-level-docs-classroom-guide` |
-| `merge-remove-old-boards` | [merge-remove-old-boards.md](merge-remove-old-boards.md) | pending | `merge-update-top-level-docs` |
-| `merge-diagrams-review` | [merge-diagrams-review.md](merge-diagrams-review.md) | pending | `merge-create-cypher-output`, `merge-create-plugboard`, `merge-remove-old-boards` |
+| `merge-top-level-docs-boards-overview` | — | done | — |
+| `merge-top-level-docs-system-architecture` | — | done | `merge-top-level-docs-boards-overview` |
+| `merge-top-level-docs-consolidated-bom` | — | done | `merge-top-level-docs-system-architecture` |
+| `merge-top-level-docs-electrical-design` | — | done | `merge-top-level-docs-consolidated-bom` |
+| `merge-top-level-docs-power-budgets` | — | done | `merge-top-level-docs-electrical-design` |
+| `merge-top-level-docs-global-routing-spec` | — | done | `merge-top-level-docs-power-budgets` |
+| `merge-top-level-docs-certification-evidence` | — | done | `merge-top-level-docs-global-routing-spec` |
+| `merge-top-level-docs-jlcpcb-manufacturing` | — | done | `merge-top-level-docs-certification-evidence` |
+| `merge-top-level-docs-pas-powermodule` | — | done | `merge-top-level-docs-jlcpcb-manufacturing` |
+| `merge-top-level-docs-lab-tests` | — | done | `merge-top-level-docs-pas-powermodule` |
+| `merge-top-level-docs-user-manual` | — | done | `merge-top-level-docs-lab-tests` |
+| `merge-top-level-docs-maintenance-guide` | — | done | `merge-top-level-docs-user-manual` |
+| `merge-top-level-docs-classroom-guide` | — | done | `merge-top-level-docs-maintenance-guide` |
+| `merge-top-level-docs-readme` | — | done | `merge-top-level-docs-classroom-guide` |
+| `merge-remove-old-boards` | — | done | — |
+| `merge-diagrams-review` | — | done | — |
 | `cypher-input-led-independent-rgb-pwm-review` | [cypher-input-led-independent-rgb-pwm-review.md](cypher-input-led-independent-rgb-pwm-review.md) | pending | `merge-diagrams-review` |
 | `merge-consistency-review` | [merge-consistency-review.md](merge-consistency-review.md) | pending | `merge-diagrams-review`, `cypher-input-led-independent-rgb-pwm-review` |
 | `merge-missing-components` | [merge-missing-components.md](merge-missing-components.md) | pending | `cypher-input-led-independent-rgb-pwm-review` |

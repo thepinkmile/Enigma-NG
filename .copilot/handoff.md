@@ -7,8 +7,35 @@ keep near the design docs but is **not** itself a source of design truth.
 
 ## ⏭️ Next Session — Start Here
 
-**2026-10-14 session update (checkpoint 196): mini-stack flush/protrude review and USM/extension
-diagram integration both complete.**
+**2026-10-29 session update (checkpoint 197): top-level docs merge sweep complete; old boards
+retired.**
+
+**Read checkpoint 197 in full before doing anything else this next session.**
+
+`merge-update-top-level-docs` (all 14 file-by-file sub-todos: Boards_Overview, System_Architecture,
+Consolidated_BOM, Electrical_Design, Power_Budgets, Global_Routing_Spec, Certification_Evidence,
+JLCPCB_Manufacturing, PAS_PowerModule_V1, Lab_Tests, User_Manual, Maintenance_Guide,
+Classroom_Guide, root README) and `merge-diagrams-review` are both done. `merge-remove-old-boards`
+is in progress — file moves are complete (Stator/Reflector/Extension/JTAG_Module to
+`.recycle-bin/`, Actuation_Module to `.copilot/discussions/max-10-fpga-details/` for a possible
+future MAX 10 FPGA redesign), but the todo isn't marked done yet pending a final
+cross-reference sanity check.
+
+**Two new retrospective DEC entries created** (decisions that existed but were never formally
+logged): DEC-108 (STA-05/STA-06 shunt resistor and power figure reconciliation) and DEC-109 (ENC
+module BtB connector topology + TTD/TTD_RETURN naming convention, previously only recorded in a
+now-retired discussion document).
+
+**Discussion folders retired this session**: `cypher-engine-discussion` (user-moved, duplicate of
+`cypher-system-discussion`), `usm-redesign` (promoted content now lives in `design/Diagrams/`),
+`cypher-system-discussion` (promoted content now lives in board specs + DEC-109).
+
+**No known open inconsistencies remain.** Next: finish `merge-remove-old-boards` sign-off, then
+continue down the merge chain (`merge-consistency-review`/`merge-missing-components`, parallel,
+both gated on the not-yet-started LED/keyboard PoC — `cypher-input-led-independent-rgb-pwm-review`)
+or start the PoC first, per the user's direction next session.
+
+### Prior session update (2026-10-14, checkpoint 196)
 
 **Read checkpoint 196 in full before doing anything else this next session.** It includes an
 important incident note: never run *any* git command (including read-only `status`/`fsck`)

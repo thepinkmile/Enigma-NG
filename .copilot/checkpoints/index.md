@@ -201,3 +201,4 @@ Checkpoints are listed in chronological order. Checkpoint 1 is the oldest, highe
 | 194 | Cypher-Output and Cypher-Plugboard rebuilt & reviewed; connector mating convention corrected | 194-cypher-output-plugboard-rebuilt-connector-convention-fixed.md |
 | 195 | USM redesign implementation complete (Cypher rebuilt; full consistency review passed) | 195-usm-redesign-implementation-complete.md |
 | 196 | USM/extension diagrams integrated; mini-stack flush/protrude review complete | 196-usm-extension-diagrams-integrated-mini-stack-flush-done.md |
+| 197 | Top-level docs merge sweep complete; old boards retired | 197-top-level-docs-merge-sweep-complete-old-boards-retired.md |
