@@ -84,53 +84,9 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ## 🗺️ System Architecture
 
-```mermaid
-flowchart BT
-    SBLANK["🔴 Stack-Blanking<br>Terminator panel"]
+![Cypher and Single Mini-Stack Configuration](design/Diagrams/renders/cypher-and-single-stack-configuration.png)
 
-    subgraph MSTACK["🔄 Rotor Mini-Stack  — 5 rotors per mini-stack, chainable via Stack-Interposer"]
-        SIN["Stack-Input"]
-        ROT["Rotor Module ×5<br>Programmable Hardware IC (CPLD/FPGA) · capacitive position sensor<br>10 wiring sets · 4-pos DIP"]
-        SOUT["Stack-Output"]
-        SIN --> ROT --> SOUT
-    end
-
-    subgraph CYPHER["🟣 Cypher Board  (Stator + Reflector + JTAG Bridge + Electrical Plugboard)"]
-        CYP["Programmable Hardware IC (CPLD/FPGA) · JTAG bridge IC<br>Telemetry IC (I²C) — rotor-stack monitoring<br>Encoder Modules ×4 (electrical Plugboard pass)"]
-    end
-
-    subgraph HID["🔡 HID Pair"]
-        CIN["Cypher-Input<br>(Keyboard)<br>Encoder Module"]
-        COUT["Cypher-Output<br>(Lightboard)<br>Encoder Module"]
-    end
-
-    PLUG["🟠 Cypher-Plugboard<br>Mechanical jack panel · electrical Encoder Modules live on Cypher"]
-    USM["🟡 User Settings Module<br>Colour config · brightness dial · buzzer"]
-
-    subgraph PWR["⚡ Power Module"]
-        PM["Power Module<br>PoE+ 802.3bt · USB-C PD · Battery<br>eFuse · Buck · LDO · Supercap UPS"]
-    end
-
-    subgraph CTRL["🖥️ Controller Board  (CM5 Carrier)"]
-        CB["Raspberry Pi CM5"]
-    end
-
-    SBLANK ~~~ MSTACK ~~~ CYPHER
-    CYPHER ~~~ HID ~~~ PLUG
-    PWR ~~~ CTRL
-
-    PWR -- "3× TE 2.5mm docks<br>5V_MAIN · 3V3_ENIG" --> CTRL
-    CTRL -- "J4 power-only (Molex)<br>J5 signal-only (Samtec QSS/QTS-025)<br>5V_MAIN/3V3_ENIG · I2C1/I2C2 · JTAG" --> CYP
-    CYP -- "Stack-Input/Output template" --> SIN
-    SOUT -- "Stack-Output template" --> SBLANK
-    CYP -- "Cypher Left Pair Template" --> CIN
-    CYP -- "Hub Connector Template<br>JTAG · I2C2" --> USM
-    USM -. "relays JTAG · I2C2" .-> CIN
-    USM -. "relays JTAG · I2C2" .-> COUT
-    USM -. "relays JTAG · I2C2" .-> PLUG
-    CIN --- PLUG
-    COUT --- PLUG
-```
+*Full diagram source: [`design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`](design/Diagrams/cypher-and-stack-configuration-diagrams.drawio)*
 
 ---
 
@@ -218,13 +174,23 @@ flowchart BT
 * **Actuation:** Each Stack-Input board hosts a native STM32 MCU for local solenoid/motor
   actuation.
 
-### 8. Cypher-Input / Cypher-Output (HID Pair)
+![Rotor Mini-Stack Front View](design/Diagrams/renders/cypher-system-layout-rotor-mini-stack-front-view.png)
+
+*Full diagram source: [`design/Diagrams/cypher-system-layout.drawio`](design/Diagrams/cypher-system-layout.drawio)*
+
+### 8. Cypher - HID (Human Interface Devices)
+
+![USM Connector Topology](design/Diagrams/renders/usm-connector-topology.png)
+
+*Full diagram source: [`design/Diagrams/usm-connector-topology.drawio`](design/Diagrams/usm-connector-topology.drawio)*
+
+#### 8.1 Cypher-Input / Cypher-Output (HID Pair)
 
 * **Role:** HID-pair boards implementing the Keyboard (Cypher-Input) and Lightboard
   (Cypher-Output) roles, each carrying one Encoder Module and available in multiple variants
   (10-Numeric, 26-Char, 64-Char).
 
-### 9. Cypher-Plugboard
+#### 8.2 Cypher-Plugboard
 
 * **Role:** Mechanical jack panel for the physical plugboard. The electrical Encoder Modules that
   implement the Plugboard-pass logic live on the Cypher Board itself, not on this board.

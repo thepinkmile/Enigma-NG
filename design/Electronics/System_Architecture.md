@@ -38,6 +38,10 @@ The Enigma-NG system comprises the following boards:
   Stack-Input side and the Stack-Output side within each mini-stack so the overall stack still
   functions correctly across this arrangement. The final mini-stack in the chain is terminated by
   a Stack-Blanking panel.
+
+  ![Rotor Mini-Stack Multi-Stack Chaining](../Diagrams/renders/cypher-system-layout-rotor-mini-stack-multi-stack.png)
+
+  *Full diagram source: [`design/Diagrams/cypher-system-layout.drawio`](../Diagrams/cypher-system-layout.drawio)*
 - **Stack-Input** - Mini-stack input board; buffers the incoming JTAG signals (`TCK`/`TMS`) for the
   mini-stack and also hosts the native Actuation Module MCU for local solenoid/motor actuation.
 - **Stack-Output** - Mini-stack output board.
@@ -55,32 +59,9 @@ The Enigma-NG system comprises the following boards:
 
 ### Physical Chain
 
-```mermaid
-flowchart TD
-    EXT["External RJ45 / HDMI / USB3"]
-    CTL["Controller Board"]
-    PM["Power Module"]
-    CYP["Cypher Board"]
-    USM["User Settings Module"]
-    HID["Cypher-Input / Cypher-Output<br>(HID pair)"]
-    PLUG["Cypher-Plugboard"]
-    SIN["Stack-Input"]
-    ROT["Rotor 1 … Rotor 5"]
-    SOUT["Stack-Output"]
-    SINT["Stack-Interposer<br>(delivers signals between the<br>Stack-Input side and Stack-Output side)"]
-    SBLANK["Stack-Blanking<br>(terminator)"]
+![Cypher and Single Mini-Stack Configuration](../Diagrams/renders/cypher-and-single-stack-configuration.png)
 
-    EXT --> CTL
-    CTL -->|"PM dock"| PM
-    CTL -->|"Cypher dock (power + signal)"| CYP
-    CYP -->|"Hub Connector Template"| USM
-    CYP -->|"Cypher Left Pair Template"| HID
-    HID --- PLUG
-    CYP --> SIN --> ROT --> SOUT
-    SIN -. "signal delivery" .-> SINT -. "signal delivery" .-> SOUT
-    SOUT --> SBLANK
-    SBLANK -->|"TTD_RETURN"| CYP
-```
+*Full diagram source: [`design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`](../Diagrams/cypher-and-stack-configuration-diagrams.drawio)*
 
 The Power Module and the Rotor Mini-Stack are both removable/reconfigurable. The Controller is the
 fixed mechanical reference that mates to the Power Module and the Cypher Board and owns all
