@@ -94,33 +94,34 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ### 1. Power Module (The Heart)
 
-* **Input:** Triple-input OR-ing between PoE+ 802.3bt Type 4, USB-C 15V PD, and Battery
-  11–16.4V via LM74700-Q1 + CSD17483F4T ideal-diode FETs. PoE is explicitly prioritised over
-  USB-C; USB-C vs Battery precedence follows the active input voltages unless extra gating is added.
-* **PoE:** Fully discrete 802.3bt Type 4 front end — TPS2372-4 (PD interface) + TPS23730 (ACF DC-DC) + TDK B82806D0060A120 ACF Forward transformer stage. Implemented 12V power stage capacity: 60W.
-* **Protection:** TPS25980 eFuse — 7A ILIM, 11.0V UVLO, 16.9V OVLO, 3mΩ RON. Plus 72°C TCO thermal fuse.
-* **Buck:** Dual-phase interleaved LMQ61460-Q1 (×2, 6A each, 12A combined, 400kHz DRSS, 180° SYNC). Effective ripple: 800kHz.
-* **LDO:** TPS75733KTTRG3 3V3_ENIG (8.8µVRMS noise, 72dB PSRR, 3A, 2.22 A typical load at 74.0% utilisation).
-* **UPS:** LTC3350 supercap manager + 8× Abracon ADCR-T02R7SA256MB (2S4P, 50 F) on 5V_MAIN bus. 50 F at 5.4V → ≥33.5 second hold-up for clean CM5 shutdown.
-* **Output Rails:** 5V_MAIN (12A) and 3V3_ENIG (3A — logic, CPLDs, and rotor stack) via BtB connectors to Controller Board for distribution.
-* **Panel Controls:** SW1 is a rugged latching RGB power toggle (Adafruit 4660) and SW2 is a
-  matching 16mm momentary RGB CM5 power button (Adafruit 3350); both are panel-mounted controls
-  wired to the Power Module harness.
+* **Input:** Triple-input OR-ing between PoE+ 802.3bt Type 4, USB-C PD, and Battery, using
+  ideal-diode FETs. PoE is explicitly prioritised over USB-C; USB-C vs Battery precedence follows
+  the active input voltages unless extra gating is added.
+* **PoE:** Discrete 802.3bt Type 4 front end (PD interface + isolated DC-DC stage).
+* **Protection:** eFuse over-current/over-voltage protection plus a thermal fuse.
+* **Buck:** Dual-phase interleaved buck converter generating `5V_MAIN`.
+* **LDO:** Low-noise linear regulator generating `3V3_ENIG` for logic, CPLDs, and the rotor stack.
+* **UPS:** Supercapacitor-backed hold-up on the `5V_MAIN` bus, sized for a clean CM5 shutdown on
+  input loss.
+* **Output Rails:** `5V_MAIN` and `3V3_ENIG` delivered to the Controller Board via BtB connectors
+  for distribution.
+* **Panel Controls:** A latching RGB power toggle and a momentary RGB CM5 power button are
+  panel-mounted controls wired to the Power Module harness.
 
 ### 2. Controller Board (The Brain)
 
-* **Module:** Raspberry Pi CM5 (BCM2712) on a custom 6-layer 2oz carrier.
-* **Power Input:** 3-way seamless switching (LM74700-Q1 ideal-diode on Power Module).
-  * **Smart Battery:** 5-pin Molex Micro-Fit connector (11V-16.4V nominal) with SMBus telemetry + BATT_PRES_N.
-  * **PoE+ (802.3bt Type 4):** Power-over-Ethernet delivered through the Power Module discrete
-    TPS2372-4 + TPS23730 + TDK B82806D0060A120 ACF Forward path. The implemented 12V stage is sized at 60W. Single
+* **Module:** Raspberry Pi CM5 on a custom 6-layer carrier.
+* **Power Input:** 3-way seamless switching, sourced from the Power Module.
+  * **Smart Battery:** Smart battery connector with SMBus telemetry + presence detect.
+  * **PoE+ (802.3bt Type 4):** Delivered through the Power Module's PoE front end. Single
     Ethernet cable carries both data and power.
-  * **USB-C PD:** 15V USB-C PD negotiated input.
+  * **USB-C PD:** USB-C PD negotiated input.
 * **Protection:** Over-voltage and over-current protection provided by Power Module eFuse upstream; local reverse-polarity and ESD protection on BtB interface.
-* **Rotor Rail:** The rotor stack is powered by the **3V3_ENIG** rail (TPS75733KTTRG3 LDO, 3A) generated on the Power Module; routed to the rotor mini-stack via Controller Board → Cypher Board.
-  CM5 GPIO 16 (ROTOR_EN) gates the LDO enable for sequenced power-up.
+* **Rotor Rail:** The rotor stack is powered by the `3V3_ENIG` rail generated on the Power Module;
+  routed to the rotor mini-stack via Controller Board → Cypher Board. CM5 GPIO gates the LDO
+  enable for sequenced power-up.
 * **JTAG Master:** Routes JTAG through the signal-only Cypher Board dock (`J5`) to the Cypher
-  Board's own JTAG bridge IC (FT232H).
+  Board's own JTAG bridge IC.
 * **Connectivity:** Native USB 3.0 (SMT), HDMI (SMT), and Gigabit Ethernet.
 
 ### 3. Cypher Board (Nervous System)
@@ -130,8 +131,8 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 * **Interconnects:** Hosts the Controller dock, rotor mini-stack docks, the HID-pair (Cypher-Input/
   Cypher-Output) docks, the Hub Connector Template to the User Settings Module, and its own
   electrical Plugboard-pass Encoder Modules.
-* **Peripherals:** Owns the rotor-stack INA219 current monitor, three MCP23017 expanders, and the
-  USB-to-JTAG bridge IC (FT232H).
+* **Peripherals:** Owns the rotor-stack current/power telemetry IC, GPIO expander ICs, and the
+  USB-to-JTAG bridge IC.
 
 ### 4. Encoder Module (Universal Interface)
 
@@ -152,11 +153,11 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 
 ### 6. Rotor Module (The Engine)
 
-* **Logic:** Intel **MAX II EPM570T100I5N** CPLD.
+* **Logic:** A Programmable Hardware IC (CPLD/FPGA).
 * **Dimensions:** Ø92 mm PCB / **Ø100 mm shroud outer**.
 * **Segments:** 64 characters with **8mm arc width** for high readability.
 * **Memory:** 10 pre-loaded bidirectional wiring sets; 4-position DIP switch for "Rotor Identity" selection.
-* **Sensing:** FDC2114RGHR capacitive encoder ICs (dual-track, 3+3 per rotor).
+* **Sensing:** Capacitive position-encoder ICs (dual-track, 3+3 per rotor).
 * **Tri-Connector Bus:**
   * Power (2x2), JTAG (2x4 Shielded), and Enigma (2x6 Bidirectional Relay) in a "Tripod" layout.
 
@@ -229,7 +230,8 @@ This end-goal will involve the definition of a new RFC for the "Enigma-Packet-Pr
 ## ⚠️ Safety & Design Rules (KiCAD 9)
 
 * **eFuse Latch-off:** Electronic fault protection requires manual power cycle to reset.
-* **Soft Start:** SW1 drives the TPS25980 eFuse EN pin; the CM5 separately gates the 3V3_ENIG LDO with ROTOR_EN.
+* **Soft Start:** The Power Module's eFuse enable is driven by SW1; the CM5 separately gates the
+  3V3_ENIG LDO with ROTOR_EN.
 * **ESD Hardening:** TVS diodes on all exposed pins (JTAG, Enigma, and 64-jack lines).
 * **Stackup:** Mixed stackup architecture: Controller Board and Power Module are 6-layer boards; the remaining electronics boards are 4-layer / 2oz designs.
 
