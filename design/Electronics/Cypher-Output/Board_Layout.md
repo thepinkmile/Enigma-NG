@@ -236,5 +236,9 @@ This board occupies the **bottom row** (the "Output" role) of the shared templat
 
 ## Diagram Reference
 
-See `design/Diagrams/cypher-system-layout.drawio` and renders in `design/Diagrams/renders/` for
-the system-level layout diagram once the Cypher-Output Board is added to that diagram set.
+See the diagram below for the system-level layout diagram showing the Cypher-Output Board's
+position within the system.
+
+![Cypher and Single Mini-Stack Configuration](../../Diagrams/renders/cypher-and-single-stack-configuration.png)
+
+*Diagram source: [`design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`](../../Diagrams/cypher-and-stack-configuration-diagrams.drawio)*

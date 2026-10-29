@@ -59,7 +59,7 @@ PWM-capable interface) rather than purely local hardware.
 
 This todo is now **the** decision point for the HID boards' actual LED drive implementation,
 following the wider User Settings Module (USM) redesign discussion (see
-`.copilot/discussions/usm-redesign/usm-connector-topology-review.drawio` for the accompanying
+`design/Diagrams/usm-connector-topology.drawio` for the accompanying
 connector topology diagram, and the session history around 2026-09-15/16 for the full discussion).
 Key outcomes to carry forward into this review:
 

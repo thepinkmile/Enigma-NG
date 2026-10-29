@@ -229,5 +229,9 @@ This board occupies the **top row** (the "Input" role) of the shared template. L
 
 ## Diagram Reference
 
-See `design/Diagrams/cypher-system-layout.drawio` and renders in `design/Diagrams/renders/` for
-the system-level layout diagram once the Cypher-Input Board is added to that diagram set.
+See the diagram below for the system-level layout diagram showing the Cypher-Input Board's
+position within the system.
+
+![Cypher and Single Mini-Stack Configuration](../../Diagrams/renders/cypher-and-single-stack-configuration.png)
+
+*Diagram source: [`design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`](../../Diagrams/cypher-and-stack-configuration-diagrams.drawio)*

@@ -93,6 +93,9 @@ Stack-Output Board (J1 side):
 
 ## Diagram Reference
 
-See `design/Diagrams/cypher-system-layout.drawio` — page **"Mini-Stack Front View"** — and
-`design/Diagrams/renders/03-Mini-Stack-Front-View.png` for the front-elevation view of the
-Rotor Mini-Stack showing the Stack-Interposer Board position at the base.
+See the diagram below for the front-elevation view of the Rotor Mini-Stack showing the
+Stack-Interposer Board position at the base.
+
+![Rotor Mini-Stack Front View](../../Diagrams/renders/cypher-system-layout-rotor-mini-stack-front-view.png)
+
+*Diagram source: [`design/Diagrams/cypher-system-layout.drawio`](../../Diagrams/cypher-system-layout.drawio) — page "Mini-Stack Front View"*

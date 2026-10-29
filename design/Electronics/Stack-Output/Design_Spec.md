@@ -168,7 +168,7 @@ Idle-state bias resistors R1–R3 are placed at the end of each spoke. They mirr
 pull-down resistors on the Cypher Board (R3/R5/R6) which hold the same signals in their defined
 idle states at the source end. Having matching bias at both source and spoke end ensures defined
 logic levels when a mini-stack is disconnected or powered down during assembly and test.
-See `design/Electronics/JTAG_Module/JTAG_Integrity.md` and DEC-016 for system JTAG integrity
+See `design/Electronics/Cypher/JTAG_Integrity.md` and DEC-016 for system JTAG integrity
 context.
 
 | RefDes | Signal | Termination | Value | Rationale |

@@ -184,5 +184,9 @@ Same canonical IC-STA-CHAIN pin map as J1 (§1 above), with I/O directions inver
 
 ## Diagram Reference
 
-See `design/Diagrams/cypher-system-layout.drawio` and renders in `design/Diagrams/renders/`
-for the system-level layout showing the Stack-Input Board position within the Rotor Mini-Stack.
+See the diagram below for the system-level layout showing the Stack-Input Board position within
+the Rotor Mini-Stack.
+
+![Rotor Mini-Stack Architecture](../../Diagrams/renders/cypher-system-layout-rotor-mini-stack-architecture.png)
+
+*Diagram source: [`design/Diagrams/cypher-system-layout.drawio`](../../Diagrams/cypher-system-layout.drawio)*

@@ -82,6 +82,10 @@ This board mates USM's own bottom (`J2`, female) Hub connector, per DEC-103. Loc
 
 ## Diagram Reference
 
-See `design/Diagrams/cypher-system-layout.drawio` and renders in `design/Diagrams/renders/` for
-the system-level layout showing the Cypher-Plugboard Board's position at the bottom of the local
-Cypher-Input/Cypher-Output HID stack and the User Settings Module hub stack.
+See the diagram below for the system-level layout showing the Cypher-Plugboard Board's position
+at the bottom of the local Cypher-Input/Cypher-Output HID stack and the User Settings Module hub
+stack.
+
+![Cypher and Single Mini-Stack Configuration](../../Diagrams/renders/cypher-and-single-stack-configuration.png)
+
+*Diagram source: [`design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`](../../Diagrams/cypher-and-stack-configuration-diagrams.drawio)*

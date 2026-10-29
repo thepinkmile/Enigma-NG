@@ -337,6 +337,8 @@ away from the high-speed JTAG/ENC signal routing at J3/J4.
 
 ## Diagram Reference
 
-See `design/Diagrams/cypher-system-layout.drawio` and renders in `design/Diagrams/renders/`
-for the system-level layout diagram showing the Cypher Board's position within the
-Rotor Mini-Stack assembly.
+See the diagram below for the Cypher Board's position within the Rotor Mini-Stack assembly.
+
+![Cypher and Single Mini-Stack Configuration](../../Diagrams/renders/cypher-and-single-stack-configuration.png)
+
+*Diagram source: [`design/Diagrams/cypher-and-stack-configuration-diagrams.drawio`](../../Diagrams/cypher-and-stack-configuration-diagrams.drawio)*

@@ -224,7 +224,7 @@ own BOM (§8):
 - **Local Chain:** one JTAG device per Encoder Module: U1 only.
 - **Trace Width:** all JTAG signal traces on L1 shall be routed at the CI width specified in
   `design/Standards/Global_Routing_Spec.md §2.3.1`, targeting **50 Ω controlled impedance**. See
-  `design/Electronics/JTAG_Module/JTAG_Integrity.md`.
+  `design/Electronics/Cypher/JTAG_Integrity.md`.
 - **Pull Resistors (x4, placed near U1):**
   - **TMS:** 10 kΩ pull-up to 3V3_ENIG (R2)
   - **TDI:** 10 kΩ pull-up to 3V3_ENIG (R3)

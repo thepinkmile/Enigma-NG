@@ -158,7 +158,7 @@ The Stack-Input Board re-buffers TCK and TMS for the 5 ROT boards within its min
 - **CPLD_RESET_N:** Received via J1 (stacking connector); broadcast to all 5 ROT CPLDs via J3.
 - **JTAG trace width:** All JTAG traces on L1 shall be routed at the CI width per
   `design/Standards/Global_Routing_Spec.md §2.3.1`, targeting 50 Ohm controlled impedance.
-  See `design/Electronics/JTAG_Module/JTAG_Integrity.md` and DEC-016.
+  See `design/Electronics/Cypher/JTAG_Integrity.md` and DEC-016.
 
 ## 4. Actuation Module (Native)
 

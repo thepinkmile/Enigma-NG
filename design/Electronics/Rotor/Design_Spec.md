@@ -376,7 +376,7 @@ A **6-position DIP switch** is mounted on each face of the rotor PCB for cipher 
   assignments as defined there.
 * **JTAG Trace Width Rule:** All JTAG signal traces on L1 shall be routed at the CI width specified in
   `design/Standards/Global_Routing_Spec.md §2.3.1`, targeting **50 Ω controlled impedance**
-  (physical properties in `design/Production/JLCPCB_Manufacturing.md §1.1`). See `design/Electronics/JTAG_Module/JTAG_Integrity.md §3.1`.
+  (physical properties in `design/Production/JLCPCB_Manufacturing.md §1.1`). See `design/Electronics/Cypher/JTAG_Integrity.md §3.1`.
 * **TTD path policy:** The rotor-stack `TTD` path is a direct board-to-board chain. No series resistor is
   placed at each rotor hop; `TTD` exits the CPLD and continues straight to J4 pin 6. Cable-driving
   damping is reserved for the ribbon-port interfaces on the Stator / Encoder boards, while the

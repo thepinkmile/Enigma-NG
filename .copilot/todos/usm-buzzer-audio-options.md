@@ -62,7 +62,7 @@ a part/topology decision is made — no decision has been made yet, this is pure
 
 ## Notes
 
-- This sits within the wider USM redesign discussion — see `.copilot/discussions/usm-redesign/`
+- This sits within the wider USM redesign discussion — see `design/Diagrams/usm-connector-topology.drawio`
   for the connector topology and LED colour-control context this todo's decision will need to fit
   alongside (e.g. whichever expander/CPLD/MCU ends up driving the buzzer/speaker may already be
   decided by the LED-colour-storage discussion, which could constrain or simplify this choice).

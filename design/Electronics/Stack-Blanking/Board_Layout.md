@@ -86,6 +86,9 @@ canonical pin map. Bottom power region (3V3_ENIG + GND) mirrors J1 bottom.
 
 ## Diagram Reference
 
-See `design/Diagrams/cypher-system-layout.drawio` and renders in `design/Diagrams/renders/`
-for the system-level layout showing the Stack-Blanking Board position at the rear of the last
-Rotor Mini-Stack.
+See the diagram below for the system-level layout showing the Stack-Blanking Board position at
+the rear of the last Rotor Mini-Stack.
+
+![Rotor Mini-Stack Architecture](../../Diagrams/renders/cypher-system-layout-rotor-mini-stack-architecture.png)
+
+*Diagram source: [`design/Diagrams/cypher-system-layout.drawio`](../../Diagrams/cypher-system-layout.drawio)*

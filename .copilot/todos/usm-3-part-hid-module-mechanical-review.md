@@ -14,7 +14,7 @@ action only once that is implemented, per the standing "electronics before mecha
 The redesigned User Settings Module (USM) is moving from a remote, panel-mounted board (connected
 to the Cypher Board over a 6-wire harness) to a board that mounts **directly alongside**
 Cypher-Input and Cypher-Output, connected to both via direct board-to-board connectors (see
-`.copilot/discussions/usm-redesign/usm-connector-topology-review.drawio` for the connector-level
+`design/Diagrams/usm-connector-topology.drawio` for the connector-level
 detail).
 
 Mechanically, this forms one physical **3-part HID module**:
