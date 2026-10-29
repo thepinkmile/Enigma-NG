@@ -5,7 +5,7 @@
 **Author:** Izzyonstage & GitHub Copilot
 **Version:** v.0.1.0
 **Associated Hardware Revision:** Rev A
-**Last Updated:** 2026-05-11
+**Last Updated:** 2026-10-28
 
 This document defines the JLCPCB fabrication and assembly constraints that apply across all
 Enigma-NG boards. Board-level design specifications and the Global Routing Specification (GRS)
@@ -32,8 +32,8 @@ nominal board thickness) + `21` (copper weight: 2oz outer / 1oz inner) + `-PPPP`
 
 | Stackup code | Layer count | Boards |
 | :--- | :--- | :--- |
-| `JLC041621-3313` | 4-layer, 2oz outer / 1oz inner | ROT, STA, EXT, REF, ENC, JM, AM, USM (8 boards) |
-| `JLC061621-3313` | 6-layer, 2oz outer / 1oz inner | CTL (CI required), PM (CI not required) |
+| `JLC041621-3313` | 4-layer, 2oz outer / 1oz inner | ROT, CYPI, CYPO, CYPB, SIN, SOUT, SINT, SBLK, ENC, USM (10 boards) |
+| `JLC061621-3313` | 6-layer, 2oz outer / 1oz inner | CTL (CI required), CYP (CI required), PM (CI not required) |
 
 > **Note:** Older documents (pre-DEC-065) used the codes `JLC04161H-7628` and `JLC06161H-2116`.
 > These codes were incorrect interpretations of the JLCPCB stackup naming scheme and have been
@@ -73,10 +73,10 @@ This is the standard stackup for all Enigma-NG boards **except** the Controller 
 > for this stackup: outer 50Ω IPC estimate is approximately **−9% low**; inner 50Ω IPC estimate is
 > approximately **+13% high**. Use JLCPCB calculator values only. Do **not** use IPC-2141A.
 
-**Boards using this stackup:** Rotor (A+B), Stator, Extension, Reflector,
-User Settings Module (USM), Actuation Module, Encoder, JTAG Module
+**Boards using this stackup:** Rotor (A+B), Cypher-Input, Cypher-Output, Cypher-Plugboard,
+Stack-Input, Stack-Output, Stack-Interposer, Stack-Blanking, Encoder Module, User Settings Module (USM)
 
-**Design rule reference:** `design/Standards/Global_Routing_Spec.md §2.3.1` (standard 4-layer) and `§2.3.2` (inverted 4-layer — JTAG Module, Actuation Module)
+**Design rule reference:** `design/Standards/Global_Routing_Spec.md §2.3.1` (standard 4-layer)
 
 ---
 
@@ -194,10 +194,6 @@ constraints must be understood and accounted for in board designs.
 | THT placement | Manual fit required (not included in JLCPCB PCBA standard service) |
 | Double-sided SMT | Available on **Economic PCBA** service with limitations; requires explicit quotation |
 
-> **Design note for Reflector Board:** The Reflector is a single-sided SMT assembly. All SMT
-> components must be on the same board face to use JLCPCB standard PCBA. This is an explicit
-> design constraint, not a limitation — see `design/Electronics/Reflector/Design_Spec.md`.
-
 ### 3.2 THT Components
 
 All THT components (headers, connectors, DIP switches, pin headers, through-hole capacitors)
@@ -232,5 +228,5 @@ manually fitted.
 | `design/Standards/Global_Routing_Spec.md` | System-wide routing rules; references this document for stackup details |
 | `design/Electronics/Controller/Design_Spec.md §9` | Controller-specific 6-layer stackup (JLC061621-3313) |
 | `design/Electronics/Rotor/Design_Spec.md §4` | Rotor 4-layer stackup (JLC041621-3313) |
-| `design/Electronics/Stator/Design_Spec.md §7` | Stator fabrication requirements |
+| `design/Electronics/Cypher/Design_Spec.md §9` | Cypher Board fabrication requirements |
 | `design/Electronics/Power_Module/Design_Spec.md §8` | Power Module fabrication requirements |
